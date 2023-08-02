@@ -46,5 +46,3 @@ Required:
 - `tag_key` (String) The key of the tag
 - `tag_key_required` (Boolean) If a tag key is required for monitor creation
 - `valid_tag_values` (List of String) Valid values for the tag
-
-

@@ -15,29 +15,31 @@ func dataSourceDatadogUser() *schema.Resource {
 		Description: "Use this data source to retrieve information about an existing user to use it in an other resources.",
 		ReadContext: dataSourceDatadogUserRead,
 
-		Schema: map[string]*schema.Schema{
-			"filter": {
-				Description: "Filter all users by the given string.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"exact_match": {
-				Description: "When true, `filter` string is exact matched againts the users `email`, followed by `name` attribute.",
-				Type:        schema.TypeBool,
-				Default:     false,
-				Optional:    true,
-			},
-			// Computed values
-			"email": {
-				Description: "Email of the user.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"name": {
-				Description: "Name of the user.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"filter": {
+					Description: "Filter all users by the given string.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"exact_match": {
+					Description: "When true, `filter` string is exact matched againts the users `email`, followed by `name` attribute.",
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
+				},
+				// Computed values
+				"email": {
+					Description: "Email of the user.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"name": {
+					Description: "Name of the user.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+			}
 		},
 	}
 }

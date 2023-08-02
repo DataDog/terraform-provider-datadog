@@ -18,38 +18,41 @@ func dataSourceDatadogRoles() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about multiple roles for use in other resources.",
 		ReadContext: dataSourceDatadogRolesRead,
-		Schema: map[string]*schema.Schema{
-			"filter": {
-				Description: "Filter all roles by the given string.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
 
-			// Computed values
-			"roles": {
-				Description: "List of Roles",
-				Type:        schema.TypeList,
-				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Description: "ID of the Datadog role",
-							Type:        schema.TypeString,
-							Computed:    true,
-						},
-						"name": {
-							Description: "Name of the Datadog role",
-							Type:        schema.TypeString,
-							Computed:    true,
-						},
-						"user_count": {
-							Description: "Number of users that have this role.",
-							Type:        schema.TypeInt,
-							Computed:    true,
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"filter": {
+					Description: "Filter all roles by the given string.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+
+				// Computed values
+				"roles": {
+					Description: "List of Roles",
+					Type:        schema.TypeList,
+					Computed:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"id": {
+								Description: "ID of the Datadog role",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
+							"name": {
+								Description: "Name of the Datadog role",
+								Type:        schema.TypeString,
+								Computed:    true,
+							},
+							"user_count": {
+								Description: "Number of users that have this role.",
+								Type:        schema.TypeInt,
+								Computed:    true,
+							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }

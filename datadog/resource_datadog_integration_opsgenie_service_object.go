@@ -21,29 +21,31 @@ func resourceDatadogIntegrationOpsgenieService() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description: "The name for the Opsgenie service.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"opsgenie_api_key": {
-				Description: "The Opsgenie API key for the Opsgenie service. Note: Since the Datadog API never returns Opsgenie API keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html) to have it destroyed and recreated.",
-				Type:        schema.TypeString,
-				Required:    true,
-				Sensitive:   true,
-			},
-			"region": {
-				Description:      "The region for the Opsgenie service.",
-				Type:             schema.TypeString,
-				Required:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewOpsgenieServiceRegionTypeFromValue),
-			},
-			"custom_url": {
-				Description: "The custom url for a custom region.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description: "The name for the Opsgenie service.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"opsgenie_api_key": {
+					Description: "The Opsgenie API key for the Opsgenie service. Note: Since the Datadog API never returns Opsgenie API keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html) to have it destroyed and recreated.",
+					Type:        schema.TypeString,
+					Required:    true,
+					Sensitive:   true,
+				},
+				"region": {
+					Description:      "The region for the Opsgenie service.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewOpsgenieServiceRegionTypeFromValue),
+				},
+				"custom_url": {
+					Description: "The custom url for a custom region.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+			}
 		},
 	}
 }

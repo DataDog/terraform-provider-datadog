@@ -35,5 +35,3 @@ resource "datadog_integration_pagerduty_service_object" "testing_bar" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

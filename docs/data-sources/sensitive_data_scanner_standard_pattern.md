@@ -25,5 +25,3 @@ Use this data source to retrieve information about an existing sensitive data sc
 - `name` (String) Name of the standard pattern.
 - `pattern` (String) Regex that the standard pattern applies.
 - `tags` (List of String) List of tags.
-
-

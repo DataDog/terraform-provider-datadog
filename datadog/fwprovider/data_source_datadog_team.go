@@ -137,7 +137,7 @@ func (d *datadogTeamDataSource) Read(ctx context.Context, req datasource.ReadReq
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *datadogTeamDataSource) updateState(state *datadogTeamDataSourceModel, teamData *datadogV2.TeamData) {
+func (r *datadogTeamDataSource) updateState(state *datadogTeamDataSourceModel, teamData *datadogV2.Team) {
 	state.ID = types.StringValue(teamData.GetId())
 	attributes := teamData.GetAttributes()
 

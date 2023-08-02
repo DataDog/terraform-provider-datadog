@@ -27,5 +27,3 @@ data "datadog_permissions" "permissions" {}
 
 - `id` (String) The ID of this resource.
 - `permissions` (Map of String) Map of permissions names to their corresponding ID.
-
-

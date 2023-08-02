@@ -36,344 +36,346 @@ func resourceDatadogMonitor() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Description: "Name of Datadog monitor.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"message": {
-				Description: "A message to include with notifications for this monitor.\n\nEmail notifications can be sent to specific users by using the same `@username` notation as events.",
-				Type:        schema.TypeString,
-				Required:    true,
-				StateFunc: func(val interface{}) string {
-					return strings.TrimSpace(val.(string))
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Description: "Name of Datadog monitor.",
+					Type:        schema.TypeString,
+					Required:    true,
 				},
-			},
-			"escalation_message": {
-				Description: "A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.",
-				Type:        schema.TypeString,
-				Optional:    true,
-				StateFunc: func(val interface{}) string {
-					return strings.TrimSpace(val.(string))
-				},
-			},
-			"query": {
-				Description: "The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.\n\n**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).",
-				Type:        schema.TypeString,
-				Required:    true,
-				StateFunc: func(val interface{}) string {
-					return strings.TrimSpace(val.(string))
-				},
-			},
-			"type": {
-				Description:      "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
-				Type:             schema.TypeString,
-				Required:         true,
-				ForceNew:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorTypeFromValue),
-				// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					if (oldVal == "query alert" && newVal == "metric alert") ||
-						(oldVal == "metric alert" && newVal == "query alert") {
-						log.Printf("[DEBUG] Monitor '%s' got a '%s' response for an expected '%s' type. Suppressing change.", d.Get("name"), newVal, oldVal)
-						return true
-					}
-					return newVal == oldVal
-				},
-			},
-			"priority": {
-				Description: "Integer from 1 (high) to 5 (low) indicating alert severity.",
-				Type:        schema.TypeInt,
-				Optional:    true,
-			},
-
-			// Options
-			"monitor_thresholds": {
-				Description: "Alert thresholds of the monitor.",
-				Type:        schema.TypeList,
-				MaxItems:    1,
-				Optional:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"ok": {
-							Description:  "The monitor `OK` threshold. Only supported in monitor type `service check`. Must be a number.",
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateFloatString,
-							Optional:     true,
-							DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-								monitorType := d.Get("type").(string)
-								return monitorType != string(datadogV1.MONITORTYPE_SERVICE_CHECK)
-							},
-						},
-						"warning": {
-							Description:  "The monitor `WARNING` threshold. Must be a number.",
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateFloatString,
-							Optional:     true,
-						},
-						"critical": {
-							Description:  "The monitor `CRITICAL` threshold. Must be a number.",
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateFloatString,
-							Optional:     true,
-						},
-						"unknown": {
-							Description:  "The monitor `UNKNOWN` threshold. Only supported in monitor type `service check`. Must be a number.",
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateFloatString,
-							Optional:     true,
-							DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-								monitorType := d.Get("type").(string)
-								return monitorType != string(datadogV1.MONITORTYPE_SERVICE_CHECK)
-							},
-						},
-						"warning_recovery": {
-							Description:  "The monitor `WARNING` recovery threshold. Must be a number.",
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateFloatString,
-							Optional:     true,
-						},
-						"critical_recovery": {
-							Description:  "The monitor `CRITICAL` recovery threshold. Must be a number.",
-							Type:         schema.TypeString,
-							ValidateFunc: validators.ValidateFloatString,
-							Optional:     true,
-						},
+				"message": {
+					Description: "A message to include with notifications for this monitor.\n\nEmail notifications can be sent to specific users by using the same `@username` notation as events.",
+					Type:        schema.TypeString,
+					Required:    true,
+					StateFunc: func(val interface{}) string {
+						return strings.TrimSpace(val.(string))
 					},
 				},
-				DiffSuppressFunc: suppressDataDogFloatIntDiff,
-			},
-			"monitor_threshold_windows": {
-				Description: "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.",
-				Type:        schema.TypeList,
-				MaxItems:    1,
-				Optional:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"recovery_window": {
-							Description: "Describes how long an anomalous metric must be normal before the alert recovers.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"trigger_window": {
-							Description: "Describes how long a metric must be anomalous before an alert triggers.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
+				"escalation_message": {
+					Description: "A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					StateFunc: func(val interface{}) string {
+						return strings.TrimSpace(val.(string))
 					},
 				},
-			},
-			"notify_no_data": {
-				Description:   "A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.",
-				Type:          schema.TypeBool,
-				Optional:      true,
-				Default:       false,
-				ConflictsWith: []string{"on_missing_data"},
-			},
-			"on_missing_data": {
-				Description:   "Controls how groups or monitors are treated if an evaluation does not return any data points. The default option results in different behavior depending on the monitor query type. For monitors using `Count` queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitors using any query type other than `Count`, for example `Gauge`, `Measure`, or `Rate`, the monitor shows the last known status. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors. Valid values are: `show_no_data`, `show_and_notify_no_data`, `resolve`, and `default`.",
-				Type:          schema.TypeString,
-				Optional:      true,
-				ConflictsWith: []string{"notify_no_data", "no_data_timeframe"},
-			},
-			"group_retention_duration": {
-				Description: "The time span after which groups with missing data are dropped from the monitor state. The minimum value is one hour, and the maximum value is 72 hours. Example values are: 60m, 1h, and 2d. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			// We only set new_group_delay in the monitor API payload if it is nonzero
-			// because the SDKv2 terraform plugin API prevents unsetting new_group_delay
-			// in updateMonitorState, so we can't reliably distinguish between new_group_delay
-			// being unset (null) or set to zero.
-			// Note that "new_group_delay overrides new_host_delay if it is set to a nonzero value"
-			// refers to this terraform resource. In the API, setting new_group_delay
-			// to any value, including zero, causes it to override new_host_delay.
-			"new_group_delay": {
-				Description: "The time (in seconds) to skip evaluations for new groups.\n\n`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.",
-				Type:        schema.TypeInt,
-				Optional:    true,
-			},
-			"new_host_delay": {
-				// Removing the default requires removing the default in the API as well (possibly only for
-				// terraform user agents)
-				Description: "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host.",
-				Type:        schema.TypeInt,
-				Optional:    true,
-				Default:     300,
-				Deprecated:  "Use `new_group_delay` except when setting `new_host_delay` to zero.",
-			},
-			"evaluation_delay": {
-				Description: "(Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.\n\nFor example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.",
-				Type:        schema.TypeInt,
-				Computed:    true,
-				Optional:    true,
-			},
-			"no_data_timeframe": {
-				Description: "The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.\n\nWe recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.",
-				Type:        schema.TypeInt,
-				Optional:    true,
-				Default:     defaultNoDataTimeframeMinutes,
-				DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
-					if !d.Get("notify_no_data").(bool) {
-						if newVal != oldVal {
-							log.Printf("[DEBUG] Ignore the no_data_timeframe change of monitor '%s' because notify_no_data is false.", d.Get("name"))
-						}
-						return true
-					}
-					return newVal == oldVal
+				"query": {
+					Description: "The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.\n\n**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).",
+					Type:        schema.TypeString,
+					Required:    true,
+					StateFunc: func(val interface{}) string {
+						return strings.TrimSpace(val.(string))
+					},
 				},
-				ConflictsWith: []string{"on_missing_data"},
-			},
-			"renotify_interval": {
-				Description: "The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.",
-				Type:        schema.TypeInt,
-				Optional:    true,
-			},
-			"renotify_occurrences": {
-				Description: "The number of re-notification messages that should be sent on the current status.",
-				Type:        schema.TypeInt,
-				Optional:    true,
-			},
-			"renotify_statuses": {
-				Description: "The types of statuses for which re-notification messages should be sent.",
-				Type:        schema.TypeSet,
-				Elem: &schema.Schema{
+				"type": {
+					Description:      "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
 					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorRenotifyStatusTypeFromValue),
+					Required:         true,
+					ForceNew:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorTypeFromValue),
+					// Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
+					DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+						if (oldVal == "query alert" && newVal == "metric alert") ||
+							(oldVal == "metric alert" && newVal == "query alert") {
+							log.Printf("[DEBUG] Monitor '%s' got a '%s' response for an expected '%s' type. Suppressing change.", d.Get("name"), newVal, oldVal)
+							return true
+						}
+						return newVal == oldVal
+					},
 				},
-				Optional: true,
-			},
-			"notify_audit": {
-				Description: "A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-			},
-			"timeout_h": {
-				Description: "The number of hours of the monitor not reporting data before it automatically resolves from a triggered state. The minimum allowed value is 0 hours. The maximum allowed value is 24 hours.",
-				Type:        schema.TypeInt,
-				Optional:    true,
-			},
-			"require_full_window": {
-				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated.\n\nWe highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     true,
-			},
-			"locked": {
-				Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
-				Type:          schema.TypeBool,
-				Optional:      true,
-				Deprecated:    "Use `restricted_roles`.",
-				ConflictsWith: []string{"restricted_roles"},
-				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					// if restricted_roles is defined, ignore locked
-					if _, ok := d.GetOk("restricted_roles"); ok {
+				"priority": {
+					Description: "Integer from 1 (high) to 5 (low) indicating alert severity.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+
+				// Options
+				"monitor_thresholds": {
+					Description: "Alert thresholds of the monitor.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"ok": {
+								Description:  "The monitor `OK` threshold. Only supported in monitor type `service check`. Must be a number.",
+								Type:         schema.TypeString,
+								ValidateFunc: validators.ValidateFloatString,
+								Optional:     true,
+								DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+									monitorType := d.Get("type").(string)
+									return monitorType != string(datadogV1.MONITORTYPE_SERVICE_CHECK)
+								},
+							},
+							"warning": {
+								Description:  "The monitor `WARNING` threshold. Must be a number.",
+								Type:         schema.TypeString,
+								ValidateFunc: validators.ValidateFloatString,
+								Optional:     true,
+							},
+							"critical": {
+								Description:  "The monitor `CRITICAL` threshold. Must be a number.",
+								Type:         schema.TypeString,
+								ValidateFunc: validators.ValidateFloatString,
+								Optional:     true,
+							},
+							"unknown": {
+								Description:  "The monitor `UNKNOWN` threshold. Only supported in monitor type `service check`. Must be a number.",
+								Type:         schema.TypeString,
+								ValidateFunc: validators.ValidateFloatString,
+								Optional:     true,
+								DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+									monitorType := d.Get("type").(string)
+									return monitorType != string(datadogV1.MONITORTYPE_SERVICE_CHECK)
+								},
+							},
+							"warning_recovery": {
+								Description:  "The monitor `WARNING` recovery threshold. Must be a number.",
+								Type:         schema.TypeString,
+								ValidateFunc: validators.ValidateFloatString,
+								Optional:     true,
+							},
+							"critical_recovery": {
+								Description:  "The monitor `CRITICAL` recovery threshold. Must be a number.",
+								Type:         schema.TypeString,
+								ValidateFunc: validators.ValidateFloatString,
+								Optional:     true,
+							},
+						},
+					},
+					DiffSuppressFunc: suppressDataDogFloatIntDiff,
+				},
+				"monitor_threshold_windows": {
+					Description: "A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"recovery_window": {
+								Description: "Describes how long an anomalous metric must be normal before the alert recovers.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+							"trigger_window": {
+								Description: "Describes how long a metric must be anomalous before an alert triggers.",
+								Type:        schema.TypeString,
+								Optional:    true,
+							},
+						},
+					},
+				},
+				"notify_no_data": {
+					Description:   "A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.",
+					Type:          schema.TypeBool,
+					Optional:      true,
+					Default:       false,
+					ConflictsWith: []string{"on_missing_data"},
+				},
+				"on_missing_data": {
+					Description:   "Controls how groups or monitors are treated if an evaluation does not return any data points. The default option results in different behavior depending on the monitor query type. For monitors using `Count` queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitors using any query type other than `Count`, for example `Gauge`, `Measure`, or `Rate`, the monitor shows the last known status. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors. Valid values are: `show_no_data`, `show_and_notify_no_data`, `resolve`, and `default`.",
+					Type:          schema.TypeString,
+					Optional:      true,
+					ConflictsWith: []string{"notify_no_data", "no_data_timeframe"},
+				},
+				"group_retention_duration": {
+					Description: "The time span after which groups with missing data are dropped from the monitor state. The minimum value is one hour, and the maximum value is 72 hours. Example values are: 60m, 1h, and 2d. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				// We only set new_group_delay in the monitor API payload if it is nonzero
+				// because the SDKv2 terraform plugin API prevents unsetting new_group_delay
+				// in updateMonitorState, so we can't reliably distinguish between new_group_delay
+				// being unset (null) or set to zero.
+				// Note that "new_group_delay overrides new_host_delay if it is set to a nonzero value"
+				// refers to this terraform resource. In the API, setting new_group_delay
+				// to any value, including zero, causes it to override new_host_delay.
+				"new_group_delay": {
+					Description: "The time (in seconds) to skip evaluations for new groups.\n\n`new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"new_host_delay": {
+					// Removing the default requires removing the default in the API as well (possibly only for
+					// terraform user agents)
+					Description: "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+					Default:     300,
+					Deprecated:  "Use `new_group_delay` except when setting `new_host_delay` to zero.",
+				},
+				"evaluation_delay": {
+					Description: "(Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.\n\nFor example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.",
+					Type:        schema.TypeInt,
+					Computed:    true,
+					Optional:    true,
+				},
+				"no_data_timeframe": {
+					Description: "The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.\n\nWe recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+					Default:     defaultNoDataTimeframeMinutes,
+					DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
+						if !d.Get("notify_no_data").(bool) {
+							if newVal != oldVal {
+								log.Printf("[DEBUG] Ignore the no_data_timeframe change of monitor '%s' because notify_no_data is false.", d.Get("name"))
+							}
+							return true
+						}
+						return newVal == oldVal
+					},
+					ConflictsWith: []string{"on_missing_data"},
+				},
+				"renotify_interval": {
+					Description: "The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"renotify_occurrences": {
+					Description: "The number of re-notification messages that should be sent on the current status.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"renotify_statuses": {
+					Description: "The types of statuses for which re-notification messages should be sent.",
+					Type:        schema.TypeSet,
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorRenotifyStatusTypeFromValue),
+					},
+					Optional: true,
+				},
+				"notify_audit": {
+					Description: "A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"timeout_h": {
+					Description: "The number of hours of the monitor not reporting data before it automatically resolves from a triggered state. The minimum allowed value is 0 hours. The maximum allowed value is 24 hours.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"require_full_window": {
+					Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated.\n\nWe highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     true,
+				},
+				"locked": {
+					Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
+					Type:          schema.TypeBool,
+					Optional:      true,
+					Deprecated:    "Use `restricted_roles`.",
+					ConflictsWith: []string{"restricted_roles"},
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						// if restricted_roles is defined, ignore locked
+						if _, ok := d.GetOk("restricted_roles"); ok {
+							return true
+						}
+						return false
+					},
+				},
+				"restricted_roles": {
+					Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.",
+					Type:          schema.TypeSet,
+					Optional:      true,
+					Elem:          &schema.Schema{Type: schema.TypeString},
+					ConflictsWith: []string{"locked"},
+				},
+				"include_tags": {
+					Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     true,
+				},
+				"tags": {
+					Description: "A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API",
+					// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
+					// we order them explicitly in the read/create/update methods of this resource and using
+					// TypeSet makes Terraform ignore differences in order when creating a plan
+					Type:     schema.TypeSet,
+					Optional: true,
+					Elem:     &schema.Schema{Type: schema.TypeString},
+				},
+				"groupby_simple_monitor": {
+					Description: "Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"notify_by": {
+					Description: "Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				// since this is only useful for "log alert" type, we don't set a default value
+				// if we did set it, it would be used for all types; we have to handle this manually
+				// throughout the code
+				"enable_logs_sample": {
+					Description: "A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"enable_samples": {
+					Description: "Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.",
+					Type:        schema.TypeBool,
+					Computed:    true,
+				},
+				"force_delete": {
+					Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"validate": {
+					Description: "If set to `false`, skip the validation call done during plan.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						// This is never sent to the backend, so it should never generate a diff
 						return true
-					}
-					return false
+					},
 				},
-			},
-			"restricted_roles": {
-				Description:   "A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.",
-				Type:          schema.TypeSet,
-				Optional:      true,
-				Elem:          &schema.Schema{Type: schema.TypeString},
-				ConflictsWith: []string{"locked"},
-			},
-			"include_tags": {
-				Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				Default:     true,
-			},
-			"tags": {
-				Description: "A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API",
-				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
-				// we order them explicitly in the read/create/update methods of this resource and using
-				// TypeSet makes Terraform ignore differences in order when creating a plan
-				Type:     schema.TypeSet,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-			},
-			"groupby_simple_monitor": {
-				Description: "Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-			},
-			"notify_by": {
-				Description: "Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.",
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			// since this is only useful for "log alert" type, we don't set a default value
-			// if we did set it, it would be used for all types; we have to handle this manually
-			// throughout the code
-			"enable_logs_sample": {
-				Description: "A boolean indicating whether or not to include a list of log values which triggered the alert. This is only used by log monitors. Defaults to `false`.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-			},
-			"enable_samples": {
-				Description: "Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.",
-				Type:        schema.TypeBool,
-				Computed:    true,
-			},
-			"force_delete": {
-				Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).",
-				Type:        schema.TypeBool,
-				Optional:    true,
-			},
-			"validate": {
-				Description: "If set to `false`, skip the validation call done during plan.",
-				Type:        schema.TypeBool,
-				Optional:    true,
-				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					// This is never sent to the backend, so it should never generate a diff
-					return true
-				},
-			},
-			"variables": getMonitorFormulaQuerySchema(),
-			"scheduling_options": {
-				Description: "Configuration options for scheduling.",
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"evaluation_window": {
-							Description: "Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together.",
-							Type:        schema.TypeList,
-							Required:    true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"day_starts": {
-										Description: "The time of the day at which a one day cumulative evaluation window starts. Must be defined in UTC time in `HH:mm` format.",
-										Type:        schema.TypeString,
-										Optional:    true,
-									},
-									"month_starts": {
-										Description: "The day of the month at which a one month cumulative evaluation window starts. Must be a value of 1.",
-										Type:        schema.TypeInt,
-										Optional:    true,
-									},
-									"hour_starts": {
-										Description: "The minute of the hour at which a one hour cumulative evaluation window starts. Must be between 0 and 59.",
-										Type:        schema.TypeInt,
-										Optional:    true,
+				"variables": getMonitorFormulaQuerySchema(),
+				"scheduling_options": {
+					Description: "Configuration options for scheduling.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"evaluation_window": {
+								Description: "Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together.",
+								Type:        schema.TypeList,
+								Required:    true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"day_starts": {
+											Description: "The time of the day at which a one day cumulative evaluation window starts. Must be defined in UTC time in `HH:mm` format.",
+											Type:        schema.TypeString,
+											Optional:    true,
+										},
+										"month_starts": {
+											Description: "The day of the month at which a one month cumulative evaluation window starts. Must be a value of 1.",
+											Type:        schema.TypeInt,
+											Optional:    true,
+										},
+										"hour_starts": {
+											Description: "The minute of the hour at which a one hour cumulative evaluation window starts. Must be between 0 and 59.",
+											Type:        schema.TypeInt,
+											Optional:    true,
+										},
 									},
 								},
 							},
 						},
 					},
 				},
-			},
-			"notification_preset_name": {
-				Description:      "Toggles the display of additional content sent in the monitor notification.",
-				Type:             schema.TypeString,
-				Optional:         true,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorOptionsNotificationPresetsFromValue),
-			},
+				"notification_preset_name": {
+					Description:      "Toggles the display of additional content sent in the monitor notification.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorOptionsNotificationPresetsFromValue),
+				},
+			}
 		},
 	}
 }

@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"notifications":["@channel"],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":["@resource"]},"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1672930521","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration"}
+      {"cases":[{"notifications":["@channel"],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":["@resource"]},"filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1689949968","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672930522992,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"kpv-tzf-uc3","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1672930521"}
+      {"id":"dlw-uic-877","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1689949968","createdAt":1689949972853,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/kpv-tzf-uc3
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dlw-uic-877
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672930522992,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"kpv-tzf-uc3","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1672930521"}
+      {"id":"dlw-uic-877","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1689949968","createdAt":1689949972853,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/kpv-tzf-uc3
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dlw-uic-877
     method: GET
   response:
     body: |
-      {"creationAuthorId":1445416,"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration","isEnabled":false,"hasExtendedTitle":true,"message":"Acceptance test TF rule","options":{"detectionMethod":"threshold","evaluationWindow":7200,"maxSignalDuration":86400,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true},"keepAlive":21600},"version":1,"createdAt":1672930522992,"filters":[],"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"aggregation":"count","name":"a","distinctFields":[]}],"isDeleted":false,"complianceSignalOptions":{"defaultActivationStatus":null,"userActivationStatus":false,"defaultGroupByFields":null,"userGroupByFields":["@resource"]},"cases":[{"status":"low","notifications":["@channel"],"name":"","condition":"a > 0"}],"id":"kpv-tzf-uc3","isDefault":false,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1672930521"}
+      {"id":"dlw-uic-877","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1689949968","createdAt":1689949972853,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -61,7 +61,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/kpv-tzf-uc3
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dlw-uic-877
     method: DELETE
   response:
     body: ""
@@ -75,11 +75,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/kpv-tzf-uc3
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dlw-uic-877
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: kpv-tzf-uc3"]}
+      {"errors":["Threat detection rule not found: dlw-uic-877"]}
     headers:
       Content-Type:
       - application/json

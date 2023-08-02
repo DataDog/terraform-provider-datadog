@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","api_secret":"test-api-secret-123"},"type":"confluent-cloud-accounts"}}
+      {"data":{"attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","api_secret":"test-api-secret-123"},"type":"confluent-cloud-accounts"}}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"data":{"type":"confluent-cloud-accounts","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","resources":[],"tags":[]},"id":"txts705wz3"}}
+      {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","resources":[]},"id":"d89d7d5298d6197a1ae380de17721b26"}}
     headers:
       Content-Type:
       - application/json
@@ -23,18 +23,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910","type":"confluent-cloud-resources"}}
+      {"data":{"attributes":{"enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910","type":"confluent-cloud-resources"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources
     method: POST
   response:
     body: |
-      {"data":{"type":"confluent-cloud-resources","attributes":{"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910"}}
+      {"data":{"type":"confluent-cloud-resources","attributes":{"enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910"}}
     headers:
       Content-Type:
       - application/json
@@ -47,11 +47,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
     method: GET
   response:
     body: |
-      {"data":{"type":"confluent-cloud-accounts","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","resources":[{"id":"12345678910","tags":["mytag","mytag2:myvalue"],"resource_type":"kafka"}],"tags":[]},"id":"txts705wz3"}}
+      {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"resources":[{"enable_custom_metrics":false,"id":"12345678910","tags":["mytag","mytag2:myvalue"],"resource_type":"kafka"}],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062"},"id":"d89d7d5298d6197a1ae380de17721b26"}}
     headers:
       Content-Type:
       - application/json
@@ -64,11 +64,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: GET
   response:
     body: |
-      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag","mytag2:myvalue"],"resource_type":"kafka"},"id":"12345678910"}}
+      {"data":{"type":"confluent-cloud-resources","id":"12345678910","attributes":{"tags":["mytag","mytag2:myvalue"],"resource_type":"kafka","enable_custom_metrics":false}}}
     headers:
       Content-Type:
       - application/json
@@ -81,11 +81,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
     method: GET
   response:
     body: |
-      {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","resources":[{"tags":["mytag","mytag2:myvalue"],"id":"12345678910","resource_type":"kafka"}]},"id":"txts705wz3"}}
+      {"data":{"type":"confluent-cloud-accounts","id":"d89d7d5298d6197a1ae380de17721b26","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","resources":[{"id":"12345678910","enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]}],"tags":[]}}}
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: GET
   response:
     body: |
-      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag","mytag2:myvalue"],"resource_type":"kafka"},"id":"12345678910"}}
+      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag","mytag2:myvalue"],"enable_custom_metrics":false,"resource_type":"kafka"},"id":"12345678910"}}
     headers:
       Content-Type:
       - application/json
@@ -111,18 +111,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"resource_type":"connector","tags":["mytag"]},"id":"12345678910","type":"confluent-cloud-resources"}}
+      {"data":{"attributes":{"enable_custom_metrics":true,"resource_type":"connector","tags":["mytag"]},"id":"12345678910","type":"confluent-cloud-resources"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: PATCH
   response:
     body: |
-      {"data":{"type":"confluent-cloud-resources","id":"12345678910","attributes":{"resource_type":"connector","tags":["mytag"]}}}
+      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag"],"resource_type":"connector","enable_custom_metrics":true},"id":"12345678910"}}
     headers:
       Content-Type:
       - application/json
@@ -135,11 +135,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
     method: GET
   response:
     body: |
-      {"data":{"type":"confluent-cloud-accounts","attributes":{"resources":[{"id":"12345678910","resource_type":"connector","tags":["mytag"]}],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1680634490","tags":[]},"id":"txts705wz3"}}
+      {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","resources":[{"resource_type":"connector","tags":["mytag"],"id":"12345678910","enable_custom_metrics":true}]},"id":"d89d7d5298d6197a1ae380de17721b26"}}
     headers:
       Content-Type:
       - application/json
@@ -152,11 +152,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: GET
   response:
     body: |
-      {"data":{"type":"confluent-cloud-resources","id":"12345678910","attributes":{"tags":["mytag"],"resource_type":"connector"}}}
+      {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag"],"enable_custom_metrics":true,"resource_type":"connector"},"id":"12345678910"}}
     headers:
       Content-Type:
       - application/json
@@ -169,7 +169,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3/resources/12345678910
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: DELETE
   response:
     body: ""
@@ -185,7 +185,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/txts705wz3
+    url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
     method: DELETE
   response:
     body: ""

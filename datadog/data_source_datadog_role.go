@@ -16,24 +16,26 @@ func dataSourceDatadogRole() *schema.Resource {
 		Description: "Use this data source to retrieve information about an existing role for use in other resources.",
 		ReadContext: dataSourceDatadogRoleRead,
 
-		Schema: map[string]*schema.Schema{
-			"filter": {
-				Description: "A string on which to filter the roles.",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"filter": {
+					Description: "A string on which to filter the roles.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
 
-			// Computed values
-			"name": {
-				Description: "Name of the role.",
-				Type:        schema.TypeString,
-				Computed:    true,
-			},
-			"user_count": {
-				Description: "Number of users assigned to this role.",
-				Type:        schema.TypeInt,
-				Computed:    true,
-			},
+				// Computed values
+				"name": {
+					Description: "Name of the role.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"user_count": {
+					Description: "Number of users assigned to this role.",
+					Type:        schema.TypeInt,
+					Computed:    true,
+				},
+			}
 		},
 	}
 }

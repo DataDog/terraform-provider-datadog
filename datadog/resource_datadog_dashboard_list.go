@@ -23,32 +23,34 @@ func resourceDatadogDashboardList() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The name of the Dashboard List",
-			},
-			"dash_item": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "A set of dashboard items that belong to this list",
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"type": {
-							Type:             schema.TypeString,
-							Required:         true,
-							ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewDashboardTypeFromValue),
-							Description:      "The type of this dashboard.",
-						},
-						"dash_id": {
-							Type:        schema.TypeString,
-							Required:    true,
-							Description: "The ID of the dashboard to add",
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"name": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The name of the Dashboard List",
+				},
+				"dash_item": {
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "A set of dashboard items that belong to this list",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"type": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewDashboardTypeFromValue),
+								Description:      "The type of this dashboard.",
+							},
+							"dash_id": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The ID of the dashboard to add",
+							},
 						},
 					},
 				},
-			},
+			}
 		},
 	}
 }

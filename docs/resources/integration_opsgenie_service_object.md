@@ -42,5 +42,3 @@ resource "datadog_integration_opsgenie_service_object" "fake_service_name_2" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-

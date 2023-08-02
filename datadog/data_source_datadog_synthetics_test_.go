@@ -16,30 +16,32 @@ func dataSourceDatadogSyntheticsTest() *schema.Resource {
 		Description: "Use this data source to retrieve a Datadog Synthetic Test.",
 		ReadContext: dataSourceDatadogSyntheticsTestRead,
 
-		Schema: map[string]*schema.Schema{
-			"test_id": {
-				Description: "The synthetic test id or URL to search for",
-				Type:        schema.TypeString,
-				Required:    true,
-			},
-			"name": {
-				Description: "The name of the synthetic test.",
-				Type:        schema.TypeString,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-				Computed:    true,
-			},
-			"tags": {
-				Description: "A list of tags assigned to the synthetic test.",
-				Type:        schema.TypeList,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-				Computed:    true,
-			},
-			"url": {
-				Description: "The start URL of the synthetic test.",
-				Type:        schema.TypeString,
-				Elem:        &schema.Schema{Type: schema.TypeString},
-				Computed:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"test_id": {
+					Description: "The synthetic test id or URL to search for",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"name": {
+					Description: "The name of the synthetic test.",
+					Type:        schema.TypeString,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+					Computed:    true,
+				},
+				"tags": {
+					Description: "A list of tags assigned to the synthetic test.",
+					Type:        schema.TypeList,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+					Computed:    true,
+				},
+				"url": {
+					Description: "The start URL of the synthetic test.",
+					Type:        schema.TypeString,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+					Computed:    true,
+				},
+			}
 		},
 	}
 }

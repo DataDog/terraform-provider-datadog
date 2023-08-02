@@ -490,7 +490,22 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 							  order = "desc"
 							}
 							limit = 10
-						  }
+						}
+					}
+				}
+			}
+			request {
+				display_type = "overlay"
+				query {
+					event_query {
+						data_source = "logs"
+						name = "my_event_overlay"
+						compute {
+							aggregation = "count"
+						}
+						search {
+							query = "abc"
+						}
 					}
 				}
 			}
@@ -525,6 +540,7 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 						group_mode = "overall"
 						measure = "slo_status"
 						slo_query_type = "metric"
+						additional_query_filters = "*"
 					}
 				}
 			}
@@ -733,6 +749,9 @@ var datadogDashboardFormulaAsserts = []string{
 	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.group_by.0.sort.0.order = desc",
 	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.group_by.0.limit = 10",
 	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.compute.0.aggregation = count",
+	"widget.1.timeseries_definition.0.request.1.display_type = overlay",
+	"widget.1.timeseries_definition.0.request.1.query.0.event_query.0.name = my_event_overlay",
+	"widget.1.timeseries_definition.0.request.1.query.0.event_query.0.search.0.query = abc",
 	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.data_source = process",
 	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.text_filter = abc",
 	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.metric = process.stat.cpu.total_pct",
@@ -748,6 +767,7 @@ var datadogDashboardFormulaAsserts = []string{
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.group_mode = overall",
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.measure = slo_status",
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.slo_query_type = metric",
+	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.additional_query_filters = *",
 }
 
 func TestAccDatadogDashboardTimeseries(t *testing.T) {

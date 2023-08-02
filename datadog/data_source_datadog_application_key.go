@@ -15,25 +15,27 @@ func dataSourceDatadogApplicationKey() *schema.Resource {
 		Description: "Use this data source to retrieve information about an existing application key.",
 		ReadContext: dataSourceDatadogApplicationKeyRead,
 
-		Schema: map[string]*schema.Schema{
-			"id": {
-				Description: "Id for Application Key.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
-			"name": {
-				Description: "Name for Application Key.",
-				Type:        schema.TypeString,
-				Optional:    true,
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"id": {
+					Description: "Id for Application Key.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"name": {
+					Description: "Name for Application Key.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 
-			// Computed values
-			"key": {
-				Description: "The value of the Application Key.",
-				Type:        schema.TypeString,
-				Computed:    true,
-				Sensitive:   true,
-			},
+				// Computed values
+				"key": {
+					Description: "The value of the Application Key.",
+					Type:        schema.TypeString,
+					Computed:    true,
+					Sensitive:   true,
+				},
+			}
 		},
 	}
 }

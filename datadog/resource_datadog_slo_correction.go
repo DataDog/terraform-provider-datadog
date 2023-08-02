@@ -21,49 +21,51 @@ func resourceDatadogSloCorrection() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"category": {
-				Type:             schema.TypeString,
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOCorrectionCategoryFromValue),
-				Required:         true,
-				Description:      "Category the SLO correction belongs to.",
-			},
-			"description": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Description of the correction being made.",
-			},
-			"end": {
-				Type:          schema.TypeInt,
-				Optional:      true,
-				ConflictsWith: []string{"rrule", "duration"},
-				Description:   "Ending time of the correction in epoch seconds. Required for one time corrections, but optional if `rrule` is specified",
-			},
-			"slo_id": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "ID of the SLO that this correction will be applied to.",
-			},
-			"start": {
-				Type:        schema.TypeInt,
-				Required:    true,
-				Description: "Starting time of the correction in epoch seconds.",
-			},
-			"timezone": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The timezone to display in the UI for the correction times (defaults to \"UTC\")",
-			},
-			"duration": {
-				Type:        schema.TypeInt,
-				Optional:    true,
-				Description: "Length of time in seconds for a specified `rrule` recurring SLO correction (required if specifying `rrule`)",
-			},
-			"rrule": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "Recurrence rules as defined in the iCalendar RFC 5545. Supported rules for SLO corrections are `FREQ`, `INTERVAL`, `COUNT` and `UNTIL`.",
-			},
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"category": {
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOCorrectionCategoryFromValue),
+					Required:         true,
+					Description:      "Category the SLO correction belongs to.",
+				},
+				"description": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Description of the correction being made.",
+				},
+				"end": {
+					Type:          schema.TypeInt,
+					Optional:      true,
+					ConflictsWith: []string{"rrule", "duration"},
+					Description:   "Ending time of the correction in epoch seconds. Required for one time corrections, but optional if `rrule` is specified",
+				},
+				"slo_id": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "ID of the SLO that this correction will be applied to.",
+				},
+				"start": {
+					Type:        schema.TypeInt,
+					Required:    true,
+					Description: "Starting time of the correction in epoch seconds.",
+				},
+				"timezone": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "The timezone to display in the UI for the correction times (defaults to \"UTC\")",
+				},
+				"duration": {
+					Type:        schema.TypeInt,
+					Optional:    true,
+					Description: "Length of time in seconds for a specified `rrule` recurring SLO correction (required if specifying `rrule`)",
+				},
+				"rrule": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Recurrence rules as defined in the iCalendar RFC 5545. Supported rules for SLO corrections are `FREQ`, `INTERVAL`, `COUNT` and `UNTIL`.",
+				},
+			}
 		},
 	}
 }

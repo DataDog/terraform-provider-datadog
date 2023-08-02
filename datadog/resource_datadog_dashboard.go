@@ -44,106 +44,108 @@ func resourceDatadogDashboard() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		Schema: map[string]*schema.Schema{
-			"title": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The title of the dashboard.",
-			},
-			"widget": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "The list of widgets to display on the dashboard.",
-				Elem: &schema.Resource{
-					Schema: getWidgetSchema(),
+		SchemaFunc: func() map[string]*schema.Schema {
+			return map[string]*schema.Schema{
+				"title": {
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "The title of the dashboard.",
 				},
-			},
-			"layout_type": {
-				Type:             schema.TypeString,
-				Required:         true,
-				ForceNew:         true,
-				Description:      "The layout type of the dashboard.",
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
-			},
-			"reflow_type": {
-				Type:             schema.TypeString,
-				Optional:         true,
-				Description:      "The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts.",
-				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
-			},
-			"description": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Description: "The description of the dashboard.",
-			},
-			"url": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				Computed:    true,
-				Description: "The URL of the dashboard.",
-				DiffSuppressFunc: func(_, _, _ string, _ *schema.ResourceData) bool {
-					// This value is computed and cannot be updated.
-					// To maintain backward compatibility, always suppress diff rather
-					// than converting the attribute to `Computed` only
-					return true
+				"widget": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "The list of widgets to display on the dashboard.",
+					Elem: &schema.Resource{
+						Schema: getWidgetSchema(),
+					},
 				},
-			},
-			"restricted_roles": {
-				Type:          schema.TypeSet,
-				Optional:      true,
-				Elem:          &schema.Schema{Type: schema.TypeString},
-				ConflictsWith: []string{"is_read_only"},
-				Description:   "UUIDs of roles whose associated users are authorized to edit the dashboard.",
-			},
-			"template_variable": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "The list of template variables for this dashboard.",
-				Elem: &schema.Resource{
-					Schema: getTemplateVariableSchema(),
+				"layout_type": {
+					Type:             schema.TypeString,
+					Required:         true,
+					ForceNew:         true,
+					Description:      "The layout type of the dashboard.",
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardLayoutTypeFromValue),
 				},
-			},
-			"template_variable_preset": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Description: "The list of selectable template variable presets for this dashboard.",
-				Elem: &schema.Resource{
-					Schema: getTemplateVariablePresetSchema(),
+				"reflow_type": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Description:      "The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts.",
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewDashboardReflowTypeFromValue),
 				},
-			},
-			"notify_list": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "The list of handles for the users to notify when changes are made to this dashboard.",
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
-			"dashboard_lists": {
-				Type:        schema.TypeSet,
-				Optional:    true,
-				Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.",
-				Elem:        &schema.Schema{Type: schema.TypeInt},
-			},
-			"dashboard_lists_removed": {
-				Type:        schema.TypeSet,
-				Computed:    true,
-				Description: "A list of dashboard lists this dashboard should be removed from. Internal only.",
-				Elem:        &schema.Schema{Type: schema.TypeInt},
-			},
-			"is_read_only": {
-				Type:          schema.TypeBool,
-				Optional:      true,
-				Default:       false,
-				ConflictsWith: []string{"restricted_roles"},
-				Description:   "Whether this dashboard is read-only.",
-				Deprecated:    "Prefer using `restricted_roles` to define which roles are required to edit the dashboard.",
-			},
-			"tags": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				MaxItems:    5,
-				Description: "A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.",
-				Elem:        &schema.Schema{Type: schema.TypeString},
-			},
+				"description": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "The description of the dashboard.",
+				},
+				"url": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Computed:    true,
+					Description: "The URL of the dashboard.",
+					DiffSuppressFunc: func(_, _, _ string, _ *schema.ResourceData) bool {
+						// This value is computed and cannot be updated.
+						// To maintain backward compatibility, always suppress diff rather
+						// than converting the attribute to `Computed` only
+						return true
+					},
+				},
+				"restricted_roles": {
+					Type:          schema.TypeSet,
+					Optional:      true,
+					Elem:          &schema.Schema{Type: schema.TypeString},
+					ConflictsWith: []string{"is_read_only"},
+					Description:   "UUIDs of roles whose associated users are authorized to edit the dashboard.",
+				},
+				"template_variable": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "The list of template variables for this dashboard.",
+					Elem: &schema.Resource{
+						Schema: getTemplateVariableSchema(),
+					},
+				},
+				"template_variable_preset": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "The list of selectable template variable presets for this dashboard.",
+					Elem: &schema.Resource{
+						Schema: getTemplateVariablePresetSchema(),
+					},
+				},
+				"notify_list": {
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "The list of handles for the users to notify when changes are made to this dashboard.",
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"dashboard_lists": {
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.",
+					Elem:        &schema.Schema{Type: schema.TypeInt},
+				},
+				"dashboard_lists_removed": {
+					Type:        schema.TypeSet,
+					Computed:    true,
+					Description: "A list of dashboard lists this dashboard should be removed from. Internal only.",
+					Elem:        &schema.Schema{Type: schema.TypeInt},
+				},
+				"is_read_only": {
+					Type:          schema.TypeBool,
+					Optional:      true,
+					Default:       false,
+					ConflictsWith: []string{"restricted_roles"},
+					Description:   "Whether this dashboard is read-only.",
+					Deprecated:    "Prefer using `restricted_roles` to define which roles are required to edit the dashboard.",
+				},
+				"tags": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    5,
+					Description: "A list of tags assigned to the Dashboard. Only team names of the form `team:<name>` are supported.",
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+			}
 		},
 	}
 }
@@ -6672,6 +6674,11 @@ func getFormulaQuerySchema() *schema.Schema {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLOQueryTypeFromValue),
 								Description:      "type of the SLO to query.",
 							},
+							"additional_query_filters": {
+								Type:        schema.TypeString,
+								Optional:    true,
+								Description: "Additional filters applied to the SLO query.",
+							},
 						},
 					},
 				},
@@ -7011,6 +7018,9 @@ func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) *datado
 	}
 	if v, ok := data["name"].(string); ok && len(v) != 0 {
 		SloQuery.SetName(v)
+	}
+	if v, ok := data["additional_query_filters"].(string); ok && len(v) != 0 {
+		SloQuery.SetAdditionalQueryFilters(v)
 	}
 
 	definition := datadogV1.FormulaAndFunctionSLOQueryDefinitionAsFormulaAndFunctionQueryDefinition(SloQuery)
@@ -8688,6 +8698,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			}
 			if name, ok := terraformSLOQueryDefinition.GetNameOk(); ok {
 				terraformQuery["name"] = name
+			}
+			if additionalQueryFilters, ok := terraformSLOQueryDefinition.GetAdditionalQueryFiltersOk(); ok {
+				terraformQuery["additional_query_filters"] = additionalQueryFilters
 			}
 			terraformQueries := []map[string]interface{}{terraformQuery}
 			terraformSLOQuery := map[string]interface{}{}

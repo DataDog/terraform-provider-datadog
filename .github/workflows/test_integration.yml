@@ -13,8 +13,11 @@ on: # yamllint disable-line rule:truthy
     - cron: "0 */12 * * *"
 
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}
+  group: ${{ github.head_ref || github.run_id }}-test-integration
   cancel-in-progress: true
+
+env:
+  TERRAFORM_VERSION: "1.5.3"
 
 jobs:
   integration_tests:
@@ -28,10 +31,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Install Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
-          go-version: 1.19
+          go-version: "1.20"
           cache: true
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/terraform
+          key: terraform-${{ env.TERRAFORM_VERSION }}
+      - name: Install terraform
+        run: |
+          mkdir -p ~/.cache/terraform
+          if [ ! -f ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }} ]; then
+            wget https://releases.hashicorp.com/terraform/${{ env.TERRAFORM_VERSION }}/terraform_${{ env.TERRAFORM_VERSION }}_linux_amd64.zip -O ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
+          fi
+          unzip -o -d ~/.cache/terraform ~/.cache/terraform/terraform-${{ env.TERRAFORM_VERSION }}
       - name: Run integration tests
         run: make testacc
         env:
@@ -46,5 +60,5 @@ jobs:
           DD_SERVICE: terraform-provider-datadog
           DD_VERSION: ${{ github.run_id }}
           DD_TAGS: "team:integrations-tools-and-libraries"
-          TF_ACC_TERRAFORM_VERSION: "1.4.0"
+          TF_ACC_TERRAFORM_PATH: "/home/runner/.cache/terraform/terraform"
           TF_ACC_TEMP_DIR: "/tmp"

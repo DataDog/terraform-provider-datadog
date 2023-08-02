@@ -33,6 +33,13 @@ type compositeProviderStruct struct {
 func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *common.APIClient {
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
+
+	// Temp - enable Downtime v2 which is currently in private beta
+	config.SetUnstableOperationEnabled("v2.CancelDowntime", true)
+	config.SetUnstableOperationEnabled("v2.CreateDowntime", true)
+	config.SetUnstableOperationEnabled("v2.GetDowntime", true)
+	config.SetUnstableOperationEnabled("v2.UpdateDowntime", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}

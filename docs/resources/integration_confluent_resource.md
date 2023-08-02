@@ -38,6 +38,7 @@ resource "datadog_integration_confluent_resource" "foo" {
 
 ### Optional
 
+- `enable_custom_metrics` (Boolean) Enable the `custom.consumer_lag_offset` metric, which contains extra metric tags.
 - `resource_type` (String) The resource type of the Resource. Can be `kafka`, `connector`, `ksql`, or `schema_registry`.
 - `tags` (Set of String) A list of strings representing tags. Can be a single key, or key-value pairs separated by a colon.
 

@@ -32,5 +32,3 @@ Use this data source to retrieve information about an existing Datadog service a
 - `status` (String) Status of the user.
 - `title` (String) Title of the user.
 - `verified` (Boolean) Whether the user is verified.
-
-
