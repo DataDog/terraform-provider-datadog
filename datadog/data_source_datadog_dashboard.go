@@ -55,9 +55,6 @@ func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData,
 			}
 			return retry.NonRetryableError(utils.TranslateClientError(err, httpresp, "error querying dashboard"))
 		}
-		if err := utils.CheckForUnparsed(dashResponse); err != nil {
-			return retry.NonRetryableError(err)
-		}
 
 		searchedName := d.Get("name")
 		var foundDashes []datadogV1.DashboardSummaryDefinition
@@ -72,6 +69,10 @@ func dataSourceDatadogDashboardRead(ctx context.Context, d *schema.ResourceData,
 			return retry.NonRetryableError(fmt.Errorf("couldn't find a dashboard named %s", searchedName))
 		} else if len(foundDashes) > 1 {
 			return retry.NonRetryableError(fmt.Errorf("%s returned more than one dashboard", searchedName))
+		}
+
+		if err := utils.CheckForUnparsed(foundDashes[0]); err != nil {
+			return retry.NonRetryableError(err)
 		}
 
 		d.SetId(foundDashes[0].GetId())

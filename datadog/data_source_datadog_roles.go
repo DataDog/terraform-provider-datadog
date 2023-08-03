@@ -83,9 +83,6 @@ func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, met
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpresp, "error querying roles")
 		}
-		if err := utils.CheckForUnparsed(rolesResp); err != nil {
-			return diag.FromErr(err)
-		}
 
 		roles = append(roles, rolesResp.GetData()...)
 
@@ -101,8 +98,18 @@ func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, met
 		return diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
+	diags := diag.Diagnostics{}
 	tfRoles := make([]map[string]interface{}, 0, len(roles))
 	for _, role := range roles {
+		if err := utils.CheckForUnparsed(role); err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("skipping role with id: %s", role.GetId()),
+				Detail:   fmt.Sprintf("role contains unparsed object: %v", err),
+			})
+			continue
+		}
+
 		attributes := role.GetAttributes()
 		tfRoles = append(tfRoles, map[string]interface{}{
 			"id":         role.GetId(),
@@ -115,7 +122,7 @@ func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, met
 	}
 	d.SetId(computeRolesDataSourceID(filterPtr))
 
-	return nil
+	return diags
 }
 
 func computeRolesDataSourceID(filter *string) string {

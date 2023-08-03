@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 	"sort"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -50,13 +51,18 @@ func dataSourceDatadogIntegrationAWSLogsServicesRead(ctx context.Context, d *sch
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying AWS logs services")
 	}
-	if err := utils.CheckForUnparsed(awsLogsServices); err != nil {
-		return diag.FromErr(err)
-	}
 
+	diags := diag.Diagnostics{}
 	tfLogsServices := make([]map[string]interface{}, 0)
-
 	for _, awsLogsService := range awsLogsServices {
+		if err := utils.CheckForUnparsed(awsLogsService); err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("skipping integration aws logs services with id: %s", awsLogsService.GetId()),
+				Detail:   fmt.Sprintf("aws logs service contains unparsed object: %v", err),
+			})
+			continue
+		}
 
 		// extract agent rule
 		awsLogsServiceTF := make(map[string]interface{})
@@ -81,5 +87,5 @@ func dataSourceDatadogIntegrationAWSLogsServicesRead(ctx context.Context, d *sch
 
 	d.SetId("aws-logs-services")
 
-	return nil
+	return diags
 }

@@ -46,13 +46,9 @@ func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schem
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics global variables")
 	}
-	if err := utils.CheckForUnparsed(globalVariables); err != nil {
-		return diag.FromErr(err)
-	}
 
 	searchedName := d.Get("name").(string)
 	var matchedGlobalVariables []datadogV1.SyntheticsGlobalVariable
-
 	for _, globalVariable := range globalVariables.Variables {
 		if globalVariable.Name == searchedName {
 			matchedGlobalVariables = append(matchedGlobalVariables, globalVariable)
@@ -63,6 +59,10 @@ func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schem
 		return diag.Errorf("Couldn't find synthetics global variable named %s", searchedName)
 	} else if len(matchedGlobalVariables) > 1 {
 		return diag.Errorf("Found multiple synthetics global variables named %s", searchedName)
+	}
+
+	if err := utils.CheckForUnparsed(matchedGlobalVariables); err != nil {
+		return diag.FromErr(err)
 	}
 
 	d.SetId(matchedGlobalVariables[0].GetId())

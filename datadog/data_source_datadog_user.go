@@ -58,9 +58,7 @@ func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying user")
 	}
-	if err := utils.CheckForUnparsed(res); err != nil {
-		return diag.FromErr(err)
-	}
+
 	users := res.GetData()
 	if len(users) > 1 && !exactMatch {
 		return diag.Errorf("your query returned more than one result for filter \"%s\", please try a more specific search criteria",
@@ -93,6 +91,10 @@ func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta
 		if matchCount == 0 {
 			return diag.Errorf("didn't find any user matching filter string with exact match \"%s\"", filter)
 		}
+	}
+
+	if err := utils.CheckForUnparsed(matchedUser); err != nil {
+		return diag.FromErr(err)
 	}
 
 	d.SetId(matchedUser.GetId())

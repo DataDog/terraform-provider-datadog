@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -62,17 +63,21 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d
 	auth := providerConf.Auth
 
 	agentRules := make([]map[string]interface{}, 0)
-
 	response, httpresp, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCloudWorkloadSecurityAgentRules(auth)
-
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing agent rules")
 	}
-	if err := utils.CheckForUnparsed(response); err != nil {
-		return diag.FromErr(err)
-	}
 
+	diags := diag.Diagnostics{}
 	for _, agentRule := range response.GetData() {
+		if err := utils.CheckForUnparsed(agentRule); err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("skipping agent rule with id: %s", agentRule.GetId()),
+				Detail:   fmt.Sprintf("rule contains unparsed object: %v", err),
+			})
+			continue
+		}
 
 		// extract agent rule
 		agentRuleTF := make(map[string]interface{})
@@ -90,5 +95,5 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d
 	d.SetId("cloud-workload-security-agent-rules")
 	d.Set("agent_rules", agentRules)
 
-	return nil
+	return diags
 }

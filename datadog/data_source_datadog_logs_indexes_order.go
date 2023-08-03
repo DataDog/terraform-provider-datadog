@@ -37,9 +37,6 @@ func dataSourceDatadogLogsIndexesOrderRead(ctx context.Context, d *schema.Resour
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying the order of your log indexes")
 	}
-	if err := utils.CheckForUnparsed(logsIndexesOrder); err != nil {
-		return diag.FromErr(err)
-	}
 
 	if err := d.Set("index_names", logsIndexesOrder.GetIndexNames()); err != nil {
 		return diag.FromErr(err)

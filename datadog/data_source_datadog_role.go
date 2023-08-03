@@ -53,9 +53,7 @@ func dataSourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying roles")
 	}
-	if err := utils.CheckForUnparsed(res); err != nil {
-		return diag.FromErr(err)
-	}
+
 	roles := res.GetData()
 	roleIndex := 0
 	if len(roles) > 1 {
@@ -77,6 +75,10 @@ func dataSourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta
 		}
 	} else if len(roles) == 0 {
 		return diag.Errorf("your query returned no result, please try a less specific search criteria")
+	}
+
+	if err := utils.CheckForUnparsed(roles[roleIndex]); err != nil {
+		return diag.FromErr(err)
 	}
 
 	r := roles[roleIndex]

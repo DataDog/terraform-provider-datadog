@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -108,12 +109,19 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying log indexes")
 	}
-	if err := utils.CheckForUnparsed(logsIndexes); err != nil {
-		return diag.FromErr(err)
-	}
 
+	diags := diag.Diagnostics{}
 	tfLogsIndexes := make([]map[string]interface{}, len(logsIndexes.GetIndexes()))
 	for i, l := range logsIndexes.GetIndexes() {
+		if err := utils.CheckForUnparsed(l); err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("skipping logs index with name: %s", l.GetName()),
+				Detail:   fmt.Sprintf("logs index contains unparsed object: %v", err),
+			})
+			continue
+		}
+
 		tfLogsIndexes[i] = map[string]interface{}{
 			"name":             l.GetName(),
 			"daily_limit":      l.GetDailyLimit(),
@@ -128,5 +136,5 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 
 	d.SetId("log-indexes")
 
-	return nil
+	return diags
 }

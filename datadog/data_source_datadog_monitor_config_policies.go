@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -77,12 +78,19 @@ func dataSourceDatadogMonitorConfigPoliciesRead(ctx context.Context, d *schema.R
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying monitor config policies")
 	}
-	if err := utils.CheckForUnparsed(monitorConfigPolicies); err != nil {
-		return diag.FromErr(err)
-	}
 
+	diags := diag.Diagnostics{}
 	tfMonitorConfigPolicies := make([]map[string]interface{}, len(monitorConfigPolicies.Data))
 	for i, mcp := range monitorConfigPolicies.Data {
+		if err := utils.CheckForUnparsed(mcp); err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("skipping monitor config policy with id: %s", mcp.GetId()),
+				Detail:   fmt.Sprintf("aws logs service contains unparsed object: %v", err),
+			})
+			continue
+		}
+
 		attributes := mcp.GetAttributes()
 		tfMonitorConfigPolicies[i] = map[string]interface{}{
 			"id":          mcp.GetId(),
@@ -102,5 +110,5 @@ func dataSourceDatadogMonitorConfigPoliciesRead(ctx context.Context, d *schema.R
 	d.SetId("monitor-config-policies")
 	d.Set("monitor_config_policies", tfMonitorConfigPolicies)
 
-	return nil
+	return diags
 }
