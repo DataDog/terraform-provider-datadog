@@ -677,6 +677,10 @@ func buildDatadogNotifyList(terraformNotifyList *schema.Set) *[]string {
 }
 
 func buildTerraformNotifyList(datadogNotifyList *[]string) *[]string {
+	if datadogNotifyList == nil {
+		terraformNotifyList := make([]string, 0)
+		return &terraformNotifyList
+	}
 	terraformNotifyList := make([]string, len(*datadogNotifyList))
 	for i, authorHandle := range *datadogNotifyList {
 		terraformNotifyList[i] = authorHandle
