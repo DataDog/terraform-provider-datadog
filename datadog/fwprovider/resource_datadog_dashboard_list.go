@@ -72,7 +72,7 @@ func (r *dashboardListResource) Schema(ctx context.Context, req resource.SchemaR
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"type": schema.StringAttribute{
-							Description: "The type of this dashboard. ",
+							Description: "The type of this dashboard.",
 							Required:    true,
 							Validators: []validator.String{
 								validators.NewEnumValidator[validator.String](datadogV2.NewDashboardTypeFromValue),
