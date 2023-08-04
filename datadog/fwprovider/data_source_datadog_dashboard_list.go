@@ -85,7 +85,7 @@ func (d *datadogDashboardListDatasource) Read(ctx context.Context, req datasourc
 		return
 	}
 
-	if err := utils.CheckForUnparsed(listResponse); err != nil {
+	if err := utils.CheckForUnparsed(foundList); err != nil {
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
 	}
 
