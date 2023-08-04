@@ -225,7 +225,13 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 
 	excludedNamespaces := []string{}
 	for _, s := range d.Get("excluded_namespaces").([]interface{}) {
-		excludedNamespaces = append(excludedNamespaces, s.(string))
+		if s == nil {
+			// sdkv2 treats empty strings in list as nils so
+			// append an empty string
+			excludedNamespaces = append(excludedNamespaces, "")
+		} else {
+			excludedNamespaces = append(excludedNamespaces, s.(string))
+		}
 	}
 	attributes.SetExcludedNamespaces(excludedNamespaces)
 
