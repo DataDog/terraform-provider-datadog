@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"name":"tf-TestAccDatadogDashboardListDatasource-local-1682003475"}
+      {"name":"tf-TestAccDatadogDashboardListDatasource-local-1690985857"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-20T15:11:16.214755+00:00","dashboards":null,"dashboard_count":0,"id":379581,"is_favorite":false,"modified":"2023-04-20T15:11:16.214761+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1682003475","type":"manual_dashboard_list"}
+      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:17:40.075467+00:00","dashboards":null,"dashboard_count":0,"id":405189,"is_favorite":false,"modified":"2023-08-02T14:17:40.075473+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1690985857","type":"manual_dashboard_list"}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/379581
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual
     method: GET
   response:
     body: |
-      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-20T15:11:16.214755+00:00","dashboards":null,"dashboard_count":0,"id":379581,"is_favorite":false,"modified":"2023-04-20T15:11:16.214761+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1682003475","type":"manual_dashboard_list"}
+      {"dashboard_lists":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2020-09-08T07:12:57.679027+00:00","dashboards":null,"dashboard_count":0,"id":126798,"is_favorite":true,"modified":"2020-09-09T08:48:11.523877+00:00","name":"frog's List","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:14:42.047870+00:00","dashboards":null,"dashboard_count":2,"id":405186,"is_favorite":false,"modified":"2023-08-02T14:16:47.477436+00:00","name":"Terraform Created Listaaaa","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:05:39.149344+00:00","dashboards":null,"dashboard_count":0,"id":395908,"is_favorite":false,"modified":"2023-06-24T14:05:39.149350+00:00","name":"Test-Create_a_dashboard_list_returns_OK_response-1687615538","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T13:37:05.556714+00:00","dashboards":null,"dashboard_count":0,"id":395889,"is_favorite":false,"modified":"2023-06-24T13:37:05.556720+00:00","name":"Test-Delete_a_dashboard_list_returns_OK_response-1687613825","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:06:01.810048+00:00","dashboards":null,"dashboard_count":0,"id":395911,"is_favorite":false,"modified":"2023-06-24T14:06:01.810054+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1687615561","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:06:45.161987+00:00","dashboards":null,"dashboard_count":0,"id":395914,"is_favorite":false,"modified":"2023-06-24T14:06:45.161993+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1687615604","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:17:40.075467+00:00","dashboards":null,"dashboard_count":0,"id":405189,"is_favorite":false,"modified":"2023-08-02T14:17:40.075473+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1690985857","type":"manual_dashboard_list"},{"author":{"name":"Hanting Zhang","handle":"hanting.zhang@datadoghq.com"},"created":"2023-08-01T16:47:50.872208+00:00","dashboards":null,"dashboard_count":2,"id":404944,"is_favorite":false,"modified":"2023-08-01T16:47:51.059822+00:00","name":"tf-TestDatadogDashListImport-local-1690908466","type":"manual_dashboard_list"}]}
     headers:
       Content-Type:
       - application/json
@@ -44,7 +44,41 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/379581/dashboards
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual
+    method: GET
+  response:
+    body: |
+      {"dashboard_lists":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2020-09-08T07:12:57.679027+00:00","dashboards":null,"dashboard_count":0,"id":126798,"is_favorite":true,"modified":"2020-09-09T08:48:11.523877+00:00","name":"frog's List","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:14:42.047870+00:00","dashboards":null,"dashboard_count":2,"id":405186,"is_favorite":false,"modified":"2023-08-02T14:16:47.477436+00:00","name":"Terraform Created Listaaaa","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:05:39.149344+00:00","dashboards":null,"dashboard_count":0,"id":395908,"is_favorite":false,"modified":"2023-06-24T14:05:39.149350+00:00","name":"Test-Create_a_dashboard_list_returns_OK_response-1687615538","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T13:37:05.556714+00:00","dashboards":null,"dashboard_count":0,"id":395889,"is_favorite":false,"modified":"2023-06-24T13:37:05.556720+00:00","name":"Test-Delete_a_dashboard_list_returns_OK_response-1687613825","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:06:01.810048+00:00","dashboards":null,"dashboard_count":0,"id":395911,"is_favorite":false,"modified":"2023-06-24T14:06:01.810054+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1687615561","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:06:45.161987+00:00","dashboards":null,"dashboard_count":0,"id":395914,"is_favorite":false,"modified":"2023-06-24T14:06:45.161993+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1687615604","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:17:40.075467+00:00","dashboards":null,"dashboard_count":0,"id":405189,"is_favorite":false,"modified":"2023-08-02T14:17:40.075473+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1690985857","type":"manual_dashboard_list"},{"author":{"name":"Hanting Zhang","handle":"hanting.zhang@datadoghq.com"},"created":"2023-08-01T16:47:50.872208+00:00","dashboards":null,"dashboard_count":2,"id":404944,"is_favorite":false,"modified":"2023-08-01T16:47:51.059822+00:00","name":"tf-TestDatadogDashListImport-local-1690908466","type":"manual_dashboard_list"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/405189
+    method: GET
+  response:
+    body: |
+      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:17:40.075467+00:00","dashboards":null,"dashboard_count":0,"id":405189,"is_favorite":false,"modified":"2023-08-02T14:17:40.075473+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1690985857","type":"manual_dashboard_list"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/405189/dashboards
     method: GET
   response:
     body: |
@@ -65,7 +99,7 @@ interactions:
     method: GET
   response:
     body: |
-      {"dashboard_lists":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2020-09-08T07:12:57.679027+00:00","dashboards":null,"dashboard_count":0,"id":126798,"is_favorite":true,"modified":"2020-09-09T08:48:11.523877+00:00","name":"frog's List","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:04.511354+00:00","dashboards":null,"dashboard_count":0,"id":368163,"is_favorite":false,"modified":"2023-03-03T15:15:04.511361+00:00","name":"Test-Add_custom_screenboard_dashboard_to_an_existing_dashboard_list_returns_OK_response-1677856504","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:05.452328+00:00","dashboards":null,"dashboard_count":0,"id":368164,"is_favorite":false,"modified":"2023-03-03T15:15:05.452334+00:00","name":"Test-Add_custom_timeboard_dashboard_to_an_existing_dashboard_list_returns_OK_response-1677856505","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:18.320222+00:00","dashboards":null,"dashboard_count":0,"id":368154,"is_favorite":false,"modified":"2023-03-03T15:12:18.320227+00:00","name":"Test-Create_a_dashboard_list_returns_OK_response-1677856338","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:19.534944+00:00","dashboards":null,"dashboard_count":0,"id":368156,"is_favorite":false,"modified":"2023-03-03T15:12:19.534950+00:00","name":"Test-Delete_a_dashboard_list_returns_OK_response-1677856339","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:06.402992+00:00","dashboards":null,"dashboard_count":0,"id":368165,"is_favorite":false,"modified":"2023-03-03T15:15:06.403001+00:00","name":"Test-Delete_custom_screenboard_dashboard_from_an_existing_dashboard_list_returns_OK_response-1677856506","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:07.329230+00:00","dashboards":null,"dashboard_count":0,"id":368166,"is_favorite":false,"modified":"2023-03-03T15:15:07.329236+00:00","name":"Test-Delete_custom_timeboard_dashboard_from_an_existing_dashboard_list_returns_OK_response-1677856507","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:20.506882+00:00","dashboards":null,"dashboard_count":0,"id":368157,"is_favorite":false,"modified":"2023-03-03T15:12:20.506888+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1677856340","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:08.249746+00:00","dashboards":null,"dashboard_count":0,"id":368167,"is_favorite":false,"modified":"2023-03-03T15:15:08.249751+00:00","name":"Test-Get_items_of_a_Dashboard_List_returns_OK_response-1677856508","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2022-12-09T15:04:28.806069+00:00","dashboards":null,"dashboard_count":1,"id":348463,"is_favorite":false,"modified":"2022-12-09T15:04:29.985883+00:00","name":"Test-Go-TestDashboardListItemCRUD-1670598268","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:13:01.356447+00:00","dashboards":null,"dashboard_count":0,"id":368162,"is_favorite":false,"modified":"2023-03-03T15:13:01.356453+00:00","name":"Test-TestDashboardListLifecycle-1677856381","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:21.395438+00:00","dashboards":null,"dashboard_count":0,"id":368158,"is_favorite":false,"modified":"2023-03-03T15:12:21.395444+00:00","name":"Test-Update_a_dashboard_list_returns_OK_response-1677856341","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:09.196541+00:00","dashboards":null,"dashboard_count":0,"id":368168,"is_favorite":false,"modified":"2023-03-03T15:15:09.196547+00:00","name":"Test-Update_items_of_a_dashboard_list_returns_OK_response-1677856509","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-20T15:11:16.214755+00:00","dashboards":null,"dashboard_count":0,"id":379581,"is_favorite":false,"modified":"2023-04-20T15:11:16.214761+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1682003475","type":"manual_dashboard_list"}]}
+      {"dashboard_lists":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2020-09-08T07:12:57.679027+00:00","dashboards":null,"dashboard_count":0,"id":126798,"is_favorite":true,"modified":"2020-09-09T08:48:11.523877+00:00","name":"frog's List","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:14:42.047870+00:00","dashboards":null,"dashboard_count":2,"id":405186,"is_favorite":false,"modified":"2023-08-02T14:16:47.477436+00:00","name":"Terraform Created Listaaaa","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:05:39.149344+00:00","dashboards":null,"dashboard_count":0,"id":395908,"is_favorite":false,"modified":"2023-06-24T14:05:39.149350+00:00","name":"Test-Create_a_dashboard_list_returns_OK_response-1687615538","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T13:37:05.556714+00:00","dashboards":null,"dashboard_count":0,"id":395889,"is_favorite":false,"modified":"2023-06-24T13:37:05.556720+00:00","name":"Test-Delete_a_dashboard_list_returns_OK_response-1687613825","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:06:01.810048+00:00","dashboards":null,"dashboard_count":0,"id":395911,"is_favorite":false,"modified":"2023-06-24T14:06:01.810054+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1687615561","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:06:45.161987+00:00","dashboards":null,"dashboard_count":0,"id":395914,"is_favorite":false,"modified":"2023-06-24T14:06:45.161993+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1687615604","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:17:40.075467+00:00","dashboards":null,"dashboard_count":0,"id":405189,"is_favorite":false,"modified":"2023-08-02T14:17:40.075473+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1690985857","type":"manual_dashboard_list"},{"author":{"name":"Hanting Zhang","handle":"hanting.zhang@datadoghq.com"},"created":"2023-08-01T16:47:50.872208+00:00","dashboards":null,"dashboard_count":2,"id":404944,"is_favorite":false,"modified":"2023-08-01T16:47:51.059822+00:00","name":"tf-TestDatadogDashListImport-local-1690908466","type":"manual_dashboard_list"}]}
     headers:
       Content-Type:
       - application/json
@@ -82,7 +116,7 @@ interactions:
     method: GET
   response:
     body: |
-      {"dashboard_lists":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2020-09-08T07:12:57.679027+00:00","dashboards":null,"dashboard_count":0,"id":126798,"is_favorite":true,"modified":"2020-09-09T08:48:11.523877+00:00","name":"frog's List","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:04.511354+00:00","dashboards":null,"dashboard_count":0,"id":368163,"is_favorite":false,"modified":"2023-03-03T15:15:04.511361+00:00","name":"Test-Add_custom_screenboard_dashboard_to_an_existing_dashboard_list_returns_OK_response-1677856504","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:05.452328+00:00","dashboards":null,"dashboard_count":0,"id":368164,"is_favorite":false,"modified":"2023-03-03T15:15:05.452334+00:00","name":"Test-Add_custom_timeboard_dashboard_to_an_existing_dashboard_list_returns_OK_response-1677856505","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:18.320222+00:00","dashboards":null,"dashboard_count":0,"id":368154,"is_favorite":false,"modified":"2023-03-03T15:12:18.320227+00:00","name":"Test-Create_a_dashboard_list_returns_OK_response-1677856338","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:19.534944+00:00","dashboards":null,"dashboard_count":0,"id":368156,"is_favorite":false,"modified":"2023-03-03T15:12:19.534950+00:00","name":"Test-Delete_a_dashboard_list_returns_OK_response-1677856339","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:06.402992+00:00","dashboards":null,"dashboard_count":0,"id":368165,"is_favorite":false,"modified":"2023-03-03T15:15:06.403001+00:00","name":"Test-Delete_custom_screenboard_dashboard_from_an_existing_dashboard_list_returns_OK_response-1677856506","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:07.329230+00:00","dashboards":null,"dashboard_count":0,"id":368166,"is_favorite":false,"modified":"2023-03-03T15:15:07.329236+00:00","name":"Test-Delete_custom_timeboard_dashboard_from_an_existing_dashboard_list_returns_OK_response-1677856507","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:20.506882+00:00","dashboards":null,"dashboard_count":0,"id":368157,"is_favorite":false,"modified":"2023-03-03T15:12:20.506888+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1677856340","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:08.249746+00:00","dashboards":null,"dashboard_count":0,"id":368167,"is_favorite":false,"modified":"2023-03-03T15:15:08.249751+00:00","name":"Test-Get_items_of_a_Dashboard_List_returns_OK_response-1677856508","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2022-12-09T15:04:28.806069+00:00","dashboards":null,"dashboard_count":1,"id":348463,"is_favorite":false,"modified":"2022-12-09T15:04:29.985883+00:00","name":"Test-Go-TestDashboardListItemCRUD-1670598268","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:13:01.356447+00:00","dashboards":null,"dashboard_count":0,"id":368162,"is_favorite":false,"modified":"2023-03-03T15:13:01.356453+00:00","name":"Test-TestDashboardListLifecycle-1677856381","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:21.395438+00:00","dashboards":null,"dashboard_count":0,"id":368158,"is_favorite":false,"modified":"2023-03-03T15:12:21.395444+00:00","name":"Test-Update_a_dashboard_list_returns_OK_response-1677856341","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:09.196541+00:00","dashboards":null,"dashboard_count":0,"id":368168,"is_favorite":false,"modified":"2023-03-03T15:15:09.196547+00:00","name":"Test-Update_items_of_a_dashboard_list_returns_OK_response-1677856509","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-20T15:11:16.214755+00:00","dashboards":null,"dashboard_count":0,"id":379581,"is_favorite":false,"modified":"2023-04-20T15:11:16.214761+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1682003475","type":"manual_dashboard_list"}]}
+      {"dashboard_lists":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2020-09-08T07:12:57.679027+00:00","dashboards":null,"dashboard_count":0,"id":126798,"is_favorite":true,"modified":"2020-09-09T08:48:11.523877+00:00","name":"frog's List","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:14:42.047870+00:00","dashboards":null,"dashboard_count":2,"id":405186,"is_favorite":false,"modified":"2023-08-02T14:16:47.477436+00:00","name":"Terraform Created Listaaaa","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:05:39.149344+00:00","dashboards":null,"dashboard_count":0,"id":395908,"is_favorite":false,"modified":"2023-06-24T14:05:39.149350+00:00","name":"Test-Create_a_dashboard_list_returns_OK_response-1687615538","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T13:37:05.556714+00:00","dashboards":null,"dashboard_count":0,"id":395889,"is_favorite":false,"modified":"2023-06-24T13:37:05.556720+00:00","name":"Test-Delete_a_dashboard_list_returns_OK_response-1687613825","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:06:01.810048+00:00","dashboards":null,"dashboard_count":0,"id":395911,"is_favorite":false,"modified":"2023-06-24T14:06:01.810054+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1687615561","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-06-24T14:06:45.161987+00:00","dashboards":null,"dashboard_count":0,"id":395914,"is_favorite":false,"modified":"2023-06-24T14:06:45.161993+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1687615604","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-08-02T14:17:40.075467+00:00","dashboards":null,"dashboard_count":0,"id":405189,"is_favorite":false,"modified":"2023-08-02T14:17:40.075473+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1690985857","type":"manual_dashboard_list"},{"author":{"name":"Hanting Zhang","handle":"hanting.zhang@datadoghq.com"},"created":"2023-08-01T16:47:50.872208+00:00","dashboards":null,"dashboard_count":2,"id":404944,"is_favorite":false,"modified":"2023-08-01T16:47:51.059822+00:00","name":"tf-TestDatadogDashListImport-local-1690908466","type":"manual_dashboard_list"}]}
     headers:
       Content-Type:
       - application/json
@@ -95,79 +129,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/379581
-    method: GET
-  response:
-    body: |
-      {"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-20T15:11:16.214755+00:00","dashboards":null,"dashboard_count":0,"id":379581,"is_favorite":false,"modified":"2023-04-20T15:11:16.214761+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1682003475","type":"manual_dashboard_list"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/dashboard/lists/manual/379581/dashboards
-    method: GET
-  response:
-    body: |
-      {"dashboards":[],"total":0}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual
-    method: GET
-  response:
-    body: |
-      {"dashboard_lists":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2020-09-08T07:12:57.679027+00:00","dashboards":null,"dashboard_count":0,"id":126798,"is_favorite":true,"modified":"2020-09-09T08:48:11.523877+00:00","name":"frog's List","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:04.511354+00:00","dashboards":null,"dashboard_count":0,"id":368163,"is_favorite":false,"modified":"2023-03-03T15:15:04.511361+00:00","name":"Test-Add_custom_screenboard_dashboard_to_an_existing_dashboard_list_returns_OK_response-1677856504","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:05.452328+00:00","dashboards":null,"dashboard_count":0,"id":368164,"is_favorite":false,"modified":"2023-03-03T15:15:05.452334+00:00","name":"Test-Add_custom_timeboard_dashboard_to_an_existing_dashboard_list_returns_OK_response-1677856505","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:18.320222+00:00","dashboards":null,"dashboard_count":0,"id":368154,"is_favorite":false,"modified":"2023-03-03T15:12:18.320227+00:00","name":"Test-Create_a_dashboard_list_returns_OK_response-1677856338","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:19.534944+00:00","dashboards":null,"dashboard_count":0,"id":368156,"is_favorite":false,"modified":"2023-03-03T15:12:19.534950+00:00","name":"Test-Delete_a_dashboard_list_returns_OK_response-1677856339","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:06.402992+00:00","dashboards":null,"dashboard_count":0,"id":368165,"is_favorite":false,"modified":"2023-03-03T15:15:06.403001+00:00","name":"Test-Delete_custom_screenboard_dashboard_from_an_existing_dashboard_list_returns_OK_response-1677856506","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:07.329230+00:00","dashboards":null,"dashboard_count":0,"id":368166,"is_favorite":false,"modified":"2023-03-03T15:15:07.329236+00:00","name":"Test-Delete_custom_timeboard_dashboard_from_an_existing_dashboard_list_returns_OK_response-1677856507","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:20.506882+00:00","dashboards":null,"dashboard_count":0,"id":368157,"is_favorite":false,"modified":"2023-03-03T15:12:20.506888+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1677856340","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:08.249746+00:00","dashboards":null,"dashboard_count":0,"id":368167,"is_favorite":false,"modified":"2023-03-03T15:15:08.249751+00:00","name":"Test-Get_items_of_a_Dashboard_List_returns_OK_response-1677856508","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2022-12-09T15:04:28.806069+00:00","dashboards":null,"dashboard_count":1,"id":348463,"is_favorite":false,"modified":"2022-12-09T15:04:29.985883+00:00","name":"Test-Go-TestDashboardListItemCRUD-1670598268","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:13:01.356447+00:00","dashboards":null,"dashboard_count":0,"id":368162,"is_favorite":false,"modified":"2023-03-03T15:13:01.356453+00:00","name":"Test-TestDashboardListLifecycle-1677856381","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:21.395438+00:00","dashboards":null,"dashboard_count":0,"id":368158,"is_favorite":false,"modified":"2023-03-03T15:12:21.395444+00:00","name":"Test-Update_a_dashboard_list_returns_OK_response-1677856341","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:09.196541+00:00","dashboards":null,"dashboard_count":0,"id":368168,"is_favorite":false,"modified":"2023-03-03T15:15:09.196547+00:00","name":"Test-Update_items_of_a_dashboard_list_returns_OK_response-1677856509","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-20T15:11:16.214755+00:00","dashboards":null,"dashboard_count":0,"id":379581,"is_favorite":false,"modified":"2023-04-20T15:11:16.214761+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1682003475","type":"manual_dashboard_list"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual
-    method: GET
-  response:
-    body: |
-      {"dashboard_lists":[{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2020-09-08T07:12:57.679027+00:00","dashboards":null,"dashboard_count":0,"id":126798,"is_favorite":true,"modified":"2020-09-09T08:48:11.523877+00:00","name":"frog's List","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:04.511354+00:00","dashboards":null,"dashboard_count":0,"id":368163,"is_favorite":false,"modified":"2023-03-03T15:15:04.511361+00:00","name":"Test-Add_custom_screenboard_dashboard_to_an_existing_dashboard_list_returns_OK_response-1677856504","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:05.452328+00:00","dashboards":null,"dashboard_count":0,"id":368164,"is_favorite":false,"modified":"2023-03-03T15:15:05.452334+00:00","name":"Test-Add_custom_timeboard_dashboard_to_an_existing_dashboard_list_returns_OK_response-1677856505","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:18.320222+00:00","dashboards":null,"dashboard_count":0,"id":368154,"is_favorite":false,"modified":"2023-03-03T15:12:18.320227+00:00","name":"Test-Create_a_dashboard_list_returns_OK_response-1677856338","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:19.534944+00:00","dashboards":null,"dashboard_count":0,"id":368156,"is_favorite":false,"modified":"2023-03-03T15:12:19.534950+00:00","name":"Test-Delete_a_dashboard_list_returns_OK_response-1677856339","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:06.402992+00:00","dashboards":null,"dashboard_count":0,"id":368165,"is_favorite":false,"modified":"2023-03-03T15:15:06.403001+00:00","name":"Test-Delete_custom_screenboard_dashboard_from_an_existing_dashboard_list_returns_OK_response-1677856506","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:07.329230+00:00","dashboards":null,"dashboard_count":0,"id":368166,"is_favorite":false,"modified":"2023-03-03T15:15:07.329236+00:00","name":"Test-Delete_custom_timeboard_dashboard_from_an_existing_dashboard_list_returns_OK_response-1677856507","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:20.506882+00:00","dashboards":null,"dashboard_count":0,"id":368157,"is_favorite":false,"modified":"2023-03-03T15:12:20.506888+00:00","name":"Test-Get_a_dashboard_list_returns_OK_response-1677856340","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:08.249746+00:00","dashboards":null,"dashboard_count":0,"id":368167,"is_favorite":false,"modified":"2023-03-03T15:15:08.249751+00:00","name":"Test-Get_items_of_a_Dashboard_List_returns_OK_response-1677856508","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2022-12-09T15:04:28.806069+00:00","dashboards":null,"dashboard_count":1,"id":348463,"is_favorite":false,"modified":"2022-12-09T15:04:29.985883+00:00","name":"Test-Go-TestDashboardListItemCRUD-1670598268","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:13:01.356447+00:00","dashboards":null,"dashboard_count":0,"id":368162,"is_favorite":false,"modified":"2023-03-03T15:13:01.356453+00:00","name":"Test-TestDashboardListLifecycle-1677856381","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:12:21.395438+00:00","dashboards":null,"dashboard_count":0,"id":368158,"is_favorite":false,"modified":"2023-03-03T15:12:21.395444+00:00","name":"Test-Update_a_dashboard_list_returns_OK_response-1677856341","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-03-03T15:15:09.196541+00:00","dashboards":null,"dashboard_count":0,"id":368168,"is_favorite":false,"modified":"2023-03-03T15:15:09.196547+00:00","name":"Test-Update_items_of_a_dashboard_list_returns_OK_response-1677856509","type":"manual_dashboard_list"},{"author":{"name":null,"handle":"frog@datadoghq.com"},"created":"2023-04-20T15:11:16.214755+00:00","dashboards":null,"dashboard_count":0,"id":379581,"is_favorite":false,"modified":"2023-04-20T15:11:16.214761+00:00","name":"tf-TestAccDatadogDashboardListDatasource-local-1682003475","type":"manual_dashboard_list"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/379581
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/405189
     method: DELETE
   response:
     body: |
-      {"deleted_dashboard_list_id":379581}
+      {"deleted_dashboard_list_id":405189}
     headers:
       Content-Type:
       - application/json
@@ -180,10 +146,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/379581
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/405189
     method: GET
   response:
-    body: '{"errors":["Manual Dashboard List with id 379581 not found"]}'
+    body: '{"errors":["Manual Dashboard List with id 405189 not found"]}'
     headers:
       Content-Type:
       - application/json
@@ -196,10 +162,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/379581
+    url: https://api.datadoghq.com/api/v1/dashboard/lists/manual/405189
     method: GET
   response:
-    body: '{"errors":["Manual Dashboard List with id 379581 not found"]}'
+    body: '{"errors":["Manual Dashboard List with id 405189 not found"]}'
     headers:
       Content-Type:
       - application/json

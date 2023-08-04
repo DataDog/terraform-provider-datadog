@@ -5,30 +5,28 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func TestAccDatadogDashboardListDatasource(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogDashListDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDashListDestroyWithFw(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceDashboardListNameFilterConfig(uniq),
-				Check:  checkDatasourceDashboardListAttrs(accProvider, uniq),
+				Check:  checkDatasourceDashboardListAttrs(uniq),
 			},
 		},
 	})
 }
 
-func checkDatasourceDashboardListAttrs(accProvider func() (*schema.Provider, error), uniq string) resource.TestCheckFunc {
+func checkDatasourceDashboardListAttrs(uniq string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(
 			"data.datadog_dashboard_list.my_list", "name", uniq),
