@@ -1,4 +1,4 @@
-{%- macro resourceExample(name, primaryId, createOperationParams) %}
+{%- macro resourceExample(name, primaryId, createOperationParams) -%}
 resource "datadog_{{ name }}" "foo" {
 {%- for name, parameter in createOperationParams.items() %}
     {%- if name != primaryId["name"] %}
