@@ -5,8 +5,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func dataSourceDatadogSyntheticsLocations() *schema.Resource {
@@ -34,16 +32,11 @@ func dataSourceDatadogSyntheticsLocationsRead(ctx context.Context, d *schema.Res
 	auth := providerConf.Auth
 
 	syntheticsLocations, _, err := apiInstances.GetSyntheticsApiV1().ListLocations(auth)
-
 	if err != nil {
-		return diag.FromErr(err)
-	}
-	if err := utils.CheckForUnparsed(syntheticsLocations); err != nil {
 		return diag.FromErr(err)
 	}
 
 	locationsMap := make(map[string]string)
-
 	for _, location := range syntheticsLocations.GetLocations() {
 		locationsMap[location.GetId()] = location.GetName()
 	}

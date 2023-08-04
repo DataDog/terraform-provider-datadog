@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -95,15 +96,22 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying log pipelines")
 	}
-	if err := utils.CheckForUnparsed(logsPipelines); err != nil {
-		return diag.FromErr(err)
-	}
 
+	diags := diag.Diagnostics{}
 	vStr, ok := d.GetOk("is_read_only")
 	v, _ := strconv.ParseBool(vStr.(string))
 	tflogsPipelines := make([]map[string]interface{}, 0)
 	for _, pipeline := range logsPipelines {
 		if !ok || (ok && v == *pipeline.IsReadOnly) {
+			if err := utils.CheckForUnparsed(pipeline); err != nil {
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Warning,
+					Summary:  fmt.Sprintf("skipping logs pipeline with id: %s", pipeline.GetId()),
+					Detail:   fmt.Sprintf("logs pipeline contains unparsed object: %v", err),
+				})
+				continue
+			}
+
 			tflogsPipelines = append(tflogsPipelines, map[string]interface{}{
 				"name":         pipeline.GetName(),
 				"id":           pipeline.GetId(),
@@ -119,7 +127,7 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 	}
 
 	d.SetId(computePipelinesDatasourceID(d))
-	return nil
+	return diags
 }
 
 func computePipelinesDatasourceID(d *schema.ResourceData) string {

@@ -108,7 +108,6 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 	ruleIds := make([]string, 0)
 	rules := make([]map[string]interface{}, 0)
 	page := int64(0)
-
 	for {
 		response, httpresp, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringRules(auth,
 			datadogV2.ListSecurityMonitoringRulesOptionalParameters{
@@ -118,9 +117,6 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpresp, "error listing rules")
-		}
-		if err := utils.CheckForUnparsed(response); err != nil {
-			return diag.FromErr(err)
 		}
 
 		for _, ruleR := range response.GetData() {

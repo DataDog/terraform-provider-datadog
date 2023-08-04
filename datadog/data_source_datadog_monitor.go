@@ -294,14 +294,14 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	monitors, httpresp, err := apiInstances.GetMonitorsApiV1().ListMonitors(auth, *optionalParams)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error querying monitors")
-	}
 	if len(monitors) > 1 {
 		return diag.Errorf("your query returned more than one result, please try a more specific search criteria")
 	}
 	if len(monitors) == 0 {
 		return diag.Errorf("your query returned no result, please try a less specific search criteria")
+	}
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpresp, "error querying monitors")
 	}
 
 	m := monitors[0]

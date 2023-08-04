@@ -167,10 +167,6 @@ func (d *ipRangesDataSource) Read(ctx context.Context, _ datasource.ReadRequest,
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting IPRanges"))
 		return
 	}
-	if err := utils.CheckForUnparsed(ipAddresses); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
 
 	state.ID = types.StringValue("datadog-ip-ranges")
 

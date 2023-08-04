@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -45,14 +46,22 @@ func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceDat
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, resp, "error listing permissions")
 	}
-	if err := utils.CheckForUnparsed(res); err != nil {
-		return diag.FromErr(err)
-	}
+
+	diags := diag.Diagnostics{}
 	perms := res.GetData()
 	permsNameToID := make(map[string]string, len(perms))
 	includeRestricted := d.Get("include_restricted").(bool)
 	for _, perm := range perms {
 		if !includeRestricted && perm.Attributes.GetRestricted() {
+			continue
+		}
+
+		if err := utils.CheckForUnparsed(perm); err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("skipping permission with id: %s", perm.GetId()),
+				Detail:   fmt.Sprintf("permission contains unparsed object: %v", err),
+			})
 			continue
 		}
 		permsNameToID[perm.Attributes.GetName()] = perm.GetId()
@@ -62,5 +71,5 @@ func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceDat
 	}
 	d.SetId("datadog-permissions")
 
-	return nil
+	return diags
 }

@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -86,17 +87,24 @@ func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying monitors")
 	}
-	if err := utils.CheckForUnparsed(monitors); err != nil {
-		return diag.FromErr(err)
-	}
 	if len(monitors) == 0 {
 		return diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
 	d.SetId(computeMonitorsDatasourceID(d))
 
+	diags := diag.Diagnostics{}
 	tfMonitors := make([]map[string]interface{}, len(monitors))
 	for i, m := range monitors {
+		if err := utils.CheckForUnparsed(m); err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("skipping monitor with id: %v", m.GetId()),
+				Detail:   fmt.Sprintf("monitor contains unparsed object: %v", err),
+			})
+			continue
+		}
+
 		tfMonitors[i] = map[string]interface{}{
 			"id":   m.GetId(),
 			"name": m.GetName(),
@@ -107,7 +115,7 @@ func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(err)
 	}
 
-	return nil
+	return diags
 }
 
 func computeMonitorsDatasourceID(d *schema.ResourceData) string {

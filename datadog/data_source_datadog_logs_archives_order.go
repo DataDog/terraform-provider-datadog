@@ -37,9 +37,6 @@ func dataSourceDatadogLogsArchivesOrderRead(ctx context.Context, d *schema.Resou
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying the order of your logs archives")
 	}
-	if err := utils.CheckForUnparsed(logsArchiveOrder); err != nil {
-		return diag.FromErr(err)
-	}
 
 	if err := d.Set("archive_ids", logsArchiveOrder.Data.Attributes.ArchiveIds); err != nil {
 		return diag.FromErr(err)

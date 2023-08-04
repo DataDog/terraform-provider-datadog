@@ -109,15 +109,22 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying service level objectives")
 	}
-	if err := utils.CheckForUnparsed(slosResp); err != nil {
-		return diag.FromErr(err)
-	}
 	if len(slosResp.GetData()) == 0 {
 		return diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
+	diags := diag.Diagnostics{}
 	slos := make([]map[string]interface{}, 0, len(slosResp.GetData()))
 	for _, slo := range slosResp.GetData() {
+		if err := utils.CheckForUnparsed(slo); err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("skipping service level objective with id: %s", slo.GetId()),
+				Detail:   fmt.Sprintf("service level objective contains unparsed object: %v", err),
+			})
+			continue
+		}
+
 		slos = append(slos, map[string]interface{}{
 			"id":   slo.GetId(),
 			"name": slo.GetName(),
@@ -129,7 +136,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 	}
 	d.SetId(computeSLOsDataSourceID(idsPtr, nameQueryPtr, tagsQueryPtr, metricsQueryPtr))
 
-	return nil
+	return diags
 }
 
 func computeSLOsDataSourceID(ids *string, nameQuery *string, tagsQuery *string, metricsQuery *string) string {

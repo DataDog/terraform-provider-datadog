@@ -69,13 +69,9 @@ func (d *datadogDashboardListDatasource) Read(ctx context.Context, req datasourc
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error querying dashboard lists"))
 		return
 	}
-	if err := utils.CheckForUnparsed(listResponse); err != nil {
-		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
-	}
 
 	searchedName := state.Name.ValueString()
 	var foundList *datadogV1.DashboardList
-
 	for _, dashList := range listResponse.GetDashboardLists() {
 		if dashList.GetName() == searchedName {
 			foundList = &dashList
@@ -87,6 +83,10 @@ func (d *datadogDashboardListDatasource) Read(ctx context.Context, req datasourc
 		errString := "Couldn't find a dashboard list named" + searchedName
 		resp.Diagnostics.AddError(errString, "")
 		return
+	}
+
+	if err := utils.CheckForUnparsed(foundList); err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
 	}
 
 	id := foundList.GetId()
