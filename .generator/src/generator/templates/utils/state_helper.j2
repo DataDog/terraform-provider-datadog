@@ -97,11 +97,7 @@
     {{ baseSetter }}.{{ name|camel_case }} = []*{{ name|camel_case|untitle_case }}Model{}
     for _, {{ name|variable_name }}Dd := range {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %} {
         {{ name|variable_name }}TfItem := {{ name|camel_case|untitle_case }}Model{}
-
-        {%- for attr, attrSchema in itemSchema.properties.items() %}
-            {{- baseStateSetter(attr, attrSchema, name|variable_name~"TfItem", name|variable_name ~ "Dd") }}
-        {%- endfor %}
-
+        {{ baseStateSetter(name, itemSchema, name|variable_name~"TfItem", name|variable_name ~ "Dd") }}
         {{ baseSetter }}.{{ name|camel_case }} = append({{ baseSetter }}.{{ name|camel_case }}, &{{ name|variable_name }}TfItem)
     }
     {%- if not required %}
