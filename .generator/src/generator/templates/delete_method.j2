@@ -1,0 +1,31 @@
+{%- set responseHasThreeValues = "204" not in operations[DELETE_OPERATION]["schema"]["responses"].keys() %}
+
+func (r *{{ name|camel_case|untitle_case }}Resource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+    var state {{ name|camel_case|untitle_case }}Model
+    response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+    if response.Diagnostics.HasError() {
+        return
+    }
+
+    {%- for name, param in deleteOperationParams.items() %}
+    {%- set paramSchema = param|parameter_schema %}
+    {%- if name == primaryId["name"] %}
+
+    id := state.ID.Value{{ get_terraform_schema_type(paramSchema) }}()
+	{%- elif paramSchema|is_primitive %}
+    {{ name|variable_name }} := state.{{ name|camel_case }}.Value{{ get_terraform_schema_type(paramSchema) }}()
+	{%- else %}
+	{%- set paramType = get_type_for_parameter(param) %}
+	{{ name|variable_name }} := datadog{{ version|upperfirst }}.New{{ paramType }}WithDefaults()
+    {%- endif %}
+    {%- endfor %}
+
+    {% if responseHasThreeValues %}_, {% endif %}httpResp, err := r.Api.{{ deleteOperationId }}(r.Auth, {% for name, param in deleteOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting {{ name }}"))
+		return
+	}
+}
