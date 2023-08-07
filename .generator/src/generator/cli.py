@@ -48,7 +48,7 @@ def cli(spec_path, output):
     env.globals["get_name"] = openapi.get_name
     env.globals["get_type_for_parameter"] = openapi.get_type_for_parameter
     env.globals["get_type"] = openapi.type_to_go
-    env.globals["get_terraform_schema_type"] = openapi.get_terraform_schema_type
+    env.globals["get_terraform_schema_type"] = formatter.get_terraform_schema_type
     env.globals["get_terraform_primary_id"] = openapi.get_terraform_primary_id
     env.globals["json_api_attributes_schema"] = openapi.json_api_attributes_schema
 

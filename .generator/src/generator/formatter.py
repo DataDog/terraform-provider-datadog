@@ -131,3 +131,15 @@ def simple_type(schema, render_nullable=False, render_new=False):
         return "bool" if not nullable else f"{nullable_prefix}Bool"
 
     return None
+
+
+def get_terraform_schema_type(schema):
+    return {
+        "string": "String",
+        "boolean": "Bool",
+        "integer": "Int64",
+        "number": "Int64",
+        "array": "List",
+        "object": "Block",
+        None: "String",
+    }[schema.get("type")]

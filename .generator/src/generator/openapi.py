@@ -285,18 +285,6 @@ def json_api_attributes_schema(schema):
     return schema.get("properties", {}).get("data", {}).get("properties", {}).get("attributes", {})
 
 
-def get_terraform_schema_type(schema):
-    return {
-        "string": "String",
-        "boolean": "Bool",
-        "integer": "Int64",
-        "number": "Int64",
-        "array": "List",
-        "object": "Block",
-        None: "String",
-    }[schema.get("type")]
-
-
 class Schema:
     def __init__(self, spec, value=None, keys=None):
         self.spec = spec
