@@ -209,7 +209,7 @@ def tf_sort_params_by_type(parameters):
                 s["_tf_required"] = required
                 if is_primitive(s):
                     primitive[attr] = s
-                elif schema.get("type") == "array":
+                elif s.get("type") == "array":
                     if is_primitive(s.get("items")):
                         primitive_array[attr] = s
                     else:
@@ -238,7 +238,7 @@ def tf_sort_properties_by_type(schema):
                 s["_tf_required"] = required
                 if is_primitive(s):
                     primitive[attr] = s
-                elif c.get("type") == "array":
+                elif s.get("type") == "array":
                     if is_primitive(s.get("items")):
                         primitive_array[attr] = s
                     else:
