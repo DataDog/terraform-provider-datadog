@@ -1,0 +1,35 @@
+func (r *{{ name|camel_case|untitle_case }}Resource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+    var state {{ name|camel_case|untitle_case }}Model
+    response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+    if response.Diagnostics.HasError() {
+        return
+    }
+
+    {%- for name, param in readOperationParams.items() %}
+    {%- set paramSchema = param|parameter_schema %}
+    {%- if name == primaryId["name"] %}
+
+    id := state.ID.Value{{ get_terraform_schema_type(paramSchema) }}()
+    {%- else%}
+    {{ name|variable_name }} := state.{{ name|camel_case }}.Value{{ get_terraform_schema_type(paramSchema) }}()
+    {%- endif %}
+    {%- endfor %}
+    resp, httpResp, err := r.Api.{{ getOperationId }}(r.Auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			response.State.RemoveResource(ctx)
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving {{ name|camel_case }}"))
+		return
+	}
+    if err := utils.CheckForUnparsed(resp); err != nil {
+        response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+        return
+    }
+
+    r.updateState(ctx, &state, &resp)
+
+    // Save data into Terraform state
+    response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
