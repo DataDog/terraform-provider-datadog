@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -11,9 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -114,8 +115,8 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 				// This attritbute is treated as required by the framework sdk.
 				// See: https://github.com/hashicorp/terraform-plugin-framework/issues/740
 				// In case this will be allowed in the future, explicitly add validation to the object.
-				PlanModifiers: []planmodifier.Object{
-					planmodifiers.ObjectRequired(),
+				Validators: []validator.Object{
+					objectvalidator.IsRequired(),
 				},
 			},
 			"filter": schema.SingleNestedBlock{
@@ -129,8 +130,8 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 				},
 				// This field is marked as required for now since the framework does not allow
 				// blocks with default values.
-				PlanModifiers: []planmodifier.Object{
-					planmodifiers.ObjectRequired(),
+				Validators: []validator.Object{
+					objectvalidator.IsRequired(),
 				},
 			},
 		},
