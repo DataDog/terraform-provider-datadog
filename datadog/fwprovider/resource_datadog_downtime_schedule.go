@@ -128,8 +128,8 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						ElementType: types.StringType,
 					},
 				},
-				PlanModifiers: []planmodifier.Object{
-					planmodifiers.ObjectRequired(),
+				Validators: []validator.Object{
+					objectvalidator.IsRequired(),
 				},
 			},
 			"one_time_schedule": schema.SingleNestedBlock{
