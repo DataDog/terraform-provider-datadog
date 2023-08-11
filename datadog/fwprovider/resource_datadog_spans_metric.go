@@ -92,7 +92,7 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 							Computed:    true,
 							Description: "Eventual name of the tag that gets created. By default, the path attribute is used as the tag name.",
 							PlanModifiers: []planmodifier.String{
-								planmodifiers.NormalizaTag(),
+								planmodifiers.NormalizeTag(),
 							},
 						},
 					},

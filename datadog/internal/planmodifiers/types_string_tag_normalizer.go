@@ -8,7 +8,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func NormalizaTag() planmodifier.String {
+func NormalizeTag() planmodifier.String {
 	return normalizeTagModifier{}
 }
 
