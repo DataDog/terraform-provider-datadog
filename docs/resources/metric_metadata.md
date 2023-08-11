@@ -17,7 +17,7 @@ Provides a Datadog metric_metadata resource. This can be used to manage a metric
 resource "datadog_metric_metadata" "request_time" {
   metric      = "request.time"
   short_name  = "Request time"
-  description = "99th percentile request time in millseconds"
+  description = "99th percentile request time in milliseconds"
   type        = "gauge"
   unit        = "millisecond"
 }
