@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -90,6 +91,9 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 							Optional:    true,
 							Computed:    true,
 							Description: "Eventual name of the tag that gets created. By default, the path attribute is used as the tag name.",
+							PlanModifiers: []planmodifier.String{
+								planmodifiers.NormalizeTag(),
+							},
 						},
 					},
 				},
