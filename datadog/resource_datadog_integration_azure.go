@@ -48,8 +48,25 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
+				"app_service_plan_filters": {
+					Description: "String of app service plan tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"automute": {
 					Description: "Silence monitors for expected Azure VM shutdowns.",
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
+				},
+				"cspm_enabled": {
+					Description: "Enable Cloud Security Management Misconfigurations for your organization.",
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
+				},
+				"custom_metrics_enabled": {
+					Description: "Enable custom metrics for your organization.",
 					Type:        schema.TypeBool,
 					Default:     false,
 					Optional:    true,
@@ -81,10 +98,17 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 			d.Set("tenant_name", integration.GetTenantName())
 			d.Set("client_id", integration.GetClientId())
 			d.Set("automute", integration.GetAutomute())
+			d.Set("cspm_enabled", integration.GetCspmEnabled())
+			d.Set("custom_metrics_enabled", integration.GetCustomMetricsEnabled())
 			hostFilters, exists := integration.GetHostFiltersOk()
 			if exists {
 				d.Set("host_filters", hostFilters)
 			}
+			appServicePlanFilters, exists := integration.GetAppServicePlanFiltersOk()
+			if exists {
+				d.Set("app_service_plan_filters", appServicePlanFilters)
+			}
+
 			return nil
 		}
 	}
@@ -166,8 +190,14 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	// Optional params
 	hostFilters := terraformDefinition.Get("host_filters")
 	datadogDefinition.SetHostFilters(hostFilters.(string))
+	appServicePlanFilters := terraformDefinition.Get("app_service_plan_filters")
+	datadogDefinition.SetAppServicePlanFiltersFilters(appServicePlanFilters.(string))
 	automute := terraformDefinition.Get("automute")
 	datadogDefinition.SetAutomute(automute.(bool))
+	cspmEnabled := terraformDefinition.Get("cspm_enabled")
+	datadogDefinition.SetCspmEnabled(cspmEnabled.(bool))
+	customMetricsEnabled := terraformDefinition.Get("custom_metrics_enabled")
+	datadogDefinition.SetCustomMetricsEnabled(customMetricsEnabled.(bool))
 
 	clientSecret, exists := terraformDefinition.GetOk("client_secret")
 	if exists {
