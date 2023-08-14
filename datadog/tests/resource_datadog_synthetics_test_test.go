@@ -780,6 +780,7 @@ resource "datadog_synthetics_test" "advanced_scheduling" {
 		body_type = "text/plain"
 		timeout = 30
 		no_saving_response_body = true
+		persist_cookies = true
 	}
 	request_headers = {
 		Accept = "application/json"
@@ -861,6 +862,8 @@ func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvi
 				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.body_type", "text/plain"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.no_saving_response_body", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.persist_cookies", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "assertion.#", "3"),
 			resource.TestCheckResourceAttr(
@@ -2816,7 +2819,7 @@ resource "datadog_synthetics_test" "bar" {
 		name = "EMAIL_VAR"
 		type = "email"
 	}
-	
+
 	browser_variable {
 		type = "text"
 		name = "MY_SECRET"
