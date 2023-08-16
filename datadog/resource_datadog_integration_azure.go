@@ -191,7 +191,7 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	hostFilters := terraformDefinition.Get("host_filters")
 	datadogDefinition.SetHostFilters(hostFilters.(string))
 	appServicePlanFilters := terraformDefinition.Get("app_service_plan_filters")
-	datadogDefinition.SetAppServicePlanFiltersFilters(appServicePlanFilters.(string))
+	datadogDefinition.SetAppServicePlanFilters(appServicePlanFilters.(string))
 	automute := terraformDefinition.Get("automute")
 	datadogDefinition.SetAutomute(automute.(bool))
 	cspmEnabled := terraformDefinition.Get("cspm_enabled")
