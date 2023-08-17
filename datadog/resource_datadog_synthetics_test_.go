@@ -223,7 +223,7 @@ func syntheticsTestRequest() *schema.Resource {
 				},
 			},
 			"persist_cookies": {
-				Description: "Persist cookies across redirects",
+				Description: "Persist cookies across redirects.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
