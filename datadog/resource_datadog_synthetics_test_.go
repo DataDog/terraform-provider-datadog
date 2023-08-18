@@ -222,6 +222,11 @@ func syntheticsTestRequest() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"persist_cookies": {
+				Description: "Persist cookies across redirects.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -1446,6 +1451,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			request.SetService("")
 		}
 	}
+	if attr, ok := d.GetOk("request_definition.0.persist_cookies"); ok {
+		request.SetPersistCookies(attr.(bool))
+	}
 
 	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}))
 
@@ -1516,6 +1524,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				request.SetTimeout(float64(requestMap["timeout"].(int)))
 				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
 				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
+				request.SetPersistCookies(requestMap["persist_cookies"].(bool))
 			}
 
 			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}))
@@ -2306,6 +2315,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasCertificateDomains() {
 		localRequest["certificate_domains"] = request.GetCertificateDomains()
+	}
+	if request.HasPersistCookies() {
+		localRequest["persist_cookies"] = request.GetPersistCookies()
 	}
 
 	return localRequest
