@@ -15,10 +15,14 @@ Provides a Datadog - Microsoft Azure integration resource. This can be used to c
 ```terraform
 # Create a new Datadog - Microsoft Azure integration
 resource "datadog_integration_azure" "sandbox" {
-  tenant_name   = "<azure_tenant_name>"
-  client_id     = "<azure_client_id>"
-  client_secret = "<azure_client_secret_key>"
-  host_filters  = "examplefilter:true,example:true"
+  tenant_name              = "<azure_tenant_name>"
+  client_id                = "<azure_client_id>"
+  client_secret            = "<azure_client_secret_key>"
+  host_filters             = "examplefilter:true,example:true"
+  app_service_plan_filters = "examplefilter:true,example:another"
+  automute                 = true
+  cspm_enabled             = true
+  custom_metrics_enabled   = false
 }
 ```
 
@@ -33,7 +37,10 @@ resource "datadog_integration_azure" "sandbox" {
 
 ### Optional
 
+- `app_service_plan_filters` (String) String of app service plan tag(s) (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. For example, `env:production,deploymentgroup:red`.
 - `automute` (Boolean) Silence monitors for expected Azure VM shutdowns.
+- `cspm_enabled` (Boolean) Enable Cloud Security Management Misconfigurations for your organization.
+- `custom_metrics_enabled` (Boolean) Enable custom metrics for your organization.
 - `host_filters` (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`
 
 ### Read-Only
