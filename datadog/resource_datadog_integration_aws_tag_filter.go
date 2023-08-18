@@ -67,6 +67,8 @@ func resourceDatadogIntegrationAwsTagFilterCreate(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+	integrationAwsMutex.Lock()
+	defer integrationAwsMutex.Unlock()
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
 	if _, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSTagFilter(auth, *req); err != nil {
@@ -81,6 +83,8 @@ func resourceDatadogIntegrationAwsTagFilterUpdate(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+	integrationAwsMutex.Lock()
+	defer integrationAwsMutex.Unlock()
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
 	if _, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSTagFilter(auth, *req); err != nil {
@@ -128,6 +132,8 @@ func resourceDatadogIntegrationAwsTagFilterDelete(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+	integrationAwsMutex.Lock()
+	defer integrationAwsMutex.Unlock()
 
 	accountID, tfNamespace, err := utils.AccountAndNamespaceFromID(d.Id())
 	if err != nil {
