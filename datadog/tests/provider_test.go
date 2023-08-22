@@ -401,6 +401,9 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 		mode = recorder.ModeRecording
 	} else if isReplaying() {
 		mode = recorder.ModeReplaying
+		f, _ := os.OpenFile("tests.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		defer f.Close()
+		f.WriteString(t.Name() + "\n")
 	} else {
 		mode = recorder.ModeDisabled
 	}

@@ -23,7 +23,7 @@ func dataSourceDatadogUser() *schema.Resource {
 					Required:    true,
 				},
 				"exact_match": {
-					Description: "When true, `filter` string is exact matched againts the users `email`, followed by `name` attribute.",
+					Description: "When true, `filter` string is exact matched against the users `email`, followed by `name` attribute.",
 					Type:        schema.TypeBool,
 					Default:     false,
 					Optional:    true,
