@@ -3,8 +3,6 @@ package datadog
 import (
 	"context"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
@@ -51,24 +49,22 @@ func dataSourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	tests, httpresp, err := apiInstances.GetSyntheticsApiV1().ListTests(auth)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetic tests")
-	}
-
 	urlRegex := regexp.MustCompile(`https:\/\/(.*)\.(datadoghq|ddog-gov)\.(com|eu)\/synthetics\/details\/`)
 	searchedId := urlRegex.ReplaceAllString(d.Get("test_id").(string), "")
 
-	for _, test := range tests.Tests {
-		if test.GetPublicId() == searchedId {
-			d.SetId(test.GetPublicId())
-			d.Set("name", test.GetName())
-			d.Set("tags", test.GetTags())
-			d.Set("url", test.GetConfig().Request.GetUrl())
-
-			return nil
-		}
+	if test, _, err := apiInstances.GetSyntheticsApiV1().GetAPITest(auth, searchedId); err == nil {
+		d.SetId(test.GetPublicId())
+		d.Set("name", test.GetName())
+		d.Set("tags", test.GetTags())
+		d.Set("url", test.Config.Request.GetUrl())
+	} else if test, _, err := apiInstances.GetSyntheticsApiV1().GetBrowserTest(auth, searchedId); err == nil {
+		d.SetId(test.GetPublicId())
+		d.Set("name", test.GetName())
+		d.Set("tags", test.GetTags())
+		d.Set("url", test.Config.Request.GetUrl())
+	} else {
+		return diag.Errorf("Couldn't retrieve synthetic test with id %s", searchedId)
 	}
 
-	return diag.Errorf("Couldn't find synthetic test with id %s", searchedId)
+	return nil
 }
