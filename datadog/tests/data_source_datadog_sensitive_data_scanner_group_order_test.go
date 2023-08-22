@@ -30,7 +30,9 @@ func TestAccDatadogSDSGroupOrderDatasource(t *testing.T) {
 
 func testAccDatasourceDatadogSDSGroupOrderWithGroupConfig(uniq string) string {
 	return fmt.Sprintf(`
-data "datadog_sensitive_data_scanner_group_order" "foo" {}
+data "datadog_sensitive_data_scanner_group_order" "foo" {
+	depends_on = [datadog_sensitive_data_scanner_group.mygroup]
+}
 
 resource "datadog_sensitive_data_scanner_group" "mygroup" {
 	name        = "%s"
