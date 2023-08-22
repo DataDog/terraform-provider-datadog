@@ -18,6 +18,7 @@ resource "datadog_sensitive_data_scanner_group_order" "foo" {
 }
 
 resource "datadog_sensitive_data_scanner_group" "mygroup" {
+	depends_on = [data.datadog_sensitive_data_scanner_group_order.foo]
 	name        = "%s"
 	description = "A relevant description"
 	filter {
