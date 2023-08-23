@@ -183,6 +183,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_synthetics_test_test":                            "synthetics",
 	"tests/resource_datadog_team_link_test":                                  "team",
 	"tests/resource_datadog_team_membership_test":                            "team",
+	"tests/resource_datadog_team_permission_setting_test":                    "team",
 	"tests/resource_datadog_team_test":                                       "team",
 	"tests/resource_datadog_timeboard_test":                                  "dashboards",
 	"tests/resource_datadog_user_test":                                       "users",

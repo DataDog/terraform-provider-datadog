@@ -61,6 +61,9 @@ func (r *teamPermissionSettingResource) Schema(_ context.Context, _ resource.Sch
 			"action": schema.StringAttribute{
 				Required:    true,
 				Description: "The identifier for the action.",
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 				Validators: []validator.String{
 					validators.NewEnumValidator[validator.String](datadogV2.NewTeamPermissionSettingSerializerActionFromValue),
 				},
