@@ -71,7 +71,7 @@ func IntegrationFastlyAccountDestroyHelper(auth context.Context, s *terraform.St
 				}
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Fastly account %s", err)}
 			}
-			return &utils.RetryableError{Prob: "Fastly acount still exists"}
+			return &utils.RetryableError{Prob: "Fastly account still exists"}
 		}
 		return nil
 	})
@@ -99,7 +99,7 @@ func integrationFastlyAccountExistsHelper(auth context.Context, s *terraform.Sta
 
 		_, httpResp, err := apiInstances.GetFastlyIntegrationApiV2().GetFastlyAccount(auth, id)
 		if err != nil {
-			return utils.TranslateClientError(err, httpResp, "error retrieving Fastly acount")
+			return utils.TranslateClientError(err, httpResp, "error retrieving Fastly account")
 		}
 	}
 	return nil

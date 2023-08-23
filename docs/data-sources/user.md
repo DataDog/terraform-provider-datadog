@@ -27,7 +27,7 @@ data "datadog_user" "test" {
 
 ### Optional
 
-- `exact_match` (Boolean) When true, `filter` string is exact matched againts the users `email`, followed by `name` attribute.
+- `exact_match` (Boolean) When true, `filter` string is exact matched against the user's `email`, followed by `name` attribute.
 
 ### Read-Only
 

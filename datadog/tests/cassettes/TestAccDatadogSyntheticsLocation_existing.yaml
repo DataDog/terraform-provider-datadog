@@ -1,0 +1,88 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/locations
+    method: GET
+  response:
+    body: |
+      {"locations":[{"id":"aws:af-south-1","name":"Cape Town (AWS)"},{"id":"aws:ap-east-1","name":"Hong Kong (AWS)"},{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul (AWS)"},{"id":"aws:ap-northeast-3","name":"Osaka (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ap-southeast-3","name":"Jakarta (AWS)"},{"id":"aws:ca-central-1","name":"Canada Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm (AWS)"},{"id":"aws:eu-south-1","name":"Milan (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:me-south-1","name":"Bahrain (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o Paulo (AWS)"},{"id":"aws:us-east-1","name":"N. Virginia (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N. California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"azure:eastus","name":"Virginia (Azure)"},{"id":"pl:gcp-integrations-lab-527d63de5764c9fdad65fd1a5ac64a8e","name":"GCP Integrations Lab"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1663166566-4038fdf86f34e5b6189745add4ea58bb","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1663166566"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/locations
+    method: GET
+  response:
+    body: |
+      {"locations":[{"id":"aws:af-south-1","name":"Cape Town (AWS)"},{"id":"aws:ap-east-1","name":"Hong Kong (AWS)"},{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul (AWS)"},{"id":"aws:ap-northeast-3","name":"Osaka (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ap-southeast-3","name":"Jakarta (AWS)"},{"id":"aws:ca-central-1","name":"Canada Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm (AWS)"},{"id":"aws:eu-south-1","name":"Milan (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:me-south-1","name":"Bahrain (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o Paulo (AWS)"},{"id":"aws:us-east-1","name":"N. Virginia (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N. California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"azure:eastus","name":"Virginia (Azure)"},{"id":"pl:gcp-integrations-lab-527d63de5764c9fdad65fd1a5ac64a8e","name":"GCP Integrations Lab"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1663166566-4038fdf86f34e5b6189745add4ea58bb","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1663166566"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/locations
+    method: GET
+  response:
+    body: |
+      {"locations":[{"id":"aws:af-south-1","name":"Cape Town (AWS)"},{"id":"aws:ap-east-1","name":"Hong Kong (AWS)"},{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul (AWS)"},{"id":"aws:ap-northeast-3","name":"Osaka (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ap-southeast-3","name":"Jakarta (AWS)"},{"id":"aws:ca-central-1","name":"Canada Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm (AWS)"},{"id":"aws:eu-south-1","name":"Milan (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:me-south-1","name":"Bahrain (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o Paulo (AWS)"},{"id":"aws:us-east-1","name":"N. Virginia (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N. California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"azure:eastus","name":"Virginia (Azure)"},{"id":"pl:gcp-integrations-lab-527d63de5764c9fdad65fd1a5ac64a8e","name":"GCP Integrations Lab"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1663166566-4038fdf86f34e5b6189745add4ea58bb","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1663166566"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/locations
+    method: GET
+  response:
+    body: |
+      {"locations":[{"id":"aws:af-south-1","name":"Cape Town (AWS)"},{"id":"aws:ap-east-1","name":"Hong Kong (AWS)"},{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul (AWS)"},{"id":"aws:ap-northeast-3","name":"Osaka (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ap-southeast-3","name":"Jakarta (AWS)"},{"id":"aws:ca-central-1","name":"Canada Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm (AWS)"},{"id":"aws:eu-south-1","name":"Milan (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:me-south-1","name":"Bahrain (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o Paulo (AWS)"},{"id":"aws:us-east-1","name":"N. Virginia (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N. California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"azure:eastus","name":"Virginia (Azure)"},{"id":"pl:gcp-integrations-lab-527d63de5764c9fdad65fd1a5ac64a8e","name":"GCP Integrations Lab"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1663166566-4038fdf86f34e5b6189745add4ea58bb","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1663166566"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/locations
+    method: GET
+  response:
+    body: |
+      {"locations":[{"id":"aws:af-south-1","name":"Cape Town (AWS)"},{"id":"aws:ap-east-1","name":"Hong Kong (AWS)"},{"id":"aws:ap-northeast-1","name":"Tokyo (AWS)"},{"id":"aws:ap-northeast-2","name":"Seoul (AWS)"},{"id":"aws:ap-northeast-3","name":"Osaka (AWS)"},{"id":"aws:ap-south-1","name":"Mumbai (AWS)"},{"id":"aws:ap-southeast-1","name":"Singapore (AWS)"},{"id":"aws:ap-southeast-2","name":"Sydney (AWS)"},{"id":"aws:ap-southeast-3","name":"Jakarta (AWS)"},{"id":"aws:ca-central-1","name":"Canada Central (AWS)"},{"id":"aws:eu-central-1","name":"Frankfurt (AWS)"},{"id":"aws:eu-north-1","name":"Stockholm (AWS)"},{"id":"aws:eu-south-1","name":"Milan (AWS)"},{"id":"aws:eu-west-1","name":"Ireland (AWS)"},{"id":"aws:eu-west-2","name":"London (AWS)"},{"id":"aws:eu-west-3","name":"Paris (AWS)"},{"id":"aws:me-south-1","name":"Bahrain (AWS)"},{"id":"aws:sa-east-1","name":"S\u00e3o Paulo (AWS)"},{"id":"aws:us-east-1","name":"N. Virginia (AWS)"},{"id":"aws:us-east-2","name":"Ohio (AWS)"},{"id":"aws:us-west-1","name":"N. California (AWS)"},{"id":"aws:us-west-2","name":"Oregon (AWS)"},{"id":"azure:eastus","name":"Virginia (Azure)"},{"id":"pl:gcp-integrations-lab-527d63de5764c9fdad65fd1a5ac64a8e","name":"GCP Integrations Lab"},{"id":"pl:tf-testaccdatadogsyntheticsprivatelocation_basic-local-1663166566-4038fdf86f34e5b6189745add4ea58bb","name":"tf-TestAccDatadogSyntheticsPrivateLocation_Basic-local-1663166566"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
