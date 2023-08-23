@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccDatatogSyntheticsLocation_existing(t *testing.T) {
+func TestAccDatadogSyntheticsLocation_existing(t *testing.T) {
 	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 

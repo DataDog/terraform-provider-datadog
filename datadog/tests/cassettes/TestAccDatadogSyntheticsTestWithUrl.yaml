@@ -1,0 +1,194 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","options":{"min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+    method: POST
+  response:
+    body: |
+      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":130183436,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
+    method: GET
+  response:
+    body: |
+      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
+    method: GET
+  response:
+    body: |
+      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
+    method: GET
+  response:
+    body: |
+      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/fzv-7iu-dem
+    method: GET
+  response:
+    body: |
+      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
+    method: GET
+  response:
+    body: |
+      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
+    method: GET
+  response:
+    body: |
+      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
+    method: GET
+  response:
+    body: |
+      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"public_ids":["fzv-7iu-dem"]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+    method: POST
+  response:
+    body: |
+      {"deleted_tests":[{"public_id":"fzv-7iu-dem","deleted_at":"2023-08-23T17:59:28.716267+00:00"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/fzv-7iu-dem
+    method: GET
+  response:
+    body: '{"errors":["Synthetics test not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/synthetics/tests/fzv-7iu-dem
+    method: GET
+  response:
+    body: '{"errors":["Synthetics test not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
