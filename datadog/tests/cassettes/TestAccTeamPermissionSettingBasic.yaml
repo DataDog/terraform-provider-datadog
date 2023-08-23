@@ -1,0 +1,179 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"description":"Example team","handle":"tf-testaccteampermissionsettingbasic-local-1692802337","name":"tf-testaccteampermissionsettingbasic-local-1692802337"},"type":"team"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team
+    method: POST
+  response:
+    body: |
+      {"data":{"type":"team","id":"a8362f88-41c4-11ee-8347-da7ad0900002","attributes":{"name":"tf-testaccteampermissionsettingbasic-local-1692802337","handle":"tf-testaccteampermissionsettingbasic-local-1692802337","summary":"Example team","description":"Example team","avatar":null,"banner":null,"visible_modules":[],"hidden_modules":[],"created_at":"2023-08-23T14:52:18.661761+00:00","modified_at":"2023-08-23T14:52:18.661767+00:00","user_count":0,"link_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/permission-settings"}}}}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"value":"teams_manage"},"type":"team_permission_settings"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/permission-settings/edit
+    method: PUT
+  response:
+    body: |
+      {"data":{"type":"team_permission_settings","attributes":{"value":"teams_manage","options":["admins","members","organization","user_access_manage","teams_manage"],"action":"edit"},"id":"TeamPermission-a8362f88-41c4-11ee-8347-da7ad0900002-edit"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"team","attributes":{"description":"Example team","created_at":"2023-08-23T14:52:18.661761+00:00","modified_at":"2023-08-23T14:52:18.661767+00:00","link_count":0,"summary":"Example team","user_count":0,"name":"tf-testaccteampermissionsettingbasic-local-1692802337","handle":"tf-testaccteampermissionsettingbasic-local-1692802337"},"relationships":{"user_team_permissions":{"links":{"related":"/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/permission-settings"}},"team_links":{"links":{"related":"/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/links"}}},"id":"a8362f88-41c4-11ee-8347-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/permission-settings
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"team_permission_settings","attributes":{"title":"Add and Remove Members","value":"organization","options":["user_access_manage","admins","members","organization"],"action":"manage_membership","editable":true},"id":"TeamPermission-a8362f88-41c4-11ee-8347-da7ad0900002-manage_membership"},{"type":"team_permission_settings","attributes":{"title":"Edit Team Details","value":"teams_manage","options":["teams_manage","admins","members"],"action":"edit","editable":true},"id":"TeamPermission-a8362f88-41c4-11ee-8347-da7ad0900002-edit"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"team","attributes":{"summary":"Example team","description":"Example team","handle":"tf-testaccteampermissionsettingbasic-local-1692802337","name":"tf-testaccteampermissionsettingbasic-local-1692802337","link_count":0,"created_at":"2023-08-23T14:52:18.661761+00:00","modified_at":"2023-08-23T14:52:18.661767+00:00","user_count":0},"relationships":{"team_links":{"links":{"related":"/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/links"}},"user_team_permissions":{"links":{"related":"/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/permission-settings"}}},"id":"a8362f88-41c4-11ee-8347-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/permission-settings
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"team_permission_settings","attributes":{"options":["user_access_manage","admins","members","organization"],"editable":true,"action":"manage_membership","title":"Add and Remove Members","value":"organization"},"id":"TeamPermission-a8362f88-41c4-11ee-8347-da7ad0900002-manage_membership"},{"type":"team_permission_settings","attributes":{"options":["teams_manage","admins","members"],"editable":true,"action":"edit","title":"Edit Team Details","value":"teams_manage"},"id":"TeamPermission-a8362f88-41c4-11ee-8347-da7ad0900002-edit"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"value":"members"},"type":"team_permission_settings"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/permission-settings/edit
+    method: PUT
+  response:
+    body: |
+      {"data":{"type":"team_permission_settings","attributes":{"value":"members","options":["admins","members","organization","user_access_manage","teams_manage"],"action":"edit"},"id":"TeamPermission-a8362f88-41c4-11ee-8347-da7ad0900002-edit"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"team","attributes":{"description":"Example team","name":"tf-testaccteampermissionsettingbasic-local-1692802337","user_count":0,"summary":"Example team","handle":"tf-testaccteampermissionsettingbasic-local-1692802337","created_at":"2023-08-23T14:52:18.661761+00:00","modified_at":"2023-08-23T14:52:18.661767+00:00","link_count":0},"relationships":{"user_team_permissions":{"links":{"related":"/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/permission-settings"}},"team_links":{"links":{"related":"/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/links"}}},"id":"a8362f88-41c4-11ee-8347-da7ad0900002"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002/permission-settings
+    method: GET
+  response:
+    body: |
+      {"data":[{"type":"team_permission_settings","id":"TeamPermission-a8362f88-41c4-11ee-8347-da7ad0900002-manage_membership","attributes":{"options":["user_access_manage","admins","members","organization"],"value":"organization","action":"manage_membership","title":"Add and Remove Members","editable":true}},{"type":"team_permission_settings","id":"TeamPermission-a8362f88-41c4-11ee-8347-da7ad0900002-edit","attributes":{"options":["teams_manage","admins","members"],"value":"members","action":"edit","title":"Edit Team Details","editable":true}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/team/a8362f88-41c4-11ee-8347-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""
