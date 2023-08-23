@@ -1,3 +1,32 @@
+## 3.29.0 (August 23, 2023)
+
+### BUGFIXES
+* [datadog_sensitive_data_scanner_rule] Handle empty string for `excluded_namespaces` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2041
+* [datadog_dashboard] Fix handling of nil notify_by list by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/2046
+* [datadog_spans_metric] Normalize tag value by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2056
+* [datadog_integration_aws_tag_filter] Prevent concurrency issues with mutex by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2063
+### IMPROVEMENTS
+* [restriction_policy] Update restriction_policy resource documentation for private beta dashboard support by @sanjaythakkar-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2028
+* [datadog_dashboard_list] Migrate to tf framework by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/2038
+* [data_sources] Relax unparsed object check for datasources by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2043
+* Use validators to mark objects as required by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2053
+* [datadog_synthetics_test] Add persistCookies option by @luissmg in https://github.com/DataDog/terraform-provider-datadog/pull/2058
+### FEATURES
+* [datadog_cloud_configuration_rule] Added filter field by @symphony-elias in https://github.com/DataDog/terraform-provider-datadog/pull/2015
+* [datadog_downtime_schedule] Add support for Downtime V2 by @carlmartensen in https://github.com/DataDog/terraform-provider-datadog/pull/2023
+* [datadog_integration_azure] Add app_service_plan_filters, cspm, and custom metrics by @ava-silver in https://github.com/DataDog/terraform-provider-datadog/pull/2059
+* [datadog_team_permission] Add team permission setting resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2070
+### NOTES
+* Bump go version to `1.20` and other terraform package versions by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2030
+* Switch sdkv2 schemas to `SchemaFunc` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2034
+* [provider] Bump datadog-api-client to 2.16.0 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2074
+
+## New Contributors
+* @ava-silver made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2059
+* @luissmg made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2058
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.28.0...v3.29.0
+
 ## 3.28.0 (July 20, 2023)
 
 ### BUGFIXES
