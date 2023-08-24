@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
@@ -67,8 +68,8 @@ func resourceDatadogIntegrationAwsTagFilterCreate(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	fwprovider.IntegrationAWSMutex.Lock()
+	defer fwprovider.IntegrationAWSMutex.Unlock()
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
 	if _, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSTagFilter(auth, *req); err != nil {
@@ -83,8 +84,8 @@ func resourceDatadogIntegrationAwsTagFilterUpdate(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	fwprovider.IntegrationAWSMutex.Lock()
+	defer fwprovider.IntegrationAWSMutex.Unlock()
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
 	if _, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSTagFilter(auth, *req); err != nil {
@@ -132,8 +133,8 @@ func resourceDatadogIntegrationAwsTagFilterDelete(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	fwprovider.IntegrationAWSMutex.Lock()
+	defer fwprovider.IntegrationAWSMutex.Unlock()
 
 	accountID, tfNamespace, err := utils.AccountAndNamespaceFromID(d.Id())
 	if err != nil {

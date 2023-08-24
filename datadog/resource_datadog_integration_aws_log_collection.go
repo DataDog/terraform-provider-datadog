@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -61,8 +62,8 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	fwprovider.IntegrationAWSMutex.Lock()
+	defer fwprovider.IntegrationAWSMutex.Unlock()
 
 	accountID := d.Get("account_id").(string)
 
@@ -87,8 +88,8 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *sc
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	fwprovider.IntegrationAWSMutex.Lock()
+	defer fwprovider.IntegrationAWSMutex.Unlock()
 
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().EnableAWSLogServices(auth, *enableLogCollectionServices)
@@ -131,8 +132,8 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *sc
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	fwprovider.IntegrationAWSMutex.Lock()
+	defer fwprovider.IntegrationAWSMutex.Unlock()
 
 	accountID := d.Id()
 	services := []string{}
