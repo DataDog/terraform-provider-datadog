@@ -296,13 +296,13 @@ func (r *integrationAWSResource) Delete(ctx context.Context, request resource.De
 	defer IntegrationAWSMutex.Unlock()
 
 	iaws := datadogV1.NewAWSAccountDeleteRequest()
-	if !state.AccountID.IsNull() {
+	if !state.AccountID.IsNull() && state.AccountID.ValueString() != "" {
 		iaws.SetAccountId(state.AccountID.ValueString())
 	}
-	if !state.RoleName.IsNull() {
+	if !state.RoleName.IsNull() && state.RoleName.ValueString() != "" {
 		iaws.SetRoleName(state.RoleName.ValueString())
 	}
-	if !state.AccessKeyID.IsNull() {
+	if !state.AccessKeyID.IsNull() && state.AccessKeyID.ValueString() != "" {
 		iaws.SetAccessKeyId(state.AccessKeyID.ValueString())
 	}
 
