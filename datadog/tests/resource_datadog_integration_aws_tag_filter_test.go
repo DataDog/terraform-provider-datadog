@@ -6,31 +6,29 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	dd "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniqueID := uniqueAWSAccountID(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationAwsTagFilterDestroy(providers.frameworkProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationAwsTagFilterBasic(uniqueID),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
+					testAccCheckDatadogIntegrationAwsTagFilterExists(providers.frameworkProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_tag_filter.testing_aws_tag_filter", "account_id", uniqueID),
 					resource.TestCheckResourceAttr(
@@ -45,19 +43,18 @@ func TestAccDatadogIntegrationAwsTagFilter_Basic(t *testing.T) {
 
 func TestAccDatadogIntegrationAwsTagFilter_BasicAccessKey(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationAwsTagFilterDestroy(providers.frameworkProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationAwsTagFilterBasicAccessKey(accessKeyID),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
+					testAccCheckDatadogIntegrationAwsTagFilterExists(providers.frameworkProvider, "datadog_integration_aws_tag_filter.testing_aws_tag_filter"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_tag_filter.testing_aws_tag_filter", "account_id", accessKeyID),
 					resource.TestCheckResourceAttr(
@@ -100,7 +97,7 @@ resource "datadog_integration_aws_tag_filter" "testing_aws_tag_filter" {
 }`, uniq)
 }
 
-func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
+func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		resourceID := s.RootModule().Resources[resourceName].Primary.ID
 		_, tfNamespace, _ := utils.AccountAndNamespaceFromID(resourceID)
@@ -124,7 +121,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterExists(accProvider func() (*schem
 	}
 }
 
-func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*schema.Provider, error), resourceName string) func(*terraform.State) error {
+func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider *fwprovider.FrameworkProvider, resourceName string) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		resourceID := s.RootModule().Resources[resourceName].Primary.ID
 		_, tfNamespace, _ := utils.AccountAndNamespaceFromID(resourceID)
@@ -152,11 +149,9 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*sche
 	}
 }
 
-func listFiltersHelper(accProvider func() (*schema.Provider, error), resourceID string) (*[]datadogV1.AWSTagFilter, error) {
-	provider, _ := accProvider()
-	providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
+func listFiltersHelper(accProvider *fwprovider.FrameworkProvider, resourceID string) (*[]datadogV1.AWSTagFilter, error) {
+	apiInstances := accProvider.DatadogApiInstances
+	auth := accProvider.Auth
 
 	filters := []datadogV1.AWSTagFilter{}
 	accountID, _, err := utils.AccountAndNamespaceFromID(resourceID)

@@ -7,19 +7,15 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-func logsArchiveOrderCheckCount(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
+func logsArchiveOrderCheckCount(accProvider *fwprovider.FrameworkProvider) func(state *terraform.State) error {
 	return func(state *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		logsArchiveOrder, _, err := apiInstances.GetLogsArchivesApiV2().GetLogsArchiveOrder(auth)
 		if err != nil {
@@ -42,13 +38,12 @@ func logsArchiveOrderCount(state *terraform.State, responseCount int) error {
 
 func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: `data "datadog_logs_archives_order" "order" {}`,
@@ -57,7 +52,7 @@ func TestAccDatadogLogsArchivesOrderDatasource(t *testing.T) {
 			{
 				Config: testAccDatasourceDatadogLogsArchiveOrderWithArchive(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					logsArchiveOrderCheckCount(accProvider),
+					logsArchiveOrderCheckCount(providers.frameworkProvider),
 				),
 			},
 		},
