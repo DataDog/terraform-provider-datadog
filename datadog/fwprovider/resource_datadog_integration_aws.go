@@ -101,7 +101,7 @@ func (r *integrationAWSResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Computed:    true,
 				Description: "Enables or disables metric collection for specific AWS namespaces for this AWS account only. A list of namespaces can be found at the [available namespace rules API endpoint](https://docs.datadoghq.com/api/v1/aws-integration/#list-namespace-rules).",
 				ElementType: types.BoolType,
-				Default:     mapdefault.StaticValue(types.MapValueMust(types.StringType, map[string]attr.Value{})),
+				Default:     mapdefault.StaticValue(types.MapValueMust(types.BoolType, map[string]attr.Value{})),
 			},
 			"excluded_regions": schema.SetAttribute{
 				Optional:    true,
@@ -434,15 +434,15 @@ func (r *integrationAWSResource) buildDatadogIntegrationAWSStruct(ctx context.Co
 		iaws.SetExcludedRegions(excludedRegions)
 	}
 
-	if !state.MetricsCollectionEnabled.IsNull() {
+	if !state.MetricsCollectionEnabled.IsUnknown() {
 		iaws.SetMetricsCollectionEnabled(state.MetricsCollectionEnabled.ValueBool())
 	}
 
-	if !state.ResourceCollectionEnabled.IsNull() {
+	if !state.ResourceCollectionEnabled.IsUnknown() {
 		iaws.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
 	}
 
-	if !state.CSPMResourceCollectionEnabled.IsNull() {
+	if !state.CSPMResourceCollectionEnabled.IsUnknown() {
 		iaws.SetCspmResourceCollectionEnabled(state.CSPMResourceCollectionEnabled.ValueBool())
 	}
 

@@ -5,13 +5,11 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
 func testAccDatadogIntegrationAWSConfig(uniq string) string {
@@ -42,19 +40,18 @@ resource "datadog_integration_aws" "account" {
 
 func TestAccDatadogIntegrationAWS(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      checkIntegrationAWSDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             checkIntegrationAWSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatadogIntegrationAWSConfig(accountID),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationAWSExists(accProvider),
+					checkIntegrationAWSExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"account_id", accountID),
@@ -74,7 +71,7 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 			}, {
 				Config: testAccDatadogIntegrationAWSUpdateConfig(accountID),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationAWSExists(accProvider),
+					checkIntegrationAWSExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"account_id", accountID),
@@ -116,7 +113,7 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 			{
 				Config: testAccDatadogIntegrationAWSConfig(accountID),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationAWSExists(accProvider),
+					checkIntegrationAWSExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"account_id", accountID),
@@ -175,19 +172,18 @@ resource "datadog_integration_aws" "account_access_key" {
 
 func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      checkIntegrationAWSDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             checkIntegrationAWSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatadogIntegrationAWSAccessKeyConfig(accessKeyID),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationAWSExists(accProvider),
+					checkIntegrationAWSExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account_access_key",
 						"access_key_id", accessKeyID),
@@ -198,7 +194,7 @@ func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
 			}, {
 				Config: testAccDatadogIntegrationAWSAccessKeyUpdateConfig(accessKeyID),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationAWSExists(accProvider),
+					checkIntegrationAWSExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account_access_key",
 						"access_key_id", accessKeyID),
@@ -231,7 +227,7 @@ func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
 			{
 				Config: testAccDatadogIntegrationAWSAccessKeyConfig(accessKeyID),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationAWSExists(accProvider),
+					checkIntegrationAWSExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account_access_key",
 						"access_key_id", accessKeyID),
@@ -256,12 +252,10 @@ func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
 	})
 }
 
-func checkIntegrationAWSExists(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func checkIntegrationAWSExists(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		return checkIntegrationAWSExistsHelper(auth, s, apiInstances)
 	}
@@ -286,12 +280,10 @@ func checkIntegrationAWSExistsHelper(ctx context.Context, s *terraform.State, ap
 	return nil
 }
 
-func checkIntegrationAWSDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func checkIntegrationAWSDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		return checkIntegrationAWSDestroyHelper(auth, s, apiInstances)
 	}
