@@ -14,6 +14,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -133,16 +134,25 @@ func (r *integrationAWSResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 				Description: "Whether Datadog collects metrics for this AWS account.",
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"resource_collection_enabled": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
 				Description: "Whether Datadog collects a standard set of resources from your AWS account.",
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"cspm_resource_collection_enabled": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
 				Description: "Whether Datadog collects cloud security posture management resources from your AWS account. This includes additional resources not covered under the general resource_collection.",
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
