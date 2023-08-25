@@ -6,10 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -44,19 +43,18 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 
 func TestAccDatadogIntegrationAWSLambdaArnAccessKey(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      checkIntegrationAWSLambdaArnDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             checkIntegrationAWSLambdaArnDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatadogIntegrationAWSLambdaArnConfigAccessKey(accessKeyID),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationAWSLambdaArnExists(accProvider),
+					checkIntegrationAWSLambdaArnExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_lambda_arn.main_collector",
 						"account_id", accessKeyID),
@@ -71,19 +69,18 @@ func TestAccDatadogIntegrationAWSLambdaArnAccessKey(t *testing.T) {
 
 func TestAccDatadogIntegrationAWSLambdaArn(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      checkIntegrationAWSLambdaArnDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             checkIntegrationAWSLambdaArnDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatadogIntegrationAWSLambdaArnConfig(accountID),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationAWSLambdaArnExists(accProvider),
+					checkIntegrationAWSLambdaArnExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_lambda_arn.main_collector",
 						"account_id", accountID),
@@ -96,12 +93,10 @@ func TestAccDatadogIntegrationAWSLambdaArn(t *testing.T) {
 	})
 }
 
-func checkIntegrationAWSLambdaArnExists(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func checkIntegrationAWSLambdaArnExists(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		return checkIntegrationAwsLambdaArnExistsHelper(auth, s, apiInstances)
 	}
@@ -130,12 +125,10 @@ func checkIntegrationAwsLambdaArnExistsHelper(ctx context.Context, s *terraform.
 	return fmt.Errorf("Unable to find AWS Lambda ARN in any account")
 }
 
-func checkIntegrationAWSLambdaArnDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func checkIntegrationAWSLambdaArnDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		return checkIntegrationAWSLambdaArnDestroyHelper(auth, s, apiInstances)
 	}
