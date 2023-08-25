@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"os"
 	"regexp"
 	"sync"
 
@@ -11,7 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
@@ -112,7 +112,6 @@ func (r *integrationAWSResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Default:     setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 			},
 			"external_id": schema.StringAttribute{
-				Optional:    true,
 				Computed:    true,
 				Description: "AWS External ID. **NOTE** This provider will not be able to detect changes made to the `external_id` field from outside Terraform.",
 				PlanModifiers: []planmodifier.String{
@@ -160,7 +159,8 @@ func (r *integrationAWSResource) Schema(_ context.Context, _ resource.SchemaRequ
 }
 
 func (r *integrationAWSResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("external_id"), os.Getenv("EXTERNAL_ID"))...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), request.ID)...)
 }
 
 func (r *integrationAWSResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
