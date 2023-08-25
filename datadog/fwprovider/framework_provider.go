@@ -454,6 +454,12 @@ type FrameworkResourceWrapper struct {
 	innerResource *resource.Resource
 }
 
+type wrapperWithGetState interface {
+	GetState() any
+
+	resource.Resource
+}
+
 func (r *FrameworkResourceWrapper) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	rCasted, ok := (*r.innerResource).(resource.ResourceWithConfigure)
 	if ok {
@@ -481,19 +487,64 @@ func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.Sche
 }
 
 func (r *FrameworkResourceWrapper) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	(*r.innerResource).Create(ctx, req, resp)
+	if wrapped, ok := (*r.innerResource).(wrapperWithGetState); ok {
+		resp.Diagnostics.Append(req.Plan.Get(ctx, wrapped.GetState())...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		wrapped.Create(ctx, req, resp)
+
+		// Save data into Terraform state
+		resp.Diagnostics.Append(resp.State.Set(ctx, wrapped.GetState())...)
+	} else {
+		(*r.innerResource).Create(ctx, req, resp)
+	}
 }
 
 func (r *FrameworkResourceWrapper) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	(*r.innerResource).Read(ctx, req, resp)
+	if wrapped, ok := (*r.innerResource).(wrapperWithGetState); ok {
+		resp.Diagnostics.Append(req.State.Get(ctx, wrapped.GetState())...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		wrapped.Read(ctx, req, resp)
+
+		// Save data into Terraform state
+		resp.Diagnostics.Append(resp.State.Set(ctx, wrapped.GetState())...)
+	} else {
+		(*r.innerResource).Read(ctx, req, resp)
+	}
 }
 
 func (r *FrameworkResourceWrapper) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	(*r.innerResource).Update(ctx, req, resp)
+	if wrapped, ok := (*r.innerResource).(wrapperWithGetState); ok {
+		resp.Diagnostics.Append(req.Plan.Get(ctx, wrapped.GetState())...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		wrapped.Update(ctx, req, resp)
+
+		// Save data into Terraform state
+		resp.Diagnostics.Append(resp.State.Set(ctx, wrapped.GetState())...)
+	} else {
+		(*r.innerResource).Update(ctx, req, resp)
+	}
 }
 
 func (r *FrameworkResourceWrapper) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	(*r.innerResource).Delete(ctx, req, resp)
+	if wrapped, ok := (*r.innerResource).(wrapperWithGetState); ok {
+		resp.Diagnostics.Append(req.State.Get(ctx, wrapped.GetState())...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		wrapped.Delete(ctx, req, resp)
+	} else {
+		(*r.innerResource).Delete(ctx, req, resp)
+	}
 }
 
 func (r *FrameworkResourceWrapper) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

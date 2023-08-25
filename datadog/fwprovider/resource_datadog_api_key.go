@@ -28,8 +28,9 @@ type apiKeyResourceModel struct {
 }
 
 type apiKeyResource struct {
-	Api  *datadogV2.KeyManagementApi
-	Auth context.Context
+	Api   *datadogV2.KeyManagementApi
+	Auth  context.Context
+	State *apiKeyResourceModel
 }
 
 func (r *apiKeyResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
@@ -62,34 +63,19 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 }
 
 func (r *apiKeyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state apiKeyResourceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	resp, _, err := r.Api.CreateAPIKey(r.Auth, *r.buildDatadogApiKeyCreateV2Struct(&state))
+	resp, _, err := r.Api.CreateAPIKey(r.Auth, *r.buildDatadogApiKeyCreateV2Struct(r.State))
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating api key"))
 		return
 	}
 
 	apiKeyData := resp.GetData()
-	state.ID = types.StringValue(apiKeyData.GetId())
-	r.updateState(&state, &apiKeyData)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.State.ID = types.StringValue(apiKeyData.GetId())
+	r.updateState(r.State, &apiKeyData)
 }
 
 func (r *apiKeyResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state apiKeyResourceModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	resp, httpResp, err := r.Api.GetAPIKey(r.Auth, state.ID.ValueString())
+	resp, httpResp, err := r.Api.GetAPIKey(r.Auth, r.State.ID.ValueString())
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -100,41 +86,23 @@ func (r *apiKeyResource) Read(ctx context.Context, request resource.ReadRequest,
 	}
 
 	apiKeyData := resp.GetData()
-	r.updateState(&state, &apiKeyData)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(r.State, &apiKeyData)
 }
 
 func (r *apiKeyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state apiKeyResourceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	resp, _, err := r.Api.UpdateAPIKey(r.Auth, state.ID.ValueString(), *r.buildDatadogApiKeyUpdateV2Struct(&state))
+	resp, _, err := r.Api.UpdateAPIKey(r.Auth, r.State.ID.ValueString(), *r.buildDatadogApiKeyUpdateV2Struct(r.State))
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating api key"))
 		return
 	}
 
 	apiKeyData := resp.GetData()
-	state.ID = types.StringValue(apiKeyData.GetId())
-	r.updateState(&state, &apiKeyData)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.State.ID = types.StringValue(apiKeyData.GetId())
+	r.updateState(r.State, &apiKeyData)
 }
 
 func (r *apiKeyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state apiKeyResourceModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	if _, err := r.Api.DeleteAPIKey(r.Auth, state.ID.ValueString()); err != nil {
+	if _, err := r.Api.DeleteAPIKey(r.Auth, r.State.ID.ValueString()); err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting api key"))
 	}
 }
@@ -163,4 +131,8 @@ func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *dat
 	apiKeyAttributes := apiKeyData.GetAttributes()
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
 	state.Key = types.StringValue(apiKeyAttributes.GetKey())
+}
+
+func (r *apiKeyResource) GetState() any {
+	return &r.State
 }
