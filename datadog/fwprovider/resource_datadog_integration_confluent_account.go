@@ -18,11 +18,13 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &integrationConfluentAccountResource{}
 	_ resource.ResourceWithImportState = &integrationConfluentAccountResource{}
+	_ ResourceWithGetState             = &integrationConfluentAccountResource{}
 )
 
 type integrationConfluentAccountResource struct {
-	Api  *datadogV2.ConfluentCloudApi
-	Auth context.Context
+	Api   *datadogV2.ConfluentCloudApi
+	Auth  context.Context
+	State *integrationConfluentAccountModel
 }
 
 type integrationConfluentAccountModel struct {
@@ -75,13 +77,7 @@ func (r *integrationConfluentAccountResource) ImportState(ctx context.Context, r
 }
 
 func (r *integrationConfluentAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state integrationConfluentAccountModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 	resp, httpResp, err := r.Api.GetConfluentAccount(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -96,20 +92,11 @@ func (r *integrationConfluentAccountResource) Read(ctx context.Context, request 
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationConfluentAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state integrationConfluentAccountModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	body, diags := r.buildIntegrationConfluentAccountRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationConfluentAccountRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -124,22 +111,13 @@ func (r *integrationConfluentAccountResource) Create(ctx context.Context, reques
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationConfluentAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state integrationConfluentAccountModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	id := r.State.ID.ValueString()
 
-	id := state.ID.ValueString()
-
-	body, diags := r.buildIntegrationConfluentAccountUpdateRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationConfluentAccountUpdateRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -154,20 +132,11 @@ func (r *integrationConfluentAccountResource) Update(ctx context.Context, reques
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationConfluentAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state integrationConfluentAccountModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 
 	httpResp, err := r.Api.DeleteConfluentAccount(r.Auth, id)
 	if err != nil {
@@ -232,4 +201,8 @@ func (r *integrationConfluentAccountResource) buildIntegrationConfluentAccountUp
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *integrationConfluentAccountResource) GetState() any {
+	return &r.State
 }

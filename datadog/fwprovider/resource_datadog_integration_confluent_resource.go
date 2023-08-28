@@ -22,11 +22,13 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &integrationConfluentResourceResource{}
 	_ resource.ResourceWithImportState = &integrationConfluentResourceResource{}
+	_ ResourceWithGetState             = &integrationConfluentResourceResource{}
 )
 
 type integrationConfluentResourceResource struct {
-	Api  *datadogV2.ConfluentCloudApi
-	Auth context.Context
+	Api   *datadogV2.ConfluentCloudApi
+	Auth  context.Context
+	State *integrationConfluentResourceModel
 }
 
 type integrationConfluentResourceModel struct {
@@ -101,13 +103,7 @@ func (r *integrationConfluentResourceResource) ImportState(ctx context.Context, 
 }
 
 func (r *integrationConfluentResourceResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state integrationConfluentResourceModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	accountID, resourceID, err := utils.AccountIDAndResourceIDFromID(state.ID.ValueString())
+	accountID, resourceID, err := utils.AccountIDAndResourceIDFromID(r.State.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
 		return
@@ -127,22 +123,13 @@ func (r *integrationConfluentResourceResource) Read(ctx context.Context, request
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationConfluentResourceResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state integrationConfluentResourceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	accountId := r.State.AccountId.ValueString()
 
-	accountId := state.AccountId.ValueString()
-
-	body, diags := r.buildIntegrationConfluentResourceRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationConfluentResourceRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -157,26 +144,17 @@ func (r *integrationConfluentResourceResource) Create(ctx context.Context, reque
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationConfluentResourceResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state integrationConfluentResourceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	accountID, resourceID, err := utils.AccountIDAndResourceIDFromID(state.ID.ValueString())
+	accountID, resourceID, err := utils.AccountIDAndResourceIDFromID(r.State.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
 		return
 	}
 
-	body, diags := r.buildIntegrationConfluentResourceRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationConfluentResourceRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -191,20 +169,11 @@ func (r *integrationConfluentResourceResource) Update(ctx context.Context, reque
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationConfluentResourceResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state integrationConfluentResourceModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	accountID, resourceID, err := utils.AccountIDAndResourceIDFromID(state.ID.ValueString())
+	accountID, resourceID, err := utils.AccountIDAndResourceIDFromID(r.State.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
 		return
@@ -259,4 +228,8 @@ func (r *integrationConfluentResourceResource) buildIntegrationConfluentResource
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *integrationConfluentResourceResource) GetState() any {
+	return &r.State
 }

@@ -24,11 +24,13 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &DowntimeScheduleResource{}
 	_ resource.ResourceWithImportState = &DowntimeScheduleResource{}
+	_ ResourceWithGetState             = &DowntimeScheduleResource{}
 )
 
 type DowntimeScheduleResource struct {
-	Api  *datadogV2.DowntimesApi
-	Auth context.Context
+	Api   *datadogV2.DowntimesApi
+	Auth  context.Context
+	State *DowntimeScheduleModel
 }
 
 type DowntimeScheduleModel struct {
@@ -190,13 +192,7 @@ func (r *DowntimeScheduleResource) ImportState(ctx context.Context, request reso
 }
 
 func (r *DowntimeScheduleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state DowntimeScheduleModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 	resp, httpResp, err := r.Api.GetDowntime(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -207,20 +203,11 @@ func (r *DowntimeScheduleResource) Read(ctx context.Context, request resource.Re
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state DowntimeScheduleModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	body, diags := r.buildDowntimeScheduleCreateRequestBody(ctx, &state)
+	body, diags := r.buildDowntimeScheduleCreateRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -231,22 +218,13 @@ func (r *DowntimeScheduleResource) Create(ctx context.Context, request resource.
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state DowntimeScheduleModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	id := r.State.ID.ValueString()
 
-	id := state.ID.ValueString()
-
-	body, diags := r.buildDowntimeScheduleUpdateRequestBody(ctx, &state)
+	body, diags := r.buildDowntimeScheduleUpdateRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -257,20 +235,11 @@ func (r *DowntimeScheduleResource) Update(ctx context.Context, request resource.
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *DowntimeScheduleResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state DowntimeScheduleModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 
 	httpResp, err := r.Api.CancelDowntime(r.Auth, id)
 	if err != nil {
@@ -590,4 +559,8 @@ func (r *DowntimeScheduleResource) buildDowntimeScheduleUpdateRequestBody(ctx co
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *DowntimeScheduleResource) GetState() any {
+	return &r.State
 }

@@ -18,11 +18,13 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &integrationFastlyAccountResource{}
 	_ resource.ResourceWithImportState = &integrationFastlyAccountResource{}
+	_ ResourceWithGetState             = &integrationFastlyAccountResource{}
 )
 
 type integrationFastlyAccountResource struct {
-	Api  *datadogV2.FastlyIntegrationApi
-	Auth context.Context
+	Api   *datadogV2.FastlyIntegrationApi
+	Auth  context.Context
+	State *integrationFastlyAccountModel
 }
 
 type integrationFastlyAccountModel struct {
@@ -70,13 +72,7 @@ func (r *integrationFastlyAccountResource) ImportState(ctx context.Context, requ
 }
 
 func (r *integrationFastlyAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state integrationFastlyAccountModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 	resp, httpResp, err := r.Api.GetFastlyAccount(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -91,20 +87,11 @@ func (r *integrationFastlyAccountResource) Read(ctx context.Context, request res
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationFastlyAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state integrationFastlyAccountModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	body, diags := r.buildIntegrationFastlyAccountRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationFastlyAccountRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -119,22 +106,13 @@ func (r *integrationFastlyAccountResource) Create(ctx context.Context, request r
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationFastlyAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state integrationFastlyAccountModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	id := r.State.ID.ValueString()
 
-	id := state.ID.ValueString()
-
-	body, diags := r.buildIntegrationFastlyAccountUpdateRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationFastlyAccountUpdateRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -149,20 +127,11 @@ func (r *integrationFastlyAccountResource) Update(ctx context.Context, request r
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationFastlyAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state integrationFastlyAccountModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 
 	httpResp, err := r.Api.DeleteFastlyAccount(r.Auth, id)
 	if err != nil {
@@ -214,4 +183,8 @@ func (r *integrationFastlyAccountResource) buildIntegrationFastlyAccountUpdateRe
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *integrationFastlyAccountResource) GetState() any {
+	return &r.State
 }

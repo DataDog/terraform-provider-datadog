@@ -18,11 +18,13 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &integrationGcpStsResource{}
 	_ resource.ResourceWithImportState = &integrationGcpStsResource{}
+	_ ResourceWithGetState             = &integrationGcpStsResource{}
 )
 
 type integrationGcpStsResource struct {
-	Api  *datadogV2.GCPIntegrationApi
-	Auth context.Context
+	Api   *datadogV2.GCPIntegrationApi
+	Auth  context.Context
+	State *integrationGcpStsModel
 }
 
 type integrationGcpStsModel struct {
@@ -91,11 +93,6 @@ func (r *integrationGcpStsResource) ImportState(ctx context.Context, request res
 }
 
 func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state integrationGcpStsModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
 	resp, httpResp, err := r.Api.ListGCPSTSAccounts(r.Auth)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -112,9 +109,9 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 
 	found := false
 	for _, account := range resp.GetData() {
-		if account.GetId() == state.ID.ValueString() {
+		if account.GetId() == r.State.ID.ValueString() {
 			found = true
-			r.updateState(ctx, &state, &account)
+			r.updateState(ctx, r.State, &account)
 			break
 		}
 	}
@@ -123,18 +120,9 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 		response.State.RemoveResource(ctx)
 		return
 	}
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *integrationGcpStsResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state integrationGcpStsModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
 	// This resource is special and uses datadog delagate account.
 	// The datadog delegate account cannot mutated after creation hence it is safe
 	// to call MakeGCPSTSDelegate multiple times. And to ensure it is created, we call it once before creating
@@ -146,9 +134,9 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 		return
 	}
 	delegateEmail := delegateResponse.Data.Attributes.GetDelegateAccountEmail()
-	state.DelegateAccountEmail = types.StringValue(delegateEmail)
+	r.State.DelegateAccountEmail = types.StringValue(delegateEmail)
 
-	body, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationGcpStsRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -163,22 +151,13 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, resp.Data)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, resp.Data)
 }
 
 func (r *integrationGcpStsResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state integrationGcpStsModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	id := r.State.ID.ValueString()
 
-	id := state.ID.ValueString()
-
-	body, diags := r.buildIntegrationGcpStsUpdateRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationGcpStsUpdateRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -193,20 +172,11 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, resp.Data)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, resp.Data)
 }
 
 func (r *integrationGcpStsResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state integrationGcpStsModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 
 	httpResp, err := r.Api.DeleteGCPSTSAccount(r.Auth, id)
 	if err != nil {
@@ -288,4 +258,8 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsUpdateRequestBody(ctx 
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *integrationGcpStsResource) GetState() any {
+	return &r.State
 }

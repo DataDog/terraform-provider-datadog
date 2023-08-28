@@ -15,6 +15,7 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &apiKeyResource{}
 	_ resource.ResourceWithImportState = &apiKeyResource{}
+	_ ResourceWithGetState             = &apiKeyResource{}
 )
 
 func NewAPIKeyResource() resource.Resource {

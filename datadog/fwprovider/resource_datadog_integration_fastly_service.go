@@ -21,11 +21,13 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &integrationFastlyServiceResource{}
 	_ resource.ResourceWithImportState = &integrationFastlyServiceResource{}
+	_ ResourceWithGetState             = &integrationFastlyServiceResource{}
 )
 
 type integrationFastlyServiceResource struct {
-	Api  *datadogV2.FastlyIntegrationApi
-	Auth context.Context
+	Api   *datadogV2.FastlyIntegrationApi
+	Auth  context.Context
+	State *integrationFastlyServiceModel
 }
 
 type integrationFastlyServiceModel struct {
@@ -91,13 +93,7 @@ func (r *integrationFastlyServiceResource) ImportState(ctx context.Context, requ
 }
 
 func (r *integrationFastlyServiceResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state integrationFastlyServiceModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(state.ID.ValueString())
+	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(r.State.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
 		return
@@ -117,22 +113,13 @@ func (r *integrationFastlyServiceResource) Read(ctx context.Context, request res
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationFastlyServiceResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state integrationFastlyServiceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	accountId := r.State.AccountId.ValueString()
 
-	accountId := state.AccountId.ValueString()
-
-	body, diags := r.buildIntegrationFastlyServiceRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationFastlyServiceRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -147,26 +134,17 @@ func (r *integrationFastlyServiceResource) Create(ctx context.Context, request r
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationFastlyServiceResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state integrationFastlyServiceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(state.ID.ValueString())
+	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(r.State.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
 		return
 	}
 
-	body, diags := r.buildIntegrationFastlyServiceRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationFastlyServiceRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -181,20 +159,11 @@ func (r *integrationFastlyServiceResource) Update(ctx context.Context, request r
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *integrationFastlyServiceResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state integrationFastlyServiceModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(state.ID.ValueString())
+	accountID, serviceID, err := utils.AccountIDAndServiceIDFromID(r.State.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
 		return
@@ -237,4 +206,8 @@ func (r *integrationFastlyServiceResource) buildIntegrationFastlyServiceRequestB
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *integrationFastlyServiceResource) GetState() any {
+	return &r.State
 }

@@ -454,7 +454,7 @@ type FrameworkResourceWrapper struct {
 	innerResource *resource.Resource
 }
 
-type wrapperWithGetState interface {
+type ResourceWithGetState interface {
 	GetState() any
 
 	resource.Resource
@@ -487,7 +487,7 @@ func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.Sche
 }
 
 func (r *FrameworkResourceWrapper) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	if wrapped, ok := (*r.innerResource).(wrapperWithGetState); ok {
+	if wrapped, ok := (*r.innerResource).(ResourceWithGetState); ok {
 		resp.Diagnostics.Append(req.Plan.Get(ctx, wrapped.GetState())...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -503,7 +503,7 @@ func (r *FrameworkResourceWrapper) Create(ctx context.Context, req resource.Crea
 }
 
 func (r *FrameworkResourceWrapper) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	if wrapped, ok := (*r.innerResource).(wrapperWithGetState); ok {
+	if wrapped, ok := (*r.innerResource).(ResourceWithGetState); ok {
 		resp.Diagnostics.Append(req.State.Get(ctx, wrapped.GetState())...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -519,7 +519,7 @@ func (r *FrameworkResourceWrapper) Read(ctx context.Context, req resource.ReadRe
 }
 
 func (r *FrameworkResourceWrapper) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	if wrapped, ok := (*r.innerResource).(wrapperWithGetState); ok {
+	if wrapped, ok := (*r.innerResource).(ResourceWithGetState); ok {
 		resp.Diagnostics.Append(req.Plan.Get(ctx, wrapped.GetState())...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -535,7 +535,7 @@ func (r *FrameworkResourceWrapper) Update(ctx context.Context, req resource.Upda
 }
 
 func (r *FrameworkResourceWrapper) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	if wrapped, ok := (*r.innerResource).(wrapperWithGetState); ok {
+	if wrapped, ok := (*r.innerResource).(ResourceWithGetState); ok {
 		resp.Diagnostics.Append(req.State.Get(ctx, wrapped.GetState())...)
 		if resp.Diagnostics.HasError() {
 			return
