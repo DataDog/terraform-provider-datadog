@@ -49,7 +49,7 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 					Optional:    true,
 				},
 				"app_service_plan_filters": {
-					Description: "String of app service plan tag(s) (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. For example, `env:production,deploymentgroup:red`.",
+					Description: "This comma separated list of tags (in the form key:value) defines a filter that we will use when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags will be imported into Datadog. The rest, including the apps and functions running on them, will be ignored. Note that this will also filter the metrics for any App or Function running on the App Service Plan(s).",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
