@@ -21,8 +21,9 @@ var (
 )
 
 type RestrictionPolicyResource struct {
-	API  *datadogV2.RestrictionPoliciesApi
-	Auth context.Context
+	API   *datadogV2.RestrictionPoliciesApi
+	Auth  context.Context
+	State *RestrictionPolicyModel
 }
 
 type RestrictionPolicyModel struct {
@@ -88,17 +89,11 @@ func (r *RestrictionPolicyResource) ImportState(ctx context.Context, request res
 }
 
 func (r *RestrictionPolicyResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state RestrictionPolicyModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 	resp, httpResp, err := r.API.GetRestrictionPolicy(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RestrictionPolicy"))
@@ -109,21 +104,12 @@ func (r *RestrictionPolicyResource) Read(ctx context.Context, request resource.R
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *RestrictionPolicyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state RestrictionPolicyModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	resourceId := state.ResourceId.ValueString()
-	body, diags := r.buildRestrictionPolicyRequestBody(ctx, &state)
+	resourceId := r.State.ResourceId.ValueString()
+	body, diags := r.buildRestrictionPolicyRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -138,21 +124,12 @@ func (r *RestrictionPolicyResource) Create(ctx context.Context, request resource
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *RestrictionPolicyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state RestrictionPolicyModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	resourceId := state.ResourceId.ValueString()
-	body, diags := r.buildRestrictionPolicyRequestBody(ctx, &state)
+	resourceId := r.State.ResourceId.ValueString()
+	body, diags := r.buildRestrictionPolicyRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -167,10 +144,7 @@ func (r *RestrictionPolicyResource) Update(ctx context.Context, request resource
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *RestrictionPolicyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -237,4 +211,8 @@ func (r *RestrictionPolicyResource) buildRestrictionPolicyRequestBody(ctx contex
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *RestrictionPolicyResource) GetState() any {
+	return &r.State
 }

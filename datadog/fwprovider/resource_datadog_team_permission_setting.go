@@ -21,8 +21,9 @@ var (
 )
 
 type teamPermissionSettingResource struct {
-	Api  *datadogV2.TeamsApi
-	Auth context.Context
+	Api   *datadogV2.TeamsApi
+	Auth  context.Context
+	State *teamPermissionSettingModel
 }
 
 type teamPermissionSettingModel struct {
@@ -81,16 +82,10 @@ func (r *teamPermissionSettingResource) Schema(_ context.Context, _ resource.Sch
 }
 
 func (r *teamPermissionSettingResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state teamPermissionSettingModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	permissions, httpresp, err := r.Api.GetTeamPermissionSettings(r.Auth, state.TeamId.ValueString())
+	permissions, httpresp, err := r.Api.GetTeamPermissionSettings(r.Auth, r.State.TeamId.ValueString())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error getting team permission setting"))
@@ -99,60 +94,39 @@ func (r *teamPermissionSettingResource) Read(ctx context.Context, request resour
 
 	found := false
 	for _, permission := range permissions.Data {
-		if permission.Id == state.ID.ValueString() {
-			r.updateState(ctx, &state, &permission)
+		if permission.Id == r.State.ID.ValueString() {
+			r.updateState(ctx, r.State, &permission)
 			found = true
 		}
 	}
 
 	if !found {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error getting team permission setting with id %s", state.ID.ValueString())))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error getting team permission setting with id %s", r.State.ID.ValueString())))
 	}
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *teamPermissionSettingResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state teamPermissionSettingModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	reqBody := r.buildTeamMembershipPermissionSettingRequestBody(r.State)
 
-	reqBody := r.buildTeamMembershipPermissionSettingRequestBody(&state)
-
-	resp, _, err := r.Api.UpdateTeamPermissionSetting(r.Auth, state.TeamId.ValueString(), state.Action.ValueString(), *reqBody)
+	resp, _, err := r.Api.UpdateTeamPermissionSetting(r.Auth, r.State.TeamId.ValueString(), r.State.Action.ValueString(), *reqBody)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating team permission setting"))
 		return
 	}
 
-	r.updateState(ctx, &state, resp.Data)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, resp.Data)
 }
 
 func (r *teamPermissionSettingResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state teamPermissionSettingModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	reqBody := r.buildTeamMembershipPermissionSettingRequestBody(r.State)
 
-	reqBody := r.buildTeamMembershipPermissionSettingRequestBody(&state)
-
-	resp, _, err := r.Api.UpdateTeamPermissionSetting(r.Auth, state.TeamId.ValueString(), state.Action.ValueString(), *reqBody)
+	resp, _, err := r.Api.UpdateTeamPermissionSetting(r.Auth, r.State.TeamId.ValueString(), r.State.Action.ValueString(), *reqBody)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating team permission setting"))
 		return
 	}
 
-	r.updateState(ctx, &state, resp.Data)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, resp.Data)
 }
 
 func (r *teamPermissionSettingResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -176,4 +150,8 @@ func (r *teamPermissionSettingResource) buildTeamMembershipPermissionSettingRequ
 	req.Data.SetAttributes(*attributes)
 
 	return req
+}
+
+func (r *teamPermissionSettingResource) GetState() any {
+	return &r.State
 }

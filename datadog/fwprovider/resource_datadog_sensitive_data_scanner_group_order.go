@@ -29,8 +29,9 @@ type sensitiveDataScannerGroupOrderModel struct {
 }
 
 type sensitiveDataScannerGroupOrder struct {
-	Api  *datadogV2.SensitiveDataScannerApi
-	Auth context.Context
+	Api   *datadogV2.SensitiveDataScannerApi
+	Auth  context.Context
+	State *sensitiveDataScannerGroupOrderModel
 }
 
 func (r *sensitiveDataScannerGroupOrder) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
@@ -59,25 +60,10 @@ func (r *sensitiveDataScannerGroupOrder) Schema(_ context.Context, _ resource.Sc
 }
 
 func (r *sensitiveDataScannerGroupOrder) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state sensitiveDataScannerGroupOrderModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	r.updateOrder(&state, &response.Diagnostics)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateOrder(r.State, &response.Diagnostics)
 }
 
 func (r *sensitiveDataScannerGroupOrder) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state sensitiveDataScannerGroupOrderModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
 	resp, httpResponse, err := r.Api.ListScanningGroups(r.Auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reading SDS groups. http response: %v", httpResponse)))
@@ -98,23 +84,12 @@ func (r *sensitiveDataScannerGroupOrder) Read(ctx context.Context, request resou
 		tfList[i] = ddGroup.GetId()
 	}
 
-	state.GroupIDs, _ = types.ListValueFrom(ctx, types.StringType, tfList)
-	state.ID = types.StringValue(groupID)
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.State.GroupIDs, _ = types.ListValueFrom(ctx, types.StringType, tfList)
+	r.State.ID = types.StringValue(groupID)
 }
 
 func (r *sensitiveDataScannerGroupOrder) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state sensitiveDataScannerGroupOrderModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	r.updateOrder(&state, &response.Diagnostics)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateOrder(r.State, &response.Diagnostics)
 }
 
 func (r *sensitiveDataScannerGroupOrder) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -154,4 +129,8 @@ func (r *sensitiveDataScannerGroupOrder) updateOrder(state *sensitiveDataScanner
 		diag.Append(utils.FrameworkErrorDiag(err, ""))
 	}
 	state.ID = types.StringValue(ddSDSGroupsList.Data.GetId())
+}
+
+func (r *sensitiveDataScannerGroupOrder) GetState() any {
+	return &r.State
 }

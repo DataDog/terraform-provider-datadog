@@ -24,7 +24,6 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &DowntimeScheduleResource{}
 	_ resource.ResourceWithImportState = &DowntimeScheduleResource{}
-	_ ResourceWithGetState             = &DowntimeScheduleResource{}
 )
 
 type DowntimeScheduleResource struct {
@@ -196,7 +195,7 @@ func (r *DowntimeScheduleResource) Read(ctx context.Context, request resource.Re
 	resp, httpResp, err := r.Api.GetDowntime(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving DowntimeSchedule"))

@@ -22,8 +22,9 @@ var (
 )
 
 type serviceAccountApplicationKeyResource struct {
-	Api  *datadogV2.ServiceAccountsApi
-	Auth context.Context
+	Api   *datadogV2.ServiceAccountsApi
+	Auth  context.Context
+	State *serviceAccountApplicationKeyModel
 }
 
 type serviceAccountApplicationKeyModel struct {
@@ -100,18 +101,13 @@ func (r *serviceAccountApplicationKeyResource) ImportState(ctx context.Context, 
 }
 
 func (r *serviceAccountApplicationKeyResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state serviceAccountApplicationKeyModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-	serviceAccountId := state.ServiceAccountId.ValueString()
+	serviceAccountId := r.State.ServiceAccountId.ValueString()
 
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 	resp, httpResp, err := r.Api.GetServiceAccountApplicationKey(r.Auth, serviceAccountId, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving ServiceAccountApplicationKey"))
@@ -122,22 +118,13 @@ func (r *serviceAccountApplicationKeyResource) Read(ctx context.Context, request
 		return
 	}
 
-	r.updateStatePartialKey(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateStatePartialKey(ctx, r.State, &resp)
 }
 
 func (r *serviceAccountApplicationKeyResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state serviceAccountApplicationKeyModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	serviceAccountId := r.State.ServiceAccountId.ValueString()
 
-	serviceAccountId := state.ServiceAccountId.ValueString()
-
-	body, diags := r.buildServiceAccountApplicationKeyRequestBody(ctx, &state)
+	body, diags := r.buildServiceAccountApplicationKeyRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -152,24 +139,15 @@ func (r *serviceAccountApplicationKeyResource) Create(ctx context.Context, reque
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateStateFullKey(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateStateFullKey(ctx, r.State, &resp)
 }
 
 func (r *serviceAccountApplicationKeyResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state serviceAccountApplicationKeyModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	serviceAccountId := r.State.ServiceAccountId.ValueString()
 
-	serviceAccountId := state.ServiceAccountId.ValueString()
+	id := r.State.ID.ValueString()
 
-	id := state.ID.ValueString()
-
-	body, diags := r.buildServiceAccountApplicationKeyUpdateRequestBody(ctx, &state)
+	body, diags := r.buildServiceAccountApplicationKeyUpdateRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -184,21 +162,13 @@ func (r *serviceAccountApplicationKeyResource) Update(ctx context.Context, reque
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateStatePartialKey(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateStatePartialKey(ctx, r.State, &resp)
 }
 
 func (r *serviceAccountApplicationKeyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state serviceAccountApplicationKeyModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-	serviceAccountId := state.ServiceAccountId.ValueString()
+	serviceAccountId := r.State.ServiceAccountId.ValueString()
 
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 
 	httpResp, err := r.Api.DeleteServiceAccountApplicationKey(r.Auth, serviceAccountId, id)
 	if err != nil {
@@ -282,4 +252,8 @@ func (r *serviceAccountApplicationKeyResource) buildServiceAccountApplicationKey
 	}
 
 	return req, diags
+}
+
+func (r *serviceAccountApplicationKeyResource) GetState() any {
+	return &r.State
 }

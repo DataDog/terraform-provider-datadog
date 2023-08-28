@@ -22,8 +22,9 @@ var (
 )
 
 type teamLinkResource struct {
-	Api  *datadogV2.TeamsApi
-	Auth context.Context
+	Api   *datadogV2.TeamsApi
+	Auth  context.Context
+	State *teamLinkModel
 }
 
 type teamLinkModel struct {
@@ -89,18 +90,13 @@ func (r *teamLinkResource) ImportState(ctx context.Context, request resource.Imp
 }
 
 func (r *teamLinkResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state teamLinkModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-	teamId := state.TeamId.ValueString()
+	teamId := r.State.TeamId.ValueString()
 
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 	resp, httpResp, err := r.Api.GetTeamLink(r.Auth, teamId, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving TeamLink"))
@@ -111,22 +107,13 @@ func (r *teamLinkResource) Read(ctx context.Context, request resource.ReadReques
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *teamLinkResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state teamLinkModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	teamId := r.State.TeamId.ValueString()
 
-	teamId := state.TeamId.ValueString()
-
-	body, diags := r.buildTeamLinkRequestBody(ctx, &state)
+	body, diags := r.buildTeamLinkRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -141,24 +128,15 @@ func (r *teamLinkResource) Create(ctx context.Context, request resource.CreateRe
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *teamLinkResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state teamLinkModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	teamId := r.State.TeamId.ValueString()
 
-	teamId := state.TeamId.ValueString()
+	id := r.State.ID.ValueString()
 
-	id := state.ID.ValueString()
-
-	body, diags := r.buildTeamLinkRequestBody(ctx, &state)
+	body, diags := r.buildTeamLinkRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -173,21 +151,13 @@ func (r *teamLinkResource) Update(ctx context.Context, request resource.UpdateRe
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *teamLinkResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state teamLinkModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-	teamId := state.TeamId.ValueString()
+	teamId := r.State.TeamId.ValueString()
 
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 
 	httpResp, err := r.Api.DeleteTeamLink(r.Auth, teamId, id)
 	if err != nil {
@@ -240,4 +210,8 @@ func (r *teamLinkResource) buildTeamLinkRequestBody(ctx context.Context, state *
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *teamLinkResource) GetState() any {
+	return &r.State
 }

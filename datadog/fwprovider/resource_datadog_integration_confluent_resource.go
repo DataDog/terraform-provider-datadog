@@ -22,7 +22,6 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &integrationConfluentResourceResource{}
 	_ resource.ResourceWithImportState = &integrationConfluentResourceResource{}
-	_ ResourceWithGetState             = &integrationConfluentResourceResource{}
 )
 
 type integrationConfluentResourceResource struct {
@@ -112,7 +111,7 @@ func (r *integrationConfluentResourceResource) Read(ctx context.Context, request
 	resp, httpResp, err := r.Api.GetConfluentResource(r.Auth, accountID, resourceID)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving API Key"))

@@ -31,8 +31,9 @@ type SyntheticsConcurrencyCapModel struct {
 }
 
 type syntheticsConcurrencyCap struct {
-	Api  *datadogV2.SyntheticsApi
-	Auth context.Context
+	Api   *datadogV2.SyntheticsApi
+	Auth  context.Context
+	State *SyntheticsConcurrencyCapModel
 }
 
 func (r *syntheticsConcurrencyCap) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
@@ -63,25 +64,10 @@ func (r *syntheticsConcurrencyCap) Schema(_ context.Context, _ resource.SchemaRe
 }
 
 func (r *syntheticsConcurrencyCap) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state SyntheticsConcurrencyCapModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	r.updateCap(&state, &response.Diagnostics)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateCap(r.State, &response.Diagnostics)
 }
 
 func (r *syntheticsConcurrencyCap) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state SyntheticsConcurrencyCapModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
 	resp, httpResponse, err := r.Api.GetOnDemandConcurrencyCap(r.Auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, fmt.Sprintf("error reading synthetics concurrency cap. http response: %v", httpResponse)))
@@ -90,27 +76,16 @@ func (r *syntheticsConcurrencyCap) Read(ctx context.Context, request resource.Re
 	if respData, ok := resp.GetDataOk(); ok {
 		if respAttributes, ok := respData.GetAttributesOk(); ok {
 			if respConcurrencyCap, ok := respAttributes.GetOnDemandConcurrencyCapOk(); ok {
-				state.OnDemandConcurrencyCap = types.Int64Value(int64(*respConcurrencyCap))
+				r.State.OnDemandConcurrencyCap = types.Int64Value(int64(*respConcurrencyCap))
 			}
 		}
 	}
 
-	state.ID = types.StringValue("synthetics-concurrency-cap")
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.State.ID = types.StringValue("synthetics-concurrency-cap")
 }
 
 func (r *syntheticsConcurrencyCap) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state SyntheticsConcurrencyCapModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	r.updateCap(&state, &response.Diagnostics)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateCap(r.State, &response.Diagnostics)
 }
 
 func (r *syntheticsConcurrencyCap) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -141,4 +116,8 @@ func (r *syntheticsConcurrencyCap) updateCap(state *SyntheticsConcurrencyCapMode
 	}
 
 	state.ID = types.StringValue("synthetics-concurrency-cap")
+}
+
+func (r *syntheticsConcurrencyCap) GetState() any {
+	return &r.State
 }

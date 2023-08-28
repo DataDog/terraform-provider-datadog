@@ -18,7 +18,6 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &integrationCloudflareAccountResource{}
 	_ resource.ResourceWithImportState = &integrationCloudflareAccountResource{}
-	_ ResourceWithGetState             = &integrationCloudflareAccountResource{}
 )
 
 type integrationCloudflareAccountResource struct {
@@ -82,7 +81,7 @@ func (r *integrationCloudflareAccountResource) Read(ctx context.Context, request
 	resp, httpResp, err := r.Api.GetCloudflareAccount(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving API Key"))

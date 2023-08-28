@@ -21,7 +21,6 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &integrationFastlyServiceResource{}
 	_ resource.ResourceWithImportState = &integrationFastlyServiceResource{}
-	_ ResourceWithGetState             = &integrationFastlyServiceResource{}
 )
 
 type integrationFastlyServiceResource struct {
@@ -102,7 +101,7 @@ func (r *integrationFastlyServiceResource) Read(ctx context.Context, request res
 	resp, httpResp, err := r.Api.GetFastlyService(r.Auth, accountID, serviceID)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving API Key"))

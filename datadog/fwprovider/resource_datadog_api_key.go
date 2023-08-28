@@ -15,7 +15,6 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &apiKeyResource{}
 	_ resource.ResourceWithImportState = &apiKeyResource{}
-	_ ResourceWithGetState             = &apiKeyResource{}
 )
 
 func NewAPIKeyResource() resource.Resource {
@@ -79,7 +78,7 @@ func (r *apiKeyResource) Read(ctx context.Context, request resource.ReadRequest,
 	resp, httpResp, err := r.Api.GetAPIKey(r.Auth, r.State.ID.ValueString())
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving API Key"))

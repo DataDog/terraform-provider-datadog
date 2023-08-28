@@ -18,7 +18,6 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &integrationGcpStsResource{}
 	_ resource.ResourceWithImportState = &integrationGcpStsResource{}
-	_ ResourceWithGetState             = &integrationGcpStsResource{}
 )
 
 type integrationGcpStsResource struct {
@@ -96,7 +95,7 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 	resp, httpResp, err := r.Api.ListGCPSTSAccounts(r.Auth)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Integration Gcp Sts"))
@@ -117,7 +116,7 @@ func (r *integrationGcpStsResource) Read(ctx context.Context, request resource.R
 	}
 
 	if !found {
-		response.State.RemoveResource(ctx)
+		r.State = nil
 		return
 	}
 }

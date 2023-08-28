@@ -24,8 +24,9 @@ var (
 )
 
 type teamMembershipResource struct {
-	Api  *datadogV2.TeamsApi
-	Auth context.Context
+	Api   *datadogV2.TeamsApi
+	Auth  context.Context
+	State *TeamMembershipModel
 }
 
 type TeamMembershipModel struct {
@@ -93,13 +94,7 @@ func (r *teamMembershipResource) ImportState(ctx context.Context, request resour
 }
 
 func (r *teamMembershipResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state TeamMembershipModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	teamId := state.TeamId.ValueString()
+	teamId := r.State.TeamId.ValueString()
 	pageSize := int64(100)
 	pageNumber := int64(0)
 
@@ -128,26 +123,17 @@ func (r *teamMembershipResource) Read(ctx context.Context, request resource.Read
 	for _, userTeam := range userTeams {
 		// we use team_id:user_id format for importing.
 		// Hence, we need to check wether resource id or user id matches config.
-		if userTeam.GetId() == state.ID.ValueString() || state.UserId.ValueString() == userTeam.Relationships.User.Data.GetId() {
-			r.updateStateFromTeamResponse(ctx, &state, &userTeam)
+		if userTeam.GetId() == r.State.ID.ValueString() || r.State.UserId.ValueString() == userTeam.Relationships.User.Data.GetId() {
+			r.updateStateFromTeamResponse(ctx, r.State, &userTeam)
 			break
 		}
 	}
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *teamMembershipResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state TeamMembershipModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	teamId := r.State.TeamId.ValueString()
 
-	teamId := state.TeamId.ValueString()
-
-	body, diags := r.buildTeamMembershipRequestBody(ctx, &state)
+	body, diags := r.buildTeamMembershipRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -162,23 +148,14 @@ func (r *teamMembershipResource) Create(ctx context.Context, request resource.Cr
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateStateFromTeamResponse(ctx, &state, resp.Data)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateStateFromTeamResponse(ctx, r.State, resp.Data)
 }
 
 func (r *teamMembershipResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state TeamMembershipModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	teamId := r.State.TeamId.ValueString()
+	userId := r.State.UserId.ValueString()
 
-	teamId := state.TeamId.ValueString()
-	userId := state.UserId.ValueString()
-
-	body, diags := r.buildTeamMembershipUpdateRequestBody(ctx, &state)
+	body, diags := r.buildTeamMembershipUpdateRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -193,21 +170,12 @@ func (r *teamMembershipResource) Update(ctx context.Context, request resource.Up
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateStateFromTeamResponse(ctx, &state, resp.Data)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateStateFromTeamResponse(ctx, r.State, resp.Data)
 }
 
 func (r *teamMembershipResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state TeamMembershipModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	teamId := state.TeamId.ValueString()
-	userId := state.UserId.ValueString()
+	teamId := r.State.TeamId.ValueString()
+	userId := r.State.UserId.ValueString()
 
 	httpResp, err := r.Api.DeleteTeamMembership(r.Auth, teamId, userId)
 	if err != nil {
@@ -268,4 +236,8 @@ func (r *teamMembershipResource) buildTeamMembershipUpdateRequestBody(ctx contex
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *teamMembershipResource) GetState() any {
+	return &r.State
 }

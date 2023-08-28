@@ -19,7 +19,6 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &dashboardListResource{}
 	_ resource.ResourceWithImportState = &dashboardListResource{}
-	_ ResourceWithGetState             = &dashboardListResource{}
 )
 
 func NewDashboardListResource() resource.Resource {
@@ -200,7 +199,7 @@ func (r *dashboardListResource) Read(ctx context.Context, req resource.ReadReque
 	dashList, httpresp, err := r.ApiV1.GetDashboardList(r.Auth, id)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
-			resp.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error getting dashboard list"))

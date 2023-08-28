@@ -25,8 +25,9 @@ var (
 )
 
 type spansMetricResource struct {
-	Api  *datadogV2.SpansMetricsApi
-	Auth context.Context
+	Api   *datadogV2.SpansMetricsApi
+	Auth  context.Context
+	State *spansMetricModel
 }
 
 type spansMetricModel struct {
@@ -147,17 +148,11 @@ func (r *spansMetricResource) ImportState(ctx context.Context, request resource.
 }
 
 func (r *spansMetricResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state spansMetricModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 	resp, httpResp, err := r.Api.GetSpansMetric(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			r.State = nil
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
@@ -168,20 +163,11 @@ func (r *spansMetricResource) Read(ctx context.Context, request resource.ReadReq
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *spansMetricResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state spansMetricModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	body, diags := r.buildSpansMetricRequestBody(ctx, &state)
+	body, diags := r.buildSpansMetricRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -196,22 +182,13 @@ func (r *spansMetricResource) Create(ctx context.Context, request resource.Creat
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *spansMetricResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state spansMetricModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
+	id := r.State.ID.ValueString()
 
-	id := state.ID.ValueString()
-
-	body, diags := r.buildSpansMetricUpdateRequestBody(ctx, &state)
+	body, diags := r.buildSpansMetricUpdateRequestBody(ctx, r.State)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -226,20 +203,11 @@ func (r *spansMetricResource) Update(ctx context.Context, request resource.Updat
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateState(ctx, r.State, &resp)
 }
 
 func (r *spansMetricResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state spansMetricModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 
 	httpResp, err := r.Api.DeleteSpansMetric(r.Auth, id)
 	if err != nil {
@@ -391,4 +359,8 @@ func (r *spansMetricResource) buildSpansMetricUpdateRequestBody(ctx context.Cont
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *spansMetricResource) GetState() any {
+	return &r.State
 }
