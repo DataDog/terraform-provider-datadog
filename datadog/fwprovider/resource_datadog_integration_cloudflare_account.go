@@ -136,13 +136,7 @@ func (r *integrationCloudflareAccountResource) Update(ctx context.Context, reque
 }
 
 func (r *integrationCloudflareAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state integrationCloudflareAccountModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 
 	httpResp, err := r.Api.DeleteCloudflareAccount(r.Auth, id)
 	if err != nil {

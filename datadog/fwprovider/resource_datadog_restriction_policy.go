@@ -64,6 +64,7 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
+
 		Blocks: map[string]schema.Block{
 			"bindings": schema.SetNestedBlock{
 				NestedObject: schema.NestedBlockObject{
@@ -148,13 +149,7 @@ func (r *RestrictionPolicyResource) Update(ctx context.Context, request resource
 }
 
 func (r *RestrictionPolicyResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state RestrictionPolicyModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
+	id := r.State.ID.ValueString()
 	httpResp, err := r.API.DeleteRestrictionPolicy(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
