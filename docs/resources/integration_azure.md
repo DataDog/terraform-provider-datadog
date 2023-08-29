@@ -37,7 +37,7 @@ resource "datadog_integration_azure" "sandbox" {
 
 ### Optional
 
-- `app_service_plan_filters` (String) This comma-separated list of tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags are imported into Datadog. The rest, including the apps and functions running on them, are ignored. This also filters the metrics for any App or Function running on the App Service Plan(s).
+- `app_service_plan_filters` (String) This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags are imported into Datadog. The rest, including the apps and functions running on them, are ignored. This also filters the metrics for any App or Function running on the App Service Plan(s).
 - `automute` (Boolean) Silence monitors for expected Azure VM shutdowns.
 - `cspm_enabled` (Boolean) Enable Cloud Security Management Misconfigurations for your organization.
 - `custom_metrics_enabled` (Boolean) Enable custom metrics for your organization.
