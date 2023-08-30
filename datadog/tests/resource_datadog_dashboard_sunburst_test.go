@@ -9,7 +9,6 @@ resource "datadog_dashboard" "sunburst_dashboard" {
   title        = "{{uniq}}"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
-  is_read_only = true
   widget {
     sunburst_definition {
       request {
@@ -100,7 +99,6 @@ var datadogDashboardSunburstAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"widget.0.sunburst_definition.0.request.0.formula.0.formula_expression = my_query_1 + my_query_2",
 	"widget.0.sunburst_definition.0.request.0.formula.0.alias = my ff query",
 	"widget.0.sunburst_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
