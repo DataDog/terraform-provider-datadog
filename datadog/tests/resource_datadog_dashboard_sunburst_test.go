@@ -25,6 +25,9 @@ resource "datadog_dashboard" "sunburst_dashboard" {
             aggregator  = "sum"
           }
         }
+        style {
+          palette = "dog_classic"
+        }
       }
       hide_total = false
       legend_inline {
@@ -104,6 +107,7 @@ var datadogDashboardSunburstAsserts = []string{
 	"widget.0.sunburst_definition.0.request.0.query.0.metric_query.0.query = avg:system.cpu.user{foo:bar} by {env}",
 	"widget.0.sunburst_definition.0.request.0.query.0.metric_query.0.name = my_query_1",
 	"widget.0.sunburst_definition.0.request.0.query.0.metric_query.0.aggregator = sum",
+  "widget.0.sunburst_definition.0.request.0.style.palette = dog_classic",
 	"widget.0.sunburst_definition.0.hide_total = false",
 	"widget.0.sunburst_definition.0.legend_inline.0.type = automatic",
 	"widget.0.sunburst_definition.0.legend_inline.0.hide_value = true",
