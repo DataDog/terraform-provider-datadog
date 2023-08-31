@@ -4625,7 +4625,7 @@ Required:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`.
 
 Optional:
 
@@ -6954,6 +6954,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--security_query))
+- `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.apm_query`
@@ -7571,6 +7572,14 @@ Optional:
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
 
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--style"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.style`
+
+Optional:
+
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
@@ -10283,7 +10292,7 @@ Required:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`.
 
 Optional:
 
@@ -12612,6 +12621,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--security_query))
+- `style` (Block List, Max: 1) Define style for the widget's request. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--style))
 
 <a id="nestedblock--widget--sunburst_definition--request--apm_query"></a>
 ### Nested Schema for `widget.sunburst_definition.request.apm_query`
@@ -13229,6 +13239,14 @@ Optional:
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
 
+
+
+<a id="nestedblock--widget--sunburst_definition--request--style"></a>
+### Nested Schema for `widget.sunburst_definition.request.style`
+
+Optional:
+
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
 
 
