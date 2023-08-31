@@ -80,7 +80,7 @@ func (r *DowntimeScheduleResource) Metadata(_ context.Context, request resource.
 
 func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog DowntimeSchedule resource. This can be used to create and manage Datadog downtimes. **NOTE:** Currently in private beta. To request access, contact Support at support@datadoghq.com.",
+		Description: "Provides a Datadog DowntimeSchedule resource. This can be used to create and manage Datadog downtimes.",
 		Attributes: map[string]schema.Attribute{
 			"display_timezone": schema.StringAttribute{
 				Optional:    true,
