@@ -5926,6 +5926,16 @@ func getSunburstRequestSchema() map[string]*schema.Schema {
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
+		// Settings specific to Sunburst requests
+		"style": {
+			Description: "Define style for the widget's request.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetRequestStyle(),
+			},
+		},
 	}
 }
 
@@ -6070,6 +6080,11 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 			}
 			datadogSunburstRequest.SetFormulas(formulas)
 		}
+		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
+			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
+				datadogSunburstRequest.Style = buildDatadogWidgetStyle(v)
+			}
+		}
 		datadogRequests[i] = *datadogSunburstRequest
 	}
 	return &datadogRequests
@@ -6108,6 +6123,10 @@ func buildTerraformSunburstRequests(datadogSunburstRequests *[]datadogV1.Sunburs
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
 			terraformRequest["formula"] = buildTerraformFormula(v)
+		}
+		if v, ok := datadogRequest.GetStyleOk(); ok {
+			style := buildTerraformWidgetStyle(*v)
+			terraformRequest["style"] = []map[string]interface{}{style}
 		}
 		terraformRequests[i] = terraformRequest
 	}
