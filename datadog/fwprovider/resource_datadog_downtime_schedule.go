@@ -313,6 +313,7 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 	state.MonitorIdentifier = &MonitorIdentifierModel{}
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierId != nil {
 		state.MonitorIdentifier.DowntimeMonitorIdentifierId = types.Int64Value(attributes.MonitorIdentifier.DowntimeMonitorIdentifierId.MonitorId)
+		state.MonitorIdentifier.DowntimeMonitorIdentifierTags = types.SetNull(types.StringType)
 	}
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierTags != nil {
 		monitorTags := attributes.MonitorIdentifier.DowntimeMonitorIdentifierTags.MonitorTags
