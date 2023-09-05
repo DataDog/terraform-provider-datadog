@@ -92,7 +92,7 @@ resource "datadog_cloud_configuration_rule" "acceptance_test" {
   name    = "%s"
   notifications = [ "@channel" ]
   group_by = [ "@resource" ]
-  policy = "package datadog"
+  policy = "package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n"
   resource_type = "gcp_compute_instance"
   related_resource_types = [ "gcp_compute_disk" ]
   severity = "low"
@@ -126,7 +126,7 @@ func testAccCheckDatadogCloudConfigurationCreatedCheck(accProvider func() (*sche
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "group_by.0", "@resource"),
 		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "policy", "package datadog"),
+			tfCloudConfRuleName, "policy", "package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n"),
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "resource_type", "gcp_compute_instance"),
 		resource.TestCheckResourceAttr(
@@ -156,7 +156,7 @@ resource "datadog_cloud_configuration_rule" "acceptance_test" {
   name    = "%s - updated"
   notifications = [ "@channel-upd" ]
   group_by = [ "@resource", "@resource_type" ]
-  policy = "package datadog # updated"
+  policy = "package datadog # updated\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n"
   resource_type = "gcp_compute_disk"
   related_resource_types = [ "gcp_compute_instance", "gcp_compute_firewall" ]
   severity = "high"
@@ -185,7 +185,7 @@ func testAccCheckDatadogCloudConfigurationUpdatedCheck(accProvider func() (*sche
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "group_by.1", "@resource_type"),
 		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "policy", "package datadog # updated"),
+			tfCloudConfRuleName, "policy", "package datadog # updated\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n"),
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "resource_type", "gcp_compute_disk"),
 		resource.TestCheckResourceAttr(
@@ -209,7 +209,7 @@ resource "datadog_cloud_configuration_rule" "acceptance_test" {
   enabled = false
   message = "Acceptance test TF rule - updated again"
   name    = "%s - updated again"
-  policy = "package datadog # updated again"
+  policy = "package datadog # updated again\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n"
   resource_type = "gcp_compute_instance"
   severity = "medium"
   tags = [ "test:acceptance-updated-again" ]
@@ -231,7 +231,7 @@ func testAccCheckDatadogCloudConfigurationUpdatedMandatoryFieldsCheck(accProvide
 		resource.TestCheckNoResourceAttr(
 			tfCloudConfRuleName, "group_by.0"),
 		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "policy", "package datadog # updated again"),
+			tfCloudConfRuleName, "policy", "package datadog # updated again\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n"),
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "resource_type", "gcp_compute_instance"),
 		resource.TestCheckNoResourceAttr(
@@ -249,7 +249,7 @@ resource "datadog_cloud_configuration_rule" "acceptance_test" {
   enabled = false
   message = "Acceptance test TF rule"
   name    = "%s"
-  policy = "package datadog"
+  policy  = "package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n"
   resource_type = "gcp_compute_instance"
   severity = "low"
 }
@@ -270,7 +270,7 @@ func testAccCheckDatadogCloudConfigurationCreatedMandatoryFieldsCheck(accProvide
 		resource.TestCheckNoResourceAttr(
 			tfCloudConfRuleName, "group_by"),
 		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "policy", "package datadog"),
+			tfCloudConfRuleName, "policy", "package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n"),
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "resource_type", "gcp_compute_instance"),
 		resource.TestCheckNoResourceAttr(
