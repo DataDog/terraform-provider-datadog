@@ -65,6 +65,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"request_basicauth":          syntheticsTestRequestBasicAuth(),
 				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
+				"request_metadata":           syntheticsTestRequestMetadata(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"browser_variable":           syntheticsBrowserVariable(),
 				"config_variable":            syntheticsConfigVariable(),
@@ -413,6 +414,14 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 				},
 			},
 		},
+	}
+}
+
+func syntheticsTestRequestMetadata() *schema.Schema {
+	return &schema.Schema{
+		Description: "Metadata to include when performing the gRPC test.",
+		Type:        schema.TypeMap,
+		Optional:    true,
 	}
 }
 
@@ -1455,7 +1464,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		request.SetPersistCookies(attr.(bool))
 	}
 
-	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}))
+	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
 
 	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
 
@@ -1527,7 +1536,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				request.SetPersistCookies(requestMap["persist_cookies"].(bool))
 			}
 
-			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}))
+			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
 
 			step.SetRequest(request)
 
@@ -1580,7 +1589,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	return syntheticsTest
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}) *datadogV1.SyntheticsTestRequest {
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
 	if len(requestHeaders) > 0 {
 		headers := make(map[string]string, len(requestHeaders))
 
@@ -1738,6 +1747,16 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 
 			request.SetProxy(testRequestProxy)
 		}
+	}
+
+	if len(requestMetadata) > 0 {
+		metadata := make(map[string]string, len(requestMetadata))
+
+		for k, v := range requestMetadata {
+			metadata[k] = v.(string)
+		}
+
+		request.SetMetadata(metadata)
 	}
 
 	return &request
@@ -2937,6 +2956,9 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		return diag.FromErr(err)
 	}
 	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("request_metadata", actualRequest.GetMetadata()); err != nil {
 		return diag.FromErr(err)
 	}
 

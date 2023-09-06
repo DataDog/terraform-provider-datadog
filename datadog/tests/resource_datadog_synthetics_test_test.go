@@ -2371,6 +2371,10 @@ func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", "Hello"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.header", "value"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.0.type", "responseTime"),
@@ -2435,6 +2439,10 @@ resource "datadog_synthetics_test" "grpc" {
 		service = "Hello"
 	}
 
+	request_metadata = {
+		header = "value"
+	}
+
 	assertion {
 		type = "responseTime"
 		operator = "lessThan"
@@ -2490,6 +2498,10 @@ func updateSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", ""),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.header", "value-updated"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.0.type", "responseTime"),
@@ -2538,6 +2550,10 @@ resource "datadog_synthetics_test" "grpc" {
 		host   = "google.com"
 		port   = 50050
 		service = ""
+	}
+
+	request_metadata = {
+		header = "value-updated"
 	}
 
 	assertion {
@@ -2812,7 +2828,6 @@ resource "datadog_synthetics_test" "bar" {
 		type = "text"
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(3)}}"
-		example = "597"
 	}
 
 	browser_variable {
