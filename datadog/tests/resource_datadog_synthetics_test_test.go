@@ -2828,6 +2828,7 @@ resource "datadog_synthetics_test" "bar" {
 		type = "text"
 		name = "MY_PATTERN_VAR"
 		pattern = "{{numeric(3)}}"
+		example = "597"
 	}
 
 	browser_variable {
