@@ -338,6 +338,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
 - `request_definition` (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
 - `request_headers` (Map of String) Header name and value map.
+- `request_metadata` (Map of String) Metadata to include when performing the gRPC test.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `set_cookie` (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
