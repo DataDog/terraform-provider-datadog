@@ -111,7 +111,10 @@ func buildScanningGroupAttributes(d *schema.ResourceData) *datadogV2.SensitiveDa
 	productList := make([]datadogV2.SensitiveDataScannerProduct, 0)
 	if pList, ok := d.GetOk("product_list"); ok {
 		for _, s := range pList.(*schema.Set).List() {
-			sensitiveDataScannerProductItem, _ := datadogV2.NewSensitiveDataScannerProductFromValue(s.(string))
+			sensitiveDataScannerProductItem, err := datadogV2.NewSensitiveDataScannerProductFromValue(s.(string))
+			if err != nil {
+				continue
+			}
 			productList = append(productList, *sensitiveDataScannerProductItem)
 		}
 		attributes.SetProductList(productList)
