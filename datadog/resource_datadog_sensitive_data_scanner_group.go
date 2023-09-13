@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var sensitiveDataScannerMutex = sync.Mutex{}
@@ -41,7 +42,8 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 					Required:    true,
 					MaxItems:    4,
 					Elem: &schema.Schema{
-						Type: schema.TypeString,
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSensitiveDataScannerProductFromValue),
 					},
 				},
 				"is_enabled": {
