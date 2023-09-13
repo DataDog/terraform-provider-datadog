@@ -505,7 +505,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 					},
 				},
 				"timings_scope": {
-					Description:      "todo",
+					Description:      "Timings scope for response time assertions.",
 					Type:             schema.TypeString,
 					Optional:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTimingsScopeFromValue),
