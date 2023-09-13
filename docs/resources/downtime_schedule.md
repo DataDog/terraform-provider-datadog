@@ -3,12 +3,12 @@
 page_title: "datadog_downtime_schedule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog DowntimeSchedule resource. This can be used to create and manage Datadog downtimes. NOTE: Currently in private beta. To request access, contact Support at support@datadoghq.com.
+  Provides a Datadog DowntimeSchedule resource. This can be used to create and manage Datadog downtimes.
 ---
 
 # datadog_downtime_schedule (Resource)
 
-Provides a Datadog DowntimeSchedule resource. This can be used to create and manage Datadog downtimes. **NOTE:** Currently in private beta. To request access, contact Support at support@datadoghq.com.
+Provides a Datadog DowntimeSchedule resource. This can be used to create and manage Datadog downtimes.
 
 ## Example Usage
 

@@ -1,3 +1,19 @@
+## 3.30.0 (September 12, 2023)
+
+### BUGFIXES
+* [datadog_downtimes_schedule] Fix downtimes schedule with monitor id identifier by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2092
+### IMPROVEMENTS
+* [datadog_synthetics_tests] Retrieve synthetics test in datasource by making 2 api calls by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2068
+* [datadog_dashboard] Add support for sunburst widget request style by @matt-miller-ddog in https://github.com/DataDog/terraform-provider-datadog/pull/2089
+### FEATURES
+* [datadog_synthetics_test] Add support for metadata for Synthetics grpc tests by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/2094
+### NOTES
+* [datadog_downtime_schedule] GA the resource by @carlmartensen in https://github.com/DataDog/terraform-provider-datadog/pull/2090
+* [datadog_provider] Bump datadog-api-client to `2.17.0` by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2099
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.29.0...v3.30.0
+
 ## 3.29.0 (August 23, 2023)
 
 ### BUGFIXES
