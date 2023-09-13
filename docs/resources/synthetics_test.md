@@ -386,6 +386,7 @@ Optional:
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetxpath))
+- `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
 
 <a id="nestedblock--api_step--assertion--targetjsonpath"></a>
 ### Nested Schema for `api_step.assertion.targetjsonpath`
@@ -561,6 +562,7 @@ Optional:
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetxpath))
+- `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
 
 <a id="nestedblock--assertion--targetjsonpath"></a>
 ### Nested Schema for `assertion.targetjsonpath`
