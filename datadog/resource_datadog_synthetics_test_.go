@@ -504,6 +504,12 @@ func syntheticsAPIAssertion() *schema.Schema {
 						},
 					},
 				},
+				"timings_scope": {
+					Description:      "Timings scope for response time assertions.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTimingsScopeFromValue),
+				},
 			},
 		},
 	}
@@ -1866,6 +1872,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 							assertionTarget.SetTarget(v.(string))
 						}
 					}
+					if v, ok := assertionMap["timings_scope"].(string); ok && len(v) > 0 {
+						assertionTarget.SetTimingsScope(datadogV1.SyntheticsAssertionTimingsScope(v))
+					}
 					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
 						log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validatesJSONPath operator, only target")
 					}
@@ -2359,6 +2368,9 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
+			}
+			if assertionTarget.HasTimingsScope() {
+				localAssertion["timings_scope"] = assertionTarget.GetTimingsScope()
 			}
 		} else if assertion.SyntheticsAssertionJSONPathTarget != nil {
 			assertionTarget := assertion.SyntheticsAssertionJSONPathTarget
