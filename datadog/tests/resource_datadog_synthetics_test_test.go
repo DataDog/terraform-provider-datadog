@@ -590,6 +590,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.2.target", "2000"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertion.2.timings_scope", "withoutDNS"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.3.type", "body"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.3.operator", "doesNotContain"),
@@ -716,6 +718,7 @@ resource "datadog_synthetics_test" "foo" {
 		type = "responseTime"
 		operator = "lessThan"
 		target = "2000"
+		timings_scope = "withoutDNS"
 	}
 	assertion {
 		type = "body"
