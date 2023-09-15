@@ -1081,7 +1081,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -1101,7 +1101,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -1946,7 +1946,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -1966,7 +1966,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -2515,7 +2515,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -2535,7 +2535,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -3380,7 +3380,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -3400,7 +3400,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -3871,7 +3871,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -3891,7 +3891,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -5244,7 +5244,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -5264,7 +5264,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -5864,7 +5864,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -5884,7 +5884,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -6278,7 +6278,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -6298,7 +6298,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -7519,7 +7519,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -7539,7 +7539,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -8235,7 +8235,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -8255,7 +8255,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -8884,7 +8884,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -8904,7 +8904,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -9325,7 +9325,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -9345,7 +9345,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -9760,7 +9760,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -9780,7 +9780,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -11133,7 +11133,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -11153,7 +11153,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -11753,7 +11753,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -11773,7 +11773,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -12167,7 +12167,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -12187,7 +12187,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -13408,7 +13408,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -13428,7 +13428,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -14124,7 +14124,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -14144,7 +14144,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -14773,7 +14773,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -14793,7 +14793,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
@@ -15214,7 +15214,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `operation_name` (String) Name of operation on service.
 - `resource_name` (String) APM resource.
@@ -15234,7 +15234,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
-- `env` (String) APM Environment.
+- `env` (String) APM environment.
 - `name` (String) The name of query for use in formulas.
 - `service` (String) APM service.
 - `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.

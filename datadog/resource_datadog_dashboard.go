@@ -6579,7 +6579,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"env": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "APM Environment.",
+								Description: "APM environment.",
 							},
 							"stat": {
 								Type:             schema.TypeString,
@@ -6641,7 +6641,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"env": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "APM Environment.",
+								Description: "APM environment.",
 							},
 							"name": {
 								Type:        schema.TypeString,
