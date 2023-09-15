@@ -162,7 +162,6 @@ func Provider() *schema.Provider {
 			"datadog_downtime":                             resourceDatadogDowntime(),
 			"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
 			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
-			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
 			"datadog_integration_azure":                    resourceDatadogIntegrationAzure(),
 			"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
 			"datadog_integration_opsgenie_service_object":  resourceDatadogIntegrationOpsgenieService(),
