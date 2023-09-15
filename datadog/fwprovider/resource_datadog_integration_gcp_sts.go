@@ -74,7 +74,7 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 			"is_cspm_enabled": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "When enabled, Datadog performs configuration checks across your Google Cloud environment by continuously scanning every resource.",
+				Description: "When enabled, Datadog performs configuration checks across your Google Cloud environment by continuously scanning every resource, which may incur additional charges.",
 			},
 			"host_filters": schema.SetAttribute{
 				Optional:    true,
