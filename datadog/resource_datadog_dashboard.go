@@ -6290,7 +6290,7 @@ func getFormulaSchema() *schema.Schema {
 							"count": {
 								Type:        schema.TypeInt,
 								Optional:    true,
-								Description: "The number of results to return",
+								Description: "The number of results to return.",
 							},
 							"order": {
 								Type:             schema.TypeString,
@@ -6331,7 +6331,7 @@ func getFormulaSchema() *schema.Schema {
 							"palette": {
 								Type:        schema.TypeString,
 								Optional:    true,
-								Description: "The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors",
+								Description: "The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.",
 							},
 							"palette_index": {
 								Type:        schema.TypeInt,
@@ -6692,14 +6692,14 @@ func getFormulaQuerySchema() *schema.Schema {
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
-					Description: "The slo query using formulas and functions.",
+					Description: "The SLO query using formulas and functions.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
 								Type:             schema.TypeString,
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLODataSourceFromValue),
-								Description:      "The data source for slo queries.",
+								Description:      "The data source for SLO queries.",
 							},
 							"slo_id": {
 								Type:        schema.TypeString,
