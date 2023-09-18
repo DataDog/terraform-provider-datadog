@@ -1,0 +1,107 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardHeatMapFormulaAndFunction-local-1694629800","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"events":[{"q":"env:prod","tags_execution":"and"}],"legend_size":"2","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"palette":"dog_classic"}}],"show_legend":true,"time":{"live_span":"1mo"},"title":"Avg of system.cpu.user over account:prod by app","title_align":"center","title_size":"16","type":"heatmap","yaxis":{"include_zero":false,"max":"100"}}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+  response:
+    body: |
+      {"id":"ipf-9ci-s78","title":"tf-TestAccDatadogDashboardHeatMapFormulaAndFunction-local-1694629800","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/ipf-9ci-s78/tf-testaccdatadogdashboardheatmapformulaandfunction-local-1694629800","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"events":[{"q":"env:prod","tags_execution":"and"}],"legend_size":"2","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"palette":"dog_classic"}}],"show_legend":true,"time":{"live_span":"1mo"},"title":"Avg of system.cpu.user over account:prod by app","title_align":"center","title_size":"16","type":"heatmap","yaxis":{"include_zero":false,"max":"100"}},"id":4307744427665324}],"notify_list":[],"created_at":"2023-09-13T18:30:03.195371+00:00","modified_at":"2023-09-13T18:30:03.195371+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ipf-9ci-s78
+    method: GET
+  response:
+    body: |
+      {"id":"ipf-9ci-s78","title":"tf-TestAccDatadogDashboardHeatMapFormulaAndFunction-local-1694629800","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/ipf-9ci-s78/tf-testaccdatadogdashboardheatmapformulaandfunction-local-1694629800","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"events":[{"q":"env:prod","tags_execution":"and"}],"legend_size":"2","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"palette":"dog_classic"}}],"show_legend":true,"time":{"live_span":"1mo"},"title":"Avg of system.cpu.user over account:prod by app","title_align":"center","title_size":"16","type":"heatmap","yaxis":{"include_zero":false,"max":"100"}},"id":4307744427665324}],"notify_list":[],"created_at":"2023-09-13T18:30:03.195371+00:00","modified_at":"2023-09-13T18:30:03.195371+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ipf-9ci-s78
+    method: GET
+  response:
+    body: |
+      {"id":"ipf-9ci-s78","title":"tf-TestAccDatadogDashboardHeatMapFormulaAndFunction-local-1694629800","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/ipf-9ci-s78/tf-testaccdatadogdashboardheatmapformulaandfunction-local-1694629800","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"events":[{"q":"env:prod","tags_execution":"and"}],"legend_size":"2","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"palette":"dog_classic"}}],"show_legend":true,"time":{"live_span":"1mo"},"title":"Avg of system.cpu.user over account:prod by app","title_align":"center","title_size":"16","type":"heatmap","yaxis":{"include_zero":false,"max":"100"}},"id":4307744427665324}],"notify_list":[],"created_at":"2023-09-13T18:30:03.195371+00:00","modified_at":"2023-09-13T18:30:03.195371+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ipf-9ci-s78
+    method: GET
+  response:
+    body: |
+      {"id":"ipf-9ci-s78","title":"tf-TestAccDatadogDashboardHeatMapFormulaAndFunction-local-1694629800","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/ipf-9ci-s78/tf-testaccdatadogdashboardheatmapformulaandfunction-local-1694629800","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"},{"is_hidden":true,"link":"https://app.datadoghq.com/dashboard/lists","override_label":"logs"}],"events":[{"q":"env:prod","tags_execution":"and"}],"legend_size":"2","requests":[{"formulas":[{"formula":"query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"avg:system.cpu.user{*}"}],"response_format":"timeseries","style":{"palette":"dog_classic"}}],"show_legend":true,"time":{"live_span":"1mo"},"title":"Avg of system.cpu.user over account:prod by app","title_align":"center","title_size":"16","type":"heatmap","yaxis":{"include_zero":false,"max":"100"}},"id":4307744427665324}],"notify_list":[],"created_at":"2023-09-13T18:30:03.195371+00:00","modified_at":"2023-09-13T18:30:03.195371+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ipf-9ci-s78
+    method: DELETE
+  response:
+    body: |
+      {"deleted_dashboard_id":"ipf-9ci-s78"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/ipf-9ci-s78
+    method: GET
+  response:
+    body: '{"errors":["Dashboard with ID ipf-9ci-s78 not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
