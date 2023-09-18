@@ -44,6 +44,10 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 
 func TestAccDatadogIntegrationAWSLambdaArnAccessKey(t *testing.T) {
 	t.Parallel()
+	if !isReplaying() {
+		t.Skip("Account ID is not returned with invalid AWS accounts using access_key_id")
+		return
+	}
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
