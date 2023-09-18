@@ -83,6 +83,10 @@ func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
 
 func TestAccDatadogIntegrationAWSLogCollectionAccessKey(t *testing.T) {
 	t.Parallel()
+	if !isReplaying() {
+		t.Skip("Account ID is not returned with invalid AWS accounts using access_key_id")
+		return
+	}
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -128,7 +132,7 @@ func checkIntegrationAWSLogCollectionExistsHelper(ctx context.Context, s *terraf
 		if strings.Contains(resourceType, "datadog_integration_aws_log_collection") {
 			accountID := r.Primary.Attributes["account_id"]
 			for _, logCollection := range logCollections {
-				if *logCollection.AccountId == accountID && len(logCollection.GetServices()) > 0 {
+				if v, ok := logCollection.GetAccountIdOk(); ok && *v == accountID && len(logCollection.GetServices()) > 0 {
 					return nil
 				}
 			}
@@ -160,8 +164,9 @@ func checkIntegrationAWSLogCollectionDestroyHelper(ctx context.Context, s *terra
 			for _, r := range s.RootModule().Resources {
 				if r.Primary.ID != "" {
 					for _, logCollection := range logCollections {
-						if *logCollection.AccountId == accountID && len(logCollection.GetServices()) > 0 {
+						if v, ok := logCollection.GetAccountIdOk(); ok && *v == accountID && len(logCollection.GetServices()) > 0 {
 							return &utils.RetryableError{Prob: fmt.Sprintf("The AWS Log Collection is still enabled for the account: accountID=%s", accountID)}
+
 						}
 					}
 				}
