@@ -33,7 +33,7 @@ resource "datadog_integration_gcp_sts" "foo" {
   client_email    = google_service_account.datadog_integration.email
   host_filters    = ["filter_one", "filter_two"]
   automute        = true
-  is_cspm_enabled = true
+  is_cspm_enabled = false
 }
 ```
 
@@ -48,7 +48,7 @@ resource "datadog_integration_gcp_sts" "foo" {
 
 - `automute` (Boolean) Silence monitors for expected GCE instance shutdowns.
 - `host_filters` (Set of String) Your Host Filters.
-- `is_cspm_enabled` (Boolean) When enabled, Datadog performs configuration checks across your Google Cloud environment by continuously scanning every resource.
+- `is_cspm_enabled` (Boolean) When enabled, Datadog performs configuration checks across your Google Cloud environment by continuously scanning every resource, which may incur additional charges.
 
 ### Read-Only
 
