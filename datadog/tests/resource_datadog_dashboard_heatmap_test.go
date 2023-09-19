@@ -10,7 +10,7 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 	description   = "Created using the Datadog provider in Terraform"
 	layout_type   = "ordered"
 	is_read_only  = "true"
-
+	
 	widget {
 		heatmap_definition {
 			title = "Avg of system.cpu.user over account:prod by app"
@@ -25,7 +25,7 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 					palette = "blue"
 				}
 			}
-
+			
 			live_span = "1mo"
 			event {
 				q = "env:prod"
@@ -91,21 +91,21 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 				max = "100"
 			}
 			request {
-                formula {
-                    formula_expression = "query1"
-                }
-                query {
-                    metric_query {
-                        data_source = "metrics"
-                        name        = "query1"
-                        query       = "avg:system.cpu.user{*}"
-                    }
-                }
-                style {
-                    palette = "dog_classic"
-                }
-            }
-
+				formula {
+					formula_expression = "query1"
+				}
+				query {
+					metric_query {
+						data_source = "metrics"
+						name        = "query1"
+						query       = "avg:system.cpu.user{*}"
+					}
+				}
+				style {
+					palette = "dog_classic"
+				}
+			}
+			
 			live_span = "1mo"
 			event {
 				q = "env:prod"
