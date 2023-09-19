@@ -91,21 +91,21 @@ resource "datadog_dashboard" "heatmap_dashboard" {
 				max = "100"
 			}
 			request {
-                formula {
-                    formula_expression = "query1"
-                }
-                query {
-                    metric_query {
-                        data_source = "metrics"
-                        name        = "query1"
-                        query       = "avg:system.cpu.user{*}"
-                    }
-                }
-                style {
-                    palette = "dog_classic"
-                }
-            }
-
+				formula {
+					formula_expression = "query1"
+				}
+				query {
+					metric_query {
+						data_source = "metrics"
+						name        = "query1"
+						query       = "avg:system.cpu.user{*}"
+					}
+				}
+				style {
+					palette = "dog_classic"
+				}
+			}
+			
 			live_span = "1mo"
 			event {
 				q = "env:prod"
