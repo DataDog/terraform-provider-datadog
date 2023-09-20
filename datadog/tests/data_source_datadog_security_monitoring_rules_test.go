@@ -206,13 +206,25 @@ func getAllSecurityMonitoringRules(accProvider func() (*schema.Provider, error))
 	auth := providerConf.Auth
 	apiInstances := providerConf.DatadogApiInstances
 
-	rulesResponse, _, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringRules(auth,
-		*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(1000))
-	if err != nil {
-		return err
+	pageSize := int64(1000)
+	pageNumber := int64(0)
+	remaining := int64(1)
+
+	var rules []datadogV2.SecurityMonitoringRuleResponse
+	for remaining > int64(0) {
+		rulesResponse, _, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringRules(auth,
+			*datadogV2.NewListSecurityMonitoringRulesOptionalParameters().WithPageSize(pageSize).WithPageNumber(pageNumber))
+		if err != nil {
+			return err
+		}
+
+		rules = append(rules, rulesResponse.GetData()...)
+
+		remaining = rulesResponse.Meta.Page.GetTotalCount() - pageSize*(pageNumber+1)
+		pageNumber++
 	}
 
-	allRules = &rulesResponse.Data
+	allRules = &rules
 	return nil
 }
 
