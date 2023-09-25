@@ -3,9 +3,13 @@
 package datadog
 
 import (
+	"bytes"
+	"compress/zlib"
 	"context"
+	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	_nethttp "net/http"
 	"regexp"
@@ -226,6 +230,11 @@ func syntheticsTestRequest() *schema.Resource {
 			"persist_cookies": {
 				Description: "Persist cookies across redirects.",
 				Type:        schema.TypeBool,
+				Optional:    true,
+			},
+			"compressed_json_descriptor": {
+				Description: "A protobuf JSON descriptor.",
+				Type:        schema.TypeString,
 				Optional:    true,
 			},
 		},
@@ -1469,6 +1478,16 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := d.GetOk("request_definition.0.persist_cookies"); ok {
 		request.SetPersistCookies(attr.(bool))
 	}
+	if attr, ok := d.GetOk("request_definition.0.compressed_json_descriptor"); ok {
+		stringifiedValue, _ := json.Marshal(attr.(string))
+		var compressedValue bytes.Buffer
+		zl := zlib.NewWriter(&compressedValue)
+		zl.Write(stringifiedValue)
+		zl.Close()
+		encodedCompressedJsonDescriptor := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
+
+		request.SetCompressedJsonDescriptor(encodedCompressedJsonDescriptor)
+	}
 
 	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
 
@@ -2346,6 +2365,17 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasPersistCookies() {
 		localRequest["persist_cookies"] = request.GetPersistCookies()
+	}
+	if request.HasCompressedJsonDescriptor() {
+		decodedValue, _ := b64.StdEncoding.DecodeString(request.GetCompressedJsonDescriptor())
+		decodedBytes := bytes.NewReader(decodedValue)
+		zl, _ := zlib.NewReader(decodedBytes)
+		defer zl.Close()
+		compressedJsonDescriptor, _ := ioutil.ReadAll(zl)
+		var result string
+		_ = json.Unmarshal(compressedJsonDescriptor, &result)
+
+		localRequest["compressed_json_descriptor"] = result
 	}
 
 	return localRequest

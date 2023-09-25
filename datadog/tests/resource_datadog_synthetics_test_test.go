@@ -2357,6 +2357,32 @@ resource "datadog_synthetics_test" "websocket" {
 }`, uniq)
 }
 
+var compressedJsonDescriptor = `syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.helloworld";
+option java_outer_classname = "HelloWorldProto";
+option objc_class_prefix = "HLW";
+
+package helloworld;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+`
+
 func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
@@ -2373,6 +2399,8 @@ func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 				"datadog_synthetics_test.grpc", "request_definition.0.port", "50050"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", "Hello"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_definition.0.compressed_json_descriptor", compressedJsonDescriptor),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
 			resource.TestCheckResourceAttr(
@@ -2440,6 +2468,8 @@ resource "datadog_synthetics_test" "grpc" {
 		host   = "google.com"
 		port   = 50050
 		service = "Hello"
+		compressed_json_descriptor = <<EOT
+%[2]sEOT
 	}
 
 	request_metadata = {
@@ -2476,12 +2506,12 @@ resource "datadog_synthetics_test" "grpc" {
 		tick_every = 60
 	}
 
-	name = "%s"
+	name = "%[1]s"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
-}`, uniq)
+}`, uniq, compressedJsonDescriptor)
 }
 
 func updateSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
