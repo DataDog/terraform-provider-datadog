@@ -21,6 +21,7 @@ type datadogTeamMembershipsDataSourceModel struct {
 	// Query Parameters
 	TeamID        types.String `tfsdk:"team_id"`
 	FilterKeyword types.String `tfsdk:"filter_keyword"`
+	ExactMatch    types.Bool   `tfsdk:"exact_match"`
 	// Results
 	ID              types.String           `tfsdk:"id"`
 	TeamMemberships []*TeamMembershipModel `tfsdk:"team_memberships"`
@@ -31,13 +32,15 @@ func NewDatadogTeamMembershipsDataSource() datasource.DataSource {
 }
 
 type datadogTeamMembershipsDataSource struct {
-	Api  *datadogV2.TeamsApi
-	Auth context.Context
+	Api      *datadogV2.TeamsApi
+	UsersApi *datadogV2.UsersApi
+	Auth     context.Context
 }
 
 func (r *datadogTeamMembershipsDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
+	r.UsersApi = providerData.DatadogApiInstances.GetUsersApiV2()
 	r.Auth = providerData.Auth
 }
 
@@ -58,6 +61,10 @@ func (d *datadogTeamMembershipsDataSource) Schema(_ context.Context, _ datasourc
 			},
 			"filter_keyword": schema.StringAttribute{
 				Description: "Search query, can be user email or name.",
+				Optional:    true,
+			},
+			"exact_match": schema.BoolAttribute{
+				Description: "When true, `filter_keyword` string is exact matched against the user's `email`, followed by `name`.",
 				Optional:    true,
 			},
 			// Computed values
@@ -121,16 +128,35 @@ func (d *datadogTeamMembershipsDataSource) Read(ctx context.Context, req datasou
 func (r *datadogTeamMembershipsDataSource) updateState(state *datadogTeamMembershipsDataSourceModel, teamData *[]datadogV2.UserTeam) {
 	state.ID = types.StringValue(fmt.Sprintf("%s:%s", state.TeamID.ValueString(), state.FilterKeyword.ValueString()))
 
+	exactMatch := state.ExactMatch.ValueBool()
+	filterKeywod := state.FilterKeyword.ValueString()
 	var teamMemberships []*TeamMembershipModel
 	for _, user := range *teamData {
-		membership := TeamMembershipModel{
-			ID:     types.StringValue(user.GetId()),
-			TeamId: types.StringValue(state.TeamID.ValueString()),
-			UserId: types.StringValue(user.Relationships.User.Data.GetId()),
-			Role:   types.StringValue(string(user.Attributes.GetRole())),
+		if exactMatch {
+			if u, _, err := r.UsersApi.GetUser(r.Auth, user.Relationships.User.Data.GetId()); err == nil {
+				attributes := u.Data.GetAttributes()
+				if attributes.GetEmail() == filterKeywod || attributes.GetName() == filterKeywod {
+					membership := TeamMembershipModel{
+						ID:     types.StringValue(user.GetId()),
+						TeamId: types.StringValue(state.TeamID.ValueString()),
+						UserId: types.StringValue(user.Relationships.User.Data.GetId()),
+						Role:   types.StringValue(string(user.Attributes.GetRole())),
+					}
+
+					teamMemberships = append(teamMemberships, &membership)
+				}
+			}
+		} else {
+			membership := TeamMembershipModel{
+				ID:     types.StringValue(user.GetId()),
+				TeamId: types.StringValue(state.TeamID.ValueString()),
+				UserId: types.StringValue(user.Relationships.User.Data.GetId()),
+				Role:   types.StringValue(string(user.Attributes.GetRole())),
+			}
+
+			teamMemberships = append(teamMemberships, &membership)
 		}
 
-		teamMemberships = append(teamMemberships, &membership)
 	}
 
 	state.TeamMemberships = teamMemberships
