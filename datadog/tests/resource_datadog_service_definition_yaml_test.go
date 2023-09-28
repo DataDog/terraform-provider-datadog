@@ -192,8 +192,8 @@ tags:
   - service:tag
 team: my-team  
 languages:
-	- go
-	- python
+  - go
+  - python
 service-type: web
 EOF
 }`, uniq)
