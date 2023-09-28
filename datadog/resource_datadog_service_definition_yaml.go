@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -247,10 +248,61 @@ func isValidServiceDefinition(i interface{}, k string) (warnings []string, error
 	return warnings, errors
 }
 
+type semVersion struct {
+	major int
+	minor int
+	patch int
+}
+
+func parseSemVersion(version string) (semVersion, error) {
+	// Remove leading 'v' if present
+	if !strings.HasPrefix(version, "v") {
+		return semVersion{}, fmt.Errorf("missing prefix v: %s", version)
+	}
+
+	version = version[1:]
+	parts := strings.Split(version, ".")
+
+	// Initialize the default values
+	var sVersion semVersion
+
+	// Parse major version
+	major, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return semVersion{}, fmt.Errorf("error parsing major version: %v", err)
+	}
+	sVersion.major = major
+
+	// If minor version is provided
+	if len(parts) > 1 {
+		minor, err := strconv.Atoi(parts[1])
+		if err != nil {
+			return semVersion{}, fmt.Errorf("error parsing minor version: %v", err)
+		}
+		sVersion.minor = minor
+	}
+
+	// If patch version is provided
+	if len(parts) > 2 {
+		patch, err := strconv.Atoi(parts[2])
+		if err != nil {
+			return semVersion{}, fmt.Errorf("error parsing patch version: %v", err)
+		}
+		sVersion.patch = patch
+	}
+
+	return sVersion, nil
+}
+
 func isValidDatadogServiceDefinition(attrMap map[string]interface{}, k string) (warnings []string, errors []error) {
 	if schemaVersion, ok := attrMap["schema-version"].(string); ok {
-		if schemaVersion != "v2" && schemaVersion != "v2.1" {
-			errors = append(errors, fmt.Errorf("schema-version must be >= v2, but %s is used", schemaVersion))
+		version, err  := parseSemVersion(schemaVersion)
+		if err != nil {
+			errors = append(errors, fmt.Errorf("schema-version is invalid: %s", schemaVersion))
+		} else {
+			if version.major < 2 {
+				errors = append(errors, fmt.Errorf("schema-version must be >= v2, but %s is used", schemaVersion))
+			}
 		}
 	} else {
 		errors = append(errors, fmt.Errorf("schema-version is missing: %q", k))
