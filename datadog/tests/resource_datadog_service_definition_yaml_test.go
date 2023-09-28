@@ -156,6 +156,49 @@ EOF
 }`, uniq)
 }
 
+
+func testAccCheckDatadogServiceDefinitionV2_2(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_definition_yaml" "service_definition" {
+  service_definition =<<EOF
+schema-version: v2.2
+dd-service: %s
+contacts:
+  - contact: contact@datadoghq.com
+    name: Team Email
+    type: email
+extensions:
+  myorgextension: extensionvalue
+integrations:
+  opsgenie:
+    region: US
+    service-url: https://my-org.opsgenie.com/service/123e4567-e89b-12d3-a456-426614174000
+  pagerduty:
+    service-url: https://my-org.pagerduty.com/service-directory/PMyService
+links:
+  - name: Architecture
+    type: doc
+    provider: Gigoogle drivetHub
+    url: https://my-runbook
+  - name: Runbook
+    type: runbook
+    url: https://my-runbook
+  - name: Source Code
+    type: repo
+    provider: GitHub
+    url: https://github.com/DataDog/schema
+tags:
+  - my:tag
+  - service:tag
+team: my-team  
+languages:
+	- go
+	- python
+service-type: web
+EOF
+}`, uniq)
+}
+
 func testAccCheckDatadogServiceDefinitionBackstage(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_definition_yaml" "service_definition_backstage" {
