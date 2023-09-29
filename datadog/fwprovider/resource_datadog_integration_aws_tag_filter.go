@@ -241,10 +241,10 @@ func (r *integrationAWSTagFilterResource) buildDatadogIntegrationAWSTagFilter(ct
 
 	filterRequest.SetAccountId(state.AccountID.ValueString())
 
-	namespace := datadogV1.AWSNamespace(state.Namespace.String())
+	namespace := datadogV1.AWSNamespace(state.Namespace.ValueString())
 	filterRequest.SetNamespace(namespace)
 
-	filterRequest.SetTagFilterStr(state.TagFilterStr.String())
+	filterRequest.SetTagFilterStr(state.TagFilterStr.ValueString())
 
 	return filterRequest
 }
