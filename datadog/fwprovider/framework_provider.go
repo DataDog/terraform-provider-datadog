@@ -36,6 +36,7 @@ var Resources = []func() resource.Resource{
 	NewDashboardListResource,
 	NewDowntimeScheduleResource,
 	NewIntegrationAWSResource,
+	NewIntegrationAWSTagFilterResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
