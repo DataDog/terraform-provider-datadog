@@ -69,7 +69,7 @@ func TestAccRestrictionPolicyInvalidInput(t *testing.T) {
 	invalidResourceType := "security_rule"
 
 	invalidResourceTypeError, _ := regexp.Compile("Invalid resource type")
-	invalidPrincipalError, _ := regexp.Compile("Invalid request: principal type")
+	invalidPrincipalError, _ := regexp.Compile("not a valid principal")
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,

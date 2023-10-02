@@ -18,5 +18,5 @@ resource "datadog_integration_gcp_sts" "foo" {
   client_email    = google_service_account.datadog_integration.email
   host_filters    = ["filter_one", "filter_two"]
   automute        = true
-  is_cspm_enabled = true
+  is_cspm_enabled = false
 }

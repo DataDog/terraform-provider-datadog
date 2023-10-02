@@ -32,7 +32,7 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
+					Description: "Your AWS Account ID without dashes.",
 					Type:        schema.TypeString,
 					Required:    true,
 					ForceNew:    true, // waits for update API call support
