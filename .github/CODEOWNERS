@@ -5,8 +5,6 @@
 # All your base
 *                                         @DataDog/integrations-tools-and-libraries
 
-/docs/                                    @DataDog/integrations-tools-and-libraries @DataDog/documentation
-
 # Terraform plugin sdk resources/data-sources
 datadog/*datadog_dashboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
 datadog/*datadog_downtime*                @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
