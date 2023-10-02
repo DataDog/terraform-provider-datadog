@@ -995,6 +995,15 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getRunWorkflowDefinitionSchema(),
 			},
 		},
+		"split_graph_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Split Graph widget.",
+			Elem: &schema.Resource{
+				Schema: getSplitGraphDefinitionSchema(),
+			},
+		},
 	}
 }
 
@@ -1145,6 +1154,10 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 		if runWorkflowDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.RunWorkflowWidgetDefinitionAsWidgetDefinition(buildDatadogRunWorkflowDefinition(runWorkflowDefinition))
 		}
+	} else if def, ok := terraformWidget["split_graph_definition"].([]interface{}); ok && len(def) > 0 {
+		if splitGraphDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.SplitGraphWidgetDefinitionAsWidgetDefinition(buildDatadogSplitGraphDefinition(splitGraphDefinition))
+		}
 	} else {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
 	}
@@ -1291,6 +1304,9 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 	} else if widgetDefinition.RunWorkflowWidgetDefinition != nil {
 		terraformDefinition := buildTerraformRunWorkflowDefinition(widgetDefinition.RunWorkflowWidgetDefinition)
 		terraformWidget["run_workflow_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.SplitGraphWidgetDefinition != nil {
+		terraformDefinition := buildTerraformSplitGraphDefinition(widgetDefinition.SplitGraphWidgetDefinition)
+		terraformWidget["split_graph_definition"] = []map[string]interface{}{terraformDefinition}
 	} else {
 		return nil, fmt.Errorf("unsupported widget type: %s", widgetDefinition.GetActualInstance())
 	}
@@ -7577,6 +7593,298 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	}
 
 	return datadogDefinition
+}
+
+//
+// Run Split Graph Definition helpers
+//
+
+func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"source_widget_definition": {
+			Description: "The original widget we are splitting on.",
+			Type:        schema.TypeList,
+			Required:    true,
+			Elem: &schema.Resource{
+				//idk if I should make splittable schema or generic is enough
+				Schema: getNonGroupWidgetSchema(),
+			},
+		},
+		"split_config": {
+			Description: "Encapsulates all user choices about how to split a graph.",
+			Type:        schema.TypeList,
+			Required:    true,
+			Elem: &schema.Resource{
+				Schema: getSplitConfigSchema(),
+			},
+		},
+		"size": {
+			Description: "Size of the individual graphs in the split.",
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+		"has_uniform_y_axes": {
+			Description: "Normalize y axes across graphs.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"live_span": getWidgetLiveSpanSchema(),
+	}
+}
+
+func getSplitConfigSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"split_dimensions": getSplitDimensionSchema(),
+		"limit": {
+			Description: "Maximum number of graphs to display in the widget.",
+			Type:        schema.TypeInt,
+			Optional:    true,
+		},
+		"sort":          getSplitSortSchema(),
+		"static_splits": getStaticSplitsSchema(),
+	}
+}
+
+func getSplitDimensionSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The property by which the graph splits",
+		Type:        schema.TypeList,
+		Required:    true,
+		MinItems:    1,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"one_graph_per": {
+					Description: "The system interprets this attribute differently depending on the data source of the query being split. For metrics, it's a tag. For the events platform, it's an attribute or tag.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			},
+		},
+	}
+}
+func getSplitSortSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "Controls the order in which graphs appear in the split.",
+		Type:        schema.TypeList,
+		Required:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"compute": getSplitSortComputeSchema(),
+				"order": {
+					Description:      "Widget sorting methods.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
+				},
+			},
+		},
+	}
+}
+
+func getSplitSortComputeSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "Defines the metric and aggregation used as the sort value",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"aggregation": {
+					Description: "How to aggregate the sort metric for the purposes of ordering.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"metric": {
+					Description: "The metric to use for sorting graphs.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			},
+		},
+	}
+}
+func getStaticSplitsSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The property by which the graph splits",
+		Type:        schema.TypeList,
+		Required:    true,
+		MinItems:    1,
+		MaxItems:    100,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"split_vector": getSplitVectorSchema(),
+			},
+		},
+	}
+}
+
+func getSplitVectorSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The split graph list contains a graph for each value of the split dimension.",
+		Type:        schema.TypeList,
+		Required:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"tag_key": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"tag_values": {
+					Type:     schema.TypeList,
+					Required: true,
+				},
+			},
+		},
+	}
+}
+
+func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}) *datadogV1.SplitGraphWidgetDefinition {
+	datadogDefinition := datadogV1.NewSplitGraphWidgetDefinitionWithDefaults()
+
+	// Required params
+	//size,source_widget,split_config, type
+
+	if size, ok := terraformDefinition["size"].(string); ok {
+		datadogDefinition.SetSize(datadogV1.SplitGraphVizSize(size))
+	}
+
+	if v, ok := terraformDefinition["type"].(string); ok {
+		datadogDefinition.SetType(datadogV1.SplitGraphWidgetDefinitionType(v))
+	}
+
+	if v, ok := terraformDefinition["source_widget_definition"].(datadogV1.SplitGraphSourceWidgetDefinition); ok {
+		datadogDefinition.SetSourceWidgetDefinition(v)
+	}
+
+	if v, ok := terraformDefinition["split_config"].(map[string]interface{}); ok {
+		datadogDefinition.SplitConfig = *buildDatadogSplitConfig(v)
+	}
+
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.Title = datadog.PtrString(v)
+	}
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+		datadogDefinition.Time = &datadogV1.WidgetTime{
+			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+		}
+	}
+
+	return datadogDefinition
+}
+
+func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datadogV1.SplitConfig {
+	datadogSplitConfig := datadogV1.NewSplitConfigWithDefaults()
+
+	if limit, ok := terraformSplitConfig["limit"].(int64); ok {
+		datadogSplitConfig.SetLimit(limit)
+	}
+
+	if sort, ok := terraformSplitConfig["sort"].(datadogV1.SplitSort); ok {
+		datadogSplitConfig.SetSort(sort)
+	}
+
+	if v, ok := terraformSplitConfig["split_dimensions"].([]datadogV1.SplitDimension); ok {
+		datadogSplitConfig.SetSplitDimensions(v)
+	}
+
+	if v, ok := terraformSplitConfig["static_splits"].([]map[string]map[string]interface{}); ok {
+		datadogStaticSplits := buildDatadogStaticSplits(v)
+		datadogSplitConfig.SetStaticSplits(datadogStaticSplits)
+	}
+	return datadogSplitConfig
+}
+
+// static_splits{
+// 	split_vector{
+// 		tag_key = "service"
+// 		tag_values = ["cassandra"]
+// 	}
+// 	split_vector{
+// 		tag_key = "datacenter"
+// 		tag_values = []
+// 	}
+// }
+// static_splits{
+// 	split_vector{
+// 		tag_key = "demo"
+// 		tag_values = ["env"]
+// 	}
+// }
+
+// [
+// 	[{"tag_key": "service", "tag_values": ["cassandra"]}, {"tag_key": "datacenter", "tag_values": []}],
+// 	[{"tag_key": "demo", "tag_values": ["env"]}],
+// ]
+
+func buildDatadogStaticSplits(terraformStaticSplits []map[string]map[string]interface{}) [][]datadogV1.SplitVectorEntryItem {
+	datadogStaticSplits := datadogV1.NewSplitConfigWithDefaults().StaticSplits
+	for i, terraformStaticSplit := range terraformStaticSplits {
+		for _, splitVector := range terraformStaticSplit {
+			if v, ok := splitVector["tag_key"].(string); ok {
+				datadogStaticSplits[0][i].SetTagKey(v)
+
+			}
+			if v, ok := splitVector["tag_values"].([]string); ok {
+				datadogStaticSplits[0][i].SetTagValues(v)
+			}
+		}
+	}
+	return datadogStaticSplits
+}
+
+func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphWidgetDefinition) map[string]interface{} {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	terraformDefinition["source_widget_definition"] = datadogDefinition.GetSourceWidgetDefinition()
+	terraformDefinition["size"] = datadogDefinition.GetSize()
+
+	if v, ok := datadogDefinition.GetSplitConfigOk(); ok {
+		terraformDefinition["split_config"] = buildTerraformSplitConfig(v)
+	}
+	// Optional params
+	if v, ok := datadogDefinition.GetHasUniformYAxesOk(); ok {
+		terraformDefinition["has_uniform_y_axes"] = *v
+	}
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = *v
+	}
+	if v, ok := datadogDefinition.GetTimeOk(); ok {
+		terraformDefinition["live_span"] = v.GetLiveSpan()
+	}
+
+	return terraformDefinition
+}
+
+func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) map[string]interface{} {
+	terraformSplitConfig := map[string]interface{}{}
+	if v, ok := datadogSplitConfig.GetSplitDimensionsOk(); ok {
+		terraformSplitConfig["split_dimensions"] = *v
+	}
+	terraformSplitConfig["limit"] = datadogSplitConfig.GetLimit()
+	terraformSplitConfig["sort"] = datadogSplitConfig.GetSort()
+	if v, ok := datadogSplitConfig.GetStaticSplitsOk(); ok {
+		terraformSplitConfig["static_splits"] = buildTerraformStaticSplits(v)
+	}
+	return terraformSplitConfig
+}
+
+func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[]map[string]interface{} {
+	//array of 2 static_splits
+	terraformStaticSplits := make([]map[string]interface{}, len(*datadogStaticSplits))
+	for i, staticSplit := range *datadogStaticSplits {
+		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
+		for j, splitVector := range staticSplit {
+			terraformSplitVectors[j]["tag_key"] = splitVector.GetTagKey()
+			terraformSplitVectors[j]["tag_values"] = splitVector.GetTagValues()
+		}
+		terraformStaticSplits[i]["splitVector"] = terraformSplitVectors
+	}
+	return &terraformStaticSplits
 }
 
 //
