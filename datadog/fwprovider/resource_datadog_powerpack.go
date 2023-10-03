@@ -225,13 +225,9 @@ func (r *powerpackResource) updateState(ctx context.Context, state *powerpackMod
 		state.TemplateVariables = []*templateVariablesModel{}
 		for _, templateVariablesDd := range *templateVariables {
 			templateVariablesTfItem := templateVariablesModel{}
+			templateVariablesTfItem.Name = types.StringValue(templateVariablesDd.Name)
+			templateVariablesTfItem.Defaults, _ = types.ListValueFrom(ctx, types.StringType, templateVariablesDd.Defaults)
 
-			if templateVariables, ok := templateVariablesDd.GetTemplateVariablesOk(); ok {
-
-				templateVariablesTf := templateVariablesModel{}
-
-				templateVariablesTfItem.TemplateVariables = &templateVariablesTf
-			}
 			state.TemplateVariables = append(state.TemplateVariables, &templateVariablesTfItem)
 		}
 	}
@@ -259,7 +255,7 @@ func (r *powerpackResource) buildPowerpackRequestBody(ctx context.Context, state
 	if state.TemplateVariables != nil {
 		var templateVariables []datadogV2.PowerpackTemplateVariable
 		for _, templateVariablesTFItem := range state.TemplateVariables {
-			templateVariablesDDItem := datadogV2.NewPowerpackTemplateVariable()
+			templateVariablesDDItem := datadogV2.NewPowerpackTemplateVariable(templateVariablesTFItem.Name.ValueString())
 
 			templateVariablesDDItem.SetName(templateVariablesTFItem.Name.ValueString())
 
