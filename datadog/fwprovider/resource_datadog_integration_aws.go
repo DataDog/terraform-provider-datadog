@@ -30,8 +30,9 @@ var IntegrationAWSMutex = sync.Mutex{}
 var accountAndRoleNameIDRegex = regexp.MustCompile("[\\d]+:.*")
 
 var (
-	_ resource.ResourceWithConfigure   = &integrationAWSResource{}
-	_ resource.ResourceWithImportState = &integrationAWSResource{}
+	_ resource.ResourceWithConfigure    = &integrationAWSResource{}
+	_ resource.ResourceWithImportState  = &integrationAWSResource{}
+	_ resource.ResourceWithUpgradeState = &integrationAWSResource{}
 )
 
 type integrationAWSResource struct {
@@ -155,6 +156,7 @@ func (r *integrationAWSResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
+		Version: 1,
 	}
 }
 
@@ -457,4 +459,45 @@ func (r *integrationAWSResource) buildDatadogIntegrationAWSStruct(ctx context.Co
 	}
 
 	return iaws
+}
+
+func (r *integrationAWSResource) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
+	return map[int64]resource.StateUpgrader{
+		0: {
+			PriorSchema: &schema.Schema{
+				Attributes: map[string]schema.Attribute{
+					"id":                               schema.StringAttribute{},
+					"account_id":                       schema.StringAttribute{},
+					"role_name":                        schema.StringAttribute{},
+					"filter_tags":                      schema.ListAttribute{ElementType: types.StringType},
+					"host_tags":                        schema.ListAttribute{ElementType: types.StringType},
+					"account_specific_namespace_rules": schema.MapAttribute{ElementType: types.BoolType},
+					"excluded_regions":                 schema.SetAttribute{ElementType: types.StringType},
+					"external_id":                      schema.StringAttribute{},
+					"access_key_id":                    schema.StringAttribute{},
+					"secret_access_key":                schema.StringAttribute{},
+					"metrics_collection_enabled":       schema.BoolAttribute{},
+					"resource_collection_enabled":      schema.BoolAttribute{},
+					"cspm_resource_collection_enabled": schema.BoolAttribute{},
+				},
+			},
+			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+				var state integrationAWSModel
+				resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+
+				if !state.AccountID.IsNull() && state.AccountID.ValueString() == "" {
+					state.AccountID = types.StringUnknown()
+				}
+
+				if !state.AccessKeyID.IsNull() && state.AccessKeyID.ValueString() == "" {
+					state.AccessKeyID = types.StringUnknown()
+				}
+
+				resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+			},
+		},
+	}
 }
