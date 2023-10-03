@@ -9,7 +9,6 @@ resource "datadog_dashboard" "sunburst_dashboard" {
   title        = "{{uniq}}"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
-  is_read_only = true
   widget {
     sunburst_definition {
       request {
@@ -24,6 +23,9 @@ resource "datadog_dashboard" "sunburst_dashboard" {
             name        = "my_query_1"
             aggregator  = "sum"
           }
+        }
+        style {
+          palette = "dog_classic"
         }
       }
       hide_total = false
@@ -97,13 +99,13 @@ var datadogDashboardSunburstAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
 	"title = {{uniq}}",
-	"is_read_only = true",
 	"widget.0.sunburst_definition.0.request.0.formula.0.formula_expression = my_query_1 + my_query_2",
 	"widget.0.sunburst_definition.0.request.0.formula.0.alias = my ff query",
 	"widget.0.sunburst_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
 	"widget.0.sunburst_definition.0.request.0.query.0.metric_query.0.query = avg:system.cpu.user{foo:bar} by {env}",
 	"widget.0.sunburst_definition.0.request.0.query.0.metric_query.0.name = my_query_1",
 	"widget.0.sunburst_definition.0.request.0.query.0.metric_query.0.aggregator = sum",
+	"widget.0.sunburst_definition.0.request.0.style.0.palette = dog_classic",
 	"widget.0.sunburst_definition.0.hide_total = false",
 	"widget.0.sunburst_definition.0.legend_inline.0.type = automatic",
 	"widget.0.sunburst_definition.0.legend_inline.0.hide_value = true",

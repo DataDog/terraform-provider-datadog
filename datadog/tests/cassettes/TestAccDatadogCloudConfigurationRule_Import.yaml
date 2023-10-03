@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"notifications":["@channel"],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":["@resource"]},"filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1689949968","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration"}
+      {"cases":[{"notifications":["@channel"],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":true,"userGroupByFields":["@resource"]},"filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1696322093","options":{"complianceRuleOptions":{"complexRule":true,"regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) \u003c= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"resourceType":"gcp_compute_instance"}},"tags":["test:acceptance","terraform:true"],"type":"cloud_configuration"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"dlw-uic-877","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1689949968","createdAt":1689949972853,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
+      {"id":"bag-bcj-sqe","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1696322093","createdAt":1696322103326,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource"]},"cases":[{"name":"","status":"low","notifications":["@channel"],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dlw-uic-877
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bag-bcj-sqe
     method: GET
   response:
     body: |
-      {"id":"dlw-uic-877","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1689949968","createdAt":1689949972853,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
+      {"id":"bag-bcj-sqe","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1696322093","createdAt":1696322103326,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource"]},"cases":[{"name":"","status":"low","notifications":["@channel"],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dlw-uic-877
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bag-bcj-sqe
     method: GET
   response:
     body: |
-      {"id":"dlw-uic-877","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1689949968","createdAt":1689949972853,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":["@resource"]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":["@channel"]}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
+      {"id":"bag-bcj-sqe","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1696322093","createdAt":1696322103326,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource"]},"cases":[{"name":"","status":"low","notifications":["@channel"],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
     headers:
       Content-Type:
       - application/json
@@ -61,7 +61,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dlw-uic-877
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bag-bcj-sqe
     method: DELETE
   response:
     body: ""
@@ -75,11 +75,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dlw-uic-877
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bag-bcj-sqe
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: dlw-uic-877"]}
+      {"errors":["Threat detection rule not found: bag-bcj-sqe"]}
     headers:
       Content-Type:
       - application/json

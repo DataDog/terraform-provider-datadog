@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"cases":[{"notifications":[],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"filters":[],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689952966","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":[],"type":"cloud_configuration"}
+      {"cases":[{"notifications":[],"status":"low"}],"complianceSignalOptions":{"userActivationStatus":false,"userGroupByFields":[]},"filters":[],"isEnabled":false,"message":"Acceptance test TF rule","name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1696322093","options":{"complianceRuleOptions":{"complexRule":false,"regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) \u003c= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]},"resourceType":"gcp_compute_instance"}},"tags":[],"type":"cloud_configuration"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"id":"wsp-wgv-s1t","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689952966","createdAt":1689952968967,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
+      {"id":"out-tub-wri","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1696322093","createdAt":1696322103331,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"name":"","status":"low","notifications":[],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wsp-wgv-s1t
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/out-tub-wri
     method: GET
   response:
     body: |
-      {"id":"wsp-wgv-s1t","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689952966","createdAt":1689952968967,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
+      {"id":"out-tub-wri","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1696322093","createdAt":1696322103331,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"name":"","status":"low","notifications":[],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wsp-wgv-s1t
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/out-tub-wri
     method: GET
   response:
     body: |
-      {"id":"wsp-wgv-s1t","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1689952966","createdAt":1689952968967,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"condition":"a > 0","name":"","status":"low","notifications":[]}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
+      {"id":"out-tub-wri","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_MandatoryFieldsOnly-local-1696322093","createdAt":1696322103331,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance"]},"complexRule":false}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":false,"userGroupByFields":[]},"cases":[{"name":"","status":"low","notifications":[],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":[],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[]}
     headers:
       Content-Type:
       - application/json
@@ -61,7 +61,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wsp-wgv-s1t
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/out-tub-wri
     method: DELETE
   response:
     body: ""
@@ -75,11 +75,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wsp-wgv-s1t
+    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/out-tub-wri
     method: GET
   response:
     body: |
-      {"errors":["Threat detection rule not found: wsp-wgv-s1t"]}
+      {"errors":["Threat detection rule not found: out-tub-wri"]}
     headers:
       Content-Type:
       - application/json

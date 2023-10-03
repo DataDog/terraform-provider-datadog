@@ -421,6 +421,7 @@ func TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings(t *testing.T) {
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
 			updateSyntheticsBrowserTestStepRumSettings(ctx, accProvider, t),
+			updateSyntheticsBrowserTestStepRumSettingsEnabled(ctx, accProvider, t),
 		},
 	})
 }
@@ -590,6 +591,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.2.target", "2000"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertion.2.timings_scope", "withoutDNS"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.3.type", "body"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.3.operator", "doesNotContain"),
@@ -716,6 +719,7 @@ resource "datadog_synthetics_test" "foo" {
 		type = "responseTime"
 		operator = "lessThan"
 		target = "2000"
+		timings_scope = "withoutDNS"
 	}
 	assertion {
 		type = "body"
@@ -2371,6 +2375,10 @@ func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", "Hello"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.header", "value"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.0.type", "responseTime"),
@@ -2435,6 +2443,10 @@ resource "datadog_synthetics_test" "grpc" {
 		service = "Hello"
 	}
 
+	request_metadata = {
+		header = "value"
+	}
+
 	assertion {
 		type = "responseTime"
 		operator = "lessThan"
@@ -2490,6 +2502,10 @@ func updateSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", ""),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.header", "value-updated"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.0.type", "responseTime"),
@@ -2538,6 +2554,10 @@ resource "datadog_synthetics_test" "grpc" {
 		host   = "google.com"
 		port   = 50050
 		service = ""
+	}
+
+	request_metadata = {
+		header = "value-updated"
 	}
 
 	assertion {
@@ -3092,6 +3112,96 @@ resource "datadog_synthetics_test" "bar" {
 	}
 }`, uniq)
 }
+
+func updateSyntheticsBrowserTestStepRumSettingsEnabled(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated-rumsettings"
+	return resource.TestStep{
+		Config: updateSyntheticsBrowserTestRumSettingEnabled(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.application_id", ""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.client_token_id", "0"),
+		),
+	}
+}
+
+func updateSyntheticsBrowserTestRumSettingEnabled(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+	type = "browser"
+	request_definition {
+		method = "PUT"
+		url = "https://docs.datadoghq.com"
+		body = "this is an updated body"
+		timeout = 60
+	}
+	request_headers = {
+		Accept = "application/xml"
+		X-Datadog-Trace-ID = "987654321"
+	}
+	device_ids = [ "laptop_large", "tablet" ]
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 1800
+		min_failure_duration = 10
+		min_location_failed = 1
+
+		retry {
+			count = 3
+			interval = 500
+		}
+
+		monitor_options {
+			renotify_interval = 120
+		}
+
+		no_screenshot = false
+
+		rum_settings {
+			is_enabled = true
+		}
+
+		ci {
+			execution_rule = "skipped"
+		}
+	}
+	name = "%s"
+	message = "Notify @pagerduty"
+	tags = ["foo:bar", "buz"]
+	status = "live"
+
+	browser_step {
+	    name = "first step updated"
+	    type = "assertCurrentUrl"
+
+	    params {
+	        check = "contains"
+	        value = "content"
+	    }
+	}
+
+	browser_step {
+	    name = "press key step"
+	    type = "pressKey"
+
+	    params {
+	        value = "1"
+	    }
+	}
+
+	browser_variable {
+		type = "text"
+		name = "MY_PATTERN_VAR"
+		pattern = "{{numeric(4)}}"
+		example = "5970"
+	}
+}`, uniq)
+}
+
 func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{

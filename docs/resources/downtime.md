@@ -3,12 +3,12 @@
 page_title: "datadog_downtime Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
+  This resource is deprecated — use the datadog_downtime_schedule resource instead. Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
 ---
 
 # datadog_downtime (Resource)
 
-Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
+This resource is deprecated — use the `datadog_downtime_schedule resource` instead. Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
 
 ## Example Usage
 

@@ -151,6 +151,26 @@ func TestAccDowntimeScheduleBasicOneTime(t *testing.T) {
 	})
 }
 
+func TestAccDowntimeScheduleBasicOneTimeWithMonitorID(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogDowntimeScheduleDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDowntimeOneTimeScheduleConfigWithMonitor(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogDowntimeScheduleExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttrSet("datadog_downtime_schedule.t", "monitor_identifier.monitor_id"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDowntimeScheduleChanged(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -202,6 +222,35 @@ func getCheckNowDate(attributeName string, dateFormat string, currentTime time.T
 		}
 		return nil
 	}
+}
+
+func testAccCheckDowntimeOneTimeScheduleConfigWithMonitor(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "downtime_monitor" {
+  name = "%s"
+  type = "metric alert"
+  message = "some message Notify: @hipchat-channel"
+  escalation_message = "the situation has escalated @pagerduty"
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  monitor_thresholds {
+    warning = "1.0"
+    critical = "2.0"
+  }
+}
+
+resource "datadog_downtime_schedule" "t" {
+    scope = "env:(staging OR %v)"
+    monitor_identifier {
+      monitor_id = datadog_monitor.downtime_monitor.id
+    }
+    one_time_schedule {
+    	start = "2050-01-02T03:04:05Z"
+    }
+    notify_end_types = []
+}
+`, uniq, uniq)
 }
 
 func testAccCheckDatadogDowntimeScheduleRecurring(uniq string) string {

@@ -2624,6 +2624,9 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 		// Settings specific to Heatmap requests
 		"style": {
 			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
@@ -2662,6 +2665,32 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogHeatmapRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogHeatmapRequest.SetQueries(queries)
+			datadogHeatmapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("timeseries"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
+				formulas[i] = *buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogHeatmapRequest.SetFormulas(formulas)
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
@@ -2693,6 +2722,11 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWi
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
 			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(v)
+		}
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(v)
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetStyle(*v)
@@ -5926,6 +5960,16 @@ func getSunburstRequestSchema() map[string]*schema.Schema {
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
+		// Settings specific to Sunburst requests
+		"style": {
+			Description: "Define style for the widget's request.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetRequestStyle(),
+			},
+		},
 	}
 }
 
@@ -6070,6 +6114,11 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 			}
 			datadogSunburstRequest.SetFormulas(formulas)
 		}
+		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
+			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
+				datadogSunburstRequest.Style = buildDatadogWidgetStyle(v)
+			}
+		}
 		datadogRequests[i] = *datadogSunburstRequest
 	}
 	return &datadogRequests
@@ -6108,6 +6157,10 @@ func buildTerraformSunburstRequests(datadogSunburstRequests *[]datadogV1.Sunburs
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
 			terraformRequest["formula"] = buildTerraformFormula(v)
+		}
+		if v, ok := datadogRequest.GetStyleOk(); ok {
+			style := buildTerraformWidgetStyle(*v)
+			terraformRequest["style"] = []map[string]interface{}{style}
 		}
 		terraformRequests[i] = terraformRequest
 	}
@@ -6237,7 +6290,7 @@ func getFormulaSchema() *schema.Schema {
 							"count": {
 								Type:        schema.TypeInt,
 								Optional:    true,
-								Description: "The number of results to return",
+								Description: "The number of results to return.",
 							},
 							"order": {
 								Type:             schema.TypeString,
@@ -6278,7 +6331,7 @@ func getFormulaSchema() *schema.Schema {
 							"palette": {
 								Type:        schema.TypeString,
 								Optional:    true,
-								Description: "The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors",
+								Description: "The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.",
 							},
 							"palette_index": {
 								Type:        schema.TypeInt,
@@ -6526,7 +6579,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"env": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "APM Environment.",
+								Description: "APM environment.",
 							},
 							"stat": {
 								Type:             schema.TypeString,
@@ -6588,7 +6641,7 @@ func getFormulaQuerySchema() *schema.Schema {
 							"env": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "APM Environment.",
+								Description: "APM environment.",
 							},
 							"name": {
 								Type:        schema.TypeString,
@@ -6639,14 +6692,14 @@ func getFormulaQuerySchema() *schema.Schema {
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
-					Description: "The slo query using formulas and functions.",
+					Description: "The SLO query using formulas and functions.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
 								Type:             schema.TypeString,
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLODataSourceFromValue),
-								Description:      "The data source for slo queries.",
+								Description:      "The data source for SLO queries.",
 							},
 							"slo_id": {
 								Type:        schema.TypeString,
