@@ -1,0 +1,1 @@
+terraform import datadog_powerpack.new_list ""

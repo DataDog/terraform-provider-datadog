@@ -62,6 +62,7 @@ type ApiInstances struct {
 	logsApiV2                  *datadogV2.LogsApi
 	logsArchivesApiV2          *datadogV2.LogsArchivesApi
 	logsMetricsApiV2           *datadogV2.LogsMetricsApi
+	powerpackApiV2             *datadogV2.PowerpackApi
 	metricsApiV2               *datadogV2.MetricsApi
 	monitorsApiV2              *datadogV2.MonitorsApi
 	opsgenieIntegrationApiV2   *datadogV2.OpsgenieIntegrationApi
@@ -445,6 +446,14 @@ func (i *ApiInstances) GetLogsMetricsApiV2() *datadogV2.LogsMetricsApi {
 		i.logsMetricsApiV2 = datadogV2.NewLogsMetricsApi(i.HttpClient)
 	}
 	return i.logsMetricsApiV2
+}
+
+// GetLogsMetricsApiV2 get instance of LogsMetricsApi
+func (i *ApiInstances) GetPowerpackApiV2() *datadogV2.PowerpackApi {
+	if i.powerpackApiV2 == nil {
+		i.powerpackApiV2 = datadogV2.NewPowerpackApi(i.HttpClient)
+	}
+	return i.powerpackApiV2
 }
 
 // GetMetricsApiV2 get instance of MetricsApi
