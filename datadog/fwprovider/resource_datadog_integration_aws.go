@@ -489,11 +489,11 @@ func (r *integrationAWSResource) UpgradeState(ctx context.Context) map[int64]res
 				}
 
 				if !state.AccountID.IsNull() && state.AccountID.ValueString() == "" {
-					state.AccountID = types.StringUnknown()
+					state.AccountID = types.StringNull()
 				}
 
 				if !state.AccessKeyID.IsNull() && state.AccessKeyID.ValueString() == "" {
-					state.AccessKeyID = types.StringUnknown()
+					state.AccessKeyID = types.StringNull()
 				}
 
 				resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
