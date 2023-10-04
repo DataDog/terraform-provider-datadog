@@ -8,6 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -40,6 +41,22 @@ func testAccCheckDatadogPowerpack(uniq string) string {
 	return fmt.Sprintf(`resource "datadog_powerpack" "foo" {
     description = "Powerpack for ABC"
     group_widget {
+    definition {
+    layout_type = "ordered"
+    show_title = True
+    title = "Sample Powerpack"
+    type = "group"
+    widgets {
+    definition {
+    }
+    }
+    }
+    layout {
+    height = "UPDATE ME"
+    width = "UPDATE ME"
+    x = "UPDATE ME"
+    y = "UPDATE ME"
+    }
     }
     name = "Sample Powerpack"
     tags = ["tag:foo1"]

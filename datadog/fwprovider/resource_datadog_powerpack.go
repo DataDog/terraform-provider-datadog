@@ -38,6 +38,27 @@ type templateVariablesModel struct {
 }
 
 type groupWidgetModel struct {
+	Definition *definitionModel `tfsdk:"definition"`
+	Layout     *layoutModel     `tfsdk:"layout"`
+}
+type definitionModel struct {
+	LayoutType types.String    `tfsdk:"layout_type"`
+	ShowTitle  types.Bool      `tfsdk:"show_title"`
+	Title      types.String    `tfsdk:"title"`
+	Type       types.String    `tfsdk:"type"`
+	Widgets    []*widgetsModel `tfsdk:"widgets"`
+}
+type widgetsModel struct {
+	Definition *definitionModel `tfsdk:"definition"`
+}
+type definitionModel struct {
+}
+
+type layoutModel struct {
+	Height types.Int64 `tfsdk:"height"`
+	Width  types.Int64 `tfsdk:"width"`
+	X      types.Int64 `tfsdk:"x"`
+	Y      types.Int64 `tfsdk:"y"`
 }
 
 func NewPowerpackResource() resource.Resource {
@@ -91,6 +112,60 @@ func (r *powerpackResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			},
 			"group_widget": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{},
+				Blocks: map[string]schema.Block{
+					"definition": schema.SingleNestedBlock{
+						Attributes: map[string]schema.Attribute{
+							"layout_type": schema.StringAttribute{
+								Optional:    true,
+								Description: "Layout type of widgets.",
+							},
+							"show_title": schema.BoolAttribute{
+								Optional:    true,
+								Description: "Boolean indicating whether powerpack group title should be visible or not.",
+							},
+							"title": schema.StringAttribute{
+								Optional:    true,
+								Description: "Name for the group widget.",
+							},
+							"type": schema.StringAttribute{
+								Optional:    true,
+								Description: "Type of widget, must be group.",
+							},
+						},
+						Blocks: map[string]schema.Block{
+							"widgets": schema.ListNestedBlock{
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{},
+									Blocks: map[string]schema.Block{
+										"definition": schema.SingleNestedBlock{
+											Attributes: map[string]schema.Attribute{},
+										},
+									},
+								},
+							},
+						},
+					},
+					"layout": schema.SingleNestedBlock{
+						Attributes: map[string]schema.Attribute{
+							"height": schema.Int64Attribute{
+								Optional:    true,
+								Description: "The height of the widget. Should be a non-negative integer.",
+							},
+							"width": schema.Int64Attribute{
+								Optional:    true,
+								Description: "The width of the widget. Should be a non-negative integer.",
+							},
+							"x": schema.Int64Attribute{
+								Optional:    true,
+								Description: "The position of the widget on the x (horizontal) axis. Should be a non-negative integer.",
+							},
+							"y": schema.Int64Attribute{
+								Optional:    true,
+								Description: "The position of the widget on the y (vertical) axis. Should be a non-negative integer.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -225,8 +300,12 @@ func (r *powerpackResource) updateState(ctx context.Context, state *powerpackMod
 		state.TemplateVariables = []*templateVariablesModel{}
 		for _, templateVariablesDd := range *templateVariables {
 			templateVariablesTfItem := templateVariablesModel{}
-			templateVariablesTfItem.Name = types.StringValue(templateVariablesDd.Name)
-			templateVariablesTfItem.Defaults, _ = types.ListValueFrom(ctx, types.StringType, templateVariablesDd.Defaults)
+			if defaults, ok := templateVariablesDd.GetDefaultsOk(); ok && len(*defaults) > 0 {
+				templateVariablesTfItem.Defaults, _ = types.ListValueFrom(ctx, types.StringType, *defaults)
+			}
+			if name, ok := templateVariablesDd.GetNameOk(); ok {
+				templateVariablesTfItem.Name = types.StringValue(*name)
+			}
 
 			state.TemplateVariables = append(state.TemplateVariables, &templateVariablesTfItem)
 		}
@@ -255,7 +334,7 @@ func (r *powerpackResource) buildPowerpackRequestBody(ctx context.Context, state
 	if state.TemplateVariables != nil {
 		var templateVariables []datadogV2.PowerpackTemplateVariable
 		for _, templateVariablesTFItem := range state.TemplateVariables {
-			templateVariablesDDItem := datadogV2.NewPowerpackTemplateVariable(templateVariablesTFItem.Name.ValueString())
+			templateVariablesDDItem := datadogV2.NewPowerpackTemplateVariable()
 
 			templateVariablesDDItem.SetName(templateVariablesTFItem.Name.ValueString())
 
@@ -268,7 +347,43 @@ func (r *powerpackResource) buildPowerpackRequestBody(ctx context.Context, state
 		attributes.SetTemplateVariables(templateVariables)
 	}
 
-	var groupWidget map[string]interface{}
+	var groupWidget datadogV2.PowerpackGroupWidgetDefinition
+
+	var definition datadogV2.PowerpackGroupWidget
+
+	definition.SetLayoutType(state.GroupWidget.Definition.LayoutType.ValueString())
+	if !state.GroupWidget.Definition.ShowTitle.IsNull() {
+		definition.SetShowTitle(state.GroupWidget.Definition.ShowTitle.ValueBool())
+	}
+	if !state.GroupWidget.Definition.Title.IsNull() {
+		definition.SetTitle(state.GroupWidget.Definition.Title.ValueString())
+	}
+	definition.SetType(state.GroupWidget.Definition.Type.ValueString())
+
+	if state.GroupWidget.Definition.Widgets != nil {
+		var widgets []datadogV2.PowerpackGroupWidgetWidgets
+		for _, widgetsTFItem := range state.GroupWidget.Definition.Widgets {
+			widgetsDDItem := datadogV2.NewPowerpackGroupWidgetWidgets()
+
+			var definition map[string]interface{}
+
+			widgetsDDItem.Definition = definition
+		}
+		definition.SetWidgets(widgets)
+	}
+
+	groupWidget.Definition = definition
+
+	if state.GroupWidget.Layout != nil {
+		var layout datadogV2.PowerpackGroupWidgetLayout
+
+		layout.SetHeight(state.GroupWidget.Layout.Height.ValueInt64())
+		layout.SetWidth(state.GroupWidget.Layout.Width.ValueInt64())
+		layout.SetX(state.GroupWidget.Layout.X.ValueInt64())
+		layout.SetY(state.GroupWidget.Layout.Y.ValueInt64())
+
+		groupWidget.Layout = &layout
+	}
 
 	attributes.GroupWidget = groupWidget
 
