@@ -5,7 +5,7 @@ import (
 )
 
 const datadogDashboardSplitGraphConfig = `
-resource "datadog_dashboard" "sunburst_dashboard" {
+resource "datadog_dashboard" "split_graph_dashboard" {
   title        = "{{uniq}}"
   description  = "Created using the Datadog provider in Terraform"
   layout_type  = "ordered"
