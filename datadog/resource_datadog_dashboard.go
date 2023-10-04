@@ -7921,28 +7921,6 @@ func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datad
 	return datadogSplitConfig
 }
 
-// static_splits{
-// 	split_vector{
-// 		tag_key = "service"
-// 		tag_values = ["cassandra"]
-// 	}
-// 	split_vector{
-// 		tag_key = "datacenter"
-// 		tag_values = []
-// 	}
-// }
-// static_splits{
-// 	split_vector{
-// 		tag_key = "demo"
-// 		tag_values = ["env"]
-// 	}
-// }
-
-// [
-// 	[{"tag_key": "service", "tag_values": ["cassandra"]}, {"tag_key": "datacenter", "tag_values": []}],
-// 	[{"tag_key": "demo", "tag_values": ["env"]}],
-// ]
-
 func buildDatadogStaticSplits(terraformStaticSplits []map[string]map[string]interface{}) [][]datadogV1.SplitVectorEntryItem {
 	datadogStaticSplits := datadogV1.NewSplitConfigWithDefaults().StaticSplits
 	for i, terraformStaticSplit := range terraformStaticSplits {
