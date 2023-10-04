@@ -27,6 +27,7 @@ type integrationGcpStsResource struct {
 
 type integrationGcpStsModel struct {
 	ID                   types.String `tfsdk:"id"`
+	AccountTags          types.Set    `tfsdk:"account_tags"`
 	Automute             types.Bool   `tfsdk:"automute"`
 	ClientEmail          types.String `tfsdk:"client_email"`
 	DelegateAccountEmail types.String `tfsdk:"delegate_account_email"`
@@ -52,6 +53,11 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
+			"account_tags": schema.SetAttribute{
+				Optional:    true,
+				Description: "Tags to be associated with GCP metrics and service checks from your account.",
+				ElementType: types.StringType,
+			},
 			"automute": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
@@ -222,6 +228,9 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	state.ID = types.StringValue(resp.GetId())
 
 	attributes := resp.GetAttributes()
+	if accountTags, ok := attributes.GetAccountTagsOk(); ok && len(*accountTags) > 0 {
+		state.AccountTags, _ = types.SetValueFrom(ctx, types.StringType, *accountTags)
+	}
 	if automute, ok := attributes.GetAutomuteOk(); ok {
 		state.Automute = types.BoolValue(*automute)
 	}
@@ -239,6 +248,12 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
+
+	accountTags := make([]string, 0)
+	if !state.AccountTags.IsNull() {
+		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
+	}
+	attributes.SetAccountTags(accountTags)
 
 	if !state.Automute.IsNull() {
 		attributes.SetAutomute(state.Automute.ValueBool())
@@ -266,6 +281,12 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 func (r *integrationGcpStsResource) buildIntegrationGcpStsUpdateRequestBody(ctx context.Context, state *integrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
+
+	accountTags := make([]string, 0)
+	if !state.AccountTags.IsNull() {
+		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
+	}
+	attributes.SetAccountTags(accountTags)
 
 	if !state.Automute.IsNull() {
 		attributes.SetAutomute(state.Automute.ValueBool())

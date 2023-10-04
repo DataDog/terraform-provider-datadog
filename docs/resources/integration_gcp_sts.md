@@ -46,6 +46,7 @@ resource "datadog_integration_gcp_sts" "foo" {
 
 ### Optional
 
+- `account_tags` (Set of String) Tags to be associated with GCP metrics and service checks from your account.
 - `automute` (Boolean) Silence monitors for expected GCE instance shutdowns.
 - `host_filters` (Set of String) Your Host Filters.
 - `is_cspm_enabled` (Boolean) When enabled, Datadog performs configuration checks across your Google Cloud environment by continuously scanning every resource, which may incur additional charges.
