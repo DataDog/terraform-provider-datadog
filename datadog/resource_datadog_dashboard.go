@@ -7914,23 +7914,23 @@ func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datad
 		datadogSplitConfig.SetSplitDimensions(v)
 	}
 
-	if v, ok := terraformSplitConfig["static_splits"].([]map[string]map[string]interface{}); ok {
+	if v, ok := terraformSplitConfig["static_splits"].([][]map[string]interface{}); ok {
 		datadogStaticSplits := buildDatadogStaticSplits(v)
 		datadogSplitConfig.SetStaticSplits(datadogStaticSplits)
 	}
 	return datadogSplitConfig
 }
 
-func buildDatadogStaticSplits(terraformStaticSplits []map[string]map[string]interface{}) [][]datadogV1.SplitVectorEntryItem {
+func buildDatadogStaticSplits(terraformStaticSplits [][]map[string]interface{}) [][]datadogV1.SplitVectorEntryItem {
 	datadogStaticSplits := datadogV1.NewSplitConfigWithDefaults().StaticSplits
 	for i, terraformStaticSplit := range terraformStaticSplits {
-		for _, splitVector := range terraformStaticSplit {
+		for j, splitVector := range terraformStaticSplit {
 			if v, ok := splitVector["tag_key"].(string); ok {
-				datadogStaticSplits[0][i].SetTagKey(v)
+				datadogStaticSplits[i][j].SetTagKey(v)
 
 			}
 			if v, ok := splitVector["tag_values"].([]string); ok {
-				datadogStaticSplits[0][i].SetTagValues(v)
+				datadogStaticSplits[i][j].SetTagValues(v)
 			}
 		}
 	}
@@ -7973,16 +7973,18 @@ func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) map[st
 	return terraformSplitConfig
 }
 
-func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[]map[string]interface{} {
+func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[][]map[string]interface{} {
 	//array of 2 static_splits
-	terraformStaticSplits := make([]map[string]interface{}, len(*datadogStaticSplits))
+	terraformStaticSplits := make([][]map[string]interface{}, len(*datadogStaticSplits))
 	for i, staticSplit := range *datadogStaticSplits {
 		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
 		for j, splitVector := range staticSplit {
-			terraformSplitVectors[j]["tag_key"] = splitVector.GetTagKey()
-			terraformSplitVectors[j]["tag_values"] = splitVector.GetTagValues()
+			terraformSplitVector := map[string]interface{}{}
+			terraformSplitVector["tag_key"] = splitVector.GetTagKey()
+			terraformSplitVector["tag_values"] = splitVector.GetTagValues()
+			terraformSplitVectors[j]["split_vector"] = terraformSplitVector
 		}
-		terraformStaticSplits[i]["splitVector"] = terraformSplitVectors
+		terraformStaticSplits[i] = terraformSplitVectors
 	}
 	return &terraformStaticSplits
 }
