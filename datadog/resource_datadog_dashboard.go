@@ -1007,6 +1007,95 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 	}
 }
 
+func getSplitGraphSourceWidgetSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+
+		// A widget should implement exactly one of the following definitions
+		"change_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Change widget.",
+			Elem: &schema.Resource{
+				Schema: getChangeDefinitionSchema(),
+			},
+		},
+		"geomap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Geomap widget.",
+			Elem: &schema.Resource{
+				Schema: getGeomapDefinitionSchema(),
+			},
+		},
+
+		"query_value_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Value widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryValueDefinitionSchema(),
+			},
+		},
+		"query_table_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Table widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryTableDefinitionSchema(),
+			},
+		},
+		"scatterplot_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Scatterplot widget.",
+			Elem: &schema.Resource{
+				Schema: getScatterplotDefinitionSchema(),
+			},
+		},
+
+		"sunburst_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Sunburst widget.",
+			Elem: &schema.Resource{
+				Schema: getSunburstDefinitionschema(),
+			},
+		},
+		"timeseries_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Timeseries widget.",
+			Elem: &schema.Resource{
+				Schema: getTimeseriesDefinitionSchema(),
+			},
+		},
+		"toplist_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Toplist widget.",
+			Elem: &schema.Resource{
+				Schema: getToplistDefinitionSchema(),
+			},
+		},
+		"treemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Treemap widget.",
+			Elem: &schema.Resource{
+				Schema: getTreemapDefinitionSchema(),
+			},
+		},
+	}
+}
 func buildDatadogWidgets(terraformWidgets *[]interface{}) (*[]datadogV1.Widget, error) {
 	datadogWidgets := make([]datadogV1.Widget, len(*terraformWidgets))
 	for i, terraformWidget := range *terraformWidgets {
@@ -7640,8 +7729,7 @@ func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			Required:    true,
 			Elem: &schema.Resource{
-				//idk if I should make splittable schema or generic is enough
-				Schema: getNonGroupWidgetSchema(),
+				Schema: getSplitGraphSourceWidgetSchema(),
 			},
 		},
 		"split_config": {
