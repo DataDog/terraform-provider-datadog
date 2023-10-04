@@ -76,9 +76,7 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 - `renotify_interval` (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
 - `renotify_occurrences` (Number) The number of re-notification messages that should be sent on the current status.
 - `renotify_statuses` (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
-- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
-
-We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.
+- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated. Defaults to `true`. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped.
 - `restricted_roles` (Set of String) A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.
 - `scheduling_options` (Block List) Configuration options for scheduling. (see [below for nested schema](#nestedblock--scheduling_options))
 - `tags` (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
