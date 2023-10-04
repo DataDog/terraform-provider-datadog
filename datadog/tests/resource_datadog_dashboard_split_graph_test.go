@@ -11,7 +11,7 @@ resource "datadog_dashboard" "sunburst_dashboard" {
   layout_type  = "ordered"
   widget {
     split_graph_definition {
-		title = "hello",
+		title = "hello"
 		source_widget_definition{
 			title_size = "16"
 			title_align = "left"
@@ -32,7 +32,7 @@ resource "datadog_dashboard" "sunburst_dashboard" {
 				}
 				display_type = "line"
 			}
-		},
+		}
 		split_config{
 			split_dimensions{
 				one_graph_per = "service"
@@ -61,9 +61,9 @@ resource "datadog_dashboard" "sunburst_dashboard" {
 					tag_values = ["env"]
 				}
 			}
-		},
-		size = "md",
-		has_uniform_y_axes = "true",
+		}
+		size = "md"
+		has_uniform_y_axes = "true"
 		live_span = "5m"
 	}
   }
