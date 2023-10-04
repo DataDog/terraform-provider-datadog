@@ -87,7 +87,7 @@ var datadogDashboardSplitGraphAsserts = []string{
 }
 
 func TestAccDatadogDashboardSplitGraph(t *testing.T) {
-	testAccDatadogDashboardWidgetUtil(t, datadogDashboardSunburstConfig, "datadog_dashboard.split_graph_dashboard", datadogDashboardSplitGraphAsserts)
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardSplitGraphConfig, "datadog_dashboard.split_graph_dashboard", datadogDashboardSplitGraphAsserts)
 }
 
 func TestAccDatadogDashboardSplitGraph_import(t *testing.T) {
