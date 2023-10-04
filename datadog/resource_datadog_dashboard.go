@@ -1009,7 +1009,6 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 
 func getSplitGraphSourceWidgetSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-
 		// A widget should implement exactly one of the following definitions
 		"change_definition": {
 			Type:        schema.TypeList,
@@ -7859,6 +7858,7 @@ func getSplitVectorSchema() *schema.Schema {
 				"tag_values": {
 					Type:     schema.TypeList,
 					Required: true,
+					Elem:     &schema.Schema{Type: schema.TypeString},
 				},
 			},
 		},
@@ -7870,7 +7870,6 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 
 	// Required params
 	//size,source_widget,split_config, type
-
 	if size, ok := terraformDefinition["size"].(string); ok {
 		datadogDefinition.SetSize(datadogV1.SplitGraphVizSize(size))
 	}
