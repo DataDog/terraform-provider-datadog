@@ -7925,13 +7925,14 @@ func buildDatadogStaticSplits(terraformStaticSplits [][]map[string]interface{}) 
 	datadogStaticSplits := datadogV1.NewSplitConfigWithDefaults().StaticSplits
 	for i, terraformStaticSplit := range terraformStaticSplits {
 		for j, splitVector := range terraformStaticSplit {
+			datadogSplitVector := datadogV1.SplitVectorEntryItem{}
 			if v, ok := splitVector["tag_key"].(string); ok {
-				datadogStaticSplits[i][j].SetTagKey(v)
-
+				datadogSplitVector.SetTagKey(v)
 			}
 			if v, ok := splitVector["tag_values"].([]string); ok {
-				datadogStaticSplits[i][j].SetTagValues(v)
+				datadogSplitVector.SetTagValues(v)
 			}
+			datadogStaticSplits[i][j] = datadogSplitVector
 		}
 	}
 	return datadogStaticSplits
