@@ -8015,7 +8015,7 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 	return terraformDefinition
 }
 
-func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) map[string]interface{} {
+func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[string]interface{} {
 	terraformSplitConfig := map[string]interface{}{}
 	if v, ok := datadogSplitConfig.GetSplitDimensionsOk(); ok {
 		terraformSplitConfig["split_dimensions"] = *v
@@ -8025,7 +8025,7 @@ func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) map[st
 	if v, ok := datadogSplitConfig.GetStaticSplitsOk(); ok {
 		terraformSplitConfig["static_splits"] = buildTerraformStaticSplits(v)
 	}
-	return terraformSplitConfig
+	return &terraformSplitConfig
 }
 
 func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[][]map[string]interface{} {
