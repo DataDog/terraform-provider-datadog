@@ -1262,6 +1262,51 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 	return datadogWidget, nil
 }
 
+// Helper to build a Datadog Source Widget defiition
+func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) *datadogV1.SplitGraphSourceWidgetDefinition {
+	// Build widget Definition
+	var definition datadogV1.SplitGraphSourceWidgetDefinition
+
+	if def, ok := terraformWidget["change_definition"].([]interface{}); ok && len(def) > 0 {
+		if changeDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ChangeWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogChangeDefinition(changeDefinition))
+		}
+	} else if def, ok := terraformWidget["query_value_definition"].([]interface{}); ok && len(def) > 0 {
+		if queryValueDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.QueryValueWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogQueryValueDefinition(queryValueDefinition))
+		}
+	} else if def, ok := terraformWidget["query_table_definition"].([]interface{}); ok && len(def) > 0 {
+		if queryTableDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TableWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogQueryTableDefinition(queryTableDefinition))
+		}
+	} else if def, ok := terraformWidget["scatterplot_definition"].([]interface{}); ok && len(def) > 0 {
+		if scatterplotDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ScatterPlotWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogScatterplotDefinition(scatterplotDefinition))
+		}
+	} else if def, ok := terraformWidget["sunburst_definition"].([]interface{}); ok && len(def) > 0 {
+		if sunburstDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.SunburstWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogSunburstDefinition(sunburstDefinition))
+		}
+	} else if def, ok := terraformWidget["timeseries_definition"].([]interface{}); ok && len(def) > 0 {
+		if timeseriesDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TimeseriesWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogTimeseriesDefinition(timeseriesDefinition))
+		}
+	} else if def, ok := terraformWidget["toplist_definition"].([]interface{}); ok && len(def) > 0 {
+		if toplistDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ToplistWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogToplistDefinition(toplistDefinition))
+		}
+	} else if def, ok := terraformWidget["treemap_definition"].([]interface{}); ok && len(def) > 0 {
+		if treemapDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TreeMapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogTreemapDefinition(treemapDefinition))
+		}
+	} else if def, ok := terraformWidget["geomap_definition"].([]interface{}); ok && len(def) > 0 {
+		if geomapDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.GeomapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogGeomapDefinition(geomapDefinition))
+		}
+	}
+	return &definition
+}
+
 // Helper to build a list of Terraform widgets from a list of Datadog widgets
 func buildTerraformWidgets(datadogWidgets *[]datadogV1.Widget, d *schema.ResourceData) (*[]map[string]interface{}, error) {
 
@@ -7865,25 +7910,31 @@ func getSplitVectorSchema() *schema.Schema {
 	}
 }
 
+//if creating
+// 1. build datadog structs from terraform
+// 1.1 send to backend
+// 1.2 Terraform recieve response
+// 2. Builds terraform from the backend response
+
 func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}) *datadogV1.SplitGraphWidgetDefinition {
 	datadogDefinition := datadogV1.NewSplitGraphWidgetDefinitionWithDefaults()
-
 	// Required params
 	//size,source_widget,split_config, type
-	if size, ok := terraformDefinition["size"].(string); ok {
+	if size, ok := terraformDefinition["size"].(string); ok && size != "" {
 		datadogDefinition.SetSize(datadogV1.SplitGraphVizSize(size))
 	}
 
-	if v, ok := terraformDefinition["type"].(string); ok {
+	if v, ok := terraformDefinition["type"].(string); ok && v != "" {
 		datadogDefinition.SetType(datadogV1.SplitGraphWidgetDefinitionType(v))
 	}
 
-	if v, ok := terraformDefinition["source_widget_definition"].(datadogV1.SplitGraphSourceWidgetDefinition); ok {
-		datadogDefinition.SetSourceWidgetDefinition(v)
+	if terraformWidget, ok := terraformDefinition["source_widget_definition"].(map[string]interface{}); ok && len(terraformWidget) > 0 {
+		datadogWidget := buildDatadogSourceWidgetDefinition(terraformWidget)
+		datadogDefinition.SetSourceWidgetDefinition(*datadogWidget)
 	}
 
-	if v, ok := terraformDefinition["split_config"].(map[string]interface{}); ok {
-		datadogDefinition.SplitConfig = *buildDatadogSplitConfig(v)
+	if v, ok := terraformDefinition["split_config"].(map[string]interface{}); ok && len(v) > 0 {
+		datadogDefinition.SetSplitConfig(*buildDatadogSplitConfig(v))
 	}
 
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
@@ -7940,7 +7991,11 @@ func buildDatadogStaticSplits(terraformStaticSplits [][]map[string]interface{}) 
 func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-	terraformDefinition["source_widget_definition"] = datadogDefinition.GetSourceWidgetDefinition()
+
+	if v, ok := datadogDefinition.GetSourceWidgetDefinitionOk(); ok {
+		terraformDefinition["source_widget_definition"] = v
+	}
+
 	terraformDefinition["size"] = datadogDefinition.GetSize()
 
 	if v, ok := datadogDefinition.GetSplitConfigOk(); ok {
