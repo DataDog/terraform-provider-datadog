@@ -49,6 +49,12 @@ func testAccCheckDatadogPowerpack(uniq string) string {
     widgets {
     definition {
     }
+    layout {
+    height = "UPDATE ME"
+    width = "UPDATE ME"
+    x = "UPDATE ME"
+    y = "UPDATE ME"
+    }
     }
     }
     layout {

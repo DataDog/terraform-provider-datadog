@@ -11,6 +11,12 @@ resource "datadog_powerpack" "foo" {
       widgets {
         definition {
         }
+        layout {
+          height = "UPDATE ME"
+          width  = "UPDATE ME"
+          x      = "UPDATE ME"
+          y      = "UPDATE ME"
+        }
       }
     }
     layout {

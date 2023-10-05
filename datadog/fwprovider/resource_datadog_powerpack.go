@@ -50,8 +50,15 @@ type definitionModel struct {
 }
 type widgetsModel struct {
 	Definition *definitionModel `tfsdk:"definition"`
+	Layout     *layoutModel     `tfsdk:"layout"`
 }
 type definitionModel struct {
+}
+type layoutModel struct {
+	Height types.Int64 `tfsdk:"height"`
+	Width  types.Int64 `tfsdk:"width"`
+	X      types.Int64 `tfsdk:"x"`
+	Y      types.Int64 `tfsdk:"y"`
 }
 
 type layoutModel struct {
@@ -139,6 +146,26 @@ func (r *powerpackResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 									Blocks: map[string]schema.Block{
 										"definition": schema.SingleNestedBlock{
 											Attributes: map[string]schema.Attribute{},
+										},
+										"layout": schema.SingleNestedBlock{
+											Attributes: map[string]schema.Attribute{
+												"height": schema.Int64Attribute{
+													Optional:    true,
+													Description: "The height of the widget. Should be a non-negative integer.",
+												},
+												"width": schema.Int64Attribute{
+													Optional:    true,
+													Description: "The width of the widget. Should be a non-negative integer.",
+												},
+												"x": schema.Int64Attribute{
+													Optional:    true,
+													Description: "The position of the widget on the x (horizontal) axis. Should be a non-negative integer.",
+												},
+												"y": schema.Int64Attribute{
+													Optional:    true,
+													Description: "The position of the widget on the y (vertical) axis. Should be a non-negative integer.",
+												},
+											},
 										},
 									},
 								},
@@ -347,9 +374,9 @@ func (r *powerpackResource) buildPowerpackRequestBody(ctx context.Context, state
 		attributes.SetTemplateVariables(templateVariables)
 	}
 
-	var groupWidget datadogV2.PowerpackGroupWidgetDefinition
+	var groupWidget datadogV2.PowerpackGroupWidget
 
-	var definition datadogV2.PowerpackGroupWidget
+	var definition datadogV2.PowerpackGroupWidgetDefinition
 
 	definition.SetLayoutType(state.GroupWidget.Definition.LayoutType.ValueString())
 	if !state.GroupWidget.Definition.ShowTitle.IsNull() {
@@ -361,13 +388,24 @@ func (r *powerpackResource) buildPowerpackRequestBody(ctx context.Context, state
 	definition.SetType(state.GroupWidget.Definition.Type.ValueString())
 
 	if state.GroupWidget.Definition.Widgets != nil {
-		var widgets []datadogV2.PowerpackGroupWidgetWidgets
+		var widgets []datadogV2.PowerpackInnerWidgets
 		for _, widgetsTFItem := range state.GroupWidget.Definition.Widgets {
-			widgetsDDItem := datadogV2.NewPowerpackGroupWidgetWidgets()
+			widgetsDDItem := datadogV2.NewPowerpackInnerWidgets()
 
 			var definition map[string]interface{}
 
 			widgetsDDItem.Definition = definition
+
+			if widgetsTFItem.Layout != nil {
+				var layout datadogV2.PowerpackInnerWidgetLayout
+
+				layout.SetHeight(widgetsTFItem.Layout.Height.ValueInt64())
+				layout.SetWidth(widgetsTFItem.Layout.Width.ValueInt64())
+				layout.SetX(widgetsTFItem.Layout.X.ValueInt64())
+				layout.SetY(widgetsTFItem.Layout.Y.ValueInt64())
+
+				widgetsDDItem.Layout = &layout
+			}
 		}
 		definition.SetWidgets(widgets)
 	}
