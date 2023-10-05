@@ -296,7 +296,7 @@ func parseSemVersion(version string) (semVersion, error) {
 
 func isValidDatadogServiceDefinition(attrMap map[string]interface{}, k string) (warnings []string, errors []error) {
 	if schemaVersion, ok := attrMap["schema-version"].(string); ok {
-		version, err  := parseSemVersion(schemaVersion)
+		version, err := parseSemVersion(schemaVersion)
 		if err != nil {
 			errors = append(errors, fmt.Errorf("schema-version is invalid: %s", schemaVersion))
 		} else {

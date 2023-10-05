@@ -156,7 +156,6 @@ EOF
 }`, uniq)
 }
 
-
 func testAccCheckDatadogServiceDefinitionV2_2(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_definition_yaml" "service_definition" {
