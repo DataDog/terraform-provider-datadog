@@ -34,6 +34,8 @@ var (
 var Resources = []func() resource.Resource{
 	NewAPIKeyResource,
 	NewDashboardListResource,
+	NewApmRetentionFilterResource,
+	NewApmRetentionFiltersOrderResource,
 	NewDowntimeScheduleResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
@@ -55,6 +57,7 @@ var Resources = []func() resource.Resource{
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewDatadogDashboardListDataSource,
+	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogServiceAccountDatasource,
 	NewDatadogTeamDataSource,

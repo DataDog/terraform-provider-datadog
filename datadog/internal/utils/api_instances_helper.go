@@ -44,6 +44,7 @@ type ApiInstances struct {
 	webhooksIntegrationApiV1              *datadogV1.WebhooksIntegrationApi
 
 	//V2 APIs
+	apmRetentionFiltersApiV2   *datadogV2.APMRetentionFiltersApi
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
 	cloudflareIntegrationApiV2 *datadogV2.CloudflareIntegrationApi
@@ -607,4 +608,12 @@ func (i *ApiInstances) GetSyntheticsApiV2() *datadogV2.SyntheticsApi {
 		i.syntheticsApiV2 = datadogV2.NewSyntheticsApi(i.HttpClient)
 	}
 	return i.syntheticsApiV2
+}
+
+// GetSpansMetricsApiV2 get instance of SpansMetricsApi
+func (i *ApiInstances) GetApmRetentionFiltersApiV2() *datadogV2.APMRetentionFiltersApi {
+	if i.apmRetentionFiltersApiV2 == nil {
+		i.apmRetentionFiltersApiV2 = datadogV2.NewAPMRetentionFiltersApi(i.HttpClient)
+	}
+	return i.apmRetentionFiltersApiV2
 }
