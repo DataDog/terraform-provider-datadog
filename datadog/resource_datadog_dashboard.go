@@ -1457,25 +1457,25 @@ func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadog
 		terraformWidgetDefinition["change_definition"] = terraformDefinition
 	} else if datadogSourceWidgetDefinition.QueryValueWidgetDefinition != nil {
 		terraformDefinition := buildTerraformQueryValueDefinition(datadogSourceWidgetDefinition.QueryValueWidgetDefinition)
-		terraformWidgetDefinition["query_value_definition"] = terraformDefinition
+		terraformWidgetDefinition["query_value_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if datadogSourceWidgetDefinition.TableWidgetDefinition != nil {
 		terraformDefinition := buildTerraformQueryTableDefinition(datadogSourceWidgetDefinition.TableWidgetDefinition)
-		terraformWidgetDefinition["query_table_definition"] = terraformDefinition
+		terraformWidgetDefinition["query_table_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if datadogSourceWidgetDefinition.SunburstWidgetDefinition != nil {
 		terraformDefinition := buildTerraformSunburstDefinition(datadogSourceWidgetDefinition.SunburstWidgetDefinition)
-		terraformWidgetDefinition["sunburst_definition"] = terraformDefinition
+		terraformWidgetDefinition["sunburst_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if datadogSourceWidgetDefinition.TimeseriesWidgetDefinition != nil {
 		terraformDefinition := buildTerraformTimeseriesDefinition(datadogSourceWidgetDefinition.TimeseriesWidgetDefinition)
-		terraformWidgetDefinition["timeseries_definition"] = terraformDefinition
+		terraformWidgetDefinition["timeseries_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if datadogSourceWidgetDefinition.ToplistWidgetDefinition != nil {
 		terraformDefinition := buildTerraformToplistDefinition(datadogSourceWidgetDefinition.ToplistWidgetDefinition)
-		terraformWidgetDefinition["toplist_definition"] = terraformDefinition
+		terraformWidgetDefinition["toplist_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if datadogSourceWidgetDefinition.TreeMapWidgetDefinition != nil {
 		terraformDefinition := buildTerraformTreemapDefinition(datadogSourceWidgetDefinition.TreeMapWidgetDefinition)
-		terraformWidgetDefinition["treemap_definition"] = terraformDefinition
+		terraformWidgetDefinition["treemap_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if datadogSourceWidgetDefinition.GeomapWidgetDefinition != nil {
 		terraformDefinition := buildTerraformGeomapDefinition(datadogSourceWidgetDefinition.GeomapWidgetDefinition)
-		terraformWidgetDefinition["geomap_definition"] = terraformDefinition
+		terraformWidgetDefinition["geomap_definition"] = []map[string]interface{}{terraformDefinition}
 	}
 	return terraformWidgetDefinition
 }
