@@ -8064,7 +8064,7 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 	}
 
 	if v, ok := datadogDefinition.GetSplitConfigOk(); ok {
-		terraformDefinition["split_config"] = buildTerraformSplitConfig(v)
+		terraformDefinition["split_config"] = []map[string]interface{}{*buildTerraformSplitConfig(v)}
 	}
 	// Optional params
 	if v, ok := datadogDefinition.GetHasUniformYAxesOk(); ok {
@@ -8081,25 +8081,32 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 }
 
 func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[string]interface{} {
+	//
 	terraformSplitConfig := map[string]interface{}{}
 	if v, ok := datadogSplitConfig.GetSplitDimensionsOk(); ok {
 		terraformOneGraphPer := map[string]interface{}{}
 		datadogSplitDimensions := *v
 		terraformOneGraphPer["one_graph_per"] = datadogSplitDimensions[0].OneGraphPer
-		terraformSplitConfig["split_dimensions"] = terraformOneGraphPer
+		terraformSplitConfig["split_dimensions"] = []map[string]interface{}{terraformOneGraphPer}
 	}
 	if v, ok := datadogSplitConfig.GetLimitOk(); ok {
 		terraformSplitConfig["limit"] = *v
 	}
 	if datadogSort, ok := datadogSplitConfig.GetSortOk(); ok {
-		//terraformSplitConfig["sort"] = datadogSplitConfig.GetSort()
+		terraformSortList := make([]map[string]interface{}, 1)
 		terraformSort := map[string]interface{}{}
+		terraformSortComputeList := make([]map[string]interface{}, 1)
+
 		terraformSortCompute := map[string]interface{}{}
 		terraformSortCompute["aggregation"] = datadogSort.Compute.Aggregation
 		terraformSortCompute["metric"] = datadogSort.Compute.Metric
+		terraformSortComputeList[0] = terraformSortCompute
 
 		terraformSort["order"] = datadogSort.Order
-		terraformSort["compute"] = terraformSortCompute
+		terraformSort["compute"] = terraformSortComputeList
+
+		terraformSortList[0] = terraformSort
+
 	}
 	if v, ok := datadogSplitConfig.GetStaticSplitsOk(); ok {
 		terraformSplitConfig["static_splits"] = buildTerraformStaticSplits(v)
