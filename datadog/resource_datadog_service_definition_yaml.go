@@ -255,7 +255,6 @@ type semVersion struct {
 }
 
 func parseSemVersion(version string) (semVersion, error) {
-	// Remove leading 'v' if present
 	if !strings.HasPrefix(version, "v") {
 		return semVersion{}, fmt.Errorf("missing prefix v: %s", version)
 	}
