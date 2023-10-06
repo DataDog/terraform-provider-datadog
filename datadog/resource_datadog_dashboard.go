@@ -8154,22 +8154,45 @@ func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[s
 //
 // ]
 
-func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[][]map[string]interface{} {
+// func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[][]map[string]interface{} {
+// 	//array of 2 static_splits
+// 	terraformStaticSplits := make([]interface{}, len(*datadogStaticSplits))
+// 	for i, staticSplit := range *datadogStaticSplits {
+// 		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
+// 		for j, splitVector := range staticSplit {
+// 			terraformSplitVectorList := make([]map[string]interface{}, 1)
+
+// 			terraformSplitVector := map[string]interface{}{}
+// 			terraformSplitVector["tag_key"] = splitVector.GetTagKey()
+// 			terraformSplitVector["tag_values"] = splitVector.GetTagValues()
+
+// 			terraformSplitVectorList[0] = terraformSplitVector
+// 			terraformSplitVectors[j] = map[string]interface{}{}
+
+// 			terraformSplitVectors[j]["split_vector"] = terraformSplitVectorList
+// 		}
+// 		terraformStaticSplits[i] = terraformSplitVectors
+// 	}
+// 	return &terraformStaticSplits
+// }
+
+func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[]interface{} {
 	//array of 2 static_splits
-	terraformStaticSplits := make([][]map[string]interface{}, len(*datadogStaticSplits))
+	terraformStaticSplits := make([]interface{}, len(*datadogStaticSplits))
 	for i, staticSplit := range *datadogStaticSplits {
 		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
 		for j, splitVector := range staticSplit {
-			terraformSplitVectorList := make([]map[string]interface{}, 1)
-
 			terraformSplitVector := map[string]interface{}{}
 			terraformSplitVector["tag_key"] = splitVector.GetTagKey()
 			terraformSplitVector["tag_values"] = splitVector.GetTagValues()
 
-			terraformSplitVectorList[0] = terraformSplitVector
-			terraformSplitVectors[j]["split_vector"] = terraformSplitVector
+			terraformSplitVectors[j] = map[string]interface{}{}
+			terraformSplitVectors[j] = terraformSplitVector
 		}
-		terraformStaticSplits[i] = terraformSplitVectors
+		//rename this
+		terraformSplitVector := map[string]interface{}{}
+		terraformSplitVector["split_vector"] = terraformSplitVectors
+		terraformStaticSplits[i] = terraformSplitVector
 	}
 	return &terraformStaticSplits
 }
