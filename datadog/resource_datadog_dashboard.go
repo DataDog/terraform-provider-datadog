@@ -1454,28 +1454,28 @@ func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadog
 	// Build definition
 	if datadogSourceWidgetDefinition.ChangeWidgetDefinition != nil {
 		terraformDefinition := buildTerraformChangeDefinition(datadogSourceWidgetDefinition.ChangeWidgetDefinition)
-		terraformWidgetDefinition["change_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidgetDefinition["change_definition"] = terraformDefinition
 	} else if datadogSourceWidgetDefinition.QueryValueWidgetDefinition != nil {
 		terraformDefinition := buildTerraformQueryValueDefinition(datadogSourceWidgetDefinition.QueryValueWidgetDefinition)
-		terraformWidgetDefinition["query_value_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidgetDefinition["query_value_definition"] = terraformDefinition
 	} else if datadogSourceWidgetDefinition.TableWidgetDefinition != nil {
 		terraformDefinition := buildTerraformQueryTableDefinition(datadogSourceWidgetDefinition.TableWidgetDefinition)
-		terraformWidgetDefinition["query_table_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidgetDefinition["query_table_definition"] = terraformDefinition
 	} else if datadogSourceWidgetDefinition.SunburstWidgetDefinition != nil {
 		terraformDefinition := buildTerraformSunburstDefinition(datadogSourceWidgetDefinition.SunburstWidgetDefinition)
-		terraformWidgetDefinition["sunburst_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidgetDefinition["sunburst_definition"] = terraformDefinition
 	} else if datadogSourceWidgetDefinition.TimeseriesWidgetDefinition != nil {
 		terraformDefinition := buildTerraformTimeseriesDefinition(datadogSourceWidgetDefinition.TimeseriesWidgetDefinition)
-		terraformWidgetDefinition["timeseries_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidgetDefinition["timeseries_definition"] = terraformDefinition
 	} else if datadogSourceWidgetDefinition.ToplistWidgetDefinition != nil {
 		terraformDefinition := buildTerraformToplistDefinition(datadogSourceWidgetDefinition.ToplistWidgetDefinition)
-		terraformWidgetDefinition["toplist_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidgetDefinition["toplist_definition"] = terraformDefinition
 	} else if datadogSourceWidgetDefinition.TreeMapWidgetDefinition != nil {
 		terraformDefinition := buildTerraformTreemapDefinition(datadogSourceWidgetDefinition.TreeMapWidgetDefinition)
-		terraformWidgetDefinition["treemap_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidgetDefinition["treemap_definition"] = terraformDefinition
 	} else if datadogSourceWidgetDefinition.GeomapWidgetDefinition != nil {
 		terraformDefinition := buildTerraformGeomapDefinition(datadogSourceWidgetDefinition.GeomapWidgetDefinition)
-		terraformWidgetDefinition["geomap_definition"] = []map[string]interface{}{terraformDefinition}
+		terraformWidgetDefinition["geomap_definition"] = terraformDefinition
 	}
 	return terraformWidgetDefinition
 }
@@ -8055,8 +8055,13 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 	if v, ok := datadogDefinition.GetSourceWidgetDefinitionOk(); ok {
 		terraformDefinition["source_widget_definition"] = buildTerraformSourceWidgetDefinition(v)
 	}
+	if v, ok := datadogDefinition.GetSizeOk(); ok {
+		terraformDefinition["size"] = v
+	}
 
-	terraformDefinition["size"] = datadogDefinition.GetSize()
+	if v, ok := datadogDefinition.GetTypeOk(); ok {
+		terraformDefinition["type"] = v
+	}
 
 	if v, ok := datadogDefinition.GetSplitConfigOk(); ok {
 		terraformDefinition["split_config"] = buildTerraformSplitConfig(v)
@@ -8086,8 +8091,16 @@ func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[s
 	if v, ok := datadogSplitConfig.GetLimitOk(); ok {
 		terraformSplitConfig["limit"] = *v
 	}
+	if datadogSort, ok := datadogSplitConfig.GetSortOk(); ok {
+		//terraformSplitConfig["sort"] = datadogSplitConfig.GetSort()
+		terraformSort := map[string]interface{}{}
+		terraformSortCompute := map[string]interface{}{}
+		terraformSortCompute["aggregation"] = datadogSort.Compute.Aggregation
+		terraformSortCompute["metric"] = datadogSort.Compute.Metric
 
-	terraformSplitConfig["sort"] = datadogSplitConfig.GetSort()
+		terraformSort["order"] = datadogSort.Order
+		terraformSort["compute"] = terraformSortCompute
+	}
 	if v, ok := datadogSplitConfig.GetStaticSplitsOk(); ok {
 		terraformSplitConfig["static_splits"] = buildTerraformStaticSplits(v)
 	}
