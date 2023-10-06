@@ -7998,7 +7998,7 @@ func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datad
 		}
 	}
 
-	if v, ok := terraformSplitConfig["static_splits"].([][]map[string]interface{}); ok {
+	if v, ok := terraformSplitConfig["static_splits"].([]interface{}); ok {
 		datadogStaticSplits := buildDatadogStaticSplits(v)
 		datadogSplitConfig.SetStaticSplits(*datadogStaticSplits)
 	}
@@ -8027,18 +8027,55 @@ func buildDatadogSplitSort(terraformSplitSort map[string]interface{}) *datadogV1
 	return &datadogSplitSort
 }
 
-func buildDatadogStaticSplits(terraformStaticSplits [][]map[string]interface{}) *[][]datadogV1.SplitVectorEntryItem {
-	datadogStaticSplits := datadogV1.NewSplitConfigWithDefaults().StaticSplits
+// [
+// 	[
+// 		{"tag_key": "service", "tag_values": ["cassandra"]},
+// 		{"tag_key": "datacenter", "tag_values": []}
+// 	],
+// 	[
+// 		{"tag_key": "demo", "tag_values": ["env"]}
+// 	],
+
+// ]
+
+//	 static_splits {
+//		 split_vector {
+//			 tag_key    = "service"
+//			 tag_values = [
+//				 "cassandra",
+//			  ]
+//		  }
+//		 split_vector {
+//			tag_key    = "datacenter"
+//			tag_values = []
+//		  }
+//	  }
+//	 static_splits {
+//		 split_vector {
+//			tag_key    = "demo"
+//			tag_values = [
+//				 "env",
+//			  ]
+//		  }
+//	  }
+func buildDatadogStaticSplits(terraformStaticSplits []interface{}) *[][]datadogV1.SplitVectorEntryItem {
+	datadogStaticSplits := make([][]datadogV1.SplitVectorEntryItem, len(terraformStaticSplits))
 	for i, terraformStaticSplit := range terraformStaticSplits {
-		for j, splitVector := range terraformStaticSplit {
+		terraformStaticSplitMap := terraformStaticSplit.(map[string]interface{})
+		for _, splitVector := range terraformStaticSplitMap["split_vector"].([]interface{}) {
+			datadogSplitVectorMap := splitVector.(map[string]interface{})
 			datadogSplitVector := datadogV1.SplitVectorEntryItem{}
-			if v, ok := splitVector["tag_key"].(string); ok {
+			if v, ok := datadogSplitVectorMap["tag_key"].(string); ok {
 				datadogSplitVector.SetTagKey(v)
 			}
-			if v, ok := splitVector["tag_values"].([]string); ok {
-				datadogSplitVector.SetTagValues(v)
+			if tagValuesList, ok := datadogSplitVectorMap["tag_values"].([]interface{}); ok {
+				datadogTagValues := make([]string, len(tagValuesList))
+				for k, tagValues := range tagValuesList {
+					datadogTagValues[k] = tagValues.(string)
+				}
+				datadogSplitVector.SetTagValues(datadogTagValues)
 			}
-			datadogStaticSplits[i][j] = datadogSplitVector
+			datadogStaticSplits[i] = append(datadogStaticSplits[i], datadogSplitVector)
 		}
 	}
 	return &datadogStaticSplits
@@ -8098,7 +8135,7 @@ func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[s
 		terraformSort["compute"] = terraformSortComputeList
 
 		terraformSortList[0] = terraformSort
-
+		terraformSplitConfig["sort"] = terraformSortList
 	}
 	if v, ok := datadogSplitConfig.GetStaticSplitsOk(); ok {
 		terraformSplitConfig["static_splits"] = buildTerraformStaticSplits(v)
@@ -8106,15 +8143,30 @@ func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[s
 	return &terraformSplitConfig
 }
 
+// [
+//
+//	i[
+//		j{"tag_key": "service", "tag_values": ["cassandra"]},
+//		{"tag_key": "datacenter", "tag_values": []}
+//	],
+//	[	{"tag_key": "demo", "tag_values": ["env"]}
+//	],
+//
+// ]
+
 func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[][]map[string]interface{} {
 	//array of 2 static_splits
 	terraformStaticSplits := make([][]map[string]interface{}, len(*datadogStaticSplits))
 	for i, staticSplit := range *datadogStaticSplits {
 		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
 		for j, splitVector := range staticSplit {
+			terraformSplitVectorList := make([]map[string]interface{}, 1)
+
 			terraformSplitVector := map[string]interface{}{}
 			terraformSplitVector["tag_key"] = splitVector.GetTagKey()
 			terraformSplitVector["tag_values"] = splitVector.GetTagValues()
+
+			terraformSplitVectorList[0] = terraformSplitVector
 			terraformSplitVectors[j]["split_vector"] = terraformSplitVector
 		}
 		terraformStaticSplits[i] = terraformSplitVectors
