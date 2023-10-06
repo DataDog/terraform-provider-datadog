@@ -7797,7 +7797,7 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 }
 
 //
-// Run Split Graph Definition helpers
+// Split Graph Definition helpers
 //
 
 func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
@@ -7952,10 +7952,6 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 		datadogDefinition.SetSize(datadogV1.SplitGraphVizSize(size))
 	}
 
-	if v, ok := terraformDefinition["type"].(string); ok && v != "" {
-		datadogDefinition.SetType(datadogV1.SplitGraphWidgetDefinitionType(v))
-	}
-
 	if terraformSourceWidget, ok := terraformDefinition["source_widget_definition"].([]interface{}); ok && len(terraformSourceWidget) > 0 {
 		datadogWidget := buildDatadogSourceWidgetDefinition(terraformSourceWidget[0].(map[string]interface{}))
 		datadogDefinition.SetSourceWidgetDefinition(*datadogWidget)
@@ -8053,14 +8049,10 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 	// Required params
 
 	if v, ok := datadogDefinition.GetSourceWidgetDefinitionOk(); ok {
-		terraformDefinition["source_widget_definition"] = buildTerraformSourceWidgetDefinition(v)
+		terraformDefinition["source_widget_definition"] = []map[string]interface{}{buildTerraformSourceWidgetDefinition(v)}
 	}
 	if v, ok := datadogDefinition.GetSizeOk(); ok {
 		terraformDefinition["size"] = v
-	}
-
-	if v, ok := datadogDefinition.GetTypeOk(); ok {
-		terraformDefinition["type"] = v
 	}
 
 	if v, ok := datadogDefinition.GetSplitConfigOk(); ok {
