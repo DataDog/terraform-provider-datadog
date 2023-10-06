@@ -65,7 +65,7 @@ resource "datadog_dashboard" "split_graph_dashboard" {
 			}
 		}
 		size = "md"
-		has_uniform_y_axes = "true"
+		has_uniform_y_axes = true
 		live_span = "5m"
 	}
   }

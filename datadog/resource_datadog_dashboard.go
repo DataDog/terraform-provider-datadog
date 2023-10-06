@@ -1446,6 +1446,40 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 	return terraformWidget, nil
 }
 
+// buildDatadogSourceWidgetDefinition
+// Helper to build a Terraform widget from a Datadog widget
+func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadogV1.SplitGraphSourceWidgetDefinition) map[string]interface{} {
+	terraformWidgetDefinition := map[string]interface{}{}
+
+	// Build definition
+	if datadogSourceWidgetDefinition.ChangeWidgetDefinition != nil {
+		terraformDefinition := buildTerraformChangeDefinition(datadogSourceWidgetDefinition.ChangeWidgetDefinition)
+		terraformWidgetDefinition["change_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.QueryValueWidgetDefinition != nil {
+		terraformDefinition := buildTerraformQueryValueDefinition(datadogSourceWidgetDefinition.QueryValueWidgetDefinition)
+		terraformWidgetDefinition["query_value_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.TableWidgetDefinition != nil {
+		terraformDefinition := buildTerraformQueryTableDefinition(datadogSourceWidgetDefinition.TableWidgetDefinition)
+		terraformWidgetDefinition["query_table_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.SunburstWidgetDefinition != nil {
+		terraformDefinition := buildTerraformSunburstDefinition(datadogSourceWidgetDefinition.SunburstWidgetDefinition)
+		terraformWidgetDefinition["sunburst_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.TimeseriesWidgetDefinition != nil {
+		terraformDefinition := buildTerraformTimeseriesDefinition(datadogSourceWidgetDefinition.TimeseriesWidgetDefinition)
+		terraformWidgetDefinition["timeseries_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.ToplistWidgetDefinition != nil {
+		terraformDefinition := buildTerraformToplistDefinition(datadogSourceWidgetDefinition.ToplistWidgetDefinition)
+		terraformWidgetDefinition["toplist_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.TreeMapWidgetDefinition != nil {
+		terraformDefinition := buildTerraformTreemapDefinition(datadogSourceWidgetDefinition.TreeMapWidgetDefinition)
+		terraformWidgetDefinition["treemap_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.GeomapWidgetDefinition != nil {
+		terraformDefinition := buildTerraformGeomapDefinition(datadogSourceWidgetDefinition.GeomapWidgetDefinition)
+		terraformWidgetDefinition["geomap_definition"] = []map[string]interface{}{terraformDefinition}
+	}
+	return terraformWidgetDefinition
+}
+
 //
 // Widget Layout helpers
 //
@@ -7791,7 +7825,7 @@ func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
 		},
 		"has_uniform_y_axes": {
 			Description: "Normalize y axes across graphs.",
-			Type:        schema.TypeString,
+			Type:        schema.TypeBool,
 			Optional:    true,
 		},
 		"title": {
@@ -7910,12 +7944,6 @@ func getSplitVectorSchema() *schema.Schema {
 	}
 }
 
-//if creating
-// 1. build datadog structs from terraform
-// 1.1 send to backend
-// 1.2 Terraform recieve response
-// 2. Builds terraform from the backend response
-
 func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}) *datadogV1.SplitGraphWidgetDefinition {
 	datadogDefinition := datadogV1.NewSplitGraphWidgetDefinitionWithDefaults()
 	// Required params
@@ -7928,13 +7956,18 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 		datadogDefinition.SetType(datadogV1.SplitGraphWidgetDefinitionType(v))
 	}
 
-	if terraformWidget, ok := terraformDefinition["source_widget_definition"].(map[string]interface{}); ok && len(terraformWidget) > 0 {
-		datadogWidget := buildDatadogSourceWidgetDefinition(terraformWidget)
+	if terraformSourceWidget, ok := terraformDefinition["source_widget_definition"].([]interface{}); ok && len(terraformSourceWidget) > 0 {
+		datadogWidget := buildDatadogSourceWidgetDefinition(terraformSourceWidget[0].(map[string]interface{}))
 		datadogDefinition.SetSourceWidgetDefinition(*datadogWidget)
 	}
 
-	if v, ok := terraformDefinition["split_config"].(map[string]interface{}); ok && len(v) > 0 {
-		datadogDefinition.SetSplitConfig(*buildDatadogSplitConfig(v))
+	if terraformSplitConfig, ok := terraformDefinition["split_config"].([]interface{}); ok && len(terraformSplitConfig) > 0 {
+		datadogDefinition.SetSplitConfig(*buildDatadogSplitConfig(terraformSplitConfig[0].(map[string]interface{})))
+	}
+
+	//non required params
+	if yAxes, ok := terraformDefinition["has_uniform_y_axes"].(bool); ok {
+		datadogDefinition.SetHasUniformYAxes(yAxes)
 	}
 
 	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
@@ -7952,26 +7985,53 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datadogV1.SplitConfig {
 	datadogSplitConfig := datadogV1.NewSplitConfigWithDefaults()
 
-	if limit, ok := terraformSplitConfig["limit"].(int64); ok {
-		datadogSplitConfig.SetLimit(limit)
+	if limit, ok := terraformSplitConfig["limit"].(int); ok {
+		datadogSplitConfig.SetLimit(int64(limit))
 	}
 
-	if sort, ok := terraformSplitConfig["sort"].(datadogV1.SplitSort); ok {
-		datadogSplitConfig.SetSort(sort)
+	if sort, ok := terraformSplitConfig["sort"].([]interface{}); ok && len(sort) > 0 {
+		datadogSplitConfig.SetSort(*buildDatadogSplitSort(sort[0].(map[string]interface{})))
 	}
 
-	if v, ok := terraformSplitConfig["split_dimensions"].([]datadogV1.SplitDimension); ok {
-		datadogSplitConfig.SetSplitDimensions(v)
+	if splitDimensions, ok := terraformSplitConfig["split_dimensions"].([]interface{}); ok && len(splitDimensions) > 0 {
+		terraformSplitDimension := splitDimensions[0].(map[string]interface{})
+		if v, ok := terraformSplitDimension["one_graph_per"].(string); ok && len(v) > 0 {
+			datadogSplitDimensions := make([]datadogV1.SplitDimension, 1)
+			datadogSplitDimensions[0] = *datadogV1.NewSplitDimension(v)
+			datadogSplitConfig.SetSplitDimensions(datadogSplitDimensions)
+		}
 	}
 
 	if v, ok := terraformSplitConfig["static_splits"].([][]map[string]interface{}); ok {
 		datadogStaticSplits := buildDatadogStaticSplits(v)
-		datadogSplitConfig.SetStaticSplits(datadogStaticSplits)
+		datadogSplitConfig.SetStaticSplits(*datadogStaticSplits)
 	}
 	return datadogSplitConfig
 }
 
-func buildDatadogStaticSplits(terraformStaticSplits [][]map[string]interface{}) [][]datadogV1.SplitVectorEntryItem {
+func buildDatadogSplitSort(terraformSplitSort map[string]interface{}) *datadogV1.SplitSort {
+	datadogSplitSort := datadogV1.SplitSort{}
+
+	if order, ok := terraformSplitSort["order"].(string); ok && len(order) > 0 {
+		datadogSplitSort.SetOrder(datadogV1.WidgetSort(order))
+	}
+
+	if compute, ok := terraformSplitSort["compute"].([]interface{}); ok && len(compute) > 0 {
+		sortCompute := compute[0].(map[string]interface{})
+		var datadogSortAggregation string
+		var datadogSortMetric string
+		if aggregation, ok := sortCompute["aggregation"].(string); ok && len(aggregation) > 0 {
+			datadogSortAggregation = aggregation
+		}
+		if metric, ok := sortCompute["metric"].(string); ok && len(metric) > 0 {
+			datadogSortMetric = metric
+		}
+		datadogSplitSort.SetCompute(*datadogV1.NewSplitConfigSortCompute(datadogSortAggregation, datadogSortMetric))
+	}
+	return &datadogSplitSort
+}
+
+func buildDatadogStaticSplits(terraformStaticSplits [][]map[string]interface{}) *[][]datadogV1.SplitVectorEntryItem {
 	datadogStaticSplits := datadogV1.NewSplitConfigWithDefaults().StaticSplits
 	for i, terraformStaticSplit := range terraformStaticSplits {
 		for j, splitVector := range terraformStaticSplit {
@@ -7985,7 +8045,7 @@ func buildDatadogStaticSplits(terraformStaticSplits [][]map[string]interface{}) 
 			datadogStaticSplits[i][j] = datadogSplitVector
 		}
 	}
-	return datadogStaticSplits
+	return &datadogStaticSplits
 }
 
 func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphWidgetDefinition) map[string]interface{} {
@@ -7993,7 +8053,7 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 	// Required params
 
 	if v, ok := datadogDefinition.GetSourceWidgetDefinitionOk(); ok {
-		terraformDefinition["source_widget_definition"] = v
+		terraformDefinition["source_widget_definition"] = buildTerraformSourceWidgetDefinition(v)
 	}
 
 	terraformDefinition["size"] = datadogDefinition.GetSize()
@@ -8018,9 +8078,15 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[string]interface{} {
 	terraformSplitConfig := map[string]interface{}{}
 	if v, ok := datadogSplitConfig.GetSplitDimensionsOk(); ok {
-		terraformSplitConfig["split_dimensions"] = *v
+		terraformOneGraphPer := map[string]interface{}{}
+		datadogSplitDimensions := *v
+		terraformOneGraphPer["one_graph_per"] = datadogSplitDimensions[0].OneGraphPer
+		terraformSplitConfig["split_dimensions"] = terraformOneGraphPer
 	}
-	terraformSplitConfig["limit"] = datadogSplitConfig.GetLimit()
+	if v, ok := datadogSplitConfig.GetLimitOk(); ok {
+		terraformSplitConfig["limit"] = *v
+	}
+
 	terraformSplitConfig["sort"] = datadogSplitConfig.GetSort()
 	if v, ok := datadogSplitConfig.GetStaticSplitsOk(); ok {
 		terraformSplitConfig["static_splits"] = buildTerraformStaticSplits(v)
