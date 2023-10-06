@@ -20,10 +20,9 @@ resource "datadog_dashboard" "split_graph_dashboard" {
 				request {
 					query {
 						metric_query {
-						data_source = "metrics"
-						query       = "avg:system.cpu.user{foo:bar} by {env}"
-						name        = "my_query_1"
-						aggregator  = "sum"
+							data_source = "metrics"
+							query       = "avg:system.cpu.user{*}"
+							name        = "my_query_1"
 						}
 					}
 					style {
