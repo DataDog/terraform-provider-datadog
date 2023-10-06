@@ -11,7 +11,7 @@ resource "datadog_dashboard" "split_graph_dashboard" {
   layout_type  = "ordered"
   widget {
     split_graph_definition {
-		title = "hello"
+		title = "Terraform Split Graph Widget"
 		source_widget_definition{
 			timeseries_definition{
 				title_size = "16"
@@ -75,16 +75,15 @@ var datadogDashboardSplitGraphAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"layout_type = ordered",
 	"title = {{uniq}}",
-	"widget.0.split_graph_definition.0.title = hello",
-	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.title_size = 16",
-	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.title_align = left",
-	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.title = system.cpu.user",
-	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.request.0.query.0.metric_query.0.data_source = metrics",
-	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.request.0.query.0.metric_query.0.query = avg:system.cpu.user{foo:bar} by {env}",
-	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.request.0.query.0.metric_query.0.name = my_query_1",
-	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.request.0.query.0.metric_query.0.aggregator = sum",
-	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.request.0.style.0.palette = dog_classic",
-	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.request.0.display_type = line",
+	"widget.0.split_graph_definition.0.title = Terraform Split Graph Widget",
+	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.title_size = 16",
+	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.title_align = left",
+	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.title = system.cpu.user",
+	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.request.0.query.0.metric_query.0.data_source = metrics",
+	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.request.0.query.0.metric_query.0.query = avg:system.cpu.user{*}",
+	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.request.0.query.0.metric_query.0.name = my_query_1",
+	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.request.0.style.0.palette = dog_classic",
+	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.request.0.display_type = line",
 }
 
 func TestAccDatadogDashboardSplitGraph(t *testing.T) {
