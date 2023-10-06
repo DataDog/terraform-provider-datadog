@@ -58,6 +58,25 @@ func TestAccDatadogServiceDefinition_BasicV2_1(t *testing.T) {
 	})
 }
 
+func TestAccDatadogServiceDefinition_BasicV2_2(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceDefinitionDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceDefinitionV2_2(uniq),
+				Check:  checkServiceDefinitionExists(accProvider),
+			},
+		},
+	})
+}
+
 func TestAccDatadogServiceDefinition_BasicBackstage(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
