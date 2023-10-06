@@ -1262,7 +1262,7 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 	return datadogWidget, nil
 }
 
-// Helper to build a Datadog Source Widget defiition
+// Helper to build a Datadog Source Widget defiition for split graph
 func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) *datadogV1.SplitGraphSourceWidgetDefinition {
 	// Build widget Definition
 	var definition datadogV1.SplitGraphSourceWidgetDefinition
@@ -1446,8 +1446,7 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 	return terraformWidget, nil
 }
 
-// buildDatadogSourceWidgetDefinition
-// Helper to build a Terraform widget from a Datadog widget
+// Helper to build a source widget definition for terraform
 func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadogV1.SplitGraphSourceWidgetDefinition) map[string]interface{} {
 	terraformWidgetDefinition := map[string]interface{}{}
 
@@ -7961,7 +7960,7 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 		datadogDefinition.SetSplitConfig(*buildDatadogSplitConfig(terraformSplitConfig[0].(map[string]interface{})))
 	}
 
-	//non required params
+	//optional params
 	if yAxes, ok := terraformDefinition["has_uniform_y_axes"].(bool); ok {
 		datadogDefinition.SetHasUniformYAxes(yAxes)
 	}
@@ -8027,37 +8026,7 @@ func buildDatadogSplitSort(terraformSplitSort map[string]interface{}) *datadogV1
 	return &datadogSplitSort
 }
 
-// [
-// 	[
-// 		{"tag_key": "service", "tag_values": ["cassandra"]},
-// 		{"tag_key": "datacenter", "tag_values": []}
-// 	],
-// 	[
-// 		{"tag_key": "demo", "tag_values": ["env"]}
-// 	],
-
-// ]
-
-//	 static_splits {
-//		 split_vector {
-//			 tag_key    = "service"
-//			 tag_values = [
-//				 "cassandra",
-//			  ]
-//		  }
-//		 split_vector {
-//			tag_key    = "datacenter"
-//			tag_values = []
-//		  }
-//	  }
-//	 static_splits {
-//		 split_vector {
-//			tag_key    = "demo"
-//			tag_values = [
-//				 "env",
-//			  ]
-//		  }
-//	  }
+// Build static splits for backend  format from static splits
 func buildDatadogStaticSplits(terraformStaticSplits []interface{}) *[][]datadogV1.SplitVectorEntryItem {
 	datadogStaticSplits := make([][]datadogV1.SplitVectorEntryItem, len(terraformStaticSplits))
 	for i, terraformStaticSplit := range terraformStaticSplits {
@@ -8084,14 +8053,12 @@ func buildDatadogStaticSplits(terraformStaticSplits []interface{}) *[][]datadogV
 func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
-
 	if v, ok := datadogDefinition.GetSourceWidgetDefinitionOk(); ok {
 		terraformDefinition["source_widget_definition"] = []map[string]interface{}{buildTerraformSourceWidgetDefinition(v)}
 	}
 	if v, ok := datadogDefinition.GetSizeOk(); ok {
 		terraformDefinition["size"] = v
 	}
-
 	if v, ok := datadogDefinition.GetSplitConfigOk(); ok {
 		terraformDefinition["split_config"] = []map[string]interface{}{*buildTerraformSplitConfig(v)}
 	}
@@ -8110,7 +8077,6 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 }
 
 func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[string]interface{} {
-	//
 	terraformSplitConfig := map[string]interface{}{}
 	if v, ok := datadogSplitConfig.GetSplitDimensionsOk(); ok {
 		terraformOneGraphPer := map[string]interface{}{}
@@ -8143,41 +8109,8 @@ func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[s
 	return &terraformSplitConfig
 }
 
-// [
-//
-//	i[
-//		j{"tag_key": "service", "tag_values": ["cassandra"]},
-//		{"tag_key": "datacenter", "tag_values": []}
-//	],
-//	[	{"tag_key": "demo", "tag_values": ["env"]}
-//	],
-//
-// ]
-
-// func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[][]map[string]interface{} {
-// 	//array of 2 static_splits
-// 	terraformStaticSplits := make([]interface{}, len(*datadogStaticSplits))
-// 	for i, staticSplit := range *datadogStaticSplits {
-// 		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
-// 		for j, splitVector := range staticSplit {
-// 			terraformSplitVectorList := make([]map[string]interface{}, 1)
-
-// 			terraformSplitVector := map[string]interface{}{}
-// 			terraformSplitVector["tag_key"] = splitVector.GetTagKey()
-// 			terraformSplitVector["tag_values"] = splitVector.GetTagValues()
-
-// 			terraformSplitVectorList[0] = terraformSplitVector
-// 			terraformSplitVectors[j] = map[string]interface{}{}
-
-// 			terraformSplitVectors[j]["split_vector"] = terraformSplitVectorList
-// 		}
-// 		terraformStaticSplits[i] = terraformSplitVectors
-// 	}
-// 	return &terraformStaticSplits
-// }
-
+// Build static splits for terraform from backend format
 func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[]interface{} {
-	//array of 2 static_splits
 	terraformStaticSplits := make([]interface{}, len(*datadogStaticSplits))
 	for i, staticSplit := range *datadogStaticSplits {
 		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
@@ -8189,10 +8122,9 @@ func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEn
 			terraformSplitVectors[j] = map[string]interface{}{}
 			terraformSplitVectors[j] = terraformSplitVector
 		}
-		//rename this
-		terraformSplitVector := map[string]interface{}{}
-		terraformSplitVector["split_vector"] = terraformSplitVectors
-		terraformStaticSplits[i] = terraformSplitVector
+		terraformSplitVectorList := map[string]interface{}{}
+		terraformSplitVectorList["split_vector"] = terraformSplitVectors
+		terraformStaticSplits[i] = terraformSplitVectorList
 	}
 	return &terraformStaticSplits
 }

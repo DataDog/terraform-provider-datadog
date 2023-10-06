@@ -84,6 +84,22 @@ var datadogDashboardSplitGraphAsserts = []string{
 	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.request.0.query.0.metric_query.0.name = my_query_1",
 	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.request.0.style.0.palette = dog_classic",
 	"widget.0.split_graph_definition.0.source_widget_definition.0.timeseries_definition.0.request.0.display_type = line",
+	"widget.0.split_graph_definition.0.split_config.0.split_dimensions.0.one_graph_per = service",
+	"widget.0.split_graph_definition.0.split_config.0.limit = 24",
+	"widget.0.split_graph_definition.0.split_config.0.sort.0.compute.0.aggregation = sum",
+	"widget.0.split_graph_definition.0.split_config.0.sort.0.compute.0.metric = system.cpu.user",
+	"widget.0.split_graph_definition.0.split_config.0.sort.0.order = desc",
+	"widget.0.split_graph_definition.0.split_config.0.static_splits.0.split_vector.0.tag_key = service",
+	"widget.0.split_graph_definition.0.split_config.0.static_splits.0.split_vector.0.tag_values.0 = cassandra",
+	"widget.0.split_graph_definition.0.split_config.0.static_splits.0.split_vector.0.tag_values.# = 1",
+	"widget.0.split_graph_definition.0.split_config.0.static_splits.0.split_vector.1.tag_key = datacenter",
+	"widget.0.split_graph_definition.0.split_config.0.static_splits.0.split_vector.1.tag_values.# = 0",
+	"widget.0.split_graph_definition.0.split_config.0.static_splits.1.split_vector.0.tag_key = demo",
+	"widget.0.split_graph_definition.0.split_config.0.static_splits.1.split_vector.0.tag_values.0 = env",
+	"widget.0.split_graph_definition.0.split_config.0.static_splits.1.split_vector.0.tag_values.# = 1",
+	"widget.0.split_graph_definition.0.size = md",
+	"widget.0.split_graph_definition.0.has_uniform_y_axes = true",
+	"widget.0.split_graph_definition.0.live_span = 5m",
 }
 
 func TestAccDatadogDashboardSplitGraph(t *testing.T) {
