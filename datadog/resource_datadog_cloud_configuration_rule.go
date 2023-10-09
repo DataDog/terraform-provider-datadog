@@ -183,7 +183,7 @@ func buildComplianceSignalOptions(d *schema.ResourceData) *datadogV2.CloudConfig
 	groupByFields := utils.GetStringSlice(d, groupByField)
 
 	signalOptions := datadogV2.NewCloudConfigurationRuleComplianceSignalOptions()
-	signalOptions.SetUserActivationStatus(len(groupByFields) > 1)
+	signalOptions.SetUserActivationStatus(len(groupByFields) > 0)
 	signalOptions.SetUserGroupByFields(groupByFields)
 
 	return signalOptions

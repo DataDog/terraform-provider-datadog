@@ -2029,11 +2029,15 @@ func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 				rumSettings.SetIsEnabled(true)
 
 				if applicationId, ok := settings["application_id"]; ok {
-					rumSettings.SetApplicationId(applicationId.(string))
+					if len(applicationId.(string)) > 0 {
+						rumSettings.SetApplicationId(applicationId.(string))
+					}
 				}
 
 				if clientTokenId, ok := settings["client_token_id"]; ok {
-					rumSettings.SetClientTokenId(int64(clientTokenId.(int)))
+					if clientTokenId.(int) != 0 {
+						rumSettings.SetClientTokenId(int64(clientTokenId.(int)))
+					}
 				}
 			} else {
 				rumSettings.SetIsEnabled(false)
