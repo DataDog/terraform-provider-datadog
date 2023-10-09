@@ -232,7 +232,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
-			"compressed_json_descriptor": {
+			"proto_json_descriptor": {
 				Description: "A protobuf JSON descriptor.",
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -1478,7 +1478,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := d.GetOk("request_definition.0.persist_cookies"); ok {
 		request.SetPersistCookies(attr.(bool))
 	}
-	if attr, ok := d.GetOk("request_definition.0.compressed_json_descriptor"); ok {
+	if attr, ok := d.GetOk("request_definition.0.proto_json_descriptor"); ok {
 		stringifiedValue, _ := json.Marshal(attr.(string))
 		var compressedValue bytes.Buffer
 		zl := zlib.NewWriter(&compressedValue)
@@ -2379,7 +2379,7 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 		var result string
 		_ = json.Unmarshal(compressedJsonDescriptor, &result)
 
-		localRequest["compressed_json_descriptor"] = result
+		localRequest["proto_json_descriptor"] = result
 	}
 
 	return localRequest

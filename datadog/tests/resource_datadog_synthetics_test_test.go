@@ -2401,7 +2401,7 @@ func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", "Hello"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.grpc", "request_definition.0.compressed_json_descriptor", compressedJsonDescriptor),
+				"datadog_synthetics_test.grpc", "request_definition.0.proto_json_descriptor", compressedJsonDescriptor),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
 			resource.TestCheckResourceAttr(
@@ -2469,7 +2469,7 @@ resource "datadog_synthetics_test" "grpc" {
 		host   = "google.com"
 		port   = 50050
 		service = "Hello"
-		compressed_json_descriptor = <<EOT
+		proto_json_descriptor = <<EOT
 %[2]sEOT
 	}
 
