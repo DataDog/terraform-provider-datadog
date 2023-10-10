@@ -282,7 +282,7 @@ resource "datadog_synthetics_test" "grpc" {
     host                       = "google.com"
     port                       = 50050
     service                    = "Hello"
-    compressed_json_descriptor = <<EOT
+    proto_json_descriptor = <<EOT
 syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "io.grpc.examples.helloworld";
