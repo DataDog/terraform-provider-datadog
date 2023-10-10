@@ -319,10 +319,10 @@ resource "datadog_synthetics_test" "grpc" {
   type    = "api"
   subtype = "grpc"
   request_definition {
-    method                     = "GET"
-    host                       = "google.com"
-    port                       = 50050
-    service                    = "Hello"
+    method                = "GET"
+    host                  = "google.com"
+    port                  = 50050
+    service               = "Hello"
     proto_json_descriptor = <<EOT
 syntax = "proto3";
 option java_multiple_files = true;
