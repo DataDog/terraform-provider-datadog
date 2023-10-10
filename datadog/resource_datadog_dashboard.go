@@ -8078,29 +8078,31 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 
 func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[string]interface{} {
 	terraformSplitConfig := map[string]interface{}{}
+
 	if v, ok := datadogSplitConfig.GetSplitDimensionsOk(); ok {
-		terraformOneGraphPer := map[string]interface{}{}
 		datadogSplitDimensions := *v
+		terraformOneGraphPer := map[string]interface{}{}
+
 		terraformOneGraphPer["one_graph_per"] = datadogSplitDimensions[0].OneGraphPer
 		terraformSplitConfig["split_dimensions"] = []map[string]interface{}{terraformOneGraphPer}
 	}
+
 	if v, ok := datadogSplitConfig.GetLimitOk(); ok {
 		terraformSplitConfig["limit"] = *v
 	}
+
 	if datadogSort, ok := datadogSplitConfig.GetSortOk(); ok {
-		terraformSortList := make([]map[string]interface{}, 1)
-		terraformSort := map[string]interface{}{}
-		terraformSortComputeList := make([]map[string]interface{}, 1)
-
-		terraformSortCompute := map[string]interface{}{}
-		terraformSortCompute["aggregation"] = datadogSort.Compute.Aggregation
-		terraformSortCompute["metric"] = datadogSort.Compute.Metric
-		terraformSortComputeList[0] = terraformSortCompute
-
-		terraformSort["order"] = datadogSort.Order
-		terraformSort["compute"] = terraformSortComputeList
-
-		terraformSortList[0] = terraformSort
+		terraformSortList := []map[string]interface{}{
+			{
+				"order": datadogSort.Order,
+				"compute": []map[string]interface{}{
+					{
+						"aggregation": datadogSort.Compute.Aggregation,
+						"metric":      datadogSort.Compute.Metric,
+					},
+				},
+			},
+		}
 		terraformSplitConfig["sort"] = terraformSortList
 	}
 	if v, ok := datadogSplitConfig.GetStaticSplitsOk(); ok {
@@ -8115,16 +8117,14 @@ func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEn
 	for i, staticSplit := range *datadogStaticSplits {
 		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
 		for j, splitVector := range staticSplit {
-			terraformSplitVector := map[string]interface{}{}
-			terraformSplitVector["tag_key"] = splitVector.GetTagKey()
-			terraformSplitVector["tag_values"] = splitVector.GetTagValues()
-
-			terraformSplitVectors[j] = map[string]interface{}{}
-			terraformSplitVectors[j] = terraformSplitVector
+			terraformSplitVectors[j] = map[string]interface{}{
+				"tag_key":    splitVector.GetTagKey(),
+				"tag_values": splitVector.GetTagValues(),
+			}
 		}
-		terraformSplitVectorList := map[string]interface{}{}
-		terraformSplitVectorList["split_vector"] = terraformSplitVectors
-		terraformStaticSplits[i] = terraformSplitVectorList
+		terraformStaticSplits[i] = map[string]interface{}{
+			"split_vector": terraformSplitVectors,
+		}
 	}
 	return &terraformStaticSplits
 }
