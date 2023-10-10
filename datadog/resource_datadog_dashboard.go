@@ -8029,10 +8029,13 @@ func buildDatadogSplitSort(terraformSplitSort map[string]interface{}) *datadogV1
 // Build static splits for backend  format from static splits
 func buildDatadogStaticSplits(terraformStaticSplits []interface{}) *[][]datadogV1.SplitVectorEntryItem {
 	datadogStaticSplits := make([][]datadogV1.SplitVectorEntryItem, len(terraformStaticSplits))
+	//going over each static split
 	for i, terraformStaticSplit := range terraformStaticSplits {
 		terraformStaticSplitMap := terraformStaticSplit.(map[string]interface{})
+		//building inner array for static split from terraform split vector list.
 		for _, splitVector := range terraformStaticSplitMap["split_vector"].([]interface{}) {
 			datadogSplitVectorMap := splitVector.(map[string]interface{})
+
 			datadogSplitVector := datadogV1.SplitVectorEntryItem{}
 			if v, ok := datadogSplitVectorMap["tag_key"].(string); ok {
 				datadogSplitVector.SetTagKey(v)
