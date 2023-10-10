@@ -35,10 +35,10 @@ resource "datadog_user" "foo" {
 
 ### Optional
 
-- `disabled` (Boolean) Whether the user is disabled.
+- `disabled` (Boolean) Whether the user is disabled. Defaults to `false`.
 - `name` (String) Name for user.
 - `roles` (Set of String) A list a role IDs to assign to the user.
-- `send_user_invitation` (Boolean) Whether an invitation email should be sent when the user is created.
+- `send_user_invitation` (Boolean) Whether an invitation email should be sent when the user is created. Defaults to `true`.
 
 ### Read-Only
 

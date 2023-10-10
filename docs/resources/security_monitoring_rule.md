@@ -60,14 +60,14 @@ resource "datadog_security_monitoring_rule" "myrule" {
 
 ### Optional
 
-- `enabled` (Boolean) Whether the rule is enabled.
+- `enabled` (Boolean) Whether the rule is enabled. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
-- `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title.
+- `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title. Defaults to `false`.
 - `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
 - `tags` (Set of String) Tags for generated signals.
-- `type` (String) The rule type. Valid values are `log_detection`, `workload_security`, `signal_correlation`.
+- `type` (String) The rule type. Valid values are `log_detection`, `workload_security`, `signal_correlation`. Defaults to `log_detection`.
 
 ### Read-Only
 
@@ -106,8 +106,8 @@ Required:
 
 Optional:
 
-- `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.
-- `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`, `third_party`.
+- `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`. Defaults to `false`.
+- `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`, `third_party`. Defaults to `threshold`.
 - `evaluation_window` (Number) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`.
 - `impossible_travel_options` (Block List, Max: 1) Options for rules using the impossible travel detection method. (see [below for nested schema](#nestedblock--options--impossible_travel_options))
 - `new_value_options` (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
@@ -117,7 +117,7 @@ Optional:
 
 Optional:
 
-- `baseline_user_locations` (Boolean) If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.
+- `baseline_user_locations` (Boolean) If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access. Defaults to `false`.
 
 
 <a id="nestedblock--options--new_value_options"></a>
@@ -129,9 +129,9 @@ Required:
 
 Optional:
 
-- `learning_duration` (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`.
-- `learning_method` (String) The learning method used to determine when signals should be generated for values that weren't learned. Valid values are `duration`, `threshold`.
-- `learning_threshold` (Number) A number of occurrences after which signals are generated for values that weren't learned. Valid values are `0`, `1`.
+- `learning_duration` (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`. Defaults to `1`.
+- `learning_method` (String) The learning method used to determine when signals should be generated for values that weren't learned. Valid values are `duration`, `threshold`. Defaults to `duration`.
+- `learning_threshold` (Number) A number of occurrences after which signals are generated for values that weren't learned. Valid values are `0`, `1`. Defaults to `0`.
 
 
 
@@ -145,7 +145,7 @@ Required:
 Optional:
 
 - `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
-- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`.
+- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`. Defaults to `count`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
 - `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.
@@ -171,9 +171,9 @@ Required:
 
 Optional:
 
-- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`.
+- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`. Defaults to `event_count`.
 - `correlated_by_fields` (List of String) Fields to correlate by.
-- `correlated_query_index` (String) Index of the rule query used to retrieve the correlated field. An empty string applies correlation on the non-projected per query attributes of the rule.
+- `correlated_query_index` (String) Index of the rule query used to retrieve the correlated field. An empty string applies correlation on the non-projected per query attributes of the rule. Defaults to ``.
 - `default_rule_id` (String) Default Rule ID of the signal to correlate. This value is READ-ONLY.
 - `name` (String) Name of the query. Not compatible with `new_value` aggregations.
 
