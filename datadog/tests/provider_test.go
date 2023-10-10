@@ -564,7 +564,7 @@ func buildDatadogClient(ctx context.Context, httpClient *http.Client) *common.AP
 }
 
 func testProviderConfigure(ctx context.Context, httpClient *http.Client, clock clockwork.FakeClock) schema.ConfigureContextFunc {
-	return func(_ context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	return func(_ context.Context, d *schema.ResourceData) (any, diag.Diagnostics) {
 		apiKey := d.Get("api_key").(string)
 		if apiKey == "" {
 			apiKey, _ = utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)

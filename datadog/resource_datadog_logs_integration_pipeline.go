@@ -32,7 +32,7 @@ func resourceDatadogLogsIntegrationPipeline() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsIntegrationPipelineCreate(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
+func resourceDatadogLogsIntegrationPipelineCreate(_ context.Context, _ *schema.ResourceData, _ any) diag.Diagnostics {
 	return diag.Errorf("cannot create an integration pipeline, please import it first to make changes")
 }
 
@@ -43,7 +43,7 @@ func updateLogsIntegrationPipelineState(d *schema.ResourceData, pipeline *datado
 	return nil
 }
 
-func resourceDatadogLogsIntegrationPipelineRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsIntegrationPipelineRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -66,7 +66,7 @@ func resourceDatadogLogsIntegrationPipelineRead(ctx context.Context, d *schema.R
 	return updateLogsIntegrationPipelineState(d, &ddPipeline)
 }
 
-func resourceDatadogLogsIntegrationPipelineUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsIntegrationPipelineUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var ddPipeline datadogV1.LogsPipeline
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
 	providerConf := meta.(*ProviderConfiguration)
@@ -84,6 +84,6 @@ func resourceDatadogLogsIntegrationPipelineUpdate(ctx context.Context, d *schema
 	return updateLogsIntegrationPipelineState(d, &updatedPipeline)
 }
 
-func resourceDatadogLogsIntegrationPipelineDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
+func resourceDatadogLogsIntegrationPipelineDelete(_ context.Context, _ *schema.ResourceData, _ any) diag.Diagnostics {
 	return nil
 }

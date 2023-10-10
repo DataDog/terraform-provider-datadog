@@ -68,7 +68,7 @@ func updateApplicationKeyState(d *schema.ResourceData, applicationKeyData *datad
 	return nil
 }
 
-func resourceDatadogApplicationKeyCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogApplicationKeyCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -84,7 +84,7 @@ func resourceDatadogApplicationKeyCreate(ctx context.Context, d *schema.Resource
 	return updateApplicationKeyState(d, &applicationKeyData)
 }
 
-func resourceDatadogApplicationKeyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogApplicationKeyRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -101,7 +101,7 @@ func resourceDatadogApplicationKeyRead(ctx context.Context, d *schema.ResourceDa
 	return updateApplicationKeyState(d, &applicationKeyData)
 }
 
-func resourceDatadogApplicationKeyUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogApplicationKeyUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -114,7 +114,7 @@ func resourceDatadogApplicationKeyUpdate(ctx context.Context, d *schema.Resource
 	return updateApplicationKeyState(d, &applicationKeyData)
 }
 
-func resourceDatadogApplicationKeyDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogApplicationKeyDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

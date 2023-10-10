@@ -127,11 +127,11 @@ func securityMonitoringRuleDeprecationWarning(rule securityMonitoringRuleRespons
 	return diags
 }
 
-func resourceDatadogSecurityMonitoringDefaultRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSecurityMonitoringDefaultRuleCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	return diag.FromErr(errors.New("cannot create a default rule, please import it first before making changes"))
 }
 
-func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -153,10 +153,10 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	d.Set("enabled", *rule.IsEnabled)
 
 	if v, ok := d.GetOk("case"); ok {
-		tfCasesRaw := v.([]interface{})
+		tfCasesRaw := v.([]any)
 		readNotifications := make([][]string, len(tfCasesRaw))
 		for i, tfCaseRaw := range tfCasesRaw {
-			tfCase := tfCaseRaw.(map[string]interface{})
+			tfCase := tfCaseRaw.(map[string]any)
 			var ruleCase *datadogV2.SecurityMonitoringRuleCase
 			tfStatus := datadogV2.SecurityMonitoringRuleSeverity(tfCase["status"].(string))
 			for _, rc := range rule.GetCases() {
@@ -176,9 +176,9 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 		}
 	}
 
-	ruleFilters := make([]map[string]interface{}, len(rule.GetFilters()))
+	ruleFilters := make([]map[string]any, len(rule.GetFilters()))
 	for idx, responseRuleFilter := range rule.GetFilters() {
-		ruleFilters[idx] = map[string]interface{}{
+		ruleFilters[idx] = map[string]any{
 			"action": responseRuleFilter.GetAction(),
 			"query":  responseRuleFilter.GetQuery(),
 		}
@@ -189,10 +189,10 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	d.Set("type", rule.GetType())
 
 	responseOptions := rule.GetOptions()
-	var ruleOptions []map[string]interface{}
+	var ruleOptions []map[string]any
 
 	if *rule.Type == datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION {
-		ruleOptions = append(ruleOptions, map[string]interface{}{
+		ruleOptions = append(ruleOptions, map[string]any{
 			"decrease_criticality_based_on_env": responseOptions.GetDecreaseCriticalityBasedOnEnv(),
 		})
 	}
@@ -202,7 +202,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	return securityMonitoringRuleDeprecationWarning(rule)
 }
 
-func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSecurityMonitoringDefaultRuleUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -261,7 +261,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 
 	matchedCases := 0
 	modifiedCases := 0
-	tfCasesRaw := d.Get("case").([]interface{})
+	tfCasesRaw := d.Get("case").([]any)
 
 	updatedRuleCase := make([]datadogV2.SecurityMonitoringRuleCase, len(currentState.GetCases()))
 	for i, ruleCase := range currentState.GetCases() {
@@ -279,7 +279,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 
 			matchedCases++
 
-			tfNotificationsRaw := tfCase["notifications"].([]interface{})
+			tfNotificationsRaw := tfCase["notifications"].([]any)
 			tfNotifications := make([]string, len(tfNotificationsRaw))
 			for notificationIdx, v := range tfNotificationsRaw {
 				tfNotifications[notificationIdx] = v.(string)
@@ -314,13 +314,13 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 		payload.Cases = updatedRuleCase
 	}
 
-	tfFilters := d.Get("filter").([]interface{})
+	tfFilters := d.Get("filter").([]any)
 	payloadFilters := make([]datadogV2.SecurityMonitoringFilter, len(tfFilters))
 
 	for idx, tfRuleFilter := range tfFilters {
 		structRuleFilter := datadogV2.SecurityMonitoringFilter{}
 
-		ruleFilter := tfRuleFilter.(map[string]interface{})
+		ruleFilter := tfRuleFilter.(map[string]any)
 
 		if action, ok := ruleFilter["action"]; ok {
 			structRuleFilter.SetAction(datadogV2.SecurityMonitoringFilterAction(action.(string)))
@@ -340,7 +340,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 }
 
 func buildDefaultRulePayloadOptions(d *schema.ResourceData) *datadogV2.SecurityMonitoringRuleOptions {
-	tfOptions := extractMapFromInterface(d.Get("options").([]interface{}))
+	tfOptions := extractMapFromInterface(d.Get("options").([]any))
 
 	if len(tfOptions) == 0 {
 		return nil
@@ -368,9 +368,9 @@ func stringSliceEquals(left []string, right []string) bool {
 	return true
 }
 
-func findRuleCaseForStatus(tfCasesRaw []interface{}, status datadogV2.SecurityMonitoringRuleSeverity) (map[string]interface{}, bool) {
+func findRuleCaseForStatus(tfCasesRaw []any, status datadogV2.SecurityMonitoringRuleSeverity) (map[string]any, bool) {
 	for _, tfCaseRaw := range tfCasesRaw {
-		tfCase := tfCaseRaw.(map[string]interface{})
+		tfCase := tfCaseRaw.(map[string]any)
 		tfStatus := datadogV2.SecurityMonitoringRuleSeverity(tfCase["status"].(string))
 		if tfStatus == status {
 			return tfCase, true
@@ -380,7 +380,7 @@ func findRuleCaseForStatus(tfCasesRaw []interface{}, status datadogV2.SecurityMo
 	return nil, false
 }
 
-func resourceDatadogSecurityMonitoringDefaultRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSecurityMonitoringDefaultRuleDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	// no-op
 	return nil
 }

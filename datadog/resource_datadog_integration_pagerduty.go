@@ -58,7 +58,7 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (*datadog.IntegrationPDRe
 	pd.SetAPIToken(d.Get("api_token").(string))
 
 	var schedules []string
-	for _, s := range d.Get("schedules").([]interface{}) {
+	for _, s := range d.Get("schedules").([]any) {
 		schedules = append(schedules, s.(string))
 	}
 	pd.Schedules = schedules
@@ -66,7 +66,7 @@ func buildIntegrationPagerduty(d *schema.ResourceData) (*datadog.IntegrationPDRe
 	return pd, nil
 }
 
-func resourceDatadogIntegrationPagerdutyCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationPagerdutyCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 
@@ -95,7 +95,7 @@ func resourceDatadogIntegrationPagerdutyCreate(ctx context.Context, d *schema.Re
 	return resourceDatadogIntegrationPagerdutyRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationPagerdutyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationPagerdutyRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 
@@ -117,7 +117,7 @@ func resourceDatadogIntegrationPagerdutyRead(ctx context.Context, d *schema.Reso
 	return nil
 }
 
-func resourceDatadogIntegrationPagerdutyUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationPagerdutyUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	client := providerConf.CommunityClient
 
@@ -136,7 +136,7 @@ func resourceDatadogIntegrationPagerdutyUpdate(ctx context.Context, d *schema.Re
 	return resourceDatadogIntegrationPagerdutyRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationPagerdutyDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationPagerdutyDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	log.Printf("Deleting the pagerduty integration isn't safe, please don't use this resource anymore")
 
 	return nil

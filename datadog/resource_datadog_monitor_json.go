@@ -47,7 +47,7 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
-		CustomizeDiff: customdiff.ForceNewIfChange("monitor", func(ctx context.Context, old, new, meta interface{}) bool {
+		CustomizeDiff: customdiff.ForceNewIfChange("monitor", func(ctx context.Context, old, new, meta any) bool {
 			oldAttrMap, _ := structure.ExpandJsonFromString(old.(string))
 			newAttrMap, _ := structure.ExpandJsonFromString(new.(string))
 
@@ -69,7 +69,7 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 					Type:         schema.TypeString,
 					Required:     true,
 					ValidateFunc: validation.StringIsJSON,
-					StateFunc: func(v interface{}) string {
+					StateFunc: func(v any) string {
 						// Remove computed fields when comparing diffs
 						attrMap, _ := structure.ExpandJsonFromString(v.(string))
 						for _, f := range monitorComputedFields {
@@ -108,7 +108,7 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 	}
 }
 
-func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -131,7 +131,7 @@ func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, m
 	return updateMonitorJSONState(d, respMap)
 }
 
-func resourceDatadogMonitorJSONCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorJSONCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -158,7 +158,7 @@ func resourceDatadogMonitorJSONCreate(ctx context.Context, d *schema.ResourceDat
 	return updateMonitorJSONState(d, respMap)
 }
 
-func resourceDatadogMonitorJSONUpdate(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorJSONUpdate(_ context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -179,7 +179,7 @@ func resourceDatadogMonitorJSONUpdate(_ context.Context, d *schema.ResourceData,
 	return updateMonitorJSONState(d, respMap)
 }
 
-func resourceDatadogMonitorJSONDelete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorJSONDelete(_ context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -194,7 +194,7 @@ func resourceDatadogMonitorJSONDelete(_ context.Context, d *schema.ResourceData,
 	return nil
 }
 
-func updateMonitorJSONState(d *schema.ResourceData, monitor map[string]interface{}) diag.Diagnostics {
+func updateMonitorJSONState(d *schema.ResourceData, monitor map[string]any) diag.Diagnostics {
 	if v, ok := monitor["url"]; ok {
 		if err := d.Set("url", v.(string)); err != nil {
 			return diag.FromErr(err)

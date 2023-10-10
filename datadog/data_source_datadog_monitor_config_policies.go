@@ -69,7 +69,7 @@ func dataSourceDatadogMonitorConfigPolicies() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogMonitorConfigPoliciesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogMonitorConfigPoliciesRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -80,7 +80,7 @@ func dataSourceDatadogMonitorConfigPoliciesRead(ctx context.Context, d *schema.R
 	}
 
 	diags := diag.Diagnostics{}
-	tfMonitorConfigPolicies := make([]map[string]interface{}, len(monitorConfigPolicies.Data))
+	tfMonitorConfigPolicies := make([]map[string]any, len(monitorConfigPolicies.Data))
 	for i, mcp := range monitorConfigPolicies.Data {
 		if err := utils.CheckForUnparsed(mcp); err != nil {
 			diags = append(diags, diag.Diagnostic{
@@ -92,14 +92,14 @@ func dataSourceDatadogMonitorConfigPoliciesRead(ctx context.Context, d *schema.R
 		}
 
 		attributes := mcp.GetAttributes()
-		tfMonitorConfigPolicies[i] = map[string]interface{}{
+		tfMonitorConfigPolicies[i] = map[string]any{
 			"id":          mcp.GetId(),
 			"policy_type": attributes.GetPolicyType(),
 		}
 
 		policy := attributes.GetPolicy()
 		if policy.MonitorConfigPolicyTagPolicy != nil {
-			tfMonitorConfigPolicies[i]["tag_policy"] = []interface{}{map[string]interface{}{
+			tfMonitorConfigPolicies[i]["tag_policy"] = []any{map[string]any{
 				"tag_key":          policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
 				"tag_key_required": policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
 				"valid_tag_values": policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),

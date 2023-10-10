@@ -68,7 +68,7 @@ func diffSuppress(k, old, new string, d *schema.ResourceData) bool {
 	return normalizeIPAddress(old) == normalizeIPAddress(new)
 }
 
-func cidrValidateFunc(cidrBlock interface{}, path cty.Path) diag.Diagnostics {
+func cidrValidateFunc(cidrBlock any, path cty.Path) diag.Diagnostics {
 	_, errors := validation.IsCIDR(cidrBlock, cidrBlock.(string))
 	if len(errors) == 0 {
 		return nil
@@ -111,9 +111,9 @@ func hashcode(s string) int {
 	return 0
 }
 
-func hashCIDR(entry interface{}) int {
-	ip := entry.(map[string]interface{})["cidr_block"].(string)
-	note := entry.(map[string]interface{})["note"].(string)
+func hashCIDR(entry any) int {
+	ip := entry.(map[string]any)["cidr_block"].(string)
+	note := entry.(map[string]any)["note"].(string)
 	return hashcode(fmt.Sprintf("%s %s", normalizeIPAddress(ip), note))
 }
 
@@ -151,7 +151,7 @@ func updateIPAllowlistEntriesState(ctx context.Context, d *schema.ResourceData, 
 	return nil
 }
 
-func resourceDatadogIPAllowlistRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIPAllowlistRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -167,7 +167,7 @@ func resourceDatadogIPAllowlistRead(ctx context.Context, d *schema.ResourceData,
 	return updateIPAllowlistState(ctx, d, ipAllowlistData.Attributes, apiInstances)
 }
 
-func resourceDatadogIPAllowlistCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIPAllowlistCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -184,7 +184,7 @@ func resourceDatadogIPAllowlistCreate(ctx context.Context, d *schema.ResourceDat
 	return updateIPAllowlistState(ctx, d, ipAllowlistData.Attributes, apiInstances)
 }
 
-func resourceDatadogIPAllowlistDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIPAllowlistDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -209,7 +209,7 @@ func resourceDatadogIPAllowlistDelete(ctx context.Context, d *schema.ResourceDat
 	return nil
 }
 
-func resourceDatadogIPAllowlistUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIPAllowlistUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -246,7 +246,7 @@ func buildIPAllowlistUpdateRequest(d *schema.ResourceData) (*datadogV2.IPAllowli
 		entries := entriesI.(*schema.Set).List()
 		ipAllowlistEntries := make([]datadogV2.IPAllowlistEntry, len(entries))
 		for i, entryI := range entries {
-			entry := entryI.(map[string]interface{})
+			entry := entryI.(map[string]any)
 			ipAllowlistEntry := datadogV2.NewIPAllowlistEntryWithDefaults()
 			ipAllowlistEntryData := datadogV2.NewIPAllowlistEntryDataWithDefaults()
 			ipAllowlistEntryAttributes := datadogV2.NewIPAllowlistEntryAttributesWithDefaults()

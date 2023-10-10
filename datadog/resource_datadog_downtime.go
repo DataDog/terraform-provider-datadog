@@ -185,7 +185,7 @@ func resourceDatadogDowntime() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 					Description: "An optional message to provide when creating the downtime, can include notification handles",
-					StateFunc: func(val interface{}) string {
+					StateFunc: func(val any) string {
 						return strings.TrimSpace(val.(string))
 					},
 				},
@@ -386,8 +386,8 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstanc
 			recurrence.SetUntilOccurrences(int32(attr.(int)))
 		}
 		if attr, ok := d.GetOk("recurrence.0.week_days"); ok {
-			weekDays := make([]string, 0, len(attr.([]interface{})))
-			for _, weekDay := range attr.([]interface{}) {
+			weekDays := make([]string, 0, len(attr.([]any)))
+			for _, weekDay := range attr.([]any) {
 				weekDays = append(weekDays, weekDay.(string))
 			}
 			recurrence.SetWeekDays(weekDays)
@@ -399,7 +399,7 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstanc
 		dt.SetRecurrence(recurrence)
 	}
 	var scope []string
-	for _, s := range d.Get("scope").([]interface{}) {
+	for _, s := range d.Get("scope").([]any) {
 		scope = append(scope, s.(string))
 	}
 	dt.SetScope(scope)
@@ -425,7 +425,7 @@ func buildDowntimeStruct(ctx context.Context, d *schema.ResourceData, apiInstanc
 	return &dt, nil
 }
 
-func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -447,7 +447,7 @@ func resourceDatadogDowntimeCreate(ctx context.Context, d *schema.ResourceData, 
 	return updateDowntimeState(d, &dt, true)
 }
 
-func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogDowntimeRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -515,8 +515,8 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, upd
 	}
 
 	if r, ok := dt.GetRecurrenceOk(); ok && r != nil {
-		recurrence := make(map[string]interface{})
-		recurrenceList := make([]map[string]interface{}, 0, 1)
+		recurrence := make(map[string]any)
+		recurrenceList := make([]map[string]any, 0, 1)
 
 		if attr, ok := r.GetPeriodOk(); ok {
 			recurrence["period"] = attr
@@ -594,7 +594,7 @@ func updateDowntimeState(d *schema.ResourceData, dt downtimeOrDowntimeChild, upd
 	return nil
 }
 
-func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -631,7 +631,7 @@ func resourceDatadogDowntimeUpdate(ctx context.Context, d *schema.ResourceData, 
 	return updateDowntimeState(d, &updatedDowntime, !ok)
 }
 
-func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogDowntimeDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

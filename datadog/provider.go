@@ -246,7 +246,7 @@ type ProviderConfiguration struct {
 	Now func() time.Time
 }
 
-func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+func providerConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.Diagnostics) {
 	apiKey := d.Get("api_key").(string)
 	if apiKey == "" {
 		apiKey, _ = utils.GetMultiEnvVar(utils.APIKeyEnvVars[:]...)

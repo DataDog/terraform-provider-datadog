@@ -39,13 +39,13 @@ func resourceDatadogLogsIndexOrder() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsIndexOrderCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsIndexOrderCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	return resourceDatadogLogsIndexOrderUpdate(ctx, d, meta)
 }
 
-func resourceDatadogLogsIndexOrderUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsIndexOrderUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var ddIndexList datadogV1.LogsIndexesOrder
-	tfList := d.Get("indexes").([]interface{})
+	tfList := d.Get("indexes").([]any)
 	ddList := make([]string, len(tfList))
 	for i, tfName := range tfList {
 		ddList[i] = tfName.(string)
@@ -80,7 +80,7 @@ func updateLogsIndexOrderState(d *schema.ResourceData, order *datadogV1.LogsInde
 	return nil
 }
 
-func resourceDatadogLogsIndexOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsIndexOrderRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -94,6 +94,6 @@ func resourceDatadogLogsIndexOrderRead(ctx context.Context, d *schema.ResourceDa
 	return updateLogsIndexOrderState(d, &ddIndexList)
 }
 
-func resourceDatadogLogsIndexOrderDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsIndexOrderDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	return nil
 }

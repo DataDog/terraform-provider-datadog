@@ -76,7 +76,7 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 	}
 }
 
-func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -115,7 +115,7 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 	return diag.Errorf("error getting an Azure integration: tenant_name=%s", tenantName)
 }
 
-func resourceDatadogIntegrationAzureCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAzureCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -137,7 +137,7 @@ func resourceDatadogIntegrationAzureCreate(ctx context.Context, d *schema.Resour
 	return resourceDatadogIntegrationAzureRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAzureUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAzureUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -161,7 +161,7 @@ func resourceDatadogIntegrationAzureUpdate(ctx context.Context, d *schema.Resour
 	return resourceDatadogIntegrationAzureRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAzureDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAzureDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

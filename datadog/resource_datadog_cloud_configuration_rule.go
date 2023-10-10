@@ -125,7 +125,7 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 	}
 }
 
-func cloudConfigurationRuleCreateContext(ctx context.Context, d *schema.ResourceData, metadata interface{}) diag.Diagnostics {
+func cloudConfigurationRuleCreateContext(ctx context.Context, d *schema.ResourceData, metadata any) diag.Diagnostics {
 	providerConf := metadata.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -189,7 +189,7 @@ func buildComplianceSignalOptions(d *schema.ResourceData) *datadogV2.CloudConfig
 	return signalOptions
 }
 
-func cloudConfigurationRuleUpdateContext(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func cloudConfigurationRuleUpdateContext(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -261,7 +261,7 @@ func buildRuleUpdateCases(d *schema.ResourceData) *[]datadogV2.SecurityMonitorin
 	return &[]datadogV2.SecurityMonitoringRuleCase{*ruleCase}
 }
 
-func cloudConfigurationRuleReadContext(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func cloudConfigurationRuleReadContext(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -324,7 +324,7 @@ func getRelatedResourceTypes(mainResourceType string, resourceTypes []string) []
 
 func buildFiltersFromResourceData(d *schema.ResourceData) []datadogV2.SecurityMonitoringFilter {
 	if filters, ok := d.GetOk(filterField); ok {
-		filterList := filters.([]interface{})
+		filterList := filters.([]any)
 		return buildPayloadFilters(filterList)
 	}
 	return []datadogV2.SecurityMonitoringFilter{}

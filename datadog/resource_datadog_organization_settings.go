@@ -170,9 +170,9 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 
 	// settings
 	if v, ok := d.GetOk("settings"); ok {
-		if settingsSetList := v.([]interface{}); len(settingsSetList) > 0 {
+		if settingsSetList := v.([]any); len(settingsSetList) > 0 {
 			settings := datadogV1.NewOrganizationSettings()
-			settingsSet := settingsSetList[0].(map[string]interface{})
+			settingsSet := settingsSetList[0].(map[string]any)
 
 			// private_widget_share
 			if v, ok := settingsSet["private_widget_share"]; ok {
@@ -181,9 +181,9 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 
 			// saml
 			if v, ok := settingsSet["saml"]; ok {
-				if samlIdpInitiatedLoginSetList := v.([]interface{}); len(samlIdpInitiatedLoginSetList) > 0 {
+				if samlIdpInitiatedLoginSetList := v.([]any); len(samlIdpInitiatedLoginSetList) > 0 {
 					saml := datadogV1.NewOrganizationSettingsSaml()
-					samlSet := samlIdpInitiatedLoginSetList[0].(map[string]interface{})
+					samlSet := samlIdpInitiatedLoginSetList[0].(map[string]any)
 					if v, ok := samlSet["enabled"]; ok {
 						saml.SetEnabled(v.(bool))
 					}
@@ -198,13 +198,13 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 
 			// saml_autocreate_users_domains
 			if v, ok := settingsSet["saml_autocreate_users_domains"]; ok {
-				if samlAutocreateUsersDomainsSetList := v.([]interface{}); len(samlAutocreateUsersDomainsSetList) > 0 {
-					samlAutocreateUsersDomainsSet := samlAutocreateUsersDomainsSetList[0].(map[string]interface{})
+				if samlAutocreateUsersDomainsSetList := v.([]any); len(samlAutocreateUsersDomainsSetList) > 0 {
+					samlAutocreateUsersDomainsSet := samlAutocreateUsersDomainsSetList[0].(map[string]any)
 					samlAutocreateUsersDomains := datadogV1.NewOrganizationSettingsSamlAutocreateUsersDomains()
 
 					// domains
 					if v, ok := samlAutocreateUsersDomainsSet["domains"]; ok {
-						tfDomains := v.([]interface{})
+						tfDomains := v.([]any)
 						domains := make([]string, len(tfDomains))
 						for i, domain := range tfDomains {
 							domains[i] = domain.(string)
@@ -223,9 +223,9 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 
 			// saml_idp_initiated_login
 			if v, ok := settingsSet["saml_idp_initiated_login"]; ok {
-				if samlIdpInitiatedLoginSetList := v.([]interface{}); len(samlIdpInitiatedLoginSetList) > 0 {
+				if samlIdpInitiatedLoginSetList := v.([]any); len(samlIdpInitiatedLoginSetList) > 0 {
 					samlIdpInitiatedLogin := datadogV1.NewOrganizationSettingsSamlIdpInitiatedLogin()
-					samlIdpInitiatedLoginSet := samlIdpInitiatedLoginSetList[0].(map[string]interface{})
+					samlIdpInitiatedLoginSet := samlIdpInitiatedLoginSetList[0].(map[string]any)
 					if v, ok := samlIdpInitiatedLoginSet["enabled"]; ok {
 						samlIdpInitiatedLogin.SetEnabled(v.(bool))
 					}
@@ -235,9 +235,9 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 
 			// saml_strict_mode
 			if v, ok := settingsSet["saml_strict_mode"]; ok {
-				if samlStrictModeSetList := v.([]interface{}); len(samlStrictModeSetList) > 0 {
+				if samlStrictModeSetList := v.([]any); len(samlStrictModeSetList) > 0 {
 					samlStrictMode := datadogV1.NewOrganizationSettingsSamlStrictMode()
-					samlStrictModeSet := samlStrictModeSetList[0].(map[string]interface{})
+					samlStrictModeSet := samlStrictModeSetList[0].(map[string]any)
 					if v, ok := samlStrictModeSet["enabled"]; ok {
 						samlStrictMode.SetEnabled(v.(bool))
 					}
@@ -252,7 +252,7 @@ func buildDatadogOrganizationUpdateV1Struct(d *schema.ResourceData) *datadogV1.O
 	return org
 }
 
-func resourceDatadogOrganizationSettingsCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogOrganizationSettingsCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -273,7 +273,7 @@ func resourceDatadogOrganizationSettingsCreate(ctx context.Context, d *schema.Re
 	return resourceDatadogOrganizationSettingsUpdate(ctx, d, meta)
 }
 
-func resourceDatadogOrganizationSettingsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogOrganizationSettingsRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -293,7 +293,7 @@ func resourceDatadogOrganizationSettingsRead(ctx context.Context, d *schema.Reso
 	return updateOrganizationState(d, &org)
 }
 
-func resourceDatadogOrganizationSettingsUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogOrganizationSettingsUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -311,7 +311,7 @@ func resourceDatadogOrganizationSettingsUpdate(ctx context.Context, d *schema.Re
 	return updateOrganizationState(d, &org)
 }
 
-func resourceDatadogOrganizationSettingsDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogOrganizationSettingsDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return append(diags, diag.Diagnostic{

@@ -75,7 +75,7 @@ func buildMetricMetadataStruct(d *schema.ResourceData) (string, *datadogV1.Metri
 	}
 }
 
-func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -117,7 +117,7 @@ func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.Metri
 	return nil
 }
 
-func resourceDatadogMetricMetadataRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMetricMetadataRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -138,7 +138,7 @@ func resourceDatadogMetricMetadataRead(ctx context.Context, d *schema.ResourceDa
 	return updateMetricMetadataState(d, &m)
 }
 
-func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -176,6 +176,6 @@ func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.Resource
 	return updateMetricMetadataState(d, &updatedMetadata)
 }
 
-func resourceDatadogMetricMetadataDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
+func resourceDatadogMetricMetadataDelete(_ context.Context, _ *schema.ResourceData, _ any) diag.Diagnostics {
 	return nil
 }

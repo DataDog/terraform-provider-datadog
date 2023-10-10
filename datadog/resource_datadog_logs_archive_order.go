@@ -35,7 +35,7 @@ func resourceDatadogLogsArchiveOrder() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsArchiveOrderCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsArchiveOrderCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	ddArchiveList, err := buildDatadogArchiveOrderCreateReq(d)
 	if err != nil {
 		return diag.FromErr(err)
@@ -64,7 +64,7 @@ func resourceDatadogLogsArchiveOrderCreate(ctx context.Context, d *schema.Resour
 	return updateLogsArchiveOrderState(d, &order)
 }
 
-func resourceDatadogLogsArchiveOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsArchiveOrderRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -86,7 +86,7 @@ func updateLogsArchiveOrderState(d *schema.ResourceData, order *datadogV2.LogsAr
 	return nil
 }
 
-func resourceDatadogLogsArchiveOrderUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsArchiveOrderUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	ddArchiveList, err := buildDatadogArchiveOrderCreateReq(d)
 	if err != nil {
 		return diag.FromErr(err)
@@ -118,12 +118,12 @@ func resourceDatadogLogsArchiveOrderUpdate(ctx context.Context, d *schema.Resour
 
 // The deletion of archive order is not supported from config API.
 // This function simply delete the archive order resource from terraform state.
-func resourceDatadogLogsArchiveOrderDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
+func resourceDatadogLogsArchiveOrderDelete(_ context.Context, _ *schema.ResourceData, _ any) diag.Diagnostics {
 	return nil
 }
 
 func getArchiveIds(d *schema.ResourceData) []string {
-	tfList := d.Get("archive_ids").([]interface{})
+	tfList := d.Get("archive_ids").([]any)
 	ddList := make([]string, len(tfList))
 	for i, id := range tfList {
 		ddList[i] = id.(string)

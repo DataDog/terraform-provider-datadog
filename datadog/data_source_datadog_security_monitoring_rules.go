@@ -69,7 +69,7 @@ func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -98,7 +98,7 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 	}
 
 	if v, ok := d.GetOk("tags_filter"); ok {
-		filter := v.([]interface{})
+		filter := v.([]any)
 		tagFilter = make(map[string]bool)
 		for _, tag := range filter {
 			tagFilter[tag.(string)] = true
@@ -106,7 +106,7 @@ func dataSourceDatadogSecurityMonitoringRulesRead(ctx context.Context, d *schema
 	}
 
 	ruleIds := make([]string, 0)
-	rules := make([]map[string]interface{}, 0)
+	rules := make([]map[string]any, 0)
 	page := int64(0)
 	for {
 		response, httpresp, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringRules(auth,
@@ -188,8 +188,8 @@ func computeSecMonDataSourceRulesID(nameFilter *string, defaultFilter *bool, tag
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func buildSecurityMonitoringTfCommonRule(rule securityMonitoringRuleResponseInterface) map[string]interface{} {
-	tfRule := make(map[string]interface{})
+func buildSecurityMonitoringTfCommonRule(rule securityMonitoringRuleResponseInterface) map[string]any {
+	tfRule := make(map[string]any)
 
 	tfRule["case"] = extractRuleCases(rule.GetCases())
 	tfRule["enabled"] = rule.GetIsEnabled()
@@ -198,7 +198,7 @@ func buildSecurityMonitoringTfCommonRule(rule securityMonitoringRuleResponseInte
 	tfRule["has_extended_title"] = rule.GetHasExtendedTitle()
 
 	tfOptions := extractTfOptions(rule.GetOptions())
-	tfRule["options"] = []map[string]interface{}{tfOptions}
+	tfRule["options"] = []map[string]any{tfOptions}
 
 	if tags, ok := rule.GetTagsOk(); ok {
 		tfRule["tags"] = *tags
@@ -210,12 +210,12 @@ func buildSecurityMonitoringTfCommonRule(rule securityMonitoringRuleResponseInte
 	return tfRule
 }
 
-func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringStandardRuleResponse) map[string]interface{} {
+func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringStandardRuleResponse) map[string]any {
 	tfRule := buildSecurityMonitoringTfCommonRule(rule)
 
-	tfQueries := make([]map[string]interface{}, len(rule.GetQueries()))
+	tfQueries := make([]map[string]any, len(rule.GetQueries()))
 	for i, query := range rule.GetQueries() {
-		tfQuery := make(map[string]interface{})
+		tfQuery := make(map[string]any)
 		if aggregation, ok := query.GetAggregationOk(); ok {
 			tfQuery["aggregation"] = string(*aggregation)
 		}
@@ -243,12 +243,12 @@ func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringSta
 	return tfRule
 }
 
-func buildSecurityMonitoringTfSignalRule(rule *datadogV2.SecurityMonitoringSignalRuleResponse) map[string]interface{} {
+func buildSecurityMonitoringTfSignalRule(rule *datadogV2.SecurityMonitoringSignalRuleResponse) map[string]any {
 	tfRule := buildSecurityMonitoringTfCommonRule(rule)
 
-	tfQueries := make([]map[string]interface{}, len(rule.GetQueries()))
+	tfQueries := make([]map[string]any, len(rule.GetQueries()))
 	for i, query := range rule.GetQueries() {
-		tfQuery := make(map[string]interface{})
+		tfQuery := make(map[string]any)
 		if aggregation, ok := query.GetAggregationOk(); ok {
 			tfQuery["aggregation"] = string(*aggregation)
 		}

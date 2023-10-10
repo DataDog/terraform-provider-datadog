@@ -27,7 +27,7 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 		ReadContext:   resourceDatadogDashboardJSONRead,
 		UpdateContext: resourceDatadogDashboardJSONUpdate,
 		DeleteContext: resourceDatadogDashboardJSONDelete,
-		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+		CustomizeDiff: func(_ context.Context, diff *schema.ResourceDiff, meta any) error {
 			oldValue, newValue := diff.GetChange("dashboard_lists")
 			if !oldValue.(*schema.Set).Equal(newValue.(*schema.Set)) {
 				// Only calculate removed when the list change, to no create useless diffs
@@ -53,7 +53,7 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 					Type:         schema.TypeString,
 					Required:     true,
 					ValidateFunc: validation.StringIsJSON,
-					StateFunc: func(v interface{}) string {
+					StateFunc: func(v any) string {
 						attrMap, _ := structure.ExpandJsonFromString(v.(string))
 						prepResource(attrMap)
 						res, _ := structure.FlattenJsonToString(attrMap)
@@ -84,12 +84,12 @@ func resourceDatadogDashboardJSON() *schema.Resource {
 	}
 }
 
-func deleteWidgetID(widgets []interface{}) {
+func deleteWidgetID(widgets []any) {
 	for _, w := range widgets {
-		if widget, ok := w.(map[string]interface{}); ok {
-			if def, ok := widget["definition"].(map[string]interface{}); ok {
+		if widget, ok := w.(map[string]any); ok {
+			if def, ok := widget["definition"].(map[string]any); ok {
 				if def["type"] == "group" {
-					if group, ok := def["widgets"].([]interface{}); ok {
+					if group, ok := def["widgets"].([]any); ok {
 						deleteWidgetID(group)
 					}
 				}
@@ -99,7 +99,7 @@ func deleteWidgetID(widgets []interface{}) {
 	}
 }
 
-func resourceDatadogDashboardJSONRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogDashboardJSONRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -123,7 +123,7 @@ func resourceDatadogDashboardJSONRead(ctx context.Context, d *schema.ResourceDat
 	return updateDashboardJSONState(d, respMap)
 }
 
-func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -175,7 +175,7 @@ func resourceDatadogDashboardJSONCreate(ctx context.Context, d *schema.ResourceD
 	return updateDashboardJSONState(d, respMap)
 }
 
-func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -204,7 +204,7 @@ func resourceDatadogDashboardJSONUpdate(ctx context.Context, d *schema.ResourceD
 	return updateDashboardJSONState(d, respMap)
 }
 
-func resourceDatadogDashboardJSONDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogDashboardJSONDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -219,7 +219,7 @@ func resourceDatadogDashboardJSONDelete(ctx context.Context, d *schema.ResourceD
 	return nil
 }
 
-func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]interface{}) diag.Diagnostics {
+func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]any) diag.Diagnostics {
 	if v, ok := dashboard["url"]; ok {
 		if err := d.Set("url", v.(string)); err != nil {
 			return diag.FromErr(err)
@@ -239,7 +239,7 @@ func updateDashboardJSONState(d *schema.ResourceData, dashboard map[string]inter
 	return nil
 }
 
-func prepResource(attrMap map[string]interface{}) map[string]interface{} {
+func prepResource(attrMap map[string]any) map[string]any {
 	// This is an edge case where refresh might be called with an empty definition.
 	if attrMap == nil {
 		return attrMap
@@ -250,11 +250,11 @@ func prepResource(attrMap map[string]interface{}) map[string]interface{} {
 		delete(attrMap, f)
 	}
 	// Remove every widget id too
-	if widgets, ok := attrMap["widgets"].([]interface{}); ok {
+	if widgets, ok := attrMap["widgets"].([]any); ok {
 		deleteWidgetID(widgets)
 	}
 	// 'restricted_roles' takes precedence over 'is_read_only'
-	if _, ok := attrMap["restricted_roles"].([]interface{}); ok {
+	if _, ok := attrMap["restricted_roles"].([]any); ok {
 		delete(attrMap, "is_read_only")
 	} else {
 		// `is_read_only` defaults to false.
@@ -264,7 +264,7 @@ func prepResource(attrMap map[string]interface{}) map[string]interface{} {
 		}
 	}
 	// handle `notify_list` order
-	if notifyList, ok := attrMap["notify_list"].([]interface{}); ok {
+	if notifyList, ok := attrMap["notify_list"].([]any); ok {
 		sort.SliceStable(notifyList, func(i, j int) bool {
 			return notifyList[i].(string) < notifyList[j].(string)
 		})

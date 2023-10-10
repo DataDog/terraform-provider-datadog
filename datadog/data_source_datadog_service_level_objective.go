@@ -93,7 +93,7 @@ func dataSourceDatadogServiceLevelObjective() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -147,11 +147,11 @@ func dataSourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.R
 	if err := d.Set("timeframe", slo.GetTimeframe()); err != nil {
 		return diag.FromErr(err)
 	}
-	query := make(map[string]interface{})
+	query := make(map[string]any)
 	sloQ := slo.GetQuery()
 	query["numerator"] = sloQ.GetNumerator()
 	query["denominator"] = sloQ.GetDenominator()
-	if err := d.Set("query", []map[string]interface{}{query}); err != nil {
+	if err := d.Set("query", []map[string]any{query}); err != nil {
 		return diag.FromErr(err)
 	}
 

@@ -57,7 +57,7 @@ func dataSourceDatadogRoles() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -99,7 +99,7 @@ func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, met
 	}
 
 	diags := diag.Diagnostics{}
-	tfRoles := make([]map[string]interface{}, 0, len(roles))
+	tfRoles := make([]map[string]any, 0, len(roles))
 	for _, role := range roles {
 		if err := utils.CheckForUnparsed(role); err != nil {
 			diags = append(diags, diag.Diagnostic{
@@ -111,7 +111,7 @@ func dataSourceDatadogRolesRead(ctx context.Context, d *schema.ResourceData, met
 		}
 
 		attributes := role.GetAttributes()
-		tfRoles = append(tfRoles, map[string]interface{}{
+		tfRoles = append(tfRoles, map[string]any{
 			"id":         role.GetId(),
 			"name":       attributes.GetName(),
 			"user_count": attributes.GetUserCount(),

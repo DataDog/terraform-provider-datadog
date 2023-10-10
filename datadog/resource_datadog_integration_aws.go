@@ -130,7 +130,7 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 
 	filterTags := make([]string, 0)
 	if attr, ok := d.GetOk("filter_tags"); ok {
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.([]any) {
 			filterTags = append(filterTags, s.(string))
 		}
 	}
@@ -138,7 +138,7 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 
 	hostTags := make([]string, 0)
 	if attr, ok := d.GetOk("host_tags"); ok {
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.([]any) {
 			hostTags = append(hostTags, s.(string))
 		}
 	}
@@ -147,7 +147,7 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 	accountSpecificNamespaceRules := make(map[string]bool)
 	if attr, ok := d.GetOk("account_specific_namespace_rules"); ok {
 		// TODO: this is not very defensive, test if we can fail on non bool input
-		for k, v := range attr.(map[string]interface{}) {
+		for k, v := range attr.(map[string]any) {
 			accountSpecificNamespaceRules[k] = v.(bool)
 		}
 	}
@@ -179,7 +179,7 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 	return iaws
 }
 
-func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -209,7 +209,7 @@ func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.Resource
 	return resourceDatadogIntegrationAwsRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -259,7 +259,7 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 	return nil
 }
 
-func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -316,7 +316,7 @@ func buildDatadogIntegrationAwsDeleteStruct(d *schema.ResourceData) *datadogV1.A
 	return awsDeleteRequest
 }
 
-func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -333,7 +333,7 @@ func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.Resource
 	return nil
 }
 
-func resourceDatadogIntegrationAwsImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+func resourceDatadogIntegrationAwsImport(ctx context.Context, d *schema.ResourceData, meta any) ([]*schema.ResourceData, error) {
 	originalId := d.Id()
 	if diagErr := resourceDatadogIntegrationAwsRead(ctx, d, meta); diagErr != nil {
 		return nil, fmt.Errorf(diagErr[0].Summary)

@@ -114,7 +114,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 	}
 }
 
-func resourceDatadogSensitiveDataScannerRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSensitiveDataScannerRuleRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -152,7 +152,7 @@ func resourceDatadogSensitiveDataScannerRuleRead(ctx context.Context, d *schema.
 	return nil
 }
 
-func resourceDatadogSensitiveDataScannerRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSensitiveDataScannerRuleCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -218,13 +218,13 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 	}
 
 	namespaces := []string{}
-	for _, s := range d.Get("namespaces").([]interface{}) {
+	for _, s := range d.Get("namespaces").([]any) {
 		namespaces = append(namespaces, s.(string))
 	}
 	attributes.SetNamespaces(namespaces)
 
 	excludedNamespaces := []string{}
-	for _, s := range d.Get("excluded_namespaces").([]interface{}) {
+	for _, s := range d.Get("excluded_namespaces").([]any) {
 		if s == nil {
 			// sdkv2 treats empty strings in list as nils so
 			// append an empty string
@@ -247,7 +247,7 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		attributes.SetPattern(pattern.(string))
 	}
 	tags := []string{}
-	for _, s := range d.Get("tags").([]interface{}) {
+	for _, s := range d.Get("tags").([]any) {
 		tags = append(tags, s.(string))
 	}
 	attributes.SetTags(tags)
@@ -275,7 +275,7 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 	return attributes
 }
 
-func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -304,7 +304,7 @@ func resourceDatadogSensitiveDataScannerRuleUpdate(ctx context.Context, d *schem
 	return updateSensitiveDataScannerRuleState(d, req.Data.Attributes)
 }
 
-func resourceDatadogSensitiveDataScannerRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSensitiveDataScannerRuleDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -348,8 +348,8 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 	}
 
 	if tR, ok := ruleAttributes.GetTextReplacementOk(); ok && tR != nil {
-		textReplacement := make(map[string]interface{})
-		textReplacementList := make([]map[string]interface{}, 0, 1)
+		textReplacement := make(map[string]any)
+		textReplacementList := make([]map[string]any, 0, 1)
 
 		if numberOfChars, ok := tR.GetNumberOfCharsOk(); ok {
 			textReplacement["number_of_chars"] = numberOfChars

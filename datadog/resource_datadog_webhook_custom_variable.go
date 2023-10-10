@@ -61,7 +61,7 @@ func updateWebhookCustomVariableState(d *schema.ResourceData, customVariable *da
 	return nil
 }
 
-func resourceDatadogWebhookCustomVariableCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookCustomVariableCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	webhookMutex.Lock()
 	defer webhookMutex.Unlock()
 
@@ -83,7 +83,7 @@ func resourceDatadogWebhookCustomVariableCreate(ctx context.Context, d *schema.R
 	return updateWebhookCustomVariableState(d, &resp)
 }
 
-func resourceDatadogWebhookCustomVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookCustomVariableRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -99,7 +99,7 @@ func resourceDatadogWebhookCustomVariableRead(ctx context.Context, d *schema.Res
 	return updateWebhookCustomVariableState(d, &resp)
 }
 
-func resourceDatadogWebhookCustomVariableUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookCustomVariableUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	webhookMutex.Lock()
 	defer webhookMutex.Unlock()
 
@@ -121,7 +121,7 @@ func resourceDatadogWebhookCustomVariableUpdate(ctx context.Context, d *schema.R
 	return updateWebhookCustomVariableState(d, &resp)
 }
 
-func resourceDatadogWebhookCustomVariableDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookCustomVariableDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	webhookMutex.Lock()
 	defer webhookMutex.Unlock()
 

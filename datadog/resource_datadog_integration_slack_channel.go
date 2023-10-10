@@ -96,7 +96,7 @@ func buildDatadogSlackChannel(d *schema.ResourceData) *datadogV1.SlackIntegratio
 	return datadogSlackChannel
 }
 
-func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -119,7 +119,7 @@ func resourceDatadogIntegrationSlackChannelCreate(ctx context.Context, d *schema
 	return updateSlackChannelState(d, &createdChannel)
 }
 
-func resourceDatadogIntegrationSlackChannelRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationSlackChannelRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -144,7 +144,7 @@ func resourceDatadogIntegrationSlackChannelRead(ctx context.Context, d *schema.R
 	return updateSlackChannelState(d, &slackChannel)
 }
 
-func resourceDatadogIntegrationSlackChannelUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationSlackChannelUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -172,7 +172,7 @@ func resourceDatadogIntegrationSlackChannelUpdate(ctx context.Context, d *schema
 	return updateSlackChannelState(d, &slackChannel)
 }
 
-func resourceDatadogIntegrationSlackChannelDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationSlackChannelDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -208,15 +208,15 @@ func updateSlackChannelState(d *schema.ResourceData, slackChannel *datadogV1.Sla
 	}
 
 	tfChannelDisplay := buildTerraformSlackChannelDisplay(slackChannel.GetDisplay())
-	if err := d.Set("display", []map[string]interface{}{tfChannelDisplay}); err != nil {
+	if err := d.Set("display", []map[string]any{tfChannelDisplay}); err != nil {
 		return diag.FromErr(err)
 	}
 
 	return nil
 }
 
-func buildTerraformSlackChannelDisplay(ddChannelDisplay datadogV1.SlackIntegrationChannelDisplay) map[string]interface{} {
-	tfChannelDisplay := map[string]interface{}{}
+func buildTerraformSlackChannelDisplay(ddChannelDisplay datadogV1.SlackIntegrationChannelDisplay) map[string]any {
+	tfChannelDisplay := map[string]any{}
 	tfChannelDisplay["message"] = ddChannelDisplay.GetMessage()
 	tfChannelDisplay["notified"] = ddChannelDisplay.GetNotified()
 	tfChannelDisplay["snapshot"] = ddChannelDisplay.GetSnapshot()

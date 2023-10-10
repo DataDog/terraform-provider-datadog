@@ -47,7 +47,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description: "A message to include with notifications for this monitor.\n\nEmail notifications can be sent to specific users by using the same `@username` notation as events.",
 					Type:        schema.TypeString,
 					Required:    true,
-					StateFunc: func(val interface{}) string {
+					StateFunc: func(val any) string {
 						return strings.TrimSpace(val.(string))
 					},
 				},
@@ -55,7 +55,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description: "A message to include with a re-notification. Supports the `@username` notification allowed elsewhere.",
 					Type:        schema.TypeString,
 					Optional:    true,
-					StateFunc: func(val interface{}) string {
+					StateFunc: func(val any) string {
 						return strings.TrimSpace(val.(string))
 					},
 				},
@@ -63,7 +63,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Description: "The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.\n\n**Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).",
 					Type:        schema.TypeString,
 					Required:    true,
-					StateFunc: func(val interface{}) string {
+					StateFunc: func(val any) string {
 						return strings.TrimSpace(val.(string))
 					},
 				},
@@ -610,15 +610,15 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		o.SetLocked(attr.(bool))
 	}
 	if v, ok := d.GetOk("variables"); ok {
-		variables := v.([]interface{})
+		variables := v.([]any)
 		if len(variables) > 0 {
 			// we always have either zero or one
 			for _, v := range variables {
-				m := v.(map[string]interface{})
-				queries := m["event_query"].([]interface{})
+				m := v.(map[string]any)
+				queries := m["event_query"].([]any)
 				monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
 				for i, q := range queries {
-					monitorVariables[i] = *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
+					monitorVariables[i] = *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]any))
 				}
 				o.SetVariables(monitorVariables)
 			}
@@ -656,9 +656,9 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	}
 
 	if attr, ok := d.GetOk("scheduling_options"); ok {
-		scheduling_options_list := attr.([]interface{})
-		if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
-			if evaluation_window_map, ok := scheduling_options_map["evaluation_window"].([]interface{})[0].(map[string]interface{}); ok {
+		scheduling_options_list := attr.([]any)
+		if scheduling_options_map, ok := scheduling_options_list[0].(map[string]any); ok {
+			if evaluation_window_map, ok := scheduling_options_map["evaluation_window"].([]any)[0].(map[string]any); ok {
 				scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
 				evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
 				day_month_scheduling := false
@@ -720,10 +720,10 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	return m, u
 }
 
-func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+func buildMonitorFormulaAndFunctionEventQuery(data map[string]any) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.MonitorFormulaAndFunctionEventsDataSource(data["data_source"].(string))
-	computeList := data["compute"].([]interface{})
-	computeMap := computeList[0].(map[string]interface{})
+	computeList := data["compute"].([]any)
+	computeMap := computeList[0].(map[string]any)
 	aggregation := datadogV1.MonitorFormulaAndFunctionEventAggregation(computeMap["aggregation"].(string))
 	compute := datadogV1.NewMonitorFormulaAndFunctionEventQueryDefinitionCompute(aggregation)
 	if interval, ok := computeMap["interval"].(int); ok && interval != 0 {
@@ -733,23 +733,23 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 		compute.SetMetric(metric)
 	}
 	eventQuery := datadogV1.NewMonitorFormulaAndFunctionEventQueryDefinition(*compute, dataSource, data["name"].(string))
-	eventQueryIndexes := data["indexes"].([]interface{})
+	eventQueryIndexes := data["indexes"].([]any)
 	indexes := make([]string, len(eventQueryIndexes))
 	for i, index := range eventQueryIndexes {
 		indexes[i] = index.(string)
 	}
 	eventQuery.SetIndexes(indexes)
 
-	if terraformSearches, ok := data["search"].([]interface{}); ok && len(terraformSearches) > 0 {
-		terraformSearch := terraformSearches[0].(map[string]interface{})
+	if terraformSearches, ok := data["search"].([]any); ok && len(terraformSearches) > 0 {
+		terraformSearch := terraformSearches[0].(map[string]any)
 		eventQuery.Search = datadogV1.NewMonitorFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
 	}
 
 	// GroupBy
-	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
+	if terraformGroupBys, ok := data["group_by"].([]any); ok && len(terraformGroupBys) > 0 {
 		datadogGroupBys := make([]datadogV1.MonitorFormulaAndFunctionEventQueryGroupBy, len(terraformGroupBys))
 		for i, g := range terraformGroupBys {
-			groupBy := g.(map[string]interface{})
+			groupBy := g.(map[string]any)
 
 			// Facet
 			datadogGroupBy := datadogV1.NewMonitorFormulaAndFunctionEventQueryGroupBy(groupBy["facet"].(string))
@@ -760,8 +760,8 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 			}
 
 			// Sort
-			if v, ok := groupBy["sort"].([]interface{}); ok && len(v) > 0 {
-				if v, ok := v[0].(map[string]interface{}); ok && len(v) > 0 {
+			if v, ok := groupBy["sort"].([]any); ok && len(v) > 0 {
+				if v, ok := v[0].(map[string]any); ok && len(v) > 0 {
 					sortMap := &datadogV1.MonitorFormulaAndFunctionEventQueryGroupBySort{}
 					if aggr, ok := v["aggregation"].(string); ok && len(aggr) > 0 {
 						aggregation := datadogV1.MonitorFormulaAndFunctionEventAggregation(v["aggregation"].(string))
@@ -791,7 +791,7 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 }
 
 // Use CustomizeDiff to do monitor validation
-func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta any) error {
 	if _, ok := diff.GetOk("query"); !ok {
 		// If "query" depends on other resources, we can't validate as the variables may not be interpolated yet.
 		return nil
@@ -832,7 +832,7 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	})
 }
 
-func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -851,7 +851,7 @@ func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, m
 	return updateMonitorState(d, meta, &mCreated)
 }
 
-func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.Monitor) diag.Diagnostics {
+func updateMonitorState(d *schema.ResourceData, meta any, m *datadogV1.Monitor) diag.Diagnostics {
 	thresholds := make(map[string]string)
 
 	if v, ok := m.Options.Thresholds.GetOkOk(); ok {
@@ -901,12 +901,12 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	}
 
 	if len(thresholds) > 0 {
-		if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
+		if err := d.Set("monitor_thresholds", []any{thresholds}); err != nil {
 			return diag.FromErr(err)
 		}
 	}
 	if len(thresholdWindows) > 0 {
-		if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
+		if err := d.Set("monitor_threshold_windows", []any{thresholdWindows}); err != nil {
 			return diag.FromErr(err)
 		}
 	}
@@ -1002,7 +1002,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		return diag.FromErr(err)
 	}
 
-	evaluation_window := make(map[string]interface{})
+	evaluation_window := make(map[string]any)
 	if e, ok := m.Options.SchedulingOptions.GetEvaluationWindowOk(); ok {
 		if d, ok := e.GetDayStartsOk(); ok {
 			evaluation_window["day_starts"] = *d
@@ -1014,10 +1014,10 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 			evaluation_window["month_starts"] = m
 		}
 	}
-	scheduling_options := make(map[string]interface{})
+	scheduling_options := make(map[string]any)
 	if len(evaluation_window) > 0 {
-		scheduling_options["evaluation_window"] = []interface{}{evaluation_window}
-		if err := d.Set("scheduling_options", []interface{}{scheduling_options}); err != nil {
+		scheduling_options["evaluation_window"] = []any{evaluation_window}
+		if err := d.Set("scheduling_options", []any{scheduling_options}); err != nil {
 			return diag.FromErr(err)
 		}
 	}
@@ -1029,10 +1029,10 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	return nil
 }
 
-func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
-	queries := make([]map[string]interface{}, len(datadogVariables))
+func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]any {
+	queries := make([]map[string]any, len(datadogVariables))
 	for i, query := range datadogVariables {
-		terraformQuery := map[string]interface{}{}
+		terraformQuery := map[string]any{}
 		terraformEventQueryDefinition := query.MonitorFormulaAndFunctionEventQueryDefinition
 		if terraformEventQueryDefinition != nil {
 			if dataSource, ok := terraformEventQueryDefinition.GetDataSourceOk(); ok {
@@ -1046,14 +1046,14 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 			}
 			if search, ok := terraformEventQueryDefinition.GetSearchOk(); ok {
 				if len(search.GetQuery()) > 0 {
-					terraformSearch := map[string]interface{}{}
+					terraformSearch := map[string]any{}
 					terraformSearch["query"] = search.GetQuery()
-					terraformSearchList := []map[string]interface{}{terraformSearch}
+					terraformSearchList := []map[string]any{terraformSearch}
 					terraformQuery["search"] = terraformSearchList
 				}
 			}
 			if compute, ok := terraformEventQueryDefinition.GetComputeOk(); ok {
-				terraformCompute := map[string]interface{}{}
+				terraformCompute := map[string]any{}
 				if aggregation, ok := compute.GetAggregationOk(); ok {
 					terraformCompute["aggregation"] = aggregation
 				}
@@ -1063,14 +1063,14 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 				if metric, ok := compute.GetMetricOk(); ok {
 					terraformCompute["metric"] = metric
 				}
-				terraformComputeList := []map[string]interface{}{terraformCompute}
+				terraformComputeList := []map[string]any{terraformCompute}
 				terraformQuery["compute"] = terraformComputeList
 			}
 			if terraformEventQuery, ok := terraformEventQueryDefinition.GetGroupByOk(); ok {
-				terraformGroupBys := make([]map[string]interface{}, len(*terraformEventQuery))
+				terraformGroupBys := make([]map[string]any, len(*terraformEventQuery))
 				for i, groupBy := range *terraformEventQuery {
 					// Facet
-					terraformGroupBy := map[string]interface{}{
+					terraformGroupBy := map[string]any{
 						"facet": groupBy.GetFacet(),
 					}
 					// Limit
@@ -1079,7 +1079,7 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 					}
 					// Sort
 					if v, ok := groupBy.GetSortOk(); ok {
-						terraformSort := map[string]interface{}{}
+						terraformSort := map[string]any{}
 						if metric, ok := v.GetMetricOk(); ok {
 							terraformSort["metric"] = metric
 						}
@@ -1089,7 +1089,7 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 						if aggregation, ok := v.GetAggregationOk(); ok {
 							terraformSort["aggregation"] = aggregation
 						}
-						terraformGroupBy["sort"] = []map[string]interface{}{terraformSort}
+						terraformGroupBy["sort"] = []map[string]any{terraformSort}
 					}
 					terraformGroupBys[i] = terraformGroupBy
 				}
@@ -1098,14 +1098,14 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 			queries[i] = terraformQuery
 		}
 	}
-	terraformVariables := make([]map[string]interface{}, 1) // only event_queries are supported for now
-	terraformVariables[0] = map[string]interface{}{"event_query": queries}
+	terraformVariables := make([]map[string]any, 1) // only event_queries are supported for now
+	terraformVariables[0] = map[string]any{"event_query": queries}
 
 	log.Printf("[INFO] queries: %+v", terraformVariables)
 	return terraformVariables
 }
 
-func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -1146,7 +1146,7 @@ func resourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, met
 	return updateMonitorState(d, meta, &m)
 }
 
-func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -1170,7 +1170,7 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 	return updateMonitorState(d, meta, &monitorResp)
 }
 
-func resourceDatadogMonitorDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

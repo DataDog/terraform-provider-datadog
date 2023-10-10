@@ -38,13 +38,13 @@ func dataSourceDatadogSecurityMonitoringFilters() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogSecurityFiltersRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogSecurityFiltersRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	filterIds := make([]string, 0)
-	filters := make([]map[string]interface{}, 0)
+	filters := make([]map[string]any, 0)
 
 	response, httpresp, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityFilters(auth)
 	if err != nil {
@@ -66,7 +66,7 @@ func dataSourceDatadogSecurityFiltersRead(ctx context.Context, d *schema.Resourc
 		filterIds = append(filterIds, filter.GetId())
 
 		// extract filter
-		filterTF := make(map[string]interface{})
+		filterTF := make(map[string]any)
 		attributes := filter.GetAttributes()
 
 		filterTF["name"] = attributes.GetName()

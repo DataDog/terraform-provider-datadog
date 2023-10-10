@@ -108,7 +108,7 @@ func TestResourceDatadogDowntimeRecurrenceWeekDaysValidation(t *testing.T) {
 
 func TestStringEnumValidation(t *testing.T) {
 	cases := []struct {
-		InputValue    interface{}
+		InputValue    any
 		ExpectedError *diag.Diagnostic
 	}{
 		{

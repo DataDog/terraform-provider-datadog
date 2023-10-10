@@ -45,7 +45,7 @@ func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) *data
 	accountID := d.Get("account_id").(string)
 	services := []string{}
 	if attr, ok := d.GetOk("services"); ok {
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.([]any) {
 			services = append(services, s.(string))
 		}
 	}
@@ -55,7 +55,7 @@ func buildDatadogIntegrationAwsLogCollectionStruct(d *schema.ResourceData) *data
 	return enableLogCollectionServices
 }
 
-func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -71,7 +71,7 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error enabling log collection services for Amazon Web Services integration account")
 	}
-	res := response.(map[string]interface{})
+	res := response.(map[string]any)
 	if status, ok := res["status"]; ok && status == "error" {
 		return diag.FromErr(fmt.Errorf("error creating aws log collection: %s", httpresp.Body))
 	}
@@ -81,7 +81,7 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 	return resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -99,7 +99,7 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *sc
 	return resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -125,7 +125,7 @@ func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *sche
 	return nil
 }
 
-func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

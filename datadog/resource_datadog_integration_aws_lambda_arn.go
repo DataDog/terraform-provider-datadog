@@ -48,7 +48,7 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 	}
 }
 
-func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -66,7 +66,7 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 		return diag.FromErr(err)
 	}
 
-	res := response.(map[string]interface{})
+	res := response.(map[string]any)
 	if status, ok := res["status"]; ok && status == "error" {
 		return diag.FromErr(fmt.Errorf("error attaching Lambda ARN to AWS integration account: %s", httpresp.Body))
 	}
@@ -76,7 +76,7 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 	return resourceDatadogIntegrationAwsLambdaArnRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -109,7 +109,7 @@ func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.R
 	return nil
 }
 
-func resourceDatadogIntegrationAwsLambdaArnDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationAwsLambdaArnDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

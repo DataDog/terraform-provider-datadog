@@ -10,7 +10,7 @@ import (
 )
 
 // SendRequest send custom request
-func SendRequest(ctx context.Context, client *datadog.APIClient, method, path string, body interface{}) ([]byte, *http.Response, error) {
+func SendRequest(ctx context.Context, client *datadog.APIClient, method, path string, body any) ([]byte, *http.Response, error) {
 	req, err := buildRequest(ctx, client, method, path, body)
 	if err != nil {
 		return nil, nil, err
@@ -39,9 +39,9 @@ func SendRequest(ctx context.Context, client *datadog.APIClient, method, path st
 	return bodyResByte, httpRes, nil
 }
 
-func buildRequest(ctx context.Context, client *datadog.APIClient, method, path string, body interface{}) (*http.Request, error) {
+func buildRequest(ctx context.Context, client *datadog.APIClient, method, path string, body any) (*http.Request, error) {
 	var (
-		localVarPostBody        interface{}
+		localVarPostBody        any
 		localVarPath            string
 		localVarQueryParams     url.Values
 		localVarFormQueryParams url.Values

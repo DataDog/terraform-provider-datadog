@@ -37,7 +37,7 @@ func dataSourceDatadogPermissions() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogPermissionsRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

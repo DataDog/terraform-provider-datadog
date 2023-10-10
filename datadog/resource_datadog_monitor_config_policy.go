@@ -79,7 +79,7 @@ func buildCreateRequestPolicy(d *schema.ResourceData, policyType datadogV2.Monit
 		tagKey := d.Get("tag_policy.0.tag_key").(string)
 		tagKeyRequired := d.Get("tag_policy.0.tag_key_required").(bool)
 		var validTagValues []string
-		for _, s := range d.Get("tag_policy.0.valid_tag_values").([]interface{}) {
+		for _, s := range d.Get("tag_policy.0.valid_tag_values").([]any) {
 			validTagValues = append(validTagValues, s.(string))
 		}
 		return &datadogV2.MonitorConfigPolicyPolicyCreateRequest{
@@ -112,7 +112,7 @@ func buildUpdateRequestPolicy(d *schema.ResourceData, policyType datadogV2.Monit
 		tagKey := d.Get("tag_policy.0.tag_key").(string)
 		tagKeyRequired := d.Get("tag_policy.0.tag_key_required").(bool)
 		var validTagValues []string
-		for _, s := range d.Get("tag_policy.0.valid_tag_values").([]interface{}) {
+		for _, s := range d.Get("tag_policy.0.valid_tag_values").([]any) {
 			validTagValues = append(validTagValues, s.(string))
 		}
 		return &datadogV2.MonitorConfigPolicyPolicy{
@@ -125,7 +125,7 @@ func buildUpdateRequestPolicy(d *schema.ResourceData, policyType datadogV2.Monit
 	return nil
 }
 
-func resourceDatadogMonitorConfigPolicyRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorConfigPolicyRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -143,7 +143,7 @@ func resourceDatadogMonitorConfigPolicyRead(ctx context.Context, d *schema.Resou
 	return updateMonitorConfigPolicyState(d, monitorConfigPolicyResponse.Data)
 }
 
-func resourceDatadogMonitorConfigPolicyCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorConfigPolicyCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -165,7 +165,7 @@ func resourceDatadogMonitorConfigPolicyCreate(ctx context.Context, d *schema.Res
 	return updateMonitorConfigPolicyState(d, mCreated.Data)
 }
 
-func resourceDatadogMonitorConfigPolicyUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorConfigPolicyUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -190,7 +190,7 @@ func resourceDatadogMonitorConfigPolicyUpdate(ctx context.Context, d *schema.Res
 	return updateMonitorConfigPolicyState(d, mUpdated.Data)
 }
 
-func resourceDatadogMonitorConfigPolicyDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMonitorConfigPolicyDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -208,7 +208,7 @@ func updateMonitorConfigPolicyState(d *schema.ResourceData, m *datadogV2.Monitor
 	attributes := m.GetAttributes()
 	d.Set("policy_type", attributes.GetPolicyType())
 	if attributes.GetPolicyType() == datadogV2.MONITORCONFIGPOLICYTYPE_TAG {
-		d.Set("tag_policy", []interface{}{map[string]interface{}{
+		d.Set("tag_policy", []any{map[string]any{
 			"tag_key":          attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKey(),
 			"tag_key_required": attributes.Policy.MonitorConfigPolicyTagPolicy.GetTagKeyRequired(),
 			"valid_tag_values": attributes.Policy.MonitorConfigPolicyTagPolicy.GetValidTagValues(),

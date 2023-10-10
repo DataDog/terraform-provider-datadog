@@ -136,7 +136,7 @@ func buildDatadogLogsMetric(d *schema.ResourceData) (*datadogV2.LogsMetricCreate
 }
 
 func getCompute(d *schema.ResourceData) (*datadogV2.LogsMetricCompute, error) {
-	resourceCompute := d.Get("compute").([]interface{})[0].(map[string]interface{})
+	resourceCompute := d.Get("compute").([]any)[0].(map[string]any)
 	compute := datadogV2.NewLogsMetricComputeWithDefaults()
 
 	if aggregationType, ok := resourceCompute["aggregation_type"]; ok {
@@ -157,7 +157,7 @@ func getCompute(d *schema.ResourceData) (*datadogV2.LogsMetricCompute, error) {
 }
 
 func getUpdateCompute(d *schema.ResourceData) (*datadogV2.LogsMetricUpdateCompute, error) {
-	resourceCompute := d.Get("compute").([]interface{})[0].(map[string]interface{})
+	resourceCompute := d.Get("compute").([]any)[0].(map[string]any)
 	updateCompute := datadogV2.NewLogsMetricUpdateComputeWithDefaults()
 
 	if aggregationType, ok := resourceCompute["aggregation_type"]; ok {
@@ -173,7 +173,7 @@ func getUpdateCompute(d *schema.ResourceData) (*datadogV2.LogsMetricUpdateComput
 }
 
 func getFilter(d *schema.ResourceData) (*datadogV2.LogsMetricFilter, error) {
-	resourceFilter := d.Get("filter").([]interface{})[0].(map[string]interface{})
+	resourceFilter := d.Get("filter").([]any)[0].(map[string]any)
 	filter := datadogV2.NewLogsMetricFilterWithDefaults()
 
 	if query, ok := resourceFilter["query"]; ok {
@@ -190,7 +190,7 @@ func getGroupBys(d *schema.ResourceData) ([]datadogV2.LogsMetricGroupBy, error) 
 		if v == nil {
 			continue
 		}
-		resourceGroupBy := v.(map[string]interface{})
+		resourceGroupBy := v.(map[string]any)
 		groupBy := datadogV2.NewLogsMetricGroupByWithDefaults()
 		if path, ok := resourceGroupBy["path"]; ok {
 			groupBy.SetPath(path.(string))
@@ -204,7 +204,7 @@ func getGroupBys(d *schema.ResourceData) ([]datadogV2.LogsMetricGroupBy, error) 
 	return groupBys, nil
 }
 
-func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -233,7 +233,7 @@ func resourceDatadogLogsMetricCreate(ctx context.Context, d *schema.ResourceData
 func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetricResponseData) diag.Diagnostics {
 	if ddAttributes, ok := resource.GetAttributesOk(); ok {
 		if computeDDModel, ok := ddAttributes.GetComputeOk(); ok {
-			computeMap := map[string]interface{}{}
+			computeMap := map[string]any{}
 
 			if v, ok := computeDDModel.GetAggregationTypeOk(); ok {
 				computeMap["aggregation_type"] = *v
@@ -246,24 +246,24 @@ func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetri
 			if v, ok := computeDDModel.GetPathOk(); ok {
 				computeMap["path"] = *v
 			}
-			if err := d.Set("compute", []map[string]interface{}{computeMap}); err != nil {
+			if err := d.Set("compute", []map[string]any{computeMap}); err != nil {
 				return diag.FromErr(err)
 			}
 		}
 		if filterDDModel, ok := ddAttributes.GetFilterOk(); ok {
-			filterMap := map[string]interface{}{}
+			filterMap := map[string]any{}
 			if v, ok := filterDDModel.GetQueryOk(); ok {
 				filterMap["query"] = *v
 			}
-			if err := d.Set("filter", []map[string]interface{}{filterMap}); err != nil {
+			if err := d.Set("filter", []map[string]any{filterMap}); err != nil {
 				return diag.FromErr(err)
 			}
 		}
 		if groupByArray, ok := ddAttributes.GetGroupByOk(); ok {
-			mapAttributesArray := make([]map[string]interface{}, 0)
+			mapAttributesArray := make([]map[string]any, 0)
 
 			for _, groupByArrayItem := range *groupByArray {
-				mapAttributesArrayIntf := map[string]interface{}{}
+				mapAttributesArrayIntf := map[string]any{}
 				if v, ok := groupByArrayItem.GetPathOk(); ok {
 					mapAttributesArrayIntf["path"] = *v
 				}
@@ -288,7 +288,7 @@ func updateLogsMetricState(d *schema.ResourceData, resource *datadogV2.LogsMetri
 	return nil
 }
 
-func resourceDatadogLogsMetricRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsMetricRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -341,7 +341,7 @@ func buildDatadogLogsMetricUpdate(d *schema.ResourceData) (*datadogV2.LogsMetric
 	return result, nil
 }
 
-func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -366,7 +366,7 @@ func resourceDatadogLogsMetricUpdate(ctx context.Context, d *schema.ResourceData
 	return updateLogsMetricState(d, response.Data)
 }
 
-func resourceDatadogLogsMetricDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsMetricDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

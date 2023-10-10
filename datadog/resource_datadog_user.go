@@ -120,7 +120,7 @@ func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userID string) *data
 	return userRequest
 }
 
-func updateRoles(meta interface{}, userID string, oldRoles *schema.Set, newRoles *schema.Set) diag.Diagnostics {
+func updateRoles(meta any, userID string, oldRoles *schema.Set, newRoles *schema.Set) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -154,7 +154,7 @@ func updateRoles(meta interface{}, userID string, oldRoles *schema.Set, newRoles
 	return nil
 }
 
-func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -212,7 +212,7 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		// Update roles
 		_, newRolesI := d.GetChange("roles")
 		newRoles := newRolesI.(*schema.Set)
-		oldRoles := schema.NewSet(newRoles.F, []interface{}{})
+		oldRoles := schema.NewSet(newRoles.F, []any{})
 		for _, existingRole := range updatedUser.Data.Relationships.Roles.GetData() {
 			oldRoles.Add(existingRole.GetId())
 		}
@@ -247,7 +247,7 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 	return updateUserStateV2(d, &createResponse)
 }
 
-func sendUserInvitation(userID string, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func sendUserInvitation(userID string, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -305,7 +305,7 @@ func updateUserStateV2(d *schema.ResourceData, user *datadogV2.UserResponse) dia
 	}
 	return nil
 }
-func resourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -324,7 +324,7 @@ func resourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta i
 	return updateUserStateV2(d, &userResponse)
 }
 
-func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -351,7 +351,7 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 	// so the updated list is available in the update response.
 	return updateUserStateV2(d, &updatedUser)
 }
-func resourceDatadogUserDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogUserDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

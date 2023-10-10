@@ -151,7 +151,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 	}
 }
 
-func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -193,7 +193,7 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 	return resourceDatadogSyntheticsGlobalVariableRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -215,7 +215,7 @@ func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.
 	return updateSyntheticsGlobalVariableLocalState(d, &syntheticsGlobalVariable)
 }
 
-func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -230,7 +230,7 @@ func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schem
 	return resourceDatadogSyntheticsGlobalVariableRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsGlobalVariableDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSyntheticsGlobalVariableDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -255,7 +255,7 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.([]any) {
 			tags = append(tags, s.(string))
 		}
 	}
@@ -343,7 +343,7 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 	if syntheticsGlobalVariable.HasParseTestPublicId() {
 		d.Set("parse_test_id", syntheticsGlobalVariable.GetParseTestPublicId())
 
-		localParseTestOptions := make(map[string]interface{})
+		localParseTestOptions := make(map[string]any)
 		localParser := make(map[string]string)
 
 		parseTestOptions := syntheticsGlobalVariable.GetParseTestOptions()
@@ -370,24 +370,24 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 			localParseTestOptions["local_variable_name"] = parseTestOptions.GetLocalVariableName()
 		}
 
-		d.Set("parse_test_options", []map[string]interface{}{localParseTestOptions})
+		d.Set("parse_test_options", []map[string]any{localParseTestOptions})
 	}
 
 	if syntheticsGlobalVariableValue.HasOptions() {
 		syntheticsGlobalVariableOptions := syntheticsGlobalVariableValue.GetOptions()
-		localVariableOptions := make(map[string]interface{})
+		localVariableOptions := make(map[string]any)
 		if syntheticsGlobalVariableOptions.HasTotpParameters() {
 			syntheticsGlobalVariableTOTPParameters := syntheticsGlobalVariableOptions.GetTotpParameters()
-			localTotpParameters := make(map[string]interface{})
+			localTotpParameters := make(map[string]any)
 			if syntheticsGlobalVariableTOTPParameters.HasDigits() {
 				localTotpParameters["digits"] = syntheticsGlobalVariableTOTPParameters.GetDigits()
 			}
 			if syntheticsGlobalVariableTOTPParameters.HasRefreshInterval() {
 				localTotpParameters["refresh_interval"] = syntheticsGlobalVariableTOTPParameters.GetRefreshInterval()
 			}
-			localVariableOptions["totp_parameters"] = []map[string]interface{}{localTotpParameters}
+			localVariableOptions["totp_parameters"] = []map[string]any{localTotpParameters}
 		}
-		d.Set("options", []map[string]interface{}{localVariableOptions})
+		d.Set("options", []map[string]any{localVariableOptions})
 	}
 
 	if syntheticsGlobalVariable.HasAttributes() {

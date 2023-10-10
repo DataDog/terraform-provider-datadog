@@ -188,7 +188,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 // ValidateServiceLevelObjectiveTypeString is a ValidateFunc that ensures the SLO is of one of the supported types
 
 // Use CustomizeDiff to do monitor validation
-func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+func resourceDatadogServiceLevelObjectiveCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta any) error {
 	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
 		// Explicitly skip validation
 		log.Printf("[DEBUG] Validate is %v, skipping validation", validate.(bool))
@@ -254,10 +254,10 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 	default:
 		// metric type
 		if attr, ok := d.GetOk("query"); ok {
-			queries := make([]map[string]interface{}, 0)
-			raw := attr.([]interface{})
+			queries := make([]map[string]any, 0)
+			raw := attr.([]any)
 			for _, rawQuery := range raw {
-				if query, ok := rawQuery.(map[string]interface{}); ok {
+				if query, ok := rawQuery.(map[string]any); ok {
 					queries = append(queries, query)
 				}
 			}
@@ -344,7 +344,7 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 	return slo, slor
 }
 
-func floatOk(val interface{}) (float64, bool) {
+func floatOk(val any) (float64, bool) {
 	switch val := val.(type) {
 	case float64:
 		return val, true
@@ -366,7 +366,7 @@ func floatOk(val interface{}) (float64, bool) {
 	return 0, false
 }
 
-func resourceDatadogServiceLevelObjectiveCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceLevelObjectiveCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -386,7 +386,7 @@ func resourceDatadogServiceLevelObjectiveCreate(ctx context.Context, d *schema.R
 	return updateSLOState(d, slo)
 }
 
-func resourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -407,9 +407,9 @@ func resourceDatadogServiceLevelObjectiveRead(ctx context.Context, d *schema.Res
 }
 
 func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective) diag.Diagnostics {
-	thresholds := make([]map[string]interface{}, 0)
+	thresholds := make([]map[string]any, 0)
 	for _, threshold := range slo.GetThresholds() {
-		t := map[string]interface{}{
+		t := map[string]any{
 			"timeframe": threshold.GetTimeframe(),
 			"target":    threshold.GetTarget(),
 		}
@@ -471,11 +471,11 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 		}
 	default:
 		// metric type
-		query := make(map[string]interface{})
+		query := make(map[string]any)
 		q := slo.GetQuery()
 		query["numerator"] = q.GetNumerator()
 		query["denominator"] = q.GetDenominator()
-		if err := d.Set("query", []map[string]interface{}{query}); err != nil {
+		if err := d.Set("query", []map[string]any{query}); err != nil {
 			return diag.FromErr(err)
 		}
 	}
@@ -484,9 +484,9 @@ func updateSLOState(d *schema.ResourceData, slo *datadogV1.ServiceLevelObjective
 
 // This duplicates updateSLOState for the SLOResponseData structure, which has mostly the same interface
 func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseData) diag.Diagnostics {
-	thresholds := make([]map[string]interface{}, 0)
+	thresholds := make([]map[string]any, 0)
 	for _, threshold := range slo.GetThresholds() {
-		t := map[string]interface{}{
+		t := map[string]any{
 			"timeframe": threshold.GetTimeframe(),
 			"target":    threshold.GetTarget(),
 		}
@@ -548,18 +548,18 @@ func updateSLOStateFromRead(d *schema.ResourceData, slo *datadogV1.SLOResponseDa
 		}
 	default:
 		// metric type
-		query := make(map[string]interface{})
+		query := make(map[string]any)
 		q := slo.GetQuery()
 		query["numerator"] = q.GetNumerator()
 		query["denominator"] = q.GetDenominator()
-		if err := d.Set("query", []map[string]interface{}{query}); err != nil {
+		if err := d.Set("query", []map[string]any{query}); err != nil {
 			return diag.FromErr(err)
 		}
 	}
 	return nil
 }
 
-func resourceDatadogServiceLevelObjectiveUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceLevelObjectiveUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -576,7 +576,7 @@ func resourceDatadogServiceLevelObjectiveUpdate(ctx context.Context, d *schema.R
 	return updateSLOState(d, &updatedSLO.GetData()[0])
 }
 
-func resourceDatadogServiceLevelObjectiveDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceLevelObjectiveDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -597,7 +597,7 @@ func resourceDatadogServiceLevelObjectiveDelete(ctx context.Context, d *schema.R
 
 }
 
-func trimStateValue(val interface{}) string {
+func trimStateValue(val any) string {
 	return strings.TrimSpace(val.(string))
 }
 

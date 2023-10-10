@@ -89,7 +89,7 @@ const (
 	defaultClientX509CertURLPrefix = "https://www.googleapis.com/robot/v1/metadata/x509/"
 )
 
-func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -124,7 +124,7 @@ func resourceDatadogIntegrationGcpCreate(ctx context.Context, d *schema.Resource
 	return resourceDatadogIntegrationGcpRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -152,7 +152,7 @@ func resourceDatadogIntegrationGcpRead(ctx context.Context, d *schema.ResourceDa
 	return nil
 }
 
-func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -175,7 +175,7 @@ func resourceDatadogIntegrationGcpUpdate(ctx context.Context, d *schema.Resource
 	return resourceDatadogIntegrationGcpRead(ctx, d, meta)
 }
 
-func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationGcpDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

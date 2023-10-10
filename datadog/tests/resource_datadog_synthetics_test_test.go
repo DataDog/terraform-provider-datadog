@@ -4466,7 +4466,7 @@ func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resourc
 			step := datadogV1.SyntheticsStep{}
 			step.SetName("click step")
 			step.SetType(datadogV1.SYNTHETICSSTEPTYPE_CLICK)
-			params := make(map[string]interface{})
+			params := make(map[string]any)
 			elementParams := `{"element":` + MMLManualUpdate + "}"
 			utils.GetMetadataFromJSON([]byte(elementParams), &params)
 			step.SetParams(params)

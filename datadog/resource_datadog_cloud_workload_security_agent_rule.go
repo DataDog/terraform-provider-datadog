@@ -55,7 +55,7 @@ func cloudWorkloadSecurityAgentRuleSchema() map[string]*schema.Schema {
 	}
 }
 
-func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -73,7 +73,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d 
 	return updateCloudWorkloadSecurityAgentRuleState(d, &response)
 }
 
-func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -94,7 +94,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *s
 	return updateCloudWorkloadSecurityAgentRuleState(d, &agentRuleResponse)
 }
 
-func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -112,7 +112,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d 
 	return updateCloudWorkloadSecurityAgentRuleState(d, &agentRuleResponse)
 }
 
-func resourceDatadogCloudWorkloadSecurityAgentRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogCloudWorkloadSecurityAgentRuleDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

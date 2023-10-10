@@ -84,7 +84,7 @@ func securityMonitoringFilterSchema() map[string]*schema.Schema {
 	}
 }
 
-func resourceDatadogSecurityMonitoringFilterCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSecurityMonitoringFilterCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -105,7 +105,7 @@ func resourceDatadogSecurityMonitoringFilterCreate(ctx context.Context, d *schem
 	return nil
 }
 
-func resourceDatadogSecurityMonitoringFilterRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSecurityMonitoringFilterRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -135,7 +135,7 @@ func resourceDatadogSecurityMonitoringFilterRead(ctx context.Context, d *schema.
 	return nil
 }
 
-func resourceDatadogSecurityMonitoringFilterUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSecurityMonitoringFilterUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -151,7 +151,7 @@ func resourceDatadogSecurityMonitoringFilterUpdate(ctx context.Context, d *schem
 	return nil
 }
 
-func resourceDatadogSecurityMonitoringFilterDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSecurityMonitoringFilterDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -185,10 +185,10 @@ func updateResourceDataFilterFromResponse(d *schema.ResourceData, filterResponse
 	}
 }
 
-func extractExclusionFiltersTF(attributes datadogV2.SecurityFilterAttributes) []map[string]interface{} {
-	exclusionFiltersTF := make([]map[string]interface{}, len(attributes.GetExclusionFilters()))
+func extractExclusionFiltersTF(attributes datadogV2.SecurityFilterAttributes) []map[string]any {
+	exclusionFiltersTF := make([]map[string]any, len(attributes.GetExclusionFilters()))
 	for idx := range attributes.GetExclusionFilters() {
-		exclusionFilterTF := make(map[string]interface{})
+		exclusionFilterTF := make(map[string]any)
 		exclusionFilter := attributes.GetExclusionFilters()[idx]
 		exclusionFilterTF["name"] = exclusionFilter.GetName()
 		exclusionFilterTF["query"] = exclusionFilter.GetQuery()
@@ -238,11 +238,11 @@ func extractFilterAttributedFromResource(d *schema.ResourceData) (bool, string, 
 
 	var filters []datadogV2.SecurityFilterExclusionFilter
 	if v, ok := d.GetOk("exclusion_filter"); ok {
-		tfFilters := v.([]interface{})
+		tfFilters := v.([]any)
 
 		filters = make([]datadogV2.SecurityFilterExclusionFilter, len(tfFilters))
 		for i, tfFiler := range tfFilters {
-			filter := tfFiler.(map[string]interface{})
+			filter := tfFiler.(map[string]any)
 			filters[i].SetName(filter["name"].(string))
 			filters[i].SetQuery(filter["query"].(string))
 		}

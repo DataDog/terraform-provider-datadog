@@ -42,7 +42,7 @@ func dataSourceDatadogIntegrationAWSLogsServices() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogIntegrationAWSLogsServicesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogIntegrationAWSLogsServicesRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -53,7 +53,7 @@ func dataSourceDatadogIntegrationAWSLogsServicesRead(ctx context.Context, d *sch
 	}
 
 	diags := diag.Diagnostics{}
-	tfLogsServices := make([]map[string]interface{}, 0)
+	tfLogsServices := make([]map[string]any, 0)
 	for _, awsLogsService := range awsLogsServices {
 		if err := utils.CheckForUnparsed(awsLogsService); err != nil {
 			diags = append(diags, diag.Diagnostic{
@@ -65,7 +65,7 @@ func dataSourceDatadogIntegrationAWSLogsServicesRead(ctx context.Context, d *sch
 		}
 
 		// extract agent rule
-		awsLogsServiceTF := make(map[string]interface{})
+		awsLogsServiceTF := make(map[string]any)
 		if awsLogsServiceId, ok := awsLogsService.GetIdOk(); ok {
 			awsLogsServiceTF["id"] = *awsLogsServiceId
 		} else {

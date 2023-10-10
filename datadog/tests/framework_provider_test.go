@@ -80,7 +80,7 @@ func testAccFrameworkMuxProviders(ctx context.Context, t *testing.T) (context.Co
 
 	// Init sdkV2 provider
 	sdkV2Provider := datadog.Provider()
-	sdkV2Provider.ConfigureContextFunc = func(context.Context, *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	sdkV2Provider.ConfigureContextFunc = func(context.Context, *schema.ResourceData) (any, diag.Diagnostics) {
 		return &datadog.ProviderConfiguration{
 			Auth:                ctx,
 			CommunityClient:     communityClient,

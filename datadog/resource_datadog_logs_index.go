@@ -119,7 +119,7 @@ func resourceDatadogLogsIndex() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsIndexCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsIndexCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -162,7 +162,7 @@ func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) di
 	return nil
 }
 
-func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -181,7 +181,7 @@ func resourceDatadogLogsIndexRead(ctx context.Context, d *schema.ResourceData, m
 	return updateLogsIndexState(d, &ddIndex)
 }
 
-func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -201,14 +201,14 @@ func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData,
 	return updateLogsIndexState(d, &updatedIndex)
 }
 
-func resourceDatadogLogsIndexDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
+func resourceDatadogLogsIndexDelete(_ context.Context, _ *schema.ResourceData, _ any) diag.Diagnostics {
 	return nil
 }
 
 func buildDatadogIndexUpdateRequest(d *schema.ResourceData) *datadogV1.LogsIndexUpdateRequest {
 	var ddIndex datadogV1.LogsIndexUpdateRequest
-	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
-		ddIndex.SetFilter(*buildDatadogIndexFilter(tfFilter[0].(map[string]interface{})))
+	if tfFilter := d.Get("filter").([]any); len(tfFilter) > 0 {
+		ddIndex.SetFilter(*buildDatadogIndexFilter(tfFilter[0].(map[string]any)))
 	}
 
 	if v, ok := d.GetOk("daily_limit"); ok {
@@ -221,7 +221,7 @@ func buildDatadogIndexUpdateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 		ddIndex.SetNumRetentionDays(int64(v.(int)))
 	}
 
-	ddIndex.ExclusionFilters = *buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
+	ddIndex.ExclusionFilters = *buildDatadogExclusionFilters(d.Get("exclusion_filter").([]any))
 	return &ddIndex
 }
 
@@ -230,8 +230,8 @@ func buildDatadogIndexCreateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 
 	ddIndex.SetName(d.Get("name").(string))
 
-	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
-		ddIndex.SetFilter(*buildDatadogIndexFilter(tfFilter[0].(map[string]interface{})))
+	if tfFilter := d.Get("filter").([]any); len(tfFilter) > 0 {
+		ddIndex.SetFilter(*buildDatadogIndexFilter(tfFilter[0].(map[string]any)))
 	}
 	if v, ok := d.GetOk("daily_limit"); ok {
 		ddIndex.SetDailyLimit(int64(v.(int)))
@@ -239,11 +239,11 @@ func buildDatadogIndexCreateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 	if v, ok := d.GetOk("retention_days"); ok {
 		ddIndex.SetNumRetentionDays(int64(v.(int)))
 	}
-	ddIndex.ExclusionFilters = *buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
+	ddIndex.ExclusionFilters = *buildDatadogExclusionFilters(d.Get("exclusion_filter").([]any))
 	return &ddIndex
 }
 
-func buildDatadogIndexFilter(tfFilter map[string]interface{}) *datadogV1.LogsFilter {
+func buildDatadogIndexFilter(tfFilter map[string]any) *datadogV1.LogsFilter {
 	ddFilter := datadogV1.NewLogsFilter()
 	if tfQuery, exists := tfFilter["query"].(string); exists {
 		ddFilter.SetQuery(tfQuery)
@@ -251,22 +251,22 @@ func buildDatadogIndexFilter(tfFilter map[string]interface{}) *datadogV1.LogsFil
 	return ddFilter
 }
 
-func buildTerraformIndexFilter(ddFilter datadogV1.LogsFilter) *[]map[string]interface{} {
-	tfFilter := map[string]interface{}{
+func buildTerraformIndexFilter(ddFilter datadogV1.LogsFilter) *[]map[string]any {
+	tfFilter := map[string]any{
 		"query": ddFilter.GetQuery(),
 	}
-	return &[]map[string]interface{}{tfFilter}
+	return &[]map[string]any{tfFilter}
 }
 
-func buildDatadogExclusionFilters(tfEFilters []interface{}) *[]datadogV1.LogsExclusion {
+func buildDatadogExclusionFilters(tfEFilters []any) *[]datadogV1.LogsExclusion {
 	ddEFilters := make([]datadogV1.LogsExclusion, len(tfEFilters))
 	for i, tfEFilter := range tfEFilters {
-		ddEFilters[i] = *buildDatadogExclusionFilter(tfEFilter.(map[string]interface{}))
+		ddEFilters[i] = *buildDatadogExclusionFilter(tfEFilter.(map[string]any))
 	}
 	return &ddEFilters
 }
 
-func buildDatadogExclusionFilter(tfEFilter map[string]interface{}) *datadogV1.LogsExclusion {
+func buildDatadogExclusionFilter(tfEFilter map[string]any) *datadogV1.LogsExclusion {
 	ddEFilter := datadogV1.NewLogsExclusionWithDefaults()
 	if tfName, exists := tfEFilter["name"].(string); exists {
 		ddEFilter.SetName(tfName)
@@ -274,8 +274,8 @@ func buildDatadogExclusionFilter(tfEFilter map[string]interface{}) *datadogV1.Lo
 	if tfIsEnabled, exists := tfEFilter["is_enabled"].(bool); exists {
 		ddEFilter.SetIsEnabled(tfIsEnabled)
 	}
-	if tfFs, exists := tfEFilter["filter"].([]interface{}); exists && len(tfFs) > 0 {
-		tfFilter := tfFs[0].(map[string]interface{})
+	if tfFs, exists := tfEFilter["filter"].([]any); exists && len(tfFs) > 0 {
+		tfFilter := tfFs[0].(map[string]any)
 		ddFilter := datadogV1.NewLogsExclusionFilterWithDefaults()
 		if tfQuery, exist := tfFilter["query"].(string); exist {
 			ddFilter.SetQuery(tfQuery)
@@ -288,22 +288,22 @@ func buildDatadogExclusionFilter(tfEFilter map[string]interface{}) *datadogV1.Lo
 	return ddEFilter
 }
 
-func buildTerraformExclusionFilters(ddEFilters []datadogV1.LogsExclusion) *[]map[string]interface{} {
-	tfEFilters := make([]map[string]interface{}, len(ddEFilters))
+func buildTerraformExclusionFilters(ddEFilters []datadogV1.LogsExclusion) *[]map[string]any {
+	tfEFilters := make([]map[string]any, len(ddEFilters))
 	for i, ddEFilter := range ddEFilters {
 		tfEFilters[i] = *buildTerraformExclusionFilter(ddEFilter)
 	}
 	return &tfEFilters
 }
 
-func buildTerraformExclusionFilter(ddEFilter datadogV1.LogsExclusion) *map[string]interface{} {
-	tfEFilter := make(map[string]interface{})
+func buildTerraformExclusionFilter(ddEFilter datadogV1.LogsExclusion) *map[string]any {
+	tfEFilter := make(map[string]any)
 	ddFilter := ddEFilter.GetFilter()
-	tfFilter := map[string]interface{}{
+	tfFilter := map[string]any{
 		"query":       ddFilter.GetQuery(),
 		"sample_rate": ddFilter.GetSampleRate(),
 	}
-	tfEFilter["filter"] = []map[string]interface{}{tfFilter}
+	tfEFilter["filter"] = []map[string]any{tfFilter}
 	tfEFilter["name"] = ddEFilter.GetName()
 	tfEFilter["is_enabled"] = ddEFilter.GetIsEnabled()
 	return &tfEFilter

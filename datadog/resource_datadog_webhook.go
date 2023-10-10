@@ -89,7 +89,7 @@ func updateWebhookState(d *schema.ResourceData, webhook *datadogV1.WebhooksInteg
 	return nil
 }
 
-func resourceDatadogWebhookCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	webhookMutex.Lock()
 	defer webhookMutex.Unlock()
 
@@ -112,7 +112,7 @@ func resourceDatadogWebhookCreate(ctx context.Context, d *schema.ResourceData, m
 	return updateWebhookState(d, &resp)
 }
 
-func resourceDatadogWebhookRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -128,7 +128,7 @@ func resourceDatadogWebhookRead(ctx context.Context, d *schema.ResourceData, met
 	return updateWebhookState(d, &resp)
 }
 
-func resourceDatadogWebhookUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	webhookMutex.Lock()
 	defer webhookMutex.Unlock()
 
@@ -151,7 +151,7 @@ func resourceDatadogWebhookUpdate(ctx context.Context, d *schema.ResourceData, m
 	return updateWebhookState(d, &resp)
 }
 
-func resourceDatadogWebhookDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogWebhookDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	webhookMutex.Lock()
 	defer webhookMutex.Unlock()
 

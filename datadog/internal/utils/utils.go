@@ -72,8 +72,8 @@ var DatadogProvider *schema.Provider
 
 // Resource minimal interface common to ResourceData and ResourceDiff
 type Resource interface {
-	Get(string) interface{}
-	GetOk(string) (interface{}, bool)
+	Get(string) any
+	GetOk(string) (any, bool)
 }
 
 // FrameworkErrorDiag return error diag
@@ -118,7 +118,7 @@ func TranslateClientError(err error, httpresp *http.Response, msg string) error 
 }
 
 // CheckForUnparsed takes in a API response object and returns an error if it contains an unparsed element
-func CheckForUnparsed(resp interface{}) error {
+func CheckForUnparsed(resp any) error {
 	if unparsed, invalidPart := datadog.ContainsUnparsedObject(resp); unparsed {
 		return fmt.Errorf("object contains unparsed element: %+v", invalidPart)
 	}
@@ -148,7 +148,7 @@ func GetUserAgentFramework(clientUserAgent, tfCLIVersion string) string {
 }
 
 // GetMetadataFromJSON decodes passed JSON data
-func GetMetadataFromJSON(jsonBytes []byte, unmarshalled interface{}) error {
+func GetMetadataFromJSON(jsonBytes []byte, unmarshalled any) error {
 	decoder := json.NewDecoder(bytes.NewReader(jsonBytes))
 	// make sure we return errors on attributes that we don't expect in metadata
 	decoder.DisallowUnknownFields()
@@ -228,9 +228,9 @@ func AccountIDAndServiceIDFromID(id string) (string, string, error) {
 	return result[0], result[1], nil
 }
 
-// ConvertResponseByteToMap converts JSON []byte to map[string]interface{}
-func ConvertResponseByteToMap(b []byte) (map[string]interface{}, error) {
-	convertedMap := make(map[string]interface{})
+// ConvertResponseByteToMap converts JSON []byte to map[string]any
+func ConvertResponseByteToMap(b []byte) (map[string]any, error) {
+	convertedMap := make(map[string]any)
 	err := json.Unmarshal(b, &convertedMap)
 	if err != nil {
 		return nil, err
@@ -240,10 +240,10 @@ func ConvertResponseByteToMap(b []byte) (map[string]interface{}, error) {
 }
 
 // DeleteKeyInMap deletes key (in dot notation) in map
-func DeleteKeyInMap(mapObject map[string]interface{}, keyList []string) {
+func DeleteKeyInMap(mapObject map[string]any, keyList []string) {
 	if len(keyList) == 1 {
 		delete(mapObject, keyList[0])
-	} else if m, ok := mapObject[keyList[0]].(map[string]interface{}); ok {
+	} else if m, ok := mapObject[keyList[0]].(map[string]any); ok {
 		DeleteKeyInMap(m, keyList[1:])
 	}
 
@@ -253,7 +253,7 @@ func DeleteKeyInMap(mapObject map[string]interface{}, keyList []string) {
 // GetStringSlice returns string slice for the given key if present, otherwise returns an empty slice
 func GetStringSlice(d Resource, key string) []string {
 	if v, ok := d.GetOk(key); ok {
-		values := v.([]interface{})
+		values := v.([]any)
 		stringValues := make([]string, len(values))
 		for i, value := range values {
 			stringValues[i] = value.(string)

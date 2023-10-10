@@ -77,14 +77,14 @@ func resourceDatadogSensitiveDataScannerGroup() *schema.Resource {
 	}
 }
 
-func buildTerraformGroupFilter(ddFilter datadogV2.SensitiveDataScannerFilter) *[]map[string]interface{} {
-	tfFilter := map[string]interface{}{
+func buildTerraformGroupFilter(ddFilter datadogV2.SensitiveDataScannerFilter) *[]map[string]any {
+	tfFilter := map[string]any{
 		"query": ddFilter.GetQuery(),
 	}
-	return &[]map[string]interface{}{tfFilter}
+	return &[]map[string]any{tfFilter}
 }
 
-func buildDatadogGroupFilter(tfFilter map[string]interface{}) *datadogV2.SensitiveDataScannerFilter {
+func buildDatadogGroupFilter(tfFilter map[string]any) *datadogV2.SensitiveDataScannerFilter {
 	ddFilter := datadogV2.NewSensitiveDataScannerFilterWithDefaults()
 	if tfQuery, exists := tfFilter["query"].(string); exists {
 		ddFilter.SetQuery(tfQuery)
@@ -103,8 +103,8 @@ func buildScanningGroupAttributes(d *schema.ResourceData) *datadogV2.SensitiveDa
 		attributes.SetDescription(description.(string))
 	}
 
-	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 && tfFilter[0] != nil {
-		attributes.SetFilter(*buildDatadogGroupFilter(tfFilter[0].(map[string]interface{})))
+	if tfFilter := d.Get("filter").([]any); len(tfFilter) > 0 && tfFilter[0] != nil {
+		attributes.SetFilter(*buildDatadogGroupFilter(tfFilter[0].(map[string]any)))
 	} else {
 		filter := datadogV2.NewSensitiveDataScannerFilterWithDefaults()
 		filter.SetQuery("*")
@@ -124,7 +124,7 @@ func buildScanningGroupAttributes(d *schema.ResourceData) *datadogV2.SensitiveDa
 	return attributes
 }
 
-func resourceDatadogSensitiveDataScannerGroupRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSensitiveDataScannerGroupRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -143,7 +143,7 @@ func resourceDatadogSensitiveDataScannerGroupRead(ctx context.Context, d *schema
 	return nil
 }
 
-func resourceDatadogSensitiveDataScannerGroupCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSensitiveDataScannerGroupCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -176,7 +176,7 @@ func buildSensitiveDataScannerGroupCreateRequestBody(d *schema.ResourceData) *da
 	return req
 }
 
-func resourceDatadogSensitiveDataScannerGroupUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSensitiveDataScannerGroupUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -213,7 +213,7 @@ func buildSensitiveDataScannerGroupUpdateRequestBody(d *schema.ResourceData) *da
 	return req
 }
 
-func resourceDatadogSensitiveDataScannerGroupDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSensitiveDataScannerGroupDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

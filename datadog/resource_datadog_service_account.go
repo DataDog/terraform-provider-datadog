@@ -85,7 +85,7 @@ func buildDatadogServiceAccountV2Request(d *schema.ResourceData) *datadogV2.Serv
 }
 
 // Creates a service account, which is a special subclass of the User model
-func resourceDatadogServiceAccountCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceAccountCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -153,7 +153,7 @@ func resourceDatadogServiceAccountCreate(ctx context.Context, d *schema.Resource
 		// Update roles
 		_, newRolesI := d.GetChange("roles")
 		newRoles := newRolesI.(*schema.Set)
-		oldRoles := schema.NewSet(newRoles.F, []interface{}{})
+		oldRoles := schema.NewSet(newRoles.F, []any{})
 
 		for _, existingRole := range updatedUser.Data.Relationships.Roles.GetData() {
 			oldRoles.Add(existingRole.GetId())
@@ -214,7 +214,7 @@ func updateServiceAccountStateV2(d *schema.ResourceData, user *datadogV2.UserRes
 	return nil
 }
 
-func resourceDatadogServiceAccountRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceAccountRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -237,7 +237,7 @@ func resourceDatadogServiceAccountRead(ctx context.Context, d *schema.ResourceDa
 	return updateServiceAccountStateV2(d, &userResponse)
 }
 
-func resourceDatadogServiceAccountUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceAccountUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -266,7 +266,7 @@ func resourceDatadogServiceAccountUpdate(ctx context.Context, d *schema.Resource
 	return updateServiceAccountStateV2(d, &updatedUser)
 }
 
-func resourceDatadogServiceAccountDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceAccountDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

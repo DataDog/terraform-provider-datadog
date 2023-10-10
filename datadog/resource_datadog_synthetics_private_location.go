@@ -73,7 +73,7 @@ func syntheticsPrivateLocationMetadata() map[string]*schema.Schema {
 	}
 }
 
-func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -119,7 +119,7 @@ func resourceDatadogSyntheticsPrivateLocationCreate(ctx context.Context, d *sche
 	return resourceDatadogSyntheticsPrivateLocationRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsPrivateLocationRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSyntheticsPrivateLocationRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -141,7 +141,7 @@ func resourceDatadogSyntheticsPrivateLocationRead(ctx context.Context, d *schema
 	return updateSyntheticsPrivateLocationLocalState(d, &syntheticsPrivateLocation)
 }
 
-func resourceDatadogSyntheticsPrivateLocationUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSyntheticsPrivateLocationUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -156,7 +156,7 @@ func resourceDatadogSyntheticsPrivateLocationUpdate(ctx context.Context, d *sche
 	return resourceDatadogSyntheticsPrivateLocationRead(ctx, d, meta)
 }
 
-func resourceDatadogSyntheticsPrivateLocationDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSyntheticsPrivateLocationDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -180,7 +180,7 @@ func buildSyntheticsPrivateLocationStruct(d *schema.ResourceData) *datadogV1.Syn
 	}
 
 	if metadata, ok := d.GetOk("metadata"); ok {
-		if metadataMap, ok := metadata.([]interface{})[0].(map[string]interface{}); ok {
+		if metadataMap, ok := metadata.([]any)[0].(map[string]any); ok {
 			privateLocationMetadata := datadogV1.NewSyntheticsPrivateLocationMetadataWithDefaults()
 			// MaxItems is set to 1 so we are sure there is only one metadata to check
 			if roles, ok := metadataMap["restricted_roles"].(*schema.Set); ok {
@@ -196,7 +196,7 @@ func buildSyntheticsPrivateLocationStruct(d *schema.ResourceData) *datadogV1.Syn
 
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
-		for _, s := range attr.([]interface{}) {
+		for _, s := range attr.([]any) {
 			tags = append(tags, s.(string))
 		}
 	}

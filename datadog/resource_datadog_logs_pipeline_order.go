@@ -39,7 +39,7 @@ func resourceDatadogLogsPipelineOrder() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsPipelineOrderCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsPipelineOrderCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	return resourceDatadogLogsPipelineOrderUpdate(ctx, d, meta)
 }
 
@@ -50,7 +50,7 @@ func updateLogsPipelineOrderState(d *schema.ResourceData, order *datadogV1.LogsP
 	return nil
 }
 
-func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -66,9 +66,9 @@ func resourceDatadogLogsPipelineOrderRead(ctx context.Context, d *schema.Resourc
 	return updateLogsPipelineOrderState(d, &order)
 }
 
-func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var ddPipelineList datadogV1.LogsPipelinesOrder
-	tfList := d.Get("pipelines").([]interface{})
+	tfList := d.Get("pipelines").([]any)
 	ddList := make([]string, len(tfList))
 	for i, id := range tfList {
 		ddList[i] = id.(string)
@@ -106,7 +106,7 @@ func resourceDatadogLogsPipelineOrderUpdate(ctx context.Context, d *schema.Resou
 
 // The deletion of pipeline order is not supported from config API.
 // This function simply delete the pipeline order resource from terraform state.
-func resourceDatadogLogsPipelineOrderDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
+func resourceDatadogLogsPipelineOrderDelete(_ context.Context, _ *schema.ResourceData, _ any) diag.Diagnostics {
 
 	return nil
 }

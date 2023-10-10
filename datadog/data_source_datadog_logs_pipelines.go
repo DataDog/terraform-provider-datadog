@@ -81,14 +81,14 @@ func dataSourceDatadogLogsPipelines() *schema.Resource {
 	}
 }
 
-func buildTerraformLogsPipelineFilter(ddFilter datadogV1.LogsFilter) *[]map[string]interface{} {
-	tfFilter := map[string]interface{}{
+func buildTerraformLogsPipelineFilter(ddFilter datadogV1.LogsFilter) *[]map[string]any {
+	tfFilter := map[string]any{
 		"query": ddFilter.GetQuery(),
 	}
-	return &[]map[string]interface{}{tfFilter}
+	return &[]map[string]any{tfFilter}
 }
 
-func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -100,7 +100,7 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 	diags := diag.Diagnostics{}
 	vStr, ok := d.GetOk("is_read_only")
 	v, _ := strconv.ParseBool(vStr.(string))
-	tflogsPipelines := make([]map[string]interface{}, 0)
+	tflogsPipelines := make([]map[string]any, 0)
 	for _, pipeline := range logsPipelines {
 		if !ok || (ok && v == *pipeline.IsReadOnly) {
 			if err := utils.CheckForUnparsed(pipeline); err != nil {
@@ -112,7 +112,7 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 				continue
 			}
 
-			tflogsPipelines = append(tflogsPipelines, map[string]interface{}{
+			tflogsPipelines = append(tflogsPipelines, map[string]any{
 				"name":         pipeline.GetName(),
 				"id":           pipeline.GetId(),
 				"filter":       buildTerraformLogsPipelineFilter(pipeline.GetFilter()),

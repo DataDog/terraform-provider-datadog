@@ -99,7 +99,7 @@ func updateOpsgenieServiceState(d *schema.ResourceData, serviceData *datadogV2.O
 	return nil
 }
 
-func resourceDatadogIntegrationOpsgenieServiceCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationOpsgenieServiceCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -115,7 +115,7 @@ func resourceDatadogIntegrationOpsgenieServiceCreate(ctx context.Context, d *sch
 	return updateOpsgenieServiceState(d, &serviceData)
 }
 
-func resourceDatadogIntegrationOpsgenieServiceRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationOpsgenieServiceRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -132,7 +132,7 @@ func resourceDatadogIntegrationOpsgenieServiceRead(ctx context.Context, d *schem
 	return updateOpsgenieServiceState(d, &serviceData)
 }
 
-func resourceDatadogIntegrationOpsgenieServiceUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationOpsgenieServiceUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -145,7 +145,7 @@ func resourceDatadogIntegrationOpsgenieServiceUpdate(ctx context.Context, d *sch
 	return updateOpsgenieServiceState(d, &serviceData)
 }
 
-func resourceDatadogIntegrationOpsgenieServiceDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogIntegrationOpsgenieServiceDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

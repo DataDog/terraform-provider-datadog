@@ -46,7 +46,7 @@ func resourceDatadogAuthnMapping() *schema.Resource {
 	}
 }
 
-func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 	authNMapReq := buildAuthNMappingCreateRequest(d)
@@ -86,7 +86,7 @@ func resourceDatadogAuthnMappingCreate(ctx context.Context, d *schema.ResourceDa
 	return updateAuthNMappingState(d, &authNMappingData)
 }
 
-func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -102,7 +102,7 @@ func resourceDatadogAuthnMappingRead(ctx context.Context, d *schema.ResourceData
 	return updateAuthNMappingState(d, &authNMappingData)
 }
 
-func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -121,7 +121,7 @@ func resourceDatadogAuthnMappingUpdate(ctx context.Context, d *schema.ResourceDa
 	return updateAuthNMappingState(d, &authNMappingData)
 }
 
-func resourceDatadogAuthnMappingDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogAuthnMappingDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 

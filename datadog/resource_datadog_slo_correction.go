@@ -134,7 +134,7 @@ func buildDatadogSloCorrectionUpdate(d *schema.ResourceData) *datadogV1.SLOCorre
 	return result
 }
 
-func resourceDatadogSloCorrectionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSloCorrectionCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -213,7 +213,7 @@ func updateSLOCorrectionState(d *schema.ResourceData, sloCorrectionData *datadog
 	return nil
 }
 
-func resourceDatadogSloCorrectionRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSloCorrectionRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -236,7 +236,7 @@ func resourceDatadogSloCorrectionRead(ctx context.Context, d *schema.ResourceDat
 	return updateSLOCorrectionState(d, sloCorrectionGetResp.Data)
 }
 
-func resourceDatadogSloCorrectionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSloCorrectionUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -255,7 +255,7 @@ func resourceDatadogSloCorrectionUpdate(ctx context.Context, d *schema.ResourceD
 	return updateSLOCorrectionState(d, response.Data)
 }
 
-func resourceDatadogSloCorrectionDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogSloCorrectionDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

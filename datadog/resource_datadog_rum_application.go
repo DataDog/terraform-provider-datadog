@@ -44,7 +44,7 @@ func resourceDatadogRUMApplication() *schema.Resource {
 	}
 }
 
-func resourceDatadogRUMApplicationRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogRUMApplicationRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -62,7 +62,7 @@ func resourceDatadogRUMApplicationRead(ctx context.Context, d *schema.ResourceDa
 	return updateRUMApplicationState(d, resp.Data)
 }
 
-func resourceDatadogRUMApplicationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogRUMApplicationCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	body := datadogV2.RUMApplicationCreateRequest{
 		Data: datadogV2.RUMApplicationCreate{
 			Attributes: datadogV2.RUMApplicationCreateAttributes{
@@ -87,7 +87,7 @@ func resourceDatadogRUMApplicationCreate(ctx context.Context, d *schema.Resource
 	return updateRUMApplicationState(d, resp.Data)
 }
 
-func resourceDatadogRUMApplicationUpdate(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogRUMApplicationUpdate(_ context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	body := datadogV2.RUMApplicationUpdateRequest{
 		Data: datadogV2.RUMApplicationUpdate{
 			Attributes: &datadogV2.RUMApplicationUpdateAttributes{
@@ -110,7 +110,7 @@ func resourceDatadogRUMApplicationUpdate(_ context.Context, d *schema.ResourceDa
 	return updateRUMApplicationState(d, resp.Data)
 }
 
-func resourceDatadogRUMApplicationDelete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogRUMApplicationDelete(_ context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

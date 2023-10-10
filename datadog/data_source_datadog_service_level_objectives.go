@@ -73,7 +73,7 @@ func dataSourceDatadogServiceLevelObjectives() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -85,7 +85,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 
 	reqParams := datadogV1.NewListSLOsOptionalParameters()
 	if v, ok := d.GetOk("ids"); ok {
-		ids := strings.Join(expandStringList(v.([]interface{})), ",")
+		ids := strings.Join(expandStringList(v.([]any)), ",")
 		idsPtr = &ids
 		reqParams.WithIds(ids)
 	}
@@ -114,7 +114,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 	}
 
 	diags := diag.Diagnostics{}
-	slos := make([]map[string]interface{}, 0, len(slosResp.GetData()))
+	slos := make([]map[string]any, 0, len(slosResp.GetData()))
 	for _, slo := range slosResp.GetData() {
 		if err := utils.CheckForUnparsed(slo); err != nil {
 			diags = append(diags, diag.Diagnostic{
@@ -125,7 +125,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 			continue
 		}
 
-		slos = append(slos, map[string]interface{}{
+		slos = append(slos, map[string]any{
 			"id":   slo.GetId(),
 			"name": slo.GetName(),
 			"type": slo.GetType(),

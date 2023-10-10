@@ -94,7 +94,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 	}
 }
 
-func resourceDatadogLogsArchiveCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsArchiveCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -129,7 +129,7 @@ func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArc
 	if err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set(fmt.Sprintf("%s_archive", archiveType), []interface{}{destination}); err != nil {
+	if err := d.Set(fmt.Sprintf("%s_archive", archiveType), []any{destination}); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -150,7 +150,7 @@ func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArc
 	return nil
 }
 
-func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -169,7 +169,7 @@ func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData,
 	return updateLogsArchiveState(d, &ddArchive)
 }
 
-func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -188,7 +188,7 @@ func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceDat
 	return updateLogsArchiveState(d, &updatedArchive)
 }
 
-func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -204,8 +204,8 @@ func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceDat
 }
 
 // Model to map
-func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestination) (string, map[string]interface{}, error) {
-	emptyDestination := map[string]interface{}{}
+func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestination) (string, map[string]any, error) {
+	emptyDestination := map[string]any{}
 	if archiveDestination.IsSet() && archiveDestination.Get() != nil {
 		destination := archiveDestination.Get().GetActualInstance()
 		switch d := destination.(type) {
@@ -220,8 +220,8 @@ func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestinatio
 	return "", emptyDestination, fmt.Errorf("destination should be not null")
 }
 
-func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) map[string]interface{} {
-	result := make(map[string]interface{})
+func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) map[string]any {
+	result := make(map[string]any)
 	integration := destination.GetIntegration()
 	result["client_id"] = integration.GetClientId()
 	result["tenant_id"] = integration.GetTenantId()
@@ -231,8 +231,8 @@ func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) map[string
 	return result
 }
 
-func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]interface{} {
-	result := make(map[string]interface{})
+func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]any {
+	result := make(map[string]any)
 	integration := destination.GetIntegration()
 	result["client_email"] = integration.GetClientEmail()
 	result["project_id"] = integration.GetProjectId()
@@ -241,8 +241,8 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]int
 	return result
 }
 
-func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]interface{} {
-	result := make(map[string]interface{})
+func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]any {
+	result := make(map[string]any)
 	integration := destination.GetIntegration()
 	result["account_id"] = integration.GetAccountId()
 	result["role_name"] = integration.GetRoleName()
@@ -323,8 +323,8 @@ func definedDestinations(d *schema.ResourceData) []string {
 	return defined
 }
 
-func buildAzureDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationAzure, error) {
-	d := dest.([]interface{})[0].(map[string]interface{})
+func buildAzureDestination(dest any) (*datadogV2.LogsArchiveDestinationAzure, error) {
+	d := dest.([]any)[0].(map[string]any)
 	clientID, ok := d["client_id"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationAzure{}, fmt.Errorf("client_id is not defined")
@@ -359,8 +359,8 @@ func buildAzureDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationA
 	return destination, nil
 }
 
-func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS, error) {
-	d := dest.([]interface{})[0].(map[string]interface{})
+func buildGCSDestination(dest any) (*datadogV2.LogsArchiveDestinationGCS, error) {
+	d := dest.([]any)[0].(map[string]any)
 	clientEmail, ok := d["client_email"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("client_email is not defined")
@@ -390,8 +390,8 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 	return destination, nil
 }
 
-func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, error) {
-	d := dest.([]interface{})[0].(map[string]interface{})
+func buildS3Destination(dest any) (*datadogV2.LogsArchiveDestinationS3, error) {
+	d := dest.([]any)[0].(map[string]any)
 	accountID, ok := d["account_id"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("account_id is not defined")
@@ -422,7 +422,7 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 }
 
 func getRehydrationTags(d *schema.ResourceData) []string {
-	tfList := d.Get("rehydration_tags").([]interface{})
+	tfList := d.Get("rehydration_tags").([]any)
 	ddList := make([]string, len(tfList))
 	for i, tfName := range tfList {
 		ddList[i] = tfName.(string)

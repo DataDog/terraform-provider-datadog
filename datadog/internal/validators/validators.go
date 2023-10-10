@@ -14,7 +14,7 @@ import (
 )
 
 // ValidateFloatString makes sure a string can be parsed into a float
-func ValidateFloatString(v interface{}, k string) (ws []string, errors []error) {
+func ValidateFloatString(v any, k string) (ws []string, errors []error) {
 	return validation.StringMatch(regexp.MustCompile(`\d*(\.\d*)?`), "value must be a float")(v, k)
 }
 
@@ -38,13 +38,13 @@ func buildMessageString(values []string) string {
 	return strings.Join(stringValues, ", ")
 }
 
-func ValidateStringEnumValue(allowedValues ...interface{}) schema.SchemaValidateDiagFunc {
+func ValidateStringEnumValue(allowedValues ...any) schema.SchemaValidateDiagFunc {
 	allowedStringValues := make([]string, 0)
 	for _, v := range allowedValues {
 		allowedStringValues = append(allowedStringValues, fmt.Sprint(v))
 	}
 
-	return func(val interface{}, path cty.Path) diag.Diagnostics {
+	return func(val any, path cty.Path) diag.Diagnostics {
 		var diags diag.Diagnostics
 
 		if _, ok := val.(EnumChecker); ok {
@@ -80,7 +80,7 @@ func ValidateStringEnumValue(allowedValues ...interface{}) schema.SchemaValidate
 
 // ValidateEnumValue returns a validate func for a collection of enum value. It takes the constructors with validation for the enum as an argument.
 // Such a constructor is for instance `datadogV1.NewWidgetLineWidthFromValue`
-func ValidateEnumValue(newEnumFuncs ...interface{}) schema.SchemaValidateDiagFunc {
+func ValidateEnumValue(newEnumFuncs ...any) schema.SchemaValidateDiagFunc {
 
 	// Get type of arg to convert int to int32/64 for instance
 	f := make([]reflect.Type, len(newEnumFuncs))
@@ -90,7 +90,7 @@ func ValidateEnumValue(newEnumFuncs ...interface{}) schema.SchemaValidateDiagFun
 		argT[idx] = f[idx].In(0)
 	}
 
-	return func(val interface{}, path cty.Path) diag.Diagnostics {
+	return func(val any, path cty.Path) diag.Diagnostics {
 		var diags diag.Diagnostics
 
 		// Hack to return a specific diagnostic containing the allowed enum values and have accurate docs
@@ -156,7 +156,7 @@ func ValidateNonEmptyStrings(v any, p cty.Path) diag.Diagnostics {
 }
 
 // ValidateDatadogDowntimeRecurrenceType ensures a string is a valid recurrence type
-func ValidateDatadogDowntimeRecurrenceType(v interface{}, k string) (ws []string, errors []error) {
+func ValidateDatadogDowntimeRecurrenceType(v any, k string) (ws []string, errors []error) {
 	value := v.(string)
 	switch value {
 	case "days", "months", "weeks", "years", "rrule":
@@ -169,7 +169,7 @@ func ValidateDatadogDowntimeRecurrenceType(v interface{}, k string) (ws []string
 }
 
 // ValidateDatadogDowntimeRecurrenceWeekDays ensures a string is a valid recurrence week day
-func ValidateDatadogDowntimeRecurrenceWeekDays(v interface{}, k string) (ws []string, errors []error) {
+func ValidateDatadogDowntimeRecurrenceWeekDays(v any, k string) (ws []string, errors []error) {
 	value := v.(string)
 	switch value {
 	case "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun":
@@ -182,7 +182,7 @@ func ValidateDatadogDowntimeRecurrenceWeekDays(v interface{}, k string) (ws []st
 }
 
 // ValidateDatadogDowntimeTimezone ensures a string is a valid timezone
-func ValidateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, errors []error) {
+func ValidateDatadogDowntimeTimezone(v any, k string) (ws []string, errors []error) {
 	value := v.(string)
 	switch strings.ToLower(value) {
 	case "utc", "":

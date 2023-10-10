@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-func NewEnumValidator[T any](i interface{}) enumValidator[T] {
+func NewEnumValidator[T any](i any) enumValidator[T] {
 	f := reflect.TypeOf(i)
 	enum := reflect.New(f.Out(0)).Elem()
 	allowedValues := enum.MethodByName("GetAllowedValues").Call([]reflect.Value{})[0].Interface()
@@ -20,8 +20,8 @@ func NewEnumValidator[T any](i interface{}) enumValidator[T] {
 }
 
 type enumValidator[T any] struct {
-	enumFunc          interface{}
-	AllowedEnumValues interface{}
+	enumFunc          any
+	AllowedEnumValues any
 }
 
 func (v enumValidator[T]) Description(ctx context.Context) string {
@@ -54,7 +54,7 @@ func (v enumValidator[T]) ValidateInt64(ctx context.Context, req validator.Int64
 	}
 }
 
-func (v enumValidator[T]) validateHelper(value interface{}) error {
+func (v enumValidator[T]) validateHelper(value any) error {
 	argT := reflect.TypeOf(v.enumFunc).In(0)
 	outs := reflect.ValueOf(v.enumFunc).Call([]reflect.Value{reflect.ValueOf(value).Convert(argT)})
 	if err := outs[1].Interface(); err != nil {

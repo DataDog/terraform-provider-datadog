@@ -16,7 +16,7 @@ func TestEnumValidatorString(t *testing.T) {
 
 	type testCaseString struct {
 		val         types.String
-		enumFunc    interface{}
+		enumFunc    any
 		expectError bool
 	}
 	stringTests := map[string]testCaseString{
@@ -69,7 +69,7 @@ func TestEnumValidatorInt64(t *testing.T) {
 
 	type testCaseString struct {
 		val         types.Int64
-		enumFunc    interface{}
+		enumFunc    any
 		expectError bool
 	}
 	int64Tests := map[string]testCaseString{

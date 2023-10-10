@@ -99,7 +99,7 @@ func getValidPermissions(ctx context.Context, apiInstances *utils.ApiInstances) 
 	return validPermissions, nil
 }
 
-func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta any) error {
 	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
 		// Explicitly skip validation
 		return nil
@@ -121,7 +121,7 @@ func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.Resource
 
 	perms := permissions.(*schema.Set)
 	for _, permI := range perms.List() {
-		perm := permI.(map[string]interface{})
+		perm := permI.(map[string]any)
 		permID := perm["id"].(string)
 		if _, ok := validPerms[permID]; !ok {
 			return fmt.Errorf(
@@ -134,7 +134,7 @@ func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.Resource
 	return nil
 }
 
-func resourceDatadogRoleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogRoleCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -174,7 +174,7 @@ func resourceDatadogRoleCreate(ctx context.Context, d *schema.ResourceData, meta
 	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, apiInstances)
 }
 
-func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI interface{}, roleRelations *datadogV2.RoleResponseRelationships, apiInstances *utils.ApiInstances) diag.Diagnostics {
+func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI any, roleRelations *datadogV2.RoleResponseRelationships, apiInstances *utils.ApiInstances) diag.Diagnostics {
 	type namer interface {
 		GetName() string
 	}
@@ -200,7 +200,7 @@ func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI int
 	return updateRolePermissionsState(ctx, d, rolePerms.GetData(), apiInstances)
 }
 
-func updateRolePermissionsState(ctx context.Context, d *schema.ResourceData, rolePermsI interface{}, apiInstances *utils.ApiInstances) diag.Diagnostics {
+func updateRolePermissionsState(ctx context.Context, d *schema.ResourceData, rolePermsI any, apiInstances *utils.ApiInstances) diag.Diagnostics {
 
 	// Get a list of all valid permissions, to ignore restricted perms
 	permsIDToName, err := getValidPermissions(ctx, apiInstances)
@@ -240,7 +240,7 @@ func appendPerm(perms []map[string]string, permID string, permsIDToName map[stri
 	return perms
 }
 
-func resourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -260,7 +260,7 @@ func resourceDatadogRoleRead(ctx context.Context, d *schema.ResourceData, meta i
 	return updateRoleState(auth, d, roleData.Attributes, roleData.Relationships, apiInstances)
 }
 
-func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -282,7 +282,7 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 	return nil
 }
 
-func resourceDatadogRoleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogRoleDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
@@ -310,7 +310,7 @@ func buildRoleCreateRequest(d *schema.ResourceData) *datadogV2.RoleCreateRequest
 		rolePermRelations := datadogV2.NewRelationshipToPermissionsWithDefaults()
 		rolePermRelationsData := make([]datadogV2.RelationshipToPermissionData, len(perms))
 		for i, permI := range perms {
-			perm := permI.(map[string]interface{})
+			perm := permI.(map[string]any)
 			roleRelationshipToPerm := datadogV2.NewRelationshipToPermissionDataWithDefaults()
 			roleRelationshipToPerm.SetId(perm["id"].(string))
 			rolePermRelationsData[i] = *roleRelationshipToPerm
@@ -343,7 +343,7 @@ func buildRoleUpdateRequest(d *schema.ResourceData) *datadogV2.RoleUpdateRequest
 		perms := permsI.(*schema.Set).List()
 		rolePermRelationsData := make([]datadogV2.RelationshipToPermissionData, len(perms))
 		for i, permI := range perms {
-			perm := permI.(map[string]interface{})
+			perm := permI.(map[string]any)
 			roleRelationshipToPerm := datadogV2.NewRelationshipToPermissionDataWithDefaults()
 			roleRelationshipToPerm.SetId(perm["id"].(string))
 			rolePermRelationsData[i] = *roleRelationshipToPerm

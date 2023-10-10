@@ -28,7 +28,7 @@ func dataSourceDatadogLogsIndexesOrder() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogLogsIndexesOrderRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogLogsIndexesOrderRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

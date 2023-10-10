@@ -24,8 +24,8 @@ const rawServiceDefinitionPath = "/api/v2/services/raw_definitions"
 var fieldsWithName = []string{"contacts", "repos", "docs", "links"}
 
 type sdAttribute struct {
-	Schema map[string]interface{} `json:"schema"`
-	Meta   sdMeta                 `json:"meta"`
+	Schema map[string]any `json:"schema"`
+	Meta   sdMeta         `json:"meta"`
 }
 
 type sdMeta struct {
@@ -63,7 +63,7 @@ func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 		ReadContext:   resourceDatadogServiceDefinitionRead,
 		UpdateContext: resourceDatadogServiceDefinitionUpdate,
 		DeleteContext: resourceDatadogServiceDefinitionDelete,
-		CustomizeDiff: customdiff.ForceNewIfChange("service_definition", func(ctx context.Context, old, new, meta interface{}) bool {
+		CustomizeDiff: customdiff.ForceNewIfChange("service_definition", func(ctx context.Context, old, new, meta any) bool {
 			oldAttrMap, _ := expandYAMLFromString(old.(string))
 			newAttrMap, _ := expandYAMLFromString(new.(string))
 
@@ -87,7 +87,7 @@ func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 					Type:         schema.TypeString,
 					Required:     true,
 					ValidateFunc: isValidServiceDefinition,
-					StateFunc: func(v interface{}) string {
+					StateFunc: func(v any) string {
 						attrMap, _ := expandYAMLFromString(v.(string))
 						prepServiceDefinitionResource(attrMap)
 						res, _ := flattenYAMLToString(attrMap)
@@ -100,15 +100,15 @@ func resourceDatadogServiceDefinitionYAML() *schema.Resource {
 	}
 }
 
-func expandYAMLFromString(yamlString string) (map[string]interface{}, error) {
-	var result map[string]interface{}
+func expandYAMLFromString(yamlString string) (map[string]any, error) {
+	var result map[string]any
 
 	err := yaml.Unmarshal([]byte(yamlString), &result)
 
 	return result, err
 }
 
-func flattenYAMLToString(input map[string]interface{}) (string, error) {
+func flattenYAMLToString(input map[string]any) (string, error) {
 	if len(input) == 0 {
 		return "", nil
 	}
@@ -121,7 +121,7 @@ func flattenYAMLToString(input map[string]interface{}) (string, error) {
 	return string(result), nil
 }
 
-func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]interface{} {
+func prepServiceDefinitionResource(attrMap map[string]any) map[string]any {
 	if isBackstageSchema(attrMap) {
 		// Don't prepare 3rd party schemas
 		return attrMap
@@ -138,7 +138,7 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 		attrMap["dd-service"] = utils.NormalizeTag(service)
 	}
 
-	if tags, ok := attrMap["tags"].([]interface{}); ok {
+	if tags, ok := attrMap["tags"].([]any); ok {
 		if len(tags) == 0 {
 			delete(attrMap, "tags")
 		} else {
@@ -153,13 +153,13 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 		}
 	}
 
-	if contacts, ok := attrMap["contacts"].([]interface{}); ok {
+	if contacts, ok := attrMap["contacts"].([]any); ok {
 		if len(contacts) == 0 {
 			delete(attrMap, "contacts")
 		} else {
-			sortedContacts := make([]map[string]interface{}, 0)
+			sortedContacts := make([]map[string]any, 0)
 			for _, contact := range contacts {
-				sortedContacts = append(sortedContacts, contact.(map[string]interface{}))
+				sortedContacts = append(sortedContacts, contact.(map[string]any))
 			}
 
 			sort.SliceStable(sortedContacts, func(i, j int) bool {
@@ -189,12 +189,12 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 			delete(attrMap, "team")
 		}
 	}
-	if extensions, ok := attrMap["extensions"].(map[string]interface{}); ok {
+	if extensions, ok := attrMap["extensions"].(map[string]any); ok {
 		if len(extensions) == 0 {
 			delete(attrMap, "extensions")
 		}
 	}
-	if integrations, ok := attrMap["integrations"].(map[string]interface{}); ok {
+	if integrations, ok := attrMap["integrations"].(map[string]any); ok {
 		if len(integrations) == 0 {
 			delete(attrMap, "integrations")
 		}
@@ -202,8 +202,8 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 	return attrMap
 }
 
-func normalizeArrayField(attrMap map[string]interface{}, key string) {
-	if items, ok := attrMap[key].([]interface{}); ok {
+func normalizeArrayField(attrMap map[string]any, key string) {
+	if items, ok := attrMap[key].([]any); ok {
 		if len(items) == 0 {
 			delete(attrMap, key)
 		} else {
@@ -216,8 +216,8 @@ func normalizeArrayField(attrMap map[string]interface{}, key string) {
 	}
 }
 
-func getNameField(data interface{}) string {
-	if stringMap, ok := data.(map[string]interface{}); ok {
+func getNameField(data any) string {
+	if stringMap, ok := data.(map[string]any); ok {
 		if name, ok := stringMap["name"]; ok {
 			return name.(string)
 		}
@@ -225,14 +225,14 @@ func getNameField(data interface{}) string {
 	return ""
 }
 
-func isValidServiceDefinition(i interface{}, k string) (warnings []string, errors []error) {
+func isValidServiceDefinition(i any, k string) (warnings []string, errors []error) {
 	v, ok := i.(string)
 	if !ok {
 		errors = append(errors, fmt.Errorf("expected type of %s to be string", k))
 		return warnings, errors
 	}
 
-	var attrMap map[string]interface{}
+	var attrMap map[string]any
 	if err := yaml.Unmarshal([]byte(v), &attrMap); err != nil {
 		errors = append(errors, fmt.Errorf("%q contains an invalid YAML/JSON: %s", k, err))
 		return warnings, errors
@@ -293,7 +293,7 @@ func parseSemVersion(version string) (semVersion, error) {
 	return sVersion, nil
 }
 
-func isValidDatadogServiceDefinition(attrMap map[string]interface{}, k string) (warnings []string, errors []error) {
+func isValidDatadogServiceDefinition(attrMap map[string]any, k string) (warnings []string, errors []error) {
 	if schemaVersion, ok := attrMap["schema-version"].(string); ok {
 		version, err := parseSemVersion(schemaVersion)
 		if err != nil {
@@ -314,7 +314,7 @@ func isValidDatadogServiceDefinition(attrMap map[string]interface{}, k string) (
 	return warnings, errors
 }
 
-func isValidBackstageServiceDefinition(attrMap map[string]interface{}, k string) (warnings []string, errors []error) {
+func isValidBackstageServiceDefinition(attrMap map[string]any, k string) (warnings []string, errors []error) {
 	if apiVersion, ok := attrMap["apiVersion"].(string); ok {
 		if apiVersion != "backstage.io/v1alpha1" {
 			errors = append(errors, fmt.Errorf("apiVersion must be backstage.io/v1alpha1, but %s is used", apiVersion))
@@ -331,7 +331,7 @@ func isValidBackstageServiceDefinition(attrMap map[string]interface{}, k string)
 		errors = append(errors, fmt.Errorf("kind is missing: %q", k))
 	}
 
-	if spec, ok := attrMap["spec"].(map[string]interface{}); ok {
+	if spec, ok := attrMap["spec"].(map[string]any); ok {
 		if _, okay := spec["type"].(string); !okay {
 			errors = append(errors, fmt.Errorf("spec.type is missing: %q", k))
 		}
@@ -339,7 +339,7 @@ func isValidBackstageServiceDefinition(attrMap map[string]interface{}, k string)
 		errors = append(errors, fmt.Errorf("spec is missing: %q", k))
 	}
 
-	if metadata, ok := attrMap["metadata"].(map[string]interface{}); ok {
+	if metadata, ok := attrMap["metadata"].(map[string]any); ok {
 		if _, okay := metadata["name"].(string); !okay {
 			errors = append(errors, fmt.Errorf("metadata.name is missing: %q", k))
 		}
@@ -350,7 +350,7 @@ func isValidBackstageServiceDefinition(attrMap map[string]interface{}, k string)
 	return warnings, errors
 }
 
-func resourceDatadogServiceDefinitionRead(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceDefinitionRead(_ context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -405,7 +405,7 @@ func resourceDatadogServiceDefinitionRead(_ context.Context, d *schema.ResourceD
 	return updateServiceDefinitionState(d, schema)
 }
 
-func resourceDatadogServiceDefinitionCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceDefinitionCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -440,7 +440,7 @@ func resourceDatadogServiceDefinitionCreate(ctx context.Context, d *schema.Resou
 	return updateServiceDefinitionState(d, response.Data[0].Attributes.Schema)
 }
 
-func resourceDatadogServiceDefinitionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceDefinitionUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -473,7 +473,7 @@ func resourceDatadogServiceDefinitionUpdate(ctx context.Context, d *schema.Resou
 	return updateServiceDefinitionState(d, response.Data[0].Attributes.Schema)
 }
 
-func resourceDatadogServiceDefinitionDelete(_ context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogServiceDefinitionDelete(_ context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -486,7 +486,7 @@ func resourceDatadogServiceDefinitionDelete(_ context.Context, d *schema.Resourc
 	return nil
 }
 
-func updateServiceDefinitionState(d *schema.ResourceData, attrMap map[string]interface{}) diag.Diagnostics {
+func updateServiceDefinitionState(d *schema.ResourceData, attrMap map[string]any) diag.Diagnostics {
 	schema := prepServiceDefinitionResource(attrMap)
 	serviceDefinition, err := flattenYAMLToString(schema)
 	if err != nil {
@@ -499,12 +499,12 @@ func updateServiceDefinitionState(d *schema.ResourceData, attrMap map[string]int
 	return nil
 }
 
-func getServiceName(attrMap map[string]interface{}) (string, bool) {
+func getServiceName(attrMap map[string]any) (string, bool) {
 	if isDatadogServiceSchema(attrMap) {
 		service, ok := attrMap["dd-service"].(string)
 		return service, ok
 	} else if isBackstageSchema(attrMap) {
-		if metadata, ok := attrMap["metadata"].(map[string]interface{}); ok {
+		if metadata, ok := attrMap["metadata"].(map[string]any); ok {
 			service, okay := metadata["name"].(string)
 			return service, okay
 		}
@@ -512,14 +512,14 @@ func getServiceName(attrMap map[string]interface{}) (string, bool) {
 	return "", false
 }
 
-func isDatadogServiceSchema(attrMap map[string]interface{}) bool {
+func isDatadogServiceSchema(attrMap map[string]any) bool {
 	if _, ok := attrMap["schema-version"]; ok {
 		return true
 	}
 	return false
 }
 
-func isBackstageSchema(attrMap map[string]interface{}) bool {
+func isBackstageSchema(attrMap map[string]any) bool {
 	if apiVersion, ok := attrMap["apiVersion"].(string); ok {
 		return strings.HasPrefix(apiVersion, "backstage.io")
 	}

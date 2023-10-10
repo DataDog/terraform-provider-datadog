@@ -100,7 +100,7 @@ var dataSourceLogsIndexesExclusionFilterSchema = map[string]*schema.Schema{
 	},
 }
 
-func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -111,7 +111,7 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 	}
 
 	diags := diag.Diagnostics{}
-	tfLogsIndexes := make([]map[string]interface{}, len(logsIndexes.GetIndexes()))
+	tfLogsIndexes := make([]map[string]any, len(logsIndexes.GetIndexes()))
 	for i, l := range logsIndexes.GetIndexes() {
 		if err := utils.CheckForUnparsed(l); err != nil {
 			diags = append(diags, diag.Diagnostic{
@@ -122,7 +122,7 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 			continue
 		}
 
-		tfLogsIndexes[i] = map[string]interface{}{
+		tfLogsIndexes[i] = map[string]any{
 			"name":             l.GetName(),
 			"daily_limit":      l.GetDailyLimit(),
 			"retention_days":   l.GetNumRetentionDays(),

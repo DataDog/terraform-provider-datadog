@@ -25,7 +25,7 @@ func dataSourceDatadogSyntheticsLocations() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogSyntheticsLocationsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogSyntheticsLocationsRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances

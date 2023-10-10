@@ -67,7 +67,7 @@ func dataSourceDatadogMonitors() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -77,10 +77,10 @@ func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, 
 		optionalParams = optionalParams.WithName(v.(string))
 	}
 	if v, ok := d.GetOk("tags_filter"); ok {
-		optionalParams = optionalParams.WithTags(strings.Join(expandStringList(v.([]interface{})), ","))
+		optionalParams = optionalParams.WithTags(strings.Join(expandStringList(v.([]any)), ","))
 	}
 	if v, ok := d.GetOk("monitor_tags_filter"); ok {
-		optionalParams = optionalParams.WithMonitorTags(strings.Join(expandStringList(v.([]interface{})), ","))
+		optionalParams = optionalParams.WithMonitorTags(strings.Join(expandStringList(v.([]any)), ","))
 	}
 
 	monitors, httpresp, err := apiInstances.GetMonitorsApiV1().ListMonitors(auth, *optionalParams)
@@ -94,7 +94,7 @@ func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, 
 	d.SetId(computeMonitorsDatasourceID(d))
 
 	diags := diag.Diagnostics{}
-	tfMonitors := make([]map[string]interface{}, len(monitors))
+	tfMonitors := make([]map[string]any, len(monitors))
 	for i, m := range monitors {
 		if err := utils.CheckForUnparsed(m); err != nil {
 			diags = append(diags, diag.Diagnostic{
@@ -105,7 +105,7 @@ func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, 
 			continue
 		}
 
-		tfMonitors[i] = map[string]interface{}{
+		tfMonitors[i] = map[string]any{
 			"id":   m.GetId(),
 			"name": m.GetName(),
 			"type": m.GetType(),
@@ -125,11 +125,11 @@ func computeMonitorsDatasourceID(d *schema.ResourceData) string {
 	}
 	dsID.WriteRune('|')
 	if v, ok := d.GetOk("tags_filter"); ok {
-		dsID.WriteString(strings.Join(expandStringList(v.([]interface{})), ","))
+		dsID.WriteString(strings.Join(expandStringList(v.([]any)), ","))
 	}
 	dsID.WriteRune('|')
 	if v, ok := d.GetOk("monitor_tags_filter"); ok {
-		dsID.WriteString(strings.Join(expandStringList(v.([]interface{})), ","))
+		dsID.WriteString(strings.Join(expandStringList(v.([]any)), ","))
 	}
 	return dsID.String()
 }

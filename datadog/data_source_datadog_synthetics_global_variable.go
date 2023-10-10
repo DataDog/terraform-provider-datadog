@@ -36,7 +36,7 @@ func dataSourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances

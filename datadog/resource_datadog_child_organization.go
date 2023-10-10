@@ -229,26 +229,26 @@ func updateOrganizationState(d *schema.ResourceData, org *datadogV1.Organization
 	d.Set("description", org.GetDescription())
 
 	settings := org.GetSettings()
-	settingsMap := make(map[string]interface{})
+	settingsMap := make(map[string]any)
 
 	// `private_widget_share`
 	settingsMap["private_widget_share"] = settings.GetPrivateWidgetShare()
 
 	// `saml`
 	settingsSaml := settings.GetSaml()
-	settingsSamlMap := make(map[string]interface{})
+	settingsSamlMap := make(map[string]any)
 	settingsSamlMap["enabled"] = settingsSaml.GetEnabled()
-	settingsMap["saml"] = []map[string]interface{}{settingsSamlMap}
+	settingsMap["saml"] = []map[string]any{settingsSamlMap}
 
 	// `saml_autocreate_access_role`
 	settingsMap["saml_autocreate_access_role"] = settings.GetSamlAutocreateAccessRole()
 
 	// `saml_autocreate_users_domains`
 	settingsSamlAutocreateUsersDomains := settings.GetSamlAutocreateUsersDomains()
-	settingsSamlAutocreateUsersDomainsMap := make(map[string]interface{})
+	settingsSamlAutocreateUsersDomainsMap := make(map[string]any)
 	settingsSamlAutocreateUsersDomainsMap["domains"] = settingsSamlAutocreateUsersDomains.GetDomains()
 	settingsSamlAutocreateUsersDomainsMap["enabled"] = settingsSamlAutocreateUsersDomains.GetEnabled()
-	settingsMap["saml_autocreate_users_domains"] = []map[string]interface{}{settingsSamlAutocreateUsersDomainsMap}
+	settingsMap["saml_autocreate_users_domains"] = []map[string]any{settingsSamlAutocreateUsersDomainsMap}
 
 	// `saml_can_be_enabled` & `saml_idp_endpoint`
 	settingsMap["saml_can_be_enabled"] = settings.GetSamlCanBeEnabled()
@@ -256,9 +256,9 @@ func updateOrganizationState(d *schema.ResourceData, org *datadogV1.Organization
 
 	// `saml_idp_initiated_login`
 	settingsSamlIdpInitiatedLogin := settings.GetSamlIdpInitiatedLogin()
-	settingsSamlIdpInitiatedLoginMap := make(map[string]interface{})
+	settingsSamlIdpInitiatedLoginMap := make(map[string]any)
 	settingsSamlIdpInitiatedLoginMap["enabled"] = settingsSamlIdpInitiatedLogin.GetEnabled()
-	settingsMap["saml_idp_initiated_login"] = []map[string]interface{}{settingsSamlIdpInitiatedLoginMap}
+	settingsMap["saml_idp_initiated_login"] = []map[string]any{settingsSamlIdpInitiatedLoginMap}
 
 	// `saml_idp_metadata_uploaded` & `saml_login_url`
 	settingsMap["saml_idp_metadata_uploaded"] = settings.GetSamlIdpMetadataUploaded()
@@ -266,11 +266,11 @@ func updateOrganizationState(d *schema.ResourceData, org *datadogV1.Organization
 
 	// `saml_strict_mode`
 	settingsSamlStrictMode := settings.GetSamlStrictMode()
-	settingsSamlStrictModeMap := make(map[string]interface{})
+	settingsSamlStrictModeMap := make(map[string]any)
 	settingsSamlStrictModeMap["enabled"] = settingsSamlStrictMode.GetEnabled()
-	settingsMap["saml_strict_mode"] = []map[string]interface{}{settingsSamlStrictModeMap}
+	settingsMap["saml_strict_mode"] = []map[string]any{settingsSamlStrictModeMap}
 
-	if err := d.Set("settings", []interface{}{settingsMap}); err != nil {
+	if err := d.Set("settings", []any{settingsMap}); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -278,12 +278,12 @@ func updateOrganizationState(d *schema.ResourceData, org *datadogV1.Organization
 }
 
 func updateOrganizationApiKeyState(d *schema.ResourceData, apiKey *datadogV1.ApiKey) diag.Diagnostics {
-	apiKeyMap := make(map[string]interface{})
+	apiKeyMap := make(map[string]any)
 
 	apiKeyMap["key"] = apiKey.GetKey()
 	apiKeyMap["name"] = apiKey.GetName()
 
-	if err := d.Set("api_key", []interface{}{apiKeyMap}); err != nil {
+	if err := d.Set("api_key", []any{apiKeyMap}); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -291,13 +291,13 @@ func updateOrganizationApiKeyState(d *schema.ResourceData, apiKey *datadogV1.Api
 }
 
 func updateOrganizationApplicationKeyState(d *schema.ResourceData, apiKey *datadogV1.ApplicationKey) diag.Diagnostics {
-	applicationKeyMap := make(map[string]interface{})
+	applicationKeyMap := make(map[string]any)
 
 	applicationKeyMap["hash"] = apiKey.GetHash()
 	applicationKeyMap["name"] = apiKey.GetName()
 	applicationKeyMap["owner"] = apiKey.GetOwner()
 
-	if err := d.Set("application_key", []interface{}{applicationKeyMap}); err != nil {
+	if err := d.Set("application_key", []any{applicationKeyMap}); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -305,20 +305,20 @@ func updateOrganizationApplicationKeyState(d *schema.ResourceData, apiKey *datad
 }
 
 func updateOrganizationUserState(d *schema.ResourceData, apiKey *datadogV1.User) diag.Diagnostics {
-	userMap := make(map[string]interface{})
+	userMap := make(map[string]any)
 
 	userMap["email"] = apiKey.GetEmail()
 	userMap["name"] = apiKey.GetName()
 	userMap["access_role"] = apiKey.GetAccessRole()
 
-	if err := d.Set("user", []interface{}{userMap}); err != nil {
+	if err := d.Set("user", []any{userMap}); err != nil {
 		return diag.FromErr(err)
 	}
 
 	return nil
 }
 
-func resourceDatadogChildOrganizationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogChildOrganizationCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -343,12 +343,12 @@ func resourceDatadogChildOrganizationCreate(ctx context.Context, d *schema.Resou
 	return updateOrganizationState(d, &org)
 }
 
-func resourceDatadogChildOrganizationRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogChildOrganizationRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	// Once the organization is created there is no way to get an information for it.
 	return nil
 }
 
-func resourceDatadogChildOrganizationDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogChildOrganizationDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return append(diags, diag.Diagnostic{

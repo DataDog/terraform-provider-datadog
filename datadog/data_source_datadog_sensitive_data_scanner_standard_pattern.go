@@ -45,7 +45,7 @@ func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogSensitiveDataScannerStandardPatternRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogSensitiveDataScannerStandardPatternRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

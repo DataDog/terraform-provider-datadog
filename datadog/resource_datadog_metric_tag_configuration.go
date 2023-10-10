@@ -21,7 +21,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 		ReadContext:   resourceDatadogMetricTagConfigurationRead,
 		UpdateContext: resourceDatadogMetricTagConfigurationUpdate,
 		DeleteContext: resourceDatadogMetricTagConfigurationDelete,
-		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta any) error {
 			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
 			oldAggrs, newAggrs := diff.GetChange("aggregations")
 			metricType, metricTypeOk := diff.GetOkExists("metric_type")
@@ -45,13 +45,13 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 				diff.SetNew("aggregations", nil)
 			} else {
 				// Always add the default aggregation regardless of if the user manually added it or not
-				var defaultAggrCombo map[string]interface{}
+				var defaultAggrCombo map[string]any
 				if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
 					// the avg/avg combo is the default aggregation for gauge metrics
-					defaultAggrCombo = map[string]interface{}{"time": "avg", "space": "avg"}
+					defaultAggrCombo = map[string]any{"time": "avg", "space": "avg"}
 				} else {
 					// the sum/sum combo is the default aggregation for count/rates metrics
-					defaultAggrCombo = map[string]interface{}{"time": "sum", "space": "sum"}
+					defaultAggrCombo = map[string]any{"time": "sum", "space": "sum"}
 				}
 
 				newAggrs.(*schema.Set).Add(defaultAggrCombo)
@@ -124,10 +124,10 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 	}
 }
 
-func buildAggregations(resourceAggregations []interface{}) ([]datadogV2.MetricCustomAggregation, error) {
+func buildAggregations(resourceAggregations []any) ([]datadogV2.MetricCustomAggregation, error) {
 	aggregations := make([]datadogV2.MetricCustomAggregation, len(resourceAggregations))
 	for i, v := range resourceAggregations {
-		resourceAggregation := v.(map[string]interface{})
+		resourceAggregation := v.(map[string]any)
 		spaceAggr, err := datadogV2.NewMetricCustomSpaceAggregationFromValue(resourceAggregation["space"].(string))
 		if err != nil {
 			return nil, err
@@ -234,7 +234,7 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 	return result, nil
 }
 
-func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMetricTagConfigurationCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -270,10 +270,10 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 					return diag.FromErr(err)
 				}
 			} else {
-				aggregationsMapArray := make([]map[string]interface{}, 0)
+				aggregationsMapArray := make([]map[string]any, 0)
 				if aggregationsArray, ok := attributes.GetAggregationsOk(); ok {
 					for _, aggregation := range *aggregationsArray {
-						aggregationsMap := map[string]interface{}{}
+						aggregationsMap := map[string]any{}
 						aggregationsMap["time"] = aggregation.GetTime()
 						aggregationsMap["space"] = aggregation.GetSpace()
 						aggregationsMapArray = append(aggregationsMapArray, aggregationsMap)
@@ -304,7 +304,7 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 	return nil
 }
 
-func resourceDatadogMetricTagConfigurationRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMetricTagConfigurationRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -332,7 +332,7 @@ func resourceDatadogMetricTagConfigurationRead(ctx context.Context, d *schema.Re
 	return updateMetricTagConfigurationState(d, &resource)
 }
 
-func resourceDatadogMetricTagConfigurationUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMetricTagConfigurationUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -373,7 +373,7 @@ func resourceDatadogMetricTagConfigurationUpdate(ctx context.Context, d *schema.
 	return updateMetricTagConfigurationState(d, response.Data)
 }
 
-func resourceDatadogMetricTagConfigurationDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogMetricTagConfigurationDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth

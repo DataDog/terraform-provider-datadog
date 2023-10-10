@@ -277,7 +277,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -287,10 +287,10 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 		optionalParams = optionalParams.WithName(v.(string))
 	}
 	if v, ok := d.GetOk("tags_filter"); ok {
-		optionalParams = optionalParams.WithTags(strings.Join(expandStringList(v.([]interface{})), ","))
+		optionalParams = optionalParams.WithTags(strings.Join(expandStringList(v.([]any)), ","))
 	}
 	if v, ok := d.GetOk("monitor_tags_filter"); ok {
-		optionalParams = optionalParams.WithMonitorTags(strings.Join(expandStringList(v.([]interface{})), ","))
+		optionalParams = optionalParams.WithMonitorTags(strings.Join(expandStringList(v.([]any)), ","))
 	}
 
 	monitors, httpresp, err := apiInstances.GetMonitorsApiV1().ListMonitors(auth, *optionalParams)
@@ -354,10 +354,10 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("query", m.GetQuery())
 	d.Set("type", m.GetType())
 
-	if err := d.Set("monitor_thresholds", []interface{}{thresholds}); err != nil {
+	if err := d.Set("monitor_thresholds", []any{thresholds}); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("monitor_threshold_windows", []interface{}{thresholdWindows}); err != nil {
+	if err := d.Set("monitor_threshold_windows", []any{thresholdWindows}); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -383,7 +383,7 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	d.Set("notify_by", m.Options.GetNotifyBy())
 	d.Set("notification_preset_name", m.Options.GetNotificationPresetName())
 
-	evaluation_window := make(map[string]interface{})
+	evaluation_window := make(map[string]any)
 	if e, ok := m.Options.SchedulingOptions.GetEvaluationWindowOk(); ok {
 		if d, ok := e.GetDayStartsOk(); ok {
 			evaluation_window["day_starts"] = *d
@@ -395,10 +395,10 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 			evaluation_window["month_starts"] = m
 		}
 	}
-	scheduling_options := make(map[string]interface{})
+	scheduling_options := make(map[string]any)
 	if len(evaluation_window) > 0 {
-		scheduling_options["evaluation_window"] = []interface{}{evaluation_window}
-		if err := d.Set("scheduling_options", []interface{}{scheduling_options}); err != nil {
+		scheduling_options["evaluation_window"] = []any{evaluation_window}
+		if err := d.Set("scheduling_options", []any{scheduling_options}); err != nil {
 			return diag.FromErr(err)
 		}
 	}
@@ -410,7 +410,7 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	return nil
 }
 
-func expandStringList(configured []interface{}) []string {
+func expandStringList(configured []any) []string {
 	vs := make([]string, 0, len(configured))
 	for _, v := range configured {
 		val, ok := v.(string)

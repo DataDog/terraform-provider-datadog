@@ -120,11 +120,11 @@ func TestConvertResponseByteToMap(t *testing.T) {
 func TestDeleteKeyInMap(t *testing.T) {
 	cases := map[string]struct {
 		keyPath   []string
-		mapObject map[string]interface{}
-		expected  map[string]interface{}
+		mapObject map[string]any
+		expected  map[string]any
 	}{
-		"basic":  {[]string{"test"}, map[string]interface{}{"test": true, "field-two": false}, map[string]interface{}{"field-two": false}},
-		"nested": {[]string{"test", "nested"}, map[string]interface{}{"test": map[string]interface{}{"nested": "field"}, "field-two": false}, map[string]interface{}{"test": map[string]interface{}{}, "field-two": false}},
+		"basic":  {[]string{"test"}, map[string]any{"test": true, "field-two": false}, map[string]any{"field-two": false}},
+		"nested": {[]string{"test", "nested"}, map[string]any{"test": map[string]any{"nested": "field"}, "field-two": false}, map[string]any{"test": map[string]any{}, "field-two": false}},
 	}
 	for name, tc := range cases {
 		DeleteKeyInMap(tc.mapObject, tc.keyPath)
@@ -137,13 +137,13 @@ func TestDeleteKeyInMap(t *testing.T) {
 func TestGetStringSlice(t *testing.T) {
 	cases := []struct {
 		testCase string
-		resource map[string]interface{}
+		resource map[string]any
 		expected []string
 	}{
-		{"emptyMap", map[string]interface{}{}, []string{}},
-		{"emptyArrayValue", map[string]interface{}{"key": []interface{}{}}, []string{}},
-		{"nonEmptyarrayValue", map[string]interface{}{"key": []interface{}{"value1", "value2"}}, []string{"value1", "value2"}},
-		{"otherKeyInMap", map[string]interface{}{"otherKey": []interface{}{"value1"}}, []string{}},
+		{"emptyMap", map[string]any{}, []string{}},
+		{"emptyArrayValue", map[string]any{"key": []any{}}, []string{}},
+		{"nonEmptyarrayValue", map[string]any{"key": []any{"value1", "value2"}}, []string{"value1", "value2"}},
+		{"otherKeyInMap", map[string]any{"otherKey": []any{"value1"}}, []string{}},
 	}
 
 	for _, tc := range cases {
@@ -176,14 +176,14 @@ func invalidJSON() string {
 }
 
 type mockResourceData struct {
-	values map[string]interface{}
+	values map[string]any
 }
 
-func (r *mockResourceData) Get(key string) interface{} {
+func (r *mockResourceData) Get(key string) any {
 	return r.values[key]
 }
 
-func (r *mockResourceData) GetOk(key string) (interface{}, bool) {
+func (r *mockResourceData) GetOk(key string) (any, bool) {
 	v, ok := r.values[key]
 	return v, ok
 }
