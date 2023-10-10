@@ -76,11 +76,11 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 	}
 
 	// Build description with Defaults
-	_default := rv.Elem().FieldByName("Default")
-	if _default.IsValid() && !_default.IsNil() {
-		defaultField := _default.Elem().FieldByName("defaultVal")
+	defaultField := rv.Elem().FieldByName("Default")
+	if defaultField.IsValid() && !defaultField.IsNil() {
+		defaultVal := defaultField.Elem().FieldByName("defaultVal")
 		if defaultField.IsValid() {
-			curentDesc = fmt.Sprintf("%s Defaults to `%v`.", curentDesc, defaultField)
+			curentDesc = fmt.Sprintf("%s Defaults to `%v`.", curentDesc, defaultVal)
 		}
 	}
 
