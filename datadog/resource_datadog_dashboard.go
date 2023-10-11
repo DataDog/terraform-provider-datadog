@@ -1444,7 +1444,10 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 		terraformDefinition := buildTerraformRunWorkflowDefinition(widgetDefinition.RunWorkflowWidgetDefinition)
 		terraformWidget["run_workflow_definition"] = []map[string]interface{}{terraformDefinition}
 	} else if widgetDefinition.SplitGraphWidgetDefinition != nil {
-		terraformDefinition := buildTerraformSplitGraphDefinition(widgetDefinition.SplitGraphWidgetDefinition)
+		terraformDefinition, err := buildTerraformSplitGraphDefinition(widgetDefinition.SplitGraphWidgetDefinition)
+		if err != nil {
+			return nil, err
+		}
 		terraformWidget["split_graph_definition"] = []map[string]interface{}{terraformDefinition}
 	} else {
 		return nil, fmt.Errorf("unsupported widget type: %s", widgetDefinition.GetActualInstance())
@@ -1453,7 +1456,7 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 }
 
 // Helper to build a source widget definition for terraform
-func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadogV1.SplitGraphSourceWidgetDefinition) map[string]interface{} {
+func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadogV1.SplitGraphSourceWidgetDefinition) (map[string]interface{}, error) {
 	terraformWidgetDefinition := map[string]interface{}{}
 
 	// Build definition
@@ -1481,8 +1484,10 @@ func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadog
 	} else if datadogSourceWidgetDefinition.GeomapWidgetDefinition != nil {
 		terraformDefinition := buildTerraformGeomapDefinition(datadogSourceWidgetDefinition.GeomapWidgetDefinition)
 		terraformWidgetDefinition["geomap_definition"] = []map[string]interface{}{terraformDefinition}
+	} else {
+		return nil, fmt.Errorf("unsupported widget type used as split graph source widget: %s", datadogSourceWidgetDefinition.GetActualInstance())
 	}
-	return terraformWidgetDefinition
+	return terraformWidgetDefinition, nil
 }
 
 //
@@ -8069,11 +8074,15 @@ func buildDatadogStaticSplits(terraformStaticSplits []interface{}) *[][]datadogV
 	return &datadogStaticSplits
 }
 
-func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphWidgetDefinition) map[string]interface{} {
+func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphWidgetDefinition) (map[string]interface{}, error) {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
 	if v, ok := datadogDefinition.GetSourceWidgetDefinitionOk(); ok {
-		terraformDefinition["source_widget_definition"] = []map[string]interface{}{buildTerraformSourceWidgetDefinition(v)}
+		terraformSourceWidgetDefinition, err := buildTerraformSourceWidgetDefinition(v)
+		if err != nil {
+			return nil, err
+		}
+		terraformDefinition["source_widget_definition"] = []map[string]interface{}{terraformSourceWidgetDefinition}
 	}
 	if v, ok := datadogDefinition.GetSizeOk(); ok {
 		terraformDefinition["size"] = v
@@ -8092,7 +8101,7 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 		terraformDefinition["live_span"] = v.GetLiveSpan()
 	}
 
-	return terraformDefinition
+	return terraformDefinition, nil
 }
 
 func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[string]interface{} {
