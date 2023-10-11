@@ -6,69 +6,69 @@ import (
 
 const datadogDashboardSplitGraphConfigWithStaticSplits = `
 resource "datadog_dashboard" "split_graph_dashboard" {
-	title        = "{{uniq}}"
-	description  = "Created using the Datadog provider in Terraform"
-	layout_type  = "ordered"
+	title       = "{{uniq}}"
+	description = "Created using the Datadog provider in Terraform"
+	layout_type = "ordered"
 	widget {
-	  split_graph_definition {
-		  title = "Terraform Split Graph Widget"
-		  source_widget_definition{
-			  timeseries_definition{
-				  title_size = "16"
-				  title_align = "left"
-				  title = "system.cpu.user"
-				  request {
-					  query {
-						  metric_query {
-							  data_source = "metrics"
-							  query       = "avg:system.cpu.user{*}"
-							  name        = "my_query_1"
-						  }
-					  }
-					  style {
-						  line_width = "thin"
-						  palette = "dog_classic"
-						  line_type = "solid"
-					  }
-					  display_type = "line"
-				  }
-			  }
-		  }
-		  split_config{
-			  split_dimensions{
-				  one_graph_per = "service"
-			  }
-			  limit = 24
-			  sort{
-				  compute{
-					  aggregation = "sum"
-					  metric = "system.cpu.user"
-				  }
-				  order = "desc"
-			  }
-			  static_splits{
-				  split_vector{
-					  tag_key = "service"
-					  tag_values = ["cassandra"]
-				  }
-				  split_vector{
-					  tag_key = "datacenter"
-					  tag_values = []
-				  }
-			  }
-			  static_splits{
-				  split_vector{
-					  tag_key = "demo"
-					  tag_values = ["env"]
-				  }
-			  }
-		  }
-		  size = "md"
-		  has_uniform_y_axes = true
-		  live_span = "5m"
-	  }
+		split_graph_definition {
+			title = "Terraform Split Graph Widget"
+			source_widget_definition {
+				timeseries_definition {
+					title_size  = "16"
+					title_align = "left"
+					title       = "system.cpu.user"
+					request {
+						query {
+							metric_query {
+								data_source = "metrics"
+								query       = "avg:system.cpu.user{*}"
+								name        = "my_query_1"
+							}
+						}
+						style {
+							line_width = "thin"
+							palette    = "dog_classic"
+							line_type  = "solid"
+						}
+						display_type = "line"
+					}
+				}
+			}
+			split_config {
+				split_dimensions {
+					one_graph_per = "service"
+				}
+				limit = 24
+				sort {
+					compute {
+						aggregation = "sum"
+						metric      = "system.cpu.user"
+					}
+					order = "desc"
+				}
+				static_splits {
+					split_vector {
+						tag_key    = "service"
+						tag_values = ["cassandra"]
+					}
+					split_vector {
+						tag_key    = "datacenter"
+						tag_values = []
+					}
+				}
+				static_splits {
+					split_vector {
+						tag_key    = "demo"
+						tag_values = ["env"]
+					}
+				}
+			}
+			size               = "md"
+			has_uniform_y_axes = true
+			live_span          = "5m"
+		}
 	}
-  }
+}
 `
 
 var datadogDashboardSplitGraphAssertsWithStaticSplits = []string{
@@ -112,48 +112,48 @@ func TestAccDatadogDashboardSplitGraphWithStaticSplits_import(t *testing.T) {
 
 const datadogDashboardSplitGraphConfig = `
 resource "datadog_dashboard" "split_graph_dashboard" {
-	title        = "{{uniq}}"
-	description  = "Created using the Datadog provider in Terraform"
-	layout_type  = "ordered"
+	title       = "{{uniq}}"
+	description = "Created using the Datadog provider in Terraform"
+	layout_type = "ordered"
 	widget {
-	  split_graph_definition {
-		  title = "Terraform Split Graph Widget"
-		  source_widget_definition{
-			  timeseries_definition{
-				  title_size = "16"
-				  title_align = "left"
-				  title = "system.cpu.user"
-				  request {
-					  query {
-						  metric_query {
-							  data_source = "metrics"
-							  query       = "avg:system.cpu.user{*}"
-							  name        = "my_query_1"
-						  }
-					  }
-					  style {
-						  line_width = "thin"
-						  palette = "dog_classic"
-						  line_type = "solid"
-					  }
-					  display_type = "line"
-				  }
-			  }
-		  }
-		  split_config{
-			  split_dimensions{
-				  one_graph_per = "service"
-			  }
-			  limit = 24
-			  sort{
-				  order = "asc"
-			  }
-		  }
-		  size = "md"
-		  live_span = "5m"
-	  }
+		split_graph_definition {
+			title = "Terraform Split Graph Widget"
+			source_widget_definition {
+				timeseries_definition {
+					title_size  = "16"
+					title_align = "left"
+					title       = "system.cpu.user"
+					request {
+						query {
+							metric_query {
+								data_source = "metrics"
+								query       = "avg:system.cpu.user{*}"
+								name        = "my_query_1"
+							}
+						}
+						style {
+							line_width = "thin"
+							palette    = "dog_classic"
+							line_type  = "solid"
+						}
+						display_type = "line"
+					}
+				}
+			}
+			split_config {
+				split_dimensions {
+					one_graph_per = "service"
+				}
+				limit = 24
+				sort {
+					order = "asc"
+				}
+			}
+			size      = "md"
+			live_span = "5m"
+		}
 	}
-  }
+}
 `
 
 var datadogDashboardSplitGraphAsserts = []string{
