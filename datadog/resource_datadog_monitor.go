@@ -166,7 +166,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					},
 				},
 				"notify_no_data": {
-					Description:   "A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.",
+					Description:   "A boolean indicating whether this monitor will notify when data stops reporting.",
 					Type:          schema.TypeBool,
 					Optional:      true,
 					Default:       false,
@@ -211,7 +211,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Optional:    true,
 				},
 				"no_data_timeframe": {
-					Description: "The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.\n\nWe recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.",
+					Description: "The number of minutes before a monitor will notify when data stops reporting.\n\nWe recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.",
 					Type:        schema.TypeInt,
 					Optional:    true,
 					Default:     defaultNoDataTimeframeMinutes,
