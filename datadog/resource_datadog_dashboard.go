@@ -1244,7 +1244,11 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 		}
 	} else if def, ok := terraformWidget["split_graph_definition"].([]interface{}); ok && len(def) > 0 {
 		if splitGraphDefinition, ok := def[0].(map[string]interface{}); ok {
-			definition = datadogV1.SplitGraphWidgetDefinitionAsWidgetDefinition(buildDatadogSplitGraphDefinition(splitGraphDefinition))
+			datadogDefinition, err := buildDatadogSplitGraphDefinition(splitGraphDefinition)
+			if err != nil {
+				return nil, err
+			}
+			definition = datadogV1.SplitGraphWidgetDefinitionAsWidgetDefinition(datadogDefinition)
 		}
 	} else {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
@@ -1263,7 +1267,7 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 }
 
 // Helper to build a Datadog Source Widget defiition for split graph
-func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) *datadogV1.SplitGraphSourceWidgetDefinition {
+func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) (*datadogV1.SplitGraphSourceWidgetDefinition, error) {
 	// Build widget Definition
 	var definition datadogV1.SplitGraphSourceWidgetDefinition
 
@@ -1303,8 +1307,10 @@ func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) 
 		if geomapDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.GeomapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogGeomapDefinition(geomapDefinition))
 		}
+	} else {
+		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
 	}
-	return &definition
+	return &definition, nil
 }
 
 // Helper to build a list of Terraform widgets from a list of Datadog widgets
@@ -7805,6 +7811,8 @@ func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
 			Description: "The original widget we are splitting on.",
 			Type:        schema.TypeList,
 			Required:    true,
+			MinItems:    1,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: getSplitGraphSourceWidgetSchema(),
 			},
@@ -7813,6 +7821,8 @@ func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
 			Description: "Encapsulates all user choices about how to split a graph.",
 			Type:        schema.TypeList,
 			Required:    true,
+			MinItems:    1,
+			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: getSplitConfigSchema(),
 			},
@@ -7872,6 +7882,8 @@ func getSplitSortSchema() *schema.Schema {
 		Description: "Controls the order in which graphs appear in the split.",
 		Type:        schema.TypeList,
 		Required:    true,
+		MinItems:    1,
+		MaxItems:    1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"compute": getSplitSortComputeSchema(),
@@ -7891,6 +7903,7 @@ func getSplitSortComputeSchema() *schema.Schema {
 		Description: "Defines the metric and aggregation used as the sort value",
 		Type:        schema.TypeList,
 		Optional:    true,
+		MaxItems:    1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"aggregation": {
@@ -7911,7 +7924,7 @@ func getStaticSplitsSchema() *schema.Schema {
 	return &schema.Schema{
 		Description: "The property by which the graph splits",
 		Type:        schema.TypeList,
-		Required:    true,
+		Optional:    true,
 		MinItems:    1,
 		MaxItems:    100,
 		Elem: &schema.Resource{
@@ -7943,7 +7956,7 @@ func getSplitVectorSchema() *schema.Schema {
 	}
 }
 
-func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}) *datadogV1.SplitGraphWidgetDefinition {
+func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}) (*datadogV1.SplitGraphWidgetDefinition, error) {
 	datadogDefinition := datadogV1.NewSplitGraphWidgetDefinitionWithDefaults()
 	// Required params
 	//size,source_widget,split_config, type
@@ -7952,7 +7965,10 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 	}
 
 	if terraformSourceWidget, ok := terraformDefinition["source_widget_definition"].([]interface{}); ok && len(terraformSourceWidget) > 0 {
-		datadogWidget := buildDatadogSourceWidgetDefinition(terraformSourceWidget[0].(map[string]interface{}))
+		datadogWidget, err := buildDatadogSourceWidgetDefinition(terraformSourceWidget[0].(map[string]interface{}))
+		if err != nil {
+			return nil, err
+		}
 		datadogDefinition.SetSourceWidgetDefinition(*datadogWidget)
 	}
 
@@ -7974,7 +7990,7 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 		}
 	}
 
-	return datadogDefinition
+	return datadogDefinition, nil
 }
 
 func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datadogV1.SplitConfig {
@@ -8098,13 +8114,16 @@ func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[s
 		terraformSortList := []map[string]interface{}{
 			{
 				"order": datadogSort.Order,
-				"compute": []map[string]interface{}{
-					{
-						"aggregation": datadogSort.Compute.Aggregation,
-						"metric":      datadogSort.Compute.Metric,
-					},
-				},
 			},
+		}
+
+		if datadogSortCompute, datadogSortComputeOk := datadogSort.GetComputeOk(); datadogSortComputeOk {
+			terraformSortList[0]["compute"] = []map[string]interface{}{
+				{
+					"aggregation": datadogSortCompute.Aggregation,
+					"metric":      datadogSortCompute.Metric,
+				},
+			}
 		}
 		terraformSplitConfig["sort"] = terraformSortList
 	}
