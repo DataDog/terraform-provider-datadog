@@ -121,7 +121,6 @@ func resourceDatadogPowerpackUpdate(ctx context.Context, d *schema.ResourceData,
 	if err := utils.CheckForUnparsed(updatedPowerpackResponse); err != nil {
 		return diag.FromErr(err)
 	}
-
 	return updatePowerpackState(d, &updatedPowerpackResponse)
 }
 
@@ -188,6 +187,7 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 }
 
 func dashboardWidgetsToPpkWidgets(terraformWidgets *[]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
+	var diags diag.Diagnostics
 
 	widgets := make([]datadogV2.PowerpackInnerWidgets, len(*terraformWidgets))
 	for i, terraformWidget := range *terraformWidgets {
@@ -200,6 +200,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]interface{}) ([]datadogV2.
 			def, ok := widget_def.([]interface{})
 			if ok && len(def) > 0 {
 				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
+
 				for field, value := range widget_def.([]interface{})[0].(map[string]interface{}) {
 					if fmt.Sprintf("%v", value) != "" {
 						widgetDef[field] = value
@@ -208,26 +209,36 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]interface{}) ([]datadogV2.
 			}
 		}
 		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
+
 		widgets[i] = *widgetsDDItem
 	}
-	return widgets, nil
+	return widgets, diags
 }
 
 func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) (*[]datadogV1.Widget, diag.Diagnostics) {
-	datadogWidgets := make([]datadogV1.Widget, len(ppkWidgets))
-	for i, terraformWidget := range ppkWidgets {
+	var diags diag.Diagnostics
+	var datadogWidgets []datadogV1.Widget
+	for _, terraformWidget := range ppkWidgets {
 		var definition datadogV1.WidgetDefinition
 		if terraformWidget.Definition == nil {
 			continue
 		}
 		if terraformWidget.Definition["type"] == "note" {
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "free_text" {
+			definition = datadogV1.FreeTextWidgetDefinitionAsWidgetDefinition(buildDatadogFreeTextDefinition(terraformWidget.Definition))
+		} else {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("this is bad: %s", terraformWidget.Definition["type"]),
+			})
+			continue
 		}
 		datadogWidget := datadogV1.NewWidget(definition)
 
-		datadogWidgets[i] = *datadogWidget
+		datadogWidgets = append(datadogWidgets, *datadogWidget)
 	}
-	return &datadogWidgets, nil
+	return &datadogWidgets, diags
 }
 
 func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.PowerpackResponse) diag.Diagnostics {
