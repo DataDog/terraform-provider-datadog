@@ -172,7 +172,6 @@ var datadogDashboardSplitGraphAsserts = []string{
 	"widget.0.split_graph_definition.0.split_config.0.split_dimensions.0.one_graph_per = service",
 	"widget.0.split_graph_definition.0.split_config.0.limit = 24",
 	"widget.0.split_graph_definition.0.split_config.0.sort.0.order = asc",
-	"widget.0.split_graph_definition.0.split_config.0.static_splits.# = 0",
 	"widget.0.split_graph_definition.0.size = md",
 	"widget.0.split_graph_definition.0.live_span = 5m",
 }

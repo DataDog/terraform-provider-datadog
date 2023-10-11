@@ -7930,7 +7930,6 @@ func getStaticSplitsSchema() *schema.Schema {
 		Description: "The property by which the graph splits",
 		Type:        schema.TypeList,
 		Optional:    true,
-		MinItems:    1,
 		MaxItems:    100,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
@@ -8018,7 +8017,7 @@ func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datad
 		}
 	}
 
-	if v, ok := terraformSplitConfig["static_splits"].([]interface{}); ok {
+	if v, ok := terraformSplitConfig["static_splits"].([]interface{}); ok && len(v) > 0 {
 		datadogStaticSplits := buildDatadogStaticSplits(v)
 		datadogSplitConfig.SetStaticSplits(*datadogStaticSplits)
 	}
