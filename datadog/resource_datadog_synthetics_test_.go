@@ -152,7 +152,7 @@ func syntheticsTestRequest() *schema.Resource {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestRequestBodyTypeFromValue),
 			},
 			"timeout": {
-				Description: "Timeout in seconds for the test. Defaults to `60`.",
+				Description: "Timeout in seconds for the test.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Default:     60,
@@ -608,7 +608,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Optional:    true,
 				},
 				"min_location_failed": {
-					Description: "Minimum number of locations in failure required to trigger an alert. Default is `1`.",
+					Description: "Minimum number of locations in failure required to trigger an alert.",
 					Type:        schema.TypeInt,
 					Default:     1,
 					Optional:    true,

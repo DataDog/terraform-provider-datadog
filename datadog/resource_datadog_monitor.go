@@ -198,7 +198,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				"new_host_delay": {
 					// Removing the default requires removing the default in the API as well (possibly only for
 					// terraform user agents)
-					Description: "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host.",
+					Description: "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host.",
 					Type:        schema.TypeInt,
 					Optional:    true,
 					Default:     300,
@@ -256,7 +256,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Optional:    true,
 				},
 				"require_full_window": {
-					Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Defaults to `true`. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped.",
+					Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     true,
@@ -283,7 +283,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					ConflictsWith: []string{"locked"},
 				},
 				"include_tags": {
-					Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.",
+					Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     true,

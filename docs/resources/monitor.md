@@ -56,14 +56,14 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 - `force_delete` (Boolean) A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).
 - `group_retention_duration` (String) The time span after which groups with missing data are dropped from the monitor state. The minimum value is one hour, and the maximum value is 72 hours. Example values are: 60m, 1h, and 2d. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors.
 - `groupby_simple_monitor` (Boolean) Whether or not to trigger one alert if any source breaches a threshold. This is only used by log monitors. Defaults to `false`.
-- `include_tags` (Boolean) A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`. Defaults to `true`.
+- `include_tags` (Boolean) A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title. Defaults to `true`.
 - `locked` (Boolean, Deprecated) A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`. **Deprecated.** Use `restricted_roles`.
 - `monitor_threshold_windows` (Block List, Max: 1) A mapping containing `recovery_window` and `trigger_window` values, e.g. `last_15m` . Can only be used for, and are required for, anomaly monitors. (see [below for nested schema](#nestedblock--monitor_threshold_windows))
 - `monitor_thresholds` (Block List, Max: 1) Alert thresholds of the monitor. (see [below for nested schema](#nestedblock--monitor_thresholds))
 - `new_group_delay` (Number) The time (in seconds) to skip evaluations for new groups.
 
 `new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.
-- `new_host_delay` (Number, Deprecated) **Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host. **Deprecated.** Use `new_group_delay` except when setting `new_host_delay` to zero. Defaults to `300`.
+- `new_host_delay` (Number, Deprecated) **Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host. **Deprecated.** Use `new_group_delay` except when setting `new_host_delay` to zero. Defaults to `300`.
 - `no_data_timeframe` (Number) The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.
 
 We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. Defaults to `10`.
@@ -76,7 +76,7 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 - `renotify_interval` (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
 - `renotify_occurrences` (Number) The number of re-notification messages that should be sent on the current status.
 - `renotify_statuses` (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
-- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated. Defaults to `true`. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. Defaults to `true`.
+- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. Defaults to `true`.
 - `restricted_roles` (Set of String) A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.
 - `scheduling_options` (Block List) Configuration options for scheduling. (see [below for nested schema](#nestedblock--scheduling_options))
 - `tags` (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API

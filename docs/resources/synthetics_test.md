@@ -522,7 +522,7 @@ Optional:
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
-- `timeout` (Number) Timeout in seconds for the test. Defaults to `60`. Defaults to `60`.
+- `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
 - `url` (String) The URL to send the request to.
 
 
@@ -720,7 +720,7 @@ Optional:
 - `ignore_server_certificate_error` (Boolean) Ignore server certificate error for browser tests.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
-- `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`. Defaults to `1`.
+- `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Defaults to `1`.
 - `monitor_name` (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
 - `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - `monitor_priority` (Number)
@@ -866,7 +866,7 @@ Optional:
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
-- `timeout` (Number) Timeout in seconds for the test. Defaults to `60`. Defaults to `60`.
+- `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
 - `url` (String) The URL to send the request to.
 
 
