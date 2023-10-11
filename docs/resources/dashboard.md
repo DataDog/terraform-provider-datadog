@@ -7122,8 +7122,8 @@ Required:
 Required:
 
 - `size` (String) Size of the individual graphs in the split.
-- `source_widget_definition` (Block List, Min: 1) The original widget we are splitting on. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition))
-- `split_config` (Block List, Min: 1) Encapsulates all user choices about how to split a graph. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config))
+- `source_widget_definition` (Block List, Min: 1, Max: 1) The original widget we are splitting on. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition))
+- `split_config` (Block List, Min: 1, Max: 1) Encapsulates all user choices about how to split a graph. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config))
 
 Optional:
 
@@ -12437,13 +12437,13 @@ Optional:
 
 Required:
 
-- `sort` (Block List, Min: 1) Controls the order in which graphs appear in the split. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--sort))
+- `sort` (Block List, Min: 1, Max: 1) Controls the order in which graphs appear in the split. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--sort))
 - `split_dimensions` (Block List, Min: 1, Max: 1) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--split_dimensions))
-- `static_splits` (Block List, Min: 1, Max: 100) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--static_splits))
 
 Optional:
 
 - `limit` (Number) Maximum number of graphs to display in the widget.
+- `static_splits` (Block List, Max: 100) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--static_splits))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--split_config--sort"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.split_config.sort`
@@ -12454,7 +12454,7 @@ Required:
 
 Optional:
 
-- `compute` (Block List) Defines the metric and aggregation used as the sort value (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--sort--compute))
+- `compute` (Block List, Max: 1) Defines the metric and aggregation used as the sort value (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--sort--compute))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--split_config--sort--compute"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.split_config.sort.compute`
@@ -18391,8 +18391,8 @@ Required:
 Required:
 
 - `size` (String) Size of the individual graphs in the split.
-- `source_widget_definition` (Block List, Min: 1) The original widget we are splitting on. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition))
-- `split_config` (Block List, Min: 1) Encapsulates all user choices about how to split a graph. (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config))
+- `source_widget_definition` (Block List, Min: 1, Max: 1) The original widget we are splitting on. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition))
+- `split_config` (Block List, Min: 1, Max: 1) Encapsulates all user choices about how to split a graph. (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config))
 
 Optional:
 
@@ -23706,13 +23706,13 @@ Optional:
 
 Required:
 
-- `sort` (Block List, Min: 1) Controls the order in which graphs appear in the split. (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--sort))
+- `sort` (Block List, Min: 1, Max: 1) Controls the order in which graphs appear in the split. (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--sort))
 - `split_dimensions` (Block List, Min: 1, Max: 1) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--split_dimensions))
-- `static_splits` (Block List, Min: 1, Max: 100) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--static_splits))
 
 Optional:
 
 - `limit` (Number) Maximum number of graphs to display in the widget.
+- `static_splits` (Block List, Max: 100) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--static_splits))
 
 <a id="nestedblock--widget--split_graph_definition--split_config--sort"></a>
 ### Nested Schema for `widget.split_graph_definition.split_config.sort`
@@ -23723,7 +23723,7 @@ Required:
 
 Optional:
 
-- `compute` (Block List) Defines the metric and aggregation used as the sort value (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--sort--compute))
+- `compute` (Block List, Max: 1) Defines the metric and aggregation used as the sort value (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--sort--compute))
 
 <a id="nestedblock--widget--split_graph_definition--split_config--sort--compute"></a>
 ### Nested Schema for `widget.split_graph_definition.split_config.sort.compute`
