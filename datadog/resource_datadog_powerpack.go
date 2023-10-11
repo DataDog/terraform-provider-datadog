@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 
@@ -164,14 +165,14 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 	definition.SetShowTitle(true)
 	definition.SetTitle("Powerpack Test")
 
-	widgets := []datadogV2.PowerpackInnerWidgets{}
-	widgetDef := make(map[string]interface{})
-	widgetDef["type"] = "note"
-	widgetDef["content"] = "test test test"
-	widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
-	widgets = append(widgets, *widgetsDDItem)
+	terraformWidgets := d.Get("widget").([]interface{})
 
-	definition.SetWidgets(widgets)
+	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(&terraformWidgets)
+	if diags != nil {
+		return nil, diags
+	}
+
+	definition.SetWidgets(powerpackWidgets)
 
 	groupWidget.Definition = definition
 
@@ -186,8 +187,33 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
-func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) (*[]datadogV1.Widget, diag.Diagnostics) {
+func dashboardWidgetsToPpkWidgets(terraformWidgets *[]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 
+	widgets := make([]datadogV2.PowerpackInnerWidgets, len(*terraformWidgets))
+	for i, terraformWidget := range *terraformWidgets {
+		if terraformWidget == nil {
+			continue
+		}
+		widgetDef := make(map[string]interface{})
+
+		for widgetType, widget_def := range terraformWidget.(map[string]interface{}) {
+			def, ok := widget_def.([]interface{})
+			if ok && len(def) > 0 {
+				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
+				for field, value := range widget_def.([]interface{})[0].(map[string]interface{}) {
+					if fmt.Sprintf("%v", value) != "" {
+						widgetDef[field] = value
+					}
+				}
+			}
+		}
+		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
+		widgets[i] = *widgetsDDItem
+	}
+	return widgets, nil
+}
+
+func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) (*[]datadogV1.Widget, diag.Diagnostics) {
 	datadogWidgets := make([]datadogV1.Widget, len(ppkWidgets))
 	for i, terraformWidget := range ppkWidgets {
 		var definition datadogV1.WidgetDefinition
