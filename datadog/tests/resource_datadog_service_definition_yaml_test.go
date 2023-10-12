@@ -212,7 +212,7 @@ team: my-team
 languages:
   - go
   - python
-service-type: web
+type: web
 EOF
 }`, uniq)
 }
