@@ -165,8 +165,10 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 	definition.SetTitle("Powerpack Test")
 
 	terraformWidgets := d.Get("widget").([]interface{})
+	datadogWidgets, _ := buildDatadogWidgets(&terraformWidgets)
+	terraformWidgets2, _ := buildTerraformWidgets(datadogWidgets, d)
 
-	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(&terraformWidgets)
+	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(terraformWidgets2)
 	if diags != nil {
 		return nil, diags
 	}
@@ -186,7 +188,7 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
-func dashboardWidgetsToPpkWidgets(terraformWidgets *[]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
+func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	widgets := make([]datadogV2.PowerpackInnerWidgets, len(*terraformWidgets))
@@ -196,17 +198,12 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]interface{}) ([]datadogV2.
 		}
 		widgetDef := make(map[string]interface{})
 
-		for widgetType, widget_def := range terraformWidget.(map[string]interface{}) {
-			def, ok := widget_def.([]interface{})
-			if ok && len(def) > 0 {
-				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
-
-				for field, value := range widget_def.([]interface{})[0].(map[string]interface{}) {
-					if fmt.Sprintf("%v", value) != "" {
-						widgetDef[field] = value
-					}
-				}
+		for widgetType, _ := range terraformWidget {
+			if widgetType == "id" {
+				continue
 			}
+			widgetDef = widget_def.([]map[string]interface{})[0]
+			widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
 		}
 		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
 
@@ -227,6 +224,22 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(terraformWidget.Definition))
 		} else if terraformWidget.Definition["type"] == "free_text" {
 			definition = datadogV1.FreeTextWidgetDefinitionAsWidgetDefinition(buildDatadogFreeTextDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "iframe" {
+			definition = datadogV1.IFrameWidgetDefinitionAsWidgetDefinition(buildDatadogIframeDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "alert_value" {
+			definition = datadogV1.AlertValueWidgetDefinitionAsWidgetDefinition(buildDatadogAlertValueDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "alert_graph" {
+			definition = datadogV1.AlertGraphWidgetDefinitionAsWidgetDefinition(buildDatadogAlertGraphDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "check_status" {
+			definition = datadogV1.CheckStatusWidgetDefinitionAsWidgetDefinition(buildDatadogCheckStatusDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "servicemap" {
+			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "event_stream" {
+			definition = datadogV1.EventStreamWidgetDefinitionAsWidgetDefinition(buildDatadogEventStreamDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "trace_service" {
+			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "image" {
+			definition = datadogV1.ImageWidgetDefinitionAsWidgetDefinition(buildDatadogImageDefinition(terraformWidget.Definition))
 		} else {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
@@ -242,6 +255,9 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 }
 
 func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.PowerpackResponse) diag.Diagnostics {
+	if powerpack.Data == nil {
+		return diag.Errorf("Powerpack data is empty.")
+	}
 	// Set description
 	if err := d.Set("description", powerpack.Data.Attributes.GetDescription()); err != nil {
 		return diag.FromErr(err)
