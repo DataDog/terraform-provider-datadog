@@ -30,7 +30,7 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 ### Optional
 
 - `case` (Block List, Max: 10) Cases of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--case))
-- `enabled` (Boolean) Enable the rule.
+- `enabled` (Boolean) Enable the rule. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
 - `options` (Block List, Max: 1) Options on default rules. Note that only a subset of fields can be updated on default rule options. (see [below for nested schema](#nestedblock--options))
 
@@ -62,7 +62,7 @@ Required:
 
 Optional:
 
-- `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.
+- `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`. Defaults to `false`.
 
 ## Import
 

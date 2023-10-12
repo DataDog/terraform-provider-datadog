@@ -65,8 +65,8 @@ func TestEnrichSchemaAttributes(t *testing.T) {
 
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			updatedSchema := EnrichFrameworkResourceSchema(testCase.schema)
-			description := updatedSchema.Attributes["test_attribute"].GetDescription()
+			EnrichFrameworkResourceSchema(&testCase.schema)
+			description := testCase.schema.Attributes["test_attribute"].GetDescription()
 			if description != testCase.expectedDescription {
 				t.Errorf("expected description '%s', got '%s' instead.", testCase.expectedDescription, description)
 			}
@@ -126,8 +126,8 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			updatedSchema := EnrichFrameworkResourceSchema(testCase.schema)
-			description := updatedSchema.Blocks["nested_block"].GetNestedObject().GetAttributes()["test_attribute"].GetDescription()
+			EnrichFrameworkResourceSchema(&testCase.schema)
+			description := testCase.schema.Blocks["nested_block"].GetNestedObject().GetAttributes()["test_attribute"].GetDescription()
 			if description != testCase.expectedDescription {
 				t.Errorf("expected description '%s', got '%s' instead.", testCase.expectedDescription, description)
 			}
@@ -183,8 +183,8 @@ func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
 
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			updatedSchema := EnrichFrameworkResourceSchema(testCase.schema)
-			description := updatedSchema.Blocks["nested_block"].GetNestedObject().GetAttributes()["test_attribute"].GetDescription()
+			EnrichFrameworkResourceSchema(&testCase.schema)
+			description := testCase.schema.Blocks["nested_block"].GetNestedObject().GetAttributes()["test_attribute"].GetDescription()
 			if description != testCase.expectedDescription {
 				t.Errorf("expected description '%s', got '%s' instead.", testCase.expectedDescription, description)
 			}
