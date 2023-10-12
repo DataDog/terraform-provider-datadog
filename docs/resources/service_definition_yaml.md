@@ -33,7 +33,7 @@ application: e-commerce
 languages: 
   - go
   - python
-service-type: web 
+type: web 
 links:
   - name: shopping-cart runbook
     type: runbook
