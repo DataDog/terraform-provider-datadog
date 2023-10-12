@@ -198,7 +198,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 		}
 		widgetDef := make(map[string]interface{})
 
-		for widgetType, _ := range terraformWidget {
+		for widgetType, widget_def := range terraformWidget {
 			if widgetType == "id" {
 				continue
 			}
