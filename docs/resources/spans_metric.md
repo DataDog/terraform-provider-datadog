@@ -67,7 +67,7 @@ Optional:
 
 Optional:
 
-- `query` (String) The search query - following the span search syntax. Defaults to `*`.
+- `query` (String) The search query - following the span search syntax. Defaults to `"*"`.
 
 
 <a id="nestedblock--group_by"></a>

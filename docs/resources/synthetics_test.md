@@ -332,7 +332,7 @@ resource "datadog_synthetics_test" "test_browser" {
 - `browser_variable` (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - `config_variable` (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
 - `device_ids` (List of String) Required if `type = "browser"`. Array with the different device IDs used to run the test. Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`, `edge.laptop_large`, `edge.tablet`, `edge.mobile_small`.
-- `message` (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events. Defaults to ``.
+- `message` (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events. Defaults to `""`.
 - `options_list` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
@@ -370,7 +370,7 @@ Optional:
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
-- `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`. Defaults to `http`.
+- `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`. Defaults to `"http"`.
 
 <a id="nestedblock--api_step--assertion"></a>
 ### Nested Schema for `api_step.assertion`
@@ -449,19 +449,19 @@ Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
 - `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
-- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to ``.
+- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
 - `password` (String, Sensitive) Password for authentication.
 - `region` (String) Region for `SIGV4` authentication.
-- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to ``.
-- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to ``.
+- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
+- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
 - `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Valid values are `header`, `body`.
-- `type` (String) Type of basic authentication to use when performing the test. Defaults to `web`.
+- `type` (String) Type of basic authentication to use when performing the test. Defaults to `"web"`.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
 
@@ -483,7 +483,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate. Defaults to `Provided in Terraform config`.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--api_step--request_client_certificate--key"></a>
@@ -495,7 +495,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate. Defaults to `Provided in Terraform config`.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 
@@ -653,7 +653,7 @@ Required:
 
 Optional:
 
-- `type` (String) Defaults to `css`.
+- `type` (String) Defaults to `"css"`.
 
 
 
@@ -662,7 +662,7 @@ Optional:
 
 Optional:
 
-- `example` (String) Example of the extracted variable. Defaults to ``.
+- `example` (String) Example of the extracted variable. Defaults to `""`.
 - `name` (String) Name of the extracted variable.
 
 
@@ -678,9 +678,9 @@ Required:
 
 Optional:
 
-- `example` (String) Example for the variable. Defaults to ``.
+- `example` (String) Example for the variable. Defaults to `""`.
 - `id` (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
-- `pattern` (String) Pattern of the variable. Defaults to ``.
+- `pattern` (String) Pattern of the variable. Defaults to `""`.
 - `secure` (Boolean) Determines whether or not the browser test variable is obfuscated. Can only be used with a browser variable of type `text`
 
 
@@ -795,19 +795,19 @@ Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
 - `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
-- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to ``.
+- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
 - `password` (String, Sensitive) Password for authentication.
 - `region` (String) Region for `SIGV4` authentication.
-- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to ``.
-- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to ``.
+- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
+- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
 - `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Valid values are `header`, `body`.
-- `type` (String) Type of basic authentication to use when performing the test. Defaults to `web`.
+- `type` (String) Type of basic authentication to use when performing the test. Defaults to `"web"`.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
 
@@ -829,7 +829,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate. Defaults to `Provided in Terraform config`.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--request_client_certificate--key"></a>
@@ -841,7 +841,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate. Defaults to `Provided in Terraform config`.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 

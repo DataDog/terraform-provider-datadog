@@ -58,7 +58,12 @@ func init() {
 		}
 
 		if s.Default != nil {
-			desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
+			switch s.Type {
+			case schema.TypeString:
+				desc += fmt.Sprintf(" Defaults to `\"%v\"`.", s.Default)
+			default:
+				desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
+			}
 		}
 		return strings.TrimSpace(desc)
 	}

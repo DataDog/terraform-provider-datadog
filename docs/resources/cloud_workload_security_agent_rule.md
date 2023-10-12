@@ -31,7 +31,7 @@ resource "datadog_cloud_workload_security_agent_rule" "my_agent_rule" {
 
 ### Optional
 
-- `description` (String) The description of the Agent rule. Defaults to ``.
+- `description` (String) The description of the Agent rule. Defaults to `""`.
 - `enabled` (Boolean) Whether the Agent rule is enabled. Defaults to `true`.
 
 ### Read-Only

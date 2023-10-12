@@ -8,6 +8,8 @@ import (
 	frameworkSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
+var stringType = reflect.TypeOf("")
+
 func EnrichFrameworkResourceSchema(s *frameworkSchema.Schema) {
 	for i, attr := range s.Attributes {
 		s.Attributes[i] = enrichDescription(attr)
@@ -79,8 +81,13 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 	defaultField := rv.Elem().FieldByName("Default")
 	if defaultField.IsValid() && !defaultField.IsNil() {
 		defaultVal := defaultField.Elem().FieldByName("defaultVal")
-		if defaultField.IsValid() {
-			curentDesc = fmt.Sprintf("%s Defaults to `%v`.", curentDesc, defaultVal)
+		if defaultVal.IsValid() {
+			switch defaultVal.Type() {
+			case stringType:
+				curentDesc = fmt.Sprintf("%s Defaults to `\"%v\"`.", curentDesc, defaultVal)
+			default:
+				curentDesc = fmt.Sprintf("%s Defaults to `%v`.", curentDesc, defaultVal)
+			}
 		}
 	}
 
