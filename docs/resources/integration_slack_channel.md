@@ -44,10 +44,10 @@ resource "datadog_integration_slack_channel" "test_channel" {
 
 Optional:
 
-- `message` (Boolean) Show the main body of the alert event.
-- `notified` (Boolean) Show the list of @-handles in the alert event.
-- `snapshot` (Boolean) Show the alert event's snapshot image.
-- `tags` (Boolean) Show the scopes on which the monitor alerted.
+- `message` (Boolean) Show the main body of the alert event. Defaults to `true`.
+- `notified` (Boolean) Show the list of @-handles in the alert event. Defaults to `true`.
+- `snapshot` (Boolean) Show the alert event's snapshot image. Defaults to `true`.
+- `tags` (Boolean) Show the scopes on which the monitor alerted. Defaults to `true`.
 
 ## Import
 

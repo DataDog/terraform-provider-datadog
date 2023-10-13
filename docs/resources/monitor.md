@@ -63,10 +63,10 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 - `new_group_delay` (Number) The time (in seconds) to skip evaluations for new groups.
 
 `new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.
-- `new_host_delay` (Number, Deprecated) **Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host. **Deprecated.** Use `new_group_delay` except when setting `new_host_delay` to zero.
-- `no_data_timeframe` (Number) The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.
+- `new_host_delay` (Number, Deprecated) **Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host. **Deprecated.** Use `new_group_delay` except when setting `new_host_delay` to zero. Defaults to `300`.
+- `no_data_timeframe` (Number) The number of minutes before a monitor will notify when data stops reporting.
 
-We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.
+We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. Defaults to `10`.
 - `notification_preset_name` (String) Toggles the display of additional content sent in the monitor notification. Valid values are `show_all`, `hide_query`, `hide_handles`, `hide_all`.
 - `notify_audit` (Boolean) A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.
 - `notify_by` (Set of String) Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.
@@ -76,9 +76,7 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 - `renotify_interval` (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
 - `renotify_occurrences` (Number) The number of re-notification messages that should be sent on the current status.
 - `renotify_statuses` (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
-- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
-
-We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.
+- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. Defaults to `true`.
 - `restricted_roles` (Set of String) A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.
 - `scheduling_options` (Block List) Configuration options for scheduling. (see [below for nested schema](#nestedblock--scheduling_options))
 - `tags` (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
