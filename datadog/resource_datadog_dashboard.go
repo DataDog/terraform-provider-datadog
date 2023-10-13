@@ -1056,7 +1056,6 @@ func getSplitGraphSourceWidgetSchema() map[string]*schema.Schema {
 				Schema: getScatterplotDefinitionSchema(),
 			},
 		},
-
 		"sunburst_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -1270,46 +1269,98 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) (*datadogV1.SplitGraphSourceWidgetDefinition, error) {
 	// Build widget Definition
 	var definition datadogV1.SplitGraphSourceWidgetDefinition
-
+	sourceWidgetCount := 0
 	if def, ok := terraformWidget["change_definition"].([]interface{}); ok && len(def) > 0 {
 		if changeDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.ChangeWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogChangeDefinition(changeDefinition))
+			sourceWidgetCount += 1
 		}
-	} else if def, ok := terraformWidget["query_value_definition"].([]interface{}); ok && len(def) > 0 {
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+
+	if def, ok := terraformWidget["query_value_definition"].([]interface{}); ok && len(def) > 0 {
 		if queryValueDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.QueryValueWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogQueryValueDefinition(queryValueDefinition))
+			sourceWidgetCount += 1
 		}
-	} else if def, ok := terraformWidget["query_table_definition"].([]interface{}); ok && len(def) > 0 {
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["query_table_definition"].([]interface{}); ok && len(def) > 0 {
+
 		if queryTableDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.TableWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogQueryTableDefinition(queryTableDefinition))
+			sourceWidgetCount += 1
 		}
-	} else if def, ok := terraformWidget["scatterplot_definition"].([]interface{}); ok && len(def) > 0 {
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["scatterplot_definition"].([]interface{}); ok && len(def) > 0 {
 		if scatterplotDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.ScatterPlotWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogScatterplotDefinition(scatterplotDefinition))
+			sourceWidgetCount += 1
 		}
-	} else if def, ok := terraformWidget["sunburst_definition"].([]interface{}); ok && len(def) > 0 {
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["sunburst_definition"].([]interface{}); ok && len(def) > 0 {
 		if sunburstDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.SunburstWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogSunburstDefinition(sunburstDefinition))
+			sourceWidgetCount += 1
 		}
-	} else if def, ok := terraformWidget["timeseries_definition"].([]interface{}); ok && len(def) > 0 {
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["timeseries_definition"].([]interface{}); ok && len(def) > 0 {
+
 		if timeseriesDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.TimeseriesWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogTimeseriesDefinition(timeseriesDefinition))
+			sourceWidgetCount += 1
 		}
-	} else if def, ok := terraformWidget["toplist_definition"].([]interface{}); ok && len(def) > 0 {
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["toplist_definition"].([]interface{}); ok && len(def) > 0 {
+
 		if toplistDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.ToplistWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogToplistDefinition(toplistDefinition))
+			sourceWidgetCount += 1
 		}
-	} else if def, ok := terraformWidget["treemap_definition"].([]interface{}); ok && len(def) > 0 {
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["treemap_definition"].([]interface{}); ok && len(def) > 0 {
+
 		if treemapDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.TreeMapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogTreemapDefinition(treemapDefinition))
+			sourceWidgetCount += 1
 		}
-	} else if def, ok := terraformWidget["geomap_definition"].([]interface{}); ok && len(def) > 0 {
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["geomap_definition"].([]interface{}); ok && len(def) > 0 {
+
 		if geomapDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.GeomapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogGeomapDefinition(geomapDefinition))
+			sourceWidgetCount += 1
 		}
-	} else {
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if sourceWidgetCount == 0 {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
 	}
+
 	return &definition, nil
 }
 
