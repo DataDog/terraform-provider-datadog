@@ -7969,12 +7969,14 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 	}
 
 	if terraformSourceWidget, ok := terraformDefinition["source_widget_definition"].([]interface{}); ok && len(terraformSourceWidget) > 0 {
-		if v, ok := terraformSourceWidget[0].(map[string]interface{}); ok && len(v) > 0 {
-			datadogWidget, err := buildDatadogSourceWidgetDefinition(terraformSourceWidget[0].(map[string]interface{}))
+		if v, ok := terraformSourceWidget[0].(map[string]interface{}); ok {
+			datadogWidget, err := buildDatadogSourceWidgetDefinition(v)
 			if err != nil {
 				return nil, err
 			}
 			datadogDefinition.SetSourceWidgetDefinition(*datadogWidget)
+		} else {
+			return nil, fmt.Errorf("failed to find valid definition in widget configuration")
 		}
 	}
 
