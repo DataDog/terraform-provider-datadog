@@ -7293,7 +7293,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--style"></a>
@@ -7511,7 +7511,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query"></a>
@@ -7528,7 +7528,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -7545,9 +7545,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -7768,7 +7768,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--style"></a>
@@ -7972,7 +7972,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query"></a>
@@ -7989,7 +7989,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -8006,9 +8006,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -8286,7 +8286,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--style"></a>
@@ -8504,7 +8504,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query"></a>
@@ -8521,7 +8521,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -8538,9 +8538,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -8906,7 +8906,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--style"></a>
@@ -9124,7 +9124,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query"></a>
@@ -9141,7 +9141,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -9158,9 +9158,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -9501,7 +9501,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -9518,7 +9518,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -9535,9 +9535,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -10368,7 +10368,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--style"></a>
@@ -10650,7 +10650,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query"></a>
@@ -10667,7 +10667,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -10684,9 +10684,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -11072,7 +11072,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--style"></a>
@@ -11366,7 +11366,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query"></a>
@@ -11383,7 +11383,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -11400,9 +11400,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -11797,7 +11797,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--style"></a>
@@ -12015,7 +12015,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query"></a>
@@ -12032,7 +12032,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -12049,9 +12049,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -12249,7 +12249,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--style"></a>
@@ -12389,7 +12389,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query"></a>
@@ -12406,7 +12406,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -12423,9 +12423,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -18562,7 +18562,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--style"></a>
@@ -18780,7 +18780,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query"></a>
@@ -18797,7 +18797,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -18814,9 +18814,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -19037,7 +19037,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--style"></a>
@@ -19241,7 +19241,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query"></a>
@@ -19258,7 +19258,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -19275,9 +19275,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -19555,7 +19555,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--style"></a>
@@ -19773,7 +19773,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query"></a>
@@ -19790,7 +19790,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -19807,9 +19807,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -20175,7 +20175,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--style"></a>
@@ -20393,7 +20393,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query"></a>
@@ -20410,7 +20410,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -20427,9 +20427,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -20770,7 +20770,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query"></a>
@@ -20787,7 +20787,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -20804,9 +20804,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -21637,7 +21637,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--style"></a>
@@ -21919,7 +21919,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query"></a>
@@ -21936,7 +21936,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -21953,9 +21953,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -22341,7 +22341,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--style"></a>
@@ -22635,7 +22635,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query"></a>
@@ -22652,7 +22652,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -22669,9 +22669,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -23066,7 +23066,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--style"></a>
@@ -23284,7 +23284,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query"></a>
@@ -23301,7 +23301,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -23318,9 +23318,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
@@ -23518,7 +23518,7 @@ Optional:
 Optional:
 
 - `count` (Number) The number of results to return.
-- `order` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--style"></a>
@@ -23658,7 +23658,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
-- `data_source` (String) The data source for metrics queries.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query"></a>
@@ -23675,7 +23675,7 @@ Optional:
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
-- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
 - `tag_filters` (List of String) An array of tags to filter by.
 - `text_filter` (String) The text to use as a filter.
 
@@ -23692,9 +23692,9 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
-- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
 
 
 
