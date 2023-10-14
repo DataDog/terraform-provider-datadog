@@ -27,6 +27,8 @@ data "datadog_ip_ranges" "test" {}
 - `api_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the API endpoint.
 - `apm_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the APM endpoint.
 - `apm_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the APM endpoint.
+- `global_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for all Datadog endpoints.
+- `global_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for all Datadog endpoints.
 - `id` (String) The ID of this resource.
 - `logs_ipv4` (List of String) An Array of IPv4 addresses in CIDR format specifying the A records for the Logs endpoint.
 - `logs_ipv6` (List of String) An Array of IPv6 addresses in CIDR format specifying the A records for the Logs endpoint.
