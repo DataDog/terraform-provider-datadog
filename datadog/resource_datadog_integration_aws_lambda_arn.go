@@ -3,11 +3,13 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -86,26 +88,31 @@ func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.R
 		return diag.FromErr(err)
 	}
 
-	logCollections, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().ListAWSLogsIntegrations(auth)
-	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error getting aws log integrations for datadog account.")
-	}
-	if err := utils.CheckForUnparsed(logCollections); err != nil {
-		return diag.FromErr(err)
-	}
-	for _, logCollection := range logCollections {
-		if logCollection.GetAccountId() == accountID {
-			for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
-				if lambdaArn == logCollectionLambdaArn.GetArn() {
-					d.Set("account_id", logCollection.GetAccountId())
-					d.Set("lambda_arn", logCollectionLambdaArn.GetArn())
-					return nil
+	retryErr := retry.RetryContext(ctx, time.Second*30, func() *retry.RetryError {
+		logCollections, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().ListAWSLogsIntegrations(auth)
+		if err != nil {
+			return retry.RetryableError(utils.TranslateClientError(err, httpresp, "error getting log collection for aws integration."))
+		}
+		if err := utils.CheckForUnparsed(logCollections); err != nil {
+			return retry.NonRetryableError(err)
+		}
+		for _, logCollection := range logCollections {
+			if logCollection.GetAccountId() == accountID {
+				for _, logCollectionLambdaArn := range logCollection.GetLambdas() {
+					if lambdaArn == logCollectionLambdaArn.GetArn() {
+						d.Set("account_id", logCollection.GetAccountId())
+						d.Set("lambda_arn", logCollectionLambdaArn.GetArn())
+						return nil
+					}
 				}
 			}
 		}
+		return retry.RetryableError(utils.TranslateClientError(err, httpresp, "aws account id not found in AWS log integrations, retrying."))
+	})
+	if retryErr != nil {
+		d.SetId("")
+		return diag.FromErr(retryErr)
 	}
-
-	d.SetId("")
 	return nil
 }
 
