@@ -43,7 +43,7 @@ resource "datadog_security_monitoring_filter" "my_filter" {
 ### Optional
 
 - `exclusion_filter` (Block List) Exclusion filters to exclude some logs from the security filter. (see [below for nested schema](#nestedblock--exclusion_filter))
-- `filtered_data_type` (String) The filtered data type. Valid values are `logs`.
+- `filtered_data_type` (String) The filtered data type. Valid values are `logs`. Defaults to `"logs"`.
 
 ### Read-Only
 
