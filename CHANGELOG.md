@@ -1,3 +1,28 @@
+## 3.31.0 (October 18, 2023)
+
+### BUGFIXES
+* [datadog_sensitive_data_scanner_group] Avoid panic when nil returned by @mikutas in https://github.com/DataDog/terraform-provider-datadog/pull/2097
+* [datadog_synthetics_test] Prevent setting empty values for rum settings by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/2124
+* [datadog_cloud_configuration_rule] Set userActivationStatus to true when at least one group_by field is present by @christophetd in https://github.com/DataDog/terraform-provider-datadog/pull/2131
+### IMPROVEMENTS
+* [datadog_synthetics_test] Add support for timings scope for response assertions by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/2101
+* [datadog_dashboard] Support Formula and Function requests in heatmap widget by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2103
+* [datadog_provider] Document default values of schemas by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2139
+* [datadog_ip_ranges] Adds global prefixes to the data source by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/1783
+* [datadog_dashboards] Implement support for split graph widget by @adil-alimbetov in https://github.com/DataDog/terraform-provider-datadog/pull/2129
+### FEATURES
+* [datadog_service_definition_yaml] Support service definition schema v2.2 by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/2126
+* [datadog_synthetics_test] Add support for proto files for grpc tests by @romainberger in https://github.com/DataDog/terraform-provider-datadog/pull/2116
+### NOTES
+* [provider] Bump Go SDK by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2147
+
+## New Contributors
+* @mikutas made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2097
+* @dtru-ddog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2104
+* @traegerdog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2120
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.30.0...v3.31.0
+
 ## 3.30.0 (September 12, 2023)
 
 ### BUGFIXES
