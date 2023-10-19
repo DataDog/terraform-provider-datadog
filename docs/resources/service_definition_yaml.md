@@ -14,7 +14,7 @@ Provides a Datadog service definition resource. This can be used to create and m
 
 ```terraform
 // Service Definition with v2.2 Schema Definition
-resource "datadog_service_definition_yaml" "service_definition_v2_1" {
+resource "datadog_service_definition_yaml" "service_definition_v2_2" {
   service_definition = <<EOF
 schema-version: v2.2
 dd-service: shopping-cart
@@ -34,6 +34,9 @@ languages:
   - go
   - python
 type: web 
+ci-pipeline-fingerprints
+  - fp1 
+  - fp2 
 links:
   - name: shopping-cart runbook
     type: runbook
