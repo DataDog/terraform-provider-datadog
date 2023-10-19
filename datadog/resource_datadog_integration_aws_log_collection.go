@@ -123,7 +123,7 @@ func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *sche
 				return nil
 			}
 		}
-		return retry.RetryableError(utils.TranslateClientError(err, httpresp, "account id not found in AWS log integrations, retrying."))
+		return retry.RetryableError(fmt.Errorf("account id not found in AWS log integrations, retrying"))
 	})
 	if retryErr != nil {
 		d.SetId("")
