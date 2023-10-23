@@ -198,12 +198,67 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 		}
 		widgetDef := make(map[string]interface{})
 
-		for widgetType, widget_def := range terraformWidget {
+		for widgetType, terraformDefinition := range terraformWidget {
 			if widgetType == "id" {
 				continue
 			}
-			widgetDef = widget_def.([]map[string]interface{})[0]
+			widgetDef = terraformDefinition.([]map[string]interface{})[0]
 			widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
+			if widgetDef["request"] != nil {
+				// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
+				// Here we set the "request" field and remove "requests"
+				if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
+					// Because of course JUST one widget type expects requests to be a single value instead of a list
+					widgetDefRequest := widgetDef["request"].([]map[string]interface{})[0]
+					if widgetDefRequest["y"] != nil {
+						widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
+					}
+					if widgetDefRequest["x"] != nil {
+						widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
+					}
+					if widgetDefRequest["fill"] != nil {
+						widgetDefRequest["fill"] = widgetDefRequest["fill"].([]map[string]interface{})[0]
+					}
+					if widgetDefRequest["size"] != nil {
+						widgetDefRequest["size"] = widgetDefRequest["size"].([]map[string]interface{})[0]
+					}
+					widgetDef["requests"] = widgetDefRequest
+					delete(widgetDef, "request")
+				} else {
+					widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
+					for i, widgetDefRequest := range widgetDefRequests {
+						if widgetDefRequest["style"] != nil {
+							// TF generates a style list, whereas API expects a single element
+							widgetDefRequest["style"] = widgetDefRequest["style"].([]map[string]interface{})[0]
+						}
+						if widgetDefRequest["x"] != nil {
+							// TF generates a style list, whereas API expects a single element
+							widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
+						}
+						if widgetDefRequest["y"] != nil {
+							// TF generates a style list, whereas API expects a single element
+							widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
+							//diags = append(diags, diag.Diagnostic{
+							//	Severity: diag.Error,
+							//	Summary:  fmt.Sprintf("this is bad: %s", widgetDef["request"]),
+							//})
+							//return nil, diags
+						}
+						widgetDefRequests[i] = widgetDefRequest
+					}
+					widgetDef["requests"] = widgetDefRequests
+					delete(widgetDef, "request")
+				}
+				if widgetDef["yaxis"] != nil {
+					widgetDef["yaxis"] = widgetDef["yaxis"].([]map[string]interface{})[0]
+				}
+				if widgetDef["xaxis"] != nil {
+					widgetDef["xaxis"] = widgetDef["xaxis"].([]map[string]interface{})[0]
+				}
+				if widgetDef["style"] != nil {
+					widgetDef["style"] = widgetDef["style"].([]map[string]interface{})[0]
+				}
+			}
 		}
 		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
 
@@ -219,6 +274,10 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		var definition datadogV1.WidgetDefinition
 		if terraformWidget.Definition == nil {
 			continue
+		}
+		if terraformWidget.Definition["requests"] != nil {
+			terraformWidget.Definition["request"] = terraformWidget.Definition["requests"]
+			delete(terraformWidget.Definition, "requests")
 		}
 		if terraformWidget.Definition["type"] == "note" {
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(terraformWidget.Definition))
@@ -240,10 +299,30 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(terraformWidget.Definition))
 		} else if terraformWidget.Definition["type"] == "image" {
 			definition = datadogV1.ImageWidgetDefinitionAsWidgetDefinition(buildDatadogImageDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "change" {
+			definition = datadogV1.ChangeWidgetDefinitionAsWidgetDefinition(buildDatadogChangeDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "distribution" {
+			definition = datadogV1.DistributionWidgetDefinitionAsWidgetDefinition(buildDatadogDistributionDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "heatmap" {
+			definition = datadogV1.HeatMapWidgetDefinitionAsWidgetDefinition(buildDatadogHeatmapDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "scatterplot" {
+			definition = datadogV1.ScatterPlotWidgetDefinitionAsWidgetDefinition(buildDatadogScatterplotDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "toplist" {
+			definition = datadogV1.ToplistWidgetDefinitionAsWidgetDefinition(buildDatadogToplistDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "query_table" {
+			definition = datadogV1.TableWidgetDefinitionAsWidgetDefinition(buildDatadogQueryTableDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "query_value" {
+			definition = datadogV1.QueryValueWidgetDefinitionAsWidgetDefinition(buildDatadogQueryValueDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "hostmap" {
+			definition = datadogV1.HostMapWidgetDefinitionAsWidgetDefinition(buildDatadogHostmapDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "topology_map" {
+			definition = datadogV1.TopologyMapWidgetDefinitionAsWidgetDefinition(buildDatadogTopologyMapDefinition(terraformWidget.Definition))
+		} else if terraformWidget.Definition["type"] == "service_level_objective" {
+			definition = datadogV1.SLOWidgetDefinitionAsWidgetDefinition(buildDatadogServiceLevelObjectiveDefinition(terraformWidget.Definition))
 		} else {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("this is bad: %s", terraformWidget.Definition["type"]),
+				Summary:  fmt.Sprintf("this is bad: %s", terraformWidget.Definition),
 			})
 			continue
 		}
@@ -256,7 +335,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 
 func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.PowerpackResponse) diag.Diagnostics {
 	if powerpack.Data == nil {
-		return diag.Errorf("Powerpack data is empty.")
+		return diag.Errorf("Powerpack data is empty, powerpack is: %s", powerpack)
 	}
 	// Set description
 	if err := d.Set("description", powerpack.Data.Attributes.GetDescription()); err != nil {
