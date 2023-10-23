@@ -191,6 +191,7 @@ func Provider() *schema.Provider {
 			"datadog_monitor_config_policy":                resourceDatadogMonitorConfigPolicy(),
 			"datadog_monitor_json":                         resourceDatadogMonitorJSON(),
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
+			"datadog_powerpack":                            resourceDatadogPowerpack(),
 			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_rum_application":                      resourceDatadogRUMApplication(),
 			"datadog_service_account":                      resourceDatadogServiceAccount(),
