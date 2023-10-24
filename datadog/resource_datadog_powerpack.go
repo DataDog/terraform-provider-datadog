@@ -348,10 +348,8 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
 			} else {
 				widgetDef = terraformDefinition.([]map[string]interface{})[0]
-				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
-				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
-				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
-				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
+				// Dashboard widgets set live span at the widget level, we must prevent that for powerpack widgets
+				// where live span is set at the resource level.
 				if widgetDef["live_span"] != nil {
 					diags = append(diags, diag.Diagnostic{
 						Severity: diag.Error,
@@ -359,6 +357,18 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 					})
 					return nil, diags
 				}
+
+				if widgetDef["request"] != nil {
+					// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
+					// Here we set the "requests" field and remove "request"
+					widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
+					widgetDef["requests"] = widgetDefRequests
+					delete(widgetDef, "request")
+				}
+				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
+				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
+				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
+				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
 			}
 		}
 		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
@@ -384,6 +394,12 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		// Add new powerpack-supported widgets here
 		// We save Powerpack widgets as Dashboard widgets so we need to convert them to the appropriate widget definition object.
 		widgetType := widgetDefinition["type"]
+		// Dashboard TF widgets have a "requests" field, while API Spec has a "request" field
+		// Here we set the "request" field and remove "requests"
+		if widgetDefinition["requests"] != nil {
+			terraformWidget.Definition["request"] = terraformWidget.Definition["requests"]
+			delete(terraformWidget.Definition, "requests")
+		}
 		switch widgetType {
 		case "alert_graph":
 			definition = datadogV1.AlertGraphWidgetDefinitionAsWidgetDefinition(buildDatadogAlertGraphDefinition(widgetDefinition))
@@ -401,6 +417,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(widgetDefinition))
 		case "servicemap":
 			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
+		case "toplist":
+			definition = datadogV1.ToplistWidgetDefinitionAsWidgetDefinition(buildDatadogToplistDefinition(widgetDefinition))
 		case "trace_service":
 			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
 		default:
