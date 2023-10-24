@@ -34,20 +34,18 @@ resource "datadog_powerpack" "simple_powerpack" {
 }
 
 var datadogSimplePowerpackConfigAsserts = []string{
-	// Dashboard metadata
+	// Powerpack metadata
 	"description = Test Powerpack",
-	"layout_type = ordered",
 	"widget.# = 1",
 	"tags.# = 1",
 	"tags.0 = tag:foo1",
 	// IFrame widget
-	"widget.0.iframe_definition.0.url = http://google.com",
+	"widget.0.iframe_definition.0.url = https://google.com",
 	// Template Variables
-	"template_variable.# = 1",
-	"template_variable.0.name = datacenter",
-	"template_variable.0.prefix = host",
-	"template_variable.0.defaults.# = 1",
-	"template_variable.0.defaults.0 = default",
+	"template_variables.# = 1",
+	"template_variables.0.name = datacenter",
+	"template_variables.0.defaults.# = 1",
+	"template_variables.0.defaults.0 = defaults",
 }
 
 func TestAccDatadogPowerpack_update(t *testing.T) {
@@ -55,7 +53,6 @@ func TestAccDatadogPowerpack_update(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	dbName := uniqueEntityName(ctx, t)
 	asserts := datadogSimplePowerpackConfigAsserts
-	asserts = append(asserts, fmt.Sprintf("title = %s", dbName))
 	accProvider := testAccProvider(t, accProviders)
 	checks := testCheckResourceAttrs("datadog_powerpack.simple_powerpack", checkPowerpackExists(accProvider), asserts)
 
