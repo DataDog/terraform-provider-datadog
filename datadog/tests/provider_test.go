@@ -133,6 +133,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_topology_map_test":                     "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                          "dashboards",
+	"tests/resource_datadog_powerpack_test":                                  "powerpacks",
+	"tests/resource_datadog_powerpack_free_text_test":                        "powerpacks",
 	"tests/resource_datadog_downtime_test":                                   "downtimes",
 	"tests/resource_datadog_downtime_schedule_test":                          "downtimes",
 	"tests/resource_datadog_integration_aws_lambda_arn_test":                 "integration-aws",

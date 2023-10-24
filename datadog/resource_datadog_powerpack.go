@@ -382,7 +382,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 
 func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.PowerpackResponse) diag.Diagnostics {
 	if powerpack.Data == nil {
-		return diag.Errorf("error updating powerpack: %s", powerpack)
+		return diag.Errorf("error updating powerpack")
 	}
 	// Set description
 	if err := d.Set("description", powerpack.Data.Attributes.GetDescription()); err != nil {

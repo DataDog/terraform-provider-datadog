@@ -1,0 +1,22 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogPowerpackFreeText-local-1698104797","widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+  response:
+    body: '{"status":"error","code":403,"errors":["Forbidden"],"statuspage":"{{ .Values.status_page_link }}","twitter":"http://twitter.com/datadogops","email":"support@datadoghq.com"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 403 Forbidden
+    code: 403
+    duration: ""

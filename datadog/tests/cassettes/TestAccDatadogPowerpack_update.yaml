@@ -1,0 +1,22 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1698099196","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"}}]}},"name":"tf-TestAccDatadogPowerpack_update-local-1698099196","tags":["tag:foo1"],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks
+    method: POST
+  response:
+    body: '{"status":"error","code":403,"errors":["Forbidden"],"statuspage":"{{ .Values.status_page_link }}","twitter":"http://twitter.com/datadogops","email":"support@datadoghq.com"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 403 Forbidden
+    code: 403
+    duration: ""
