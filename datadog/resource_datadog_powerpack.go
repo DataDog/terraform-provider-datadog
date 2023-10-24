@@ -327,10 +327,6 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				continue
 			}
 			if widgetType == "widget_layout" {
-				//diags = append(diags, diag.Diagnostic{
-				//	Severity: diag.Error,
-				//	Summary:  fmt.Sprintf("terraformDefinition: %s", terraformDefinition),
-				//})
 				dimensions := terraformDefinition.([]map[string]interface{})[0]
 				height := dimensions["height"].(int64)
 				width := dimensions["width"].(int64)
