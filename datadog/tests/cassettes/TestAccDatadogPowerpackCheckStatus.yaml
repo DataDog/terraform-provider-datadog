@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"}}]}},"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","tags":["tag:foo1"]},"type":"powerpack"}}
+      {"data":{"attributes":{"description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"}}]}},"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","tags":["tag:foo1"]},"type":"powerpack"}}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"data":{"type":"powerpack","id":"5943475c-720d-11ee-ad19-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"},"id":2742876869325049}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+      {"data":{"type":"powerpack","id":"d2cb468e-728e-11ee-8152-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"},"id":4359315513991062}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/5943475c-720d-11ee-ad19-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/d2cb468e-728e-11ee-8152-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"powerpack","id":"5943475c-720d-11ee-ad19-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"},"id":2742876869325049}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+      {"data":{"type":"powerpack","id":"d2cb468e-728e-11ee-8152-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"},"id":4359315513991062}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/5943475c-720d-11ee-ad19-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/d2cb468e-728e-11ee-8152-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"powerpack","id":"5943475c-720d-11ee-ad19-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"},"id":2742876869325049}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+      {"data":{"type":"powerpack","id":"d2cb468e-728e-11ee-8152-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"},"id":4359315513991062}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/5943475c-720d-11ee-ad19-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/d2cb468e-728e-11ee-8152-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"powerpack","id":"5943475c-720d-11ee-ad19-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698111212","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"},"id":2742876869325049}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+      {"data":{"type":"powerpack","id":"d2cb468e-728e-11ee-8152-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackCheckStatus-local-1698166819","type":"group","widgets":[{"definition":{"check":"aws.ecs.agent_connected","group_by":["account","cluster"],"grouping":"cluster","tags":["account:demo","cluster:awseb-ruthebdog-env-8-dn3m6u3gvk"],"title":"Widget Title!!","type":"check_status"},"id":4359315513991062}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
     headers:
       Content-Type:
       - application/json
@@ -78,7 +78,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/powerpacks/5943475c-720d-11ee-ad19-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/d2cb468e-728e-11ee-8152-da7ad0900002
     method: DELETE
   response:
     body: ""
@@ -94,10 +94,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/5943475c-720d-11ee-ad19-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/d2cb468e-728e-11ee-8152-da7ad0900002
     method: GET
   response:
-    body: '{"errors":["Powerpack with ID 5943475c-720d-11ee-ad19-da7ad0900002 not found"]}'
+    body: '{"errors":["Powerpack with ID d2cb468e-728e-11ee-8152-da7ad0900002 not found"]}'
     headers:
       Content-Type:
       - application/json
