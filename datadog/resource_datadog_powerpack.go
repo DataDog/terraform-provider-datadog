@@ -318,6 +318,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 			continue
 		}
 		widgetDef := make(map[string]interface{})
+		var widgetLayout *datadogV2.PowerpackInnerWidgetLayout
 
 		for widgetType, terraformDefinition := range terraformWidget {
 			// Each terraform definition contains an ID field which is unused,
@@ -325,13 +326,30 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 			if widgetType == "id" {
 				continue
 			}
-			widgetDef = terraformDefinition.([]map[string]interface{})[0]
-			// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
-			// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
-			// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
-			widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
+			if widgetType == "widget_layout" {
+				//diags = append(diags, diag.Diagnostic{
+				//	Severity: diag.Error,
+				//	Summary:  fmt.Sprintf("terraformDefinition: %s", terraformDefinition),
+				//})
+				dimensions := terraformDefinition.([]map[string]interface{})[0]
+				height := dimensions["height"].(int64)
+				width := dimensions["width"].(int64)
+				x := dimensions["x"].(int64)
+				y := dimensions["y"].(int64)
+				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
+			} else {
+				widgetDef = terraformDefinition.([]map[string]interface{})[0]
+				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
+				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
+				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
+				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
+			}
 		}
 		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
+
+		if widgetLayout != nil {
+			widgetsDDItem.SetLayout(*widgetLayout)
+		}
 
 		widgets[i] = *widgetsDDItem
 	}
@@ -375,9 +393,27 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 
 		datadogWidget := datadogV1.NewWidget(definition)
 
+		if terraformWidget.Layout != nil {
+			layout := map[string]interface{}{
+				"x":      terraformWidget.Layout.X,
+				"y":      terraformWidget.Layout.Y,
+				"width":  terraformWidget.Layout.Width,
+				"height": terraformWidget.Layout.Height,
+			}
+			datadogWidget.SetLayout(*buildPowerpackWidgetLayout(layout))
+		}
+
 		datadogWidgets = append(datadogWidgets, *datadogWidget)
 	}
 	return &datadogWidgets, diags
+}
+func buildPowerpackWidgetLayout(terraformLayout map[string]interface{}) *datadogV1.WidgetLayout {
+	datadogLayout := datadogV1.NewWidgetLayoutWithDefaults()
+	datadogLayout.SetX(terraformLayout["x"].(int64))
+	datadogLayout.SetY(terraformLayout["y"].(int64))
+	datadogLayout.SetHeight(terraformLayout["height"].(int64))
+	datadogLayout.SetWidth(terraformLayout["width"].(int64))
+	return datadogLayout
 }
 
 func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.PowerpackResponse) diag.Diagnostics {

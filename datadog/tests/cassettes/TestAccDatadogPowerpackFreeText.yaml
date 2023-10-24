@@ -3,20 +3,104 @@ version: 1
 interactions:
 - request:
     body: |
-      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"free","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogPowerpackFreeText-local-1698104797","widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":43,"width":32,"x":5,"y":5}}]}
+      {"data":{"attributes":{"description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","type":"group","widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":4,"width":5,"x":5,"y":5}}]}},"name":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","tags":["tag:foo1"]},"type":"powerpack"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v1/dashboard
+    url: https://api.datadoghq.com/api/v2/powerpacks
     method: POST
   response:
-    body: '{"status":"error","code":403,"errors":["Forbidden"],"statuspage":"{{ .Values.status_page_link }}","twitter":"http://twitter.com/datadogops","email":"support@datadoghq.com"}'
+    body: |
+      {"data":{"type":"powerpack","id":"bec03ae2-720b-11ee-8fc2-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","type":"group","widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":4,"width":5,"x":5,"y":5},"id":2016972070292012}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
     headers:
       Content-Type:
       - application/json
-    status: 403 Forbidden
-    code: 403
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/bec03ae2-720b-11ee-8fc2-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"bec03ae2-720b-11ee-8fc2-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","type":"group","widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":4,"width":5,"x":5,"y":5},"id":2016972070292012}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/bec03ae2-720b-11ee-8fc2-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"bec03ae2-720b-11ee-8fc2-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","type":"group","widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":4,"width":5,"x":5,"y":5},"id":2016972070292012}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/bec03ae2-720b-11ee-8fc2-da7ad0900002
+    method: GET
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"bec03ae2-720b-11ee-8fc2-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackFreeText-local-1698110524","type":"group","widgets":[{"definition":{"color":"#eb364b","font_size":"56","text":"Free Text","text_align":"left","type":"free_text"},"layout":{"height":4,"width":5,"x":5,"y":5},"id":2016972070292012}]}},"template_variables":null,"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/powerpacks/bec03ae2-720b-11ee-8fc2-da7ad0900002
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/bec03ae2-720b-11ee-8fc2-da7ad0900002
+    method: GET
+  response:
+    body: '{"errors":["Powerpack with ID bec03ae2-720b-11ee-8fc2-da7ad0900002 not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
     duration: ""
