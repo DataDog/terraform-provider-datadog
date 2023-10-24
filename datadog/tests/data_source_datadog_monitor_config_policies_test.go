@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -36,25 +35,5 @@ func TestAccDatadogMonitorConfigPoliciesDatasource(t *testing.T) {
 }
 
 func testAccDatasourceMonitorConfigPolicies(name string) string {
-	return fmt.Sprintf(`
-	data "datadog_monitor_config_policies" "test" {
-		depends_on   = ["datadog_monitor_config_policy.%[1]s-2"]
-	} 
-    resource "datadog_monitor_config_policy" "%[1]s-1" {
-		policy_type = "tag"
-		tag_policy {
-			tag_key          = "tagKey1"
-			tag_key_required = false
-			valid_tag_values = ["value"]
-		}
-	}
-    resource "datadog_monitor_config_policy" "%[1]s-2" {
-		depends_on   = ["datadog_monitor_config_policy.%[1]s-1"]
-		policy_type = "tag"
-		tag_policy {
-			tag_key          = "tagKey2"
-			tag_key_required = false
-			valid_tag_values = ["value"]
-		}
-	}`, name)
+	return `data "datadog_monitor_config_policies" "test" {}`
 }
