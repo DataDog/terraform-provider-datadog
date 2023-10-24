@@ -35,6 +35,7 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Optional:    true,
 					Description: "The description of the powerpack.",
 				},
+				"live_span": getWidgetLiveSpanSchema(),
 				"name": {
 					Type:        schema.TypeString,
 					Optional:    true,
@@ -296,6 +297,19 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 	groupWidget.Definition = definition
 
+	// Set Live span for all powerpack widgets.
+	if v, ok := d.GetOk("live_span"); ok {
+		liveSpan, err := datadogV2.NewPowerpackGroupWidgetLiveSpanFromValue(v.(string))
+		if err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("live_span is invalid: %s", v.(string)),
+			})
+			return nil, diags
+		}
+		groupWidget.LiveSpan = liveSpan
+	}
+
 	attributes.GroupWidget = groupWidget
 
 	req := datadogV2.NewPowerpackWithDefaults()
@@ -319,7 +333,6 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 		}
 		widgetDef := make(map[string]interface{})
 		var widgetLayout *datadogV2.PowerpackInnerWidgetLayout
-
 		for widgetType, terraformDefinition := range terraformWidget {
 			// Each terraform definition contains an ID field which is unused,
 			// and a widget definition which we need to process
@@ -339,6 +352,13 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
 				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
 				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
+				if widgetDef["live_span"] != nil {
+					diags = append(diags, diag.Diagnostic{
+						Severity: diag.Error,
+						Summary:  fmt.Sprintf("live_span must be set at the powerpack level and will be applied to all widgets"),
+					})
+					return nil, diags
+				}
 			}
 		}
 		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
@@ -369,6 +389,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.AlertGraphWidgetDefinitionAsWidgetDefinition(buildDatadogAlertGraphDefinition(widgetDefinition))
 		case "check_status":
 			definition = datadogV1.CheckStatusWidgetDefinitionAsWidgetDefinition(buildDatadogCheckStatusDefinition(widgetDefinition))
+		case "event_stream":
+			definition = datadogV1.EventStreamWidgetDefinitionAsWidgetDefinition(buildDatadogEventStreamDefinition(widgetDefinition))
 		case "free_text":
 			definition = datadogV1.FreeTextWidgetDefinitionAsWidgetDefinition(buildDatadogFreeTextDefinition(widgetDefinition))
 		case "iframe":
@@ -379,6 +401,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(widgetDefinition))
 		case "servicemap":
 			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
+		case "trace_service":
+			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
 		default:
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
@@ -398,7 +422,6 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			}
 			datadogWidget.SetLayout(*buildPowerpackWidgetLayout(layout))
 		}
-
 		datadogWidgets = append(datadogWidgets, *datadogWidget)
 	}
 	return &datadogWidgets, diags
