@@ -400,9 +400,16 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			terraformWidget.Definition["request"] = terraformWidget.Definition["requests"]
 			delete(terraformWidget.Definition, "requests")
 		}
+		// TF -> json conversion processes precision as float64, it needs to be converted to
+		// an int value to be saved successfully
+		if widgetDefinition["precision"] != nil {
+			widgetDefinition["precision"] = int(widgetDefinition["precision"].(float64))
+		}
 		switch widgetType {
 		case "alert_graph":
 			definition = datadogV1.AlertGraphWidgetDefinitionAsWidgetDefinition(buildDatadogAlertGraphDefinition(widgetDefinition))
+		case "alert_value":
+			definition = datadogV1.AlertValueWidgetDefinitionAsWidgetDefinition(buildDatadogAlertValueDefinition(widgetDefinition))
 		case "change":
 			definition = datadogV1.ChangeWidgetDefinitionAsWidgetDefinition(buildDatadogChangeDefinition(widgetDefinition))
 		case "check_status":
@@ -417,6 +424,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.ImageWidgetDefinitionAsWidgetDefinition(buildDatadogImageDefinition(widgetDefinition))
 		case "note":
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(widgetDefinition))
+		case "query_value":
+			definition = datadogV1.QueryValueWidgetDefinitionAsWidgetDefinition(buildDatadogQueryValueDefinition(widgetDefinition))
 		case "servicemap":
 			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
 		case "toplist":
