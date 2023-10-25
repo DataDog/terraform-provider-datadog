@@ -365,6 +365,13 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 					widgetDef["requests"] = widgetDefRequests
 					delete(widgetDef, "request")
 				}
+				if widgetDef["custom_link"] != nil {
+					// Some widgets have a "custom_links" field, while API Spec has a "custom_link" field
+					// Here we set the "custom_links" field and remove "custom_link"
+					widgetDefCustomLinks := *widgetDef["custom_link"].(*[]map[string]interface{})
+					widgetDef["custom_links"] = widgetDefCustomLinks
+					delete(widgetDef, "custom_link")
+				}
 				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
 				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
@@ -397,8 +404,23 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		// Dashboard TF widgets have a "requests" field, while API Spec has a "request" field
 		// Here we set the "request" field and remove "requests"
 		if widgetDefinition["requests"] != nil {
-			terraformWidget.Definition["request"] = terraformWidget.Definition["requests"]
+			widgetDefRequests := widgetDefinition["requests"].([]interface{})
+			for i, widgetDefRequest := range widgetDefRequests {
+				widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
+				if widgetDefRequestNormalized["limit"] != nil {
+					widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
+				}
+				widgetDefRequests[i] = widgetDefRequestNormalized
+			}
+			terraformWidget.Definition["request"] = widgetDefRequests
 			delete(terraformWidget.Definition, "requests")
+		}
+		// Dashboard TF widgets have a "custom_links" field, while API Spec has a "custom_link" field
+		// Here we set the "custom_link" field and remove "custom_links"
+		if widgetDefinition["custom_links"] != nil {
+			widgetDefCustomLinks := widgetDefinition["custom_links"].([]interface{})
+			terraformWidget.Definition["custom_link"] = widgetDefCustomLinks
+			delete(terraformWidget.Definition, "custom_links")
 		}
 		// TF -> json conversion processes precision as float64, it needs to be converted to
 		// an int value to be saved successfully
@@ -422,6 +444,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.IFrameWidgetDefinitionAsWidgetDefinition(buildDatadogIframeDefinition(widgetDefinition))
 		case "image":
 			definition = datadogV1.ImageWidgetDefinitionAsWidgetDefinition(buildDatadogImageDefinition(widgetDefinition))
+		case "manage_status":
+			definition = datadogV1.MonitorSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogManageStatusDefinition(widgetDefinition))
 		case "note":
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(widgetDefinition))
 		case "query_value":
