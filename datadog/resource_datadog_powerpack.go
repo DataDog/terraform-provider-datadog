@@ -403,6 +403,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		switch widgetType {
 		case "alert_graph":
 			definition = datadogV1.AlertGraphWidgetDefinitionAsWidgetDefinition(buildDatadogAlertGraphDefinition(widgetDefinition))
+		case "change":
+			definition = datadogV1.ChangeWidgetDefinitionAsWidgetDefinition(buildDatadogChangeDefinition(widgetDefinition))
 		case "check_status":
 			definition = datadogV1.CheckStatusWidgetDefinitionAsWidgetDefinition(buildDatadogCheckStatusDefinition(widgetDefinition))
 		case "event_stream":
