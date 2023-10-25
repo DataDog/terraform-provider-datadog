@@ -299,7 +299,7 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 	// Set Live span for all powerpack widgets.
 	if v, ok := d.GetOk("live_span"); ok {
-		liveSpan, err := datadogV2.NewPowerpackGroupWidgetLiveSpanFromValue(v.(string))
+		liveSpan, err := datadogV2.NewWidgetLiveSpanFromValue(v.(string))
 		if err != nil {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
