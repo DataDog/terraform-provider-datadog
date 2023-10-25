@@ -23,9 +23,11 @@ data "datadog_service_level_objectives" "ft_foo_slos" {
 
 ### Optional
 
+- `error_on_no_results` (Boolean) Throw an error if no results are found.
 - `ids` (List of String) An array of SLO IDs to limit the search.
 - `metrics_query` (String) Filter results based on SLO numerator and denominator.
 - `name_query` (String) Filter results based on SLO names.
+- `q` (String) The query string to filter results based on SLO names. Some examples of queries include service:<service-name> and <slo-name>. If you specify this parameter, the name_query, tags_query, and metrics_query parameters are ignored.
 - `tags_query` (String) Filter results based on a single SLO tag.
 
 ### Read-Only
