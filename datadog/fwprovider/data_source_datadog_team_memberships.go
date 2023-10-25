@@ -129,13 +129,13 @@ func (r *datadogTeamMembershipsDataSource) updateState(state *datadogTeamMembers
 	state.ID = types.StringValue(fmt.Sprintf("%s:%s", state.TeamID.ValueString(), state.FilterKeyword.ValueString()))
 
 	exactMatch := state.ExactMatch.ValueBool()
-	filterKeywod := state.FilterKeyword.ValueString()
+	filterKeyword := state.FilterKeyword.ValueString()
 	var teamMemberships []*TeamMembershipModel
 	for _, user := range *teamData {
 		if exactMatch {
 			if u, _, err := r.UsersApi.GetUser(r.Auth, user.Relationships.User.Data.GetId()); err == nil {
 				attributes := u.Data.GetAttributes()
-				if attributes.GetEmail() == filterKeywod || attributes.GetName() == filterKeywod {
+				if attributes.GetEmail() == filterKeyword || attributes.GetName() == filterKeyword {
 					membership := TeamMembershipModel{
 						ID:     types.StringValue(user.GetId()),
 						TeamId: types.StringValue(state.TeamID.ValueString()),
