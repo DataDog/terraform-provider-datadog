@@ -8,6 +8,8 @@ github.com/DataDog/datadog-api-client-go/v2 v2.18.1-0.20231024180157-06315a33e5f
 github.com/DataDog/datadog-api-client-go/v2 v2.18.1-0.20231024180157-06315a33e5f7/go.mod h1:lHlfhsNQ2qZclvpVQTfrGowUDIdIzAao38A05f9EQpc=
 github.com/DataDog/datadog-api-client-go/v2 v2.18.1-0.20231024184046-df036bc40dfc h1:p8LbmurY9vd/T9cbZ91P0DynxySOt5JGUz4iwHj/B30=
 github.com/DataDog/datadog-api-client-go/v2 v2.18.1-0.20231024184046-df036bc40dfc/go.mod h1:lHlfhsNQ2qZclvpVQTfrGowUDIdIzAao38A05f9EQpc=
+github.com/DataDog/datadog-api-client-go/v2 v2.18.1-0.20231025164835-288b147cf4b3 h1:NyT2PvbsV+/suodCSSaLjpI7CVWOtDEIdL9T8aja+z4=
+github.com/DataDog/datadog-api-client-go/v2 v2.18.1-0.20231025164835-288b147cf4b3/go.mod h1:lHlfhsNQ2qZclvpVQTfrGowUDIdIzAao38A05f9EQpc=
 github.com/DataDog/datadog-go v4.4.0+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
 github.com/DataDog/datadog-go v4.8.3+incompatible h1:fNGaYSuObuQb5nzeTQqowRAd9bpDIRRV4/gUtIBjh8Q=
 github.com/DataDog/datadog-go v4.8.3+incompatible/go.mod h1:LButxg5PwREeZtORoXG3tL4fMGNddJ+vMq1mwgfaqoQ=
