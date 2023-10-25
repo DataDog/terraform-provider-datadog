@@ -492,6 +492,10 @@ func (r *integrationAWSResource) UpgradeState(ctx context.Context) map[int64]res
 					state.AccountID = types.StringNull()
 				}
 
+				if !state.RoleName.IsNull() && state.RoleName.ValueString() == "" {
+					state.RoleName = types.StringNull()
+				}
+
 				if !state.AccessKeyID.IsNull() && state.AccessKeyID.ValueString() == "" {
 					state.AccessKeyID = types.StringNull()
 				}
