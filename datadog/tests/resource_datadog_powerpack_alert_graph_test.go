@@ -6,7 +6,7 @@ import (
 
 const datadogPowerpackAlertGraphTest = `
  resource "datadog_monitor" "downtime_monitor" { 
-   name = "%s" 
+   name = "monitor"
    type = "metric alert" 
    message = "some message Notify: @hipchat-channel" 
    escalation_message = "the situation has escalated @pagerduty" 
@@ -41,6 +41,7 @@ resource "datadog_powerpack" "alert_graph_powerpack" {
 
 var datadogPowerpackAlertGraphTestAsserts = []string{
 	// Powerpack metadata
+	"name = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.# = 1",
 	"tags.# = 1",
