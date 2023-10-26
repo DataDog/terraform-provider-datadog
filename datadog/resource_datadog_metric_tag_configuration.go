@@ -28,6 +28,10 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			tags, _ := diff.GetOkExists("tags")
 			excludeTagsMode, _ := diff.GetOkExists("exclude_tags_mode")
 
+			if excludeTagsMode.(bool) && len(tags.(*schema.Set).List()) == 0 {
+				return fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
+			}
+
 			if !includePercentilesOk && oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
 				// if there was no change to include_percentiles nor aggregations nor metricType we don't need special handling
 				return nil
@@ -38,9 +42,6 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 			}
 			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
-			}
-			if excludeTagsMode.(bool) && len(tags.(*schema.Set).List()) == 0 {
-				return fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
 			}
 
 			if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
@@ -125,7 +126,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					},
 				},
 				"exclude_tags_mode": {
-					Description: "Toggle to include/exclude tags as queryable for your metric.  Defaults to false.  Can only be applied to metrics that have one or more tags configured.",
+					Description: "Toggle to include/exclude tags as queryable for your metric. Can only be applied to metrics that have one or more tags configured.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     false,
