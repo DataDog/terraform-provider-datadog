@@ -362,6 +362,25 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 					// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
 					// Here we set the "requests" field and remove "request"
 					widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
+					for i, widgetDefRequest := range widgetDefRequests {
+						if widgetDefRequest["style"] != nil {
+							// TF generates a style list, whereas API expects a single element
+							widgetDefRequest["style"] = widgetDefRequest["style"].([]map[string]interface{})[0]
+						}
+						if widgetDefRequest["apm_stats_query"] != nil {
+							// TF generates an apm_stats_query list, whereas API expects a single element
+							widgetDefRequest["apm_stats_query"] = widgetDefRequest["apm_stats_query"].([]map[string]interface{})[0]
+						}
+						if widgetDefRequest["x"] != nil {
+							// TF generates a style list, whereas API expects a single element
+							widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
+						}
+						if widgetDefRequest["y"] != nil {
+							// TF generates a style list, whereas API expects a single element
+							widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
+						}
+						widgetDefRequests[i] = widgetDefRequest
+					}
 					widgetDef["requests"] = widgetDefRequests
 					delete(widgetDef, "request")
 				}
@@ -410,6 +429,12 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 				if widgetDefRequestNormalized["limit"] != nil {
 					widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
 				}
+				if widgetDefRequestNormalized["style"] != nil {
+					widgetDefRequestNormalized["style"] = []interface{}{widgetDefRequestNormalized["style"]}
+				}
+				if widgetDefRequestNormalized["apm_stats_query"] != nil {
+					widgetDefRequestNormalized["apm_stats_query"] = []interface{}{widgetDefRequestNormalized["apm_stats_query"]}
+				}
 				widgetDefRequests[i] = widgetDefRequestNormalized
 			}
 			terraformWidget.Definition["request"] = widgetDefRequests
@@ -436,6 +461,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.ChangeWidgetDefinitionAsWidgetDefinition(buildDatadogChangeDefinition(widgetDefinition))
 		case "check_status":
 			definition = datadogV1.CheckStatusWidgetDefinitionAsWidgetDefinition(buildDatadogCheckStatusDefinition(widgetDefinition))
+		case "distribution":
+			definition = datadogV1.DistributionWidgetDefinitionAsWidgetDefinition(buildDatadogDistributionDefinition(widgetDefinition))
 		case "event_stream":
 			definition = datadogV1.EventStreamWidgetDefinitionAsWidgetDefinition(buildDatadogEventStreamDefinition(widgetDefinition))
 		case "event_timeline":
