@@ -454,6 +454,18 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.QueryValueWidgetDefinitionAsWidgetDefinition(buildDatadogQueryValueDefinition(widgetDefinition))
 		case "servicemap":
 			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
+		case "group":
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("powerpacks cannot contain group widgets"),
+			})
+			continue
+		case "powerpack":
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("powerpacks cannot contain powerpack widgets"),
+			})
+			continue
 		case "toplist":
 			definition = datadogV1.ToplistWidgetDefinitionAsWidgetDefinition(buildDatadogToplistDefinition(widgetDefinition))
 		case "trace_service":
@@ -461,7 +473,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		default:
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("unsupported widget type: %s", terraformWidget.Definition["type"]),
+				Summary:  fmt.Sprintf("support for this widget type is still in progress: %s", terraformWidget.Definition["type"]),
 			})
 			continue
 		}

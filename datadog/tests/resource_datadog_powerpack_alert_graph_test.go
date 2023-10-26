@@ -5,6 +5,20 @@ import (
 )
 
 const datadogPowerpackAlertGraphTest = `
+ resource "datadog_monitor" "downtime_monitor" { 
+   name = "monitor"
+   type = "metric alert" 
+   message = "some message Notify: @hipchat-channel" 
+   escalation_message = "the situation has escalated @pagerduty" 
+  
+   query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2" 
+  
+   monitor_thresholds { 
+     warning = "1.0" 
+     critical = "2.0" 
+   } 
+ } 
+
 resource "datadog_powerpack" "alert_graph_powerpack" {
 	name         = "{{uniq}}"
     tags = ["tag:foo1"]
@@ -15,7 +29,7 @@ resource "datadog_powerpack" "alert_graph_powerpack" {
 	}
     widget {
       alert_graph_definition {
-        alert_id  = "895605"
+        alert_id  = "${datadog_monitor.downtime_monitor.id}"
         viz_type  = "timeseries"
         title     = "Widget Title"
         title_align = "center"
@@ -27,12 +41,12 @@ resource "datadog_powerpack" "alert_graph_powerpack" {
 
 var datadogPowerpackAlertGraphTestAsserts = []string{
 	// Powerpack metadata
+	"name = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
 	"widget.# = 1",
 	"tags.# = 1",
 	"tags.0 = tag:foo1",
 	// Alert Graph widget
-	"widget.0.alert_graph_definition.0.alert_id = 895605",
 	"widget.0.alert_graph_definition.0.viz_type = timeseries",
 	"widget.0.alert_graph_definition.0.title = Widget Title",
 	"widget.0.alert_graph_definition.0.title_align = center",
