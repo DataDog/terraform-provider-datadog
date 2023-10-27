@@ -14,7 +14,7 @@ func TestAccDatadogServiceLevelObjectivesDatasource(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	firstSLOName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
-	secondSLOName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
+	secondSLOName := firstSLOName
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
