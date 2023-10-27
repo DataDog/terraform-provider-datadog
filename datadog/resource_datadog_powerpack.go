@@ -323,6 +323,30 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
+func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}) []map[string]interface{} {
+	normalizedWidgetDefRequests := widgetDefRequests
+	for i, widgetDefRequest := range normalizedWidgetDefRequests {
+		if widgetDefRequest["style"] != nil {
+			// TF generates a style list, whereas API expects a single element
+			widgetDefRequest["style"] = widgetDefRequest["style"].([]map[string]interface{})[0]
+		}
+		if widgetDefRequest["apm_stats_query"] != nil {
+			// TF generates an apm_stats_query list, whereas API expects a single element
+			widgetDefRequest["apm_stats_query"] = widgetDefRequest["apm_stats_query"].([]map[string]interface{})[0]
+		}
+		if widgetDefRequest["x"] != nil {
+			// TF generates a style list, whereas API expects a single element
+			widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
+		}
+		if widgetDefRequest["y"] != nil {
+			// TF generates a style list, whereas API expects a single element
+			widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
+		}
+		normalizedWidgetDefRequests[i] = widgetDefRequest
+	}
+	return normalizedWidgetDefRequests
+}
+
 func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
@@ -348,6 +372,10 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
 			} else {
 				widgetDef = terraformDefinition.([]map[string]interface{})[0]
+				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
+				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
+				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
+				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
 				// Dashboard widgets set live span at the widget level, we must prevent that for powerpack widgets
 				// where live span is set at the resource level.
 				if widgetDef["live_span"] != nil {
@@ -361,28 +389,24 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				if widgetDef["request"] != nil {
 					// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
 					// Here we set the "requests" field and remove "request"
-					widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
-					for i, widgetDefRequest := range widgetDefRequests {
-						if widgetDefRequest["style"] != nil {
-							// TF generates a style list, whereas API expects a single element
-							widgetDefRequest["style"] = widgetDefRequest["style"].([]map[string]interface{})[0]
+					if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
+						// Because of course JUST one widget type expects requests to be a single value instead of a list
+						widgetDefRequest := widgetDef["request"].([]map[string]interface{})[0]
+						if widgetDefRequest["fill"] != nil {
+							widgetDefRequest["fill"] = widgetDefRequest["fill"].([]map[string]interface{})[0]
 						}
-						if widgetDefRequest["apm_stats_query"] != nil {
-							// TF generates an apm_stats_query list, whereas API expects a single element
-							widgetDefRequest["apm_stats_query"] = widgetDefRequest["apm_stats_query"].([]map[string]interface{})[0]
+						if widgetDefRequest["size"] != nil {
+							widgetDefRequest["size"] = widgetDefRequest["size"].([]map[string]interface{})[0]
 						}
-						if widgetDefRequest["x"] != nil {
-							// TF generates a style list, whereas API expects a single element
-							widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
-						}
-						if widgetDefRequest["y"] != nil {
-							// TF generates a style list, whereas API expects a single element
-							widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
-						}
-						widgetDefRequests[i] = widgetDefRequest
+						widgetDef["requests"] = widgetDefRequest
+					} else {
+						widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
+						widgetDef["requests"] = normalizeWidgetDefRequests(widgetDefRequests)
 					}
-					widgetDef["requests"] = widgetDefRequests
 					delete(widgetDef, "request")
+				}
+				if widgetDef["style"] != nil {
+					widgetDef["style"] = widgetDef["style"].([]map[string]interface{})[0]
 				}
 				if widgetDef["custom_link"] != nil {
 					// Some widgets have a "custom_links" field, while API Spec has a "custom_link" field
@@ -391,10 +415,6 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 					widgetDef["custom_links"] = widgetDefCustomLinks
 					delete(widgetDef, "custom_link")
 				}
-				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
-				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
-				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
-				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
 			}
 		}
 		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
@@ -423,21 +443,33 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		// Dashboard TF widgets have a "requests" field, while API Spec has a "request" field
 		// Here we set the "request" field and remove "requests"
 		if widgetDefinition["requests"] != nil {
-			widgetDefRequests := widgetDefinition["requests"].([]interface{})
-			for i, widgetDefRequest := range widgetDefRequests {
-				widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
-				if widgetDefRequestNormalized["limit"] != nil {
-					widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
+			if widgetDefinition["type"] == "scatterplot" || widgetDefinition["type"] == "hostmap" {
+				// Because of course JUST one widget type expects requests to be a single value instead of a list
+				widgetDefRequest := widgetDefinition["requests"].(map[string]interface{})
+				if widgetDefRequest["fill"] != nil {
+					widgetDefRequest["fill"] = []interface{}{widgetDefRequest["fill"].(interface{})}
 				}
-				if widgetDefRequestNormalized["style"] != nil {
-					widgetDefRequestNormalized["style"] = []interface{}{widgetDefRequestNormalized["style"]}
+				if widgetDefRequest["size"] != nil {
+					widgetDefRequest["size"] = []interface{}{widgetDefRequest["size"].(interface{})}
 				}
-				if widgetDefRequestNormalized["apm_stats_query"] != nil {
-					widgetDefRequestNormalized["apm_stats_query"] = []interface{}{widgetDefRequestNormalized["apm_stats_query"]}
+				terraformWidget.Definition["request"] = []interface{}{widgetDefRequest}
+			} else {
+				widgetDefRequests := widgetDefinition["requests"].([]interface{})
+				for i, widgetDefRequest := range widgetDefRequests {
+					widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
+					if widgetDefRequestNormalized["limit"] != nil {
+						widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
+					}
+					if widgetDefRequestNormalized["style"] != nil {
+						widgetDefRequestNormalized["style"] = []interface{}{widgetDefRequestNormalized["style"]}
+					}
+					if widgetDefRequestNormalized["apm_stats_query"] != nil {
+						widgetDefRequestNormalized["apm_stats_query"] = []interface{}{widgetDefRequestNormalized["apm_stats_query"]}
+					}
+					widgetDefRequests[i] = widgetDefRequestNormalized
 				}
-				widgetDefRequests[i] = widgetDefRequestNormalized
+				terraformWidget.Definition["request"] = widgetDefRequests
 			}
-			terraformWidget.Definition["request"] = widgetDefRequests
 			delete(terraformWidget.Definition, "requests")
 		}
 		// Dashboard TF widgets have a "custom_links" field, while API Spec has a "custom_link" field
@@ -446,6 +478,9 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			widgetDefCustomLinks := widgetDefinition["custom_links"].([]interface{})
 			terraformWidget.Definition["custom_link"] = widgetDefCustomLinks
 			delete(terraformWidget.Definition, "custom_links")
+		}
+		if widgetDefinition["style"] != nil {
+			widgetDefinition["style"] = []interface{}{widgetDefinition["style"].(map[string]interface{})}
 		}
 		// TF -> json conversion processes precision as float64, it needs to be converted to
 		// an int value to be saved successfully
@@ -469,6 +504,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.EventTimelineWidgetDefinitionAsWidgetDefinition(buildDatadogEventTimelineDefinition(widgetDefinition))
 		case "free_text":
 			definition = datadogV1.FreeTextWidgetDefinitionAsWidgetDefinition(buildDatadogFreeTextDefinition(widgetDefinition))
+		case "hostmap":
+			definition = datadogV1.HostMapWidgetDefinitionAsWidgetDefinition(buildDatadogHostmapDefinition(widgetDefinition))
 		case "iframe":
 			definition = datadogV1.IFrameWidgetDefinitionAsWidgetDefinition(buildDatadogIframeDefinition(widgetDefinition))
 		case "image":
