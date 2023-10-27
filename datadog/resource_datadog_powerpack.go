@@ -398,6 +398,12 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 						if widgetDefRequest["size"] != nil {
 							widgetDefRequest["size"] = widgetDefRequest["size"].([]map[string]interface{})[0]
 						}
+						if widgetDefRequest["x"] != nil {
+							widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
+						}
+						if widgetDefRequest["y"] != nil {
+							widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
+						}
 						widgetDef["requests"] = widgetDefRequest
 					} else {
 						widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
@@ -407,6 +413,12 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				}
 				if widgetDef["style"] != nil {
 					widgetDef["style"] = widgetDef["style"].([]map[string]interface{})[0]
+				}
+				if widgetDef["xaxis"] != nil {
+					widgetDef["xaxis"] = widgetDef["xaxis"].([]map[string]interface{})[0]
+				}
+				if widgetDef["yaxis"] != nil {
+					widgetDef["yaxis"] = widgetDef["yaxis"].([]map[string]interface{})[0]
 				}
 				if widgetDef["custom_link"] != nil {
 					// Some widgets have a "custom_links" field, while API Spec has a "custom_link" field
@@ -452,6 +464,12 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 				if widgetDefRequest["size"] != nil {
 					widgetDefRequest["size"] = []interface{}{widgetDefRequest["size"].(interface{})}
 				}
+				if widgetDefRequest["x"] != nil {
+					widgetDefRequest["x"] = []interface{}{widgetDefRequest["x"].(interface{})}
+				}
+				if widgetDefRequest["y"] != nil {
+					widgetDefRequest["y"] = []interface{}{widgetDefRequest["y"].(interface{})}
+				}
 				terraformWidget.Definition["request"] = []interface{}{widgetDefRequest}
 			} else {
 				widgetDefRequests := widgetDefinition["requests"].([]interface{})
@@ -481,6 +499,12 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		}
 		if widgetDefinition["style"] != nil {
 			widgetDefinition["style"] = []interface{}{widgetDefinition["style"].(map[string]interface{})}
+		}
+		if widgetDefinition["xaxis"] != nil {
+			widgetDefinition["xaxis"] = []interface{}{widgetDefinition["xaxis"].(map[string]interface{})}
+		}
+		if widgetDefinition["yaxis"] != nil {
+			widgetDefinition["yaxis"] = []interface{}{widgetDefinition["yaxis"].(map[string]interface{})}
 		}
 		// TF -> json conversion processes precision as float64, it needs to be converted to
 		// an int value to be saved successfully
@@ -516,6 +540,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(widgetDefinition))
 		case "query_value":
 			definition = datadogV1.QueryValueWidgetDefinitionAsWidgetDefinition(buildDatadogQueryValueDefinition(widgetDefinition))
+		case "scatterplot":
+			definition = datadogV1.ScatterPlotWidgetDefinitionAsWidgetDefinition(buildDatadogScatterplotDefinition(widgetDefinition))
 		case "servicemap":
 			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
 		case "group":
@@ -532,6 +558,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			continue
 		case "toplist":
 			definition = datadogV1.ToplistWidgetDefinitionAsWidgetDefinition(buildDatadogToplistDefinition(widgetDefinition))
+		case "topology_map":
+			definition = datadogV1.TopologyMapWidgetDefinitionAsWidgetDefinition(buildDatadogTopologyMapDefinition(widgetDefinition))
 		case "trace_service":
 			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
 		default:
