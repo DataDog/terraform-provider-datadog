@@ -1,14 +1,3 @@
-## 3.32.0 (October 30, 2023)
-
-### BUGFIXES
-* [datadog_service_definition_yaml] Fix typo in v2.2 example by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/2152
-* [datadog_integration_aws] Allow account_id to be specified in an access_key configured integration by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2154
-### IMPROVEMENTS
-* [data_source_datadog_team_memberships] add exact match support by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2118
-
-
-**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.31.0...v3.32.0
-
 ## 3.31.0 (October 18, 2023)
 
 ### BUGFIXES
