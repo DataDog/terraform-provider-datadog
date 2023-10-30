@@ -414,8 +414,12 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				if widgetDef["style"] != nil {
 					widgetDef["style"] = widgetDef["style"].([]map[string]interface{})[0]
 				}
+				if widgetDef["event"] != nil {
+					widgetDef["events"] = (*widgetDef["event"].(*[]map[string]string))
+					delete(widgetDef, "event")
+				}
 				if widgetDef["xaxis"] != nil {
-					widgetDef["xaxis"] = widgetDef["xaxis"].([]map[string]interface{})[0]
+					widgetDef["xaxis"] = (widgetDef["xaxis"].([]map[string]interface{}))[0]
 				}
 				if widgetDef["yaxis"] != nil {
 					widgetDef["yaxis"] = widgetDef["yaxis"].([]map[string]interface{})[0]
@@ -506,6 +510,10 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		if widgetDefinition["yaxis"] != nil {
 			widgetDefinition["yaxis"] = []interface{}{widgetDefinition["yaxis"].(map[string]interface{})}
 		}
+		if widgetDefinition["events"] != nil {
+			widgetDefinition["event"] = widgetDefinition["events"]
+			delete(terraformWidget.Definition, "events")
+		}
 		// TF -> json conversion processes precision as float64, it needs to be converted to
 		// an int value to be saved successfully
 		if widgetDefinition["precision"] != nil {
@@ -528,6 +536,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.EventTimelineWidgetDefinitionAsWidgetDefinition(buildDatadogEventTimelineDefinition(widgetDefinition))
 		case "free_text":
 			definition = datadogV1.FreeTextWidgetDefinitionAsWidgetDefinition(buildDatadogFreeTextDefinition(widgetDefinition))
+		case "heatmap":
+			definition = datadogV1.HeatMapWidgetDefinitionAsWidgetDefinition(buildDatadogHeatmapDefinition(widgetDefinition))
 		case "hostmap":
 			definition = datadogV1.HostMapWidgetDefinitionAsWidgetDefinition(buildDatadogHostmapDefinition(widgetDefinition))
 		case "iframe":
