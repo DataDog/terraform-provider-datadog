@@ -342,6 +342,9 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}) []ma
 			// TF generates a style list, whereas API expects a single element
 			widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
 		}
+		if widgetDefRequest["query"] != nil {
+			widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
+		}
 		normalizedWidgetDefRequests[i] = widgetDefRequest
 	}
 	return normalizedWidgetDefRequests
@@ -491,6 +494,9 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 					if widgetDefRequestNormalized["apm_stats_query"] != nil {
 						widgetDefRequestNormalized["apm_stats_query"] = []interface{}{widgetDefRequestNormalized["apm_stats_query"]}
 					}
+					if widgetDefRequestNormalized["query"] != nil {
+						widgetDefRequestNormalized["query"] = []interface{}{widgetDefRequestNormalized["query"].(interface{})}
+					}
 					widgetDefRequests[i] = widgetDefRequestNormalized
 				}
 				terraformWidget.Definition["request"] = widgetDefRequests
@@ -550,6 +556,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.IFrameWidgetDefinitionAsWidgetDefinition(buildDatadogIframeDefinition(widgetDefinition))
 		case "image":
 			definition = datadogV1.ImageWidgetDefinitionAsWidgetDefinition(buildDatadogImageDefinition(widgetDefinition))
+		case "list_stream":
+			definition = datadogV1.ListStreamWidgetDefinitionAsWidgetDefinition(buildDatadogListStreamDefinition(widgetDefinition))
 		case "log_stream":
 			definition = datadogV1.LogStreamWidgetDefinitionAsWidgetDefinition(buildDatadogLogStreamDefinition(widgetDefinition))
 		case "manage_status":
