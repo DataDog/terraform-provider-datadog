@@ -326,6 +326,51 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
+func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	// Dashboard widgets set live span at the widget level, we don't allow that for powerpack widgets
+	// where live span is set at the resource level.
+	if widgetDef["live_span"] != nil {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("live_span must be set at the powerpack level and will be applied to all widgets"),
+		})
+		return nil, diags
+	}
+
+	if widgetDef["request"] != nil {
+		// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
+		// Here we set the "requests" field and remove "request"
+		widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
+		widgetDef["requests"] = widgetDefRequests
+		delete(widgetDef, "request")
+	}
+	return widgetDef, diags
+}
+
+func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]interface{} {
+	// Dashboard TF widgets have a "requests" field, while API Spec has a "request" field
+	// Here we set the "request" field and remove "requests"
+	if widgetDef["requests"] != nil {
+		widgetDefRequests := widgetDef["requests"].([]interface{})
+		for i, widgetDefRequest := range widgetDefRequests {
+			widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
+			if widgetDefRequestNormalized["limit"] != nil {
+				widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
+			}
+			widgetDefRequests[i] = widgetDefRequestNormalized
+		}
+		widgetDef["request"] = widgetDefRequests
+		delete(widgetDef, "requests")
+	}
+	// TF -> json conversion processes precision as float64, it needs to be converted to
+	// an int value to be saved successfully
+	if widgetDef["precision"] != nil {
+		widgetDef["precision"] = int(widgetDef["precision"].(float64))
+	}
+	return widgetDef
+}
+
 func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
@@ -351,34 +396,14 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
 			} else {
 				widgetDef = terraformDefinition.([]map[string]interface{})[0]
-				// Dashboard widgets set live span at the widget level, we must prevent that for powerpack widgets
-				// where live span is set at the resource level.
-				if widgetDef["live_span"] != nil {
-					diags = append(diags, diag.Diagnostic{
-						Severity: diag.Error,
-						Summary:  fmt.Sprintf("live_span must be set at the powerpack level and will be applied to all widgets"),
-					})
-					return nil, diags
-				}
-
-				if widgetDef["request"] != nil {
-					// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
-					// Here we set the "requests" field and remove "request"
-					widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
-					widgetDef["requests"] = widgetDefRequests
-					delete(widgetDef, "request")
-				}
-				if widgetDef["custom_link"] != nil {
-					// Some widgets have a "custom_links" field, while API Spec has a "custom_link" field
-					// Here we set the "custom_links" field and remove "custom_link"
-					widgetDefCustomLinks := *widgetDef["custom_link"].(*[]map[string]interface{})
-					widgetDef["custom_links"] = widgetDefCustomLinks
-					delete(widgetDef, "custom_link")
-				}
 				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
 				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
 				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
+				widgetDef, diags = normalizeDashboardWidgetDef(widgetDef)
+				if diags.HasError() {
+					return nil, diags
+				}
 			}
 		}
 		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
@@ -401,35 +426,10 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		if widgetDefinition == nil {
 			continue
 		}
+		widgetDefinition = normalizeTerraformWidgetDef(widgetDefinition)
 		// Add new powerpack-supported widgets here
 		// We save Powerpack widgets as Dashboard widgets so we need to convert them to the appropriate widget definition object.
 		widgetType := widgetDefinition["type"]
-		// Dashboard TF widgets have a "requests" field, while API Spec has a "request" field
-		// Here we set the "request" field and remove "requests"
-		if widgetDefinition["requests"] != nil {
-			widgetDefRequests := widgetDefinition["requests"].([]interface{})
-			for i, widgetDefRequest := range widgetDefRequests {
-				widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
-				if widgetDefRequestNormalized["limit"] != nil {
-					widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
-				}
-				widgetDefRequests[i] = widgetDefRequestNormalized
-			}
-			terraformWidget.Definition["request"] = widgetDefRequests
-			delete(terraformWidget.Definition, "requests")
-		}
-		// Dashboard TF widgets have a "custom_links" field, while API Spec has a "custom_link" field
-		// Here we set the "custom_link" field and remove "custom_links"
-		if widgetDefinition["custom_links"] != nil {
-			widgetDefCustomLinks := widgetDefinition["custom_links"].([]interface{})
-			terraformWidget.Definition["custom_link"] = widgetDefCustomLinks
-			delete(terraformWidget.Definition, "custom_links")
-		}
-		// TF -> json conversion processes precision as float64, it needs to be converted to
-		// an int value to be saved successfully
-		if widgetDefinition["precision"] != nil {
-			widgetDefinition["precision"] = int(widgetDefinition["precision"].(float64))
-		}
 		switch widgetType {
 		case "alert_graph":
 			definition = datadogV1.AlertGraphWidgetDefinitionAsWidgetDefinition(buildDatadogAlertGraphDefinition(widgetDefinition))
