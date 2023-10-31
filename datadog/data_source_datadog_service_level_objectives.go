@@ -42,16 +42,17 @@ func dataSourceDatadogServiceLevelObjectives() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
-				"error_on_no_results": {
+				"error_on_empty_result": {
 					Description: "Throw an error if no results are found.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     true,
 				},
-				"q": {
-					Description: "The query string to filter results based on SLO names. Some examples of queries include service:<service-name> and <slo-name>. If you specify this parameter, the name_query, tags_query, and metrics_query parameters are ignored.",
-					Type:        schema.TypeString,
-					Optional:    true,
+				"query": {
+					Description:   "The query string to filter results based on SLO names. Some examples of queries include service:<service-name> and <slo-name>. If you specify this parameter, the name_query, tags_query, and metrics_query parameters are ignored.",
+					Type:          schema.TypeString,
+					Optional:      true,
+					ConflictsWith: []string{"metrics_query", "tags_query", "name_query", "ids"},
 				},
 
 				// Computed values
@@ -91,23 +92,18 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 	var slos []map[string]interface{}
 	var diags diag.Diagnostics
 
-	errorOnNoResults := true
+	errorOnNoResults := d.Get("error_on_empty_result").(bool)
 
-	if v, ok := d.GetOk("error_on_no_results"); ok {
-		errorOnNoResults = v.(bool)
-	}
-
-	if v, ok := d.GetOk("q"); ok {
+	// query take precedence over other query parameters if specified
+	if v, ok := d.GetOk("query"); ok {
 		var qPtr *string
 		q := v.(string)
 		qPtr = &q
-		// q take precedence over other query parameters if specified
 
 		reqParams := datadogV1.NewSearchSLOOptionalParameters()
 		reqParams.WithQuery(q)
 
-		diags, slos = searchSLO(reqParams, providerConf)
-
+		slos, diags = searchSLO(reqParams, providerConf)
 		if diags.HasError() {
 			return diags
 		}
@@ -141,8 +137,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 			reqParams.WithMetricsQuery(metricsQuery)
 		}
 
-		diags, slos = listSLO(reqParams, providerConf)
-
+		slos, diags = listSLO(reqParams, providerConf)
 		if diags.HasError() {
 			return diags
 		}
@@ -162,11 +157,12 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 	return diags
 }
 
-func searchSLO(reqParams *datadogV1.SearchSLOOptionalParameters, providerConf *ProviderConfiguration) (diag.Diagnostics, []map[string]interface{}) {
+func searchSLO(reqParams *datadogV1.SearchSLOOptionalParameters, providerConf *ProviderConfiguration) ([]map[string]interface{}, diag.Diagnostics) {
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	reqParams.WithPageSize(100)
+	var pageSize int = 100
+	reqParams.WithPageSize(int64(pageSize))
 
 	pageNumber := int64(0)
 	numberOfSLOs := int64(0)
@@ -179,7 +175,7 @@ func searchSLO(reqParams *datadogV1.SearchSLOOptionalParameters, providerConf *P
 		reqParams.WithPageNumber(pageNumber)
 		slosResp, httpresp, err := apiInstances.GetServiceLevelObjectivesApiV1().SearchSLO(auth, *reqParams)
 		if err != nil {
-			return utils.TranslateClientErrorDiag(err, httpresp, "error querying service level objectives"), nil
+			return nil, utils.TranslateClientErrorDiag(err, httpresp, "error querying service level objectives")
 		}
 
 		slosPage := make([]map[string]interface{}, 0, len(slosResp.GetData().Attributes.Slos))
@@ -203,9 +199,10 @@ func searchSLO(reqParams *datadogV1.SearchSLOOptionalParameters, providerConf *P
 		allSlosPages = append(allSlosPages, slosPage)
 		numberOfSLOs += int64(len(slosPage))
 
-		if *slosResp.GetMeta().Pagination.LastNumber <= pageNumber {
+		if *slosResp.GetMeta().Pagination.LastNumber <= pageNumber || len(slosResp.GetData().Attributes.Slos) < pageSize {
 			break
 		}
+
 		pageNumber++
 	}
 
@@ -215,11 +212,41 @@ func searchSLO(reqParams *datadogV1.SearchSLOOptionalParameters, providerConf *P
 		slos = append(slos, slosPage...)
 	}
 
-	return diags, slos
+	return slos, diags
 }
 
-func listSLO(reqParams *datadogV1.ListSLOsOptionalParameters, providerConf *ProviderConfiguration) (diag.Diagnostics, []map[string]interface{}) {
-	return nil, nil
+func listSLO(reqParams *datadogV1.ListSLOsOptionalParameters, providerConf *ProviderConfiguration) ([]map[string]interface{}, diag.Diagnostics) {
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	slosResp, httpresp, err := apiInstances.GetServiceLevelObjectivesApiV1().ListSLOs(auth, *reqParams)
+	if err != nil {
+		return nil, utils.TranslateClientErrorDiag(err, httpresp, "error querying service level objectives")
+	}
+	if len(slosResp.GetData()) == 0 {
+		return nil, diag.Errorf("your query returned no result, please try a less specific search criteria")
+	}
+
+	diags := diag.Diagnostics{}
+	slos := make([]map[string]interface{}, 0, len(slosResp.GetData()))
+	for _, slo := range slosResp.GetData() {
+		if err := utils.CheckForUnparsed(slo); err != nil {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Warning,
+				Summary:  fmt.Sprintf("skipping service level objective with id: %s", slo.GetId()),
+				Detail:   fmt.Sprintf("service level objective contains unparsed object: %v", err),
+			})
+			continue
+		}
+
+		slos = append(slos, map[string]interface{}{
+			"id":   slo.GetId(),
+			"name": slo.GetName(),
+			"type": slo.GetType(),
+		})
+	}
+
+	return slos, diags
 }
 
 func computeSLOsDataSourceIDbySearchEndpointCall(q *string) string {
