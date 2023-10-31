@@ -128,6 +128,7 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 	ctx = testSpan(ctx, t)
 	rec := initRecorder(t)
 	httpClient := cleanhttp.DefaultClient()
+	httpClient.Transport = rec
 	t.Cleanup(func() {
 		rec.Stop()
 	})
