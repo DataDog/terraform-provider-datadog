@@ -26,7 +26,6 @@ import (
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -626,8 +625,6 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	rec := initRecorder(t)
 	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	c := cleanhttp.DefaultClient()
-	loggingTransport := logging.NewTransport("Datadog", rec)
-	c.Transport = loggingTransport
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
 	t.Cleanup(func() {
 		rec.Stop()
@@ -649,7 +646,6 @@ func TestProvider(t *testing.T) {
 	defer rec.Stop()
 
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewTransport("Datadog", rec)
 	accProvider := initAccProvider(context.Background(), t, c)
 
 	if err := accProvider.InternalValidate(); err != nil {
