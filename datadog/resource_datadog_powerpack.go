@@ -415,7 +415,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 					widgetDef["style"] = widgetDef["style"].([]map[string]interface{})[0]
 				}
 				if widgetDef["event"] != nil {
-					widgetDef["events"] = (*widgetDef["event"].(*[]map[string]string))
+					widgetDef["events"] = *widgetDef["event"].(*[]map[string]string)
 					delete(widgetDef, "event")
 				}
 				if widgetDef["xaxis"] != nil {
@@ -423,6 +423,9 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				}
 				if widgetDef["yaxis"] != nil {
 					widgetDef["yaxis"] = widgetDef["yaxis"].([]map[string]interface{})[0]
+				}
+				if widgetDef["sort"] != nil {
+					widgetDef["sort"] = widgetDef["sort"].([]map[string]interface{})[0]
 				}
 				if widgetDef["custom_link"] != nil {
 					// Some widgets have a "custom_links" field, while API Spec has a "custom_link" field
@@ -510,6 +513,9 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		if widgetDefinition["yaxis"] != nil {
 			widgetDefinition["yaxis"] = []interface{}{widgetDefinition["yaxis"].(map[string]interface{})}
 		}
+		if widgetDefinition["sort"] != nil {
+			widgetDefinition["sort"] = []interface{}{widgetDefinition["sort"].(map[string]interface{})}
+		}
 		if widgetDefinition["events"] != nil {
 			widgetDefinition["event"] = widgetDefinition["events"]
 			delete(terraformWidget.Definition, "events")
@@ -544,6 +550,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.IFrameWidgetDefinitionAsWidgetDefinition(buildDatadogIframeDefinition(widgetDefinition))
 		case "image":
 			definition = datadogV1.ImageWidgetDefinitionAsWidgetDefinition(buildDatadogImageDefinition(widgetDefinition))
+		case "log_stream":
+			definition = datadogV1.LogStreamWidgetDefinitionAsWidgetDefinition(buildDatadogLogStreamDefinition(widgetDefinition))
 		case "manage_status":
 			definition = datadogV1.MonitorSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogManageStatusDefinition(widgetDefinition))
 		case "note":
