@@ -13,8 +13,7 @@ import (
 func TestAccDatadogServiceLevelObjectivesDatasource(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	firstSLOName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
-	secondSLOName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
+	sloName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -23,20 +22,20 @@ func TestAccDatadogServiceLevelObjectivesDatasource(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceServiceLevelObjectivesIdsConfig(firstSLOName),
-				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, firstSLOName),
+				Config: testAccDatasourceServiceLevelObjectivesIdsConfig(sloName),
+				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, sloName),
 			},
 			{
-				Config: testAccDatasourceServiceLevelObjectivesNameFilterConfig(firstSLOName, secondSLOName),
-				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, firstSLOName),
+				Config: testAccDatasourceServiceLevelObjectivesNameFilterConfig(sloName),
+				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, sloName),
 			},
 			{
-				Config: testAccDatasourceServiceLevelObjectivesTagsFilterConfig(firstSLOName),
-				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, firstSLOName),
+				Config: testAccDatasourceServiceLevelObjectivesTagsFilterConfig(sloName),
+				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, sloName),
 			},
 			{
-				Config: testAccDatasourceServiceLevelObjectivesMetricsFilterConfig(firstSLOName),
-				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, firstSLOName),
+				Config: testAccDatasourceServiceLevelObjectivesMetricsFilterConfig(sloName),
+				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, sloName),
 			},
 		},
 	})
@@ -112,7 +111,7 @@ data "datadog_service_level_objectives" "foo" {
 	)
 }
 
-func testAccDatasourceServiceLevelObjectivesNameFilterConfig(firstSLOName string, secondSLOName string) string {
+func testAccDatasourceServiceLevelObjectivesNameFilterConfig(sloName string) string {
 	return fmt.Sprintf(`
 %s
 %s
@@ -124,9 +123,9 @@ data "datadog_service_level_objectives" "foo" {
   name_query = "%s"
 }
 `,
-		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(firstSLOName),
-		strings.ReplaceAll(testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(secondSLOName), "\"foo\"", "\"bar\""),
-		firstSLOName,
+		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(sloName),
+		strings.ReplaceAll(testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(sloName), "\"foo\"", "\"bar\""),
+		sloName,
 	)
 }
 
