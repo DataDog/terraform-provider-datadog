@@ -40,6 +40,7 @@ resource "datadog_integration_azure" "an_azure_integration" {
   client_id     = "testc7f6-1234-5678-9101-3fcbf464test"
   client_secret = "testingx./Sw*g/Y33t..R1cH+hScMDt"
   app_service_plan_filters = "bar:baz,stinky:pete"
+  container_app_filters = "bazinga:bazingo,woody:pride"
   automute      = true
   cspm_enabled  = true
   custom_metrics_enabled = true
@@ -78,6 +79,9 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 						"app_service_plan_filters", ""),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
+						"container_app_filters", ""),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_azure.an_azure_integration",
 						"automute", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
@@ -111,6 +115,9 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
 						"app_service_plan_filters", "bar:baz,stinky:pete"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_azure.an_azure_integration",
+						"container_app_filters", "bazinga:bazingo,woody:pride"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
 						"automute", "true"),
