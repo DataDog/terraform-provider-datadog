@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -47,7 +46,7 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Description: "Whether or not title should be displayed in the powerpack.",
 				},
 				"tags": {
-					Type:        schema.TypeList,
+					Type:        schema.TypeSet,
 					Optional:    true,
 					Description: "List of tags to identify this powerpack.",
 					Elem: &schema.Schema{
@@ -138,16 +137,12 @@ func resourceDatadogPowerpackCreate(ctx context.Context, d *schema.ResourceData,
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	powerpackPayload, diags := buildDatadogPowerpack(ctx, d)
-	if diags != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  fmt.Sprintf("failed to parse resource configuration"),
-		})
+	if diags.HasError() {
 		return diags
 	}
 	powerpack, httpresp, err := apiInstances.GetPowerpackApiV2().CreatePowerpack(auth, *powerpackPayload)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error creating powerpack error A")
+		return utils.TranslateClientErrorDiag(err, httpresp, "error creating powerpack")
 	}
 	if err := utils.CheckForUnparsed(powerpack); err != nil {
 		return diag.FromErr(err)
@@ -187,11 +182,7 @@ func resourceDatadogPowerpackUpdate(ctx context.Context, d *schema.ResourceData,
 	auth := providerConf.Auth
 	id := d.Id()
 	powerpack, diags := buildDatadogPowerpack(ctx, d)
-	if diags != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  fmt.Sprintf("failed to parse resource configuration"),
-		})
+	if diags.HasError() {
 		return diags
 	}
 
@@ -200,7 +191,7 @@ func resourceDatadogPowerpackUpdate(ctx context.Context, d *schema.ResourceData,
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("failure: %s", err),
+				Summary:  fmt.Sprintf("error updating powerpack: %s", err),
 			})
 			return diags
 		}
@@ -247,8 +238,8 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 	// Set Tags
 	if v, ok := d.GetOk("tags"); ok {
-		tags := make([]string, len(v.([]interface{})))
-		for i, tag := range v.([]interface{}) {
+		tags := make([]string, v.(*schema.Set).Len())
+		for i, tag := range v.(*schema.Set).List() {
 			tags[i] = tag.(string)
 		}
 		attributes.SetTags(tags)
@@ -282,9 +273,21 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 	// Fetch widgets in the request form
 	requestWidgets := d.Get("widget").([]interface{})
 	// Convert and validate them using the Dashboard widget type
-	datadogWidgets, _ := buildDatadogWidgets(&requestWidgets)
+	datadogWidgets, err := buildDatadogWidgets(&requestWidgets)
+	if err != nil {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("error constructing widgets: %s", err),
+		})
+	}
 	// Convert to TF widget type for easier parsing
-	terraformWidgets, _ := buildTerraformWidgets(datadogWidgets, d)
+	terraformWidgets, err := buildTerraformWidgets(datadogWidgets, d)
+	if err != nil {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("error constructing widgets: %s", err),
+		})
+	}
 	// Finally, build JSON Powerpack API compatible widgets
 	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(terraformWidgets)
 
@@ -454,26 +457,26 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.QueryValueWidgetDefinitionAsWidgetDefinition(buildDatadogQueryValueDefinition(widgetDefinition))
 		case "servicemap":
 			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
+		case "toplist":
+			definition = datadogV1.ToplistWidgetDefinitionAsWidgetDefinition(buildDatadogToplistDefinition(widgetDefinition))
+		case "trace_service":
+			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
 		case "group":
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
 				Summary:  fmt.Sprintf("powerpacks cannot contain group widgets"),
 			})
-			continue
+			return nil, diags
 		case "powerpack":
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
 				Summary:  fmt.Sprintf("powerpacks cannot contain powerpack widgets"),
 			})
-			continue
-		case "toplist":
-			definition = datadogV1.ToplistWidgetDefinitionAsWidgetDefinition(buildDatadogToplistDefinition(widgetDefinition))
-		case "trace_service":
-			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
+			return nil, diags
 		default:
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("support for this widget type is still in progress: %s", terraformWidget.Definition["type"]),
+				Summary:  fmt.Sprintf("support for this widget type is not supported: %s", terraformWidget.Definition["type"]),
 			})
 			continue
 		}
@@ -529,7 +532,7 @@ func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.Powerpack
 
 	// Set widgets
 	dashWidgets, diags := ppkWidgetsToDashboardWidgets(powerpack.Data.Attributes.GetGroupWidget().Definition.Widgets)
-	if diags != nil {
+	if diags.HasError() {
 		return diags
 	}
 	terraformWidgets, err := buildTerraformWidgets(dashWidgets, d)

@@ -21,7 +21,7 @@ Provides a Datadog powerpack resource. This can be used to create and manage Dat
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - `name` (String) The name for the powerpack.
 - `show_title` (Boolean) Whether or not title should be displayed in the powerpack.
-- `tags` (List of String) List of tags to identify this powerpack.
+- `tags` (Set of String) List of tags to identify this powerpack.
 - `template_variables` (Block List) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--template_variables))
 - `widget` (Block List) The list of widgets to display in the powerpack. (see [below for nested schema](#nestedblock--widget))
 

@@ -28,6 +28,7 @@ data "datadog_team_memberships" "foo" {
 
 ### Optional
 
+- `exact_match` (Boolean) When true, `filter_keyword` string is exact matched against the user's `email`, followed by `name`.
 - `filter_keyword` (String) Search query, can be user email or name.
 
 ### Read-Only
