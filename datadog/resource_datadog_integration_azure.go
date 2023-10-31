@@ -53,6 +53,11 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
+				"container_app_filters": {
+					Description: "This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure Container Apps. Only Container Apps that match one of the defined tags are imported into Datadog.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"automute": {
 					Description: "Silence monitors for expected Azure VM shutdowns.",
 					Type:        schema.TypeBool,
@@ -107,6 +112,10 @@ func resourceDatadogIntegrationAzureRead(ctx context.Context, d *schema.Resource
 			appServicePlanFilters, exists := integration.GetAppServicePlanFiltersOk()
 			if exists {
 				d.Set("app_service_plan_filters", appServicePlanFilters)
+			}
+			containerAppFilters, exists := integration.GetContainerAppFiltersOk()
+			if exists {
+				d.Set("container_app_filters", containerAppFilters)
 			}
 
 			return nil
@@ -192,6 +201,8 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	datadogDefinition.SetHostFilters(hostFilters.(string))
 	appServicePlanFilters := terraformDefinition.Get("app_service_plan_filters")
 	datadogDefinition.SetAppServicePlanFilters(appServicePlanFilters.(string))
+	containerAppFilters := terraformDefinition.Get("container_app_filters")
+	datadogDefinition.SetContainerAppFilters(containerAppFilters.(string))
 	automute := terraformDefinition.Get("automute")
 	datadogDefinition.SetAutomute(automute.(bool))
 	cspmEnabled := terraformDefinition.Get("cspm_enabled")

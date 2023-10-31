@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"app_service_plan_filters":"","automute":false,"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"","tenant_name":"0241555f-ba72-8afa-b280-d73e229717b3"}
+      {"app_service_plan_filters":"","automute":false,"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","container_app_filters":"","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"","tenant_name":"3d2c804e-b5a4-123e-a31b-497a3298097b"}
     form: {}
     headers:
       Accept:
@@ -31,7 +31,7 @@ interactions:
     method: GET
   response:
     body: |
-      [{"tenant_name":"0241555f-ba72-8afa-b280-d73e229717b3","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","host_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":[],"warnings":[]},{"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1692199125","client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":[],"warnings":[]},{"tenant_name":"Test-Go-TestAzureCreate-1689984326","client_id":"testc7f6-1234-5678-9101-tt1689984326","host_filters":"","app_service_plan_filters":"","automute":true,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]}]
+      [{"tenant_name":"3d2c804e-b5a4-123e-a31b-497a3298097b","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","container_app_filters":"","host_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":[],"warnings":[]}]
     headers:
       Content-Type:
       - application/json
@@ -40,7 +40,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"destination":{"container":"my-container","integration":{"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","tenant_id":"0241555f-ba72-8afa-b280-d73e229717b3"},"path":"/path/blou","storage_account":"storageaccount","type":"azure"},"include_tags":false,"name":"my first azure archive","query":"service:toto","rehydration_max_scan_size_in_gb":null,"rehydration_tags":[]},"type":"archives"}}
+      {"data":{"attributes":{"destination":{"container":"my-container","integration":{"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","tenant_id":"3d2c804e-b5a4-123e-a31b-497a3298097b"},"path":"/path/blou","storage_account":"storageaccount","type":"azure"},"include_tags":false,"name":"my first azure archive","query":"service:toto","rehydration_max_scan_size_in_gb":null,"rehydration_tags":[]},"type":"archives"}}
     form: {}
     headers:
       Accept:
@@ -51,7 +51,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"data":{"type":"archives","id":"-GWdZ6m2RhKwHu40SqvtKg","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"0241555f-ba72-8afa-b280-d73e229717b3","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null}}}
+      {"data":{"type":"archives","id":"j0FZmzs-QjusCqvWcPSSsQ","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"3d2c804e-b5a4-123e-a31b-497a3298097b","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null}}}
     headers:
       Content-Type:
       - application/json
@@ -64,11 +64,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/-GWdZ6m2RhKwHu40SqvtKg
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/j0FZmzs-QjusCqvWcPSSsQ
     method: GET
   response:
     body: |
-      {"data":{"type":"archives","id":"-GWdZ6m2RhKwHu40SqvtKg","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"0241555f-ba72-8afa-b280-d73e229717b3","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null}}}
+      {"data":{"type":"archives","id":"j0FZmzs-QjusCqvWcPSSsQ","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"3d2c804e-b5a4-123e-a31b-497a3298097b","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null}}}
     headers:
       Content-Type:
       - application/json
@@ -85,7 +85,7 @@ interactions:
     method: GET
   response:
     body: |
-      [{"tenant_name":"0241555f-ba72-8afa-b280-d73e229717b3","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","host_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":[],"warnings":[]},{"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1692199125","client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":[],"warnings":[]},{"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1692199125","client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":[],"warnings":[]},{"tenant_name":"Test-Go-TestAzureCreate-1689984326","client_id":"testc7f6-1234-5678-9101-tt1689984326","host_filters":"","app_service_plan_filters":"","automute":true,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]}]
+      [{"tenant_name":"3d2c804e-b5a4-123e-a31b-497a3298097b","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","app_service_plan_filters":"","container_app_filters":"","host_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":[],"warnings":[]}]
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/-GWdZ6m2RhKwHu40SqvtKg
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/j0FZmzs-QjusCqvWcPSSsQ
     method: GET
   response:
     body: |
-      {"data":{"type":"archives","id":"-GWdZ6m2RhKwHu40SqvtKg","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"0241555f-ba72-8afa-b280-d73e229717b3","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null}}}
+      {"data":{"type":"archives","id":"j0FZmzs-QjusCqvWcPSSsQ","attributes":{"name":"my first azure archive","query":"service:toto","state":"UNKNOWN","destination":{"container":"my-container","storage_account":"storageaccount","path":"/path/blou","type":"azure","integration":{"tenant_id":"3d2c804e-b5a4-123e-a31b-497a3298097b","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e"}},"rehydration_tags":[],"include_tags":false,"rehydration_max_scan_size_in_gb":null}}}
     headers:
       Content-Type:
       - application/json
@@ -115,7 +115,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/-GWdZ6m2RhKwHu40SqvtKg
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/j0FZmzs-QjusCqvWcPSSsQ
     method: DELETE
   response:
     body: ""
@@ -125,7 +125,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"app_service_plan_filters":"","automute":false,"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"","tenant_name":"0241555f-ba72-8afa-b280-d73e229717b3"}
+      {"app_service_plan_filters":"","automute":false,"client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","container_app_filters":"","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"","tenant_name":"3d2c804e-b5a4-123e-a31b-497a3298097b"}
     form: {}
     headers:
       Accept:
@@ -149,10 +149,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/-GWdZ6m2RhKwHu40SqvtKg
+    url: https://api.datadoghq.com/api/v2/logs/config/archives/j0FZmzs-QjusCqvWcPSSsQ
     method: GET
   response:
-    body: '{"errors":["Archive -GWdZ6m2RhKwHu40SqvtKg not found"]}'
+    body: '{"errors":["Archive j0FZmzs-QjusCqvWcPSSsQ not found"]}'
     headers:
       Content-Type:
       - application/json
@@ -168,11 +168,10 @@ interactions:
     url: https://api.datadoghq.com/api/v1/integration/azure
     method: GET
   response:
-    body: |
-      [{"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1692199125","client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":[],"warnings":[]},{"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1692199125","client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":[],"warnings":[]},{"tenant_name":"Test-Go-TestAzureCreate-1689984326","client_id":"testc7f6-1234-5678-9101-tt1689984326","host_filters":"","app_service_plan_filters":"","automute":true,"cspm_enabled":false,"custom_metrics_enabled":false,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]}]
+    body: '{"errors":["Azure Integration not yet installed. Please install before performing this action."]}'
     headers:
       Content-Type:
       - application/json
-    status: 200 OK
-    code: 200
+    status: 400 Bad Request
+    code: 400
     duration: ""
