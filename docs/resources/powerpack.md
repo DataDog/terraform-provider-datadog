@@ -20,7 +20,7 @@ Provides a Datadog powerpack resource. This can be used to create and manage Dat
 - `description` (String) The description of the powerpack.
 - `name` (String) The name for the powerpack.
 - `show_title` (Boolean) Whether or not title should be displayed in the powerpack.
-- `tags` (List of String) List of tags to identify this powerpack.
+- `tags` (Set of String) List of tags to identify this powerpack.
 - `template_variables` (Block List) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--template_variables))
 - `widget` (Block List) The list of widgets to display in the powerpack. (see [below for nested schema](#nestedblock--widget))
 
