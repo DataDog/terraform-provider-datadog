@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -47,7 +46,7 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Description: "Whether or not title should be displayed in the powerpack.",
 				},
 				"tags": {
-					Type:        schema.TypeList,
+					Type:        schema.TypeSet,
 					Optional:    true,
 					Description: "List of tags to identify this powerpack.",
 					Elem: &schema.Schema{
@@ -67,10 +66,300 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Optional:    true,
 					Description: "The list of widgets to display in the powerpack.",
 					Elem: &schema.Resource{
-						Schema: getWidgetSchema(),
+						Schema: getPowerpackWidgetSchema(),
 					},
 				},
 			}
+		},
+	}
+}
+
+func getPowerpackWidgetSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"widget_layout": {
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Description: "The layout of the widget on a 'free' dashboard.",
+			Elem: &schema.Resource{
+				Schema: getWidgetLayoutSchema(),
+			},
+		},
+		"id": {
+			Type:        schema.TypeInt,
+			Computed:    true,
+			Description: "The ID of the widget.",
+		},
+		// A widget should implement exactly one of the following definitions
+		"alert_graph_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Alert Graph widget.",
+			Elem: &schema.Resource{
+				Schema: getAlertGraphDefinitionSchema(),
+			},
+		},
+		"alert_value_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Alert Value widget.",
+			Elem: &schema.Resource{
+				Schema: getAlertValueDefinitionSchema(),
+			},
+		},
+		"change_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Change widget.",
+			Elem: &schema.Resource{
+				Schema: getChangeDefinitionSchema(),
+			},
+		},
+		"check_status_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Check Status widget.",
+			Elem: &schema.Resource{
+				Schema: getCheckStatusDefinitionSchema(),
+			},
+		},
+		"distribution_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Distribution widget.",
+			Elem: &schema.Resource{
+				Schema: getDistributionDefinitionSchema(),
+			},
+		},
+		"event_stream_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Event Stream widget.",
+			Elem: &schema.Resource{
+				Schema: getEventStreamDefinitionSchema(),
+			},
+		},
+		"event_timeline_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Event Timeline widget.",
+			Elem: &schema.Resource{
+				Schema: getEventTimelineDefinitionSchema(),
+			},
+		},
+		"free_text_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Free Text widget.",
+			Elem: &schema.Resource{
+				Schema: getFreeTextDefinitionSchema(),
+			},
+		},
+		"heatmap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Heatmap widget.",
+			Elem: &schema.Resource{
+				Schema: getHeatmapDefinitionSchema(),
+			},
+		},
+		"hostmap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Hostmap widget.",
+			Elem: &schema.Resource{
+				Schema: getHostmapDefinitionSchema(),
+			},
+		},
+		"iframe_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an Iframe widget.",
+			Elem: &schema.Resource{
+				Schema: getIframeDefinitionSchema(),
+			},
+		},
+		"image_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an Image widget",
+			Elem: &schema.Resource{
+				Schema: getImageDefinitionSchema(),
+			},
+		},
+		"list_stream_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a List Stream widget.",
+			Elem: &schema.Resource{
+				Schema: getListStreamDefinitionSchema(),
+			},
+		},
+		"log_stream_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an Log Stream widget.",
+			Elem: &schema.Resource{
+				Schema: getLogStreamDefinitionSchema(),
+			},
+		},
+		"manage_status_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an Manage Status widget.",
+			Elem: &schema.Resource{
+				Schema: getManageStatusDefinitionSchema(),
+			},
+		},
+		"note_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Note widget.",
+			Elem: &schema.Resource{
+				Schema: getNoteDefinitionSchema(),
+			},
+		},
+		"query_value_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Value widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryValueDefinitionSchema(),
+			},
+		},
+		"query_table_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Table widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryTableDefinitionSchema(),
+			},
+		},
+		"scatterplot_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Scatterplot widget.",
+			Elem: &schema.Resource{
+				Schema: getScatterplotDefinitionSchema(),
+			},
+		},
+		"servicemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Service Map widget.",
+			Elem: &schema.Resource{
+				Schema: getServiceMapDefinitionSchema(),
+			},
+		},
+		"service_level_objective_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Service Level Objective widget.",
+			Elem: &schema.Resource{
+				Schema: getServiceLevelObjectiveDefinitionSchema(),
+			},
+		},
+		"slo_list_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an SLO (Service Level Objective) List widget.",
+			Elem: &schema.Resource{
+				Schema: getSloListDefinitionSchema(),
+			},
+		},
+		"sunburst_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Sunburst widget.",
+			Elem: &schema.Resource{
+				Schema: getSunburstDefinitionschema(),
+			},
+		},
+		"timeseries_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Timeseries widget.",
+			Elem: &schema.Resource{
+				Schema: getTimeseriesDefinitionSchema(),
+			},
+		},
+		"toplist_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Toplist widget.",
+			Elem: &schema.Resource{
+				Schema: getToplistDefinitionSchema(),
+			},
+		},
+		"topology_map_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Topology Map widget.",
+			Elem: &schema.Resource{
+				Schema: getTopologyMapDefinitionSchema(),
+			},
+		},
+		"trace_service_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Trace Service widget.",
+			Elem: &schema.Resource{
+				Schema: getTraceServiceDefinitionSchema(),
+			},
+		},
+		"treemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Treemap widget.",
+			Elem: &schema.Resource{
+				Schema: getTreemapDefinitionSchema(),
+			},
+		},
+		"geomap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Geomap widget.",
+			Elem: &schema.Resource{
+				Schema: getGeomapDefinitionSchema(),
+			},
+		},
+		"run_workflow_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Run Workflow widget.",
+			Elem: &schema.Resource{
+				Schema: getRunWorkflowDefinitionSchema(),
+			},
 		},
 	}
 }
@@ -138,16 +427,12 @@ func resourceDatadogPowerpackCreate(ctx context.Context, d *schema.ResourceData,
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	powerpackPayload, diags := buildDatadogPowerpack(ctx, d)
-	if diags != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  fmt.Sprintf("failed to parse resource configuration"),
-		})
+	if diags.HasError() {
 		return diags
 	}
 	powerpack, httpresp, err := apiInstances.GetPowerpackApiV2().CreatePowerpack(auth, *powerpackPayload)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpresp, "error creating powerpack error A")
+		return utils.TranslateClientErrorDiag(err, httpresp, "error creating powerpack")
 	}
 	if err := utils.CheckForUnparsed(powerpack); err != nil {
 		return diag.FromErr(err)
@@ -187,11 +472,7 @@ func resourceDatadogPowerpackUpdate(ctx context.Context, d *schema.ResourceData,
 	auth := providerConf.Auth
 	id := d.Id()
 	powerpack, diags := buildDatadogPowerpack(ctx, d)
-	if diags != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  fmt.Sprintf("failed to parse resource configuration"),
-		})
+	if diags.HasError() {
 		return diags
 	}
 
@@ -200,7 +481,7 @@ func resourceDatadogPowerpackUpdate(ctx context.Context, d *schema.ResourceData,
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("failure: %s", err),
+				Summary:  fmt.Sprintf("error updating powerpack: %s", err),
 			})
 			return diags
 		}
@@ -247,8 +528,8 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 	// Set Tags
 	if v, ok := d.GetOk("tags"); ok {
-		tags := make([]string, len(v.([]interface{})))
-		for i, tag := range v.([]interface{}) {
+		tags := make([]string, v.(*schema.Set).Len())
+		for i, tag := range v.(*schema.Set).List() {
 			tags[i] = tag.(string)
 		}
 		attributes.SetTags(tags)
@@ -282,9 +563,21 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 	// Fetch widgets in the request form
 	requestWidgets := d.Get("widget").([]interface{})
 	// Convert and validate them using the Dashboard widget type
-	datadogWidgets, _ := buildDatadogWidgets(&requestWidgets)
+	datadogWidgets, err := buildDatadogWidgets(&requestWidgets)
+	if err != nil {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("error constructing widgets: %s", err),
+		})
+	}
 	// Convert to TF widget type for easier parsing
-	terraformWidgets, _ := buildTerraformWidgets(datadogWidgets, d)
+	terraformWidgets, err := buildTerraformWidgets(datadogWidgets, d)
+	if err != nil {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("error constructing widgets: %s", err),
+		})
+	}
 	// Finally, build JSON Powerpack API compatible widgets
 	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(terraformWidgets)
 
@@ -354,6 +647,152 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}) []ma
 	return normalizedWidgetDefRequests
 }
 
+func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if widgetDef["type"] == "service_level_objective" {
+		widgetDef["type"] = "slo"
+	}
+	// Dashboard widgets set live span at the widget level, we don't allow that for powerpack widgets
+	// where live span is set at the resource level.
+	if widgetDef["live_span"] != nil {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("live_span must be set at the powerpack level and will be applied to all widgets"),
+		})
+		return nil, diags
+	}
+
+	if widgetDef["request"] != nil {
+		// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
+		// Here we set the "requests" field and remove "request"
+		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
+			// Because of course JUST one widget type expects requests to be a single value instead of a list
+			widgetDefRequest := widgetDef["request"].([]map[string]interface{})[0]
+			if widgetDefRequest["fill"] != nil {
+				widgetDefRequest["fill"] = widgetDefRequest["fill"].([]map[string]interface{})[0]
+			}
+			if widgetDefRequest["size"] != nil {
+				widgetDefRequest["size"] = widgetDefRequest["size"].([]map[string]interface{})[0]
+			}
+			if widgetDefRequest["x"] != nil {
+				widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
+			}
+			if widgetDefRequest["y"] != nil {
+				widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
+			}
+			widgetDef["requests"] = widgetDefRequest
+		} else {
+			widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
+			widgetDef["requests"] = normalizeWidgetDefRequests(widgetDefRequests)
+		}
+		delete(widgetDef, "request")
+	}
+	if widgetDef["style"] != nil {
+		widgetDef["style"] = widgetDef["style"].([]map[string]interface{})[0]
+	}
+	if widgetDef["event"] != nil {
+		widgetDef["events"] = *widgetDef["event"].(*[]map[string]string)
+		delete(widgetDef, "event")
+	}
+	if widgetDef["input"] != nil {
+		widgetDef["inputs"] = *widgetDef["input"].(*[]map[string]interface{})
+		delete(widgetDef, "input")
+	}
+	if widgetDef["xaxis"] != nil {
+		widgetDef["xaxis"] = (widgetDef["xaxis"].([]map[string]interface{}))[0]
+	}
+	if widgetDef["yaxis"] != nil {
+		widgetDef["yaxis"] = widgetDef["yaxis"].([]map[string]interface{})[0]
+	}
+	if widgetDef["type"] == "log_stream" && widgetDef["sort"] != nil {
+		widgetDef["sort"] = widgetDef["sort"].([]map[string]interface{})[0]
+	}
+	if widgetDef["custom_link"] != nil {
+		// Some widgets have a "custom_links" field, while API Spec has a "custom_link" field
+		// Here we set the "custom_links" field and remove "custom_link"
+		widgetDefCustomLinks := *widgetDef["custom_link"].(*[]map[string]interface{})
+		widgetDef["custom_links"] = widgetDefCustomLinks
+		delete(widgetDef, "custom_link")
+	}
+	return widgetDef, diags
+}
+
+func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]interface{} {
+	// Dashboard TF widgets have a "requests" field, while API Spec has a "request" field
+	// Here we set the "request" field and remove "requests"
+	if widgetDef["requests"] != nil {
+		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
+			// Because of course JUST one widget type expects requests to be a single value instead of a list
+			widgetDefRequest := widgetDef["requests"].(map[string]interface{})
+			if widgetDefRequest["fill"] != nil {
+				widgetDefRequest["fill"] = []interface{}{widgetDefRequest["fill"].(interface{})}
+			}
+			if widgetDefRequest["size"] != nil {
+				widgetDefRequest["size"] = []interface{}{widgetDefRequest["size"].(interface{})}
+			}
+			if widgetDefRequest["x"] != nil {
+				widgetDefRequest["x"] = []interface{}{widgetDefRequest["x"].(interface{})}
+			}
+			if widgetDefRequest["y"] != nil {
+				widgetDefRequest["y"] = []interface{}{widgetDefRequest["y"].(interface{})}
+			}
+			widgetDef["request"] = []interface{}{widgetDefRequest}
+		} else {
+			widgetDefRequests := widgetDef["requests"].([]interface{})
+			for i, widgetDefRequest := range widgetDefRequests {
+				widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
+				if widgetDefRequestNormalized["limit"] != nil {
+					widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
+				}
+				if widgetDefRequestNormalized["style"] != nil {
+					widgetDefRequestNormalized["style"] = []interface{}{widgetDefRequestNormalized["style"]}
+				}
+				if widgetDefRequestNormalized["apm_stats_query"] != nil {
+					widgetDefRequestNormalized["apm_stats_query"] = []interface{}{widgetDefRequestNormalized["apm_stats_query"]}
+				}
+				if widgetDefRequestNormalized["query"] != nil {
+					widgetDefRequestNormalized["query"] = []interface{}{widgetDefRequestNormalized["query"].(interface{})}
+				}
+				widgetDefRequests[i] = widgetDefRequestNormalized
+			}
+			widgetDef["request"] = widgetDefRequests
+		}
+		delete(widgetDef, "requests")
+	}
+	// Dashboard TF widgets have a "custom_links" field, while API Spec has a "custom_link" field
+	// Here we set the "custom_link" field and remove "custom_links"
+	if widgetDef["custom_links"] != nil {
+		widgetDef["custom_link"] = widgetDef["custom_links"].([]interface{})
+		delete(widgetDef, "custom_links")
+	}
+	if widgetDef["style"] != nil {
+		widgetDef["style"] = []interface{}{widgetDef["style"].(map[string]interface{})}
+	}
+	if widgetDef["xaxis"] != nil {
+		widgetDef["xaxis"] = []interface{}{widgetDef["xaxis"].(map[string]interface{})}
+	}
+	if widgetDef["yaxis"] != nil {
+		widgetDef["yaxis"] = []interface{}{widgetDef["yaxis"].(map[string]interface{})}
+	}
+	if widgetDef["type"] == "log_stream" && widgetDef["sort"] != nil {
+		widgetDef["sort"] = []interface{}{widgetDef["sort"].(map[string]interface{})}
+	}
+	if widgetDef["events"] != nil {
+		widgetDef["event"] = widgetDef["events"]
+		delete(widgetDef, "events")
+	}
+	if widgetDef["inputs"] != nil {
+		widgetDef["input"] = widgetDef["inputs"]
+		delete(widgetDef, "inputs")
+	}
+	// TF -> json conversion processes precision as float64, it needs to be converted to
+	// an int value to be saved successfully
+	if widgetDef["precision"] != nil {
+		widgetDef["precision"] = int(widgetDef["precision"].(float64))
+	}
+	return widgetDef
+}
+
 func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
@@ -383,70 +822,9 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
 				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
 				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
-				if widgetDef["type"] == "service_level_objective" {
-					widgetDef["type"] = "slo"
-				}
-				// Dashboard widgets set live span at the widget level, we must prevent that for powerpack widgets
-				// where live span is set at the resource level.
-				if widgetDef["live_span"] != nil {
-					diags = append(diags, diag.Diagnostic{
-						Severity: diag.Error,
-						Summary:  fmt.Sprintf("live_span must be set at the powerpack level and will be applied to all widgets"),
-					})
+				widgetDef, diags = normalizeDashboardWidgetDef(widgetDef)
+				if diags.HasError() {
 					return nil, diags
-				}
-
-				if widgetDef["request"] != nil {
-					// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
-					// Here we set the "requests" field and remove "request"
-					if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
-						// Because of course JUST one widget type expects requests to be a single value instead of a list
-						widgetDefRequest := widgetDef["request"].([]map[string]interface{})[0]
-						if widgetDefRequest["fill"] != nil {
-							widgetDefRequest["fill"] = widgetDefRequest["fill"].([]map[string]interface{})[0]
-						}
-						if widgetDefRequest["size"] != nil {
-							widgetDefRequest["size"] = widgetDefRequest["size"].([]map[string]interface{})[0]
-						}
-						if widgetDefRequest["x"] != nil {
-							widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
-						}
-						if widgetDefRequest["y"] != nil {
-							widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
-						}
-						widgetDef["requests"] = widgetDefRequest
-					} else {
-						widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
-						widgetDef["requests"] = normalizeWidgetDefRequests(widgetDefRequests)
-					}
-					delete(widgetDef, "request")
-				}
-				if widgetDef["style"] != nil {
-					widgetDef["style"] = widgetDef["style"].([]map[string]interface{})[0]
-				}
-				if widgetDef["event"] != nil {
-					widgetDef["events"] = *widgetDef["event"].(*[]map[string]string)
-					delete(widgetDef, "event")
-				}
-				if widgetDef["input"] != nil {
-					widgetDef["inputs"] = *widgetDef["input"].(*[]map[string]interface{})
-					delete(widgetDef, "input")
-				}
-				if widgetDef["xaxis"] != nil {
-					widgetDef["xaxis"] = (widgetDef["xaxis"].([]map[string]interface{}))[0]
-				}
-				if widgetDef["yaxis"] != nil {
-					widgetDef["yaxis"] = widgetDef["yaxis"].([]map[string]interface{})[0]
-				}
-				if widgetDef["sort"] != nil {
-					widgetDef["sort"] = widgetDef["sort"].([]map[string]interface{})[0]
-				}
-				if widgetDef["custom_link"] != nil {
-					// Some widgets have a "custom_links" field, while API Spec has a "custom_link" field
-					// Here we set the "custom_links" field and remove "custom_link"
-					widgetDefCustomLinks := *widgetDef["custom_link"].(*[]map[string]interface{})
-					widgetDef["custom_links"] = widgetDefCustomLinks
-					delete(widgetDef, "custom_link")
 				}
 			}
 		}
@@ -470,82 +848,10 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		if widgetDefinition == nil {
 			continue
 		}
+		widgetDefinition = normalizeTerraformWidgetDef(widgetDefinition)
 		// Add new powerpack-supported widgets here
 		// We save Powerpack widgets as Dashboard widgets so we need to convert them to the appropriate widget definition object.
 		widgetType := widgetDefinition["type"]
-		// Dashboard TF widgets have a "requests" field, while API Spec has a "request" field
-		// Here we set the "request" field and remove "requests"
-		if widgetDefinition["requests"] != nil {
-			if widgetDefinition["type"] == "scatterplot" || widgetDefinition["type"] == "hostmap" {
-				// Because of course JUST one widget type expects requests to be a single value instead of a list
-				widgetDefRequest := widgetDefinition["requests"].(map[string]interface{})
-				if widgetDefRequest["fill"] != nil {
-					widgetDefRequest["fill"] = []interface{}{widgetDefRequest["fill"].(interface{})}
-				}
-				if widgetDefRequest["size"] != nil {
-					widgetDefRequest["size"] = []interface{}{widgetDefRequest["size"].(interface{})}
-				}
-				if widgetDefRequest["x"] != nil {
-					widgetDefRequest["x"] = []interface{}{widgetDefRequest["x"].(interface{})}
-				}
-				if widgetDefRequest["y"] != nil {
-					widgetDefRequest["y"] = []interface{}{widgetDefRequest["y"].(interface{})}
-				}
-				terraformWidget.Definition["request"] = []interface{}{widgetDefRequest}
-			} else {
-				widgetDefRequests := widgetDefinition["requests"].([]interface{})
-				for i, widgetDefRequest := range widgetDefRequests {
-					widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
-					if widgetDefRequestNormalized["limit"] != nil {
-						widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
-					}
-					if widgetDefRequestNormalized["style"] != nil {
-						widgetDefRequestNormalized["style"] = []interface{}{widgetDefRequestNormalized["style"]}
-					}
-					if widgetDefRequestNormalized["apm_stats_query"] != nil {
-						widgetDefRequestNormalized["apm_stats_query"] = []interface{}{widgetDefRequestNormalized["apm_stats_query"]}
-					}
-					if widgetDefRequestNormalized["query"] != nil {
-						widgetDefRequestNormalized["query"] = []interface{}{widgetDefRequestNormalized["query"].(interface{})}
-					}
-					widgetDefRequests[i] = widgetDefRequestNormalized
-				}
-				terraformWidget.Definition["request"] = widgetDefRequests
-			}
-			delete(terraformWidget.Definition, "requests")
-		}
-		// Dashboard TF widgets have a "custom_links" field, while API Spec has a "custom_link" field
-		// Here we set the "custom_link" field and remove "custom_links"
-		if widgetDefinition["custom_links"] != nil {
-			widgetDefCustomLinks := widgetDefinition["custom_links"].([]interface{})
-			terraformWidget.Definition["custom_link"] = widgetDefCustomLinks
-			delete(terraformWidget.Definition, "custom_links")
-		}
-		if widgetDefinition["style"] != nil {
-			widgetDefinition["style"] = []interface{}{widgetDefinition["style"].(map[string]interface{})}
-		}
-		if widgetDefinition["xaxis"] != nil {
-			widgetDefinition["xaxis"] = []interface{}{widgetDefinition["xaxis"].(map[string]interface{})}
-		}
-		if widgetDefinition["yaxis"] != nil {
-			widgetDefinition["yaxis"] = []interface{}{widgetDefinition["yaxis"].(map[string]interface{})}
-		}
-		if widgetDefinition["sort"] != nil {
-			widgetDefinition["sort"] = []interface{}{widgetDefinition["sort"].(map[string]interface{})}
-		}
-		if widgetDefinition["events"] != nil {
-			widgetDefinition["event"] = widgetDefinition["events"]
-			delete(terraformWidget.Definition, "events")
-		}
-		if widgetDefinition["inputs"] != nil {
-			widgetDefinition["input"] = widgetDefinition["inputs"]
-			delete(terraformWidget.Definition, "inputs")
-		}
-		// TF -> json conversion processes precision as float64, it needs to be converted to
-		// an int value to be saved successfully
-		if widgetDefinition["precision"] != nil {
-			widgetDefinition["precision"] = int(widgetDefinition["precision"].(float64))
-		}
 		switch widgetType {
 		case "alert_graph":
 			definition = datadogV1.AlertGraphWidgetDefinitionAsWidgetDefinition(buildDatadogAlertGraphDefinition(widgetDefinition))
@@ -589,18 +895,6 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
 		case "slo":
 			definition = datadogV1.SLOWidgetDefinitionAsWidgetDefinition(buildDatadogServiceLevelObjectiveDefinition(widgetDefinition))
-		case "group":
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("powerpacks cannot contain group widgets"),
-			})
-			continue
-		case "powerpack":
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("powerpacks cannot contain powerpack widgets"),
-			})
-			continue
 		case "toplist":
 			definition = datadogV1.ToplistWidgetDefinitionAsWidgetDefinition(buildDatadogToplistDefinition(widgetDefinition))
 		case "topology_map":
@@ -609,10 +903,22 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
 		case "treemap":
 			definition = datadogV1.TreeMapWidgetDefinitionAsWidgetDefinition(buildDatadogTreemapDefinition(widgetDefinition))
+		case "group":
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("powerpacks cannot contain group widgets"),
+			})
+			return nil, diags
+		case "powerpack":
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("powerpacks cannot contain powerpack widgets"),
+			})
+			return nil, diags
 		default:
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("support for this widget type is still in progress: %s", terraformWidget.Definition["type"]),
+				Summary:  fmt.Sprintf("support for this widget type is not supported: %s", terraformWidget.Definition["type"]),
 			})
 			continue
 		}
@@ -668,7 +974,7 @@ func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.Powerpack
 
 	// Set widgets
 	dashWidgets, diags := ppkWidgetsToDashboardWidgets(powerpack.Data.Attributes.GetGroupWidget().Definition.Widgets)
-	if diags != nil {
+	if diags.HasError() {
 		return diags
 	}
 	terraformWidgets, err := buildTerraformWidgets(dashWidgets, d)
