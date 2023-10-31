@@ -237,8 +237,8 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 	// Set Tags
 	if v, ok := d.GetOk("tags"); ok {
-		tags := make([]string, len(v.([]interface{})))
-		for i, tag := range v.([]interface{}) {
+		tags := make([]string, v.(*schema.Set).Len())
+		for i, tag := range v.(*schema.Set).List() {
 			tags[i] = tag.(string)
 		}
 		attributes.SetTags(tags)
