@@ -428,6 +428,10 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 					widgetDef["events"] = *widgetDef["event"].(*[]map[string]string)
 					delete(widgetDef, "event")
 				}
+				if widgetDef["input"] != nil {
+					widgetDef["inputs"] = *widgetDef["input"].(*[]map[string]interface{})
+					delete(widgetDef, "input")
+				}
 				if widgetDef["xaxis"] != nil {
 					widgetDef["xaxis"] = (widgetDef["xaxis"].([]map[string]interface{}))[0]
 				}
@@ -533,6 +537,10 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			widgetDefinition["event"] = widgetDefinition["events"]
 			delete(terraformWidget.Definition, "events")
 		}
+		if widgetDefinition["inputs"] != nil {
+			widgetDefinition["input"] = widgetDefinition["inputs"]
+			delete(terraformWidget.Definition, "inputs")
+		}
 		// TF -> json conversion processes precision as float64, it needs to be converted to
 		// an int value to be saved successfully
 		if widgetDefinition["precision"] != nil {
@@ -573,6 +581,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(widgetDefinition))
 		case "query_value":
 			definition = datadogV1.QueryValueWidgetDefinitionAsWidgetDefinition(buildDatadogQueryValueDefinition(widgetDefinition))
+		case "run_workflow":
+			definition = datadogV1.RunWorkflowWidgetDefinitionAsWidgetDefinition(buildDatadogRunWorkflowDefinition(widgetDefinition))
 		case "scatterplot":
 			definition = datadogV1.ScatterPlotWidgetDefinitionAsWidgetDefinition(buildDatadogScatterplotDefinition(widgetDefinition))
 		case "servicemap":
