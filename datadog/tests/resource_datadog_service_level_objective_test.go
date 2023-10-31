@@ -262,21 +262,28 @@ func testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider func() (*schema
 }
 
 func destroyServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
-	err := utils.Retry(2, 5, func() error {
-		for _, r := range s.RootModule().Resources {
-			if r.Primary.ID != "" && r.Type == "datadog_service_level_objective" {
-				if _, httpResp, err := apiInstances.GetServiceLevelObjectivesApiV1().GetSLO(ctx, r.Primary.ID); err != nil {
-					if httpResp != nil && httpResp.StatusCode == 404 {
-						continue
-					}
-					return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving service level objective %s", err)}
-				}
-				return &utils.RetryableError{Prob: "service Level Objective still exists"}
-			}
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_service_level_objective" {
+			continue
 		}
-		return nil
-	})
-	return err
+
+		err := utils.Retry(2, 5, func() error {
+			if _, httpResp, err := apiInstances.GetServiceLevelObjectivesApiV1().GetSLO(ctx, r.Primary.ID); err != nil {
+				if httpResp != nil && httpResp.StatusCode == 404 {
+					return nil
+				}
+				return &utils.FatalError{Prob: fmt.Sprintf("received an error retrieving service level objective %s", err)}
+			}
+			return &utils.RetryableError{Prob: "service Level Objective still exists"}
+		})
+
+		if err != nil {
+			return nil
+		}
+
+	}
+
+	return nil
 }
 
 func existsServiceLevelObjectiveHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {

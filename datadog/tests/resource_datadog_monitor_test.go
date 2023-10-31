@@ -837,7 +837,7 @@ func testAccCheckDatadogMonitorDestroy(accProvider func() (*schema.Provider, err
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		if err := destroyHelper(auth, s, apiInstances); err != nil {
+		if err := destroyMonitorHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
@@ -1568,9 +1568,13 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
-func destroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
-	err := utils.Retry(2, 10, func() error {
-		for _, r := range s.RootModule().Resources {
+func destroyMonitorHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_monitor" {
+			continue
+		}
+
+		err := utils.Retry(2, 10, func() error {
 			i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
 			_, httpresp, err := apiInstances.GetMonitorsApiV1().GetMonitor(ctx, i)
 			if err != nil {
@@ -1580,10 +1584,14 @@ func destroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 			}
 			return &utils.RetryableError{Prob: "Monitor still exists"}
+		})
+
+		if err != nil {
+			return err
 		}
-		return nil
-	})
-	return err
+	}
+
+	return nil
 }
 
 func existsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {

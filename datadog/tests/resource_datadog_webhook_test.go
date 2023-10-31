@@ -120,8 +120,11 @@ func testAccCheckDatadogWebhookDestroy(accProvider func() (*schema.Provider, err
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 		for _, r := range s.RootModule().Resources {
-			var err error
+			if r.Type != "datadog_webhook" {
+				continue
+			}
 
+			var err error
 			id := r.Primary.ID
 
 			_, httpResp, err := apiInstances.GetWebhooksIntegrationApiV1().GetWebhooksIntegration(auth, id)
