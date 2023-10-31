@@ -647,6 +647,7 @@ func TestProvider(t *testing.T) {
 	defer rec.Stop()
 
 	c := cleanhttp.DefaultClient()
+	c.Transport = rec
 	accProvider := initAccProvider(context.Background(), t, c)
 
 	if err := accProvider.InternalValidate(); err != nil {
