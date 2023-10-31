@@ -65,10 +65,300 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Optional:    true,
 					Description: "The list of widgets to display in the powerpack.",
 					Elem: &schema.Resource{
-						Schema: getWidgetSchema(),
+						Schema: getPowerpackWidgetSchema(),
 					},
 				},
 			}
+		},
+	}
+}
+
+func getPowerpackWidgetSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"widget_layout": {
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Description: "The layout of the widget on a 'free' dashboard.",
+			Elem: &schema.Resource{
+				Schema: getWidgetLayoutSchema(),
+			},
+		},
+		"id": {
+			Type:        schema.TypeInt,
+			Computed:    true,
+			Description: "The ID of the widget.",
+		},
+		// A widget should implement exactly one of the following definitions
+		"alert_graph_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Alert Graph widget.",
+			Elem: &schema.Resource{
+				Schema: getAlertGraphDefinitionSchema(),
+			},
+		},
+		"alert_value_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Alert Value widget.",
+			Elem: &schema.Resource{
+				Schema: getAlertValueDefinitionSchema(),
+			},
+		},
+		"change_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Change widget.",
+			Elem: &schema.Resource{
+				Schema: getChangeDefinitionSchema(),
+			},
+		},
+		"check_status_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Check Status widget.",
+			Elem: &schema.Resource{
+				Schema: getCheckStatusDefinitionSchema(),
+			},
+		},
+		"distribution_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Distribution widget.",
+			Elem: &schema.Resource{
+				Schema: getDistributionDefinitionSchema(),
+			},
+		},
+		"event_stream_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Event Stream widget.",
+			Elem: &schema.Resource{
+				Schema: getEventStreamDefinitionSchema(),
+			},
+		},
+		"event_timeline_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Event Timeline widget.",
+			Elem: &schema.Resource{
+				Schema: getEventTimelineDefinitionSchema(),
+			},
+		},
+		"free_text_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Free Text widget.",
+			Elem: &schema.Resource{
+				Schema: getFreeTextDefinitionSchema(),
+			},
+		},
+		"heatmap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Heatmap widget.",
+			Elem: &schema.Resource{
+				Schema: getHeatmapDefinitionSchema(),
+			},
+		},
+		"hostmap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Hostmap widget.",
+			Elem: &schema.Resource{
+				Schema: getHostmapDefinitionSchema(),
+			},
+		},
+		"iframe_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an Iframe widget.",
+			Elem: &schema.Resource{
+				Schema: getIframeDefinitionSchema(),
+			},
+		},
+		"image_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an Image widget",
+			Elem: &schema.Resource{
+				Schema: getImageDefinitionSchema(),
+			},
+		},
+		"list_stream_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a List Stream widget.",
+			Elem: &schema.Resource{
+				Schema: getListStreamDefinitionSchema(),
+			},
+		},
+		"log_stream_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an Log Stream widget.",
+			Elem: &schema.Resource{
+				Schema: getLogStreamDefinitionSchema(),
+			},
+		},
+		"manage_status_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an Manage Status widget.",
+			Elem: &schema.Resource{
+				Schema: getManageStatusDefinitionSchema(),
+			},
+		},
+		"note_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Note widget.",
+			Elem: &schema.Resource{
+				Schema: getNoteDefinitionSchema(),
+			},
+		},
+		"query_value_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Value widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryValueDefinitionSchema(),
+			},
+		},
+		"query_table_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Table widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryTableDefinitionSchema(),
+			},
+		},
+		"scatterplot_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Scatterplot widget.",
+			Elem: &schema.Resource{
+				Schema: getScatterplotDefinitionSchema(),
+			},
+		},
+		"servicemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Service Map widget.",
+			Elem: &schema.Resource{
+				Schema: getServiceMapDefinitionSchema(),
+			},
+		},
+		"service_level_objective_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Service Level Objective widget.",
+			Elem: &schema.Resource{
+				Schema: getServiceLevelObjectiveDefinitionSchema(),
+			},
+		},
+		"slo_list_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an SLO (Service Level Objective) List widget.",
+			Elem: &schema.Resource{
+				Schema: getSloListDefinitionSchema(),
+			},
+		},
+		"sunburst_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Sunburst widget.",
+			Elem: &schema.Resource{
+				Schema: getSunburstDefinitionschema(),
+			},
+		},
+		"timeseries_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Timeseries widget.",
+			Elem: &schema.Resource{
+				Schema: getTimeseriesDefinitionSchema(),
+			},
+		},
+		"toplist_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Toplist widget.",
+			Elem: &schema.Resource{
+				Schema: getToplistDefinitionSchema(),
+			},
+		},
+		"topology_map_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Topology Map widget.",
+			Elem: &schema.Resource{
+				Schema: getTopologyMapDefinitionSchema(),
+			},
+		},
+		"trace_service_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Trace Service widget.",
+			Elem: &schema.Resource{
+				Schema: getTraceServiceDefinitionSchema(),
+			},
+		},
+		"treemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Treemap widget.",
+			Elem: &schema.Resource{
+				Schema: getTreemapDefinitionSchema(),
+			},
+		},
+		"geomap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Geomap widget.",
+			Elem: &schema.Resource{
+				Schema: getGeomapDefinitionSchema(),
+			},
+		},
+		"run_workflow_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Run Workflow widget.",
+			Elem: &schema.Resource{
+				Schema: getRunWorkflowDefinitionSchema(),
+			},
 		},
 	}
 }
