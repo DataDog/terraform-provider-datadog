@@ -345,6 +345,10 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}) []ma
 		if widgetDefRequest["query"] != nil {
 			widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
 		}
+		if widgetDefRequest["formula"] != nil {
+			widgetDefRequest["formulas"] = widgetDefRequest["formula"]
+			delete(widgetDefRequest, "formula")
+		}
 		normalizedWidgetDefRequests[i] = widgetDefRequest
 	}
 	return normalizedWidgetDefRequests
@@ -379,6 +383,9 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
 				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
 				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
+				if widgetDef["type"] == "service_level_objective" {
+					widgetDef["type"] = "slo"
+				}
 				// Dashboard widgets set live span at the widget level, we must prevent that for powerpack widgets
 				// where live span is set at the resource level.
 				if widgetDef["live_span"] != nil {
@@ -570,6 +577,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.ScatterPlotWidgetDefinitionAsWidgetDefinition(buildDatadogScatterplotDefinition(widgetDefinition))
 		case "servicemap":
 			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
+		case "slo":
+			definition = datadogV1.SLOWidgetDefinitionAsWidgetDefinition(buildDatadogServiceLevelObjectiveDefinition(widgetDefinition))
 		case "group":
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
@@ -588,6 +597,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.TopologyMapWidgetDefinitionAsWidgetDefinition(buildDatadogTopologyMapDefinition(widgetDefinition))
 		case "trace_service":
 			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
+		case "treemap":
+			definition = datadogV1.TreeMapWidgetDefinitionAsWidgetDefinition(buildDatadogTreemapDefinition(widgetDefinition))
 		default:
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
