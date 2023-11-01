@@ -616,17 +616,6 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
-func normalizeWidgetDefQueries(widgetDefQueries map[string]interface{}) []map[string]interface{} {
-	var normalizedQueries []map[string]interface{}
-	if widgetDefQueries["metric_query"] != nil {
-		metricQuery := widgetDefQueries["metric_query"].([]map[string]interface{})[0]
-		metricQuery["data_source"] = "metrics"
-		metricQuery["aggregator"] = "sum"
-		normalizedQueries = append(normalizedQueries, metricQuery)
-	}
-	return normalizedQueries
-}
-
 func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widgetType string) ([]map[string]interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	normalizedWidgetDefRequests := widgetDefRequests
@@ -658,10 +647,6 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 					delete(formulaDef, "formula_expression")
 					formulas = append(formulas, formulaDef)
 				}
-				//formulaDef := widgetDefRequest["formula"].([]map[string]interface{})[0]
-				//formulaDef["limit"] = formulaDef["limit"].([]map[string]interface{})[0]
-				//formulaDef["formula"] = formulaDef["formula_expression"]
-				//delete(formulaDef, "formula_expression")
 				widgetDefRequest["formulas"] = formulas
 			} else {
 				widgetDefRequest["formulas"] = widgetDefRequest["formula"]
