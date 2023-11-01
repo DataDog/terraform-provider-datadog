@@ -616,7 +616,19 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
-func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}) []map[string]interface{} {
+func normalizeWidgetDefQueries(widgetDefQueries map[string]interface{}) []map[string]interface{} {
+	var normalizedQueries []map[string]interface{}
+	if widgetDefQueries["metric_query"] != nil {
+		metricQuery := widgetDefQueries["metric_query"].([]map[string]interface{})[0]
+		metricQuery["data_source"] = "metrics"
+		metricQuery["aggregator"] = "sum"
+		normalizedQueries = append(normalizedQueries, metricQuery)
+	}
+	return normalizedQueries
+}
+
+func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widgetType string) ([]map[string]interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	normalizedWidgetDefRequests := widgetDefRequests
 	for i, widgetDefRequest := range normalizedWidgetDefRequests {
 		if widgetDefRequest["style"] != nil {
@@ -635,16 +647,43 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}) []ma
 			// TF generates a style list, whereas API expects a single element
 			widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
 		}
-		if widgetDefRequest["query"] != nil {
-			widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
-		}
 		if widgetDefRequest["formula"] != nil {
-			widgetDefRequest["formulas"] = widgetDefRequest["formula"]
+			if widgetType == "query_table" {
+				var formulas []map[string]interface{}
+				for _, formulaDef := range widgetDefRequest["formula"].([]map[string]interface{}) {
+					if formulaDef["limit"] != nil {
+						formulaDef["limit"] = formulaDef["limit"].([]map[string]interface{})[0]
+					}
+					formulaDef["formula"] = formulaDef["formula_expression"]
+					delete(formulaDef, "formula_expression")
+					formulas = append(formulas, formulaDef)
+				}
+				//formulaDef := widgetDefRequest["formula"].([]map[string]interface{})[0]
+				//formulaDef["limit"] = formulaDef["limit"].([]map[string]interface{})[0]
+				//formulaDef["formula"] = formulaDef["formula_expression"]
+				//delete(formulaDef, "formula_expression")
+				widgetDefRequest["formulas"] = formulas
+			} else {
+				widgetDefRequest["formulas"] = widgetDefRequest["formula"]
+			}
 			delete(widgetDefRequest, "formula")
+
+		}
+		if widgetDefRequest["query"] != nil {
+			if widgetType == "query_table" {
+				queryBody := widgetDefRequest["query"].([]map[string]interface{})[0]
+				for _, v := range queryBody {
+					widgetDefRequest["queries"] = v
+				}
+				widgetDefRequest["response_format"] = "scalar"
+				delete(widgetDefRequest, "query")
+			} else {
+				widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
+			}
 		}
 		normalizedWidgetDefRequests[i] = widgetDefRequest
 	}
-	return normalizedWidgetDefRequests
+	return normalizedWidgetDefRequests, diags
 }
 
 func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
@@ -683,7 +722,10 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 			widgetDef["requests"] = widgetDefRequest
 		} else {
 			widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
-			widgetDef["requests"] = normalizeWidgetDefRequests(widgetDefRequests)
+			widgetDef["requests"], diags = normalizeWidgetDefRequests(widgetDefRequests, widgetDef["type"].(string))
+			if diags.HasError() {
+				return nil, diags
+			}
 		}
 		delete(widgetDef, "request")
 	}
@@ -750,8 +792,33 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]in
 				if widgetDefRequestNormalized["apm_stats_query"] != nil {
 					widgetDefRequestNormalized["apm_stats_query"] = []interface{}{widgetDefRequestNormalized["apm_stats_query"]}
 				}
+				if widgetDefRequestNormalized["queries"] != nil {
+					delete(widgetDefRequestNormalized, "response_format")
+					query := widgetDefRequestNormalized["queries"].([]interface{})[0].(map[string]interface{})["data_source"].(string)
+					queryType := query + "_query"
+					if query == "metrics" {
+						queryType = "metric_query"
+					}
+					queryBody := map[string]interface{}{
+						queryType: widgetDefRequestNormalized["queries"].(interface{})}
+					widgetDefRequestNormalized["query"] = queryBody
+				}
 				if widgetDefRequestNormalized["query"] != nil {
 					widgetDefRequestNormalized["query"] = []interface{}{widgetDefRequestNormalized["query"].(interface{})}
+				}
+				if widgetDefRequestNormalized["formulas"] != nil {
+					if widgetDef["type"] == "query_table" {
+						formulaDef := widgetDefRequestNormalized["formulas"].([]interface{})[0].(map[string]interface{})
+						formulaDef["formula_expression"] = formulaDef["formula"]
+						delete(formulaDef, "formula")
+						if formulaDef["limit"] != nil {
+							limit := formulaDef["limit"].(map[string]interface{})
+							limit["count"] = int(limit["count"].(float64))
+							formulaDef["limit"] = []interface{}{limit}
+						}
+						widgetDefRequestNormalized["formula"] = []interface{}{formulaDef}
+						delete(widgetDefRequestNormalized, "formulas")
+					}
 				}
 				widgetDefRequests[i] = widgetDefRequestNormalized
 			}
@@ -885,6 +952,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.MonitorSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogManageStatusDefinition(widgetDefinition))
 		case "note":
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(widgetDefinition))
+		case "query_table":
+			definition = datadogV1.TableWidgetDefinitionAsWidgetDefinition(buildDatadogQueryTableDefinition(widgetDefinition))
 		case "query_value":
 			definition = datadogV1.QueryValueWidgetDefinitionAsWidgetDefinition(buildDatadogQueryValueDefinition(widgetDefinition))
 		case "run_workflow":
