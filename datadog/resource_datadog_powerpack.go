@@ -625,6 +625,11 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 			if widgetDefRequest[v] != nil {
 				widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
 			}
+		for _, v := range []string{"style", "apm_stats_query", "x", "y", "query"} {
+			// Properties listed above are always a single value, not a list
+			if widgetDefRequest[v] != nil {
+				widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
+			}
 		}
 		if widgetDefRequest["formula"] != nil {
 			if widgetType == "query_table" {
@@ -656,8 +661,15 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 				widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
 			}
 		}
+		for _, v := range []string{"formula"} {
+			// Properties listed above are defined as single, but API Spec expects a plural name
+			if widgetDefRequest[v] != nil {
+				widgetDefRequest[v+"s"] = widgetDefRequest[v]
+				delete(widgetDefRequest, v)
+			}
+		}
 		normalizedWidgetDefRequests[i] = widgetDefRequest
-	}
+	}}
 	return normalizedWidgetDefRequests, diags
 }
 
@@ -680,14 +692,25 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
 			// Scatterplot and hostmap widgets expect a single requests object instead of a list
 			widgetDefRequest := widgetDef["request"].([]map[string]interface{})[0]
-			for _, v := range []string{"fill", "size", "x", "y"} {
-				// Properties listed above are always a single value, not a list
-				if widgetDefRequest[v] != nil {
-					widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
-				}
+			if widgetDefRequest["fill"] != nil {
+				widgetDefRequest["fill"] = widgetDefRequest["fill"].([]map[string]interface{})[0]
+			}
+			if widgetDefRequest["size"] != nil {
+				widgetDefRequest["size"] = widgetDefRequest["size"].([]map[string]interface{})[0]
 			}
 			widgetDef["requests"] = widgetDefRequest
 		} else {
+			castWidgetDefReq := *widgetDef["request"].(*[]map[string]interface{})
+			if len(castWidgetDefReq) == 0 {
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Error,
+					Summary:  fmt.Sprintf("at least one request should be defined for widget: %s", widgetDef["type"]),
+				})
+				return nil, diags
+			}
+			// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
+			// Here we set the "requests" field and remove "request"
+			widgetDef["requests"] = normalizeWidgetDefRequests(castWidgetDefReq)
 			castWidgetDefReq := *widgetDef["request"].(*[]map[string]interface{})
 			if len(castWidgetDefReq) == 0 {
 				diags = append(diags, diag.Diagnostic{
@@ -745,6 +768,12 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) (map[string]i
 			widgetDefRequests := widgetDef["requests"].([]interface{})
 			for i, widgetDefRequest := range widgetDefRequests {
 				widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
+				for _, v := range []string{"style", "query", "apm_stats_query"} {
+					// Properties listed above need to be converted from single values in the API to plural values for TF
+					if widgetDefRequestNormalized[v] != nil {
+						widgetDefRequestNormalized[v] = []interface{}{widgetDefRequestNormalized[v].(interface{})}
+					}
+				}
 				for _, v := range []string{"style", "query", "apm_query", "log_query", "process_query", "rum_query", "apm_stats_query", "security_query"} {
 					// Properties listed above need to be converted from single values in the API to plural values for TF
 					if widgetDefRequestNormalized[v] != nil {
