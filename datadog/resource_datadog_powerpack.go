@@ -620,21 +620,11 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 	var diags diag.Diagnostics
 	normalizedWidgetDefRequests := widgetDefRequests
 	for i, widgetDefRequest := range normalizedWidgetDefRequests {
-		if widgetDefRequest["style"] != nil {
-			// TF generates a style list, whereas API expects a single element
-			widgetDefRequest["style"] = widgetDefRequest["style"].([]map[string]interface{})[0]
-		}
-		if widgetDefRequest["apm_stats_query"] != nil {
-			// TF generates an apm_stats_query list, whereas API expects a single element
-			widgetDefRequest["apm_stats_query"] = widgetDefRequest["apm_stats_query"].([]map[string]interface{})[0]
-		}
-		if widgetDefRequest["x"] != nil {
-			// TF generates a style list, whereas API expects a single element
-			widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
-		}
-		if widgetDefRequest["y"] != nil {
-			// TF generates a style list, whereas API expects a single element
-			widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
+		for _, v := range []string{"style", "x", "y", "apm_query", "log_query", "process_query", "rum_query", "apm_stats_query", "security_query"} {
+			// Properties listed above are always a single value, not a list
+			if widgetDefRequest[v] != nil {
+				widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
+			}
 		}
 		if widgetDefRequest["formula"] != nil {
 			if widgetType == "query_table" {
@@ -681,101 +671,89 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 	if widgetDef["live_span"] != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  fmt.Sprintf("live_span must be set at the powerpack level and will be applied to all widgets"),
+			Summary:  fmt.Sprintf("live_span must be set for all powerpack resources (to be applied to all widgets within the powerpack)"),
 		})
 		return nil, diags
 	}
 
 	if widgetDef["request"] != nil {
-		// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
-		// Here we set the "requests" field and remove "request"
 		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
-			// Because of course JUST one widget type expects requests to be a single value instead of a list
+			// Scatterplot and hostmap widgets expect a single requests object instead of a list
 			widgetDefRequest := widgetDef["request"].([]map[string]interface{})[0]
-			if widgetDefRequest["fill"] != nil {
-				widgetDefRequest["fill"] = widgetDefRequest["fill"].([]map[string]interface{})[0]
-			}
-			if widgetDefRequest["size"] != nil {
-				widgetDefRequest["size"] = widgetDefRequest["size"].([]map[string]interface{})[0]
-			}
-			if widgetDefRequest["x"] != nil {
-				widgetDefRequest["x"] = widgetDefRequest["x"].([]map[string]interface{})[0]
-			}
-			if widgetDefRequest["y"] != nil {
-				widgetDefRequest["y"] = widgetDefRequest["y"].([]map[string]interface{})[0]
+			for _, v := range []string{"fill", "size", "x", "y"} {
+				// Properties listed above are always a single value, not a list
+				if widgetDefRequest[v] != nil {
+					widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
+				}
 			}
 			widgetDef["requests"] = widgetDefRequest
 		} else {
-			widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
-			widgetDef["requests"], diags = normalizeWidgetDefRequests(widgetDefRequests, widgetDef["type"].(string))
+			castWidgetDefReq := *widgetDef["request"].(*[]map[string]interface{})
+			if len(castWidgetDefReq) == 0 {
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Error,
+					Summary:  fmt.Sprintf("at least one request should be defined for widget: %s", widgetDef["type"]),
+				})
+				return nil, diags
+			}
+			// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
+			// Here we set the "requests" field and remove "request"
+			widgetDef["requests"], diags = normalizeWidgetDefRequests(castWidgetDefReq, widgetDef["type"].(string))
 			if diags.HasError() {
 				return nil, diags
 			}
 		}
 		delete(widgetDef, "request")
 	}
-	if widgetDef["style"] != nil {
-		widgetDef["style"] = widgetDef["style"].([]map[string]interface{})[0]
+	for _, v := range []string{"style", "xaxis", "yaxis"} {
+		// Properties listed above are always a single value, not a list
+		if widgetDef[v] != nil {
+			widgetDef[v] = widgetDef[v].([]map[string]interface{})[0]
+		}
 	}
-	if widgetDef["event"] != nil {
-		widgetDef["events"] = *widgetDef["event"].(*[]map[string]string)
-		delete(widgetDef, "event")
-	}
-	if widgetDef["input"] != nil {
-		widgetDef["inputs"] = *widgetDef["input"].(*[]map[string]interface{})
-		delete(widgetDef, "input")
-	}
-	if widgetDef["xaxis"] != nil {
-		widgetDef["xaxis"] = (widgetDef["xaxis"].([]map[string]interface{}))[0]
-	}
-	if widgetDef["yaxis"] != nil {
-		widgetDef["yaxis"] = widgetDef["yaxis"].([]map[string]interface{})[0]
+	for _, v := range []string{"event", "custom_link", "input"} {
+		// Properties listed above are defined as single, but API Spec expects a plural name
+		if widgetDef[v] != nil {
+			widgetDef[v+"s"] = widgetDef[v]
+			delete(widgetDef, v)
+		}
 	}
 	if widgetDef["type"] == "log_stream" && widgetDef["sort"] != nil {
+		// For log stream only, sort is not a string value but an object
+		// that is a single value
 		widgetDef["sort"] = widgetDef["sort"].([]map[string]interface{})[0]
-	}
-	if widgetDef["custom_link"] != nil {
-		// Some widgets have a "custom_links" field, while API Spec has a "custom_link" field
-		// Here we set the "custom_links" field and remove "custom_link"
-		widgetDefCustomLinks := *widgetDef["custom_link"].(*[]map[string]interface{})
-		widgetDef["custom_links"] = widgetDefCustomLinks
-		delete(widgetDef, "custom_link")
 	}
 	return widgetDef, diags
 }
 
-func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]interface{} {
+func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
 	// Dashboard TF widgets have a "requests" field, while API Spec has a "request" field
 	// Here we set the "request" field and remove "requests"
 	if widgetDef["requests"] != nil {
 		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
 			// Because of course JUST one widget type expects requests to be a single value instead of a list
 			widgetDefRequest := widgetDef["requests"].(map[string]interface{})
-			if widgetDefRequest["fill"] != nil {
-				widgetDefRequest["fill"] = []interface{}{widgetDefRequest["fill"].(interface{})}
-			}
-			if widgetDefRequest["size"] != nil {
-				widgetDefRequest["size"] = []interface{}{widgetDefRequest["size"].(interface{})}
-			}
-			if widgetDefRequest["x"] != nil {
-				widgetDefRequest["x"] = []interface{}{widgetDefRequest["x"].(interface{})}
-			}
-			if widgetDefRequest["y"] != nil {
-				widgetDefRequest["y"] = []interface{}{widgetDefRequest["y"].(interface{})}
+			for _, v := range []string{"fill", "size", "x", "y"} {
+				// Properties listed above need to be converted from single values in the API to plural values for TF
+				if widgetDefRequest[v] != nil {
+					widgetDefRequest[v] = []interface{}{widgetDefRequest[v].(interface{})}
+				}
 			}
 			widgetDef["request"] = []interface{}{widgetDefRequest}
 		} else {
 			widgetDefRequests := widgetDef["requests"].([]interface{})
 			for i, widgetDefRequest := range widgetDefRequests {
 				widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
+				for _, v := range []string{"style", "query", "apm_query", "log_query", "process_query", "rum_query", "apm_stats_query", "security_query"} {
+					// Properties listed above need to be converted from single values in the API to plural values for TF
+					if widgetDefRequestNormalized[v] != nil {
+						widgetDefRequestNormalized[v] = []interface{}{widgetDefRequestNormalized[v].(interface{})}
+					}
+				}
 				if widgetDefRequestNormalized["limit"] != nil {
+					// Dashboard widget can't typecast the float64 limit value so we need to convert it first
 					widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
-				}
-				if widgetDefRequestNormalized["style"] != nil {
-					widgetDefRequestNormalized["style"] = []interface{}{widgetDefRequestNormalized["style"]}
-				}
-				if widgetDefRequestNormalized["apm_stats_query"] != nil {
-					widgetDefRequestNormalized["apm_stats_query"] = []interface{}{widgetDefRequestNormalized["apm_stats_query"]}
 				}
 				if widgetDefRequestNormalized["queries"] != nil {
 					delete(widgetDefRequestNormalized, "response_format")
@@ -784,12 +762,10 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]in
 					if query == "metrics" {
 						queryType = "metric_query"
 					}
-					queryBody := map[string]interface{}{
-						queryType: widgetDefRequestNormalized["queries"].(interface{})}
+					queryBody := []interface{}{map[string]interface{}{
+						queryType: widgetDefRequestNormalized["queries"].(interface{})}}
 					widgetDefRequestNormalized["query"] = queryBody
-				}
-				if widgetDefRequestNormalized["query"] != nil {
-					widgetDefRequestNormalized["query"] = []interface{}{widgetDefRequestNormalized["query"].(interface{})}
+					delete(widgetDefRequestNormalized, "queries")
 				}
 				if widgetDefRequestNormalized["formulas"] != nil {
 					if widgetDef["type"] == "query_table" {
@@ -811,38 +787,30 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]in
 		}
 		delete(widgetDef, "requests")
 	}
-	// Dashboard TF widgets have a "custom_links" field, while API Spec has a "custom_link" field
-	// Here we set the "custom_link" field and remove "custom_links"
-	if widgetDef["custom_links"] != nil {
-		widgetDef["custom_link"] = widgetDef["custom_links"].([]interface{})
-		delete(widgetDef, "custom_links")
+	for _, v := range []string{"style", "xaxis", "yaxis", "y"} {
+		// Properties listed above need to be converted from single values in the API to plural values for TF
+		if widgetDef[v] != nil {
+			widgetDef[v] = []interface{}{widgetDef[v].(map[string]interface{})}
+		}
 	}
-	if widgetDef["style"] != nil {
-		widgetDef["style"] = []interface{}{widgetDef["style"].(map[string]interface{})}
-	}
-	if widgetDef["xaxis"] != nil {
-		widgetDef["xaxis"] = []interface{}{widgetDef["xaxis"].(map[string]interface{})}
-	}
-	if widgetDef["yaxis"] != nil {
-		widgetDef["yaxis"] = []interface{}{widgetDef["yaxis"].(map[string]interface{})}
+	for _, v := range []string{"custom_links", "inputs", "events"} {
+		// Properties listed above are defined as plural for the API Spec and need to be converted back to single values for TF
+		if widgetDef[v] != nil {
+			widgetDef[v[:len(v)-1]] = widgetDef[v]
+			delete(widgetDef, v)
+		}
 	}
 	if widgetDef["type"] == "log_stream" && widgetDef["sort"] != nil {
+		// For log stream only, sort is not a string value and we need to cast it from a
+		// single object to a list of objects for TF
 		widgetDef["sort"] = []interface{}{widgetDef["sort"].(map[string]interface{})}
-	}
-	if widgetDef["events"] != nil {
-		widgetDef["event"] = widgetDef["events"]
-		delete(widgetDef, "events")
-	}
-	if widgetDef["inputs"] != nil {
-		widgetDef["input"] = widgetDef["inputs"]
-		delete(widgetDef, "inputs")
 	}
 	// TF -> json conversion processes precision as float64, it needs to be converted to
 	// an int value to be saved successfully
 	if widgetDef["precision"] != nil {
 		widgetDef["precision"] = int(widgetDef["precision"].(float64))
 	}
-	return widgetDef
+	return widgetDef, diags
 }
 
 func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
@@ -900,7 +868,10 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		if widgetDefinition == nil {
 			continue
 		}
-		widgetDefinition = normalizeTerraformWidgetDef(widgetDefinition)
+		widgetDefinition, diags = normalizeTerraformWidgetDef(widgetDefinition)
+		if diags.HasError() {
+			return nil, diags
+		}
 		// Add new powerpack-supported widgets here
 		// We save Powerpack widgets as Dashboard widgets so we need to convert them to the appropriate widget definition object.
 		widgetType := widgetDefinition["type"]
