@@ -623,7 +623,7 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 	if widgetDef["live_span"] != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  fmt.Sprintf("live_span must be set at the powerpack level and will be applied to all widgets"),
+			Summary:  fmt.Sprintf("live_span must be set for all powerpack resources (to be applied to all widgets within the powerpack)"),
 		})
 		return nil, diags
 	}
