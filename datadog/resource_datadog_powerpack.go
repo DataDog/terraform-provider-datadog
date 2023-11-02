@@ -626,7 +626,7 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 				widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
 			}
 			if widgetDefRequest["formula"] != nil {
-				if widgetType == "query_table" {
+				if widgetType == "query_table" || widgetType == "treemap" {
 					var formulas []map[string]interface{}
 					for _, formulaDef := range widgetDefRequest["formula"].([]map[string]interface{}) {
 						if formulaDef["limit"] != nil {
@@ -644,7 +644,7 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 
 			}
 			if widgetDefRequest["query"] != nil {
-				if widgetType == "query_table" {
+				if widgetType == "query_table" || widgetType == "treemap" {
 					queryBody := widgetDefRequest["query"].([]map[string]interface{})[0]
 					for _, v := range queryBody {
 						widgetDefRequest["queries"] = v
@@ -776,7 +776,7 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) (map[string]i
 					delete(widgetDefRequestNormalized, "queries")
 				}
 				if widgetDefRequestNormalized["formulas"] != nil {
-					if widgetDef["type"] == "query_table" {
+					if widgetDef["type"] == "query_table" || widgetDef["type"] == "treemap" {
 						formulaDef := widgetDefRequestNormalized["formulas"].([]interface{})[0].(map[string]interface{})
 						formulaDef["formula_expression"] = formulaDef["formula"]
 						delete(formulaDef, "formula")
