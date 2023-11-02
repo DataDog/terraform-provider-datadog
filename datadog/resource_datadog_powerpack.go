@@ -687,7 +687,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		default:
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("support for this widget type is not supported: %s", terraformWidget.Definition["type"]),
+				Summary:  fmt.Sprintf("widget type is not supported: %s", terraformWidget.Definition["type"]),
 			})
 			continue
 		}
