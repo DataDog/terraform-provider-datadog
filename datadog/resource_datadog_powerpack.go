@@ -629,10 +629,17 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 	}
 
 	if widgetDef["request"] != nil {
+		castWidgetDefReq := *widgetDef["request"].(*[]map[string]interface{})
+		if len(castWidgetDefReq) == 0 {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("at least one request should be defined for widget: %s", widgetDef["type"]),
+			})
+			return nil, diags
+		}
 		// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
 		// Here we set the "requests" field and remove "request"
-		widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
-		widgetDef["requests"] = widgetDefRequests
+		widgetDef["requests"] = castWidgetDefReq
 		delete(widgetDef, "request")
 	}
 	return widgetDef, diags
