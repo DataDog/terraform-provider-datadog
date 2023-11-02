@@ -625,51 +625,46 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 			if widgetDefRequest[v] != nil {
 				widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
 			}
-		for _, v := range []string{"style", "apm_stats_query", "x", "y", "query"} {
-			// Properties listed above are always a single value, not a list
-			if widgetDefRequest[v] != nil {
-				widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
-			}
-		}
-		if widgetDefRequest["formula"] != nil {
-			if widgetType == "query_table" {
-				var formulas []map[string]interface{}
-				for _, formulaDef := range widgetDefRequest["formula"].([]map[string]interface{}) {
-					if formulaDef["limit"] != nil {
-						formulaDef["limit"] = formulaDef["limit"].([]map[string]interface{})[0]
+			if widgetDefRequest["formula"] != nil {
+				if widgetType == "query_table" {
+					var formulas []map[string]interface{}
+					for _, formulaDef := range widgetDefRequest["formula"].([]map[string]interface{}) {
+						if formulaDef["limit"] != nil {
+							formulaDef["limit"] = formulaDef["limit"].([]map[string]interface{})[0]
+						}
+						formulaDef["formula"] = formulaDef["formula_expression"]
+						delete(formulaDef, "formula_expression")
+						formulas = append(formulas, formulaDef)
 					}
-					formulaDef["formula"] = formulaDef["formula_expression"]
-					delete(formulaDef, "formula_expression")
-					formulas = append(formulas, formulaDef)
+					widgetDefRequest["formulas"] = formulas
+				} else {
+					widgetDefRequest["formulas"] = widgetDefRequest["formula"]
 				}
-				widgetDefRequest["formulas"] = formulas
-			} else {
-				widgetDefRequest["formulas"] = widgetDefRequest["formula"]
-			}
-			delete(widgetDefRequest, "formula")
+				delete(widgetDefRequest, "formula")
 
-		}
-		if widgetDefRequest["query"] != nil {
-			if widgetType == "query_table" {
-				queryBody := widgetDefRequest["query"].([]map[string]interface{})[0]
-				for _, v := range queryBody {
-					widgetDefRequest["queries"] = v
+			}
+			if widgetDefRequest["query"] != nil {
+				if widgetType == "query_table" {
+					queryBody := widgetDefRequest["query"].([]map[string]interface{})[0]
+					for _, v := range queryBody {
+						widgetDefRequest["queries"] = v
+					}
+					widgetDefRequest["response_format"] = "scalar"
+					delete(widgetDefRequest, "query")
+				} else {
+					widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
 				}
-				widgetDefRequest["response_format"] = "scalar"
-				delete(widgetDefRequest, "query")
-			} else {
-				widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
 			}
-		}
-		for _, v := range []string{"formula"} {
-			// Properties listed above are defined as single, but API Spec expects a plural name
-			if widgetDefRequest[v] != nil {
-				widgetDefRequest[v+"s"] = widgetDefRequest[v]
-				delete(widgetDefRequest, v)
+			for _, v := range []string{"formula"} {
+				// Properties listed above are defined as single, but API Spec expects a plural name
+				if widgetDefRequest[v] != nil {
+					widgetDefRequest[v+"s"] = widgetDefRequest[v]
+					delete(widgetDefRequest, v)
+				}
 			}
+			normalizedWidgetDefRequests[i] = widgetDefRequest
 		}
-		normalizedWidgetDefRequests[i] = widgetDefRequest
-	}}
+	}
 	return normalizedWidgetDefRequests, diags
 }
 
@@ -700,6 +695,8 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 			}
 			widgetDef["requests"] = widgetDefRequest
 		} else {
+			// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
+			// Here we set the "requests" field and remove "request"
 			castWidgetDefReq := *widgetDef["request"].(*[]map[string]interface{})
 			if len(castWidgetDefReq) == 0 {
 				diags = append(diags, diag.Diagnostic{
@@ -708,19 +705,6 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 				})
 				return nil, diags
 			}
-			// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
-			// Here we set the "requests" field and remove "request"
-			widgetDef["requests"] = normalizeWidgetDefRequests(castWidgetDefReq)
-			castWidgetDefReq := *widgetDef["request"].(*[]map[string]interface{})
-			if len(castWidgetDefReq) == 0 {
-				diags = append(diags, diag.Diagnostic{
-					Severity: diag.Error,
-					Summary:  fmt.Sprintf("at least one request should be defined for widget: %s", widgetDef["type"]),
-				})
-				return nil, diags
-			}
-			// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
-			// Here we set the "requests" field and remove "request"
 			widgetDef["requests"], diags = normalizeWidgetDefRequests(castWidgetDefReq, widgetDef["type"].(string))
 			if diags.HasError() {
 				return nil, diags
@@ -768,12 +752,7 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) (map[string]i
 			widgetDefRequests := widgetDef["requests"].([]interface{})
 			for i, widgetDefRequest := range widgetDefRequests {
 				widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
-				for _, v := range []string{"style", "query", "apm_stats_query"} {
-					// Properties listed above need to be converted from single values in the API to plural values for TF
-					if widgetDefRequestNormalized[v] != nil {
-						widgetDefRequestNormalized[v] = []interface{}{widgetDefRequestNormalized[v].(interface{})}
-					}
-				}
+
 				for _, v := range []string{"style", "query", "apm_query", "log_query", "process_query", "rum_query", "apm_stats_query", "security_query"} {
 					// Properties listed above need to be converted from single values in the API to plural values for TF
 					if widgetDefRequestNormalized[v] != nil {
