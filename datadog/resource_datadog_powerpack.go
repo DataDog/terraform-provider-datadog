@@ -657,14 +657,13 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 	if widgetDef["live_span"] != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  fmt.Sprintf("live_span must be set at the powerpack level and will be applied to all widgets"),
+			Summary:  fmt.Sprintf("live_span must be set for all powerpack resources (to be applied to all widgets within the powerpack)"),
 		})
 		return nil, diags
 	}
 
 	if widgetDef["request"] != nil {
-		// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
-		// Here we set the "requests" field and remove "request"
+		widgetDef["requests"] = castWidgetDefReq
 		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
 			// Because of course JUST one widget type expects requests to be a single value instead of a list
 			widgetDefRequest := widgetDef["request"].([]map[string]interface{})[0]
@@ -682,8 +681,17 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 			}
 			widgetDef["requests"] = widgetDefRequest
 		} else {
-			widgetDefRequests := *widgetDef["request"].(*[]map[string]interface{})
-			widgetDef["requests"] = normalizeWidgetDefRequests(widgetDefRequests)
+			castWidgetDefReq := *widgetDef["request"].(*[]map[string]interface{})
+			if len(castWidgetDefReq) == 0 {
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Error,
+					Summary:  fmt.Sprintf("at least one request should be defined for widget: %s", widgetDef["type"]),
+				})
+				return nil, diags
+			}
+			// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
+			// Here we set the "requests" field and remove "request"
+			widgetDef["requests"] = normalizeWidgetDefRequests(castWidgetDefReq)
 		}
 		delete(widgetDef, "request")
 	}
