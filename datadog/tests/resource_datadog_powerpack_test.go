@@ -95,11 +95,12 @@ func checkPowerpackDestroy(accProvider func() (*schema.Provider, error)) resourc
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		err := utils.Retry(2, 10, func() error {
-			for _, r := range s.RootModule().Resources {
-				if r.Type != "datadog_powerpack" {
-					continue
-				}
+		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_powerpack" {
+				continue
+			}
+			err := utils.Retry(2, 10, func() error {
+
 				if _, httpResp, err := apiInstances.GetPowerpackApiV2().GetPowerpack(auth, r.Primary.ID); err != nil {
 					if httpResp != nil && httpResp.StatusCode == 404 {
 						return nil
@@ -107,10 +108,13 @@ func checkPowerpackDestroy(accProvider func() (*schema.Provider, error)) resourc
 					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Powerpack %s", err)}
 				}
 				return &utils.RetryableError{Prob: "Powerpack still exists"}
+			})
+			if err != nil {
+				return err
 			}
 			return nil
-		})
-		return err
+		}
+		return nil
 	}
 }
 

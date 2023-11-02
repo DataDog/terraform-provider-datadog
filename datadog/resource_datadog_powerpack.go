@@ -626,7 +626,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				x := dimensions["x"].(int64)
 				y := dimensions["y"].(int64)
 				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
-			} else {
+			} else if strings.HasSuffix(widgetType, "_definition") {
 				widgetDef = terraformDefinition.([]map[string]interface{})[0]
 				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
