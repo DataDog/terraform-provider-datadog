@@ -692,8 +692,8 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 		}
 	}
 	if widgetDef["type"] == "log_stream" && widgetDef["sort"] != nil {
-		// Some widgets have a "custom_links" field, while API Spec has a "custom_link" field
-		// Here we set the "custom_links" field and remove "custom_link"
+		// For log stream only, sort is not a string value but an object
+		// that is a single value
 		widgetDef["sort"] = widgetDef["sort"].([]map[string]interface{})[0]
 	}
 	return widgetDef, diags
@@ -747,6 +747,8 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]in
 		}
 	}
 	if widgetDef["type"] == "log_stream" && widgetDef["sort"] != nil {
+		// For log stream only, sort is not a string value and we need to cast it from a
+		// single object to a list of objects for TF
 		widgetDef["sort"] = []interface{}{widgetDef["sort"].(map[string]interface{})}
 	}
 	// TF -> json conversion processes precision as float64, it needs to be converted to
