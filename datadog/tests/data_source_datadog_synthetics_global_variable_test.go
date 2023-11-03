@@ -19,7 +19,7 @@ func TestAccDatadogSyntheticsGlobalVariable(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSyntheticsGlobalVariableConfig(uniq),

@@ -62,20 +62,21 @@ func testAccCheckDatadogTeamMembershipDestroy(accProvider *fwprovider.FrameworkP
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		if err := TeamMembershipDestroyHelper(auth, s, apiInstances); err != nil {
+		if err := teamMembershipDestroyHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func TeamMembershipDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
-	err := utils.Retry(2, 10, func() error {
-		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_team_membership" {
-				continue
-			}
-			teamId := r.Primary.ID
+func teamMembershipDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "resource_datadog_team_membership" {
+			continue
+		}
+		teamId := r.Primary.ID
+
+		err := utils.Retry(2, 10, func() error {
 			r, httpResp, err := apiInstances.GetTeamsApiV2().GetTeamMemberships(auth, teamId)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
@@ -88,10 +89,13 @@ func TeamMembershipDestroyHelper(auth context.Context, s *terraform.State, apiIn
 					return &utils.RetryableError{Prob: "TeamMembership still exists"}
 				}
 			}
+			return nil
+		})
+		if err != nil {
+			return err
 		}
-		return nil
-	})
-	return err
+	}
+	return nil
 }
 
 func testAccCheckDatadogTeamMembershipExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {

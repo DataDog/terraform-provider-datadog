@@ -105,22 +105,22 @@ func testAccCheckDatadogTeamLinkDestroy(accProvider *fwprovider.FrameworkProvide
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		if err := TeamLinkDestroyHelper(auth, s, apiInstances); err != nil {
+		if err := teamLinkDestroyHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func TeamLinkDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
-	err := utils.Retry(2, 10, func() error {
-		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_team_link" {
-				continue
-			}
-			teamId := r.Primary.Attributes["team_id"]
-			id := r.Primary.ID
+func teamLinkDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "resource_datadog_team_link" {
+			continue
+		}
+		teamId := r.Primary.Attributes["team_id"]
+		id := r.Primary.ID
 
+		err := utils.Retry(2, 10, func() error {
 			_, httpResp, err := apiInstances.GetTeamsApiV2().GetTeamLink(auth, teamId, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
@@ -129,10 +129,12 @@ func TeamLinkDestroyHelper(auth context.Context, s *terraform.State, apiInstance
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving TeamLink %s", err)}
 			}
 			return &utils.RetryableError{Prob: "TeamLink still exists"}
+		})
+		if err != nil {
+			return nil
 		}
-		return nil
-	})
-	return err
+	}
+	return nil
 }
 
 func testAccCheckDatadogTeamLinkExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {

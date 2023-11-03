@@ -678,6 +678,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 		}
 		widgetDef := make(map[string]interface{})
 		var widgetLayout *datadogV2.PowerpackInnerWidgetLayout
+
 		for widgetType, terraformDefinition := range terraformWidget {
 			// Each terraform definition contains an ID field which is unused,
 			// and a widget definition which we need to process
@@ -691,7 +692,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				x := dimensions["x"].(int64)
 				y := dimensions["y"].(int64)
 				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
-			} else {
+			} else if strings.HasSuffix(widgetType, "_definition") {
 				widgetDef = terraformDefinition.([]map[string]interface{})[0]
 				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
@@ -750,8 +751,6 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.MonitorSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogManageStatusDefinition(widgetDefinition))
 		case "note":
 			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(widgetDefinition))
-		case "query_value":
-			definition = datadogV1.QueryValueWidgetDefinitionAsWidgetDefinition(buildDatadogQueryValueDefinition(widgetDefinition))
 		case "servicemap":
 			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
 		case "toplist":
@@ -773,7 +772,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		default:
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("support for this widget type is not supported: %s", terraformWidget.Definition["type"]),
+				Summary:  fmt.Sprintf("widget type is not supported: %s", terraformWidget.Definition["type"]),
 			})
 			continue
 		}
@@ -789,6 +788,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			}
 			datadogWidget.SetLayout(*buildPowerpackWidgetLayout(layout))
 		}
+
 		datadogWidgets = append(datadogWidgets, *datadogWidget)
 	}
 	return &datadogWidgets, diags

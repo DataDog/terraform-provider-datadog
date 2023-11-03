@@ -516,7 +516,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITest(ctx, accProvider, t),
 		},
@@ -4457,6 +4457,10 @@ func testSyntheticsTestIsDestroyed(accProvider func() (*schema.Provider, error))
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_synthetics_test" {
+				continue
+			}
+
 			if _, _, err := apiInstances.GetSyntheticsApiV1().GetTest(auth, r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
