@@ -93,6 +93,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 	var diags diag.Diagnostics
 
 	errorOnNoResults := d.Get("error_on_empty_result").(bool)
+	fmt.Println("check this ---- ", errorOnNoResults)
 
 	// query take precedence over other query parameters if specified
 	if v, ok := d.GetOk("query"); ok {
@@ -222,9 +223,6 @@ func listSLO(reqParams *datadogV1.ListSLOsOptionalParameters, providerConf *Prov
 	slosResp, httpresp, err := apiInstances.GetServiceLevelObjectivesApiV1().ListSLOs(auth, *reqParams)
 	if err != nil {
 		return nil, utils.TranslateClientErrorDiag(err, httpresp, "error querying service level objectives")
-	}
-	if len(slosResp.GetData()) == 0 {
-		return nil, diag.Errorf("your query returned no result, please try a less specific search criteria")
 	}
 
 	diags := diag.Diagnostics{}
