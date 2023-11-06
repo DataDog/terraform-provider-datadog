@@ -626,13 +626,6 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 				widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
 			}
 		}
-		for _, v := range []string{"formula"} {
-			// Properties listed above are defined as single, but API Spec expects a plural name
-			if widgetDefRequest[v] != nil {
-				widgetDefRequest[v+"s"] = widgetDefRequest[v]
-				delete(widgetDefRequest, v)
-			}
-		}
 		if widgetDefRequest["formula"] != nil {
 			if widgetType == "query_table" || widgetType == "treemap" {
 				var formulas []map[string]interface{}
@@ -659,17 +652,8 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 				}
 				widgetDefRequest["response_format"] = "scalar"
 				delete(widgetDefRequest, "query")
-			} else if widgetType == "topology_map" {
-				widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
 			} else {
 				widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
-			}
-		}
-		for _, v := range []string{"formula"} {
-			// Properties listed above are defined as single, but API Spec expects a plural name
-			if widgetDefRequest[v] != nil {
-				widgetDefRequest[v+"s"] = widgetDefRequest[v]
-				delete(widgetDefRequest, v)
 			}
 		}
 		normalizedWidgetDefRequests[i] = widgetDefRequest
@@ -779,6 +763,9 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) (map[string]i
 					// Dashboard widget can't typecast the float64 limit value so we need to convert it first
 					widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
 				}
+				if widgetDef["type"] != "topology_map" && widgetDefRequestNormalized["query"] != nil {
+					widgetDefRequestNormalized["query"] = []interface{}{widgetDefRequestNormalized["query"].(interface{})}
+				}
 				if widgetDefRequestNormalized["queries"] != nil {
 					delete(widgetDefRequestNormalized, "response_format")
 					query := widgetDefRequestNormalized["queries"].([]interface{})[0].(map[string]interface{})["data_source"].(string)
@@ -804,9 +791,6 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) (map[string]i
 						widgetDefRequestNormalized["formula"] = []interface{}{formulaDef}
 						delete(widgetDefRequestNormalized, "formulas")
 					}
-				}
-				if widgetDef["type"] != "topology_map" && widgetDefRequestNormalized["query"] != nil {
-					widgetDefRequestNormalized["query"] = []interface{}{widgetDefRequestNormalized["query"].(interface{})}
 				}
 				widgetDefRequests[i] = widgetDefRequestNormalized
 			}
@@ -954,6 +938,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.TopologyMapWidgetDefinitionAsWidgetDefinition(buildDatadogTopologyMapDefinition(widgetDefinition))
 		case "trace_service":
 			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
+		case "treemap":
+			definition = datadogV1.TreeMapWidgetDefinitionAsWidgetDefinition(buildDatadogTreemapDefinition(widgetDefinition))
 		case "group":
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
