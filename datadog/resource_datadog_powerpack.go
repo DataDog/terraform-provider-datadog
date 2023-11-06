@@ -100,24 +100,24 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getAlertGraphDefinitionSchema(),
 			},
 		},
-		// "alert_value_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Alert Value widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getAlertValueDefinitionSchema(),
-		// 	},
-		// },
-		// "change_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Change widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getChangeDefinitionSchema(),
-		// 	},
-		// },
+		"alert_value_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Alert Value widget.",
+			Elem: &schema.Resource{
+				Schema: getAlertValueDefinitionSchema(),
+			},
+		},
+		"change_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Change widget.",
+			Elem: &schema.Resource{
+				Schema: getChangeDefinitionSchema(),
+			},
+		},
 		"check_status_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -136,24 +136,24 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 		// 		Schema: getDistributionDefinitionSchema(),
 		// 	},
 		// },
-		// "event_stream_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Event Stream widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getEventStreamDefinitionSchema(),
-		// 	},
-		// },
-		// "event_timeline_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Event Timeline widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getEventTimelineDefinitionSchema(),
-		// 	},
-		// },
+		"event_stream_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Event Stream widget.",
+			Elem: &schema.Resource{
+				Schema: getEventStreamDefinitionSchema(),
+			},
+		},
+		"event_timeline_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Event Timeline widget.",
+			Elem: &schema.Resource{
+				Schema: getEventTimelineDefinitionSchema(),
+			},
+		},
 		"free_text_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -217,15 +217,15 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 		// 		Schema: getLogStreamDefinitionSchema(),
 		// 	},
 		// },
-		// "manage_status_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for an Manage Status widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getManageStatusDefinitionSchema(),
-		// 	},
-		// },
+		"manage_status_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for an Manage Status widget.",
+			Elem: &schema.Resource{
+				Schema: getManageStatusDefinitionSchema(),
+			},
+		},
 		"note_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -235,15 +235,15 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getNoteDefinitionSchema(),
 			},
 		},
-		// "query_value_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Query Value widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getQueryValueDefinitionSchema(),
-		// 	},
-		// },
+		"query_value_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Value widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryValueDefinitionSchema(),
+			},
+		},
 		// "query_table_definition": {
 		// 	Type:        schema.TypeList,
 		// 	Optional:    true,
@@ -307,15 +307,15 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 		// 		Schema: getTimeseriesDefinitionSchema(),
 		// 	},
 		// },
-		// "toplist_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Toplist widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getToplistDefinitionSchema(),
-		// 	},
-		// },
+		"toplist_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Toplist widget.",
+			Elem: &schema.Resource{
+				Schema: getToplistDefinitionSchema(),
+			},
+		},
 		// "topology_map_definition": {
 		// 	Type:        schema.TypeList,
 		// 	Optional:    true,
@@ -325,15 +325,15 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 		// 		Schema: getTopologyMapDefinitionSchema(),
 		// 	},
 		// },
-		// "trace_service_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Trace Service widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getTraceServiceDefinitionSchema(),
-		// 	},
-		// },
+		"trace_service_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Trace Service widget.",
+			Elem: &schema.Resource{
+				Schema: getTraceServiceDefinitionSchema(),
+			},
+		},
 		// "treemap_definition": {
 		// 	Type:        schema.TypeList,
 		// 	Optional:    true,
