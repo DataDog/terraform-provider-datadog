@@ -639,6 +639,7 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}) []ma
 
 func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
+	// SLO widgets are spelled out in dashboard widgets, but API expects "slo" as the widget type
 	if widgetDef["type"] == "service_level_objective" {
 		widgetDef["type"] = "slo"
 	}
@@ -656,6 +657,13 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
 			// Scatterplot and hostmap widgets expect a single requests object instead of a list
 			widgetDefRequest := widgetDef["request"].([]map[string]interface{})[0]
+			if len(widgetDefRequest) == 0 {
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Error,
+					Summary:  fmt.Sprintf("request should be defined for widget: %s", widgetDef["type"]),
+				})
+				return nil, diags
+			}
 			for _, v := range []string{"fill", "size", "x", "y"} {
 				// Properties listed above are always a single value, not a list
 				if widgetDefRequest[v] != nil {
@@ -704,7 +712,6 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]in
 	// Here we set the "request" field and remove "requests"
 	if widgetDef["requests"] != nil {
 		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
-			// Because of course JUST one widget type expects requests to be a single value instead of a list
 			widgetDefRequest := widgetDef["requests"].(map[string]interface{})
 			for _, v := range []string{"fill", "size", "x", "y"} {
 				// Properties listed above need to be converted from single values in the API to plural values for TF
