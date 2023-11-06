@@ -42,17 +42,17 @@ func dataSourceDatadogServiceLevelObjectives() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
+				"query": {
+					Description:   "The query string to filter results based on SLO names. Some examples of queries include service:<service-name> and <slo-name>.",
+					Type:          schema.TypeString,
+					Optional:      true,
+					ConflictsWith: []string{"metrics_query", "tags_query", "name_query", "ids"},
+				},
 				"error_on_empty_result": {
 					Description: "Throw an error if no results are found.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     true,
-				},
-				"query": {
-					Description:   "The query string to filter results based on SLO names. Some examples of queries include service:<service-name> and <slo-name>. If you specify this parameter, the name_query, tags_query, and metrics_query parameters are ignored.",
-					Type:          schema.TypeString,
-					Optional:      true,
-					ConflictsWith: []string{"metrics_query", "tags_query", "name_query", "ids"},
 				},
 
 				// Computed values
@@ -129,7 +129,7 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 		if v, ok := d.GetOk("tags_query"); ok {
 			tagsQuery := v.(string)
 			tagsQueryPtr = &tagsQuery
-			reqParams.WithTagsQuery(tagsQuery)
+			reqParams = reqParams.WithTagsQuery(tagsQuery)
 		}
 		if v, ok := d.GetOk("metrics_query"); ok {
 			metricsQuery := v.(string)
