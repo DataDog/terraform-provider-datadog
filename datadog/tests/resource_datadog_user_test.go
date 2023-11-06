@@ -403,6 +403,10 @@ resource "datadog_user" "bar" {
 
 func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_user" {
+			continue
+		}
+
 		id := r.Primary.ID
 		userResponse, httpResponse, err := apiInstances.GetUsersApiV2().GetUser(ctx, id)
 

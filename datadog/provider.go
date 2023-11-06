@@ -297,7 +297,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewLoggingHTTPTransport(c.Transport)
 	communityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
 		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
 		"go-datadog-api",

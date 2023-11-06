@@ -244,15 +244,15 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getQueryValueDefinitionSchema(),
 			},
 		},
-		"query_table_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Query Table widget.",
-			Elem: &schema.Resource{
-				Schema: getQueryTableDefinitionSchema(),
-			},
-		},
+		// "query_table_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Query Table widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getQueryTableDefinitionSchema(),
+		// 	},
+		// },
 		"scatterplot_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -280,33 +280,33 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getServiceLevelObjectiveDefinitionSchema(),
 			},
 		},
-		"slo_list_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for an SLO (Service Level Objective) List widget.",
-			Elem: &schema.Resource{
-				Schema: getSloListDefinitionSchema(),
-			},
-		},
-		"sunburst_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Sunburst widget.",
-			Elem: &schema.Resource{
-				Schema: getSunburstDefinitionschema(),
-			},
-		},
-		"timeseries_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Timeseries widget.",
-			Elem: &schema.Resource{
-				Schema: getTimeseriesDefinitionSchema(),
-			},
-		},
+		// "slo_list_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for an SLO (Service Level Objective) List widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getSloListDefinitionSchema(),
+		// 	},
+		// },
+		// "sunburst_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Sunburst widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getSunburstDefinitionschema(),
+		// 	},
+		// },
+		// "timeseries_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Timeseries widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getTimeseriesDefinitionSchema(),
+		// 	},
+		// },
 		"toplist_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -334,24 +334,24 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getTraceServiceDefinitionSchema(),
 			},
 		},
-		"treemap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Treemap widget.",
-			Elem: &schema.Resource{
-				Schema: getTreemapDefinitionSchema(),
-			},
-		},
-		"geomap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Geomap widget.",
-			Elem: &schema.Resource{
-				Schema: getGeomapDefinitionSchema(),
-			},
-		},
+		// "treemap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Treemap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getTreemapDefinitionSchema(),
+		// 	},
+		// },
+		// "geomap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Geomap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getGeomapDefinitionSchema(),
+		// 	},
+		// },
 		"run_workflow_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -670,6 +670,7 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 
 func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
+	// SLO widgets are spelled out in dashboard widgets, but API expects "slo" as the widget type
 	if widgetDef["type"] == "service_level_objective" {
 		widgetDef["type"] = "slo"
 	}
@@ -687,11 +688,18 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
 			// Scatterplot and hostmap widgets expect a single requests object instead of a list
 			widgetDefRequest := widgetDef["request"].([]map[string]interface{})[0]
-			if widgetDefRequest["fill"] != nil {
-				widgetDefRequest["fill"] = widgetDefRequest["fill"].([]map[string]interface{})[0]
+			if len(widgetDefRequest) == 0 {
+				diags = append(diags, diag.Diagnostic{
+					Severity: diag.Error,
+					Summary:  fmt.Sprintf("request should be defined for widget: %s", widgetDef["type"]),
+				})
+				return nil, diags
 			}
-			if widgetDefRequest["size"] != nil {
-				widgetDefRequest["size"] = widgetDefRequest["size"].([]map[string]interface{})[0]
+			for _, v := range []string{"fill", "size", "x", "y"} {
+				// Properties listed above are always a single value, not a list
+				if widgetDefRequest[v] != nil {
+					widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
+				}
 			}
 			widgetDef["requests"] = widgetDefRequest
 		} else {
@@ -739,7 +747,6 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) (map[string]i
 	// Here we set the "request" field and remove "requests"
 	if widgetDef["requests"] != nil {
 		if widgetDef["type"] == "scatterplot" || widgetDef["type"] == "hostmap" {
-			// Because of course JUST one widget type expects requests to be a single value instead of a list
 			widgetDefRequest := widgetDef["requests"].(map[string]interface{})
 			for _, v := range []string{"fill", "size", "x", "y"} {
 				// Properties listed above need to be converted from single values in the API to plural values for TF
@@ -831,6 +838,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 		}
 		widgetDef := make(map[string]interface{})
 		var widgetLayout *datadogV2.PowerpackInnerWidgetLayout
+
 		for widgetType, terraformDefinition := range terraformWidget {
 			// Each terraform definition contains an ID field which is unused,
 			// and a widget definition which we need to process
@@ -844,7 +852,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				x := dimensions["x"].(int64)
 				y := dimensions["y"].(int64)
 				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
-			} else {
+			} else if strings.HasSuffix(widgetType, "_definition") {
 				widgetDef = terraformDefinition.([]map[string]interface{})[0]
 				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
@@ -934,8 +942,6 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.TopologyMapWidgetDefinitionAsWidgetDefinition(buildDatadogTopologyMapDefinition(widgetDefinition))
 		case "trace_service":
 			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
-		case "treemap":
-			definition = datadogV1.TreeMapWidgetDefinitionAsWidgetDefinition(buildDatadogTreemapDefinition(widgetDefinition))
 		case "group":
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
@@ -951,7 +957,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		default:
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("support for this widget type is not supported: %s", terraformWidget.Definition["type"]),
+				Summary:  fmt.Sprintf("widget type is not supported: %s", terraformWidget.Definition["type"]),
 			})
 			continue
 		}
@@ -967,6 +973,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			}
 			datadogWidget.SetLayout(*buildPowerpackWidgetLayout(layout))
 		}
+
 		datadogWidgets = append(datadogWidgets, *datadogWidget)
 	}
 	return &datadogWidgets, diags
