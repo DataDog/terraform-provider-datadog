@@ -244,15 +244,15 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getQueryValueDefinitionSchema(),
 			},
 		},
-		// "query_table_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Query Table widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getQueryTableDefinitionSchema(),
-		// 	},
-		// },
+		"query_table_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Table widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryTableDefinitionSchema(),
+			},
+		},
 		"scatterplot_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -334,15 +334,15 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getTraceServiceDefinitionSchema(),
 			},
 		},
-		// "treemap_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Treemap widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getTreemapDefinitionSchema(),
-		// 	},
-		// },
+		"treemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Treemap widget.",
+			Elem: &schema.Resource{
+				Schema: getTreemapDefinitionSchema(),
+			},
+		},
 		// "geomap_definition": {
 		// 	Type:        schema.TypeList,
 		// 	Optional:    true,
@@ -651,6 +651,8 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 					}
 					widgetDefRequest["response_format"] = "scalar"
 					delete(widgetDefRequest, "query")
+				} else if widgetType == "topology_map" {
+					widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
 				} else {
 					widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
 				}
