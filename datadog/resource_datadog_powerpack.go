@@ -100,24 +100,24 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getAlertGraphDefinitionSchema(),
 			},
 		},
-		"alert_value_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Alert Value widget.",
-			Elem: &schema.Resource{
-				Schema: getAlertValueDefinitionSchema(),
-			},
-		},
-		"change_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Change widget.",
-			Elem: &schema.Resource{
-				Schema: getChangeDefinitionSchema(),
-			},
-		},
+		// "alert_value_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Alert Value widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getAlertValueDefinitionSchema(),
+		// 	},
+		// },
+		// "change_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Change widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getChangeDefinitionSchema(),
+		// 	},
+		// },
 		"check_status_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -127,33 +127,33 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getCheckStatusDefinitionSchema(),
 			},
 		},
-		"distribution_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Distribution widget.",
-			Elem: &schema.Resource{
-				Schema: getDistributionDefinitionSchema(),
-			},
-		},
-		"event_stream_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Event Stream widget.",
-			Elem: &schema.Resource{
-				Schema: getEventStreamDefinitionSchema(),
-			},
-		},
-		"event_timeline_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Event Timeline widget.",
-			Elem: &schema.Resource{
-				Schema: getEventTimelineDefinitionSchema(),
-			},
-		},
+		// "distribution_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Distribution widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getDistributionDefinitionSchema(),
+		// 	},
+		// },
+		// "event_stream_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Event Stream widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getEventStreamDefinitionSchema(),
+		// 	},
+		// },
+		// "event_timeline_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Event Timeline widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getEventTimelineDefinitionSchema(),
+		// 	},
+		// },
 		"free_text_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -163,24 +163,24 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getFreeTextDefinitionSchema(),
 			},
 		},
-		"heatmap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Heatmap widget.",
-			Elem: &schema.Resource{
-				Schema: getHeatmapDefinitionSchema(),
-			},
-		},
-		"hostmap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Hostmap widget.",
-			Elem: &schema.Resource{
-				Schema: getHostmapDefinitionSchema(),
-			},
-		},
+		// "heatmap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Heatmap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getHeatmapDefinitionSchema(),
+		// 	},
+		// },
+		// "hostmap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Hostmap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getHostmapDefinitionSchema(),
+		// 	},
+		// },
 		"iframe_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -199,33 +199,33 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getImageDefinitionSchema(),
 			},
 		},
-		"list_stream_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a List Stream widget.",
-			Elem: &schema.Resource{
-				Schema: getListStreamDefinitionSchema(),
-			},
-		},
-		"log_stream_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for an Log Stream widget.",
-			Elem: &schema.Resource{
-				Schema: getLogStreamDefinitionSchema(),
-			},
-		},
-		"manage_status_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for an Manage Status widget.",
-			Elem: &schema.Resource{
-				Schema: getManageStatusDefinitionSchema(),
-			},
-		},
+		// "list_stream_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a List Stream widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getListStreamDefinitionSchema(),
+		// 	},
+		// },
+		// "log_stream_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for an Log Stream widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getLogStreamDefinitionSchema(),
+		// 	},
+		// },
+		// "manage_status_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for an Manage Status widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getManageStatusDefinitionSchema(),
+		// 	},
+		// },
 		"note_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -235,33 +235,33 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getNoteDefinitionSchema(),
 			},
 		},
-		"query_value_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Query Value widget.",
-			Elem: &schema.Resource{
-				Schema: getQueryValueDefinitionSchema(),
-			},
-		},
-		"query_table_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Query Table widget.",
-			Elem: &schema.Resource{
-				Schema: getQueryTableDefinitionSchema(),
-			},
-		},
-		"scatterplot_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Scatterplot widget.",
-			Elem: &schema.Resource{
-				Schema: getScatterplotDefinitionSchema(),
-			},
-		},
+		// "query_value_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Query Value widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getQueryValueDefinitionSchema(),
+		// 	},
+		// },
+		// "query_table_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Query Table widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getQueryTableDefinitionSchema(),
+		// 	},
+		// },
+		// "scatterplot_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Scatterplot widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getScatterplotDefinitionSchema(),
+		// 	},
+		// },
 		"servicemap_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -271,96 +271,96 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getServiceMapDefinitionSchema(),
 			},
 		},
-		"service_level_objective_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Service Level Objective widget.",
-			Elem: &schema.Resource{
-				Schema: getServiceLevelObjectiveDefinitionSchema(),
-			},
-		},
-		"slo_list_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for an SLO (Service Level Objective) List widget.",
-			Elem: &schema.Resource{
-				Schema: getSloListDefinitionSchema(),
-			},
-		},
-		"sunburst_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Sunburst widget.",
-			Elem: &schema.Resource{
-				Schema: getSunburstDefinitionschema(),
-			},
-		},
-		"timeseries_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Timeseries widget.",
-			Elem: &schema.Resource{
-				Schema: getTimeseriesDefinitionSchema(),
-			},
-		},
-		"toplist_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Toplist widget.",
-			Elem: &schema.Resource{
-				Schema: getToplistDefinitionSchema(),
-			},
-		},
-		"topology_map_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Topology Map widget.",
-			Elem: &schema.Resource{
-				Schema: getTopologyMapDefinitionSchema(),
-			},
-		},
-		"trace_service_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Trace Service widget.",
-			Elem: &schema.Resource{
-				Schema: getTraceServiceDefinitionSchema(),
-			},
-		},
-		"treemap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Treemap widget.",
-			Elem: &schema.Resource{
-				Schema: getTreemapDefinitionSchema(),
-			},
-		},
-		"geomap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Geomap widget.",
-			Elem: &schema.Resource{
-				Schema: getGeomapDefinitionSchema(),
-			},
-		},
-		"run_workflow_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Run Workflow widget.",
-			Elem: &schema.Resource{
-				Schema: getRunWorkflowDefinitionSchema(),
-			},
-		},
+		// "service_level_objective_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Service Level Objective widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getServiceLevelObjectiveDefinitionSchema(),
+		// 	},
+		// },
+		// "slo_list_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for an SLO (Service Level Objective) List widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getSloListDefinitionSchema(),
+		// 	},
+		// },
+		// "sunburst_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Sunburst widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getSunburstDefinitionschema(),
+		// 	},
+		// },
+		// "timeseries_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Timeseries widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getTimeseriesDefinitionSchema(),
+		// 	},
+		// },
+		// "toplist_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Toplist widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getToplistDefinitionSchema(),
+		// 	},
+		// },
+		// "topology_map_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Topology Map widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getTopologyMapDefinitionSchema(),
+		// 	},
+		// },
+		// "trace_service_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Trace Service widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getTraceServiceDefinitionSchema(),
+		// 	},
+		// },
+		// "treemap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Treemap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getTreemapDefinitionSchema(),
+		// 	},
+		// },
+		// "geomap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Geomap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getGeomapDefinitionSchema(),
+		// 	},
+		// },
+		// "run_workflow_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Run Workflow widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getRunWorkflowDefinitionSchema(),
+		// 	},
+		// },
 	}
 }
 
