@@ -20,6 +20,7 @@ resource "datadog_integration_azure" "sandbox" {
   client_secret            = "<azure_client_secret_key>"
   host_filters             = "examplefilter:true,example:true"
   app_service_plan_filters = "examplefilter:true,example:another"
+  container_app_filters    = "examplefilter:true,example:one_more"
   automute                 = true
   cspm_enabled             = true
   custom_metrics_enabled   = false
@@ -38,9 +39,10 @@ resource "datadog_integration_azure" "sandbox" {
 ### Optional
 
 - `app_service_plan_filters` (String) This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags are imported into Datadog. The rest, including the apps and functions running on them, are ignored. This also filters the metrics for any App or Function running on the App Service Plan(s).
-- `automute` (Boolean) Silence monitors for expected Azure VM shutdowns.
-- `cspm_enabled` (Boolean) Enable Cloud Security Management Misconfigurations for your organization.
-- `custom_metrics_enabled` (Boolean) Enable custom metrics for your organization.
+- `automute` (Boolean) Silence monitors for expected Azure VM shutdowns. Defaults to `false`.
+- `container_app_filters` (String) This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure Container Apps. Only Container Apps that match one of the defined tags are imported into Datadog.
+- `cspm_enabled` (Boolean) Enable Cloud Security Management Misconfigurations for your organization. Defaults to `false`.
+- `custom_metrics_enabled` (Boolean) Enable custom metrics for your organization. Defaults to `false`.
 - `host_filters` (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`
 
 ### Read-Only

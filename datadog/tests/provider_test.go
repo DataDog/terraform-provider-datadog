@@ -26,7 +26,6 @@ import (
 	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -125,6 +124,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_slo_list_test":                         "dashboards",
 	"tests/resource_datadog_dashboard_slo_test":                              "dashboards",
 	"tests/resource_datadog_dashboard_style_test":                            "dashboards",
+	"tests/resource_datadog_dashboard_split_graph_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_sunburst_test":                         "dashboards",
 	"tests/resource_datadog_dashboard_test":                                  "dashboards",
 	"tests/resource_datadog_dashboard_timeseries_test":                       "dashboards",
@@ -132,6 +132,14 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_topology_map_test":                     "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                          "dashboards",
+	"tests/resource_datadog_powerpack_test":                                  "powerpacks",
+	"tests/resource_datadog_powerpack_alert_graph_test":                      "powerpacks",
+	"tests/resource_datadog_powerpack_check_status_test":                     "powerpacks",
+	"tests/resource_datadog_powerpack_iframe_test":                           "powerpacks",
+	"tests/resource_datadog_powerpack_image_test":                            "powerpacks",
+	"tests/resource_datadog_powerpack_free_text_test":                        "powerpacks",
+	"tests/resource_datadog_powerpack_note_test":                             "powerpacks",
+	"tests/resource_datadog_powerpack_servicemap_test":                       "powerpacks",
 	"tests/resource_datadog_downtime_test":                                   "downtimes",
 	"tests/resource_datadog_downtime_schedule_test":                          "downtimes",
 	"tests/resource_datadog_integration_aws_lambda_arn_test":                 "integration-aws",
@@ -625,8 +633,7 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	rec := initRecorder(t)
 	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	c := cleanhttp.DefaultClient()
-	loggingTransport := logging.NewTransport("Datadog", rec)
-	c.Transport = loggingTransport
+	c.Transport = rec
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
 	t.Cleanup(func() {
 		rec.Stop()
@@ -648,7 +655,7 @@ func TestProvider(t *testing.T) {
 	defer rec.Stop()
 
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewTransport("Datadog", rec)
+	c.Transport = rec
 	accProvider := initAccProvider(context.Background(), t, c)
 
 	if err := accProvider.InternalValidate(); err != nil {

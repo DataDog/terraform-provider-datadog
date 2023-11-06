@@ -158,10 +158,11 @@ resource "datadog_integration_aws" "account_access_key" {
 }`, uniq)
 }
 
-func testAccDatadogIntegrationAWSAccessKeyUpdateConfig(uniq string) string {
+func testAccDatadogIntegrationAWSAccessKeyUpdateConfig(access_key_id string, account_id string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account_access_key" {
-  	access_key_id                    = "%s"
+	account_id                       = "%s"
+	access_key_id                    = "%s"
   	secret_access_key                = "testacc-datadog-integration-secret"
 	filter_tags                      = ["key:value"]
   	host_tags                        = ["key:value", "key2:value2"]
@@ -170,13 +171,14 @@ resource "datadog_integration_aws" "account_access_key" {
     	    opsworks = true
   	}
   	excluded_regions                 = ["us-east-1", "us-west-2"]
-}`, uniq)
+}`, account_id, access_key_id)
 }
 
 func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
+	accountID := uniqueAWSAccountID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -196,9 +198,12 @@ func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
 						"secret_access_key", "testacc-datadog-integration-secret"),
 				),
 			}, {
-				Config: testAccDatadogIntegrationAWSAccessKeyUpdateConfig(accessKeyID),
+				Config: testAccDatadogIntegrationAWSAccessKeyUpdateConfig(accessKeyID, accountID),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationAWSExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account_access_key",
+						"account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account_access_key",
 						"access_key_id", accessKeyID),

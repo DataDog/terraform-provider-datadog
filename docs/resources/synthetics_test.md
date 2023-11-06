@@ -398,7 +398,7 @@ EOT
 - `browser_variable` (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - `config_variable` (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
 - `device_ids` (List of String) Required if `type = "browser"`. Array with the different device IDs used to run the test. Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`, `edge.laptop_large`, `edge.tablet`, `edge.mobile_small`.
-- `message` (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
+- `message` (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events. Defaults to `""`.
 - `options_list` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
@@ -436,7 +436,7 @@ Optional:
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
-- `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`.
+- `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`. Defaults to `"http"`.
 
 <a id="nestedblock--api_step--assertion"></a>
 ### Nested Schema for `api_step.assertion`
@@ -515,19 +515,19 @@ Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
 - `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
-- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication.
+- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
 - `password` (String, Sensitive) Password for authentication.
 - `region` (String) Region for `SIGV4` authentication.
-- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication.
-- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication.
+- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
+- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
 - `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Valid values are `header`, `body`.
-- `type` (String) Type of basic authentication to use when performing the test.
+- `type` (String) Type of basic authentication to use when performing the test. Defaults to `"web"`.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
 
@@ -549,7 +549,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--api_step--request_client_certificate--key"></a>
@@ -561,7 +561,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 
@@ -610,8 +610,8 @@ Optional:
 
 Optional:
 
-- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert.
-- `interval` (Number) Interval between a failed test and the next retry in milliseconds.
+- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Defaults to `0`.
+- `interval` (Number) Interval between a failed test and the next retry in milliseconds. Defaults to `300`.
 
 
 
@@ -709,7 +709,7 @@ Required:
 
 Optional:
 
-- `fail_test_on_cannot_locate` (Boolean)
+- `fail_test_on_cannot_locate` (Boolean) Defaults to `false`.
 
 <a id="nestedblock--browser_step--params--element_user_locator--value"></a>
 ### Nested Schema for `browser_step.params.element_user_locator.value`
@@ -720,7 +720,7 @@ Required:
 
 Optional:
 
-- `type` (String)
+- `type` (String) Defaults to `"css"`.
 
 
 
@@ -729,7 +729,7 @@ Optional:
 
 Optional:
 
-- `example` (String) Example of the extracted variable.
+- `example` (String) Example of the extracted variable. Defaults to `""`.
 - `name` (String) Name of the extracted variable.
 
 
@@ -745,9 +745,9 @@ Required:
 
 Optional:
 
-- `example` (String) Example for the variable.
+- `example` (String) Example for the variable. Defaults to `""`.
 - `id` (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
-- `pattern` (String) Pattern of the variable.
+- `pattern` (String) Pattern of the variable. Defaults to `""`.
 - `secure` (Boolean) Determines whether or not the browser test variable is obfuscated. Can only be used with a browser variable of type `text`
 
 
@@ -764,7 +764,7 @@ Optional:
 - `example` (String) Example for the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
 - `id` (String) When type = `global`, ID of the global variable to use.
 - `pattern` (String) Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
-- `secure` (Boolean) Whether the value of this variable will be obfuscated in test results.
+- `secure` (Boolean) Whether the value of this variable will be obfuscated in test results. Defaults to `false`.
 
 
 <a id="nestedblock--options_list"></a>
@@ -787,7 +787,7 @@ Optional:
 - `ignore_server_certificate_error` (Boolean) Ignore server certificate error for browser tests.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
-- `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
+- `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Defaults to `1`.
 - `monitor_name` (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
 - `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - `monitor_priority` (Number)
@@ -810,7 +810,7 @@ Optional:
 
 Optional:
 
-- `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`.
+- `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
 
 
 <a id="nestedblock--options_list--retry"></a>
@@ -818,8 +818,8 @@ Optional:
 
 Optional:
 
-- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert.
-- `interval` (Number) Interval between a failed test and the next retry in milliseconds.
+- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Defaults to `0`.
+- `interval` (Number) Interval between a failed test and the next retry in milliseconds. Defaults to `300`.
 
 
 <a id="nestedblock--options_list--rum_settings"></a>
@@ -862,19 +862,19 @@ Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
 - `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
-- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication.
+- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
 - `password` (String, Sensitive) Password for authentication.
 - `region` (String) Region for `SIGV4` authentication.
-- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication.
-- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication.
+- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
+- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
 - `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Valid values are `header`, `body`.
-- `type` (String) Type of basic authentication to use when performing the test.
+- `type` (String) Type of basic authentication to use when performing the test. Defaults to `"web"`.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
 
@@ -896,7 +896,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--request_client_certificate--key"></a>
@@ -908,7 +908,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 

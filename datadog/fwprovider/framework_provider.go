@@ -471,7 +471,7 @@ func (r *FrameworkResourceWrapper) Metadata(ctx context.Context, req resource.Me
 
 func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	(*r.innerResource).Schema(ctx, req, resp)
-	resp.Schema = fwutils.EnrichFrameworkResourceSchema(resp.Schema)
+	fwutils.EnrichFrameworkResourceSchema(&resp.Schema)
 }
 
 func (r *FrameworkResourceWrapper) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {

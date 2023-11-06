@@ -27,7 +27,7 @@ func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsGlobalVariableConfig(variableName, roleName),
@@ -49,7 +49,7 @@ func TestAccDatadogSyntheticsGlobalVariable_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableStep(ctx, accProvider, t),
 		},
@@ -64,7 +64,7 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableSecureStep(ctx, accProvider, t),
 		},
@@ -79,7 +79,7 @@ func TestAccDatadogSyntheticsGlobalVariable_Updated(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableStep(ctx, accProvider, t),
 			updateSyntheticsGlobalVariableStep(ctx, accProvider, t),
@@ -95,7 +95,7 @@ func TestAccDatadogSyntheticsGlobalVariableSecure_Updated(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableSecureStep(ctx, accProvider, t),
 			updateSyntheticsGlobalVariableSecureStep(ctx, accProvider, t),
@@ -111,7 +111,7 @@ func TestAccDatadogSyntheticsGlobalVariableFromTest_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableFromTestStep(ctx, accProvider, t),
 		},
@@ -126,7 +126,7 @@ func TestAccDatadogSyntheticsGlobalVariableFromTest_LocalVariable(t *testing.T) 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGlobalVariableFromTestLocalVariableStep(ctx, accProvider, t),
 		},
@@ -494,12 +494,6 @@ func testSyntheticsResourceExists(accProvider func() (*schema.Provider, error)) 
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type == "datadog_synthetics_test" {
-				if _, _, err := apiInstances.GetSyntheticsApiV1().GetTest(auth, r.Primary.ID); err != nil {
-					return fmt.Errorf("received an error retrieving synthetics test %s", err)
-				}
-			}
-
 			if r.Type == "datadog_synthetics_global_variable" {
 				if _, _, err := apiInstances.GetSyntheticsApiV1().GetGlobalVariable(auth, r.Primary.ID); err != nil {
 					return fmt.Errorf("received an error retrieving synthetics global variable %s", err)
@@ -510,7 +504,7 @@ func testSyntheticsResourceExists(accProvider func() (*schema.Provider, error)) 
 	}
 }
 
-func testSyntheticsResourceIsDestroyed(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testSyntheticsGlobalVariableResourceIsDestroyed(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
@@ -518,18 +512,8 @@ func testSyntheticsResourceIsDestroyed(accProvider func() (*schema.Provider, err
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
-			if r.Type == "datadog_role" {
+			if r.Type != "datadog_synthetics_global_variable" {
 				continue
-			}
-
-			if r.Type == "datadog_synthetics_test" {
-				if _, _, err := apiInstances.GetSyntheticsApiV1().GetTest(auth, r.Primary.ID); err != nil {
-					if strings.Contains(err.Error(), "404 Not Found") {
-						continue
-					}
-					return fmt.Errorf("received an error retrieving synthetics test %s", err)
-				}
-				return fmt.Errorf("synthetics test still exists")
 			}
 
 			if _, _, err := apiInstances.GetSyntheticsApiV1().GetGlobalVariable(auth, r.Primary.ID); err != nil {

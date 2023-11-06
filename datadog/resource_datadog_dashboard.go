@@ -995,9 +995,105 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getRunWorkflowDefinitionSchema(),
 			},
 		},
+		"split_graph_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Split Graph widget.",
+			Elem: &schema.Resource{
+				Schema: getSplitGraphDefinitionSchema(),
+			},
+		},
 	}
 }
 
+func getSplitGraphSourceWidgetSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		// A widget should implement exactly one of the following definitions
+		"change_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Change widget.",
+			Elem: &schema.Resource{
+				Schema: getChangeDefinitionSchema(),
+			},
+		},
+		"geomap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Geomap widget.",
+			Elem: &schema.Resource{
+				Schema: getGeomapDefinitionSchema(),
+			},
+		},
+
+		"query_value_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Value widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryValueDefinitionSchema(),
+			},
+		},
+		"query_table_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Table widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryTableDefinitionSchema(),
+			},
+		},
+		"scatterplot_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Scatterplot widget.",
+			Elem: &schema.Resource{
+				Schema: getScatterplotDefinitionSchema(),
+			},
+		},
+		"sunburst_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Sunburst widget.",
+			Elem: &schema.Resource{
+				Schema: getSunburstDefinitionschema(),
+			},
+		},
+		"timeseries_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Timeseries widget.",
+			Elem: &schema.Resource{
+				Schema: getTimeseriesDefinitionSchema(),
+			},
+		},
+		"toplist_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Toplist widget.",
+			Elem: &schema.Resource{
+				Schema: getToplistDefinitionSchema(),
+			},
+		},
+		"treemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Treemap widget.",
+			Elem: &schema.Resource{
+				Schema: getTreemapDefinitionSchema(),
+			},
+		},
+	}
+}
 func buildDatadogWidgets(terraformWidgets *[]interface{}) (*[]datadogV1.Widget, error) {
 	datadogWidgets := make([]datadogV1.Widget, len(*terraformWidgets))
 	for i, terraformWidget := range *terraformWidgets {
@@ -1145,6 +1241,14 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 		if runWorkflowDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.RunWorkflowWidgetDefinitionAsWidgetDefinition(buildDatadogRunWorkflowDefinition(runWorkflowDefinition))
 		}
+	} else if def, ok := terraformWidget["split_graph_definition"].([]interface{}); ok && len(def) > 0 {
+		if splitGraphDefinition, ok := def[0].(map[string]interface{}); ok {
+			datadogDefinition, err := buildDatadogSplitGraphDefinition(splitGraphDefinition)
+			if err != nil {
+				return nil, err
+			}
+			definition = datadogV1.SplitGraphWidgetDefinitionAsWidgetDefinition(datadogDefinition)
+		}
 	} else {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
 	}
@@ -1159,6 +1263,105 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 	}
 
 	return datadogWidget, nil
+}
+
+// Helper to build a Datadog Source Widget defiition for split graph
+func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) (*datadogV1.SplitGraphSourceWidgetDefinition, error) {
+	// Build widget Definition
+	var definition datadogV1.SplitGraphSourceWidgetDefinition
+	sourceWidgetCount := 0
+	if def, ok := terraformWidget["change_definition"].([]interface{}); ok && len(def) > 0 {
+		if changeDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ChangeWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogChangeDefinition(changeDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+
+	if def, ok := terraformWidget["query_value_definition"].([]interface{}); ok && len(def) > 0 {
+		if queryValueDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.QueryValueWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogQueryValueDefinition(queryValueDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["query_table_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if queryTableDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TableWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogQueryTableDefinition(queryTableDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["scatterplot_definition"].([]interface{}); ok && len(def) > 0 {
+		if scatterplotDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ScatterPlotWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogScatterplotDefinition(scatterplotDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["sunburst_definition"].([]interface{}); ok && len(def) > 0 {
+		if sunburstDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.SunburstWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogSunburstDefinition(sunburstDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["timeseries_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if timeseriesDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TimeseriesWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogTimeseriesDefinition(timeseriesDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["toplist_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if toplistDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ToplistWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogToplistDefinition(toplistDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["treemap_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if treemapDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TreeMapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogTreemapDefinition(treemapDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["geomap_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if geomapDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.GeomapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogGeomapDefinition(geomapDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if sourceWidgetCount == 0 {
+		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
+	}
+
+	return &definition, nil
 }
 
 // Helper to build a list of Terraform widgets from a list of Datadog widgets
@@ -1291,10 +1494,51 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 	} else if widgetDefinition.RunWorkflowWidgetDefinition != nil {
 		terraformDefinition := buildTerraformRunWorkflowDefinition(widgetDefinition.RunWorkflowWidgetDefinition)
 		terraformWidget["run_workflow_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.SplitGraphWidgetDefinition != nil {
+		terraformDefinition, err := buildTerraformSplitGraphDefinition(widgetDefinition.SplitGraphWidgetDefinition)
+		if err != nil {
+			return nil, err
+		}
+		terraformWidget["split_graph_definition"] = []map[string]interface{}{terraformDefinition}
 	} else {
 		return nil, fmt.Errorf("unsupported widget type: %s", widgetDefinition.GetActualInstance())
 	}
 	return terraformWidget, nil
+}
+
+// Helper to build a source widget definition for terraform
+func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadogV1.SplitGraphSourceWidgetDefinition) (map[string]interface{}, error) {
+	terraformWidgetDefinition := map[string]interface{}{}
+
+	// Build definition
+	if datadogSourceWidgetDefinition.ChangeWidgetDefinition != nil {
+		terraformDefinition := buildTerraformChangeDefinition(datadogSourceWidgetDefinition.ChangeWidgetDefinition)
+		terraformWidgetDefinition["change_definition"] = terraformDefinition
+	} else if datadogSourceWidgetDefinition.QueryValueWidgetDefinition != nil {
+		terraformDefinition := buildTerraformQueryValueDefinition(datadogSourceWidgetDefinition.QueryValueWidgetDefinition)
+		terraformWidgetDefinition["query_value_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.TableWidgetDefinition != nil {
+		terraformDefinition := buildTerraformQueryTableDefinition(datadogSourceWidgetDefinition.TableWidgetDefinition)
+		terraformWidgetDefinition["query_table_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.SunburstWidgetDefinition != nil {
+		terraformDefinition := buildTerraformSunburstDefinition(datadogSourceWidgetDefinition.SunburstWidgetDefinition)
+		terraformWidgetDefinition["sunburst_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.TimeseriesWidgetDefinition != nil {
+		terraformDefinition := buildTerraformTimeseriesDefinition(datadogSourceWidgetDefinition.TimeseriesWidgetDefinition)
+		terraformWidgetDefinition["timeseries_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.ToplistWidgetDefinition != nil {
+		terraformDefinition := buildTerraformToplistDefinition(datadogSourceWidgetDefinition.ToplistWidgetDefinition)
+		terraformWidgetDefinition["toplist_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.TreeMapWidgetDefinition != nil {
+		terraformDefinition := buildTerraformTreemapDefinition(datadogSourceWidgetDefinition.TreeMapWidgetDefinition)
+		terraformWidgetDefinition["treemap_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.GeomapWidgetDefinition != nil {
+		terraformDefinition := buildTerraformGeomapDefinition(datadogSourceWidgetDefinition.GeomapWidgetDefinition)
+		terraformWidgetDefinition["geomap_definition"] = []map[string]interface{}{terraformDefinition}
+	} else {
+		return nil, fmt.Errorf("unsupported widget type used as split graph source widget: %s", datadogSourceWidgetDefinition.GetActualInstance())
+	}
+	return terraformWidgetDefinition, nil
 }
 
 //
@@ -7611,6 +7855,363 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	}
 
 	return datadogDefinition
+}
+
+//
+// Split Graph Definition helpers
+//
+
+func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"source_widget_definition": {
+			Description: "The original widget we are splitting on.",
+			Type:        schema.TypeList,
+			Required:    true,
+			MinItems:    1,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: getSplitGraphSourceWidgetSchema(),
+			},
+		},
+		"split_config": {
+			Description: "Encapsulates all user choices about how to split a graph.",
+			Type:        schema.TypeList,
+			Required:    true,
+			MinItems:    1,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: getSplitConfigSchema(),
+			},
+		},
+		"size": {
+			Description: "Size of the individual graphs in the split.",
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+		"has_uniform_y_axes": {
+			Description: "Normalize y axes across graphs.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"live_span": getWidgetLiveSpanSchema(),
+	}
+}
+
+func getSplitConfigSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"split_dimensions": getSplitDimensionSchema(),
+		"limit": {
+			Description: "Maximum number of graphs to display in the widget.",
+			Type:        schema.TypeInt,
+			Optional:    true,
+		},
+		"sort":          getSplitSortSchema(),
+		"static_splits": getStaticSplitsSchema(),
+	}
+}
+
+func getSplitDimensionSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The property by which the graph splits",
+		Type:        schema.TypeList,
+		Required:    true,
+		MinItems:    1,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"one_graph_per": {
+					Description: "The system interprets this attribute differently depending on the data source of the query being split. For metrics, it's a tag. For the events platform, it's an attribute or tag.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			},
+		},
+	}
+}
+func getSplitSortSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "Controls the order in which graphs appear in the split.",
+		Type:        schema.TypeList,
+		Required:    true,
+		MinItems:    1,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"compute": getSplitSortComputeSchema(),
+				"order": {
+					Description:      "Widget sorting methods.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
+				},
+			},
+		},
+	}
+}
+
+func getSplitSortComputeSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "Defines the metric and aggregation used as the sort value",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"aggregation": {
+					Description: "How to aggregate the sort metric for the purposes of ordering.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"metric": {
+					Description: "The metric to use for sorting graphs.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			},
+		},
+	}
+}
+func getStaticSplitsSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The property by which the graph splits",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    100,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"split_vector": getSplitVectorSchema(),
+			},
+		},
+	}
+}
+
+func getSplitVectorSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The split graph list contains a graph for each value of the split dimension.",
+		Type:        schema.TypeList,
+		Required:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"tag_key": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"tag_values": {
+					Type:     schema.TypeList,
+					Required: true,
+					Elem:     &schema.Schema{Type: schema.TypeString},
+				},
+			},
+		},
+	}
+}
+
+func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}) (*datadogV1.SplitGraphWidgetDefinition, error) {
+	datadogDefinition := datadogV1.NewSplitGraphWidgetDefinitionWithDefaults()
+	// Required params
+	//size,source_widget,split_config, type
+	if size, ok := terraformDefinition["size"].(string); ok && size != "" {
+		datadogDefinition.SetSize(datadogV1.SplitGraphVizSize(size))
+	}
+
+	if terraformSourceWidget, ok := terraformDefinition["source_widget_definition"].([]interface{}); ok && len(terraformSourceWidget) > 0 {
+		if v, ok := terraformSourceWidget[0].(map[string]interface{}); ok {
+			datadogWidget, err := buildDatadogSourceWidgetDefinition(v)
+			if err != nil {
+				return nil, err
+			}
+			datadogDefinition.SetSourceWidgetDefinition(*datadogWidget)
+		} else {
+			return nil, fmt.Errorf("failed to find valid definition in widget configuration")
+		}
+	}
+
+	if terraformSplitConfig, ok := terraformDefinition["split_config"].([]interface{}); ok && len(terraformSplitConfig) > 0 {
+		datadogDefinition.SetSplitConfig(*buildDatadogSplitConfig(terraformSplitConfig[0].(map[string]interface{})))
+	}
+
+	//optional params
+	if yAxes, ok := terraformDefinition["has_uniform_y_axes"].(bool); ok {
+		datadogDefinition.SetHasUniformYAxes(yAxes)
+	}
+
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.Title = datadog.PtrString(v)
+	}
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+		datadogDefinition.Time = &datadogV1.WidgetTime{
+			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+		}
+	}
+
+	return datadogDefinition, nil
+}
+
+func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datadogV1.SplitConfig {
+	datadogSplitConfig := datadogV1.NewSplitConfigWithDefaults()
+
+	if limit, ok := terraformSplitConfig["limit"].(int); ok {
+		datadogSplitConfig.SetLimit(int64(limit))
+	}
+
+	if sort, ok := terraformSplitConfig["sort"].([]interface{}); ok && len(sort) > 0 {
+		datadogSplitConfig.SetSort(*buildDatadogSplitSort(sort[0].(map[string]interface{})))
+	}
+
+	if splitDimensions, ok := terraformSplitConfig["split_dimensions"].([]interface{}); ok && len(splitDimensions) > 0 {
+		terraformSplitDimension := splitDimensions[0].(map[string]interface{})
+		if v, ok := terraformSplitDimension["one_graph_per"].(string); ok && len(v) > 0 {
+			datadogSplitDimensions := make([]datadogV1.SplitDimension, 1)
+			datadogSplitDimensions[0] = *datadogV1.NewSplitDimension(v)
+			datadogSplitConfig.SetSplitDimensions(datadogSplitDimensions)
+		}
+	}
+
+	if v, ok := terraformSplitConfig["static_splits"].([]interface{}); ok && len(v) > 0 {
+		datadogStaticSplits := buildDatadogStaticSplits(v)
+		datadogSplitConfig.SetStaticSplits(*datadogStaticSplits)
+	}
+	return datadogSplitConfig
+}
+
+func buildDatadogSplitSort(terraformSplitSort map[string]interface{}) *datadogV1.SplitSort {
+	datadogSplitSort := datadogV1.SplitSort{}
+
+	if order, ok := terraformSplitSort["order"].(string); ok && len(order) > 0 {
+		datadogSplitSort.SetOrder(datadogV1.WidgetSort(order))
+	}
+
+	if compute, ok := terraformSplitSort["compute"].([]interface{}); ok && len(compute) > 0 {
+		sortCompute := compute[0].(map[string]interface{})
+		var datadogSortAggregation string
+		var datadogSortMetric string
+		if aggregation, ok := sortCompute["aggregation"].(string); ok && len(aggregation) > 0 {
+			datadogSortAggregation = aggregation
+		}
+		if metric, ok := sortCompute["metric"].(string); ok && len(metric) > 0 {
+			datadogSortMetric = metric
+		}
+		datadogSplitSort.SetCompute(*datadogV1.NewSplitConfigSortCompute(datadogSortAggregation, datadogSortMetric))
+	}
+	return &datadogSplitSort
+}
+
+// Build static splits for backend  format from static splits
+func buildDatadogStaticSplits(terraformStaticSplits []interface{}) *[][]datadogV1.SplitVectorEntryItem {
+	datadogStaticSplits := make([][]datadogV1.SplitVectorEntryItem, len(terraformStaticSplits))
+	//going over each static split
+	for i, terraformStaticSplit := range terraformStaticSplits {
+		terraformStaticSplitMap := terraformStaticSplit.(map[string]interface{})
+		//building inner array for static split from terraform split vector list.
+		for _, splitVector := range terraformStaticSplitMap["split_vector"].([]interface{}) {
+			datadogSplitVectorMap := splitVector.(map[string]interface{})
+
+			datadogSplitVector := datadogV1.SplitVectorEntryItem{}
+			if v, ok := datadogSplitVectorMap["tag_key"].(string); ok {
+				datadogSplitVector.SetTagKey(v)
+			}
+			if tagValuesList, ok := datadogSplitVectorMap["tag_values"].([]interface{}); ok {
+				datadogTagValues := make([]string, len(tagValuesList))
+				for k, tagValues := range tagValuesList {
+					datadogTagValues[k] = tagValues.(string)
+				}
+				datadogSplitVector.SetTagValues(datadogTagValues)
+			}
+			datadogStaticSplits[i] = append(datadogStaticSplits[i], datadogSplitVector)
+		}
+	}
+	return &datadogStaticSplits
+}
+
+func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphWidgetDefinition) (map[string]interface{}, error) {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	if v, ok := datadogDefinition.GetSourceWidgetDefinitionOk(); ok {
+		terraformSourceWidgetDefinition, err := buildTerraformSourceWidgetDefinition(v)
+		if err != nil {
+			return nil, err
+		}
+		terraformDefinition["source_widget_definition"] = []map[string]interface{}{terraformSourceWidgetDefinition}
+	}
+	if v, ok := datadogDefinition.GetSizeOk(); ok {
+		terraformDefinition["size"] = v
+	}
+	if v, ok := datadogDefinition.GetSplitConfigOk(); ok {
+		terraformDefinition["split_config"] = []map[string]interface{}{*buildTerraformSplitConfig(v)}
+	}
+	// Optional params
+	if v, ok := datadogDefinition.GetHasUniformYAxesOk(); ok {
+		terraformDefinition["has_uniform_y_axes"] = *v
+	}
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = *v
+	}
+	if v, ok := datadogDefinition.GetTimeOk(); ok {
+		terraformDefinition["live_span"] = v.GetLiveSpan()
+	}
+
+	return terraformDefinition, nil
+}
+
+func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[string]interface{} {
+	terraformSplitConfig := map[string]interface{}{}
+
+	if v, ok := datadogSplitConfig.GetSplitDimensionsOk(); ok {
+		datadogSplitDimensions := *v
+		terraformOneGraphPer := map[string]interface{}{}
+
+		terraformOneGraphPer["one_graph_per"] = datadogSplitDimensions[0].OneGraphPer
+		terraformSplitConfig["split_dimensions"] = []map[string]interface{}{terraformOneGraphPer}
+	}
+
+	if v, ok := datadogSplitConfig.GetLimitOk(); ok {
+		terraformSplitConfig["limit"] = *v
+	}
+
+	if datadogSort, ok := datadogSplitConfig.GetSortOk(); ok {
+		terraformSortList := []map[string]interface{}{
+			{
+				"order": datadogSort.Order,
+			},
+		}
+
+		if datadogSortCompute, datadogSortComputeOk := datadogSort.GetComputeOk(); datadogSortComputeOk {
+			terraformSortList[0]["compute"] = []map[string]interface{}{
+				{
+					"aggregation": datadogSortCompute.Aggregation,
+					"metric":      datadogSortCompute.Metric,
+				},
+			}
+		}
+		terraformSplitConfig["sort"] = terraformSortList
+	}
+	if v, ok := datadogSplitConfig.GetStaticSplitsOk(); ok {
+		terraformSplitConfig["static_splits"] = buildTerraformStaticSplits(v)
+	}
+	return &terraformSplitConfig
+}
+
+// Build static splits for terraform from backend format
+func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[]interface{} {
+	terraformStaticSplits := make([]interface{}, len(*datadogStaticSplits))
+	for i, staticSplit := range *datadogStaticSplits {
+		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
+		for j, splitVector := range staticSplit {
+			terraformSplitVectors[j] = map[string]interface{}{
+				"tag_key":    splitVector.GetTagKey(),
+				"tag_values": splitVector.GetTagValues(),
+			}
+		}
+		terraformStaticSplits[i] = map[string]interface{}{
+			"split_vector": terraformSplitVectors,
+		}
+	}
+	return &terraformStaticSplits
 }
 
 //

@@ -33,9 +33,6 @@ func init() {
 	// to the exported descriptions if present.
 	schema.SchemaDescriptionBuilder = func(s *schema.Schema) string {
 		desc := s.Description
-		//if s.Default != nil {
-		//	desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
-		//}
 		if s.ValidateDiagFunc != nil {
 			defer func() {
 				recover()
@@ -58,6 +55,15 @@ func init() {
 		}
 		if s.Deprecated != "" {
 			desc = fmt.Sprintf("%s **Deprecated.** %s", desc, s.Deprecated)
+		}
+
+		if s.Default != nil {
+			switch s.Type {
+			case schema.TypeString:
+				desc += fmt.Sprintf(" Defaults to `\"%v\"`.", s.Default)
+			default:
+				desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
+			}
 		}
 		return strings.TrimSpace(desc)
 	}
@@ -185,6 +191,7 @@ func Provider() *schema.Provider {
 			"datadog_monitor_config_policy":                resourceDatadogMonitorConfigPolicy(),
 			"datadog_monitor_json":                         resourceDatadogMonitorJSON(),
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
+			"datadog_powerpack":                            resourceDatadogPowerpack(),
 			"datadog_role":                                 resourceDatadogRole(),
 			"datadog_rum_application":                      resourceDatadogRUMApplication(),
 			"datadog_service_account":                      resourceDatadogServiceAccount(),
@@ -290,7 +297,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewLoggingHTTPTransport(c.Transport)
 	communityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
 		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
 		"go-datadog-api",
