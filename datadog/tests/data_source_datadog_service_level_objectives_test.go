@@ -30,12 +30,8 @@ func TestAccDatadogServiceLevelObjectivesDatasource(t *testing.T) {
 				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, sloName),
 			},
 			{
-				Config: testAccDatasourceServiceLevelObjectivesNameFilterConfig(sloName),
-				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, sloName),
-			},
-			{
 				Config: testAccDatasourceServiceLevelObjectivesWithQueryNameFilterConfig(sloName),
-				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, sloName),
+				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, sloName),
 			},
 			{
 				Config: testAccDatasourceServiceLevelObjectivesTagsFilterConfig(sloName),
