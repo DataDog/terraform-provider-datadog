@@ -625,47 +625,54 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 			if widgetDefRequest[v] != nil {
 				widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
 			}
-			if widgetDefRequest["formula"] != nil {
-				if widgetType == "query_table" || widgetType == "treemap" {
-					var formulas []map[string]interface{}
-					for _, formulaDef := range widgetDefRequest["formula"].([]map[string]interface{}) {
-						if formulaDef["limit"] != nil {
-							formulaDef["limit"] = formulaDef["limit"].([]map[string]interface{})[0]
-						}
-						formulaDef["formula"] = formulaDef["formula_expression"]
-						delete(formulaDef, "formula_expression")
-						formulas = append(formulas, formulaDef)
-					}
-					widgetDefRequest["formulas"] = formulas
-				} else {
-					widgetDefRequest["formulas"] = widgetDefRequest["formula"]
-				}
-				delete(widgetDefRequest, "formula")
-
-			}
-			if widgetDefRequest["query"] != nil {
-				if widgetType == "query_table" || widgetType == "treemap" {
-					queryBody := widgetDefRequest["query"].([]map[string]interface{})[0]
-					for _, v := range queryBody {
-						widgetDefRequest["queries"] = v
-					}
-					widgetDefRequest["response_format"] = "scalar"
-					delete(widgetDefRequest, "query")
-				} else if widgetType == "topology_map" {
-					widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
-				} else {
-					widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
-				}
-			}
-			for _, v := range []string{"formula"} {
-				// Properties listed above are defined as single, but API Spec expects a plural name
-				if widgetDefRequest[v] != nil {
-					widgetDefRequest[v+"s"] = widgetDefRequest[v]
-					delete(widgetDefRequest, v)
-				}
-			}
-			normalizedWidgetDefRequests[i] = widgetDefRequest
 		}
+		for _, v := range []string{"formula"} {
+			// Properties listed above are defined as single, but API Spec expects a plural name
+			if widgetDefRequest[v] != nil {
+				widgetDefRequest[v+"s"] = widgetDefRequest[v]
+				delete(widgetDefRequest, v)
+			}
+		}
+		if widgetDefRequest["formula"] != nil {
+			if widgetType == "query_table" || widgetType == "treemap" {
+				var formulas []map[string]interface{}
+				for _, formulaDef := range widgetDefRequest["formula"].([]map[string]interface{}) {
+					if formulaDef["limit"] != nil {
+						formulaDef["limit"] = formulaDef["limit"].([]map[string]interface{})[0]
+					}
+					formulaDef["formula"] = formulaDef["formula_expression"]
+					delete(formulaDef, "formula_expression")
+					formulas = append(formulas, formulaDef)
+				}
+				widgetDefRequest["formulas"] = formulas
+			} else {
+				widgetDefRequest["formulas"] = widgetDefRequest["formula"]
+			}
+			delete(widgetDefRequest, "formula")
+
+		}
+		if widgetType != "topology_map" && widgetDefRequest["query"] != nil {
+			if widgetType == "query_table" || widgetType == "treemap" {
+				queryBody := widgetDefRequest["query"].([]map[string]interface{})[0]
+				for _, v := range queryBody {
+					widgetDefRequest["queries"] = v
+				}
+				widgetDefRequest["response_format"] = "scalar"
+				delete(widgetDefRequest, "query")
+			} else if widgetType == "topology_map" {
+				widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
+			} else {
+				widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
+			}
+		}
+		for _, v := range []string{"formula"} {
+			// Properties listed above are defined as single, but API Spec expects a plural name
+			if widgetDefRequest[v] != nil {
+				widgetDefRequest[v+"s"] = widgetDefRequest[v]
+				delete(widgetDefRequest, v)
+			}
+		}
+		normalizedWidgetDefRequests[i] = widgetDefRequest
 	}
 	return normalizedWidgetDefRequests, diags
 }
@@ -762,7 +769,7 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) (map[string]i
 			for i, widgetDefRequest := range widgetDefRequests {
 				widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
 
-				for _, v := range []string{"style", "query", "apm_query", "log_query", "process_query", "rum_query", "apm_stats_query", "security_query"} {
+				for _, v := range []string{"style", "apm_query", "log_query", "process_query", "rum_query", "apm_stats_query", "security_query"} {
 					// Properties listed above need to be converted from single values in the API to plural values for TF
 					if widgetDefRequestNormalized[v] != nil {
 						widgetDefRequestNormalized[v] = []interface{}{widgetDefRequestNormalized[v].(interface{})}
@@ -797,6 +804,9 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) (map[string]i
 						widgetDefRequestNormalized["formula"] = []interface{}{formulaDef}
 						delete(widgetDefRequestNormalized, "formulas")
 					}
+				}
+				if widgetDef["type"] != "topology_map" && widgetDefRequestNormalized["query"] != nil {
+					widgetDefRequestNormalized["query"] = []interface{}{widgetDefRequestNormalized["query"].(interface{})}
 				}
 				widgetDefRequests[i] = widgetDefRequestNormalized
 			}
