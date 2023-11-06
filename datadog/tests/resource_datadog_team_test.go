@@ -81,13 +81,13 @@ func testAccCheckDatadogTeamDestroy(accProvider *fwprovider.FrameworkProvider) f
 }
 
 func TeamDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
-	err := utils.Retry(2, 10, func() error {
-		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_team" {
-				continue
-			}
-			id := r.Primary.ID
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "resource_datadog_team" {
+			continue
+		}
+		id := r.Primary.ID
 
+		err := utils.Retry(2, 10, func() error {
 			_, httpResp, err := apiInstances.GetTeamsApiV2().GetTeam(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
@@ -96,10 +96,13 @@ func TeamDestroyHelper(auth context.Context, s *terraform.State, apiInstances *u
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Team %s", err)}
 			}
 			return &utils.RetryableError{Prob: "Team still exists"}
+		})
+
+		if err != nil {
+			return err
 		}
-		return nil
-	})
-	return err
+	}
+	return nil
 }
 
 func testAccCheckDatadogTeamExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {

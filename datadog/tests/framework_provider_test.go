@@ -15,7 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
 	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
@@ -129,7 +128,7 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 	ctx = testSpan(ctx, t)
 	rec := initRecorder(t)
 	httpClient := cleanhttp.DefaultClient()
-	httpClient.Transport = logging.NewTransport("Datadog", rec)
+	httpClient.Transport = rec
 	t.Cleanup(func() {
 		rec.Stop()
 	})

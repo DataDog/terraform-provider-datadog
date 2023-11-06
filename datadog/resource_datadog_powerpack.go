@@ -127,15 +127,15 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getCheckStatusDefinitionSchema(),
 			},
 		},
-		"distribution_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Distribution widget.",
-			Elem: &schema.Resource{
-				Schema: getDistributionDefinitionSchema(),
-			},
-		},
+		// "distribution_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Distribution widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getDistributionDefinitionSchema(),
+		// 	},
+		// },
 		"event_stream_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -163,24 +163,24 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getFreeTextDefinitionSchema(),
 			},
 		},
-		"heatmap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Heatmap widget.",
-			Elem: &schema.Resource{
-				Schema: getHeatmapDefinitionSchema(),
-			},
-		},
-		"hostmap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Hostmap widget.",
-			Elem: &schema.Resource{
-				Schema: getHostmapDefinitionSchema(),
-			},
-		},
+		// "heatmap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Heatmap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getHeatmapDefinitionSchema(),
+		// 	},
+		// },
+		// "hostmap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Hostmap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getHostmapDefinitionSchema(),
+		// 	},
+		// },
 		"iframe_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -199,24 +199,24 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getImageDefinitionSchema(),
 			},
 		},
-		"list_stream_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a List Stream widget.",
-			Elem: &schema.Resource{
-				Schema: getListStreamDefinitionSchema(),
-			},
-		},
-		"log_stream_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for an Log Stream widget.",
-			Elem: &schema.Resource{
-				Schema: getLogStreamDefinitionSchema(),
-			},
-		},
+		// "list_stream_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a List Stream widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getListStreamDefinitionSchema(),
+		// 	},
+		// },
+		// "log_stream_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for an Log Stream widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getLogStreamDefinitionSchema(),
+		// 	},
+		// },
 		"manage_status_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -244,24 +244,24 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getQueryValueDefinitionSchema(),
 			},
 		},
-		"query_table_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Query Table widget.",
-			Elem: &schema.Resource{
-				Schema: getQueryTableDefinitionSchema(),
-			},
-		},
-		"scatterplot_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Scatterplot widget.",
-			Elem: &schema.Resource{
-				Schema: getScatterplotDefinitionSchema(),
-			},
-		},
+		// "query_table_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Query Table widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getQueryTableDefinitionSchema(),
+		// 	},
+		// },
+		// "scatterplot_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Scatterplot widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getScatterplotDefinitionSchema(),
+		// 	},
+		// },
 		"servicemap_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -271,42 +271,42 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getServiceMapDefinitionSchema(),
 			},
 		},
-		"service_level_objective_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Service Level Objective widget.",
-			Elem: &schema.Resource{
-				Schema: getServiceLevelObjectiveDefinitionSchema(),
-			},
-		},
-		"slo_list_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for an SLO (Service Level Objective) List widget.",
-			Elem: &schema.Resource{
-				Schema: getSloListDefinitionSchema(),
-			},
-		},
-		"sunburst_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Sunburst widget.",
-			Elem: &schema.Resource{
-				Schema: getSunburstDefinitionschema(),
-			},
-		},
-		"timeseries_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Timeseries widget.",
-			Elem: &schema.Resource{
-				Schema: getTimeseriesDefinitionSchema(),
-			},
-		},
+		// "service_level_objective_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Service Level Objective widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getServiceLevelObjectiveDefinitionSchema(),
+		// 	},
+		// },
+		// "slo_list_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for an SLO (Service Level Objective) List widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getSloListDefinitionSchema(),
+		// 	},
+		// },
+		// "sunburst_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Sunburst widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getSunburstDefinitionschema(),
+		// 	},
+		// },
+		// "timeseries_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Timeseries widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getTimeseriesDefinitionSchema(),
+		// 	},
+		// },
 		"toplist_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -316,15 +316,15 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getToplistDefinitionSchema(),
 			},
 		},
-		"topology_map_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Topology Map widget.",
-			Elem: &schema.Resource{
-				Schema: getTopologyMapDefinitionSchema(),
-			},
-		},
+		// "topology_map_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Topology Map widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getTopologyMapDefinitionSchema(),
+		// 	},
+		// },
 		"trace_service_definition": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -334,33 +334,33 @@ func getPowerpackWidgetSchema() map[string]*schema.Schema {
 				Schema: getTraceServiceDefinitionSchema(),
 			},
 		},
-		"treemap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Treemap widget.",
-			Elem: &schema.Resource{
-				Schema: getTreemapDefinitionSchema(),
-			},
-		},
-		"geomap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Geomap widget.",
-			Elem: &schema.Resource{
-				Schema: getGeomapDefinitionSchema(),
-			},
-		},
-		"run_workflow_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Run Workflow widget.",
-			Elem: &schema.Resource{
-				Schema: getRunWorkflowDefinitionSchema(),
-			},
-		},
+		// "treemap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Treemap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getTreemapDefinitionSchema(),
+		// 	},
+		// },
+		// "geomap_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Geomap widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getGeomapDefinitionSchema(),
+		// 	},
+		// },
+		// "run_workflow_definition": {
+		// 	Type:        schema.TypeList,
+		// 	Optional:    true,
+		// 	MaxItems:    1,
+		// 	Description: "The definition for a Run Workflow widget.",
+		// 	Elem: &schema.Resource{
+		// 		Schema: getRunWorkflowDefinitionSchema(),
+		// 	},
+		// },
 	}
 }
 
@@ -769,6 +769,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 		}
 		widgetDef := make(map[string]interface{})
 		var widgetLayout *datadogV2.PowerpackInnerWidgetLayout
+
 		for widgetType, terraformDefinition := range terraformWidget {
 			// Each terraform definition contains an ID field which is unused,
 			// and a widget definition which we need to process
@@ -782,7 +783,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				x := dimensions["x"].(int64)
 				y := dimensions["y"].(int64)
 				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
-			} else {
+			} else if strings.HasSuffix(widgetType, "_definition") {
 				widgetDef = terraformDefinition.([]map[string]interface{})[0]
 				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
@@ -882,7 +883,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 		default:
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
-				Summary:  fmt.Sprintf("support for this widget type is not supported: %s", terraformWidget.Definition["type"]),
+				Summary:  fmt.Sprintf("widget type is not supported: %s", terraformWidget.Definition["type"]),
 			})
 			continue
 		}
@@ -898,6 +899,7 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			}
 			datadogWidget.SetLayout(*buildPowerpackWidgetLayout(layout))
 		}
+
 		datadogWidgets = append(datadogWidgets, *datadogWidget)
 	}
 	return &datadogWidgets, diags
