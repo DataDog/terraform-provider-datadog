@@ -93,7 +93,6 @@ func dataSourceDatadogServiceLevelObjectivesRead(ctx context.Context, d *schema.
 	var diags diag.Diagnostics
 
 	errorOnNoResults := d.Get("error_on_empty_result").(bool)
-	fmt.Println("check this ---- ", errorOnNoResults)
 
 	// query take precedence over other query parameters if specified
 	if v, ok := d.GetOk("query"); ok {
