@@ -616,10 +616,10 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
-func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}) []map[string]interface{} {
+func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widgetType string) []map[string]interface{} {
 	normalizedWidgetDefRequests := widgetDefRequests
 	for i, widgetDefRequest := range normalizedWidgetDefRequests {
-		for _, v := range []string{"style", "apm_stats_query", "x", "y", "query"} {
+		for _, v := range []string{"style", "apm_stats_query", "x", "y"} {
 			// Properties listed above are always a single value, not a list
 			if widgetDefRequest[v] != nil {
 				widgetDefRequest[v] = widgetDefRequest[v].([]map[string]interface{})[0]
@@ -631,6 +631,9 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}) []ma
 				widgetDefRequest[v+"s"] = widgetDefRequest[v]
 				delete(widgetDefRequest, v)
 			}
+		}
+		if widgetType != "topology_map" && widgetDefRequest["query"] != nil {
+			widgetDefRequest["query"] = widgetDefRequest["query"].([]map[string]interface{})[0]
 		}
 		normalizedWidgetDefRequests[i] = widgetDefRequest
 	}
@@ -682,7 +685,7 @@ func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]i
 			}
 			// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
 			// Here we set the "requests" field and remove "request"
-			widgetDef["requests"] = normalizeWidgetDefRequests(castWidgetDefReq)
+			widgetDef["requests"] = normalizeWidgetDefRequests(castWidgetDefReq, widgetDef["type"].(string))
 		}
 		delete(widgetDef, "request")
 	}
@@ -724,7 +727,7 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]in
 			widgetDefRequests := widgetDef["requests"].([]interface{})
 			for i, widgetDefRequest := range widgetDefRequests {
 				widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
-				for _, v := range []string{"style", "query", "apm_stats_query"} {
+				for _, v := range []string{"style", "apm_stats_query"} {
 					// Properties listed above need to be converted from single values in the API to plural values for TF
 					if widgetDefRequestNormalized[v] != nil {
 						widgetDefRequestNormalized[v] = []interface{}{widgetDefRequestNormalized[v].(interface{})}
@@ -733,6 +736,9 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]in
 				if widgetDefRequestNormalized["limit"] != nil {
 					// Dashboard widget can't typecast the float64 limit value so we need to convert it first
 					widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
+				}
+				if widgetDef["type"] != "topology_map" && widgetDefRequestNormalized["query"] != nil {
+					widgetDefRequestNormalized["query"] = []interface{}{widgetDefRequestNormalized["query"].(interface{})}
 				}
 				widgetDefRequests[i] = widgetDefRequestNormalized
 			}
