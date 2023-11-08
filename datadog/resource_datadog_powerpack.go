@@ -68,6 +68,15 @@ func resourceDatadogPowerpack() *schema.Resource {
 						Schema: getPowerpackWidgetSchema(),
 					},
 				},
+				"layout": {
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Description: "The layout of the powerpack on a 'free' dashboard.",
+					Elem: &schema.Resource{
+						Schema: getWidgetLayoutSchema(),
+					},
+				},
 			}
 		},
 	}
@@ -511,6 +520,49 @@ func resourceDatadogPowerpackRead(ctx context.Context, d *schema.ResourceData, m
 	return updatePowerpackState(d, &powerpack)
 }
 
+func validatePowerpackGroupWidgetLayout(layout map[string]interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	height := int64(layout["height"].(int))
+	width := int64(layout["width"].(int))
+	x := int64(layout["x"].(int))
+	y := int64(layout["y"].(int))
+
+	layoutDict := map[string]interface{}{
+		"height": height,
+		"width":  width,
+		"x":      x,
+		"y":      y,
+	}
+
+	for _, v := range []string{"height", "width"} {
+		if layoutDict[v].(int64) < 0 {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be greater than 0", v),
+			})
+		}
+	}
+
+	for _, v := range []string{"x", "y"} {
+		if layoutDict[v].(int64) < 1 {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be 0 or greater", v),
+			})
+		}
+	}
+
+	if width+x > 12 {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("powerpack layout contains an invalid value. sum of x and width is greater than the maximum of 12."),
+		})
+	}
+
+	return diags
+}
+
 func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datadogV2.Powerpack, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	attributes := datadogV2.NewPowerpackAttributesWithDefaults()
@@ -577,8 +629,30 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 			Summary:  fmt.Sprintf("error constructing widgets: %s", err),
 		})
 	}
+
+	var columnWidth int64
+	if v, ok := d.GetOk("layout"); ok {
+		unparsedLayout := v.([]interface{})[0].(map[string]interface{})
+		diags := validatePowerpackGroupWidgetLayout(unparsedLayout)
+		if diags.HasError() {
+			return nil, diags
+		}
+
+		columnWidth = int64(unparsedLayout["width"].(int))
+		layout := datadogV2.NewPowerpackGroupWidgetLayout(
+			int64(unparsedLayout["height"].(int)),
+			columnWidth,
+			int64(unparsedLayout["x"].(int)),
+			int64(unparsedLayout["y"].(int)))
+		groupWidget.SetLayout(*layout)
+	} else {
+		// Temporary fix: set a reasonable default layout value for the layout property
+		columnWidth = 12
+		groupWidget.Layout = datadogV2.NewPowerpackGroupWidgetLayout(1, 12, 0, 0)
+	}
+
 	// Finally, build JSON Powerpack API compatible widgets
-	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(terraformWidgets)
+	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(terraformWidgets, columnWidth)
 
 	if diags != nil {
 		return nil, diags
@@ -588,9 +662,6 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 	definition.SetWidgets(powerpackWidgets)
 
 	groupWidget.Definition = definition
-
-	// Temporary fix: set a reasonable default layout value for the layout property
-	groupWidget.Layout = datadogV2.NewPowerpackGroupWidgetLayout(1, 12, 0, 0)
 
 	attributes.GroupWidget = groupWidget
 
@@ -605,7 +676,7 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
-func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
+func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}, columnWidth int64) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	widgets := make([]datadogV2.PowerpackInnerWidgets, len(*terraformWidgets))
@@ -628,6 +699,14 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				width := dimensions["width"].(int64)
 				x := dimensions["x"].(int64)
 				y := dimensions["y"].(int64)
+
+				if x+width > columnWidth {
+					diags = append(diags, diag.Diagnostic{
+						Severity: diag.Error,
+						Summary:  fmt.Sprintf("sum of x [%s] and width [%s] is greater than the maximum of %s", x, width, columnWidth),
+					})
+					return nil, diags
+				}
 				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
 			} else if strings.HasSuffix(widgetType, "_definition") {
 				widgetDef = terraformDefinition.([]map[string]interface{})[0]
