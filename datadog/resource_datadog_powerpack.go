@@ -589,6 +589,9 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 	groupWidget.Definition = definition
 
+	// Temporary fix: set a reasonable default layout value for the layout property
+	groupWidget.Layout = datadogV2.NewPowerpackGroupWidgetLayout(1, 12, 0, 0)
+
 	attributes.GroupWidget = groupWidget
 
 	req := datadogV2.NewPowerpackWithDefaults()
