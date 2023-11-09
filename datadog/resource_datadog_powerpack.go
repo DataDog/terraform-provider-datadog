@@ -454,7 +454,7 @@ func resourceDatadogPowerpackCreate(ctx context.Context, d *schema.ResourceData,
 		getPowerpackResponse, httpResponse, err = apiInstances.GetPowerpackApiV2().GetPowerpack(auth, *powerpack.Data.Id)
 
 		if err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
+			if httpResponse != nil {
 				return retry.RetryableError(fmt.Errorf("powerpack not created yet"))
 			}
 			return retry.NonRetryableError(err)
@@ -507,7 +507,7 @@ func resourceDatadogPowerpackRead(ctx context.Context, d *schema.ResourceData, m
 	id := d.Id()
 	powerpack, httpResponse, err := apiInstances.GetPowerpackApiV2().GetPowerpack(auth, id)
 	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
+		if httpResponse != nil {
 			d.SetId("")
 			return nil
 		}
@@ -584,12 +584,16 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 			tags[i] = tag.(string)
 		}
 		attributes.SetTags(tags)
+	} else {
+		attributes.SetTags([]string{})
 	}
 
 	// Set TemplateVariables
 	if v, ok := d.GetOk("template_variables"); ok {
 		templateVariables := *buildPowerpackTemplateVariables(v.([]interface{}))
 		attributes.SetTemplateVariables(templateVariables)
+	} else {
+		attributes.SetTemplateVariables(*buildPowerpackTemplateVariables([]interface{}{}))
 	}
 
 	// Create group widget object
