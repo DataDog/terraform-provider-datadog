@@ -7,6 +7,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -73,6 +74,14 @@ func resourceDatadogApmRetentionFilterOrderRead(ctx context.Context, d *schema.R
 		return diag.FromErr(err)
 	}
 	return updateApmRetentionFilterOrderState(d, &listData)
+}
+
+func GetApmFilterIds(apmRetentionFiltersOrder datadogV2.RetentionFiltersResponse) []types.String {
+	filterIds := make([]types.String, len(apmRetentionFiltersOrder.Data))
+	for i, rf := range apmRetentionFiltersOrder.Data {
+		filterIds[i] = types.StringValue(rf.Id)
+	}
+	return filterIds
 }
 
 func updateApmRetentionFilterOrderState(d *schema.ResourceData, listData *datadogV2.RetentionFiltersResponse) diag.Diagnostics {

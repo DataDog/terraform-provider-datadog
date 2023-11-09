@@ -5,17 +5,16 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -89,11 +88,7 @@ func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 						Default:     stringdefault.StaticString("*"),
 					},
 				},
-				// This field is marked as required for now since the framework does not allow
-				// blocks with default values.
-				PlanModifiers: []planmodifier.Object{
-					planmodifiers.ObjectRequired(),
-				},
+				Validators: []validator.Object{objectvalidator.IsRequired()},
 			},
 		},
 	}
