@@ -72,7 +72,7 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
-					Description: "The layout of the powerpack on a 'free' dashboard.",
+					Description: "The layout of the powerpack on a free-form dashboard.",
 					Elem: &schema.Resource{
 						Schema: getWidgetLayoutSchema(),
 					},
