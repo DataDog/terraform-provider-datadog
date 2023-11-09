@@ -1,0 +1,161 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:123 service:my-service"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilter-local-1699542582","rate":0.1},"type":"apm_retention_filter"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters
+    method: POST
+  response:
+    body: |
+      {"data":{"id":"RFo8fITFSFuzKLxvDNCw2A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699542582","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699542584,"created_by":"frog@datadoghq.com","created_at":1699542584},"type":"apm_retention_filter"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/RFo8fITFSFuzKLxvDNCw2A
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"RFo8fITFSFuzKLxvDNCw2A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699542582","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699542584,"created_by":"frog@datadoghq.com","created_at":1699542584},"type":"apm_retention_filter"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/RFo8fITFSFuzKLxvDNCw2A
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"RFo8fITFSFuzKLxvDNCw2A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699542582","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699542584,"created_by":"frog@datadoghq.com","created_at":1699542584},"type":"apm_retention_filter"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/RFo8fITFSFuzKLxvDNCw2A
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"RFo8fITFSFuzKLxvDNCw2A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699542582","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699542584,"created_by":"frog@datadoghq.com","created_at":1699542584},"type":"apm_retention_filter"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: |
+      {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:123"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilter-local-1699542582","rate":1},"id":"","type":"apm_retention_filter"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/RFo8fITFSFuzKLxvDNCw2A
+    method: PUT
+  response:
+    body: |
+      {"data":{"id":"RFo8fITFSFuzKLxvDNCw2A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699542582","rate":1.0,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699542585,"created_by":"frog@datadoghq.com","created_at":1699542584},"type":"apm_retention_filter"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/RFo8fITFSFuzKLxvDNCw2A
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"RFo8fITFSFuzKLxvDNCw2A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699542582","rate":1.0,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699542585,"created_by":"frog@datadoghq.com","created_at":1699542584},"type":"apm_retention_filter"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/RFo8fITFSFuzKLxvDNCw2A
+    method: GET
+  response:
+    body: |
+      {"data":{"id":"RFo8fITFSFuzKLxvDNCw2A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699542582","rate":1.0,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699542585,"created_by":"frog@datadoghq.com","created_at":1699542584},"type":"apm_retention_filter"}}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/RFo8fITFSFuzKLxvDNCw2A
+    method: DELETE
+  response:
+    body: |
+      {}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/RFo8fITFSFuzKLxvDNCw2A
+    method: GET
+  response:
+    body: '{"errors":["retention filter with id: ''RFo8fITFSFuzKLxvDNCw2A'' not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: ""
