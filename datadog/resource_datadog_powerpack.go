@@ -536,7 +536,7 @@ func validatePowerpackGroupWidgetLayout(layout map[string]interface{}) diag.Diag
 	}
 
 	for _, v := range []string{"height", "width"} {
-		if layoutDict[v].(int64) < 0 {
+		if layoutDict[v].(int64) < 1 {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
 				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be greater than 0", v),
@@ -545,7 +545,7 @@ func validatePowerpackGroupWidgetLayout(layout map[string]interface{}) diag.Diag
 	}
 
 	for _, v := range []string{"x", "y"} {
-		if layoutDict[v].(int64) < 1 {
+		if layoutDict[v].(int64) < 0 {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
 				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be 0 or greater", v),
