@@ -109,9 +109,7 @@ func resourceDatadogApmRetentionFilterOrderUpdate(ctx context.Context, d *schema
 			if listErr != nil {
 				return utils.TranslateClientErrorDiag(err, httpResponse, "error getting APM retention filters order")
 			}
-			return diag.Errorf("cannot map filters to existing ones\n existing filters: %s\n filters to be updated: %s",
-				currentOrder.Data,
-				ddOrderList.Data)
+			return diag.Errorf("cannot map filters to existing ones")
 		}
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating APM retention filters order")
 	}
