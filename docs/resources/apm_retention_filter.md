@@ -3,12 +3,12 @@
 page_title: "datadog_apm_retention_filter Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  
+  The object describing the configuration of the retention filter to create/update.
 ---
 
 # datadog_apm_retention_filter (Resource)
 
-
+The object describing the configuration of the retention filter to create/update.
 
 
 
@@ -20,11 +20,11 @@ description: |-
 - `enabled` (Boolean) the status of the retention filter.
 - `filter_type` (String) The type of the retention filter, currently only spans-processing-sampling is available.
 - `name` (String) The name of the retention filter.
-- `rate` (Number)
+- `rate` (String) Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.
 
 ### Optional
 
-- `filter` (Block, Optional) (see [below for nested schema](#nestedblock--filter))
+- `filter` (Block, Optional) The spans filter. Spans matching this filter will be indexed and stored. (see [below for nested schema](#nestedblock--filter))
 
 ### Read-Only
 

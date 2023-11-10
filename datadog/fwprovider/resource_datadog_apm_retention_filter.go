@@ -2,9 +2,10 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/hashicorp/terraform-plugin-framework-validators/float64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -16,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var (
@@ -31,7 +33,7 @@ type ApmRetentionFilterResource struct {
 type ApmRetentionFilterModel struct {
 	ID         types.String          `tfsdk:"id"`
 	Name       types.String          `tfsdk:"name"`
-	Rate       types.Float64         `tfsdk:"rate"`
+	Rate       types.String          `tfsdk:"rate"`
 	Enabled    types.Bool            `tfsdk:"enabled"`
 	FilterType types.String          `tfsdk:"filter_type"`
 	Filter     *retentionFilterModel `tfsdk:"filter"`
@@ -59,6 +61,7 @@ func (r *ApmRetentionFilterResource) Metadata(_ context.Context, request resourc
 
 func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
+		Description: "The object describing the configuration of the retention filter to create/update.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "The name of the retention filter.",
@@ -74,12 +77,14 @@ func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 				Required:    true,
 				Validators:  []validator.String{stringvalidator.OneOf(spansRetentionFilterType)},
 			},
-			"rate": schema.Float64Attribute{
-				Required:   true,
-				Validators: []validator.Float64{float64validator.Between(0, 1)}},
+			"rate": schema.StringAttribute{
+				Description: "Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.",
+				Required:    true,
+				Validators:  []validator.String{validators.Float64Between(0, 1)}},
 		},
 		Blocks: map[string]schema.Block{
 			"filter": schema.SingleNestedBlock{
+				Description: "The spans filter. Spans matching this filter will be indexed and stored.",
 				Attributes: map[string]schema.Attribute{
 					"query": schema.StringAttribute{
 						Optional:    true,
@@ -206,7 +211,7 @@ func (r *ApmRetentionFilterResource) Delete(ctx context.Context, request resourc
 func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *ApmRetentionFilterModel, resp *datadogV2.RetentionFilterResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 	state.Name = types.StringValue(resp.Data.Attributes.GetName())
-	state.Rate = types.Float64Value(resp.Data.Attributes.GetRate())
+	state.Rate = types.StringValue(strconv.FormatFloat(resp.Data.Attributes.GetRate(), 'f', -1, 64))
 	state.Filter.Query = types.StringValue(*resp.Data.Attributes.GetFilter().Query)
 	state.Enabled = types.BoolValue(*resp.Data.Attributes.Enabled)
 }
@@ -218,7 +223,11 @@ func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(ctx c
 	attributes.SetName(state.Name.ValueString())
 	attributes.SetEnabled(state.Enabled.ValueBool())
 	attributes.SetFilterType(datadogV2.RetentionFilterType(state.FilterType.ValueString()))
-	attributes.SetRate(state.Rate.ValueFloat64())
+	fValue, err := strconv.ParseFloat(state.Rate.ValueString(), 64)
+	if err != nil {
+		diags.AddError("rate", fmt.Sprintf("error parsing rate: %s", err))
+	}
+	attributes.SetRate(fValue)
 	attributes.Filter.Query = state.Filter.Query.ValueString()
 
 	req := datadogV2.NewRetentionFilterCreateRequestWithDefaults()
@@ -234,7 +243,11 @@ func (r *ApmRetentionFilterResource) buildApmRetentionFilterUpdateRequestBody(ct
 
 	attributes.SetName(state.Name.ValueString())
 	attributes.SetFilterType(datadogV2.RetentionFilterType(state.FilterType.ValueString()))
-	attributes.SetRate(state.Rate.ValueFloat64())
+	fValue, err := strconv.ParseFloat(state.Rate.ValueString(), 64)
+	if err != nil {
+		diags.AddError("rate", fmt.Sprintf("error parsing rate: %s", err))
+	}
+	attributes.SetRate(fValue)
 	attributes.SetEnabled(state.Enabled.ValueBool())
 	attributes.Filter.Query = state.Filter.Query.ValueString()
 

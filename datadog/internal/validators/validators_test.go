@@ -5,6 +5,8 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/go-cty/cty"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 )
 
@@ -172,4 +174,45 @@ func TestStringEnumValidation(t *testing.T) {
 
 func areEqual(actual diag.Diagnostic, expected diag.Diagnostic) bool {
 	return actual.Detail == expected.Detail && actual.Severity == expected.Severity && actual.Summary == expected.Summary
+}
+
+func TestValidateFloat64Between(t *testing.T) {
+	cases := []struct {
+		InputValue    string
+		ExpectedError bool
+	}{
+
+		{
+			InputValue:    "-0.1",
+			ExpectedError: true,
+		},
+		{
+			InputValue:    "0",
+			ExpectedError: true,
+		},
+		{
+			InputValue:    "0.1",
+			ExpectedError: false,
+		},
+		{
+			InputValue:    "0.5",
+			ExpectedError: false,
+		},
+		{
+			InputValue:    "1.1",
+			ExpectedError: true,
+		},
+		{
+			InputValue:    "Mon",
+			ExpectedError: true,
+		},
+	}
+
+	for _, tc := range cases {
+		validationResult := validator.StringResponse{}
+		Float64Between(0.1, 1).ValidateString(nil, validator.StringRequest{ConfigValue: basetypes.NewStringValue(tc.InputValue)}, &validationResult)
+		if tc.ExpectedError == false && len(validationResult.Diagnostics) != 0 {
+			t.Fatalf("Expected no diagnostics for input %v, found %d instead", tc.InputValue, len(validationResult.Diagnostics))
+		}
+	}
 }

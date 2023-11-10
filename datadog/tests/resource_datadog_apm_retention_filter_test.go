@@ -17,9 +17,9 @@ func TestAccApmRetentionFilter(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	query := "error_code:123 service:my-service"
-	rate := 0.1
+	rate := "0.1"
 	updatedQuery := "error_code:123"
-	updatedRate := 1
+	updatedRate := "1"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -31,15 +31,15 @@ func TestAccApmRetentionFilter(t *testing.T) {
 					testAccCheckDatadogApmRetentionFilterExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "filter.query", query),
-					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "rate", fmt.Sprintf("%.1f", rate))),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "rate", rate)),
 			},
 			{
-				Config: buildApmRetentionFilterResourceConfig(uniq, updatedQuery, float64(updatedRate)),
+				Config: buildApmRetentionFilterResourceConfig(uniq, updatedQuery, updatedRate),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApmRetentionFilterExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "filter.query", updatedQuery),
-					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "rate", fmt.Sprintf("%d", updatedRate))),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "rate", updatedRate)),
 			},
 		},
 	})
@@ -106,11 +106,11 @@ func ApmRetentionFilterExistsHelper(auth context.Context, s *terraform.State, ap
 	return nil
 }
 
-func buildApmRetentionFilterResourceConfig(name, query string, rate float64) string {
-	return fmt.Sprintf(`
+func buildApmRetentionFilterResourceConfig(name, query string, rate string) string {
+	t := fmt.Sprintf(`
 		resource "datadog_apm_retention_filter" "test" {
 			name = "%s"
-			rate = %f
+			rate = "%s"
 			filter {
 				query = "%s"
 			}
@@ -118,5 +118,5 @@ func buildApmRetentionFilterResourceConfig(name, query string, rate float64) str
 			enabled = true
 		}
 	`, name, rate, query)
-
+	return t
 }
