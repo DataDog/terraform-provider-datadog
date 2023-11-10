@@ -1056,7 +1056,7 @@ resource "datadog_monitor" "foo" {
   message = "a message"
   priority = 3
 
-  query = "avg(current_1h):avg:system.load.5{*} > 0.5"
+  query = "avg(last_1h):avg:system.load.5{*} > 0.5"
 
   monitor_thresholds {
 	critical = "0.5"
@@ -1068,6 +1068,58 @@ resource "datadog_monitor" "foo" {
 			rrule = "FREQ=DAILY;INTERVAL=1;"
 			timezone = "America/New_York"
 			start = "2023-11-10T12:31:00"
+		}
+	}
+  }
+}`, uniq)
+}
+
+func TestAccDatadogMonitor_SchedulingOptionsCustomScheduleNoStart(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrences.0.rrule", "FREQ=DAILY;INTERVAL=1;"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrences.0.timezone", "America/New_York"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorWithSchedulingOptionsCustomScheduleNoStart(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "metric alert"
+  message = "a message"
+  priority = 3
+
+  query = "avg(last_1h):avg:system.load.5{*} > 0.5"
+
+  monitor_thresholds {
+	critical = "0.5"
+  }
+
+  scheduling_options {
+	custom_schedule {
+		recurrences {
+			rrule = "FREQ=DAILY;INTERVAL=1;"
+			timezone = "America/New_York"
 		}
 	}
   }
