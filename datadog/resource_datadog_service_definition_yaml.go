@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -208,7 +207,7 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 			for _, fingerprint := range ci_pipeline_fingerprints {
 				sortedFingerprints = append(sortedFingerprints, fingerprint.(string))
 			}
-			slices.Sort(sortedFingerprints)
+			sort.Strings(sortedFingerprints)
 			attrMap["ci-pipeline-fingerprints"] = sortedFingerprints
 		}
 	}
