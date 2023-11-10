@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:123 service:my-service"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilter-local-1699615682","rate":0.1},"type":"apm_retention_filter"}}
+      {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:123 service:my-service"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilter-local-1699619274","rate":0.1},"type":"apm_retention_filter"}}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"data":{"id":"q-_2S0K-QCqBxk-2GhCM9A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699615682","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699615683,"created_by":"frog@datadoghq.com","created_at":1699615683},"type":"apm_retention_filter"}}
+      {"data":{"id":"ZDCZV3KiSV6lRWIeR5fFrw","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699619274","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699619276,"created_by":"frog@datadoghq.com","created_at":1699619276},"type":"apm_retention_filter"}}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/q-_2S0K-QCqBxk-2GhCM9A
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/ZDCZV3KiSV6lRWIeR5fFrw
     method: GET
   response:
     body: |
-      {"data":{"id":"q-_2S0K-QCqBxk-2GhCM9A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699615682","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699615683,"created_by":"frog@datadoghq.com","created_at":1699615683},"type":"apm_retention_filter"}}
+      {"data":{"id":"ZDCZV3KiSV6lRWIeR5fFrw","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699619274","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699619276,"created_by":"frog@datadoghq.com","created_at":1699619276},"type":"apm_retention_filter"}}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/q-_2S0K-QCqBxk-2GhCM9A
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/ZDCZV3KiSV6lRWIeR5fFrw
     method: GET
   response:
     body: |
-      {"data":{"id":"q-_2S0K-QCqBxk-2GhCM9A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699615682","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699615683,"created_by":"frog@datadoghq.com","created_at":1699615683},"type":"apm_retention_filter"}}
+      {"data":{"id":"ZDCZV3KiSV6lRWIeR5fFrw","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699619274","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699619276,"created_by":"frog@datadoghq.com","created_at":1699619276},"type":"apm_retention_filter"}}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/q-_2S0K-QCqBxk-2GhCM9A
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/ZDCZV3KiSV6lRWIeR5fFrw
     method: GET
   response:
     body: |
-      {"data":{"id":"q-_2S0K-QCqBxk-2GhCM9A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699615682","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699615683,"created_by":"frog@datadoghq.com","created_at":1699615683},"type":"apm_retention_filter"}}
+      {"data":{"id":"ZDCZV3KiSV6lRWIeR5fFrw","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699619274","rate":0.1,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123 service:my-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699619276,"created_by":"frog@datadoghq.com","created_at":1699619276},"type":"apm_retention_filter"}}
     headers:
       Content-Type:
       - application/json
@@ -74,18 +74,18 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:123"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilter-local-1699615682","rate":1},"id":"","type":"apm_retention_filter"}}
+      {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:123"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilter-local-1699619274","rate":1},"id":"","type":"apm_retention_filter"}}
     form: {}
     headers:
       Accept:
       - application/json
       Content-Type:
       - application/json
-    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/q-_2S0K-QCqBxk-2GhCM9A
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/ZDCZV3KiSV6lRWIeR5fFrw
     method: PUT
   response:
     body: |
-      {"data":{"id":"q-_2S0K-QCqBxk-2GhCM9A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699615682","rate":1.0,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699615685,"created_by":"frog@datadoghq.com","created_at":1699615683},"type":"apm_retention_filter"}}
+      {"data":{"id":"ZDCZV3KiSV6lRWIeR5fFrw","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699619274","rate":1.0,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699619278,"created_by":"frog@datadoghq.com","created_at":1699619276},"type":"apm_retention_filter"}}
     headers:
       Content-Type:
       - application/json
@@ -98,11 +98,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/q-_2S0K-QCqBxk-2GhCM9A
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/ZDCZV3KiSV6lRWIeR5fFrw
     method: GET
   response:
     body: |
-      {"data":{"id":"q-_2S0K-QCqBxk-2GhCM9A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699615682","rate":1.0,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699615685,"created_by":"frog@datadoghq.com","created_at":1699615683},"type":"apm_retention_filter"}}
+      {"data":{"id":"ZDCZV3KiSV6lRWIeR5fFrw","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699619274","rate":1.0,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699619278,"created_by":"frog@datadoghq.com","created_at":1699619276},"type":"apm_retention_filter"}}
     headers:
       Content-Type:
       - application/json
@@ -115,11 +115,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/q-_2S0K-QCqBxk-2GhCM9A
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/ZDCZV3KiSV6lRWIeR5fFrw
     method: GET
   response:
     body: |
-      {"data":{"id":"q-_2S0K-QCqBxk-2GhCM9A","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699615682","rate":1.0,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699615685,"created_by":"frog@datadoghq.com","created_at":1699615683},"type":"apm_retention_filter"}}
+      {"data":{"id":"ZDCZV3KiSV6lRWIeR5fFrw","attributes":{"name":"tf-TestAccApmRetentionFilter-local-1699619274","rate":1.0,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:123"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1699619278,"created_by":"frog@datadoghq.com","created_at":1699619276},"type":"apm_retention_filter"}}
     headers:
       Content-Type:
       - application/json
@@ -132,7 +132,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/q-_2S0K-QCqBxk-2GhCM9A
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/ZDCZV3KiSV6lRWIeR5fFrw
     method: DELETE
   response:
     body: |
@@ -149,10 +149,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/q-_2S0K-QCqBxk-2GhCM9A
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/ZDCZV3KiSV6lRWIeR5fFrw
     method: GET
   response:
-    body: '{"errors":["retention filter with id: ''q-_2S0K-QCqBxk-2GhCM9A'' not found"]}'
+    body: '{"errors":["retention filter with id: ''ZDCZV3KiSV6lRWIeR5fFrw'' not found"]}'
     headers:
       Content-Type:
       - application/json
