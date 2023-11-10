@@ -244,6 +244,7 @@ func dataSourceDatadogMonitor() *schema.Resource {
 								Description: "Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together.",
 								Type:        schema.TypeList,
 								Computed:    true,
+								Optional:    true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"day_starts": {
@@ -260,6 +261,40 @@ func dataSourceDatadogMonitor() *schema.Resource {
 											Description: "The minute of the hour at which a one hour cumulative evaluation window starts. Must be between 0 and 59.",
 											Type:        schema.TypeInt,
 											Computed:    true,
+										},
+									},
+								},
+							},
+							"custom_schedule": {
+								Description: "Configuration options for the custom schedules. If `start`is omitted, the monitor creation time will be used.",
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"recurrences": {
+											Description: "A list of recurrence definitions. Length must be 1.",
+											Type:        schema.TypeSet,
+											MaxItems:    1,
+											Required:    true,
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"rrule": {
+														Description: "Must be a valid rrule. See api docs for supported fields",
+														Type:        schema.TypeString,
+														Required:    true,
+													},
+													"start": {
+														Description: "Time to start recurrence cycle. Similar to DTSTART. Expected format 'YYYY-MM-DDThh:mm:ss'",
+														Type:        schema.TypeString,
+														Optional:    true,
+													},
+													"timezone": {
+														Description: "'tz database' format. ex: 'America/New_York' or UTC",
+														Type:        schema.TypeString,
+														Required:    true,
+													},
+												},
+											},
 										},
 									},
 								},

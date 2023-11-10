@@ -1,0 +1,22 @@
+---
+version: 1
+interactions:
+- request:
+    body: |
+      {"message":"a message","name":"tf-TestAccDatadogMonitor_SchedulingOptionsCustomSchedule-local-1699632729","options":{"include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":0.5}},"priority":3,"query":"avg(current_1h):avg:system.load.5{*} \u003e 0.5","restricted_roles":null,"tags":[],"type":"metric alert"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/monitor/validate
+    method: POST
+  response:
+    body: '{"status":"error","code":403,"errors":["Forbidden"],"statuspage":"{{ .Values.status_page_link }}","twitter":"http://twitter.com/datadogops","email":"support@datadoghq.com"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 403 Forbidden
+    code: 403
+    duration: ""
