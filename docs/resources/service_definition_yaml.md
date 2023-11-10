@@ -34,7 +34,7 @@ languages:
   - go
   - python
 type: web 
-ci-pipeline-fingerprints
+ci-pipeline-fingerprints:
   - fp1 
   - fp2 
 links:
