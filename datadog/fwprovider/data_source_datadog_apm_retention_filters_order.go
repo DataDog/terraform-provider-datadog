@@ -41,7 +41,7 @@ func (d *datadogApmRetentionFiltersOrderDataSource) Schema(_ context.Context, _ 
 			"filter_ids": schema.ListAttribute{
 				Description: "The filter IDs list. The order of filters IDs in this attribute defines the overall APM retention filters order.",
 				ElementType: types.StringType,
-				Optional:    true,
+				Computed:    true,
 			},
 			"id": utils.ResourceIDAttribute(),
 		}}
