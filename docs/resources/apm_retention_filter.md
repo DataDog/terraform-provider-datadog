@@ -18,7 +18,7 @@ The object describing the configuration of the retention filter to create/update
 ### Required
 
 - `enabled` (Boolean) the status of the retention filter.
-- `filter_type` (String) The type of the retention filter, currently only spans-processing-sampling is available.
+- `filter_type` (String) The type of the retention filter, currently only spans-processing-sampling is available. Valid values are `spans-sampling-processor`.
 - `name` (String) The name of the retention filter.
 - `rate` (String) Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.
 
