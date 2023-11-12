@@ -46,7 +46,7 @@ func (d *ApmRetentionFiltersOrderResource) Schema(_ context.Context, _ resource.
 			"filter_ids": schema.ListAttribute{
 				Description: "The filter IDs list. The order of filters IDs in this attribute defines the overall APM retention filters order.. If `filter_ids` is empty or not specified, it will import the actual order, and create the resource. Otherwise, it will try to update the order.",
 				ElementType: types.StringType,
-				Optional:    true,
+				Required:    true,
 			},
 			"id": utils.ResourceIDAttribute(),
 		}}
