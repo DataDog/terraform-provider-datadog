@@ -7,7 +7,6 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
-	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -47,8 +46,6 @@ func NewApmRetentionFilterResource() resource.Resource {
 	return &ApmRetentionFilterResource{}
 }
 
-const spansRetentionFilterType = "spans-sampling-processor"
-
 func (r *ApmRetentionFilterResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetApmRetentionFiltersApiV2()
@@ -75,7 +72,7 @@ func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 			"filter_type": schema.StringAttribute{
 				Description: "The type of the retention filter, currently only spans-processing-sampling is available.",
 				Required:    true,
-				Validators:  []validator.String{stringvalidator.OneOf(spansRetentionFilterType)},
+				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewRetentionFilterTypeFromValue)},
 			},
 			"rate": schema.StringAttribute{
 				Description: "Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.",
