@@ -44,7 +44,7 @@ func (d *ApmRetentionFiltersOrderResource) Schema(_ context.Context, _ resource.
 		Description: "Provides a Datadog [APM Retention Filters API](https://docs.datadoghq.com/api/v2/apm-retention-filters/) resource, which is used to manage Datadog APM retention filters order.",
 		Attributes: map[string]schema.Attribute{
 			"filter_ids": schema.ListAttribute{
-				Description: "The filter IDs list. The order of filters IDs in this attribute defines the overall APM retention filters order.. If `filter_ids` is empty or not specified, it will import the actual order, and create the resource. Otherwise, it will try to update the order.",
+				Description: "The filter IDs list. The order of filters IDs in this attribute defines the overall APM retention filters order. If `filter_ids` is empty or not specified, it will import the actual order, and create the resource. Otherwise, it will try to update the order.",
 				ElementType: types.StringType,
 				Required:    true,
 			},
@@ -105,7 +105,7 @@ func (r *ApmRetentionFiltersOrderResource) Create(ctx context.Context, request r
 	}
 	listData, httpResponse, err := r.Api.ListApmRetentionFilters(r.Auth)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving retention filters order"))
 		return
 	}
 	if err := utils.CheckForUnparsed(httpResponse); err != nil {
@@ -131,10 +131,10 @@ func (r *ApmRetentionFiltersOrderResource) Update(ctx context.Context, request r
 	}
 
 	httpResp, err := r.Api.ReorderApmRetentionFilters(r.Auth, *body)
-	listData, httpResponse, err := r.Api.ListApmRetentionFilters(r.Auth)
+	listData, httpResponse, listErr := r.Api.ListApmRetentionFilters(r.Auth)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 400 {
-			if err != nil || httpResponse.StatusCode >= 400 {
+			if listErr != nil || httpResponse.StatusCode >= 400 {
 				response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 				return
 			}
