@@ -18,7 +18,7 @@ Provides a Datadog powerpack resource. This can be used to create and manage Dat
 ### Optional
 
 - `description` (String) The description of the powerpack.
-- `layout` (Block List, Max: 1) The layout of the powerpack on a 'free' dashboard. (see [below for nested schema](#nestedblock--layout))
+- `layout` (Block List, Max: 1) The layout of the powerpack on a free-form dashboard. (see [below for nested schema](#nestedblock--layout))
 - `name` (String) The name for the powerpack.
 - `show_title` (Boolean) Whether or not title should be displayed in the powerpack.
 - `tags` (Set of String) List of tags to identify this powerpack.
