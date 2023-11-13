@@ -248,23 +248,23 @@ resource "datadog_synthetics_test" "test_browser" {
   }
 
   browser_step {
-    name                 = "Test a downloaded file"
-    type                 = "assertFileDownload"
+    name = "Test a downloaded file"
+    type = "assertFileDownload"
     params {
       file = jsonencode(
         {
-          md5       = "abcdef1234567890" // MD5 hash of the file
+          md5 = "abcdef1234567890" // MD5 hash of the file
           sizeCheck = {
-              type  = "equals"  // "equals", "greater", "greaterEquals", "lower", 
-                                // "lowerEquals", "notEquals", "between"
-              value = 1
-              // min   = 1      // only used for "between"
-              // max   = 1      // only used for "between"
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
           }
           nameCheck = {
-            type  = "contains"  // "contains", "equals", "isEmpty", "matchRegex", 
-                                // "notContains", "notIsEmpty", "notEquals", 
-                                // "notStartsWith", "startsWith"
+            type = "contains" // "contains", "equals", "isEmpty", "matchRegex", 
+            // "notContains", "notIsEmpty", "notEquals", 
+            // "notStartsWith", "startsWith"
             value = ".xls"
           }
         }
