@@ -746,7 +746,6 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]in
 	return widgetDef
 }
 
-func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}, columnWidth int64) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
@@ -785,7 +784,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}, co
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
 				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
 				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
-				widgetDef, diags = normalizeDashboardWidgetDef(widgetDef)
+				widgetDef, diags = normalizeDashboardWidgetDef(widgetDef, columnWidth)
 				if diags.HasError() {
 					return nil, diags
 				}
