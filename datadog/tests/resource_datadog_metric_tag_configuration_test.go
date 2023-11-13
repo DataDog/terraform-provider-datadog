@@ -74,6 +74,7 @@ func testAccCheckDatadogMetricTagConfigurationAggregationsError(uniq string, met
 		}
 	`, uniq, metricType)
 }
+
 func testAccCheckDatadogMetricTagConfigurationExcludeTagsModeError(uniq string) string {
 	return fmt.Sprintf(`
 		resource "datadog_metric_tag_configuration" "testing_metric_tag_config_aggregations" {

@@ -187,6 +187,15 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 		}
 	}
 
+	excludeTagsMode, iclExcludeTagsMode := d.GetOk("exclude_tags_mode")
+	if iclExcludeTagsMode {
+		if excludeTagsMode.(bool) && len(stringTags) == 0 {
+			return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
+		}
+
+		attributes.SetExcludeTagsMode(excludeTagsMode.(bool))
+	}
+
 	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
 		if *metricType == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
@@ -228,6 +237,15 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 		if *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
 			attributes.IncludePercentiles = nil
 		}
+	}
+
+	excludeTagsMode, iclExcludeTagsMode := d.GetOk("exclude_tags_mode")
+	if iclExcludeTagsMode {
+		if excludeTagsMode.(bool) && len(stringTags) == 0 {
+			return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
+		}
+
+		attributes.SetExcludeTagsMode(excludeTagsMode.(bool))
 	}
 
 	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
@@ -301,6 +319,11 @@ func updateMetricTagConfigurationState(d *schema.ResourceData, metricTagConfigur
 			tags = []string{}
 		}
 		if err := d.Set("tags", tags); err != nil {
+			return diag.FromErr(err)
+		}
+
+		excludeTagsMode := attributes.GetExcludeTagsMode()
+		if err := d.Set("exclude_tags_mode", excludeTagsMode); err != nil {
 			return diag.FromErr(err)
 		}
 	}
