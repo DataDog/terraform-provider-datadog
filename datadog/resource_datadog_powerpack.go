@@ -707,7 +707,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}, co
 				if x+width > columnWidth {
 					diags = append(diags, diag.Diagnostic{
 						Severity: diag.Error,
-						Summary:  fmt.Sprintf("sum of x [%s] and width [%s] is greater than the maximum of %s", x, width, columnWidth),
+						Summary:  fmt.Sprintf("sum of x [%d] and width [%d] is greater than the maximum of %d", x, width, columnWidth),
 					})
 					return nil, diags
 				}
