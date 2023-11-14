@@ -18,6 +18,7 @@ Provides a Datadog powerpack resource. This can be used to create and manage Dat
 ### Optional
 
 - `description` (String) The description of the powerpack.
+- `layout` (Block List, Max: 1) The layout of the powerpack on a free-form dashboard. (see [below for nested schema](#nestedblock--layout))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - `name` (String) The name for the powerpack.
 - `show_title` (Boolean) Whether or not title should be displayed in the powerpack.
@@ -28,6 +29,21 @@ Provides a Datadog powerpack resource. This can be used to create and manage Dat
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--layout"></a>
+### Nested Schema for `layout`
+
+Required:
+
+- `height` (Number) The height of the widget.
+- `width` (Number) The width of the widget.
+- `x` (Number) The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.
+- `y` (Number) The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.
+
+Optional:
+
+- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.
+
 
 <a id="nestedblock--template_variables"></a>
 ### Nested Schema for `template_variables`

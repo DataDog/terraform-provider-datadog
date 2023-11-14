@@ -718,7 +718,7 @@ func normalizeWidgetDefRequests(widgetDefRequests []map[string]interface{}, widg
 	return normalizedWidgetDefRequests
 }
 
-func normalizeDashboardWidgetDef(widgetDef map[string]interface{}) (map[string]interface{}, diag.Diagnostics) {
+func normalizeDashboardWidgetDef(widgetDef map[string]interface{}, columnWidth int64) (map[string]interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	// SLO widgets are spelled out in dashboard widgets, but API expects "slo" as the widget type
 	if widgetDef["type"] == "service_level_objective" {
@@ -850,7 +850,7 @@ func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]in
 	return widgetDef
 }
 
-func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
+func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}, columnWidth int64) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	widgets := make([]datadogV2.PowerpackInnerWidgets, len(*terraformWidgets))
@@ -943,8 +943,6 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.IFrameWidgetDefinitionAsWidgetDefinition(buildDatadogIframeDefinition(widgetDefinition))
 		case "image":
 			definition = datadogV1.ImageWidgetDefinitionAsWidgetDefinition(buildDatadogImageDefinition(widgetDefinition))
-		case "manage_status":
-			definition = datadogV1.MonitorSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogManageStatusDefinition(widgetDefinition))
 		case "list_stream":
 			definition = datadogV1.ListStreamWidgetDefinitionAsWidgetDefinition(buildDatadogListStreamDefinition(widgetDefinition))
 		case "log_stream":
