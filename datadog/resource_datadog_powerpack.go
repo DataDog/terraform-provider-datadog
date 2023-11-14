@@ -69,6 +69,15 @@ func resourceDatadogPowerpack() *schema.Resource {
 						Schema: getPowerpackWidgetSchema(),
 					},
 				},
+				"layout": {
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Description: "The layout of the powerpack on a free-form dashboard.",
+					Elem: &schema.Resource{
+						Schema: getWidgetLayoutSchema(),
+					},
+				},
 			}
 		},
 	}
@@ -446,7 +455,7 @@ func resourceDatadogPowerpackCreate(ctx context.Context, d *schema.ResourceData,
 		getPowerpackResponse, httpResponse, err = apiInstances.GetPowerpackApiV2().GetPowerpack(auth, *powerpack.Data.Id)
 
 		if err != nil {
-			if httpResponse != nil && httpResponse.StatusCode == 404 {
+			if httpResponse != nil {
 				return retry.RetryableError(fmt.Errorf("powerpack not created yet"))
 			}
 			return retry.NonRetryableError(err)
@@ -478,7 +487,7 @@ func resourceDatadogPowerpackUpdate(ctx context.Context, d *schema.ResourceData,
 
 	updatedPowerpackResponse, httpResponse, err := apiInstances.GetPowerpackApiV2().UpdatePowerpack(auth, id, *powerpack)
 	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
+		if httpResponse != nil {
 			diags = append(diags, diag.Diagnostic{
 				Severity: diag.Error,
 				Summary:  fmt.Sprintf("error updating powerpack: %s", err),
@@ -499,7 +508,7 @@ func resourceDatadogPowerpackRead(ctx context.Context, d *schema.ResourceData, m
 	id := d.Id()
 	powerpack, httpResponse, err := apiInstances.GetPowerpackApiV2().GetPowerpack(auth, id)
 	if err != nil {
-		if httpResponse != nil && httpResponse.StatusCode == 404 {
+		if httpResponse != nil {
 			d.SetId("")
 			return nil
 		}
@@ -510,6 +519,49 @@ func resourceDatadogPowerpackRead(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	return updatePowerpackState(d, &powerpack)
+}
+
+func validatePowerpackGroupWidgetLayout(layout map[string]interface{}) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	height := int64(layout["height"].(int))
+	width := int64(layout["width"].(int))
+	x := int64(layout["x"].(int))
+	y := int64(layout["y"].(int))
+
+	layoutDict := map[string]interface{}{
+		"height": height,
+		"width":  width,
+		"x":      x,
+		"y":      y,
+	}
+
+	for _, v := range []string{"height", "width"} {
+		if layoutDict[v].(int64) < 1 {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be greater than 0", v),
+			})
+		}
+	}
+
+	for _, v := range []string{"x", "y"} {
+		if layoutDict[v].(int64) < 0 {
+			diags = append(diags, diag.Diagnostic{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be 0 or greater", v),
+			})
+		}
+	}
+
+	if width+x > 12 {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  fmt.Sprintf("powerpack layout contains an invalid value. sum of x and width is greater than the maximum of 12."),
+		})
+	}
+
+	return diags
 }
 
 func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datadogV2.Powerpack, diag.Diagnostics) {
@@ -533,12 +585,16 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 			tags[i] = tag.(string)
 		}
 		attributes.SetTags(tags)
+	} else {
+		attributes.SetTags([]string{})
 	}
 
 	// Set TemplateVariables
 	if v, ok := d.GetOk("template_variables"); ok {
 		templateVariables := *buildPowerpackTemplateVariables(v.([]interface{}))
 		attributes.SetTemplateVariables(templateVariables)
+	} else {
+		attributes.SetTemplateVariables(*buildPowerpackTemplateVariables([]interface{}{}))
 	}
 
 	// Create group widget object
@@ -578,8 +634,30 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 			Summary:  fmt.Sprintf("error constructing widgets: %s", err),
 		})
 	}
+
+	var columnWidth int64
+	if v, ok := d.GetOk("layout"); ok {
+		unparsedLayout := v.([]interface{})[0].(map[string]interface{})
+		diags := validatePowerpackGroupWidgetLayout(unparsedLayout)
+		if diags.HasError() {
+			return nil, diags
+		}
+
+		columnWidth = int64(unparsedLayout["width"].(int))
+		layout := datadogV2.NewPowerpackGroupWidgetLayout(
+			int64(unparsedLayout["height"].(int)),
+			columnWidth,
+			int64(unparsedLayout["x"].(int)),
+			int64(unparsedLayout["y"].(int)))
+		groupWidget.SetLayout(*layout)
+	} else {
+		// Temporary fix: set a reasonable default layout value for the layout property
+		columnWidth = 12
+		groupWidget.Layout = datadogV2.NewPowerpackGroupWidgetLayout(1, 12, 0, 0)
+	}
+
 	// Finally, build JSON Powerpack API compatible widgets
-	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(terraformWidgets)
+	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(terraformWidgets, columnWidth)
 
 	if diags != nil {
 		return nil, diags
@@ -795,6 +873,14 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				width := dimensions["width"].(int64)
 				x := dimensions["x"].(int64)
 				y := dimensions["y"].(int64)
+
+				if x+width > columnWidth {
+					diags = append(diags, diag.Diagnostic{
+						Severity: diag.Error,
+						Summary:  fmt.Sprintf("sum of x [%d] and width [%d] is greater than the maximum of %d", x, width, columnWidth),
+					})
+					return nil, diags
+				}
 				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
 			} else if strings.HasSuffix(widgetType, "_definition") {
 				widgetDef = terraformDefinition.([]map[string]interface{})[0]
@@ -802,7 +888,7 @@ func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}) ([
 				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
 				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
 				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
-				widgetDef, diags = normalizeDashboardWidgetDef(widgetDef)
+				widgetDef, diags = normalizeDashboardWidgetDef(widgetDef, columnWidth)
 				if diags.HasError() {
 					return nil, diags
 				}
@@ -857,6 +943,8 @@ func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) 
 			definition = datadogV1.IFrameWidgetDefinitionAsWidgetDefinition(buildDatadogIframeDefinition(widgetDefinition))
 		case "image":
 			definition = datadogV1.ImageWidgetDefinitionAsWidgetDefinition(buildDatadogImageDefinition(widgetDefinition))
+		case "manage_status":
+			definition = datadogV1.MonitorSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogManageStatusDefinition(widgetDefinition))
 		case "list_stream":
 			definition = datadogV1.ListStreamWidgetDefinitionAsWidgetDefinition(buildDatadogListStreamDefinition(widgetDefinition))
 		case "log_stream":
