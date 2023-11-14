@@ -374,7 +374,7 @@ func resourceDatadogMonitor() *schema.Resource {
 									Schema: map[string]*schema.Schema{
 										"recurrences": {
 											Description: "A list of recurrence definitions. Length must be 1.",
-											Type:        schema.TypeSet,
+											Type:        schema.TypeList,
 											Required:    true,
 											MaxItems:    1,
 											Elem: &schema.Resource{
@@ -691,6 +691,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 
 	if attr, ok := d.GetOk("scheduling_options"); ok {
 		scheduling_options_list := attr.([]interface{})
+
 		if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
 			scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
 			evaluation_window_map, evaluation_window_found := scheduling_options_map["evaluation_window"].(map[string]interface{})
@@ -710,11 +711,23 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 				}
 				scheduling_options.SetEvaluationWindow(*evaluation_window)
 			}
-			custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].(map[string]interface{})
+			custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].([]interface{})
 			if custom_schedule_found {
-				if recurrences, ok := custom_schedule_map["recurrences"].([]datadogV1.MonitorOptionsCustomScheduleRecurrence); ok && len(recurrences) == 1 {
+				if recurrences, ok := custom_schedule_map[0].(map[string]interface{})["recurrences"].([]interface{}); ok {
+					recurrence := datadogV1.NewMonitorOptionsCustomScheduleRecurrence()
+					firstRecurrence := recurrences[0].(map[string]interface{})
+					if rrule, ok := firstRecurrence["rrule"].(string); ok {
+						recurrence.SetRrule(rrule)
+					}
+					if start, ok := firstRecurrence["start"].(string); ok {
+						recurrence.SetStart(start)
+					}
+					if timezone, ok := firstRecurrence["timezone"].(string); ok {
+						recurrence.SetTimezone(timezone)
+					}
+					newRecurrences := []datadogV1.MonitorOptionsCustomScheduleRecurrence{*recurrence}
 					custom_schedule := datadogV1.NewMonitorOptionsCustomSchedule()
-					custom_schedule.SetRecurrences(recurrences)
+					custom_schedule.SetRecurrences(newRecurrences)
 					scheduling_options.SetCustomSchedule(*custom_schedule)
 				}
 			}
