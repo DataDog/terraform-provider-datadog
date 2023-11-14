@@ -114,9 +114,31 @@ Optional:
 <a id="nestedblock--scheduling_options"></a>
 ### Nested Schema for `scheduling_options`
 
+Optional:
+
+- `custom_schedule` (Block List) Configuration options for the custom schedules. If `start`is omitted, the monitor creation time will be used. (see [below for nested schema](#nestedblock--scheduling_options--custom_schedule))
+- `evaluation_window` (Block List) Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together. (see [below for nested schema](#nestedblock--scheduling_options--evaluation_window))
+
+<a id="nestedblock--scheduling_options--custom_schedule"></a>
+### Nested Schema for `scheduling_options.custom_schedule`
+
 Required:
 
-- `evaluation_window` (Block List, Min: 1) Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together. (see [below for nested schema](#nestedblock--scheduling_options--evaluation_window))
+- `recurrences` (Block List, Min: 1, Max: 1) A list of recurrence definitions. Length must be 1. (see [below for nested schema](#nestedblock--scheduling_options--custom_schedule--recurrences))
+
+<a id="nestedblock--scheduling_options--custom_schedule--recurrences"></a>
+### Nested Schema for `scheduling_options.custom_schedule.recurrences`
+
+Required:
+
+- `rrule` (String) Must be a valid rrule. See api docs for supported fields
+- `timezone` (String) 'tz database' format. ex: 'America/New_York' or UTC
+
+Optional:
+
+- `start` (String) Time to start recurrence cycle. Similar to DTSTART. Expected format 'YYYY-MM-DDThh:mm:ss'
+
+
 
 <a id="nestedblock--scheduling_options--evaluation_window"></a>
 ### Nested Schema for `scheduling_options.evaluation_window`
