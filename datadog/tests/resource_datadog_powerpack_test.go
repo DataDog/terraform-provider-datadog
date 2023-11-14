@@ -20,6 +20,7 @@ resource "datadog_powerpack" "simple_powerpack" {
 	name = "%s"
 	tags = ["tag:foo1"]
 	description = "Test Powerpack"
+	live_span = "1h"
 
   template_variables {
 	defaults = ["defaults"]
@@ -39,6 +40,7 @@ var datadogSimplePowerpackConfigAsserts = []string{
 	"widget.# = 1",
 	"tags.# = 1",
 	"tags.0 = tag:foo1",
+	"live_span = 1h",
 	// IFrame widget
 	"widget.0.iframe_definition.0.url = https://google.com",
 	// Template Variables
