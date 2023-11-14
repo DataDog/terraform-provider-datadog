@@ -60,7 +60,7 @@ jobs:
     strategy:
       matrix:
         terraform_version:
-          - "0.14.0"
+          - "0.14.11"
           - "0.15.5"
           - "1.1.2"
           - "1.5.3"
