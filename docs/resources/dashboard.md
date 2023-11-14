@@ -14865,12 +14865,12 @@ Required:
 
 - `height` (Number) The height of the widget.
 - `width` (Number) The width of the widget.
-- `x` (Number) The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.
-- `y` (Number) The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.
+- `x` (Number) The position of the widget on the x (horizontal) axis. Must be greater than or equal to 0.
+- `y` (Number) The position of the widget on the y (vertical) axis. Must be greater than or equal to 0.
 
 Optional:
 
-- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.
+- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.
 
 
 
@@ -26134,12 +26134,12 @@ Required:
 
 - `height` (Number) The height of the widget.
 - `width` (Number) The width of the widget.
-- `x` (Number) The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.
-- `y` (Number) The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.
+- `x` (Number) The position of the widget on the x (horizontal) axis. Must be greater than or equal to 0.
+- `y` (Number) The position of the widget on the y (vertical) axis. Must be greater than or equal to 0.
 
 Optional:
 
-- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.
+- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.
 
 ## Import
 

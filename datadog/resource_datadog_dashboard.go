@@ -1548,12 +1548,12 @@ func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadog
 func getWidgetLayoutSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"x": {
-			Description: "The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.",
+			Description: "The position of the widget on the x (horizontal) axis. Must be greater than or equal to 0.",
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
 		"y": {
-			Description: "The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.",
+			Description: "The position of the widget on the y (vertical) axis. Must be greater than or equal to 0.",
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
@@ -1568,7 +1568,7 @@ func getWidgetLayoutSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"is_column_break": {
-			Description: "Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.",
+			Description: "Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
