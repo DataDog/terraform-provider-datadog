@@ -199,6 +199,19 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 			delete(attrMap, "integrations")
 		}
 	}
+	if ci_pipeline_fingerprints, ok := attrMap["ci-pipeline-fingerprints"].([]interface{}); ok {
+		if len(ci_pipeline_fingerprints) == 0 {
+			delete(attrMap, "ci-pipeline-fingerprints")
+		} else {
+			sortedFingerprints := make([]string, 0)
+			for _, fingerprint := range ci_pipeline_fingerprints {
+				sortedFingerprints = append(sortedFingerprints, fingerprint.(string))
+			}
+			sort.Strings(sortedFingerprints)
+			attrMap["ci-pipeline-fingerprints"] = sortedFingerprints
+		}
+	}
+
 	return attrMap
 }
 

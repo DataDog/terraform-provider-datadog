@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"data":{"attributes":{"description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1698166819","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"}}]}},"name":"tf-TestAccDatadogPowerpack_update-local-1698166819","tags":["tag:foo1"],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
+      {"data":{"attributes":{"description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1699900684","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"}}]},"layout":{"height":1,"width":12,"x":0,"y":0},"live_span":"1h"},"name":"tf-TestAccDatadogPowerpack_update-local-1699900684","tags":["tag:foo1"],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"data":{"type":"powerpack","id":"d2d6138e-728e-11ee-a404-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpack_update-local-1698166819","description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1698166819","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"},"id":2591746836340385}]}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+      {"data":{"type":"powerpack","id":"c9287dc0-8253-11ee-9bec-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpack_update-local-1699900684","description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1699900684","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"},"id":4104666491440065}]},"layout":{"height":1,"width":12,"x":0,"y":0},"live_span":"1h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
     headers:
       Content-Type:
       - application/json
@@ -27,11 +27,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/d2d6138e-728e-11ee-a404-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/c9287dc0-8253-11ee-9bec-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"powerpack","id":"d2d6138e-728e-11ee-a404-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpack_update-local-1698166819","description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1698166819","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"},"id":2591746836340385}]}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+      {"data":{"type":"powerpack","id":"c9287dc0-8253-11ee-9bec-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpack_update-local-1699900684","description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1699900684","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"},"id":4104666491440065}]},"layout":{"height":1,"width":12,"x":0,"y":0},"live_span":"1h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
     headers:
       Content-Type:
       - application/json
@@ -44,11 +44,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/d2d6138e-728e-11ee-a404-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/c9287dc0-8253-11ee-9bec-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"powerpack","id":"d2d6138e-728e-11ee-a404-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpack_update-local-1698166819","description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1698166819","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"},"id":2591746836340385}]}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+      {"data":{"type":"powerpack","id":"c9287dc0-8253-11ee-9bec-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpack_update-local-1699900684","description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1699900684","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"},"id":4104666491440065}]},"layout":{"height":1,"width":12,"x":0,"y":0},"live_span":"1h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
     headers:
       Content-Type:
       - application/json
@@ -61,11 +61,11 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/d2d6138e-728e-11ee-a404-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/c9287dc0-8253-11ee-9bec-da7ad0900002
     method: GET
   response:
     body: |
-      {"data":{"type":"powerpack","id":"d2d6138e-728e-11ee-a404-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpack_update-local-1698166819","description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1698166819","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"},"id":2591746836340385}]}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+      {"data":{"type":"powerpack","id":"c9287dc0-8253-11ee-9bec-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpack_update-local-1699900684","description":"Test Powerpack","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpack_update-local-1699900684","type":"group","widgets":[{"definition":{"type":"iframe","url":"https://google.com"},"id":4104666491440065}]},"layout":{"height":1,"width":12,"x":0,"y":0},"live_span":"1h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
     headers:
       Content-Type:
       - application/json
@@ -78,7 +78,7 @@ interactions:
     headers:
       Accept:
       - '*/*'
-    url: https://api.datadoghq.com/api/v2/powerpacks/d2d6138e-728e-11ee-a404-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/c9287dc0-8253-11ee-9bec-da7ad0900002
     method: DELETE
   response:
     body: ""
@@ -94,10 +94,10 @@ interactions:
     headers:
       Accept:
       - application/json
-    url: https://api.datadoghq.com/api/v2/powerpacks/d2d6138e-728e-11ee-a404-da7ad0900002
+    url: https://api.datadoghq.com/api/v2/powerpacks/c9287dc0-8253-11ee-9bec-da7ad0900002
     method: GET
   response:
-    body: '{"errors":["Powerpack with ID d2d6138e-728e-11ee-a404-da7ad0900002 not found"]}'
+    body: '{"errors":["Powerpack with ID c9287dc0-8253-11ee-9bec-da7ad0900002 not found"]}'
     headers:
       Content-Type:
       - application/json
