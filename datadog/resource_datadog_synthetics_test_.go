@@ -1010,7 +1010,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 				},
 				"file": {
-					Description: `For an "assert download" step.`,
+					Description: `JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.`,
 					Type:        schema.TypeString,
 					Optional:    true,
 					DiffSuppressFunc: func(_, old, new string, _ *schema.ResourceData) bool {
