@@ -1062,8 +1062,6 @@ resource "datadog_monitor" "foo" {
 	critical = "0.5"
   }
 
-  no_data_timeframe = null
-
   scheduling_options {
 	custom_schedule {
 		recurrences {
@@ -1110,7 +1108,7 @@ resource "datadog_monitor" "foo" {
   type = "metric alert"
   message = "a message"
   priority = 3
-
+  
   query = "avg(last_1h):avg:system.load.5{*} > 0.5"
 
   monitor_thresholds {

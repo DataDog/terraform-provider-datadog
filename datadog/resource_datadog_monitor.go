@@ -588,9 +588,10 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 
 		if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
 			scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
-			evaluation_window_map, evaluation_window_found := scheduling_options_map["evaluation_window"].(map[string]interface{})
-			if evaluation_window_found {
+			evaluation_window_list, evaluation_list_found := scheduling_options_map["evaluation_window"].([]interface{})
+			if evaluation_list_found && len(evaluation_window_list) > 0 {
 				evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
+				evaluation_window_map := evaluation_window_list[0].(map[string]interface{})
 				day_month_scheduling := false
 				if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
 					evaluation_window.SetDayStarts(day_starts)
@@ -606,7 +607,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 				scheduling_options.SetEvaluationWindow(*evaluation_window)
 			}
 			custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].([]interface{})
-			if custom_schedule_found {
+			if custom_schedule_found && len(custom_schedule_map) > 0 {
 				hasCustomSchedule = true
 				if recurrences, ok := custom_schedule_map[0].(map[string]interface{})["recurrences"].([]interface{}); ok {
 					recurrence := datadogV1.NewMonitorOptionsCustomScheduleRecurrence()
@@ -626,7 +627,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 					scheduling_options.SetCustomSchedule(*custom_schedule)
 				}
 			}
-			if evaluation_window_found || custom_schedule_found {
+			if len(scheduling_options_list) > 0 {
 				o.SetSchedulingOptions(*scheduling_options)
 			}
 
@@ -643,9 +644,6 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		o.SetThresholdWindows(thresholdWindows)
 	}
 
-	if attr, ok := d.GetOk("notify_no_data"); ok && !hasCustomSchedule {
-		o.SetNotifyNoData(attr.(bool))
-	}
 	if attr, ok := d.GetOk("group_retention_duration"); ok {
 		o.SetGroupRetentionDuration(attr.(string))
 	}
