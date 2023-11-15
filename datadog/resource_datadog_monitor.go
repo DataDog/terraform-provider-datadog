@@ -582,16 +582,68 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	}
 
 	o := datadogV1.MonitorOptions{}
+	hasCustomSchedule := false
+	if attr, ok := d.GetOk("scheduling_options"); ok {
+		scheduling_options_list := attr.([]interface{})
+
+		if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
+			scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
+			evaluation_window_map, evaluation_window_found := scheduling_options_map["evaluation_window"].(map[string]interface{})
+			if evaluation_window_found {
+				evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
+				day_month_scheduling := false
+				if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
+					evaluation_window.SetDayStarts(day_starts)
+					day_month_scheduling = true
+				}
+				if month_starts, ok := evaluation_window_map["month_starts"].(int); ok && month_starts != 0 {
+					evaluation_window.SetMonthStarts(int32(month_starts))
+					day_month_scheduling = true
+				}
+				if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
+					evaluation_window.SetHourStarts(int32(hour_starts))
+				}
+				scheduling_options.SetEvaluationWindow(*evaluation_window)
+			}
+			custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].([]interface{})
+			if custom_schedule_found {
+				hasCustomSchedule = true
+				if recurrences, ok := custom_schedule_map[0].(map[string]interface{})["recurrences"].([]interface{}); ok {
+					recurrence := datadogV1.NewMonitorOptionsCustomScheduleRecurrence()
+					firstRecurrence := recurrences[0].(map[string]interface{})
+					if rrule, ok := firstRecurrence["rrule"].(string); ok {
+						recurrence.SetRrule(rrule)
+					}
+					if start, ok := firstRecurrence["start"].(string); ok {
+						recurrence.SetStart(start)
+					}
+					if timezone, ok := firstRecurrence["timezone"].(string); ok {
+						recurrence.SetTimezone(timezone)
+					}
+					newRecurrences := []datadogV1.MonitorOptionsCustomScheduleRecurrence{*recurrence}
+					custom_schedule := datadogV1.NewMonitorOptionsCustomSchedule()
+					custom_schedule.SetRecurrences(newRecurrences)
+					scheduling_options.SetCustomSchedule(*custom_schedule)
+				}
+			}
+			if evaluation_window_found || custom_schedule_found {
+				o.SetSchedulingOptions(*scheduling_options)
+			}
+
+		}
+	}
 	o.SetThresholds(thresholds)
-	o.SetNotifyNoData(d.Get("notify_no_data").(bool))
-	o.SetRequireFullWindow(d.Get("require_full_window").(bool))
 	o.SetIncludeTags(d.Get("include_tags").(bool))
+	if !hasCustomSchedule {
+		o.SetNotifyNoData(d.Get("notify_no_data").(bool))
+		o.SetRequireFullWindow(d.Get("require_full_window").(bool))
+	}
 
 	if thresholdWindows.HasRecoveryWindow() || thresholdWindows.HasTriggerWindow() {
 		o.SetThresholdWindows(thresholdWindows)
 	}
 
-	if attr, ok := d.GetOk("notify_no_data"); ok {
+	if attr, ok := d.GetOk("notify_no_data"); ok && !hasCustomSchedule {
 		o.SetNotifyNoData(attr.(bool))
 	}
 	if attr, ok := d.GetOk("group_retention_duration"); ok {
@@ -613,7 +665,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	// no_data_timeframe cannot be combined with on_missing_data. This provider
 	// defaults no_data_timeframe to 10, so we need this extra logic to exclude
 	// no_data_timeframe from the monitor definition when on_missing_data is set.
-	if attr, ok := d.GetOk("no_data_timeframe"); ok && !onMissingDataOk {
+	if attr, ok := d.GetOk("no_data_timeframe"); ok && !onMissingDataOk && !hasCustomSchedule {
 		o.SetNoDataTimeframe(int64(attr.(int)))
 	}
 	if attr, ok := d.GetOk("renotify_interval"); ok {
@@ -687,55 +739,6 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		}
 		sort.Strings(notifyBy)
 		o.SetNotifyBy(notifyBy)
-	}
-
-	if attr, ok := d.GetOk("scheduling_options"); ok {
-		scheduling_options_list := attr.([]interface{})
-
-		if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
-			scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
-			evaluation_window_map, evaluation_window_found := scheduling_options_map["evaluation_window"].(map[string]interface{})
-			if evaluation_window_found {
-				evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
-				day_month_scheduling := false
-				if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
-					evaluation_window.SetDayStarts(day_starts)
-					day_month_scheduling = true
-				}
-				if month_starts, ok := evaluation_window_map["month_starts"].(int); ok && month_starts != 0 {
-					evaluation_window.SetMonthStarts(int32(month_starts))
-					day_month_scheduling = true
-				}
-				if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
-					evaluation_window.SetHourStarts(int32(hour_starts))
-				}
-				scheduling_options.SetEvaluationWindow(*evaluation_window)
-			}
-			custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].([]interface{})
-			if custom_schedule_found {
-				if recurrences, ok := custom_schedule_map[0].(map[string]interface{})["recurrences"].([]interface{}); ok {
-					recurrence := datadogV1.NewMonitorOptionsCustomScheduleRecurrence()
-					firstRecurrence := recurrences[0].(map[string]interface{})
-					if rrule, ok := firstRecurrence["rrule"].(string); ok {
-						recurrence.SetRrule(rrule)
-					}
-					if start, ok := firstRecurrence["start"].(string); ok {
-						recurrence.SetStart(start)
-					}
-					if timezone, ok := firstRecurrence["timezone"].(string); ok {
-						recurrence.SetTimezone(timezone)
-					}
-					newRecurrences := []datadogV1.MonitorOptionsCustomScheduleRecurrence{*recurrence}
-					custom_schedule := datadogV1.NewMonitorOptionsCustomSchedule()
-					custom_schedule.SetRecurrences(newRecurrences)
-					scheduling_options.SetCustomSchedule(*custom_schedule)
-				}
-			}
-			if evaluation_window_found || custom_schedule_found {
-				o.SetSchedulingOptions(*scheduling_options)
-			}
-
-		}
 	}
 
 	if attr, ok := d.GetOk("notification_preset_name"); ok {
@@ -1073,10 +1076,22 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 			evaluation_window["month_starts"] = m
 		}
 	}
-	custom_schedule := datadogV1.NewMonitorOptionsCustomSchedule()
+	custom_schedule := make(map[string]interface{})
 	if c, ok := m.Options.SchedulingOptions.GetCustomScheduleOk(); ok {
-		if r, ok := c.GetRecurrencesOk(); ok && len(*r) > 0 {
-			custom_schedule.SetRecurrences(*r)
+		if recurrences, ok := c.GetRecurrencesOk(); ok && len(*recurrences) > 0 {
+			recurrence := make(map[string]interface{})
+			r := (*recurrences)[0]
+			if rrule, ok := r.GetRruleOk(); ok {
+				recurrence["rrule"] = rrule
+			}
+			if start, ok := r.GetStartOk(); ok {
+				recurrence["start"] = start
+			}
+			if timezone, ok := r.GetTimezoneOk(); ok {
+				recurrence["timezone"] = timezone
+			}
+			value := [](interface{}){recurrence}
+			custom_schedule["recurrences"] = value
 		}
 	}
 
@@ -1084,8 +1099,8 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if len(evaluation_window) > 0 {
 		scheduling_options["evaluation_window"] = []interface{}{evaluation_window}
 	}
-	if len(custom_schedule.GetRecurrences()) > 0 {
-		scheduling_options["custom_schedule"] = custom_schedule
+	if len(custom_schedule) > 0 {
+		scheduling_options["custom_schedule"] = []interface{}{custom_schedule}
 	}
 
 	if len(scheduling_options) > 0 {

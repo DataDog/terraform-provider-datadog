@@ -1037,7 +1037,7 @@ func TestAccDatadogMonitor_SchedulingOptionsCustomSchedule(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrences.0.rrule", "FREQ=DAILY;INTERVAL=1;"),
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrences.0.rrule", "FREQ=DAILY;INTERVAL=1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrences.0.timezone", "America/New_York"),
 					resource.TestCheckResourceAttr(
@@ -1062,10 +1062,12 @@ resource "datadog_monitor" "foo" {
 	critical = "0.5"
   }
 
+  no_data_timeframe = null
+
   scheduling_options {
 	custom_schedule {
 		recurrences {
-			rrule = "FREQ=DAILY;INTERVAL=1;"
+			rrule = "FREQ=DAILY;INTERVAL=1"
 			timezone = "America/New_York"
 			start = "2023-11-10T12:31:00"
 		}
@@ -1092,7 +1094,7 @@ func TestAccDatadogMonitor_SchedulingOptionsCustomScheduleNoStart(t *testing.T) 
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "name", monitorName),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrences.0.rrule", "FREQ=DAILY;INTERVAL=1;"),
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrences.0.rrule", "FREQ=DAILY;INTERVAL=1"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrences.0.timezone", "America/New_York"),
 				),
@@ -1118,7 +1120,7 @@ resource "datadog_monitor" "foo" {
   scheduling_options {
 	custom_schedule {
 		recurrences {
-			rrule = "FREQ=DAILY;INTERVAL=1;"
+			rrule = "FREQ=DAILY;INTERVAL=1"
 			timezone = "America/New_York"
 		}
 	}
