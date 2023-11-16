@@ -288,6 +288,31 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Test a downloaded file"
+    type = "assertFileDownload"
+    params {
+      file = jsonencode(
+        {
+          md5 = "abcdef1234567890" // MD5 hash of the file
+          sizeCheck = {
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
+          }
+          nameCheck = {
+            type = "contains" // "contains", "equals", "isEmpty", "matchRegex", 
+            // "notContains", "notIsEmpty", "notEquals", 
+            // "notStartsWith", "startsWith"
+            value = ".xls"
+          }
+        }
+      )
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -688,7 +713,7 @@ Optional:
 - `element` (String) Element to use for the step, json encoded string.
 - `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
 - `email` (String) Details of the email for an "assert email" step.
-- `file` (String) For an "assert download" step.
+- `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
 - `files` (String) Details of the files for an "upload files" step, json encoded string.
 - `modifiers` (List of String) Modifier to use for a "press key" step.
 - `playing_tab_id` (String) ID of the tab to play the subtest.
