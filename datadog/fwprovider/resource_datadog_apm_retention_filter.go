@@ -143,7 +143,7 @@ func (r *ApmRetentionFilterResource) Create(ctx context.Context, request resourc
 
 	resp, _, err := r.Api.CreateApmRetentionFilter(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving retention filter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -173,7 +173,7 @@ func (r *ApmRetentionFilterResource) Update(ctx context.Context, request resourc
 
 	resp, _, err := r.Api.UpdateApmRetentionFilter(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving retention filter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -200,7 +200,7 @@ func (r *ApmRetentionFilterResource) Delete(ctx context.Context, request resourc
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting spans metric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting retention filter"))
 		return
 	}
 }
@@ -229,7 +229,7 @@ func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(ctx c
 
 	req := datadogV2.NewRetentionFilterCreateRequestWithDefaults()
 	req.Data = *datadogV2.NewRetentionFilterCreateDataWithDefaults()
-	req.Data.SetType("apm_retention_filter")
+	req.Data.SetType(datadogV2.APMRETENTIONFILTERTYPE_apm_retention_filter)
 	req.Data.SetAttributes(*attributes)
 	return req, diags
 }
@@ -250,7 +250,7 @@ func (r *ApmRetentionFilterResource) buildApmRetentionFilterUpdateRequestBody(ct
 
 	req := datadogV2.NewRetentionFilterUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewRetentionFilterUpdateDataWithDefaults()
-	req.Data.SetType("apm_retention_filter")
+	req.Data.SetType(datadogV2.APMRETENTIONFILTERTYPE_apm_retention_filter)
 	req.Data.SetAttributes(*attributes)
 	return req, diags
 }

@@ -44,7 +44,7 @@ func (d *ApmRetentionFiltersOrderResource) Schema(_ context.Context, _ resource.
 		Description: "Provides a Datadog [APM Retention Filters API](https://docs.datadoghq.com/api/v2/apm-retention-filters/) resource, which is used to manage Datadog APM retention filters order.",
 		Attributes: map[string]schema.Attribute{
 			"filter_ids": schema.ListAttribute{
-				Description: "The filter IDs list. The order of filters IDs in this attribute defines the overall APM retention filters order. If `filter_ids` is empty or not specified, it will import the actual order, and create the resource. Otherwise, it will try to update the order.",
+				Description: "The filter IDs list. The order of filters IDs in this attribute defines the overall APM retention filters order.",
 				ElementType: types.StringType,
 				Required:    true,
 			},
@@ -90,19 +90,18 @@ func (r *ApmRetentionFiltersOrderResource) Create(ctx context.Context, request r
 		return
 	}
 
-	if len(state.FilterIds) > 0 {
-		body, diags := r.buildRetentionFiltersOrderRequestBody(ctx, &state)
-		response.Diagnostics.Append(diags...)
-		if response.Diagnostics.HasError() {
-			return
-		}
-		_, err := r.Api.ReorderApmRetentionFilters(r.Auth, *body)
-		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error re-ordering retention filters"))
-			return
-
-		}
+	body, diags := r.buildRetentionFiltersOrderRequestBody(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
 	}
+	_, err := r.Api.ReorderApmRetentionFilters(r.Auth, *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error re-ordering retention filters"))
+		return
+
+	}
+
 	listData, httpResponse, err := r.Api.ListApmRetentionFilters(r.Auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving retention filters order"))
