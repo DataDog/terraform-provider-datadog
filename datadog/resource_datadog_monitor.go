@@ -256,7 +256,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					Optional:    true,
 				},
 				"require_full_window": {
-					Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped.",
+					Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. If there's a custom_schedule set, require_full_window must be false and will be ignored.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     true,
