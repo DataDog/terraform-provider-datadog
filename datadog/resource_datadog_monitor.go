@@ -384,7 +384,7 @@ func resourceDatadogMonitor() *schema.Resource {
 								Optional:    true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
-										"recurrences": {
+										"recurrence": {
 											Description: "A list of recurrence definitions. Length must be 1.",
 											Type:        schema.TypeList,
 											Required:    true,
@@ -621,7 +621,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 			custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].([]interface{})
 			if custom_schedule_found && len(custom_schedule_map) > 0 {
 				hasCustomSchedule = true
-				if recurrences, ok := custom_schedule_map[0].(map[string]interface{})["recurrences"].([]interface{}); ok {
+				if recurrences, ok := custom_schedule_map[0].(map[string]interface{})["recurrence"].([]interface{}); ok {
 					recurrence := datadogV1.NewMonitorOptionsCustomScheduleRecurrence()
 					firstRecurrence := recurrences[0].(map[string]interface{})
 					if rrule, ok := firstRecurrence["rrule"].(string); ok {
@@ -1104,7 +1104,7 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 				recurrence["timezone"] = timezone
 			}
 			value := [](interface{}){recurrence}
-			custom_schedule["recurrences"] = value
+			custom_schedule["recurrence"] = value
 		}
 	}
 
