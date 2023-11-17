@@ -18,6 +18,8 @@ Provides a Datadog powerpack resource. This can be used to create and manage Dat
 ### Optional
 
 - `description` (String) The description of the powerpack.
+- `layout` (Block List, Max: 1) The layout of the powerpack on a free-form dashboard. (see [below for nested schema](#nestedblock--layout))
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - `name` (String) The name for the powerpack.
 - `show_title` (Boolean) Whether or not title should be displayed in the powerpack.
 - `tags` (Set of String) List of tags to identify this powerpack.
@@ -27,6 +29,21 @@ Provides a Datadog powerpack resource. This can be used to create and manage Dat
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--layout"></a>
+### Nested Schema for `layout`
+
+Required:
+
+- `height` (Number) The height of the widget.
+- `width` (Number) The width of the widget.
+- `x` (Number) The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.
+- `y` (Number) The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.
+
+Optional:
+
+- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.
+
 
 <a id="nestedblock--template_variables"></a>
 ### Nested Schema for `template_variables`
@@ -46,12 +63,20 @@ Optional:
 Optional:
 
 - `alert_graph_definition` (Block List, Max: 1) The definition for a Alert Graph widget. (see [below for nested schema](#nestedblock--widget--alert_graph_definition))
+- `alert_value_definition` (Block List, Max: 1) The definition for a Alert Value widget. (see [below for nested schema](#nestedblock--widget--alert_value_definition))
+- `change_definition` (Block List, Max: 1) The definition for a Change widget. (see [below for nested schema](#nestedblock--widget--change_definition))
 - `check_status_definition` (Block List, Max: 1) The definition for a Check Status widget. (see [below for nested schema](#nestedblock--widget--check_status_definition))
+- `event_stream_definition` (Block List, Max: 1) The definition for a Event Stream widget. (see [below for nested schema](#nestedblock--widget--event_stream_definition))
+- `event_timeline_definition` (Block List, Max: 1) The definition for a Event Timeline widget. (see [below for nested schema](#nestedblock--widget--event_timeline_definition))
 - `free_text_definition` (Block List, Max: 1) The definition for a Free Text widget. (see [below for nested schema](#nestedblock--widget--free_text_definition))
 - `iframe_definition` (Block List, Max: 1) The definition for an Iframe widget. (see [below for nested schema](#nestedblock--widget--iframe_definition))
 - `image_definition` (Block List, Max: 1) The definition for an Image widget (see [below for nested schema](#nestedblock--widget--image_definition))
+- `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--note_definition))
+- `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--query_value_definition))
 - `servicemap_definition` (Block List, Max: 1) The definition for a Service Map widget. (see [below for nested schema](#nestedblock--widget--servicemap_definition))
+- `toplist_definition` (Block List, Max: 1) The definition for a Toplist widget. (see [below for nested schema](#nestedblock--widget--toplist_definition))
+- `trace_service_definition` (Block List, Max: 1) The definition for a Trace Service widget. (see [below for nested schema](#nestedblock--widget--trace_service_definition))
 - `widget_layout` (Block List, Max: 1) The layout of the widget on a 'free' dashboard. (see [below for nested schema](#nestedblock--widget--widget_layout))
 
 Read-Only:
@@ -74,6 +99,558 @@ Optional:
 - `title_size` (String) The size of the widget's title (defaults to 16).
 
 
+<a id="nestedblock--widget--alert_value_definition"></a>
+### Nested Schema for `widget.alert_value_definition`
+
+Required:
+
+- `alert_id` (String) The ID of the monitor used by the widget.
+
+Optional:
+
+- `precision` (Number) The precision to use when displaying the value. Use `*` for maximum precision.
+- `text_align` (String) The alignment of the text in the widget. Valid values are `center`, `left`, `right`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+- `unit` (String) The unit for the value displayed in the widget.
+
+
+<a id="nestedblock--widget--change_definition"></a>
+### Nested Schema for `widget.change_definition`
+
+Optional:
+
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--change_definition--custom_link"></a>
+### Nested Schema for `widget.change_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
+
+
+<a id="nestedblock--widget--change_definition--request"></a>
+### Nested Schema for `widget.change_definition.request`
+
+Optional:
+
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query))
+- `change_type` (String) Whether to show absolute or relative change. Valid values are `absolute`, `relative`.
+- `compare_to` (String) Choose from when to compare current data to. Valid values are `hour_before`, `day_before`, `week_before`, `month_before`.
+- `formula` (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula))
+- `increase_good` (Boolean) A Boolean indicating whether an increase in the value is good (displayed in green) or not (displayed in red).
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query))
+- `order_by` (String) What to order by. Valid values are `change`, `name`, `present`, `past`.
+- `order_dir` (String) Widget sorting method. Valid values are `asc`, `desc`.
+- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--change_definition--request--process_query))
+- `q` (String) The metric query to use for this widget.
+- `query` (Block List) (see [below for nested schema](#nestedblock--widget--change_definition--request--query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query))
+- `show_present` (Boolean) If set to `true`, displays the current value.
+
+<a id="nestedblock--widget--change_definition--request--apm_query"></a>
+### Nested Schema for `widget.change_definition.request.apm_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--change_definition--request--apm_query--compute_query"></a>
+### Nested Schema for `widget.change_definition.request.apm_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--change_definition--request--apm_query--group_by"></a>
+### Nested Schema for `widget.change_definition.request.apm_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--apm_query--group_by--sort_query))
+
+<a id="nestedblock--widget--change_definition--request--apm_query--group_by--sort_query"></a>
+### Nested Schema for `widget.change_definition.request.apm_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--change_definition--request--apm_query--multi_compute"></a>
+### Nested Schema for `widget.change_definition.request.apm_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--change_definition--request--formula"></a>
+### Nested Schema for `widget.change_definition.request.formula`
+
+Required:
+
+- `formula_expression` (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) An expression alias.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--conditional_formats))
+- `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--limit))
+- `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--style))
+
+<a id="nestedblock--widget--change_definition--request--formula--conditional_formats"></a>
+### Nested Schema for `widget.change_definition.request.formula.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--change_definition--request--formula--limit"></a>
+### Nested Schema for `widget.change_definition.request.formula.limit`
+
+Optional:
+
+- `count` (Number) The number of results to return.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--change_definition--request--formula--style"></a>
+### Nested Schema for `widget.change_definition.request.formula.style`
+
+Optional:
+
+- `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
+- `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--change_definition--request--log_query"></a>
+### Nested Schema for `widget.change_definition.request.log_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--change_definition--request--log_query--compute_query"></a>
+### Nested Schema for `widget.change_definition.request.log_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--change_definition--request--log_query--group_by"></a>
+### Nested Schema for `widget.change_definition.request.log_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--log_query--group_by--sort_query))
+
+<a id="nestedblock--widget--change_definition--request--log_query--group_by--sort_query"></a>
+### Nested Schema for `widget.change_definition.request.log_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--change_definition--request--log_query--multi_compute"></a>
+### Nested Schema for `widget.change_definition.request.log_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--change_definition--request--process_query"></a>
+### Nested Schema for `widget.change_definition.request.process_query`
+
+Required:
+
+- `metric` (String) Your chosen metric.
+
+Optional:
+
+- `filter_by` (List of String) A list of processes.
+- `limit` (Number) The max number of items in the filter list.
+- `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--change_definition--request--query"></a>
+### Nested Schema for `widget.change_definition.request.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_resource_stats_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--slo_query))
+
+<a id="nestedblock--widget--change_definition--request--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.change_definition.request.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--change_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.change_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--change_definition--request--query--event_query"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by))
+- `indexes` (List of String) An array of index names to query in the stream.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--search))
+- `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--compute"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--group_by"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--change_definition--request--query--event_query--search"></a>
+### Nested Schema for `widget.change_definition.request.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--change_definition--request--query--metric_query"></a>
+### Nested Schema for `widget.change_definition.request.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+
+
+<a id="nestedblock--widget--change_definition--request--query--process_query"></a>
+### Nested Schema for `widget.change_definition.request.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--change_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.change_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+
+
+
+<a id="nestedblock--widget--change_definition--request--rum_query"></a>
+### Nested Schema for `widget.change_definition.request.rum_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--change_definition--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.change_definition.request.rum_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--change_definition--request--rum_query--group_by"></a>
+### Nested Schema for `widget.change_definition.request.rum_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--rum_query--group_by--sort_query))
+
+<a id="nestedblock--widget--change_definition--request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.change_definition.request.rum_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--change_definition--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.change_definition.request.rum_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--change_definition--request--security_query"></a>
+### Nested Schema for `widget.change_definition.request.security_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--change_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.change_definition.request.security_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--change_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.change_definition.request.security_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--change_definition--request--security_query--group_by--sort_query))
+
+<a id="nestedblock--widget--change_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.change_definition.request.security_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--change_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.change_definition.request.security_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+
+
 <a id="nestedblock--widget--check_status_definition"></a>
 ### Nested Schema for `widget.check_status_definition`
 
@@ -88,6 +665,39 @@ Optional:
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
 - `tags` (List of String) A list of tags to use in the widget.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+
+<a id="nestedblock--widget--event_stream_definition"></a>
+### Nested Schema for `widget.event_stream_definition`
+
+Required:
+
+- `query` (String) The query to use in the widget.
+
+Optional:
+
+- `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+
+<a id="nestedblock--widget--event_timeline_definition"></a>
+### Nested Schema for `widget.event_timeline_definition`
+
+Required:
+
+- `query` (String) The query to use in the widget.
+
+Optional:
+
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -133,6 +743,27 @@ Optional:
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
+<a id="nestedblock--widget--manage_status_definition"></a>
+### Nested Schema for `widget.manage_status_definition`
+
+Required:
+
+- `query` (String) The query to use in the widget.
+
+Optional:
+
+- `color_preference` (String) Whether to colorize text or background. Valid values are `background`, `text`.
+- `display_format` (String) The display setting to use. Valid values are `counts`, `countsAndList`, `list`.
+- `hide_zero_counts` (Boolean) A Boolean indicating whether to hide empty categories.
+- `show_last_triggered` (Boolean) A Boolean indicating whether to show when monitors/groups last triggered.
+- `show_priority` (Boolean) Whether to show the priorities column.
+- `sort` (String) The method to sort the monitors. Valid values are `name`, `group`, `status`, `tags`, `triggered`, `group,asc`, `group,desc`, `name,asc`, `name,desc`, `status,asc`, `status,desc`, `tags,asc`, `tags,desc`, `triggered,asc`, `triggered,desc`, `priority,asc`, `priority,desc`.
+- `summary_type` (String) The summary type to use. Valid values are `monitors`, `groups`, `combined`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+
 <a id="nestedblock--widget--note_definition"></a>
 ### Nested Schema for `widget.note_definition`
 
@@ -150,6 +781,650 @@ Optional:
 - `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`.
 - `tick_pos` (String) When `tick = true`, a string with a percent sign indicating the position of the tick, for example: `tick_pos = "50%"` is centered alignment.
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
+
+
+<a id="nestedblock--widget--query_value_definition"></a>
+### Nested Schema for `widget.query_value_definition`
+
+Optional:
+
+- `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--custom_link))
+- `custom_unit` (String) The unit for the value displayed in the widget.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `precision` (Number) The precision to use when displaying the tile.
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
+- `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
+- `timeseries_background` (Block List, Max: 1) Set a timeseries on the widget background. (see [below for nested schema](#nestedblock--widget--query_value_definition--timeseries_background))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--query_value_definition--custom_link"></a>
+### Nested Schema for `widget.query_value_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
+
+
+<a id="nestedblock--widget--query_value_definition--request"></a>
+### Nested Schema for `widget.query_value_definition.request`
+
+Optional:
+
+- `aggregator` (String) The aggregator to use for time aggregation. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query))
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--conditional_formats))
+- `formula` (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query))
+- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--process_query))
+- `q` (String) The metric query to use for this widget.
+- `query` (Block List) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query))
+
+<a id="nestedblock--widget--query_value_definition--request--apm_query"></a>
+### Nested Schema for `widget.query_value_definition.request.apm_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--query_value_definition--request--apm_query--compute_query"></a>
+### Nested Schema for `widget.query_value_definition.request.apm_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--query_value_definition--request--apm_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.apm_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--apm_query--group_by--sort_query))
+
+<a id="nestedblock--widget--query_value_definition--request--apm_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_value_definition.request.apm_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--apm_query--multi_compute"></a>
+### Nested Schema for `widget.query_value_definition.request.apm_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--audit_query"></a>
+### Nested Schema for `widget.query_value_definition.request.audit_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--query_value_definition--request--audit_query--compute_query"></a>
+### Nested Schema for `widget.query_value_definition.request.audit_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--query_value_definition--request--audit_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.audit_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--audit_query--group_by--sort_query))
+
+<a id="nestedblock--widget--query_value_definition--request--audit_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_value_definition.request.audit_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--audit_query--multi_compute"></a>
+### Nested Schema for `widget.query_value_definition.request.audit_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--conditional_formats"></a>
+### Nested Schema for `widget.query_value_definition.request.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--query_value_definition--request--formula"></a>
+### Nested Schema for `widget.query_value_definition.request.formula`
+
+Required:
+
+- `formula_expression` (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) An expression alias.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--conditional_formats))
+- `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--limit))
+- `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--style))
+
+<a id="nestedblock--widget--query_value_definition--request--formula--conditional_formats"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--query_value_definition--request--formula--limit"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.limit`
+
+Optional:
+
+- `count` (Number) The number of results to return.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--query_value_definition--request--formula--style"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.style`
+
+Optional:
+
+- `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
+- `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--log_query"></a>
+### Nested Schema for `widget.query_value_definition.request.log_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--query_value_definition--request--log_query--compute_query"></a>
+### Nested Schema for `widget.query_value_definition.request.log_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--query_value_definition--request--log_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.log_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--log_query--group_by--sort_query))
+
+<a id="nestedblock--widget--query_value_definition--request--log_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_value_definition.request.log_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--log_query--multi_compute"></a>
+### Nested Schema for `widget.query_value_definition.request.log_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--process_query"></a>
+### Nested Schema for `widget.query_value_definition.request.process_query`
+
+Required:
+
+- `metric` (String) Your chosen metric.
+
+Optional:
+
+- `filter_by` (List of String) A list of processes.
+- `limit` (Number) The max number of items in the filter list.
+- `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query"></a>
+### Nested Schema for `widget.query_value_definition.request.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--slo_query))
+
+<a id="nestedblock--widget--query_value_definition--request--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--event_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by))
+- `indexes` (List of String) An array of index names to query in the stream.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--search))
+- `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--query_value_definition--request--query--event_query--compute"></a>
+### Nested Schema for `widget.query_value_definition.request.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--event_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--query_value_definition--request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.query_value_definition.request.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--event_query--search"></a>
+### Nested Schema for `widget.query_value_definition.request.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--metric_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--process_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--rum_query"></a>
+### Nested Schema for `widget.query_value_definition.request.rum_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--query_value_definition--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.query_value_definition.request.rum_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--query_value_definition--request--rum_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.rum_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--rum_query--group_by--sort_query))
+
+<a id="nestedblock--widget--query_value_definition--request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_value_definition.request.rum_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.query_value_definition.request.rum_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--security_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query))
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.query_value_definition.request.security_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+
+<a id="nestedblock--widget--query_value_definition--timeseries_background"></a>
+### Nested Schema for `widget.query_value_definition.timeseries_background`
+
+Required:
+
+- `type` (String) Whether the Timeseries is made using an area or bars. Valid values are `bars`, `area`.
+
+Optional:
+
+- `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--timeseries_background--yaxis))
+
+<a id="nestedblock--widget--query_value_definition--timeseries_background--yaxis"></a>
+### Nested Schema for `widget.query_value_definition.timeseries_background.yaxis`
+
+Optional:
+
+- `include_zero` (Boolean) Always include zero or fit the axis to the data range.
+- `label` (String) The label of the axis to display on the graph.
+- `max` (String) Specify the maximum value to show on the Y-axis.
+- `min` (String) Specify the minimum value to show on the Y-axis.
+- `scale` (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
+
+
 
 
 <a id="nestedblock--widget--servicemap_definition"></a>
@@ -177,6 +1452,654 @@ Optional:
 - `link` (String) The URL of the custom link.
 - `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
 
+
+
+<a id="nestedblock--widget--toplist_definition"></a>
+### Nested Schema for `widget.toplist_definition`
+
+Optional:
+
+- `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
+
+<a id="nestedblock--widget--toplist_definition--custom_link"></a>
+### Nested Schema for `widget.toplist_definition.custom_link`
+
+Optional:
+
+- `is_hidden` (Boolean) The flag for toggling context menu link visibility.
+- `label` (String) The label for the custom link URL.
+- `link` (String) The URL of the custom link.
+- `override_label` (String) The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.
+
+
+<a id="nestedblock--widget--toplist_definition--request"></a>
+### Nested Schema for `widget.toplist_definition.request`
+
+Optional:
+
+- `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query))
+- `audit_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query))
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on a rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--conditional_formats))
+- `formula` (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula))
+- `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query))
+- `process_query` (Block List, Max: 1) The process query to use in the widget. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--process_query))
+- `q` (String) The metric query to use for this widget.
+- `query` (Block List) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query))
+- `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query))
+- `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query))
+- `style` (Block List, Max: 1) Define request for the widget's style. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--style))
+
+<a id="nestedblock--widget--toplist_definition--request--apm_query"></a>
+### Nested Schema for `widget.toplist_definition.request.apm_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--toplist_definition--request--apm_query--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.apm_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--toplist_definition--request--apm_query--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.apm_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--apm_query--group_by--sort_query))
+
+<a id="nestedblock--widget--toplist_definition--request--apm_query--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.apm_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--apm_query--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.apm_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--audit_query"></a>
+### Nested Schema for `widget.toplist_definition.request.audit_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--toplist_definition--request--audit_query--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.audit_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--toplist_definition--request--audit_query--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.audit_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--audit_query--group_by--sort_query))
+
+<a id="nestedblock--widget--toplist_definition--request--audit_query--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.audit_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--audit_query--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.audit_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--conditional_formats"></a>
+### Nested Schema for `widget.toplist_definition.request.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--toplist_definition--request--formula"></a>
+### Nested Schema for `widget.toplist_definition.request.formula`
+
+Required:
+
+- `formula_expression` (String) A string expression built from queries, formulas, and functions.
+
+Optional:
+
+- `alias` (String) An expression alias.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--conditional_formats))
+- `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--limit))
+- `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--style))
+
+<a id="nestedblock--widget--toplist_definition--request--formula--conditional_formats"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.conditional_formats`
+
+Required:
+
+- `comparator` (String) The comparator to use. Valid values are `=`, `>`, `>=`, `<`, `<=`.
+- `palette` (String) The color palette to apply. Valid values are `blue`, `custom_bg`, `custom_image`, `custom_text`, `gray_on_white`, `grey`, `green`, `orange`, `red`, `red_on_white`, `white_on_gray`, `white_on_green`, `green_on_white`, `white_on_red`, `white_on_yellow`, `yellow_on_white`, `black_on_light_yellow`, `black_on_light_green`, `black_on_light_red`.
+- `value` (Number) A value for the comparator.
+
+Optional:
+
+- `custom_bg_color` (String) The color palette to apply to the background, same values available as palette.
+- `custom_fg_color` (String) The color palette to apply to the foreground, same values available as palette.
+- `hide_value` (Boolean) Setting this to True hides values.
+- `image_url` (String) Displays an image as the background.
+- `metric` (String) The metric from the request to correlate with this conditional format.
+- `timeframe` (String) Defines the displayed timeframe.
+
+
+<a id="nestedblock--widget--toplist_definition--request--formula--limit"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.limit`
+
+Optional:
+
+- `count` (Number) The number of results to return.
+- `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--toplist_definition--request--formula--style"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.style`
+
+Optional:
+
+- `palette` (String) The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.
+- `palette_index` (Number) Index specifying which color to use within the palette.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--log_query"></a>
+### Nested Schema for `widget.toplist_definition.request.log_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--toplist_definition--request--log_query--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.log_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--toplist_definition--request--log_query--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.log_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--log_query--group_by--sort_query))
+
+<a id="nestedblock--widget--toplist_definition--request--log_query--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.log_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--log_query--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.log_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--process_query"></a>
+### Nested Schema for `widget.toplist_definition.request.process_query`
+
+Required:
+
+- `metric` (String) Your chosen metric.
+
+Optional:
+
+- `filter_by` (List of String) A list of processes.
+- `limit` (Number) The max number of items in the filter list.
+- `search_by` (String) Your chosen search term.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query"></a>
+### Nested Schema for `widget.toplist_definition.request.query`
+
+Optional:
+
+- `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_dependency_stats_query))
+- `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query))
+- `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query))
+- `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--metric_query))
+- `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--process_query))
+- `slo_query` (Block List, Max: 1) The SLO query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--slo_query))
+
+<a id="nestedblock--widget--toplist_definition--request--query--apm_dependency_stats_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.apm_dependency_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Dependency Stats queries. Valid values are `apm_dependency_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `operation_name` (String) Name of operation on service.
+- `resource_name` (String) APM resource.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `avg_duration`, `avg_root_duration`, `avg_spans_per_trace`, `error_rate`, `pct_exec_time`, `pct_of_traces`, `total_traces_count`.
+
+Optional:
+
+- `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.apm_resource_stats_query`
+
+Required:
+
+- `data_source` (String) The data source for APM Resource Stats queries. Valid values are `apm_resource_stats`.
+- `env` (String) APM environment.
+- `name` (String) The name of query for use in formulas.
+- `service` (String) APM service.
+- `stat` (String) APM statistic. Valid values are `errors`, `error_rate`, `hits`, `latency_avg`, `latency_distribution`, `latency_max`, `latency_p50`, `latency_p75`, `latency_p90`, `latency_p95`, `latency_p99`.
+
+Optional:
+
+- `group_by` (List of String) Array of fields to group results by.
+- `operation_name` (String) Name of operation on service.
+- `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
+- `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
+- `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--event_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.event_query`
+
+Required:
+
+- `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--compute))
+- `data_source` (String) The data source for event platform-based queries. Valid values are `logs`, `spans`, `network`, `rum`, `security_signals`, `profiles`, `audit`, `events`, `ci_tests`, `ci_pipelines`.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by))
+- `indexes` (List of String) An array of index names to query in the stream.
+- `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--search))
+- `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--toplist_definition--request--query--event_query--compute"></a>
+### Nested Schema for `widget.toplist_definition.request.query.event_query.compute`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `interval` (Number) A time interval in milliseconds.
+- `metric` (String) The measurable attribute to compute.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--event_query--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.query.event_query.group_by`
+
+Required:
+
+- `facet` (String) The event facet.
+
+Optional:
+
+- `limit` (Number) The number of groups to return.
+- `sort` (Block List, Max: 1) The options for sorting group by results. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by--sort))
+
+<a id="nestedblock--widget--toplist_definition--request--query--event_query--group_by--sort"></a>
+### Nested Schema for `widget.toplist_definition.request.query.event_query.group_by.sort`
+
+Required:
+
+- `aggregation` (String) The aggregation methods for the event platform queries. Valid values are `count`, `cardinality`, `median`, `pc75`, `pc90`, `pc95`, `pc98`, `pc99`, `sum`, `min`, `max`, `avg`.
+
+Optional:
+
+- `metric` (String) The metric used for sorting group by results.
+- `order` (String) Direction of sort. Valid values are `asc`, `desc`.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--event_query--search"></a>
+### Nested Schema for `widget.toplist_definition.request.query.event_query.search`
+
+Required:
+
+- `query` (String) The events search string.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--metric_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.metric_query`
+
+Required:
+
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The metrics query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--process_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.process_query`
+
+Required:
+
+- `data_source` (String) The data source for process queries. Valid values are `process`, `container`.
+- `metric` (String) The process metric name.
+- `name` (String) The name of query for use in formulas.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
+- `limit` (Number) The number of hits to return.
+- `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+- `tag_filters` (List of String) An array of tags to filter by.
+- `text_filter` (String) The text to use as a filter.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--slo_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.slo_query`
+
+Required:
+
+- `data_source` (String) The data source for SLO queries. Valid values are `slo`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `slo_id` (String) ID of an SLO to query.
+
+Optional:
+
+- `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
+- `name` (String) The name of query for use in formulas.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--rum_query"></a>
+### Nested Schema for `widget.toplist_definition.request.rum_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--toplist_definition--request--rum_query--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.rum_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--toplist_definition--request--rum_query--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.rum_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--rum_query--group_by--sort_query))
+
+<a id="nestedblock--widget--toplist_definition--request--rum_query--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.rum_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--rum_query--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.rum_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--security_query"></a>
+### Nested Schema for `widget.toplist_definition.request.security_query`
+
+Required:
+
+- `index` (String) The name of the index to query.
+
+Optional:
+
+- `compute_query` (Block List, Max: 1) `compute_query` or `multi_compute` is required. The map keys are listed below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--compute_query))
+- `group_by` (Block List) Multiple `group_by` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--group_by))
+- `multi_compute` (Block List) `compute_query` or `multi_compute` is required. Multiple `multi_compute` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--multi_compute))
+- `search_query` (String) The search query to use.
+
+<a id="nestedblock--widget--toplist_definition--request--security_query--compute_query"></a>
+### Nested Schema for `widget.toplist_definition.request.security_query.compute_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+<a id="nestedblock--widget--toplist_definition--request--security_query--group_by"></a>
+### Nested Schema for `widget.toplist_definition.request.security_query.group_by`
+
+Optional:
+
+- `facet` (String) The facet name.
+- `limit` (Number) The maximum number of items in the group.
+- `sort_query` (Block List, Max: 1) A list of exactly one element describing the sort query to use. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--security_query--group_by--sort_query))
+
+<a id="nestedblock--widget--toplist_definition--request--security_query--group_by--sort_query"></a>
+### Nested Schema for `widget.toplist_definition.request.security_query.group_by.sort_query`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+- `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
+
+Optional:
+
+- `facet` (String) The facet name.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--security_query--multi_compute"></a>
+### Nested Schema for `widget.toplist_definition.request.security_query.multi_compute`
+
+Required:
+
+- `aggregation` (String) The aggregation method.
+
+Optional:
+
+- `facet` (String) The facet name.
+- `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--style"></a>
+### Nested Schema for `widget.toplist_definition.request.style`
+
+Optional:
+
+- `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+
+<a id="nestedblock--widget--trace_service_definition"></a>
+### Nested Schema for `widget.trace_service_definition`
+
+Required:
+
+- `env` (String) APM environment.
+- `service` (String) APM service.
+- `span_name` (String) APM span name
+
+Optional:
+
+- `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
+- `show_distribution` (Boolean) Whether to show the latency distribution or not.
+- `show_errors` (Boolean) Whether to show the error metrics or not.
+- `show_hits` (Boolean) Whether to show the hits metrics or not
+- `show_latency` (Boolean) Whether to show the latency metrics or not.
+- `show_resource_list` (Boolean) Whether to show the resource list or not.
+- `size_format` (String) The size of the widget. Valid values are `small`, `medium`, `large`.
+- `title` (String) The title of the widget.
+- `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
+- `title_size` (String) The size of the widget's title (defaults to 16).
 
 
 <a id="nestedblock--widget--widget_layout"></a>
