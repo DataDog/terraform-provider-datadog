@@ -131,8 +131,8 @@ Required:
 
 Required:
 
-- `rrule` (String) Must be a valid rrule. See api docs for supported fields
-- `timezone` (String) 'tz database' format. ex: 'America/New_York' or UTC
+- `rrule` (String) Must be a valid `rrule`. See API docs for supported fields
+- `timezone` (String) 'tz database' format. Example: `America/New_York` or `UTC`
 
 Optional:
 

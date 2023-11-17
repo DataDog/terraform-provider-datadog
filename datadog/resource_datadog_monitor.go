@@ -392,7 +392,7 @@ func resourceDatadogMonitor() *schema.Resource {
 											Elem: &schema.Resource{
 												Schema: map[string]*schema.Schema{
 													"rrule": {
-														Description: "Must be a valid rrule. See api docs for supported fields",
+														Description: "Must be a valid `rrule`. See API docs for supported fields",
 														Type:        schema.TypeString,
 														Required:    true,
 													},
@@ -402,7 +402,7 @@ func resourceDatadogMonitor() *schema.Resource {
 														Optional:    true,
 													},
 													"timezone": {
-														Description: "'tz database' format. ex: 'America/New_York' or UTC",
+														Description: "'tz database' format. Example: `America/New_York` or `UTC`",
 														Type:        schema.TypeString,
 														Required:    true,
 													},
