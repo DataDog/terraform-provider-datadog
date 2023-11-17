@@ -638,6 +638,9 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	if !hasCustomSchedule {
 		o.SetNotifyNoData(d.Get("notify_no_data").(bool))
 		o.SetRequireFullWindow(d.Get("require_full_window").(bool))
+	} else {
+		// this has to be done explicitly to override the default
+		o.SetRequireFullWindow(false)
 	}
 
 	if thresholdWindows.HasRecoveryWindow() || thresholdWindows.HasTriggerWindow() {
