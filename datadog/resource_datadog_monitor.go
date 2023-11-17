@@ -260,6 +260,18 @@ func resourceDatadogMonitor() *schema.Resource {
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     true,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						if attr, ok := d.GetOk("scheduling_options"); ok {
+							scheduling_options_list := attr.([]interface{})
+							if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
+								custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].([]interface{})
+								if custom_schedule_found && len(custom_schedule_map) > 0 {
+									return true
+								}
+							}
+						}
+						return false
+					},
 				},
 				"locked": {
 					Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
