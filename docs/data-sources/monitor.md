@@ -97,10 +97,10 @@ Read-Only:
 
 Read-Only:
 
-- `recurrences` (Set of Object) (see [below for nested schema](#nestedobjatt--scheduling_options--custom_schedule--recurrences))
+- `recurrence` (Set of Object) (see [below for nested schema](#nestedobjatt--scheduling_options--custom_schedule--recurrence))
 
-<a id="nestedobjatt--scheduling_options--custom_schedule--recurrences"></a>
-### Nested Schema for `scheduling_options.custom_schedule.recurrences`
+<a id="nestedobjatt--scheduling_options--custom_schedule--recurrence"></a>
+### Nested Schema for `scheduling_options.custom_schedule.recurrence`
 
 Read-Only:
 
