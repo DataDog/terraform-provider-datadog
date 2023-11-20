@@ -256,10 +256,22 @@ func resourceDatadogMonitor() *schema.Resource {
 					Optional:    true,
 				},
 				"require_full_window": {
-					Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped.",
+					Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. If there's a custom_schedule set, `require_full_window` must be false and will be ignored.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					Default:     true,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						if attr, ok := d.GetOk("scheduling_options"); ok {
+							scheduling_options_list := attr.([]interface{})
+							if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
+								custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].([]interface{})
+								if custom_schedule_found && len(custom_schedule_map) > 0 {
+									return true
+								}
+							}
+						}
+						return false
+					},
 				},
 				"locked": {
 					Description:   "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
@@ -345,7 +357,7 @@ func resourceDatadogMonitor() *schema.Resource {
 							"evaluation_window": {
 								Description: "Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together.",
 								Type:        schema.TypeList,
-								Required:    true,
+								Optional:    true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"day_starts": {
@@ -362,6 +374,40 @@ func resourceDatadogMonitor() *schema.Resource {
 											Description: "The minute of the hour at which a one hour cumulative evaluation window starts. Must be between 0 and 59.",
 											Type:        schema.TypeInt,
 											Optional:    true,
+										},
+									},
+								},
+							},
+							"custom_schedule": {
+								Description: "Configuration options for the custom schedules. If `start` is omitted, the monitor creation time will be used.",
+								Type:        schema.TypeList,
+								Optional:    true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"recurrence": {
+											Description: "A list of recurrence definitions. Length must be 1.",
+											Type:        schema.TypeList,
+											Required:    true,
+											MaxItems:    1,
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"rrule": {
+														Description: "Must be a valid `rrule`. See API docs for supported fields",
+														Type:        schema.TypeString,
+														Required:    true,
+													},
+													"start": {
+														Description: "Time to start recurrence cycle. Similar to DTSTART. Expected format 'YYYY-MM-DDThh:mm:ss'",
+														Type:        schema.TypeString,
+														Optional:    true,
+													},
+													"timezone": {
+														Description: "'tz database' format. Example: `America/New_York` or `UTC`",
+														Type:        schema.TypeString,
+														Required:    true,
+													},
+												},
+											},
 										},
 									},
 								},
@@ -548,18 +594,71 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	}
 
 	o := datadogV1.MonitorOptions{}
+	hasCustomSchedule := false
+	if attr, ok := d.GetOk("scheduling_options"); ok {
+		scheduling_options_list := attr.([]interface{})
+
+		if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
+			scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
+			evaluation_window_list, evaluation_list_found := scheduling_options_map["evaluation_window"].([]interface{})
+			if evaluation_list_found && len(evaluation_window_list) > 0 {
+				evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
+				evaluation_window_map := evaluation_window_list[0].(map[string]interface{})
+				day_month_scheduling := false
+				if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
+					evaluation_window.SetDayStarts(day_starts)
+					day_month_scheduling = true
+				}
+				if month_starts, ok := evaluation_window_map["month_starts"].(int); ok && month_starts != 0 {
+					evaluation_window.SetMonthStarts(int32(month_starts))
+					day_month_scheduling = true
+				}
+				if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
+					evaluation_window.SetHourStarts(int32(hour_starts))
+				}
+				scheduling_options.SetEvaluationWindow(*evaluation_window)
+			}
+			custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].([]interface{})
+			if custom_schedule_found && len(custom_schedule_map) > 0 {
+				hasCustomSchedule = true
+				if recurrences, ok := custom_schedule_map[0].(map[string]interface{})["recurrence"].([]interface{}); ok {
+					recurrence := datadogV1.NewMonitorOptionsCustomScheduleRecurrence()
+					firstRecurrence := recurrences[0].(map[string]interface{})
+					if rrule, ok := firstRecurrence["rrule"].(string); ok {
+						recurrence.SetRrule(rrule)
+					}
+					if start, ok := firstRecurrence["start"].(string); ok {
+						recurrence.SetStart(start)
+					}
+					if timezone, ok := firstRecurrence["timezone"].(string); ok {
+						recurrence.SetTimezone(timezone)
+					}
+					newRecurrences := []datadogV1.MonitorOptionsCustomScheduleRecurrence{*recurrence}
+					custom_schedule := datadogV1.NewMonitorOptionsCustomSchedule()
+					custom_schedule.SetRecurrences(newRecurrences)
+					scheduling_options.SetCustomSchedule(*custom_schedule)
+				}
+			}
+			if len(scheduling_options_list) > 0 {
+				o.SetSchedulingOptions(*scheduling_options)
+			}
+
+		}
+	}
 	o.SetThresholds(thresholds)
-	o.SetNotifyNoData(d.Get("notify_no_data").(bool))
-	o.SetRequireFullWindow(d.Get("require_full_window").(bool))
 	o.SetIncludeTags(d.Get("include_tags").(bool))
+	if !hasCustomSchedule {
+		o.SetNotifyNoData(d.Get("notify_no_data").(bool))
+		o.SetRequireFullWindow(d.Get("require_full_window").(bool))
+	} else {
+		// this has to be done explicitly to override the default
+		o.SetRequireFullWindow(false)
+	}
 
 	if thresholdWindows.HasRecoveryWindow() || thresholdWindows.HasTriggerWindow() {
 		o.SetThresholdWindows(thresholdWindows)
 	}
 
-	if attr, ok := d.GetOk("notify_no_data"); ok {
-		o.SetNotifyNoData(attr.(bool))
-	}
 	if attr, ok := d.GetOk("group_retention_duration"); ok {
 		o.SetGroupRetentionDuration(attr.(string))
 	}
@@ -579,7 +678,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	// no_data_timeframe cannot be combined with on_missing_data. This provider
 	// defaults no_data_timeframe to 10, so we need this extra logic to exclude
 	// no_data_timeframe from the monitor definition when on_missing_data is set.
-	if attr, ok := d.GetOk("no_data_timeframe"); ok && !onMissingDataOk {
+	if attr, ok := d.GetOk("no_data_timeframe"); ok && !onMissingDataOk && !hasCustomSchedule {
 		o.SetNoDataTimeframe(int64(attr.(int)))
 	}
 	if attr, ok := d.GetOk("renotify_interval"); ok {
@@ -653,30 +752,6 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		}
 		sort.Strings(notifyBy)
 		o.SetNotifyBy(notifyBy)
-	}
-
-	if attr, ok := d.GetOk("scheduling_options"); ok {
-		scheduling_options_list := attr.([]interface{})
-		if scheduling_options_map, ok := scheduling_options_list[0].(map[string]interface{}); ok {
-			if evaluation_window_map, ok := scheduling_options_map["evaluation_window"].([]interface{})[0].(map[string]interface{}); ok {
-				scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
-				evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
-				day_month_scheduling := false
-				if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
-					evaluation_window.SetDayStarts(day_starts)
-					day_month_scheduling = true
-				}
-				if month_starts, ok := evaluation_window_map["month_starts"].(int); ok && month_starts != 0 {
-					evaluation_window.SetMonthStarts(int32(month_starts))
-					day_month_scheduling = true
-				}
-				if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
-					evaluation_window.SetHourStarts(int32(hour_starts))
-				}
-				scheduling_options.SetEvaluationWindow(*evaluation_window)
-				o.SetSchedulingOptions(*scheduling_options)
-			}
-		}
 	}
 
 	if attr, ok := d.GetOk("notification_preset_name"); ok {
@@ -1014,9 +1089,34 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 			evaluation_window["month_starts"] = m
 		}
 	}
+	custom_schedule := make(map[string]interface{})
+	if c, ok := m.Options.SchedulingOptions.GetCustomScheduleOk(); ok {
+		if recurrences, ok := c.GetRecurrencesOk(); ok && len(*recurrences) > 0 {
+			recurrence := make(map[string]interface{})
+			r := (*recurrences)[0]
+			if rrule, ok := r.GetRruleOk(); ok {
+				recurrence["rrule"] = rrule
+			}
+			if start, ok := r.GetStartOk(); ok {
+				recurrence["start"] = start
+			}
+			if timezone, ok := r.GetTimezoneOk(); ok {
+				recurrence["timezone"] = timezone
+			}
+			value := [](interface{}){recurrence}
+			custom_schedule["recurrence"] = value
+		}
+	}
+
 	scheduling_options := make(map[string]interface{})
 	if len(evaluation_window) > 0 {
 		scheduling_options["evaluation_window"] = []interface{}{evaluation_window}
+	}
+	if len(custom_schedule) > 0 {
+		scheduling_options["custom_schedule"] = []interface{}{custom_schedule}
+	}
+
+	if len(scheduling_options) > 0 {
 		if err := d.Set("scheduling_options", []interface{}{scheduling_options}); err != nil {
 			return diag.FromErr(err)
 		}
