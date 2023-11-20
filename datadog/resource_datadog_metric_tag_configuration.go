@@ -173,28 +173,25 @@ func buildDatadogMetricTagConfiguration(d *schema.ResourceData) (*datadogV2.Metr
 	}
 	attributes.SetMetricType(*metricType)
 
-	includePercentiles, iclFieldSet := d.GetOk("include_percentiles")
+	includePercentiles := d.Get("include_percentiles")
 
-	if iclFieldSet {
-		if *metricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-			return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *metricType)
-		}
-		attributes.SetIncludePercentiles(includePercentiles.(bool))
+	if includePercentiles.(bool) && *metricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *metricType)
+	}
+
+	if *metricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		attributes.IncludePercentiles = nil
 	} else {
-		// if the include_percentiles field is not set and the metric is not a distribution, we need to remove the include_percentiles field from the payload
-		if *metricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-			attributes.IncludePercentiles = nil
-		}
+		attributes.SetIncludePercentiles(includePercentiles.(bool))
 	}
 
-	excludeTagsMode, iclExcludeTagsMode := d.GetOk("exclude_tags_mode")
-	if iclExcludeTagsMode {
-		if excludeTagsMode.(bool) && len(stringTags) == 0 {
-			return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
-		}
+	excludeTagsMode := d.Get("exclude_tags_mode")
 
-		attributes.SetExcludeTagsMode(excludeTagsMode.(bool))
+	if excludeTagsMode.(bool) && len(stringTags) == 0 {
+		return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
 	}
+
+	attributes.SetExcludeTagsMode(excludeTagsMode.(bool))
 
 	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
@@ -226,27 +223,25 @@ func buildDatadogMetricTagConfigurationUpdate(d *schema.ResourceData, existingMe
 	}
 	attributes.SetTags(stringTags)
 
-	includePercentiles, iclFieldSet := d.GetOk("include_percentiles")
-	if iclFieldSet {
-		if *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-			return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *existingMetricType)
-		}
-		attributes.SetIncludePercentiles(includePercentiles.(bool))
+	includePercentiles := d.Get("include_percentiles")
+
+	if includePercentiles.(bool) && *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		return nil, fmt.Errorf("include_percentiles field not allowed with metric_type: %s, only with metric_type distribution", *existingMetricType)
+	}
+
+	if *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		attributes.IncludePercentiles = nil
 	} else {
-		// if the include_percentiles field is not set and the metric is not a distribution, we need to remove the include_percentiles field from the payload
-		if *existingMetricType != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-			attributes.IncludePercentiles = nil
-		}
+		attributes.SetIncludePercentiles(includePercentiles.(bool))
 	}
 
-	excludeTagsMode, iclExcludeTagsMode := d.GetOk("exclude_tags_mode")
-	if iclExcludeTagsMode {
-		if excludeTagsMode.(bool) && len(stringTags) == 0 {
-			return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
-		}
+	excludeTagsMode := d.Get("exclude_tags_mode")
 
-		attributes.SetExcludeTagsMode(excludeTagsMode.(bool))
+	if excludeTagsMode.(bool) && len(stringTags) == 0 {
+		return nil, fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
 	}
+
+	attributes.SetExcludeTagsMode(excludeTagsMode.(bool))
 
 	aggregationsArray, aggregationsFieldSet := d.GetOk("aggregations")
 	if aggregationsFieldSet {
