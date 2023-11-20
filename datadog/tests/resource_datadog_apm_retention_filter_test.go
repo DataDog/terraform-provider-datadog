@@ -58,13 +58,13 @@ func testAccCheckDatadogApmRetentionFilterDestroy(accProvider *fwprovider.Framew
 }
 
 func ApmRetentionFilterDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
-	err := utils.Retry(2, 10, func() error {
-		for _, r := range s.RootModule().Resources {
-			if r.Type != "datadog_apm_retention_filter" {
-				continue
-			}
-			id := r.Primary.ID
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_apm_retention_filter" {
+			continue
+		}
+		id := r.Primary.ID
 
+		err := utils.Retry(2, 10, func() error {
 			_, httpResp, err := apiInstances.GetApmRetentionFiltersApiV2().GetApmRetentionFilter(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
@@ -73,10 +73,14 @@ func ApmRetentionFilterDestroyHelper(auth context.Context, s *terraform.State, a
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving retention filter %s", err)}
 			}
 			return &utils.RetryableError{Prob: "retention filter still exists"}
+		})
+
+		if err != nil {
+			return err
 		}
-		return nil
-	})
-	return err
+	}
+
+	return nil
 }
 
 func testAccCheckDatadogApmRetentionFilterExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {

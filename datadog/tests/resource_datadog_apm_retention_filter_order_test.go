@@ -17,10 +17,11 @@ import (
 // Get the current order and inverse it
 func RetentionFiltersOrderConfig() string {
 	return `
-	data "datadog_apm_retention_filters_order" "order" {}
-	resource "datadog_apm_retention_filter_order" "filters_orders" {
+data "datadog_apm_retention_filters_order" "order" {}
+
+resource "datadog_apm_retention_filter_order" "filters_orders" {
 	filter_ids=reverse(data.datadog_apm_retention_filters_order.order.filter_ids)
-	}`
+}`
 }
 
 func GetApmFilterIds(apmRetentionFiltersOrder datadogV2.RetentionFiltersResponse) []string {
