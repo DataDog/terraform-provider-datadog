@@ -3,9 +3,9 @@ package fwprovider
 import (
 	"context"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
