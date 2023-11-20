@@ -49,3 +49,12 @@ resource "datadog_apm_retention_filter" "foo" {
 Optional:
 
 - `query` (String) The search query - following the span search syntax. Defaults to `"*"`.
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+# Import existing APM retention filter 
+terraform import datadog_apm_retention_filter.foo <filter_id>
+```
