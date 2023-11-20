@@ -50,6 +50,7 @@ var allowedHeaders = map[string]string{"Accept": "", "Content-Type": ""}
 
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_api_key_test":                                 "api_keys",
+	"tests/data_source_datadog_apm_retention_filters_order_test":             "apm_retention_filters_order",
 	"tests/data_source_datadog_application_key_test":                         "application_keys",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test":     "cloud-workload-security",
 	"tests/data_source_datadog_dashboard_list_test":                          "dashboard-lists",
@@ -91,6 +92,8 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/import_datadog_user_test":                                         "users",
 	"tests/provider_test":                                                    "terraform",
 	"tests/resource_datadog_api_key_test":                                    "api_keys",
+	"tests/resource_datadog_apm_retention_filter_test":                       "apm_retention_filter",
+	"tests/resource_datadog_apm_retention_filter_order_test":                 "apm_retention_filter_order",
 	"tests/resource_datadog_application_key_test":                            "application_keys",
 	"tests/resource_datadog_authn_mapping_test":                              "authn_mapping",
 	"tests/resource_datadog_child_organization_test":                         "organization",
