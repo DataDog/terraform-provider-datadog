@@ -68,7 +68,6 @@ type ApiInstances struct {
 	opsgenieIntegrationApiV2   *datadogV2.OpsgenieIntegrationApi
 	organizationsApiV2         *datadogV2.OrganizationsApi
 	processesApiV2             *datadogV2.ProcessesApi
-	powerpackApiV2             *datadogV2.PowerpackApi
 	restrictionPolicyApiV2     *datadogV2.RestrictionPoliciesApi
 	rolesApiV2                 *datadogV2.RolesApi
 	rumApiV2                   *datadogV2.RUMApi
@@ -487,14 +486,6 @@ func (i *ApiInstances) GetProcessesApiV2() *datadogV2.ProcessesApi {
 		i.processesApiV2 = datadogV2.NewProcessesApi(i.HttpClient)
 	}
 	return i.processesApiV2
-}
-
-// GetPowerpackApiV2 get instance of PowerpackApi
-func (i *ApiInstances) GetPowerpackApiV2() *datadogV2.PowerpackApi {
-	if i.powerpackApiV2 == nil {
-		i.powerpackApiV2 = datadogV2.NewPowerpackApi(i.HttpClient)
-	}
-	return i.powerpackApiV2
 }
 
 // GetRolesApiV2 get instance of RolesApi
