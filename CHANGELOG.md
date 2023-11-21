@@ -2,15 +2,12 @@
 
 ### BUGFIXES
 * [datadog_service_definition_yaml] Keep `ci-pipeline-fingerprints` sorted in state by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2178
-* [datadog_powerpack] set reasonable default group widget layout value by @dashashifrina in https://github.com/DataDog/terraform-provider-datadog/pull/2173
 ### IMPROVEMENTS
 * [provider] Remove terraform logger transport by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2167
 * [data_source_datadog_service_level_objectives] Add ability to query slo with multiple tags by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2172
 * [datadog_monitor] Add custom_schedule fields by @unclebconnor in https://github.com/DataDog/terraform-provider-datadog/pull/2177
 ### FEATURES
 * [datadog_integration_azure] Add container_app_filters by @ava-silver in https://github.com/DataDog/terraform-provider-datadog/pull/2138
-* [datadog_powerpacks] Implement support for basic widgets by @dashashifrina in https://github.com/DataDog/terraform-provider-datadog/pull/2157
-* [datadog_powerpacks] Implement support for live span and more widgets by @dashashifrina in https://github.com/DataDog/terraform-provider-datadog/pull/2158
 * [apm_retention_filters] Add resources and datasource by @SalahEddineBC in https://github.com/DataDog/terraform-provider-datadog/pull/2137
 * [datadog_metric_tag_configuration] Adds exclude_tags_mode; updates include_percentiles by @jmfurlott in https://github.com/DataDog/terraform-provider-datadog/pull/1949
 ### NOTES
