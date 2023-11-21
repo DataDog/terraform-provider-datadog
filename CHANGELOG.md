@@ -1,3 +1,25 @@
+## 3.33.0 (November 21, 2023)
+
+### BUGFIXES
+* [datadog_service_definition_yaml] Keep `ci-pipeline-fingerprints` sorted in state by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2178
+### IMPROVEMENTS
+* [provider] Remove terraform logger transport by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2167
+* [data_source_datadog_service_level_objectives] Add ability to query slo with multiple tags by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2172
+* [datadog_monitor] Add custom_schedule fields by @unclebconnor in https://github.com/DataDog/terraform-provider-datadog/pull/2177
+### FEATURES
+* [datadog_integration_azure] Add container_app_filters by @ava-silver in https://github.com/DataDog/terraform-provider-datadog/pull/2138
+* [apm_retention_filters] Add resources and datasource by @SalahEddineBC in https://github.com/DataDog/terraform-provider-datadog/pull/2137
+* [datadog_metric_tag_configuration] Adds exclude_tags_mode; updates include_percentiles by @jmfurlott in https://github.com/DataDog/terraform-provider-datadog/pull/1949
+### NOTES
+* [provider] bump Go SDK to 2.19.0 by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2185
+
+## New Contributors
+* @romainmeunier made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2175
+* @SalahEddineBC made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2137
+* @jmfurlott made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/1949
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.32.0...v3.33.0
+
 ## 3.32.0 (October 31, 2023)
 
 ### BUGFIXES
