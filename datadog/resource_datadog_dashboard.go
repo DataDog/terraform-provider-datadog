@@ -9102,20 +9102,21 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	if terraformGroupBys, ok := terraformQuery["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
 		datadogGroupBys := make([]datadogV1.LogQueryDefinitionGroupBy, len(terraformGroupBys))
 		for i, g := range terraformGroupBys {
-			groupBy := g.(map[string]interface{})
-			// Facet
-			datadogGroupBy := datadogV1.NewLogQueryDefinitionGroupBy(groupBy["facet"].(string))
-			// Limit
-			if v, ok := groupBy["limit"].(int); ok && v != 0 {
-				datadogGroupBy.SetLimit(int64(v))
-			}
-			// Sort
-			if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
-				if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
-					datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
+			if groupBy, ok := g.(map[string]interface{}); ok {
+				// Facet
+				datadogGroupBy := datadogV1.NewLogQueryDefinitionGroupBy(groupBy["facet"].(string))
+				// Limit
+				if v, ok := groupBy["limit"].(int); ok && v != 0 {
+					datadogGroupBy.SetLimit(int64(v))
 				}
+				// Sort
+				if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
+					if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
+						datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
+					}
+				}
+				datadogGroupBys[i] = *datadogGroupBy
 			}
-			datadogGroupBys[i] = *datadogGroupBy
 		}
 		datadogQuery.SetGroupBy(datadogGroupBys)
 	}
