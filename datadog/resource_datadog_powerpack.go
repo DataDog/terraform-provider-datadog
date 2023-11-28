@@ -344,10 +344,6 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 			int64(unparsedLayout["x"].(int)),
 			int64(unparsedLayout["y"].(int)))
 		groupWidget.SetLayout(*layout)
-	} else {
-		// Temporary fix: set a reasonable default layout value for the layout property
-		columnWidth = 12
-		groupWidget.Layout = datadogV2.NewPowerpackGroupWidgetLayout(1, 12, 0, 0)
 	}
 
 	// Finally, build JSON Powerpack API compatible widgets
