@@ -159,6 +159,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_powerpack_scatterplot_test":                      "powerpacks",
 	"tests/resource_datadog_powerpack_servicemap_test":                       "powerpacks",
 	"tests/resource_datadog_powerpack_slo_test":                              "powerpacks",
+	"tests/resource_datadog_powerpack_slo_list_test":                         "powerpacks",
 	"tests/resource_datadog_powerpack_sunburst_test":                         "powerpacks",
 	"tests/resource_datadog_powerpack_timeseries_test":                       "powerpacks",
 	"tests/resource_datadog_powerpack_toplist_test":                          "powerpacks",
