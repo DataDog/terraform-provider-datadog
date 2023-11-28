@@ -162,6 +162,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_powerpack_toplist_test":                          "powerpacks",
 	"tests/resource_datadog_powerpack_topology_map_test":                     "powerpacks",
 	"tests/resource_datadog_powerpack_trace_service_test":                    "powerpacks",
+	"tests/resource_datadog_powerpack_treemap_test":                          "powerpacks",
 	"tests/resource_datadog_downtime_test":                                   "downtimes",
 	"tests/resource_datadog_downtime_schedule_test":                          "downtimes",
 	"tests/resource_datadog_integration_aws_lambda_arn_test":                 "integration-aws",
