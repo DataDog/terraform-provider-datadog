@@ -71,11 +71,10 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 					Optional:    true,
 				},
 				"cspm_enabled": {
-					Description:  "When enabled, Datadog’s Cloud Security Management product will scan resource configurations monitored by this app registration.\nNote: This requires resource_collection_enabled to be set to true.",
-					Type:         schema.TypeBool,
-					Default:      false,
-					Optional:     true,
-					RequiredWith: []string{"resource_collection_enabled"},
+					Description: "When enabled, Datadog’s Cloud Security Management product will scan resource configurations monitored by this app registration.\nNote: This requires resource_collection_enabled to be set to true.",
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
 				},
 				"custom_metrics_enabled": {
 					Description: "Enable custom metrics for your organization.",
