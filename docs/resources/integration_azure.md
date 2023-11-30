@@ -15,15 +15,16 @@ Provides a Datadog - Microsoft Azure integration resource. This can be used to c
 ```terraform
 # Create a new Datadog - Microsoft Azure integration
 resource "datadog_integration_azure" "sandbox" {
-  tenant_name              = "<azure_tenant_name>"
-  client_id                = "<azure_client_id>"
-  client_secret            = "<azure_client_secret_key>"
-  host_filters             = "examplefilter:true,example:true"
-  app_service_plan_filters = "examplefilter:true,example:another"
-  container_app_filters    = "examplefilter:true,example:one_more"
-  automute                 = true
-  cspm_enabled             = true
-  custom_metrics_enabled   = false
+  tenant_name                 = "<azure_tenant_name>"
+  client_id                   = "<azure_client_id>"
+  client_secret               = "<azure_client_secret_key>"
+  host_filters                = "examplefilter:true,example:true"
+  app_service_plan_filters    = "examplefilter:true,example:another"
+  container_app_filters       = "examplefilter:true,example:one_more"
+  automute                    = true
+  resource_collection_enabled = true
+  cspm_enabled                = true
+  custom_metrics_enabled      = false
 }
 ```
 
@@ -41,9 +42,11 @@ resource "datadog_integration_azure" "sandbox" {
 - `app_service_plan_filters` (String) This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags are imported into Datadog. The rest, including the apps and functions running on them, are ignored. This also filters the metrics for any App or Function running on the App Service Plan(s).
 - `automute` (Boolean) Silence monitors for expected Azure VM shutdowns. Defaults to `false`.
 - `container_app_filters` (String) This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure Container Apps. Only Container Apps that match one of the defined tags are imported into Datadog.
-- `cspm_enabled` (Boolean) Enable Cloud Security Management Misconfigurations for your organization. Defaults to `false`.
+- `cspm_enabled` (Boolean) When enabled, Datadog’s Cloud Security Management product will scan resource configurations monitored by this app registration.
+Note: This requires resource_collection_enabled to be set to true. Defaults to `false`.
 - `custom_metrics_enabled` (Boolean) Enable custom metrics for your organization. Defaults to `false`.
 - `host_filters` (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`
+- `resource_collection_enabled` (Boolean) When enabled, Datadog collects metadata and configuration info from cloud resources (compute instances, databases, load balancers, etc.) monitored by this app registration.
 
 ### Read-Only
 
