@@ -212,8 +212,10 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	datadogDefinition.SetContainerAppFilters(containerAppFilters.(string))
 	automute := terraformDefinition.Get("automute")
 	datadogDefinition.SetAutomute(automute.(bool))
-	resourceCollectionEnabled := terraformDefinition.Get("resource_collection_enabled")
-	datadogDefinition.SetResourceCollectionEnabled(resourceCollectionEnabled.(bool))
+	resourceCollectionEnabled, exists := terraformDefinition.GetOk("resource_collection_enabled")
+	if exists {
+		datadogDefinition.SetResourceCollectionEnabled(resourceCollectionEnabled.(bool))
+	}
 	cspmEnabled := terraformDefinition.Get("cspm_enabled")
 	datadogDefinition.SetCspmEnabled(cspmEnabled.(bool))
 	customMetricsEnabled := terraformDefinition.Get("custom_metrics_enabled")
