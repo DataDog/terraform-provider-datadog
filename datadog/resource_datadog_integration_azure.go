@@ -67,7 +67,6 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 				"resource_collection_enabled": {
 					Description: "When enabled, Datadog collects metadata and configuration info from cloud resources (compute instances, databases, load balancers, etc.) monitored by this app registration.",
 					Type:        schema.TypeBool,
-					Default:     false,
 					Optional:    true,
 				},
 				"cspm_enabled": {
@@ -212,14 +211,17 @@ func buildDatadogAzureIntegrationDefinition(terraformDefinition *schema.Resource
 	datadogDefinition.SetContainerAppFilters(containerAppFilters.(string))
 	automute := terraformDefinition.Get("automute")
 	datadogDefinition.SetAutomute(automute.(bool))
+	customMetricsEnabled := terraformDefinition.Get("custom_metrics_enabled")
+	datadogDefinition.SetCustomMetricsEnabled(customMetricsEnabled.(bool))
+
+	// only set resource collection if it has been set
+	// we want to intentionally not have a default value so it plays nicely with cspm_enabled in the API
 	resourceCollectionEnabled, exists := terraformDefinition.GetOk("resource_collection_enabled")
 	if exists {
 		datadogDefinition.SetResourceCollectionEnabled(resourceCollectionEnabled.(bool))
 	}
 	cspmEnabled := terraformDefinition.Get("cspm_enabled")
 	datadogDefinition.SetCspmEnabled(cspmEnabled.(bool))
-	customMetricsEnabled := terraformDefinition.Get("custom_metrics_enabled")
-	datadogDefinition.SetCustomMetricsEnabled(customMetricsEnabled.(bool))
 
 	clientSecret, exists := terraformDefinition.GetOk("client_secret")
 	if exists {
