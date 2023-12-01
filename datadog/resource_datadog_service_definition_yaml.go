@@ -324,6 +324,14 @@ func isValidDatadogServiceDefinition(attrMap map[string]interface{}, k string) (
 		errors = append(errors, fmt.Errorf("dd-service is missing: %q", k))
 	}
 
+	if tags, ok := attrMap["tags"].([]interface{}); ok {
+		for _, tag := range tags {
+			if _, ok := tag.(string); !ok {
+				errors = append(errors, fmt.Errorf("tags must be a list of strings, but %s is used", tag))
+			}
+		}
+	}
+
 	return warnings, errors
 }
 
