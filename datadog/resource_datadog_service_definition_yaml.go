@@ -327,7 +327,7 @@ func isValidDatadogServiceDefinition(attrMap map[string]interface{}, k string) (
 	if tags, ok := attrMap["tags"].([]interface{}); ok {
 		for _, tag := range tags {
 			if _, ok := tag.(string); !ok {
-				errors = append(errors, fmt.Errorf("tags must be a list of strings, but %s is used", tag))
+				errors = append(errors, fmt.Errorf("tag must be a string, but found %s", tag))
 			}
 		}
 	}
