@@ -19,20 +19,20 @@ resource "datadog_organization_settings" "organization" {
 }
 
 resource "datadog_powerpack" "foo" {
-	description   = "Created using the Datadog provider in terraform"
-	live_span = "4h"
+  description = "Created using the Datadog provider in terraform"
+  live_span   = "4h"
 
   layout {
-			height = 10
-			width = 3
-			x = 1
-			y = 0
+    height = 10
+    width  = 3
+    x      = 1
+    y      = 0
   }
 
-	template_variables {
-		defaults = ["defaults"]
-		name     = "datacenter"
-	}
+  template_variables {
+    defaults = ["defaults"]
+    name     = "datacenter"
+  }
 
   widget {
     event_stream_definition {
@@ -42,7 +42,7 @@ resource "datadog_powerpack" "foo" {
       title_size  = 16
       title_align = "right"
     }
-	}
+  }
 }
 ```
 
