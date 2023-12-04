@@ -72,9 +72,39 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
+					Computed:    true,
 					Description: "The layout of the powerpack on a free-form dashboard.",
 					Elem: &schema.Resource{
-						Schema: getWidgetLayoutSchema(),
+						Schema: map[string]*schema.Schema{
+							"x": {
+								Description:  "The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								Computed:     true,
+								ValidateFunc: validation.IntAtLeast(0),
+							},
+							"y": {
+								Description:  "The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								Computed:     true,
+								ValidateFunc: validation.IntAtLeast(0),
+							},
+							"width": {
+								Description:  "The width of the widget.",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								Computed:     true,
+								ValidateFunc: validation.IntAtLeast(1),
+							},
+							"height": {
+								Description:  "The height of the widget.",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								Computed:     true,
+								ValidateFunc: validation.IntAtLeast(1),
+							},
+						},
 					},
 				},
 			}
@@ -233,40 +263,12 @@ func resourceDatadogPowerpackRead(ctx context.Context, d *schema.ResourceData, m
 func validatePowerpackGroupWidgetLayout(layout map[string]interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	height := int64(layout["height"].(int))
 	width := int64(layout["width"].(int))
 	x := int64(layout["x"].(int))
-	y := int64(layout["y"].(int))
-
-	layoutDict := map[string]interface{}{
-		"height": height,
-		"width":  width,
-		"x":      x,
-		"y":      y,
-	}
-
-	for _, v := range []string{"height", "width"} {
-		if layoutDict[v].(int64) < 1 {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be greater than 0", v),
-			})
-		}
-	}
-
-	for _, v := range []string{"x", "y"} {
-		if layoutDict[v].(int64) < 0 {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be 0 or greater", v),
-			})
-		}
-	}
-
 	if width+x > 12 {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  fmt.Sprintf("powerpack layout contains an invalid value. sum of x and width is greater than the maximum of 12."),
+			Summary:  "powerpack layout contains an invalid value. sum of x and width is greater than the maximum of 12.",
 		})
 	}
 
@@ -443,10 +445,30 @@ func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.Powerpack
 		return diag.FromErr(err)
 	}
 
+	// Set tags
+	if err := d.Set("live_span", powerpack.Data.Attributes.GroupWidget.GetLiveSpan()); err != nil {
+		return diag.FromErr(err)
+	}
+
 	// Set template variables
 	templateVariables := buildPowerpackTerraformTemplateVariables(powerpack.Data.Attributes.GetTemplateVariables())
 	if err := d.Set("template_variables", templateVariables); err != nil {
 		return diag.FromErr(err)
+	}
+
+	// Build layout
+	if v, ok := powerpack.Data.Attributes.GroupWidget.GetLayoutOk(); ok {
+		widgetLayout := map[string]interface{}{
+			"x":      (*v).GetX(),
+			"y":      (*v).GetY(),
+			"height": (*v).GetHeight(),
+			"width":  (*v).GetWidth(),
+		}
+
+		if err := d.Set("layout", []map[string]interface{}{widgetLayout}); err != nil {
+			return diag.FromErr(err)
+		}
+
 	}
 
 	// Set widgets
