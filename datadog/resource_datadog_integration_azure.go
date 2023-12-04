@@ -65,12 +65,12 @@ func resourceDatadogIntegrationAzure() *schema.Resource {
 					Optional:    true,
 				},
 				"resource_collection_enabled": {
-					Description: "When enabled, Datadog collects metadata and configuration info from cloud resources (compute instances, databases, load balancers, etc.) monitored by this app registration.",
+					Description: "When enabled, Datadog collects metadata and configuration info from cloud resources (such as compute instances, databases, and load balancers) monitored by this app registration.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
 				"cspm_enabled": {
-					Description: "When enabled, Datadog’s Cloud Security Management product will scan resource configurations monitored by this app registration.\nNote: This requires resource_collection_enabled to be set to true.",
+					Description: "When enabled, Datadog’s Cloud Security Management product will scan resource configurations monitored by this app registration.\nNote: This requires `resource_collection_enabled` to be set to true.",
 					Type:        schema.TypeBool,
 					Default:     false,
 					Optional:    true,
