@@ -11,6 +11,7 @@
 datadog/*datadog_dashboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
 datadog/*datadog_downtime*                @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
 datadog/*datadog_integration_aws*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
+datadog/*datadog_integration_azure*       @DataDog/integrations-tools-and-libraries @DataDog/azure-integrations
 datadog/*datadog_integration_gcp*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
 datadog/*datadog_integration_pagerduty*   @DataDog/integrations-tools-and-libraries @DataDog/web-integrations
 datadog/*datadog_integration_opsgenie*    @DataDog/integrations-tools-and-libraries @Datadog/collaboration-integrations
