@@ -58,7 +58,7 @@ func (r *integrationAzureResource) Metadata(_ context.Context, request resource.
 
 func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog IntegrationAzure resource. This can be used to create and manage Datadog azure_integration.",
+		Description: "Provides a Datadog - Microsoft Azure integration resource. This can be used to create and manage the integrations.",
 		Attributes: map[string]schema.Attribute{
 			"client_id": schema.StringAttribute{
 				Required:    true,
@@ -66,7 +66,7 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 			},
 			"client_secret": schema.StringAttribute{
 				Required:    true,
-				Description: "Your Azure web application secret key.",
+				Description: "(Required for Initial Creation) Your Azure web application secret key.",
 				Sensitive:   true,
 			},
 			"tenant_name": schema.StringAttribute{
@@ -83,7 +83,7 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 				Optional:    true,
-				Description: "When enabled, Datadog’s Cloud Security Management product will scan resource configurations monitored by this app registration. Note: This requires resource_collection_enabled to be set to true.",
+				Description: "Enable Cloud Security Management Misconfigurations for your organization.",
 			},
 			"custom_metrics_enabled": schema.BoolAttribute{
 				Computed:    true,
@@ -94,19 +94,19 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 			"host_filters": schema.StringAttribute{
 				Computed:    true,
 				Optional:    true,
-				Description: "Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
+				Description: "String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red`",
 				Default:     stringdefault.StaticString(""),
 			},
 			"container_app_filters": schema.StringAttribute{
 				Computed:    true,
 				Optional:    true,
-				Description: "Limit the Azure container apps that are pulled into Datadog using tags. Only container apps that match one of the defined tags are imported into Datadog.",
+				Description: "This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure Container Apps. Only Container Apps that match one of the defined tags are imported into Datadog.",
 				Default:     stringdefault.StaticString(""),
 			},
 			"app_service_plan_filters": schema.StringAttribute{
 				Computed:    true,
 				Optional:    true,
-				Description: "Limit the Azure app service plans that are pulled into Datadog using tags. Only app service plans that match one of the defined tags are imported into Datadog.",
+				Description: "This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags are imported into Datadog. The rest, including the apps and functions running on them, are ignored. This also filters the metrics for any App or Function running on the App Service Plan(s).",
 				Default:     stringdefault.StaticString(""),
 			},
 			"id": utils.ResourceIDAttribute(),
