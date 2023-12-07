@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 func testAccCheckDatadogIntegrationGCPConfig(uniq string) string {
@@ -49,19 +48,18 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 
 func TestAccDatadogIntegrationGCP(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	client := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      checkIntegrationGCPDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             checkIntegrationGCPDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIntegrationGCPConfig(client),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationGCPExists(accProvider),
+					checkIntegrationGCPExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"project_id", client),
@@ -91,7 +89,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 			{
 				Config: testAccCheckDatadogIntegrationGCPEmptyHostFiltersConfig(client),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationGCPExists(accProvider),
+					checkIntegrationGCPExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"project_id", client),
@@ -118,7 +116,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 			{
 				Config: testAccCheckDatadogIntegrationGCPUpdatePrivateKeyConfig(client),
 				Check: resource.ComposeTestCheckFunc(
-					checkIntegrationGCPExists(accProvider),
+					checkIntegrationGCPExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"project_id", client),
@@ -146,12 +144,10 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 	})
 }
 
-func checkIntegrationGCPExists(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func checkIntegrationGCPExists(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		integrations, _, err := apiInstances.GetGCPIntegrationApiV1().ListGCPIntegration(auth)
 		if err != nil {
@@ -170,12 +166,10 @@ func checkIntegrationGCPExists(accProvider func() (*schema.Provider, error)) fun
 	}
 }
 
-func checkIntegrationGCPDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func checkIntegrationGCPDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		integrations, _, err := apiInstances.GetGCPIntegrationApiV1().ListGCPIntegration(auth)
 		if err != nil {
