@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -59,12 +60,6 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog IntegrationAzure resource. This can be used to create and manage Datadog azure_integration.",
 		Attributes: map[string]schema.Attribute{
-			"automute": schema.BoolAttribute{
-				Computed:    true,
-				Default:     booldefault.StaticBool(false),
-				Optional:    true,
-				Description: "Silence monitors for expected Azure VM shutdowns.",
-			},
 			"client_id": schema.StringAttribute{
 				Required:    true,
 				Description: "Your Azure web application ID.",
@@ -73,6 +68,16 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Required:    true,
 				Description: "Your Azure web application secret key.",
 				Sensitive:   true,
+			},
+			"tenant_name": schema.StringAttribute{
+				Required:    true,
+				Description: "Your Azure Active Directory ID.",
+			},
+			"automute": schema.BoolAttribute{
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+				Optional:    true,
+				Description: "Silence monitors for expected Azure VM shutdowns.",
 			},
 			"cspm_enabled": schema.BoolAttribute{
 				Computed:    true,
@@ -87,20 +92,22 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Description: "Enable custom metrics for your organization.",
 			},
 			"host_filters": schema.StringAttribute{
+				Computed:    true,
 				Optional:    true,
 				Description: "Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
+				Default:     stringdefault.StaticString(""),
 			},
 			"container_app_filters": schema.StringAttribute{
+				Computed:    true,
 				Optional:    true,
 				Description: "Limit the Azure container apps that are pulled into Datadog using tags. Only container apps that match one of the defined tags are imported into Datadog.",
+				Default:     stringdefault.StaticString(""),
 			},
 			"app_service_plan_filters": schema.StringAttribute{
+				Computed:    true,
 				Optional:    true,
 				Description: "Limit the Azure app service plans that are pulled into Datadog using tags. Only app service plans that match one of the defined tags are imported into Datadog.",
-			},
-			"tenant_name": schema.StringAttribute{
-				Required:    true,
-				Description: "Your Azure Active Directory ID.",
+				Default:     stringdefault.StaticString(""),
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -309,10 +316,10 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	}
 	// Only do the following if building for the Update
 	if update {
-		if state.TenantName.IsNull() {
+		if !state.TenantName.IsNull() {
 			datadogDefinition.SetNewTenantName(state.TenantName.ValueString())
 		}
-		if state.ClientId.IsNull() {
+		if !state.ClientId.IsNull() {
 			datadogDefinition.SetNewClientId(state.ClientId.ValueString())
 		}
 	}
