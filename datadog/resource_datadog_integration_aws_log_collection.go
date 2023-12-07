@@ -25,10 +25,11 @@ func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description: "Your AWS Account ID without dashes.",
-					Type:        schema.TypeString,
-					Required:    true,
-					ForceNew:    true,
+					Description:  "Your AWS Account ID without dashes.",
+					Type:         schema.TypeString,
+					Required:     true,
+					ForceNew:     true,
+					ValidateFunc: utils.ValidateAWSAccountID,
 				},
 				"services": {
 					Description: "A list of services to collect logs from. See the [api docs](https://docs.datadoghq.com/api/v1/aws-logs-integration/#get-list-of-aws-log-ready-services) for more details on which services are supported.",

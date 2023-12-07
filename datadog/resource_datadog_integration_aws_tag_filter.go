@@ -26,9 +26,10 @@ func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description: "Your AWS Account ID without dashes.",
-					Type:        schema.TypeString,
-					Required:    true,
+					Description:  "Your AWS Account ID without dashes.",
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: utils.ValidateAWSAccountID,
 				},
 				"namespace": {
 					Description:      "The namespace associated with the tag filter entry.",

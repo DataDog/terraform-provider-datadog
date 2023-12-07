@@ -32,10 +32,11 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description: "Your AWS Account ID without dashes.",
-					Type:        schema.TypeString,
-					Required:    true,
-					ForceNew:    true, // waits for update API call support
+					Description:  "Your AWS Account ID without dashes.",
+					Type:         schema.TypeString,
+					Required:     true,
+					ForceNew:     true, // waits for update API call support
+					ValidateFunc: utils.ValidateAWSAccountID,
 				},
 				"lambda_arn": {
 					Description: "The ARN of the Datadog forwarder Lambda.",

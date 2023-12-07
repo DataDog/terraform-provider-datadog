@@ -33,9 +33,10 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description: "Your AWS Account ID without dashes.",
-					Type:        schema.TypeString,
-					Optional:    true,
+					Description:  "Your AWS Account ID without dashes.",
+					Type:         schema.TypeString,
+					Optional:     true,
+					ValidateFunc: utils.ValidateAWSAccountID,
 				},
 				"role_name": {
 					Description:   "Your Datadog role delegation name.",

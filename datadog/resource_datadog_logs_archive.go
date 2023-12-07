@@ -34,10 +34,15 @@ func resourceDatadogLogsArchive() *schema.Resource {
 					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
-							"bucket":     {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
-							"path":       {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
-							"account_id": {Description: "Your AWS account id.", Type: schema.TypeString, Required: true},
-							"role_name":  {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
+							"bucket": {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
+							"path":   {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
+							"account_id": {
+								Description:  "Your AWS account id.",
+								Type:         schema.TypeString,
+								Required:     true,
+								ValidateFunc: utils.ValidateAWSAccountID,
+							},
+							"role_name": {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
 						},
 					},
 				},
