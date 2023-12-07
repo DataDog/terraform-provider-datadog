@@ -79,7 +79,11 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 
 	d.SetId(accountID)
 
-	return resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration log collection resource with account id `%s` not found after creation", accountID))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -97,7 +101,11 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *sc
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating log collection services for Amazon Web Services integration account")
 	}
 
-	return resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration log collection resource with account id `%s` not found after creation", enableLogCollectionServices.GetAccountId()))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {

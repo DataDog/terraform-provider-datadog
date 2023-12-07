@@ -150,12 +150,13 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 	})
 }
 
-func testAccDatadogIntegrationAWSAccessKeyConfig(uniq string) string {
+func testAccDatadogIntegrationAWSAccessKeyConfig(access_key_id string, account_id string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account_access_key" {
+	account_id                          = "%s"
   	access_key_id                       = "%s"
   	secret_access_key                   = "testacc-datadog-integration-secret"
-}`, uniq)
+}`, account_id, access_key_id)
 }
 
 func testAccDatadogIntegrationAWSAccessKeyUpdateConfig(access_key_id string, account_id string) string {
@@ -187,7 +188,7 @@ func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
 		CheckDestroy:      checkIntegrationAWSDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatadogIntegrationAWSAccessKeyConfig(accessKeyID),
+				Config: testAccDatadogIntegrationAWSAccessKeyConfig(accessKeyID, accountID),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationAWSExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -234,7 +235,7 @@ func TestAccDatadogIntegrationAWSAccessKey(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccDatadogIntegrationAWSAccessKeyConfig(accessKeyID),
+				Config: testAccDatadogIntegrationAWSAccessKeyConfig(accessKeyID, accountID),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationAWSExists(accProvider),
 					resource.TestCheckResourceAttr(

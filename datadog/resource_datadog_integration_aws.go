@@ -19,6 +19,7 @@ import (
 var integrationAwsMutex = sync.Mutex{}
 var accountAndRoleNameIDRegex = regexp.MustCompile("[\\d]+:.*")
 
+// [datadog_integration_aws_*] Add account_id validation and better error handling
 func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.\n\n",

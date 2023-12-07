@@ -74,7 +74,11 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 
 	d.SetId(fmt.Sprintf("%s %s", attachLambdaArnRequest.GetAccountId(), attachLambdaArnRequest.GetLambdaArn()))
 
-	return resourceDatadogIntegrationAwsLambdaArnRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsLambdaArnRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration lambda arn with account id `%s` and lambda arn `%s` not found after creation", attachLambdaArnRequest.GetAccountId(), attachLambdaArnRequest.GetLambdaArn()))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
