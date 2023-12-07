@@ -59,10 +59,6 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog IntegrationAzure resource. This can be used to create and manage Datadog azure_integration.",
 		Attributes: map[string]schema.Attribute{
-			"app_service_plan_filters": schema.StringAttribute{
-				Optional:    true,
-				Description: "Limit the Azure app service plans that are pulled into Datadog using tags. Only app service plans that match one of the defined tags are imported into Datadog.",
-			},
 			"automute": schema.BoolAttribute{
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
@@ -77,10 +73,6 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Required:    true,
 				Description: "Your Azure web application secret key.",
 				Sensitive:   true,
-			},
-			"container_app_filters": schema.StringAttribute{
-				Optional:    true,
-				Description: "Limit the Azure container apps that are pulled into Datadog using tags. Only container apps that match one of the defined tags are imported into Datadog.",
 			},
 			"cspm_enabled": schema.BoolAttribute{
 				Computed:    true,
@@ -97,6 +89,14 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 			"host_filters": schema.StringAttribute{
 				Optional:    true,
 				Description: "Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
+			},
+			"container_app_filters": schema.StringAttribute{
+				Optional:    true,
+				Description: "Limit the Azure container apps that are pulled into Datadog using tags. Only container apps that match one of the defined tags are imported into Datadog.",
+			},
+			"app_service_plan_filters": schema.StringAttribute{
+				Optional:    true,
+				Description: "Limit the Azure app service plans that are pulled into Datadog using tags. Only app service plans that match one of the defined tags are imported into Datadog.",
 			},
 			"tenant_name": schema.StringAttribute{
 				Required:    true,
