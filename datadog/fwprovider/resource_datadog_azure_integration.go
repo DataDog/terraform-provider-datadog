@@ -79,11 +79,16 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Optional:    true,
 				Description: "Silence monitors for expected Azure VM shutdowns.",
 			},
+			"resource_collection_enabled": schema.BoolAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: "When enabled, Datadog collects metadata and configuration info from cloud resources (such as compute instances, databases, and load balancers) monitored by this app registration.",
+			},
 			"cspm_enabled": schema.BoolAttribute{
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 				Optional:    true,
-				Description: "Enable Cloud Security Management Misconfigurations for your organization.",
+				Description: "When enabled, Datadog’s Cloud Security Management product will scan resource configurations monitored by this app registration.\nNote: This requires `resource_collection_enabled` to be set to true.",
 			},
 			"custom_metrics_enabled": schema.BoolAttribute{
 				Computed:    true,
