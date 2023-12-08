@@ -227,10 +227,7 @@ func resourceDatadogPowerpackUpdate(ctx context.Context, d *schema.ResourceData,
 	updatedPowerpackResponse, httpResponse, err := apiInstances.GetPowerpackApiV2().UpdatePowerpack(auth, id, *powerpack)
 	if err != nil {
 		if httpResponse != nil {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("error updating powerpack: %s", err),
-			})
+			diags = append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error updating powerpack")...)
 			return diags
 		}
 	}
