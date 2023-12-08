@@ -1,13 +1,17 @@
 package validators
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/hashicorp/go-cty/cty"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -200,4 +204,53 @@ func ValidateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, erro
 		}
 	}
 	return
+}
+
+type BetweenValidator struct {
+	min float64
+	max float64
+}
+
+func (v BetweenValidator) Description(ctx context.Context) string {
+	return v.MarkdownDescription(ctx)
+}
+
+func (v BetweenValidator) MarkdownDescription(_ context.Context) string {
+	return fmt.Sprintf("value must be between %f and %f", v.min, v.max)
+}
+
+func (v BetweenValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+		return
+	}
+
+	value := request.ConfigValue.ValueString()
+
+	fValue, err := strconv.ParseFloat(value, 64)
+
+	if err != nil {
+		response.Diagnostics.AddError(
+			fmt.Sprintf("value must be float"),
+			fmt.Sprintf("was %s", value),
+		)
+	}
+
+	if fValue < v.min || fValue > v.max {
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+			request.Path,
+			v.Description(ctx),
+			fmt.Sprintf("%f", fValue),
+		))
+	}
+}
+
+func Float64Between(min, max float64) validator.String {
+	if min > max {
+		return nil
+	}
+
+	return BetweenValidator{
+		min: min,
+		max: max,
+	}
 }

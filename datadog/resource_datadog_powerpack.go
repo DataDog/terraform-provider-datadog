@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -66,310 +65,50 @@ func resourceDatadogPowerpack() *schema.Resource {
 					Optional:    true,
 					Description: "The list of widgets to display in the powerpack.",
 					Elem: &schema.Resource{
-						Schema: getPowerpackWidgetSchema(),
+						Schema: getNonGroupWidgetSchema(true),
 					},
 				},
 				"layout": {
 					Type:        schema.TypeList,
 					MaxItems:    1,
 					Optional:    true,
+					Computed:    true,
 					Description: "The layout of the powerpack on a free-form dashboard.",
 					Elem: &schema.Resource{
-						Schema: getWidgetLayoutSchema(),
+						Schema: map[string]*schema.Schema{
+							"x": {
+								Description:  "The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								Computed:     true,
+								ValidateFunc: validation.IntAtLeast(0),
+							},
+							"y": {
+								Description:  "The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								Computed:     true,
+								ValidateFunc: validation.IntAtLeast(0),
+							},
+							"width": {
+								Description:  "The width of the widget.",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								Computed:     true,
+								ValidateFunc: validation.IntAtLeast(1),
+							},
+							"height": {
+								Description:  "The height of the widget.",
+								Type:         schema.TypeInt,
+								Optional:     true,
+								Computed:     true,
+								ValidateFunc: validation.IntAtLeast(1),
+							},
+						},
 					},
 				},
 			}
 		},
-	}
-}
-
-func getPowerpackWidgetSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
-		"widget_layout": {
-			Type:        schema.TypeList,
-			MaxItems:    1,
-			Optional:    true,
-			Description: "The layout of the widget on a 'free' dashboard.",
-			Elem: &schema.Resource{
-				Schema: getWidgetLayoutSchema(),
-			},
-		},
-		"id": {
-			Type:        schema.TypeInt,
-			Computed:    true,
-			Description: "The ID of the widget.",
-		},
-		// A widget should implement exactly one of the following definitions
-		"alert_graph_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Alert Graph widget.",
-			Elem: &schema.Resource{
-				Schema: getAlertGraphDefinitionSchema(),
-			},
-		},
-		"alert_value_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Alert Value widget.",
-			Elem: &schema.Resource{
-				Schema: getAlertValueDefinitionSchema(),
-			},
-		},
-		"change_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Change widget.",
-			Elem: &schema.Resource{
-				Schema: getChangeDefinitionSchema(),
-			},
-		},
-		"check_status_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Check Status widget.",
-			Elem: &schema.Resource{
-				Schema: getCheckStatusDefinitionSchema(),
-			},
-		},
-		// "distribution_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Distribution widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getDistributionDefinitionSchema(),
-		// 	},
-		// },
-		"event_stream_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Event Stream widget.",
-			Elem: &schema.Resource{
-				Schema: getEventStreamDefinitionSchema(),
-			},
-		},
-		"event_timeline_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Event Timeline widget.",
-			Elem: &schema.Resource{
-				Schema: getEventTimelineDefinitionSchema(),
-			},
-		},
-		"free_text_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Free Text widget.",
-			Elem: &schema.Resource{
-				Schema: getFreeTextDefinitionSchema(),
-			},
-		},
-		// "heatmap_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Heatmap widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getHeatmapDefinitionSchema(),
-		// 	},
-		// },
-		// "hostmap_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Hostmap widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getHostmapDefinitionSchema(),
-		// 	},
-		// },
-		"iframe_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for an Iframe widget.",
-			Elem: &schema.Resource{
-				Schema: getIframeDefinitionSchema(),
-			},
-		},
-		"image_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for an Image widget",
-			Elem: &schema.Resource{
-				Schema: getImageDefinitionSchema(),
-			},
-		},
-		// "list_stream_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a List Stream widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getListStreamDefinitionSchema(),
-		// 	},
-		// },
-		// "log_stream_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for an Log Stream widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getLogStreamDefinitionSchema(),
-		// 	},
-		// },
-		"manage_status_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for an Manage Status widget.",
-			Elem: &schema.Resource{
-				Schema: getManageStatusDefinitionSchema(),
-			},
-		},
-		"note_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Note widget.",
-			Elem: &schema.Resource{
-				Schema: getNoteDefinitionSchema(),
-			},
-		},
-		"query_value_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Query Value widget.",
-			Elem: &schema.Resource{
-				Schema: getQueryValueDefinitionSchema(),
-			},
-		},
-		// "query_table_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Query Table widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getQueryTableDefinitionSchema(),
-		// 	},
-		// },
-		// "scatterplot_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Scatterplot widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getScatterplotDefinitionSchema(),
-		// 	},
-		// },
-		"servicemap_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Service Map widget.",
-			Elem: &schema.Resource{
-				Schema: getServiceMapDefinitionSchema(),
-			},
-		},
-		// "service_level_objective_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Service Level Objective widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getServiceLevelObjectiveDefinitionSchema(),
-		// 	},
-		// },
-		// "slo_list_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for an SLO (Service Level Objective) List widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getSloListDefinitionSchema(),
-		// 	},
-		// },
-		// "sunburst_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Sunburst widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getSunburstDefinitionschema(),
-		// 	},
-		// },
-		// "timeseries_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Timeseries widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getTimeseriesDefinitionSchema(),
-		// 	},
-		// },
-		"toplist_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Toplist widget.",
-			Elem: &schema.Resource{
-				Schema: getToplistDefinitionSchema(),
-			},
-		},
-		// "topology_map_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Topology Map widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getTopologyMapDefinitionSchema(),
-		// 	},
-		// },
-		"trace_service_definition": {
-			Type:        schema.TypeList,
-			Optional:    true,
-			MaxItems:    1,
-			Description: "The definition for a Trace Service widget.",
-			Elem: &schema.Resource{
-				Schema: getTraceServiceDefinitionSchema(),
-			},
-		},
-		// "treemap_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Treemap widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getTreemapDefinitionSchema(),
-		// 	},
-		// },
-		// "geomap_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Geomap widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getGeomapDefinitionSchema(),
-		// 	},
-		// },
-		// "run_workflow_definition": {
-		// 	Type:        schema.TypeList,
-		// 	Optional:    true,
-		// 	MaxItems:    1,
-		// 	Description: "The definition for a Run Workflow widget.",
-		// 	Elem: &schema.Resource{
-		// 		Schema: getRunWorkflowDefinitionSchema(),
-		// 	},
-		// },
 	}
 }
 
@@ -488,10 +227,7 @@ func resourceDatadogPowerpackUpdate(ctx context.Context, d *schema.ResourceData,
 	updatedPowerpackResponse, httpResponse, err := apiInstances.GetPowerpackApiV2().UpdatePowerpack(auth, id, *powerpack)
 	if err != nil {
 		if httpResponse != nil {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("error updating powerpack: %s", err),
-			})
+			diags = append(diags, utils.TranslateClientErrorDiag(err, httpResponse, "error updating powerpack")...)
 			return diags
 		}
 	}
@@ -524,40 +260,12 @@ func resourceDatadogPowerpackRead(ctx context.Context, d *schema.ResourceData, m
 func validatePowerpackGroupWidgetLayout(layout map[string]interface{}) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	height := int64(layout["height"].(int))
 	width := int64(layout["width"].(int))
 	x := int64(layout["x"].(int))
-	y := int64(layout["y"].(int))
-
-	layoutDict := map[string]interface{}{
-		"height": height,
-		"width":  width,
-		"x":      x,
-		"y":      y,
-	}
-
-	for _, v := range []string{"height", "width"} {
-		if layoutDict[v].(int64) < 1 {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be greater than 0", v),
-			})
-		}
-	}
-
-	for _, v := range []string{"x", "y"} {
-		if layoutDict[v].(int64) < 0 {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("powerpack layout contains an invalid value. %s must be 0 or greater", v),
-			})
-		}
-	}
-
 	if width+x > 12 {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  fmt.Sprintf("powerpack layout contains an invalid value. sum of x and width is greater than the maximum of 12."),
+			Summary:  "powerpack layout contains an invalid value. sum of x and width is greater than the maximum of 12.",
 		})
 	}
 
@@ -617,23 +325,8 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 	}
 
 	// Fetch widgets in the request form
-	requestWidgets := d.Get("widget").([]interface{})
-	// Convert and validate them using the Dashboard widget type
-	datadogWidgets, err := buildDatadogWidgets(&requestWidgets)
-	if err != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  fmt.Sprintf("error constructing widgets: %s", err),
-		})
-	}
-	// Convert to TF widget type for easier parsing
-	terraformWidgets, err := buildTerraformWidgets(datadogWidgets, d)
-	if err != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  fmt.Sprintf("error constructing widgets: %s", err),
-		})
-	}
+	terraformWidgets := d.Get("widget").([]interface{})
+	datadogWidgets, _ := buildDatadogWidgets(&terraformWidgets)
 
 	var columnWidth int64
 	if v, ok := d.GetOk("layout"); ok {
@@ -650,14 +343,10 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 			int64(unparsedLayout["x"].(int)),
 			int64(unparsedLayout["y"].(int)))
 		groupWidget.SetLayout(*layout)
-	} else {
-		// Temporary fix: set a reasonable default layout value for the layout property
-		columnWidth = 12
-		groupWidget.Layout = datadogV2.NewPowerpackGroupWidgetLayout(1, 12, 0, 0)
 	}
 
 	// Finally, build JSON Powerpack API compatible widgets
-	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(terraformWidgets, columnWidth)
+	powerpackWidgets, diags := dashboardWidgetsToPpkWidgets(datadogWidgets, columnWidth)
 
 	if diags != nil {
 		return nil, diags
@@ -694,200 +383,44 @@ func buildDatadogPowerpack(ctx context.Context, d *schema.ResourceData) (*datado
 
 }
 
-func normalizeDashboardWidgetDef(widgetDef map[string]interface{}, columnWidth int64) (map[string]interface{}, diag.Diagnostics) {
-	var diags diag.Diagnostics
-	// Dashboard widgets set live span at the widget level, we don't allow that for powerpack widgets
-	// where live span is set at the resource level.
-	if widgetDef["live_span"] != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  fmt.Sprintf("live_span must be set for all powerpack resources (to be applied to all widgets within the powerpack)"),
-		})
-		return nil, diags
-	}
-
-	if widgetDef["request"] != nil {
-		castWidgetDefReq := *widgetDef["request"].(*[]map[string]interface{})
-		if len(castWidgetDefReq) == 0 {
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("at least one request should be defined for widget: %s", widgetDef["type"]),
-			})
-			return nil, diags
-		}
-		// Distribution/change/heatmap widgets have a "requests" field, while API Spec has a "request" field
-		// Here we set the "requests" field and remove "request"
-		widgetDef["requests"] = castWidgetDefReq
-		delete(widgetDef, "request")
-	}
-	return widgetDef, diags
-}
-
-func normalizeTerraformWidgetDef(widgetDef map[string]interface{}) map[string]interface{} {
-	// Dashboard TF widgets have a "requests" field, while API Spec has a "request" field
-	// Here we set the "request" field and remove "requests"
-	if widgetDef["requests"] != nil {
-		widgetDefRequests := widgetDef["requests"].([]interface{})
-		for i, widgetDefRequest := range widgetDefRequests {
-			widgetDefRequestNormalized := widgetDefRequest.(map[string]interface{})
-			if widgetDefRequestNormalized["limit"] != nil {
-				widgetDefRequestNormalized["limit"] = int(widgetDefRequestNormalized["limit"].(float64))
-			}
-			widgetDefRequests[i] = widgetDefRequestNormalized
-		}
-		widgetDef["request"] = widgetDefRequests
-		delete(widgetDef, "requests")
-	}
-	// TF -> json conversion processes precision as float64, it needs to be converted to
-	// an int value to be saved successfully
-	if widgetDef["precision"] != nil {
-		widgetDef["precision"] = int(widgetDef["precision"].(float64))
-	}
-	return widgetDef
-}
-
-func dashboardWidgetsToPpkWidgets(terraformWidgets *[]map[string]interface{}, columnWidth int64) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
+func dashboardWidgetsToPpkWidgets(terraformWidgets *[]datadogV1.Widget, columnWidth int64) ([]datadogV2.PowerpackInnerWidgets, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	widgets := make([]datadogV2.PowerpackInnerWidgets, len(*terraformWidgets))
 	for i, terraformWidget := range *terraformWidgets {
-		if terraformWidget == nil {
-			continue
-		}
-		widgetDef := make(map[string]interface{})
-		var widgetLayout *datadogV2.PowerpackInnerWidgetLayout
+		dashJsonBytes, _ := terraformWidget.MarshalJSON()
+		var newPowerpackWidget datadogV2.PowerpackInnerWidgets
+		newPowerpackWidget.UnmarshalJSON(dashJsonBytes)
+		// Explicitly set additionalProperties as nil so we don't send bad definitions
+		newPowerpackWidget.AdditionalProperties = nil
 
-		for widgetType, terraformDefinition := range terraformWidget {
-			// Each terraform definition contains an ID field which is unused,
-			// and a widget definition which we need to process
-			if widgetType == "id" {
-				continue
-			}
-			if widgetType == "widget_layout" {
-				dimensions := terraformDefinition.([]map[string]interface{})[0]
-				height := dimensions["height"].(int64)
-				width := dimensions["width"].(int64)
-				x := dimensions["x"].(int64)
-				y := dimensions["y"].(int64)
-
-				if x+width > columnWidth {
-					diags = append(diags, diag.Diagnostic{
-						Severity: diag.Error,
-						Summary:  fmt.Sprintf("sum of x [%d] and width [%d] is greater than the maximum of %d", x, width, columnWidth),
-					})
-					return nil, diags
-				}
-				widgetLayout = datadogV2.NewPowerpackInnerWidgetLayout(height, width, x, y)
-			} else if strings.HasSuffix(widgetType, "_definition") {
-				widgetDef = terraformDefinition.([]map[string]interface{})[0]
-				// The type in the dictionary is in the format <widget_type>_definition, where <widget_type> can contain
-				// a type with multiple underscores. To parse a valid type name, we take a substring up until the last
-				// underscore. Ex: free_text_definition -> free_text, hostmap_definition -> hostmap
-				widgetDef["type"] = widgetType[:strings.LastIndex(widgetType, "_")]
-				widgetDef, diags = normalizeDashboardWidgetDef(widgetDef, columnWidth)
-				if diags.HasError() {
-					return nil, diags
-				}
-			}
-		}
-		widgetsDDItem := datadogV2.NewPowerpackInnerWidgets(widgetDef)
-
-		if widgetLayout != nil {
-			widgetsDDItem.SetLayout(*widgetLayout)
-		}
-
-		widgets[i] = *widgetsDDItem
+		widgets[i] = newPowerpackWidget
 	}
+
 	return widgets, diags
 }
 
-func ppkWidgetsToDashboardWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) (*[]datadogV1.Widget, diag.Diagnostics) {
+func ppkWidgetsToTerraformWidgets(ppkWidgets []datadogV2.PowerpackInnerWidgets) (*[]map[string]interface{}, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	var datadogWidgets []datadogV1.Widget
-	for _, terraformWidget := range ppkWidgets {
-		var definition datadogV1.WidgetDefinition
-		widgetDefinition := terraformWidget.Definition
-		if widgetDefinition == nil {
-			continue
-		}
-		widgetDefinition = normalizeTerraformWidgetDef(widgetDefinition)
-		// Add new powerpack-supported widgets here
-		// We save Powerpack widgets as Dashboard widgets so we need to convert them to the appropriate widget definition object.
-		widgetType := widgetDefinition["type"]
-		switch widgetType {
-		case "alert_graph":
-			definition = datadogV1.AlertGraphWidgetDefinitionAsWidgetDefinition(buildDatadogAlertGraphDefinition(widgetDefinition))
-		case "alert_value":
-			definition = datadogV1.AlertValueWidgetDefinitionAsWidgetDefinition(buildDatadogAlertValueDefinition(widgetDefinition))
-		case "change":
-			definition = datadogV1.ChangeWidgetDefinitionAsWidgetDefinition(buildDatadogChangeDefinition(widgetDefinition))
-		case "check_status":
-			definition = datadogV1.CheckStatusWidgetDefinitionAsWidgetDefinition(buildDatadogCheckStatusDefinition(widgetDefinition))
-		case "event_stream":
-			definition = datadogV1.EventStreamWidgetDefinitionAsWidgetDefinition(buildDatadogEventStreamDefinition(widgetDefinition))
-		case "event_timeline":
-			definition = datadogV1.EventTimelineWidgetDefinitionAsWidgetDefinition(buildDatadogEventTimelineDefinition(widgetDefinition))
-		case "free_text":
-			definition = datadogV1.FreeTextWidgetDefinitionAsWidgetDefinition(buildDatadogFreeTextDefinition(widgetDefinition))
-		case "iframe":
-			definition = datadogV1.IFrameWidgetDefinitionAsWidgetDefinition(buildDatadogIframeDefinition(widgetDefinition))
-		case "image":
-			definition = datadogV1.ImageWidgetDefinitionAsWidgetDefinition(buildDatadogImageDefinition(widgetDefinition))
-		case "manage_status":
-			definition = datadogV1.MonitorSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogManageStatusDefinition(widgetDefinition))
-		case "note":
-			definition = datadogV1.NoteWidgetDefinitionAsWidgetDefinition(buildDatadogNoteDefinition(widgetDefinition))
-		case "query_value":
-			definition = datadogV1.QueryValueWidgetDefinitionAsWidgetDefinition(buildDatadogQueryValueDefinition(widgetDefinition))
-		case "servicemap":
-			definition = datadogV1.ServiceMapWidgetDefinitionAsWidgetDefinition(buildDatadogServiceMapDefinition(widgetDefinition))
-		case "toplist":
-			definition = datadogV1.ToplistWidgetDefinitionAsWidgetDefinition(buildDatadogToplistDefinition(widgetDefinition))
-		case "trace_service":
-			definition = datadogV1.ServiceSummaryWidgetDefinitionAsWidgetDefinition(buildDatadogTraceServiceDefinition(widgetDefinition))
-		case "group":
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("powerpacks cannot contain group widgets"),
-			})
-			return nil, diags
-		case "powerpack":
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("powerpacks cannot contain powerpack widgets"),
-			})
-			return nil, diags
-		default:
-			diags = append(diags, diag.Diagnostic{
-				Severity: diag.Error,
-				Summary:  fmt.Sprintf("widget type is not supported: %s", terraformWidget.Definition["type"]),
-			})
-			continue
+	terraformWidgets := make([]map[string]interface{}, len(ppkWidgets))
+
+	for i, ppkWidget := range ppkWidgets {
+		serializedMap, err := ppkWidget.MarshalJSON()
+		if err != nil {
+			return nil, diag.FromErr(err)
 		}
 
-		datadogWidget := datadogV1.NewWidget(definition)
+		var ddV1Widget datadogV1.Widget
+		ddV1Widget.UnmarshalJSON(serializedMap)
 
-		if terraformWidget.Layout != nil {
-			layout := map[string]interface{}{
-				"x":      terraformWidget.Layout.X,
-				"y":      terraformWidget.Layout.Y,
-				"width":  terraformWidget.Layout.Width,
-				"height": terraformWidget.Layout.Height,
-			}
-			datadogWidget.SetLayout(*buildPowerpackWidgetLayout(layout))
+		tfWidget, err := buildTerraformWidget(&ddV1Widget)
+		if err != nil {
+			return nil, diag.FromErr(err)
 		}
 
-		datadogWidgets = append(datadogWidgets, *datadogWidget)
+		terraformWidgets[i] = tfWidget
 	}
-	return &datadogWidgets, diags
-}
-func buildPowerpackWidgetLayout(terraformLayout map[string]interface{}) *datadogV1.WidgetLayout {
-	datadogLayout := datadogV1.NewWidgetLayoutWithDefaults()
-	datadogLayout.SetX(terraformLayout["x"].(int64))
-	datadogLayout.SetY(terraformLayout["y"].(int64))
-	datadogLayout.SetHeight(terraformLayout["height"].(int64))
-	datadogLayout.SetWidth(terraformLayout["width"].(int64))
-	return datadogLayout
+	return &terraformWidgets, diags
 }
 
 func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.PowerpackResponse) diag.Diagnostics {
@@ -909,22 +442,39 @@ func updatePowerpackState(d *schema.ResourceData, powerpack *datadogV2.Powerpack
 		return diag.FromErr(err)
 	}
 
+	// Set tags
+	if err := d.Set("live_span", powerpack.Data.Attributes.GroupWidget.GetLiveSpan()); err != nil {
+		return diag.FromErr(err)
+	}
+
 	// Set template variables
 	templateVariables := buildPowerpackTerraformTemplateVariables(powerpack.Data.Attributes.GetTemplateVariables())
 	if err := d.Set("template_variables", templateVariables); err != nil {
 		return diag.FromErr(err)
 	}
 
+	// Build layout
+	if v, ok := powerpack.Data.Attributes.GroupWidget.GetLayoutOk(); ok {
+		widgetLayout := map[string]interface{}{
+			"x":      (*v).GetX(),
+			"y":      (*v).GetY(),
+			"height": (*v).GetHeight(),
+			"width":  (*v).GetWidth(),
+		}
+
+		if err := d.Set("layout", []map[string]interface{}{widgetLayout}); err != nil {
+			return diag.FromErr(err)
+		}
+
+	}
+
 	// Set widgets
-	dashWidgets, diags := ppkWidgetsToDashboardWidgets(powerpack.Data.Attributes.GetGroupWidget().Definition.Widgets)
+	dashWidgets, diags := ppkWidgetsToTerraformWidgets(powerpack.Data.Attributes.GetGroupWidget().Definition.Widgets)
 	if diags.HasError() {
 		return diags
 	}
-	terraformWidgets, err := buildTerraformWidgets(dashWidgets, d)
-	if err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("widget", terraformWidgets); err != nil {
+
+	if err := d.Set("widget", dashWidgets); err != nil {
 		return diag.FromErr(fmt.Errorf("trouble setting widget"))
 	}
 

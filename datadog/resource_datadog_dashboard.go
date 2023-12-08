@@ -695,7 +695,7 @@ func buildTerraformNotifyList(datadogNotifyList *[]string) *[]string {
 // The generic widget schema is a combination of the schema for a non-group widget
 // and the schema for a Group Widget (which can contains only non-group widgets)
 func getWidgetSchema() map[string]*schema.Schema {
-	widgetSchema := getNonGroupWidgetSchema()
+	widgetSchema := getNonGroupWidgetSchema(false)
 	widgetSchema["group_definition"] = &schema.Schema{
 		Type:        schema.TypeList,
 		Optional:    true,
@@ -708,8 +708,8 @@ func getWidgetSchema() map[string]*schema.Schema {
 	return widgetSchema
 }
 
-func getNonGroupWidgetSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+func getNonGroupWidgetSchema(isPowerpackSchema bool) map[string]*schema.Schema {
+	s := map[string]*schema.Schema{
 		"widget_layout": {
 			Type:        schema.TypeList,
 			MaxItems:    1,
@@ -995,7 +995,11 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getRunWorkflowDefinitionSchema(),
 			},
 		},
-		"split_graph_definition": {
+	}
+
+	// Non powerpack specific widgets
+	if !isPowerpackSchema {
+		s["split_graph_definition"] = &schema.Schema{
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -1003,8 +1007,10 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: getSplitGraphDefinitionSchema(),
 			},
-		},
+		}
 	}
+
+	return s
 }
 
 func getSplitGraphSourceWidgetSchema() map[string]*schema.Schema {
@@ -1598,7 +1604,7 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "The list of widgets in this group.",
 			Elem: &schema.Resource{
-				Schema: getNonGroupWidgetSchema(),
+				Schema: getNonGroupWidgetSchema(false),
 			},
 		},
 		"layout_type": {
@@ -9102,20 +9108,21 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	if terraformGroupBys, ok := terraformQuery["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
 		datadogGroupBys := make([]datadogV1.LogQueryDefinitionGroupBy, len(terraformGroupBys))
 		for i, g := range terraformGroupBys {
-			groupBy := g.(map[string]interface{})
-			// Facet
-			datadogGroupBy := datadogV1.NewLogQueryDefinitionGroupBy(groupBy["facet"].(string))
-			// Limit
-			if v, ok := groupBy["limit"].(int); ok && v != 0 {
-				datadogGroupBy.SetLimit(int64(v))
-			}
-			// Sort
-			if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
-				if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
-					datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
+			if groupBy, ok := g.(map[string]interface{}); ok {
+				// Facet
+				datadogGroupBy := datadogV1.NewLogQueryDefinitionGroupBy(groupBy["facet"].(string))
+				// Limit
+				if v, ok := groupBy["limit"].(int); ok && v != 0 {
+					datadogGroupBy.SetLimit(int64(v))
 				}
+				// Sort
+				if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
+					if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
+						datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
+					}
+				}
+				datadogGroupBys[i] = *datadogGroupBy
 			}
-			datadogGroupBys[i] = *datadogGroupBy
 		}
 		datadogQuery.SetGroupBy(datadogGroupBys)
 	}

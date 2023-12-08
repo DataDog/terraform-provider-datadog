@@ -264,6 +264,39 @@ func dataSourceDatadogMonitor() *schema.Resource {
 									},
 								},
 							},
+							"custom_schedule": {
+								Description: "Configuration options for the custom schedules. If `start` is omitted, the monitor creation time will be used.",
+								Type:        schema.TypeList,
+								Computed:    true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"recurrence": {
+											Description: "A list of recurrence definitions. Length must be 1.",
+											Type:        schema.TypeSet,
+											Computed:    true,
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"rrule": {
+														Description: "Must be a valid rrule. See api docs for supported fields",
+														Type:        schema.TypeString,
+														Computed:    true,
+													},
+													"start": {
+														Description: "Time to start recurrence cycle. Similar to DTSTART. Expected format 'YYYY-MM-DDThh:mm:ss'",
+														Type:        schema.TypeString,
+														Computed:    true,
+													},
+													"timezone": {
+														Description: "'tz database' format. ex: 'America/New_York' or UTC",
+														Type:        schema.TypeString,
+														Computed:    true,
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -395,9 +428,32 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 			evaluation_window["month_starts"] = m
 		}
 	}
+	custom_schedule := make(map[string]interface{})
+	if c, ok := m.Options.SchedulingOptions.GetCustomScheduleOk(); ok {
+		if recurrences, ok := c.GetRecurrencesOk(); ok && len(*recurrences) > 0 {
+			recurrence := make(map[string]interface{})
+			r := (*recurrences)[0]
+			if rrule, ok := r.GetRruleOk(); ok {
+				recurrence["rrule"] = rrule
+			}
+			if start, ok := r.GetStartOk(); ok {
+				recurrence["start"] = start
+			}
+			if timezone, ok := r.GetTimezoneOk(); ok {
+				recurrence["timezone"] = timezone
+			}
+			value := [](interface{}){recurrence}
+			custom_schedule["recurrence"] = value
+		}
+	}
 	scheduling_options := make(map[string]interface{})
 	if len(evaluation_window) > 0 {
 		scheduling_options["evaluation_window"] = []interface{}{evaluation_window}
+	}
+	if len(custom_schedule) > 0 {
+		scheduling_options["custom_schedule"] = []interface{}{custom_schedule}
+	}
+	if len(scheduling_options) > 0 {
 		if err := d.Set("scheduling_options", []interface{}{scheduling_options}); err != nil {
 			return diag.FromErr(err)
 		}
