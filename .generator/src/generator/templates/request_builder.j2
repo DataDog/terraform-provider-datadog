@@ -1,10 +1,13 @@
 {%- import "utils/request_builder_helper.j2" as requestBuilderMacros %}
-{%- set useCreateBodyRequest = get_type_for_parameter(createOperationParams["body"]) == get_type_for_parameter(updateOperationParams["body"]) %}
-{%- set parameterCreateBodySchema = createOperationParams["body"]|parameter_schema %}
-{%- set parameterUpdateBodySchema = updateOperationParams["body"]|parameter_schema %}
+{%- set parameterCreateBody = createOperationParams.get("body") %}
+{%- set parameterUpdateBody = updateOperationParams.get("body") %}
 
-{{ requestBuilderMacros.requestBaseFunc(name, "build"~name|camel_case~"RequestBody", parameterCreateBodySchema) }}
+{% if parameterCreateBody %}
+{{ requestBuilderMacros.requestBaseFunc(name, "build"~name|camel_case~"RequestBody", parameterCreateBody|parameter_schema) }}
+{% endif %}
 
-{% if not useCreateBodyRequest %}
-{{ requestBuilderMacros.requestBaseFunc(name, "build"~name|camel_case~"UpdateRequestBody", parameterUpdateBodySchema) }}
+{% if parameterUpdateBody %}
+{% if not parameterCreateBody or (parameterCreateBody|parameter_schema != parameterUpdateBody|parameter_schema) %}
+{{ requestBuilderMacros.requestBaseFunc(name, "build"~name|camel_case~"UpdateRequestBody", parameterUpdateBody|parameter_schema) }}
+{% endif%}
 {% endif %}

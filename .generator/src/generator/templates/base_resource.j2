@@ -1,12 +1,12 @@
 {%- set apiName = operations[GET_OPERATION]["schema"]["tags"][0].replace(" ", "") + "Api" %}
-{%- set getOperationId = operations[GET_OPERATION]["schema"]["operationId"] %}
-{%- set updateOperationId = operations[UPDATE_OPERATION]["schema"]["operationId"] %}
-{%- set createOperationId = operations[CREATE_OPERATION]["schema"]["operationId"] %}
-{%- set deleteOperationId = operations[DELETE_OPERATION]["schema"]["operationId"] %}
-{%- set readOperationParams = operations[GET_OPERATION]["schema"]|parameters %}
-{%- set createOperationParams = operations[CREATE_OPERATION]["schema"]|parameters %}
-{%- set updateOperationParams = operations[UPDATE_OPERATION]["schema"]|parameters %}
-{%- set deleteOperationParams = operations[DELETE_OPERATION]["schema"]|parameters %}
+{%- set getOperationId = operations.get(GET_OPERATION, {}).get("schema", {})["operationId"] %}
+{%- set updateOperationId = operations.get(UPDATE_OPERATION, {}).get("schema", {})["operationId"] %}
+{%- set createOperationId = operations.get(CREATE_OPERATION, {}).get("schema", {})["operationId"] %}
+{%- set deleteOperationId = operations.get(DELETE_OPERATION, {}).get("schema", {})["operationId"] %}
+{%- set readOperationParams = operations.get(GET_OPERATION, {}).get("schema", {})|parameters %}
+{%- set createOperationParams = operations.get(CREATE_OPERATION, {}).get("schema", {})|parameters %}
+{%- set updateOperationParams = operations.get(UPDATE_OPERATION, {}).get("schema", {})|parameters %}
+{%- set deleteOperationParams = operations.get(DELETE_OPERATION, {}).get("schema", {})|parameters %}
 {%- set primaryId = get_terraform_primary_id(operations) %}
 package fwprovider
 
@@ -51,13 +51,22 @@ func (r *{{ name|camel_case|untitle_case }}Resource) ImportState(ctx context.Con
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
+{% if getOperationId %}
 {% include "read_method.j2" %}
+{% endif %}
 
+{% if createOperationId %}
 {% include "create_method.j2" %}
+{% endif %}
 
+
+{% if updateOperationId %}
 {% include "update_method.j2" %}
+{% endif %}
 
+{% if deleteOperationId %}
 {% include "delete_method.j2" %}
+{% endif %}
 
 {% include "update_state_method.j2" %}
 

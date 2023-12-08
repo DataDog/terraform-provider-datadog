@@ -134,14 +134,14 @@ def operations_to_generate(spec):
     
 
 def get_terraform_primary_id(operations):
-    update_params = parameters(operations[UPDATE_OPERATION]["schema"])
-    get_params = parameters(operations[GET_OPERATION]["schema"])
+    update_params = parameters(operations.get(UPDATE_OPERATION, {}).get("schema", {}))
+    get_params = parameters(operations.get(GET_OPERATION, {}).get("schema", {}))
     
     primary_id = {}
-    if operations[UPDATE_OPERATION]["path"].endswith("}"):
+    if operations.get(UPDATE_OPERATION) and operations[UPDATE_OPERATION]["path"].endswith("}"):
         primary_id["name"] = operations[UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
         primary_id["schema"] = update_params.pop(primary_id)
-    elif operations[GET_OPERATION]["path"].endswith("}"):
+    elif operations.get(GET_OPERATION) and operations[GET_OPERATION]["path"].endswith("}"):
         primary_id["name"] = operations[GET_OPERATION]["path"].split("/")[-1][1:-1]
         primary_id["schema"] = get_params.pop(primary_id)
     
@@ -179,6 +179,7 @@ def parameter_schema(parameter):
         for content in parameter.get("content", {}).values():
             if "schema" in content:
                 return content["schema"]
+    import pdb; pdb.set_trace()
     raise ValueError(f"Unknown schema for parameter {parameter}")
 
 
