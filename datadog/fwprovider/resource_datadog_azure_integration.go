@@ -315,7 +315,7 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	datadogDefinition.SetAppServicePlanFilters(state.AppServicePlanFilters.ValueString())
 	datadogDefinition.SetContainerAppFilters(state.ContainerAppFilters.ValueString())
 	datadogDefinition.SetAutomute(state.Automute.ValueBool())
-	if !state.ResourceCollectionEnabled.IsNull() {
+	if !state.ResourceCollectionEnabled.IsUnknown() {
 		datadogDefinition.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
 	}
 	datadogDefinition.SetCspmEnabled(state.CspmEnabled.ValueBool())
