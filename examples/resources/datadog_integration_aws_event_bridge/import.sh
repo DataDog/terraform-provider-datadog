@@ -1,0 +1,1 @@
+terraform import datadog_integration_aws_event_bridge.new_list "UPDATE_ME"
