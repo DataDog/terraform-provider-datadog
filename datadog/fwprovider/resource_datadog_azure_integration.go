@@ -89,7 +89,7 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 				Optional:    true,
-				Description: "When enabled, Datadog’s Cloud Security Management product will scan resource configurations monitored by this app registration.\nNote: This requires `resource_collection_enabled` to be set to true.",
+				Description: "When enabled, Datadog’s Cloud Security Management product scans resource configurations monitored by this app registration.\nNote: This requires `resource_collection_enabled` to be set to true.",
 			},
 			"custom_metrics_enabled": schema.BoolAttribute{
 				Computed:    true,
