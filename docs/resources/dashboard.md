@@ -773,6 +773,7 @@ Optional:
 - `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--log_stream_definition))
 - `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--note_definition))
+- `powerpack_definition` (Block List, Max: 1) The definition for a Powerpack widget. (see [below for nested schema](#nestedblock--widget--powerpack_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--query_value_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--run_workflow_definition))
@@ -2208,6 +2209,7 @@ Optional:
 - `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition))
 - `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition))
+- `powerpack_definition` (Block List, Max: 1) The definition for a Powerpack widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition))
@@ -4936,6 +4938,57 @@ Optional:
 - `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`.
 - `tick_pos` (String) When `tick = true`, a string with a percent sign indicating the position of the tick, for example: `tick_pos = "50%"` is centered alignment.
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
+
+
+<a id="nestedblock--widget--group_definition--widget--powerpack_definition"></a>
+### Nested Schema for `widget.group_definition.widget.powerpack_definition`
+
+Required:
+
+- `powerpack_id` (String) UUID of the associated powerpack.
+
+Optional:
+
+- `background_color` (String) The background color of the powerpack title.
+- `banner_img` (String) URL of image to display as a banner for the powerpack.
+- `show_title` (Boolean) Whether to show the title of the powerpack.
+- `template_variables` (Block List, Max: 1) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition--template_variables))
+- `title` (String) Title of the powerpack.
+
+<a id="nestedblock--widget--group_definition--widget--powerpack_definition--template_variables"></a>
+### Nested Schema for `widget.group_definition.widget.powerpack_definition.template_variables`
+
+Optional:
+
+- `controlled_by_powerpack` (Block List) Template variables controlled at the powerpack level. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition--template_variables--controlled_by_powerpack))
+- `controlled_externally` (Block List) Template variables controlled by the external resource, such as the dashboard this powerpack is on. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition--template_variables--controlled_externally))
+
+<a id="nestedblock--widget--group_definition--widget--powerpack_definition--template_variables--controlled_by_powerpack"></a>
+### Nested Schema for `widget.group_definition.widget.powerpack_definition.template_variables.controlled_by_powerpack`
+
+Required:
+
+- `name` (String) The name of the variable.
+- `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.
+
+Optional:
+
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+
+
+<a id="nestedblock--widget--group_definition--widget--powerpack_definition--template_variables--controlled_externally"></a>
+### Nested Schema for `widget.group_definition.widget.powerpack_definition.template_variables.controlled_externally`
+
+Required:
+
+- `name` (String) The name of the variable.
+- `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.
+
+Optional:
+
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+
+
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition"></a>
@@ -16205,6 +16258,57 @@ Optional:
 - `tick_edge` (String) When `tick = true`, a string indicating on which side of the widget the tick should be displayed. Valid values are `bottom`, `left`, `right`, `top`.
 - `tick_pos` (String) When `tick = true`, a string with a percent sign indicating the position of the tick, for example: `tick_pos = "50%"` is centered alignment.
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
+
+
+<a id="nestedblock--widget--powerpack_definition"></a>
+### Nested Schema for `widget.powerpack_definition`
+
+Required:
+
+- `powerpack_id` (String) UUID of the associated powerpack.
+
+Optional:
+
+- `background_color` (String) The background color of the powerpack title.
+- `banner_img` (String) URL of image to display as a banner for the powerpack.
+- `show_title` (Boolean) Whether to show the title of the powerpack.
+- `template_variables` (Block List, Max: 1) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--widget--powerpack_definition--template_variables))
+- `title` (String) Title of the powerpack.
+
+<a id="nestedblock--widget--powerpack_definition--template_variables"></a>
+### Nested Schema for `widget.powerpack_definition.template_variables`
+
+Optional:
+
+- `controlled_by_powerpack` (Block List) Template variables controlled at the powerpack level. (see [below for nested schema](#nestedblock--widget--powerpack_definition--template_variables--controlled_by_powerpack))
+- `controlled_externally` (Block List) Template variables controlled by the external resource, such as the dashboard this powerpack is on. (see [below for nested schema](#nestedblock--widget--powerpack_definition--template_variables--controlled_externally))
+
+<a id="nestedblock--widget--powerpack_definition--template_variables--controlled_by_powerpack"></a>
+### Nested Schema for `widget.powerpack_definition.template_variables.controlled_by_powerpack`
+
+Required:
+
+- `name` (String) The name of the variable.
+- `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.
+
+Optional:
+
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+
+
+<a id="nestedblock--widget--powerpack_definition--template_variables--controlled_externally"></a>
+### Nested Schema for `widget.powerpack_definition.template_variables.controlled_externally`
+
+Required:
+
+- `name` (String) The name of the variable.
+- `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.
+
+Optional:
+
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+
+
 
 
 <a id="nestedblock--widget--query_table_definition"></a>
