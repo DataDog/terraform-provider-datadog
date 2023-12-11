@@ -30,7 +30,7 @@ func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 					Type:        schema.TypeString,
 					Required:    true,
 					// TODO: When backend is ready, add validation back.
-					// ValidateFunc: utils.ValidateAWSAccountID,
+					// ValidateDiagFunc: validators.ValidateAWSAccountID,
 				},
 				"namespace": {
 					Description:      "The namespace associated with the tag filter entry.",

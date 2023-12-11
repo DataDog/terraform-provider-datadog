@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"regexp"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
@@ -282,21 +281,4 @@ func ResourceIDAttribute() frameworkSchema.StringAttribute {
 			stringplanmodifier.UseStateForUnknown(),
 		},
 	}
-}
-
-// ValidateAWSAccountID AWS Account ID must be a string exactly 12 digits long
-// See https://docs.aws.amazon.com/organizations/latest/APIReference/API_Account.html
-func ValidateAWSAccountID(val any, _ string) (warns []string, errs []error) {
-	AWSAccountIDRegex := regexp.MustCompile(`^\d{12}$`)
-	AWSIAMAAccessKeyRegex := regexp.MustCompile(`^(AKIA|ASIA)[A-Z0-9]{16,20}`)
-	v := val.(string)
-	if AWSIAMAAccessKeyRegex.MatchString(v) {
-		// Help the user with a deprecation warning
-		// Fedramp DD previously required using an IAM access key in place of the AWS account id
-		warns = append(warns, "the provided account ID might be an IAM access key. This behavior is deprecated. Use the AWS account ID instead")
-	}
-	if !AWSAccountIDRegex.MatchString(v) {
-		errs = append(errs, fmt.Errorf("account ID must be a string containing exactly 12 digits, may start with 0"))
-	}
-	return
 }

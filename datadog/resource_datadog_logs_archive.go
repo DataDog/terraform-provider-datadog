@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -37,10 +38,10 @@ func resourceDatadogLogsArchive() *schema.Resource {
 							"bucket": {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
 							"path":   {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
 							"account_id": {
-								Description:  "Your AWS account id.",
-								Type:         schema.TypeString,
-								Required:     true,
-								ValidateFunc: utils.ValidateAWSAccountID,
+								Description:      "Your AWS account id.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateAWSAccountID,
 							},
 							"role_name": {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
 						},

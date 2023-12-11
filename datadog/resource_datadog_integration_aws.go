@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -19,7 +20,6 @@ import (
 var integrationAwsMutex = sync.Mutex{}
 var accountAndRoleNameIDRegex = regexp.MustCompile("[\\d]+:.*")
 
-// [datadog_integration_aws_*] Add account_id validation and better error handling
 func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.\n\n",
@@ -34,10 +34,10 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description:  "Your AWS Account ID without dashes.",
-					Type:         schema.TypeString,
-					Optional:     true,
-					ValidateFunc: utils.ValidateAWSAccountID,
+					Description:      "Your AWS Account ID without dashes.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateAWSAccountID,
 				},
 				"role_name": {
 					Description:   "Your Datadog role delegation name.",
