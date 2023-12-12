@@ -664,6 +664,28 @@ resource "datadog_dashboard" "free_dashboard" {
     }
   }
 
+  widget {
+    powerpack_definition {
+      powerpack_id     = "00000000-0000-0000-0000-000000000000"
+      background_color = "blue"
+      banner_img       = "https://example.org/example.png"
+      show_title       = true
+      title            = "Powerpack Widget"
+      template_variables {
+        controlled_externally {
+          name   = "var_2"
+          values = ["autoscaling"]
+          prefix = "service_name"
+        }
+        controlled_by_powerpack {
+          name   = "var_3"
+          prefix = "timeframe"
+          values = ["default", "values", "here"]
+        }
+      }
+    }
+  }
+
   template_variable {
     name    = "var_1"
     prefix  = "host"
