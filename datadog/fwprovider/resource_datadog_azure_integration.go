@@ -30,16 +30,17 @@ type integrationAzureResource struct {
 }
 
 type integrationAzureModel struct {
-	ID                    types.String `tfsdk:"id"`
-	AppServicePlanFilters types.String `tfsdk:"app_service_plan_filters"`
-	Automute              types.Bool   `tfsdk:"automute"`
-	ClientId              types.String `tfsdk:"client_id"`
-	ClientSecret          types.String `tfsdk:"client_secret"`
-	ContainerAppFilters   types.String `tfsdk:"container_app_filters"`
-	CspmEnabled           types.Bool   `tfsdk:"cspm_enabled"`
-	CustomMetricsEnabled  types.Bool   `tfsdk:"custom_metrics_enabled"`
-	HostFilters           types.String `tfsdk:"host_filters"`
-	TenantName            types.String `tfsdk:"tenant_name"`
+	ID                        types.String `tfsdk:"id"`
+	AppServicePlanFilters     types.String `tfsdk:"app_service_plan_filters"`
+	Automute                  types.Bool   `tfsdk:"automute"`
+	ClientId                  types.String `tfsdk:"client_id"`
+	ClientSecret              types.String `tfsdk:"client_secret"`
+	ContainerAppFilters       types.String `tfsdk:"container_app_filters"`
+	ResourceCollectionEnabled types.Bool   `tfsdk:"resource_collection_enabled"`
+	CspmEnabled               types.Bool   `tfsdk:"cspm_enabled"`
+	CustomMetricsEnabled      types.Bool   `tfsdk:"custom_metrics_enabled"`
+	HostFilters               types.String `tfsdk:"host_filters"`
+	TenantName                types.String `tfsdk:"tenant_name"`
 }
 
 func NewIntegrationAzureResource() resource.Resource {
@@ -79,11 +80,16 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Optional:    true,
 				Description: "Silence monitors for expected Azure VM shutdowns.",
 			},
+			"resource_collection_enabled": schema.BoolAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: "When enabled, Datadog collects metadata and configuration info from cloud resources (such as compute instances, databases, and load balancers) monitored by this app registration.",
+			},
 			"cspm_enabled": schema.BoolAttribute{
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 				Optional:    true,
-				Description: "Enable Cloud Security Management Misconfigurations for your organization.",
+				Description: "When enabled, Datadog’s Cloud Security Management product scans resource configurations monitored by this app registration.\nNote: This requires `resource_collection_enabled` to be set to true.",
 			},
 			"custom_metrics_enabled": schema.BoolAttribute{
 				Computed:    true,
@@ -248,6 +254,7 @@ func (r *integrationAzureResource) updateState(ctx context.Context, state *integ
 	state.TenantName = types.StringValue(account.GetTenantName())
 	state.ClientId = types.StringValue(account.GetClientId())
 	state.Automute = types.BoolValue(account.GetAutomute())
+	state.ResourceCollectionEnabled = types.BoolValue(account.GetResourceCollectionEnabled())
 	state.CspmEnabled = types.BoolValue(account.GetCspmEnabled())
 	state.CustomMetricsEnabled = types.BoolValue(account.GetCustomMetricsEnabled())
 
@@ -308,6 +315,9 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	datadogDefinition.SetAppServicePlanFilters(state.AppServicePlanFilters.ValueString())
 	datadogDefinition.SetContainerAppFilters(state.ContainerAppFilters.ValueString())
 	datadogDefinition.SetAutomute(state.Automute.ValueBool())
+	if !state.ResourceCollectionEnabled.IsUnknown() {
+		datadogDefinition.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
+	}
 	datadogDefinition.SetCspmEnabled(state.CspmEnabled.ValueBool())
 	datadogDefinition.SetCustomMetricsEnabled(state.CustomMetricsEnabled.ValueBool())
 
