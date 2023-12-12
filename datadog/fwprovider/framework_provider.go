@@ -37,6 +37,7 @@ var Resources = []func() resource.Resource{
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
 	NewDowntimeScheduleResource,
+	NewIntegrationAzureResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
