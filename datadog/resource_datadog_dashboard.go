@@ -8384,11 +8384,6 @@ func buildTerraformPowerpackDefinition(datadogDefinition *datadogV1.PowerpackWid
 	if templateVariables, ok := datadogDefinition.GetTemplateVariablesOk(); ok {
 		terraformTemplateVariables := make([]map[string]interface{}, 1)
 		terraformTemplateVariable := map[string]interface{}{}
-		controlledByPowerpackTVars := make([]map[string]interface{}, 1)
-		controlledByPowerpackTVar := map[string]interface{}{}
-		controlledByPowerpackTVar["name"] = "var"
-		controlledByPowerpackTVar["values"] = []string{"default"}
-		controlledByPowerpackTVars[0] = controlledByPowerpackTVar
 
 		if ddControlledByPowerpack, ok := templateVariables.GetControlledByPowerpackOk(); ok {
 			controlledByPowerpackTVars := buildTerraformPowerpackTVarContents(*ddControlledByPowerpack)
