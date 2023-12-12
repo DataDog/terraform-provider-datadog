@@ -22,8 +22,6 @@ import (
 
 	common "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	ddtesting "github.com/DataDog/dd-sdk-go-testing"
-	"github.com/dnaeon/go-vcr/cassette"
-	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -34,6 +32,8 @@ import (
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/ext"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
+	"gopkg.in/dnaeon/go-vcr.v3/cassette"
+	"gopkg.in/dnaeon/go-vcr.v3/recorder"
 )
 
 type clockContextKey string
@@ -434,30 +434,39 @@ func removeURLSecrets(u *url.URL) *url.URL {
 func initRecorder(t *testing.T) *recorder.Recorder {
 	var mode recorder.Mode
 	if isRecording() {
-		mode = recorder.ModeRecording
+		mode = recorder.ModeRecordOnly
 	} else if isReplaying() {
-		mode = recorder.ModeReplaying
+		mode = recorder.ModeReplayOnly
 	} else {
-		mode = recorder.ModeDisabled
+		mode = recorder.ModePassthrough
 	}
 
-	rec, err := recorder.NewAsMode(fmt.Sprintf("cassettes/%s", t.Name()), mode, nil)
+	opts := &recorder.Options{
+		CassetteName:       fmt.Sprintf("cassettes/%s", t.Name()),
+		Mode:               mode,
+		SkipRequestLatency: false,
+		RealTransport:      http.DefaultTransport,
+	}
+
+	rec, err := recorder.NewWithOptions(opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	rec.SetMatcher(matchInteraction)
 
-	rec.AddFilter(func(i *cassette.Interaction) error {
-		u, err := url.Parse(i.URL)
+	redactHook := func(i *cassette.Interaction) error {
+		u, err := url.Parse(i.Request.URL)
 		if err != nil {
 			return err
 		}
-		i.URL = removeURLSecrets(u).String()
+		i.Request.URL = removeURLSecrets(u).String()
 
 		filterHeaders(i)
 		return nil
-	})
+	}
+	rec.AddHook(redactHook, recorder.AfterCaptureHook)
+
 	return rec
 }
 

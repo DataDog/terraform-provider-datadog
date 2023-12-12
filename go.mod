@@ -3,7 +3,6 @@ module github.com/terraform-providers/terraform-provider-datadog
 require (
 	github.com/DataDog/datadog-api-client-go/v2 v2.20.0
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
-	github.com/dnaeon/go-vcr v1.0.1
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
@@ -16,6 +15,7 @@ require (
 	github.com/jonboulle/clockwork v0.2.2
 	github.com/zorkian/go-datadog-api v2.30.0+incompatible
 	gopkg.in/DataDog/dd-trace-go.v1 v1.34.0
+	gopkg.in/dnaeon/go-vcr.v3 v3.1.2
 	gopkg.in/warnings.v0 v0.1.2
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -94,7 +94,6 @@ require (
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	google.golang.org/grpc v1.56.3 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
-	gopkg.in/yaml.v2 v2.3.0 // indirect
 )
 
 go 1.20
