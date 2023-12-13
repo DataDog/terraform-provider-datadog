@@ -2165,6 +2165,8 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogChangeRequest.SetQueries(queries)
@@ -4262,6 +4264,8 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryValueRequest.SetQueries(queries)
@@ -4534,6 +4538,8 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryTableRequest.SetQueries(queries)
@@ -4889,6 +4895,8 @@ func buildDatadogScatterplotTableRequest(terraformRequest map[string]interface{}
 				queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 			} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 				queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+			} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 			}
 		}
 		datadogScatterplotTableRequest.SetQueries(queries)
@@ -6460,6 +6468,8 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogSunburstRequest.SetQueries(queries)
@@ -7100,6 +7110,38 @@ func getFormulaQuerySchema() *schema.Schema {
 						},
 					},
 				},
+				"cloud_cost_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "The Cloud Cost query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionCloudCostDataSourceFromValue),
+								Description:      "The data source for cloud cost queries.",
+							},
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The cloud cost query definition.",
+							},
+							"aggregator": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+								Description:      "The aggregation methods available for cloud cost queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the query for use in formulas.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -7445,6 +7487,19 @@ func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) *datado
 	return &definition
 }
 
+func buildDatadogFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionCloudCostDataSource(data["data_source"].(string))
+
+	CloudCostQuery := datadogV1.NewFormulaAndFunctionCloudCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
+
+	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
+		CloudCostQuery.SetAggregator(datadogV1.WidgetAggregator(v))
+	}
+
+	definition := datadogV1.FormulaAndFunctionCloudCostQueryDefinitionAsFormulaAndFunctionQueryDefinition(CloudCostQuery)
+	return &definition
+}
+
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
 	datadogRequests := make([]datadogV1.TimeseriesWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -7489,6 +7544,8 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTimeseriesRequest.SetQueries(queries)
@@ -7768,8 +7825,9 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
-
 			}
 			datadogToplistRequest.SetQueries(queries)
 			// Toplist requests for formulas and functions always has a response format of "scalar"
@@ -8656,7 +8714,8 @@ func buildDatadogTreemapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTreemapRequest.SetQueries(queries)
@@ -9608,6 +9667,25 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			terraformSLOQuery := map[string]interface{}{}
 			terraformSLOQuery["slo_query"] = terraformQueries
 			queries[i] = terraformSLOQuery
+		}
+		terraformCloudCostQueryDefinition := query.FormulaAndFunctionCloudCostQueryDefinition
+		if terraformCloudCostQueryDefinition != nil {
+			if dataSource, ok := terraformCloudCostQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if aggregator, ok := terraformCloudCostQueryDefinition.GetAggregatorOk(); ok {
+				terraformQuery["aggregator"] = aggregator
+			}
+			if name, ok := terraformCloudCostQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if query, ok := terraformCloudCostQueryDefinition.GetQueryOk(); ok {
+				terraformQuery["query"] = query
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformCloudCostQuery := map[string]interface{}{}
+			terraformCloudCostQuery["cloud_cost_query"] = terraformQueries
+			queries[i] = terraformCloudCostQuery
 		}
 	}
 	return queries
