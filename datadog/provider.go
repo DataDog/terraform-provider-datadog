@@ -152,6 +152,7 @@ func Provider() *schema.Provider {
 							Summary:  "Max retries must be between 0 and 5",
 						})
 					}
+
 					return diags
 				},
 			},
