@@ -156,7 +156,6 @@ func Provider() *schema.Provider {
 				},
 			},
 		},
-
 		ResourcesMap: map[string]*schema.Resource{
 			"datadog_application_key":                      resourceDatadogApplicationKey(),
 			"datadog_authn_mapping":                        resourceDatadogAuthnMapping(),

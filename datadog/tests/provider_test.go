@@ -263,6 +263,7 @@ func getEndpointTagValue(t *testing.T) (string, error) {
 }
 
 func isRecording() bool {
+
 	return os.Getenv("RECORD") == "true"
 }
 
