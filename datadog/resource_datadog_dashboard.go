@@ -400,6 +400,51 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 // Template Variable helpers
 //
 
+func getPpkTemplateVariableSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"controlled_externally": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Template variables controlled by the external resource, such as the dashboard this powerpack is on.",
+			Elem: &schema.Resource{
+				Schema: getPpkTemplateVariableContentSchema(),
+			},
+		},
+		"controlled_by_powerpack": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Template variables controlled at the powerpack level.",
+			Elem: &schema.Resource{
+				Schema: getPpkTemplateVariableContentSchema(),
+			},
+		},
+	}
+}
+
+func getPpkTemplateVariableContentSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The name of the variable.",
+		},
+		"prefix": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.",
+		},
+		"values": {
+			Type:     schema.TypeList,
+			Required: true,
+			Elem: &schema.Schema{
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringIsNotEmpty,
+			},
+			Description: "One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.",
+		},
+	}
+}
+
 func getTemplateVariableSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
@@ -434,6 +479,49 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 			Description: "The list of values that the template variable drop-down is be limited to",
 		},
 	}
+}
+
+func buildDatadogPowerpackTVarContents(contents []interface{}) []datadogV1.PowerpackTemplateVariableContents {
+	tVarContents := make([]datadogV1.PowerpackTemplateVariableContents, len(contents))
+	for ind, tvp := range contents {
+		typecastTvp := tvp.(map[string]interface{})
+		tvar := datadogV1.NewPowerpackTemplateVariableContentsWithDefaults()
+		if name, ok := typecastTvp["name"].(string); ok {
+			tvar.SetName(name)
+		}
+		if v, ok := typecastTvp["values"].([]interface{}); ok && len(v) != 0 {
+			var values []string
+			for _, s := range v {
+				values = append(values, s.(string))
+			}
+			tvar.SetValues(values)
+		}
+		if prefix, ok := typecastTvp["prefix"].(string); ok {
+			tvar.SetPrefix(prefix)
+		}
+		tVarContents[ind] = *tvar
+	}
+	return tVarContents
+}
+
+func buildTerraformPowerpackTVarContents(tVarContents []datadogV1.PowerpackTemplateVariableContents) []map[string]interface{} {
+	ppkTvarContents := make([]map[string]interface{}, len(tVarContents))
+	for i, templateVariable := range tVarContents {
+		terraformTemplateVariable := map[string]interface{}{}
+		if v, ok := templateVariable.GetNameOk(); ok {
+			terraformTemplateVariable["name"] = *v
+		}
+		if v := templateVariable.GetPrefix(); len(v) > 0 {
+			terraformTemplateVariable["prefix"] = v
+		}
+		if v, ok := templateVariable.GetValuesOk(); ok && len(*v) > 0 {
+			var tags []string
+			tags = append(tags, *v...)
+			terraformTemplateVariable["values"] = tags
+		}
+		ppkTvarContents[i] = terraformTemplateVariable
+	}
+	return ppkTvarContents
 }
 
 func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datadogV1.DashboardTemplateVariable {
@@ -999,6 +1087,15 @@ func getNonGroupWidgetSchema(isPowerpackSchema bool) map[string]*schema.Schema {
 
 	// Non powerpack specific widgets
 	if !isPowerpackSchema {
+		s["powerpack_definition"] = &schema.Schema{
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Powerpack widget.",
+			Elem: &schema.Resource{
+				Schema: getPowerpackDefinitionSchema(),
+			},
+		}
 		s["split_graph_definition"] = &schema.Schema{
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -1255,6 +1352,14 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 			}
 			definition = datadogV1.SplitGraphWidgetDefinitionAsWidgetDefinition(datadogDefinition)
 		}
+	} else if def, ok := terraformWidget["powerpack_definition"].([]interface{}); ok && len(def) > 0 {
+		if powerpackDefinition, ok := def[0].(map[string]interface{}); ok {
+			datadogDefinition, err := buildDatadogPowerpackDefinition(powerpackDefinition)
+			if err != nil {
+				return nil, err
+			}
+			definition = datadogV1.PowerpackWidgetDefinitionAsWidgetDefinition(datadogDefinition)
+		}
 	} else {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
 	}
@@ -1506,6 +1611,12 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 			return nil, err
 		}
 		terraformWidget["split_graph_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.PowerpackWidgetDefinition != nil {
+		terraformDefinition, err := buildTerraformPowerpackDefinition(widgetDefinition.PowerpackWidgetDefinition)
+		if err != nil {
+			return nil, err
+		}
+		terraformWidget["powerpack_definition"] = []map[string]interface{}{terraformDefinition}
 	} else {
 		return nil, fmt.Errorf("unsupported widget type: %s", widgetDefinition.GetActualInstance())
 	}
@@ -7864,6 +7975,51 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 }
 
 //
+// Powerpack Definition helpers
+//
+
+func getPowerpackDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"background_color": {
+			Description: "The background color of the powerpack title.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"banner_img": {
+			Description: "URL of image to display as a banner for the powerpack.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"powerpack_id": {
+			Description:  "UUID of the associated powerpack.",
+			Type:         schema.TypeString,
+			Required:     true,
+			ValidateFunc: validation.StringIsNotEmpty,
+		},
+		"show_title": {
+			Description: "Whether to show the title of the powerpack.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+		"template_variables": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The list of template variables for this powerpack.",
+			Elem: &schema.Resource{
+				Schema: getPpkTemplateVariableSchema(),
+			},
+		},
+		"title": {
+			Description:  "Title of the powerpack.",
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validation.StringIsNotEmpty,
+		},
+	}
+}
+
+//
 // Split Graph Definition helpers
 //
 
@@ -8058,6 +8214,49 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 	return datadogDefinition, nil
 }
 
+func buildDatadogPowerpackDefinition(terraformDefinition map[string]interface{}) (*datadogV1.PowerpackWidgetDefinition, error) {
+	datadogDefinition := datadogV1.NewPowerpackWidgetDefinitionWithDefaults()
+	// Required params
+	//type, powerpack_id
+
+	powerpack_type, _ := datadogV1.NewPowerpackWidgetDefinitionTypeFromValue("powerpack")
+	datadogDefinition.SetType(*powerpack_type)
+
+	if powerpack_id, ok := terraformDefinition["powerpack_id"].(string); ok && powerpack_id != "" {
+		datadogDefinition.SetPowerpackId(powerpack_id)
+	}
+
+	if background_color, ok := terraformDefinition["background_color"].(string); ok && background_color != "" {
+		datadogDefinition.SetBackgroundColor(background_color)
+	}
+
+	if banner_img, ok := terraformDefinition["banner_img"].(string); ok && banner_img != "" {
+		datadogDefinition.SetBannerImg(banner_img)
+	}
+
+	if show_title, ok := terraformDefinition["show_title"].(bool); ok {
+		datadogDefinition.SetShowTitle(show_title)
+	}
+
+	if template_variables, ok := terraformDefinition["template_variables"].([]interface{}); ok {
+		ppkTVars := datadogV1.NewPowerpackTemplateVariablesWithDefaults()
+		tvars := template_variables[0].(map[string]interface{})
+		if tfControlledByPowerpack, ok := tvars["controlled_by_powerpack"].([]interface{}); ok {
+			ppkTVars.SetControlledByPowerpack(buildDatadogPowerpackTVarContents(tfControlledByPowerpack))
+		}
+		if tfControlledExternally, ok := tvars["controlled_externally"].([]interface{}); ok {
+			ppkTVars.SetControlledExternally(buildDatadogPowerpackTVarContents(tfControlledExternally))
+		}
+		datadogDefinition.SetTemplateVariables(*ppkTVars)
+	}
+
+	if title, ok := terraformDefinition["title"].(string); ok && title != "" {
+		datadogDefinition.SetTitle(title)
+	}
+
+	return datadogDefinition, nil
+}
+
 func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datadogV1.SplitConfig {
 	datadogSplitConfig := datadogV1.NewSplitConfigWithDefaults()
 
@@ -8159,6 +8358,44 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		terraformDefinition["live_span"] = v.GetLiveSpan()
+	}
+
+	return terraformDefinition, nil
+}
+
+func buildTerraformPowerpackDefinition(datadogDefinition *datadogV1.PowerpackWidgetDefinition) (map[string]interface{}, error) {
+	terraformDefinition := map[string]interface{}{}
+	// Required params: powerpack_id
+	if v, ok := datadogDefinition.GetPowerpackIdOk(); ok {
+		terraformDefinition["powerpack_id"] = v
+	}
+	if v, ok := datadogDefinition.GetBackgroundColorOk(); ok {
+		terraformDefinition["background_color"] = v
+	}
+	if v, ok := datadogDefinition.GetBannerImgOk(); ok {
+		terraformDefinition["banner_img"] = v
+	}
+	if v, ok := datadogDefinition.GetShowTitleOk(); ok {
+		terraformDefinition["show_title"] = v
+	}
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = v
+	}
+	if templateVariables, ok := datadogDefinition.GetTemplateVariablesOk(); ok {
+		terraformTemplateVariables := make([]map[string]interface{}, 1)
+		terraformTemplateVariable := map[string]interface{}{}
+
+		if ddControlledByPowerpack, ok := templateVariables.GetControlledByPowerpackOk(); ok {
+			controlledByPowerpackTVars := buildTerraformPowerpackTVarContents(*ddControlledByPowerpack)
+			terraformTemplateVariable["controlled_by_powerpack"] = controlledByPowerpackTVars
+		}
+		if ddControlledExternally, ok := templateVariables.GetControlledExternallyOk(); ok {
+			controlledExternallyTVars := buildTerraformPowerpackTVarContents(*ddControlledExternally)
+			terraformTemplateVariable["controlled_externally"] = controlledExternallyTVars
+		}
+		terraformTemplateVariables[0] = terraformTemplateVariable
+
+		terraformDefinition["template_variables"] = terraformTemplateVariables
 	}
 
 	return terraformDefinition, nil
