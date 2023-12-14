@@ -444,7 +444,7 @@ func initRecorder(t *testing.T) *recorder.Recorder {
 	opts := &recorder.Options{
 		CassetteName:       fmt.Sprintf("cassettes/%s", t.Name()),
 		Mode:               mode,
-		SkipRequestLatency: false,
+		SkipRequestLatency: true,
 		RealTransport:      http.DefaultTransport,
 	}
 
