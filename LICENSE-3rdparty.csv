@@ -26,7 +26,7 @@ go.sum,github.com/creack/pty,MIT,2011 Keith Rarick
 go.sum,github.com/cucumber/gherkin-go/v13,MIT,Cucumber Ltd and Gaspar Nagy and Björn Rasmusson and Peter Sergeant
 go.sum,github.com/cucumber/messages-go/v12,MIT,Cucumber Ltd
 go.sum,github.com/davecgh/go-spew,ISC,2012-2016 Dave Collins <dave@davec.name>
-go.sum,github.com/dnaeon/go-vcr,BSD-2-Clause,2015-2016 Marin Atanasov Nikolov <dnaeon@gmail.com>
+go.sum,gopkg.in/dnaeon/go-vcr.v3,BSD-2-Clause,2015-2022 Marin Atanasov Nikolov <dnaeon@gmail.com>
 go.sum,github.com/envoyproxy/go-control-plane,Apache-2.0,2018 Envoyproxy Authors
 go.sum,github.com/envoyproxy/protoc-gen-validate,Apache-2.0,2019 Envoy Project Authors
 go.sum,github.com/fatih/color,MIT,2013 Fatih Arslan
