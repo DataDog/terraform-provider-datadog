@@ -206,6 +206,32 @@ func ValidateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, erro
 	return
 }
 
+// ValidateAWSAccountID AWS Account ID must be a string exactly 12 digits long
+// See https://docs.aws.amazon.com/organizations/latest/APIReference/API_Account.html
+func ValidateAWSAccountID(v any, p cty.Path) diag.Diagnostics {
+	value, ok := v.(string)
+	var diags diag.Diagnostics
+	AWSAccountIDRegex := regexp.MustCompile(`^\d{12}$`)
+	AWSIAMAAccessKeyRegex := regexp.MustCompile(`^(AKIA|ASIA)[A-Z0-9]{16,20}`)
+	if ok && AWSIAMAAccessKeyRegex.MatchString(value) {
+		// Help the user with a deprecation warning
+		// Fedramp DD previously required using an IAM access key in place of the AWS account id
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Warning,
+			Summary:  "Deprecated",
+			Detail:   "the provided account ID might be an IAM access key. This behavior is deprecated. Use the AWS account ID instead.",
+		})
+	}
+	if ok && !AWSAccountIDRegex.MatchString(value) {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Invalid value",
+			Detail:   "account id must be a string containing exactly 12 digits",
+		})
+	}
+	return diags
+}
+
 type BetweenValidator struct {
 	min float64
 	max float64
@@ -230,7 +256,7 @@ func (v BetweenValidator) ValidateString(ctx context.Context, request validator.
 
 	if err != nil {
 		response.Diagnostics.AddError(
-			fmt.Sprintf("value must be float"),
+			"value must be float",
 			fmt.Sprintf("was %s", value),
 		)
 	}
