@@ -1,3 +1,25 @@
+## 3.34.0 (December 14, 2023)
+
+### BUGFIXES
+* [datadog_dashboard] Don't crash on empty group_by in widgets by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/2189
+* [datadog_service_definition_yaml] Validate tag type is string by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2196
+### IMPROVEMENTS
+* [datadog_integration_azure] Migrate resource to framework by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2202
+* [datadog_powerpack] Re-introduce powerpack resource by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2187
+* [datadog_dashboards] [datadog_powerpacks] clarify widget layout schema component descriptions by @dashashifrina in https://github.com/DataDog/terraform-provider-datadog/pull/2182
+### FEATURES
+* [datadog_integration_azure] Add resource_collection_enabled by @ava-silver in https://github.com/DataDog/terraform-provider-datadog/pull/2203
+* [dashboards] Support for powerpack widgets by @dashashifrina in https://github.com/DataDog/terraform-provider-datadog/pull/2205
+* [datadog_security_monitoring_rule] Support for Application Security rule type by @nizox in https://github.com/DataDog/terraform-provider-datadog/pull/2195
+### NOTES
+* [datadog_integration_aws_*] Validate AWS account ID and improve error handling by @rjhornsby in https://github.com/DataDog/terraform-provider-datadog/pull/2201
+
+## New Contributors
+* @nizox made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2195
+* @rjhornsby made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2201
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.33.0...v3.34.0
+
 ## 3.33.0 (November 21, 2023)
 
 ### BUGFIXES
