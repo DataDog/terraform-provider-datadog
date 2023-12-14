@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
+    id: 0
   response:
     body: |
       {}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -32,6 +32,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
+    id: 1
   response:
     body: |
       {}
@@ -40,7 +41,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -52,6 +53,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
+    id: 2
   response:
     body: |
       {}
@@ -60,7 +62,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -72,6 +74,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
+    id: 3
   response:
     body: |
       {}
@@ -80,7 +83,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -92,6 +95,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
+    id: 4
   response:
     body: |
       {}
@@ -100,7 +104,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -112,6 +116,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
+    id: 5
   response:
     body: |
       {}
@@ -120,7 +125,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -132,6 +137,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
+    id: 6
   response:
     body: |
       {"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -140,7 +146,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -152,6 +158,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
+    id: 7
   response:
     body: |
       {"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -160,7 +167,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -169,6 +176,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 8
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -177,7 +185,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -186,6 +194,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: GET
+    id: 9
   response:
     body: |
       {"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -194,7 +203,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -203,6 +212,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: GET
+    id: 10
   response:
     body: |
       {"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -211,7 +221,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -223,6 +233,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 11
   response:
     body: |
       {}
@@ -231,7 +242,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -243,6 +254,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 12
   response:
     body: |
       {}
@@ -251,7 +263,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -260,6 +272,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 13
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -268,7 +281,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -277,6 +290,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: GET
+    id: 14
   response:
     body: |
       {"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -285,7 +299,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -294,6 +308,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: GET
+    id: 15
   response:
     body: |
       {"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -302,7 +317,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -314,6 +329,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 16
   response:
     body: |
       {}
@@ -322,7 +338,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -334,6 +350,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 17
   response:
     body: |
       {}
@@ -342,7 +359,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -351,6 +368,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 18
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -359,7 +377,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -371,6 +389,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 19
   response:
     body: |
       {}
@@ -379,7 +398,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -391,6 +410,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 20
   response:
     body: |
       {}
@@ -399,7 +419,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -408,6 +428,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?name=tf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 21
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -416,7 +437,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -425,6 +446,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: GET
+    id: 22
   response:
     body: |
       {"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -433,7 +455,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -442,6 +464,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: GET
+    id: 23
   response:
     body: |
       {"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -450,7 +473,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -462,6 +485,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 24
   response:
     body: |
       {}
@@ -470,7 +494,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -482,6 +506,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 25
   response:
     body: |
       {}
@@ -490,7 +515,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -499,6 +524,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 26
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -507,7 +533,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -519,6 +545,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 27
   response:
     body: |
       {}
@@ -527,7 +554,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -539,6 +566,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 28
   response:
     body: |
       {}
@@ -547,7 +575,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -556,6 +584,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 29
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -564,7 +593,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -573,6 +602,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: GET
+    id: 30
   response:
     body: |
       {"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -581,7 +611,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -590,6 +620,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: GET
+    id: 31
   response:
     body: |
       {"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -598,7 +629,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -610,6 +641,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 32
   response:
     body: |
       {}
@@ -618,7 +650,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -630,6 +662,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 33
   response:
     body: |
       {}
@@ -638,7 +671,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -647,6 +680,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 34
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -655,7 +689,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -664,6 +698,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: GET
+    id: 35
   response:
     body: |
       {"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -672,7 +707,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -681,6 +716,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: GET
+    id: 36
   response:
     body: |
       {"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -689,7 +725,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -701,6 +737,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 37
   response:
     body: |
       {}
@@ -709,7 +746,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -721,6 +758,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 38
   response:
     body: |
       {}
@@ -729,7 +767,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -738,6 +776,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 39
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -746,7 +785,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -758,6 +797,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 40
   response:
     body: |
       {}
@@ -766,7 +806,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -778,6 +818,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 41
   response:
     body: |
       {}
@@ -786,7 +827,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -795,6 +836,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?tags=test_datasource_monitor_scope%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 42
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -803,7 +845,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -812,6 +854,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: GET
+    id: 43
   response:
     body: |
       {"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -820,7 +863,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -829,6 +872,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: GET
+    id: 44
   response:
     body: |
       {"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -837,7 +881,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -849,6 +893,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 45
   response:
     body: |
       {}
@@ -857,7 +902,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -869,6 +914,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 46
   response:
     body: |
       {}
@@ -877,7 +923,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -886,6 +932,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 47
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -894,7 +941,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -906,6 +953,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 48
   response:
     body: |
       {}
@@ -914,7 +962,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -926,6 +974,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 49
   response:
     body: |
       {}
@@ -934,7 +983,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -943,6 +992,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 50
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -951,7 +1001,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -960,6 +1010,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: GET
+    id: 51
   response:
     body: |
       {"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -968,7 +1019,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -977,6 +1028,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: GET
+    id: 52
   response:
     body: |
       {"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -985,7 +1037,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -997,6 +1049,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 53
   response:
     body: |
       {}
@@ -1005,7 +1058,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -1017,6 +1070,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 54
   response:
     body: |
       {}
@@ -1025,7 +1079,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1034,6 +1088,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 55
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -1042,7 +1097,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1051,6 +1106,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: GET
+    id: 56
   response:
     body: |
       {"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -1059,7 +1115,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1068,6 +1124,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: GET
+    id: 57
   response:
     body: |
       {"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -1076,7 +1133,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -1088,6 +1145,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 58
   response:
     body: |
       {}
@@ -1096,7 +1154,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -1108,6 +1166,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 59
   response:
     body: |
       {}
@@ -1116,7 +1175,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1125,6 +1184,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 60
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -1133,7 +1193,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -1145,6 +1205,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629/validate
     method: POST
+    id: 61
   response:
     body: |
       {}
@@ -1153,7 +1214,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10},"priority":0,"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') \u003e= 1","restricted_roles":null,"tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"type":"query alert"}
@@ -1165,6 +1226,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630/validate
     method: POST
+    id: 62
   response:
     body: |
       {}
@@ -1173,7 +1235,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1182,6 +1244,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor?monitor_tags=test_datasource_monitor%3Atf_TestAccDatadogMonitorsDatasource_local_1698776199
     method: GET
+    id: 63
   response:
     body: |
       [{"id":134060629,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_host_delay":600,"notify_no_data":false,"renotify_interval":60,"renotify_occurrences":3,"renotify_statuses":["alert","warn"],"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.795024+00:00","modified":"2023-10-31T18:16:41.795024+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]},{"id":134060630,"org_id":321813,"type":"query alert","name":"tf_TestAccDatadogMonitorsDatasource_local_1698776199","message":"some message Notify: @hipchat-channel","tags":["baz","test_datasource_monitor:tf_TestAccDatadogMonitorsDatasource_local_1698776199"],"query":"avg(last_4h):anomalies(avg:aws.ec2.cpu{environment:foo,host:foo,test_datasource_monitor_scope:tf_TestAccDatadogMonitorsDatasource_local_1698776199} by {host}, 'basic', 2, direction='both', alert_window='last_15m', interval=60, count_default_zero='true') >= 1","options":{"escalation_message":"the situation has escalated @pagerduty","evaluation_delay":700,"include_tags":true,"new_group_delay":500,"new_host_delay":300,"notify_no_data":false,"renotify_interval":60,"require_full_window":true,"threshold_windows":{"recovery_window":"last_15m","trigger_window":"last_15m"},"thresholds":{"critical":1.0,"critical_recovery":0.7,"warning":0.5,"warning_recovery":0.3},"timeout_h":10,"notify_audit":false,"silenced":{}},"multi":true,"created_at":1698776201000,"created":"2023-10-31T18:16:41.803663+00:00","modified":"2023-10-31T18:16:41.803663+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":"2023-10-31T18:16:50+00:00","overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416},"matching_downtimes":[]}]
@@ -1190,7 +1253,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1199,6 +1262,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: DELETE
+    id: 64
   response:
     body: |
       {"deleted_monitor_id":134060629}
@@ -1207,7 +1271,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1216,6 +1280,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: DELETE
+    id: 65
   response:
     body: |
       {"deleted_monitor_id":134060630}
@@ -1224,7 +1289,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1233,6 +1298,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060629
     method: GET
+    id: 66
   response:
     body: '{"errors":["Monitor not found"]}'
     headers:
@@ -1240,7 +1306,7 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1249,6 +1315,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/134060630
     method: GET
+    id: 67
   response:
     body: '{"errors":["Monitor not found"]}'
     headers:
@@ -1256,4 +1323,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"

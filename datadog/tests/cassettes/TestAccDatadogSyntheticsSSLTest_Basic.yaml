@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api
     method: POST
+    id: 0
   response:
     body: '{"status":"paused","public_id":"w8n-6u5-xvd","tags":[],"org_id":321813,"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","deleted_at":null,"name":"tf-TestAccDatadogSyntheticsSSLTest_Basic-local-1658396795","monitor_id":77761569,"type":"api","created_at":"2022-07-21T09:46:49.613194+00:00","modified_at":"2022-07-21T09:46:49.613194+00:00","subtype":"ssl","config":{"request":{"host":"datadoghq.com","servername":"datadoghq.com","port":443,"timeout":60},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
@@ -19,7 +19,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -28,6 +28,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/w8n-6u5-xvd
     method: GET
+    id: 1
   response:
     body: '{"status":"paused","public_id":"w8n-6u5-xvd","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Basic-local-1658396795","monitor_id":77761569,"type":"api","created_at":"2022-07-21T09:46:49.613194+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-21T09:46:49.613194+00:00","subtype":"ssl","config":{"request":{"host":"datadoghq.com","servername":"datadoghq.com","port":443,"timeout":60},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
@@ -35,7 +36,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -44,6 +45,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/w8n-6u5-xvd
     method: GET
+    id: 2
   response:
     body: '{"status":"paused","public_id":"w8n-6u5-xvd","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Basic-local-1658396795","monitor_id":77761569,"type":"api","created_at":"2022-07-21T09:46:49.613194+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-21T09:46:49.613194+00:00","subtype":"ssl","config":{"request":{"host":"datadoghq.com","servername":"datadoghq.com","port":443,"timeout":60},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
@@ -51,7 +53,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -60,6 +62,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/w8n-6u5-xvd
     method: GET
+    id: 3
   response:
     body: '{"status":"paused","public_id":"w8n-6u5-xvd","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Basic-local-1658396795","monitor_id":77761569,"type":"api","created_at":"2022-07-21T09:46:49.613194+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-21T09:46:49.613194+00:00","subtype":"ssl","config":{"request":{"host":"datadoghq.com","servername":"datadoghq.com","port":443,"timeout":60},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
@@ -67,7 +70,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -76,6 +79,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/w8n-6u5-xvd
     method: GET
+    id: 4
   response:
     body: '{"status":"paused","public_id":"w8n-6u5-xvd","tags":[],"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLTest_Basic-local-1658396795","monitor_id":77761569,"type":"api","created_at":"2022-07-21T09:46:49.613194+00:00","creator":{"handle":"frog@datadoghq.com","name":null,"email":"frog@datadoghq.com"},"modified_at":"2022-07-21T09:46:49.613194+00:00","subtype":"ssl","config":{"request":{"host":"datadoghq.com","servername":"datadoghq.com","port":443,"timeout":60},"assertions":[{"operator":"isInMoreThan","type":"certificate","target":30}],"configVariables":[]},"options":{"accept_self_signed":true,"checkCertificateRevocation":true,"min_location_failed":1,"tick_every":60}}'
     headers:
@@ -83,7 +87,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"public_ids":["w8n-6u5-xvd"]}
@@ -95,6 +99,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
+    id: 5
   response:
     body: '{"deleted_tests":[{"deleted_at":"2022-07-21T09:47:10.212298+00:00","public_id":"w8n-6u5-xvd"}]}'
     headers:
@@ -102,7 +107,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -111,6 +116,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/w8n-6u5-xvd
     method: GET
+    id: 6
   response:
     body: '{"errors": ["Synthetics test not found"]}'
     headers:
@@ -118,4 +124,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"

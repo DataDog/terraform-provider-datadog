@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules
     method: POST
+    id: 0
   response:
     body: |
       {"id":"bag-bcj-sqe","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1696322093","createdAt":1696322103326,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource"]},"cases":[{"name":"","status":"low","notifications":["@channel"],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bag-bcj-sqe
     method: GET
+    id: 1
   response:
     body: |
       {"id":"bag-bcj-sqe","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1696322093","createdAt":1696322103326,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource"]},"cases":[{"name":"","status":"low","notifications":["@channel"],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bag-bcj-sqe
     method: GET
+    id: 2
   response:
     body: |
       {"id":"bag-bcj-sqe","version":1,"name":"tf-TestAccDatadogCloudConfigurationRule_Import-local-1696322093","createdAt":1696322103326,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"resource_type:gcp_compute_instance","groupByFields":["resource_type","resource_id"],"distinctFields":[],"aggregation":"count","name":"a"}],"options":{"keepAlive":21600,"maxSignalDuration":86400,"detectionMethod":"threshold","evaluationWindow":7200,"complianceRuleOptions":{"resourceType":"gcp_compute_instance","regoRule":{"policy":"package datadog\n\nimport data.datadog.output as dd_output\n\nimport future.keywords.contains\nimport future.keywords.if\nimport future.keywords.in\n\nmilliseconds_in_a_day := ((1000 * 60) * 60) * 24\n\neval(iam_service_account_key) = \"skip\" if {\n\tiam_service_account_key.disabled\n} else = \"pass\" if {\n\t(iam_service_account_key.resource_seen_at / milliseconds_in_a_day) - (iam_service_account_key.valid_after_time / milliseconds_in_a_day) <= 90\n} else = \"fail\"\n\n# This part remains unchanged for all rules\nresults contains result if {\n\tsome resource in input.resources[input.main_resource_type]\n\tresult := dd_output.format(resource, eval(resource))\n}\n","resourceTypes":["gcp_compute_instance","gcp_compute_disk"]},"complexRule":true}},"complianceSignalOptions":{"defaultActivationStatus":null,"defaultGroupByFields":null,"userActivationStatus":true,"userGroupByFields":["@resource"]},"cases":[{"name":"","status":"low","notifications":["@channel"],"condition":"a > 0"}],"message":"Acceptance test TF rule","tags":["test:acceptance","terraform:true"],"hasExtendedTitle":true,"type":"cloud_configuration","filters":[{"action":"suppress","query":"resource_id:hel*"},{"action":"require","query":"resource_type:hel*"}]}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,12 +65,13 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bag-bcj-sqe
     method: DELETE
+    id: 3
   response:
     body: ""
     headers: {}
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -77,6 +80,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/bag-bcj-sqe
     method: GET
+    id: 4
   response:
     body: |
       {"errors":["Threat detection rule not found: bag-bcj-sqe"]}
@@ -85,4 +89,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"

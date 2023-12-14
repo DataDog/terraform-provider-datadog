@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules
     method: POST
+    id: 0
   response:
     body: |
       {"id":"4z5-mtd-gyq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1679093394","createdAt":1679093395594,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"","name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4z5-mtd-gyq
     method: GET
+    id: 1
   response:
     body: |
       {"id":"4z5-mtd-gyq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1679093394","createdAt":1679093395594,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"","name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4z5-mtd-gyq
     method: GET
+    id: 2
   response:
     body: |
       {"id":"4z5-mtd-gyq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1679093394","createdAt":1679093395594,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"","name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4z5-mtd-gyq
     method: GET
+    id: 3
   response:
     body: |
       {"id":"4z5-mtd-gyq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1679093394","createdAt":1679093395594,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_query"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"","name":"","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"cases":[{"condition":"","name":"new case name (updated)","notifications":["@user"],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"impossible travel rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1679093394","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"geo_data","distinctFields":[],"groupByFields":["@usr.handle"],"metric":"@usr.handle","metrics":["@usr.handle"],"name":"my_updated_query","query":"*"}],"tags":["u:tomato","i:tomato"]}
@@ -83,6 +86,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4z5-mtd-gyq
     method: PUT
+    id: 4
   response:
     body: |
       {"id":"4z5-mtd-gyq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1679093394","createdAt":1679093395594,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_updated_query"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"","name":"new case name (updated)","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
@@ -91,7 +95,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -100,6 +104,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4z5-mtd-gyq
     method: GET
+    id: 5
   response:
     body: |
       {"id":"4z5-mtd-gyq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1679093394","createdAt":1679093395594,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_updated_query"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"","name":"new case name (updated)","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
@@ -108,7 +113,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -117,6 +122,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4z5-mtd-gyq
     method: GET
+    id: 6
   response:
     body: |
       {"id":"4z5-mtd-gyq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule-local-1679093394","createdAt":1679093395594,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"*","groupByFields":["@usr.handle"],"distinctFields":[],"metric":"@usr.handle","metrics":["@usr.handle"],"aggregation":"geo_data","name":"my_updated_query"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"impossible_travel","evaluationWindow":0,"impossibleTravelOptions":{"baselineUserLocations":true},"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"","name":"new case name (updated)","status":"high","notifications":["@user"]}],"message":"impossible travel rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
@@ -125,7 +131,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -134,12 +140,13 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4z5-mtd-gyq
     method: DELETE
+    id: 7
   response:
     body: ""
     headers: {}
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -148,6 +155,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/rules/4z5-mtd-gyq
     method: GET
+    id: 8
   response:
     body: |
       {"errors":["Threat detection rule not found: 4z5-mtd-gyq"]}
@@ -156,4 +164,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"

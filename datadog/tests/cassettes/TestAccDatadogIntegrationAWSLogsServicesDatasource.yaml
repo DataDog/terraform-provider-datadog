@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: ""
@@ -9,6 +8,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
     method: GET
+    id: 0
   response:
     body: |
       [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
@@ -17,7 +17,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -26,6 +26,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
     method: GET
+    id: 1
   response:
     body: |
       [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
@@ -34,7 +35,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -43,6 +44,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
     method: GET
+    id: 2
   response:
     body: |
       [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
@@ -51,7 +53,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -60,6 +62,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
     method: GET
+    id: 3
   response:
     body: |
       [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
@@ -68,7 +71,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -77,6 +80,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
     method: GET
+    id: 4
   response:
     body: |
       [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
@@ -85,7 +89,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -94,6 +98,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/logs/services
     method: GET
+    id: 5
   response:
     body: |
       [{"id":"apigw-access-logs","label":"API Gateway Access Logs"},{"id":"apigw-execution-logs","label":"API Gateway Execution Logs"},{"id":"elbv2","label":"Application ELB Access Logs"},{"id":"elb","label":"Classic ELB Access Logs"},{"id":"cloudfront","label":"CloudFront Access Logs"},{"id":"lambda","label":"Lambda Cloudwatch Logs"},{"id":"redshift","label":"Redshift Logs"},{"id":"s3","label":"S3 Access Logs"}]
@@ -102,4 +107,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

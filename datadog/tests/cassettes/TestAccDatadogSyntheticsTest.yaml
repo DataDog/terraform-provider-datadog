@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api
     method: POST
+    id: 0
   response:
     body: |
       {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":130183432,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
     method: GET
+    id: 1
   response:
     body: |
       {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
     method: GET
+    id: 2
   response:
     body: |
       {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
     method: GET
+    id: 3
   response:
     body: |
       {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -80,6 +83,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/kaa-uep-guh
     method: GET
+    id: 4
   response:
     body: |
       {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -88,7 +92,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -97,6 +101,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
     method: GET
+    id: 5
   response:
     body: |
       {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -105,7 +110,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -114,6 +119,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
     method: GET
+    id: 6
   response:
     body: |
       {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -122,7 +128,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -131,6 +137,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
     method: GET
+    id: 7
   response:
     body: |
       {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -139,7 +146,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"public_ids":["kaa-uep-guh"]}
@@ -151,6 +158,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
+    id: 8
   response:
     body: |
       {"deleted_tests":[{"public_id":"kaa-uep-guh","deleted_at":"2023-08-23T17:59:28.894394+00:00"}]}
@@ -159,7 +167,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -168,6 +176,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/kaa-uep-guh
     method: GET
+    id: 9
   response:
     body: '{"errors":["Synthetics test not found"]}'
     headers:
@@ -175,7 +184,7 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -184,6 +193,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/kaa-uep-guh
     method: GET
+    id: 10
   response:
     body: '{"errors":["Synthetics test not found"]}'
     headers:
@@ -191,4 +201,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"

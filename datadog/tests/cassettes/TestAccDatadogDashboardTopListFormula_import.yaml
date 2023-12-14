@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
+    id: 0
   response:
     body: |
       {"id":"yds-ccv-p5t","title":"tf-TestAccDatadogDashboardTopListFormula_import-local-1682003481","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/yds-ccv-p5t/tf-testaccdatadogdashboardtoplistformulaimport-local-1682003481","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"type":"toplist"},"id":6591514035123776},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"type":"toplist"},"id":3468704219045412}],"notify_list":[],"created_at":"2023-04-20T15:11:23.247305+00:00","modified_at":"2023-04-20T15:11:23.247305+00:00","template_variable_presets":[],"tags":[]}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard/yds-ccv-p5t
     method: GET
+    id: 1
   response:
     body: |
       {"id":"yds-ccv-p5t","title":"tf-TestAccDatadogDashboardTopListFormula_import-local-1682003481","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/yds-ccv-p5t/tf-testaccdatadogdashboardtoplistformulaimport-local-1682003481","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"type":"toplist"},"id":6591514035123776},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"type":"toplist"},"id":3468704219045412}],"notify_list":[],"created_at":"2023-04-20T15:11:23.247305+00:00","modified_at":"2023-04-20T15:11:23.247305+00:00","template_variable_presets":[],"tags":[]}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard/yds-ccv-p5t
     method: GET
+    id: 2
   response:
     body: |
       {"id":"yds-ccv-p5t","title":"tf-TestAccDatadogDashboardTopListFormula_import-local-1682003481","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/yds-ccv-p5t/tf-testaccdatadogdashboardtoplistformulaimport-local-1682003481","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"type":"toplist"},"id":6591514035123776},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"type":"toplist"},"id":3468704219045412}],"notify_list":[],"created_at":"2023-04-20T15:11:23.247305+00:00","modified_at":"2023-04-20T15:11:23.247305+00:00","template_variable_presets":[],"tags":[]}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard/yds-ccv-p5t
     method: GET
+    id: 3
   response:
     body: |
       {"id":"yds-ccv-p5t","title":"tf-TestAccDatadogDashboardTopListFormula_import-local-1682003481","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/yds-ccv-p5t/tf-testaccdatadogdashboardtoplistformulaimport-local-1682003481","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"formula":"query1 + query2","limit":{"count":10,"order":"asc"}}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"query1","query":"avg:system.cpu.system{*} by {datacenter}"},{"aggregator":"sum","data_source":"metrics","name":"query2","query":"avg:system.load.1{*} by {datacenter}"}],"response_format":"scalar"}],"type":"toplist"},"id":6591514035123776},{"definition":{"requests":[{"formulas":[{"formula":"query1","limit":{"count":25,"order":"desc"}}],"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"type":"toplist"},"id":3468704219045412}],"notify_list":[],"created_at":"2023-04-20T15:11:23.247305+00:00","modified_at":"2023-04-20T15:11:23.247305+00:00","template_variable_presets":[],"tags":[]}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -80,6 +83,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard/yds-ccv-p5t
     method: DELETE
+    id: 4
   response:
     body: |
       {"deleted_dashboard_id":"yds-ccv-p5t"}
@@ -88,7 +92,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -97,6 +101,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard/yds-ccv-p5t
     method: GET
+    id: 5
   response:
     body: '{"errors":["Dashboard with ID yds-ccv-p5t not found"]}'
     headers:
@@ -104,4 +109,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"

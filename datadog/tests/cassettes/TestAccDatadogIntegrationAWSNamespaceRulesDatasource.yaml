@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: ""
@@ -9,6 +8,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/available_namespace_rules
     method: GET
+    id: 0
   response:
     body: |
       ["api_gateway","application_elb","apprunner","appstream","appsync","athena","auto_scaling","backup","billing","budgeting","certificatemanager","cloudfront","cloudhsm","cloudsearch","cloudwatch_events","cloudwatch_logs","codebuild","cognito","collect_custom_metrics","connect","crawl_alarms","directconnect","dms","documentdb","dynamodb","dynamodbaccelerator","ebs","ec2","ec2api","ec2spot","ecr","ecs","efs","elasticache","elasticbeanstalk","elasticinference","elastictranscoder","elb","emr","es","firehose","fsx","gamelift","glue","inspector","iot","keyspaces","kinesis","kinesis_analytics","kms","lambda","lex","mediaconnect","mediaconvert","medialive","mediapackage","mediastore","mediatailor","ml","mq","msk","mwaa","nat_gateway","neptune","network_elb","networkfirewall","opsworks","polly","privatelinkendpoints","privatelinkservices","rds","rdsproxy","redshift","rekognition","route53","route53resolver","s3","s3storagelens","sagemaker","sagemakerendpoints","sagemakerlabelingjobs","sagemakermodelbuildingpipeline","sagemakerprocessingjobs","sagemakertrainingjobs","sagemakertransformjobs","sagemakerworkteam","service_quotas","ses","shield","sns","sqs","step_functions","storage_gateway","swf","textract","transitgateway","translate","trusted_advisor","usage","vpn","waf","wafv2","workspaces","xray"]
@@ -17,7 +17,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -26,6 +26,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/available_namespace_rules
     method: GET
+    id: 1
   response:
     body: |
       ["api_gateway","application_elb","apprunner","appstream","appsync","athena","auto_scaling","backup","billing","budgeting","certificatemanager","cloudfront","cloudhsm","cloudsearch","cloudwatch_events","cloudwatch_logs","codebuild","cognito","collect_custom_metrics","connect","crawl_alarms","directconnect","dms","documentdb","dynamodb","dynamodbaccelerator","ebs","ec2","ec2api","ec2spot","ecr","ecs","efs","elasticache","elasticbeanstalk","elasticinference","elastictranscoder","elb","emr","es","firehose","fsx","gamelift","glue","inspector","iot","keyspaces","kinesis","kinesis_analytics","kms","lambda","lex","mediaconnect","mediaconvert","medialive","mediapackage","mediastore","mediatailor","ml","mq","msk","mwaa","nat_gateway","neptune","network_elb","networkfirewall","opsworks","polly","privatelinkendpoints","privatelinkservices","rds","rdsproxy","redshift","rekognition","route53","route53resolver","s3","s3storagelens","sagemaker","sagemakerendpoints","sagemakerlabelingjobs","sagemakermodelbuildingpipeline","sagemakerprocessingjobs","sagemakertrainingjobs","sagemakertransformjobs","sagemakerworkteam","service_quotas","ses","shield","sns","sqs","step_functions","storage_gateway","swf","textract","transitgateway","translate","trusted_advisor","usage","vpn","waf","wafv2","workspaces","xray"]
@@ -34,7 +35,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -43,6 +44,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/available_namespace_rules
     method: GET
+    id: 2
   response:
     body: |
       ["api_gateway","application_elb","apprunner","appstream","appsync","athena","auto_scaling","backup","billing","budgeting","certificatemanager","cloudfront","cloudhsm","cloudsearch","cloudwatch_events","cloudwatch_logs","codebuild","cognito","collect_custom_metrics","connect","crawl_alarms","directconnect","dms","documentdb","dynamodb","dynamodbaccelerator","ebs","ec2","ec2api","ec2spot","ecr","ecs","efs","elasticache","elasticbeanstalk","elasticinference","elastictranscoder","elb","emr","es","firehose","fsx","gamelift","glue","inspector","iot","keyspaces","kinesis","kinesis_analytics","kms","lambda","lex","mediaconnect","mediaconvert","medialive","mediapackage","mediastore","mediatailor","ml","mq","msk","mwaa","nat_gateway","neptune","network_elb","networkfirewall","opsworks","polly","privatelinkendpoints","privatelinkservices","rds","rdsproxy","redshift","rekognition","route53","route53resolver","s3","s3storagelens","sagemaker","sagemakerendpoints","sagemakerlabelingjobs","sagemakermodelbuildingpipeline","sagemakerprocessingjobs","sagemakertrainingjobs","sagemakertransformjobs","sagemakerworkteam","service_quotas","ses","shield","sns","sqs","step_functions","storage_gateway","swf","textract","transitgateway","translate","trusted_advisor","usage","vpn","waf","wafv2","workspaces","xray"]
@@ -51,7 +53,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -60,6 +62,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/available_namespace_rules
     method: GET
+    id: 3
   response:
     body: |
       ["api_gateway","application_elb","apprunner","appstream","appsync","athena","auto_scaling","backup","billing","budgeting","certificatemanager","cloudfront","cloudhsm","cloudsearch","cloudwatch_events","cloudwatch_logs","codebuild","cognito","collect_custom_metrics","connect","crawl_alarms","directconnect","dms","documentdb","dynamodb","dynamodbaccelerator","ebs","ec2","ec2api","ec2spot","ecr","ecs","efs","elasticache","elasticbeanstalk","elasticinference","elastictranscoder","elb","emr","es","firehose","fsx","gamelift","glue","inspector","iot","keyspaces","kinesis","kinesis_analytics","kms","lambda","lex","mediaconnect","mediaconvert","medialive","mediapackage","mediastore","mediatailor","ml","mq","msk","mwaa","nat_gateway","neptune","network_elb","networkfirewall","opsworks","polly","privatelinkendpoints","privatelinkservices","rds","rdsproxy","redshift","rekognition","route53","route53resolver","s3","s3storagelens","sagemaker","sagemakerendpoints","sagemakerlabelingjobs","sagemakermodelbuildingpipeline","sagemakerprocessingjobs","sagemakertrainingjobs","sagemakertransformjobs","sagemakerworkteam","service_quotas","ses","shield","sns","sqs","step_functions","storage_gateway","swf","textract","transitgateway","translate","trusted_advisor","usage","vpn","waf","wafv2","workspaces","xray"]
@@ -68,7 +71,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -77,6 +80,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/available_namespace_rules
     method: GET
+    id: 4
   response:
     body: |
       ["api_gateway","application_elb","apprunner","appstream","appsync","athena","auto_scaling","backup","billing","budgeting","certificatemanager","cloudfront","cloudhsm","cloudsearch","cloudwatch_events","cloudwatch_logs","codebuild","cognito","collect_custom_metrics","connect","crawl_alarms","directconnect","dms","documentdb","dynamodb","dynamodbaccelerator","ebs","ec2","ec2api","ec2spot","ecr","ecs","efs","elasticache","elasticbeanstalk","elasticinference","elastictranscoder","elb","emr","es","firehose","fsx","gamelift","glue","inspector","iot","keyspaces","kinesis","kinesis_analytics","kms","lambda","lex","mediaconnect","mediaconvert","medialive","mediapackage","mediastore","mediatailor","ml","mq","msk","mwaa","nat_gateway","neptune","network_elb","networkfirewall","opsworks","polly","privatelinkendpoints","privatelinkservices","rds","rdsproxy","redshift","rekognition","route53","route53resolver","s3","s3storagelens","sagemaker","sagemakerendpoints","sagemakerlabelingjobs","sagemakermodelbuildingpipeline","sagemakerprocessingjobs","sagemakertrainingjobs","sagemakertransformjobs","sagemakerworkteam","service_quotas","ses","shield","sns","sqs","step_functions","storage_gateway","swf","textract","transitgateway","translate","trusted_advisor","usage","vpn","waf","wafv2","workspaces","xray"]
@@ -85,4 +89,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

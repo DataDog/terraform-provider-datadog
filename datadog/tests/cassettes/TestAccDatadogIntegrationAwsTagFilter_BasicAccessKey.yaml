@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: POST
+    id: 0
   response:
     body: '{}'
     headers:
@@ -19,7 +19,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -28,14 +28,17 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 1
   response:
-    body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5556100565199100","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_j9xni-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1634025936","excluded_regions":[],"account_id":"java_qN3Bftu","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java","dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1634049312","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"539849555454","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"java-generateNewExternalIdTest-local-1634382352","excluded_regions":[],"account_id":"java_+YOQ7Ib","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1634382358","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1634393563","excluded_regions":[],"account_id":"java_3Qne493","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java","dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_1","excluded_regions":[],"account_id":"java_zte8V-1","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_2","excluded_regions":[],"account_id":"java_zte8V-2","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_3","excluded_regions":[],"account_id":"java_zte8V-3","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_zte8V-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5210098995749984","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"4997101525355485","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"555252985610","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"481005652575","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5554505557975752","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5656515497551005","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5557505698101515","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5156985010099571","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false}]}'
+    body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5556100565199100","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_j9xni-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1634025936","excluded_regions":[],"account_id":"java_qN3Bftu","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java","dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1634049312","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"539849555454","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"java-generateNewExternalIdTest-local-1634382352","excluded_regions":[],"account_id":"java_+YOQ7Ib","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1634382358","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1634393563","excluded_regions":[],"account_id":"java_3Qne493","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java","dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java
+      Client Role Name_1","excluded_regions":[],"account_id":"java_zte8V-1","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_2","excluded_regions":[],"account_id":"java_zte8V-2","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_3","excluded_regions":[],"account_id":"java_zte8V-3","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java
+      Client Role Name_4","excluded_regions":[],"account_id":"java_zte8V-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5210098995749984","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"4997101525355485","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"555252985610","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"481005652575","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5554505557975752","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5656515497551005","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5557505698101515","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5156985010099571","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false}]}'
     headers:
       Content-Type:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"account_id":"5156985010099571","namespace":"application_elb","tag_filter_str":"test:filter"}
@@ -47,6 +50,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/filtering
     method: POST
+    id: 2
   response:
     body: '{}'
     headers:
@@ -54,7 +58,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +67,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=5156985010099571
     method: GET
+    id: 3
   response:
     body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
     headers:
@@ -70,7 +75,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -79,6 +84,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=5156985010099571
     method: GET
+    id: 4
   response:
     body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
     headers:
@@ -86,7 +92,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -95,14 +101,17 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 5
   response:
-    body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5556100565199100","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_j9xni-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1634025936","excluded_regions":[],"account_id":"java_qN3Bftu","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java","dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1634049312","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"539849555454","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"java-generateNewExternalIdTest-local-1634382352","excluded_regions":[],"account_id":"java_+YOQ7Ib","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1634382358","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1634393563","excluded_regions":[],"account_id":"java_3Qne493","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java","dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_1","excluded_regions":[],"account_id":"java_zte8V-1","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_2","excluded_regions":[],"account_id":"java_zte8V-2","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_3","excluded_regions":[],"account_id":"java_zte8V-3","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_zte8V-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5210098995749984","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"4997101525355485","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"555252985610","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"481005652575","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5554505557975752","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5656515497551005","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5557505698101515","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5156985010099571","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"579750985299","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]}]}'
+    body: '{"accounts":[{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5556100565199100","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_4","excluded_regions":[],"account_id":"java_j9xni-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1634025936","excluded_regions":[],"account_id":"java_qN3Bftu","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java","dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1634049312","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"role_name":"1234@testacc-datadog-integration-role","excluded_regions":["us-east-1","us-west-2"],"account_id":"539849555454","host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["key:value"]},{"cspm_resource_collection_enabled":false,"role_name":"java-generateNewExternalIdTest-local-1634382352","excluded_regions":[],"account_id":"java_+YOQ7Ib","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"DatadogAWSIntegrationRole","excluded_regions":[],"account_id":"Test-Go-TestCheckLambdaAsync-1634382358","host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["testTag","test:Tag2"]},{"cspm_resource_collection_enabled":false,"role_name":"java-aWSLogsAddListEnableAndDeleteTest-local-1634393563","excluded_regions":[],"account_id":"java_3Qne493","host_tags":["javaTag:one","java:success","javaTag:one","java:success"],"account_specific_namespace_rules":{"api_gateway":true},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java","dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java
+      Client Role Name_1","excluded_regions":[],"account_id":"java_zte8V-1","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_2","excluded_regions":[],"account_id":"java_zte8V-2","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java Client Role Name_3","excluded_regions":[],"account_id":"java_zte8V-3","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"role_name":"Java
+      Client Role Name_4","excluded_regions":[],"account_id":"java_zte8V-4","host_tags":["java_test_tag:value"],"account_specific_namespace_rules":{"api_gateway":false},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":["dontCollect:java"]},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5210098995749984","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"4997101525355485","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"555252985610","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"481005652575","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5554505557975752","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5656515497551005","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5557505698101515","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"errors":[],"excluded_regions":[],"filter_tags":[],"access_key_id":"5156985010099571","account_specific_namespace_rules":{},"metrics_collection_enabled":true,"host_tags":[],"resource_collection_enabled":false},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"579750985299","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]}]}'
     headers:
       Content-Type:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -111,6 +120,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=5156985010099571
     method: GET
+    id: 6
   response:
     body: '{"filters":[{"tag_filter_str":null,"namespace":"elb"},{"tag_filter_str":"test:filter","namespace":"application_elb"},{"tag_filter_str":null,"namespace":"sqs"},{"tag_filter_str":null,"namespace":"rds"},{"tag_filter_str":null,"namespace":"custom"},{"tag_filter_str":null,"namespace":"network_elb"},{"tag_filter_str":null,"namespace":"lambda"}]}'
     headers:
@@ -118,7 +128,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"account_id":"5156985010099571","namespace":"application_elb"}
@@ -130,6 +140,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/filtering
     method: DELETE
+    id: 7
   response:
     body: '{}'
     headers:
@@ -137,7 +148,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"access_key_id":"5156985010099571"}
@@ -149,6 +160,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: DELETE
+    id: 8
   response:
     body: '{}'
     headers:
@@ -156,7 +168,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -165,6 +177,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws/filtering?account_id=5156985010099571
     method: GET
+    id: 9
   response:
     body: '{"errors": ["AWS account 5156985010099571 does not exist in integration"]}'
     headers:
@@ -172,4 +185,4 @@ interactions:
       - application/json
     status: 400 Bad Request
     code: 400
-    duration: ""
+    duration: "0ms"

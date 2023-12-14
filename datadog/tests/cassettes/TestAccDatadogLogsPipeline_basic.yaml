@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines
     method: POST
+    id: 0
   response:
     body: |
       {"id":"hRsnw_WqTzOQV-7CBF79hQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_basic-local-1678127470","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"}]}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/hRsnw_WqTzOQV-7CBF79hQ
     method: GET
+    id: 1
   response:
     body: |
       {"id":"hRsnw_WqTzOQV-7CBF79hQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_basic-local-1678127470","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"}]}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/hRsnw_WqTzOQV-7CBF79hQ
     method: GET
+    id: 2
   response:
     body: |
       {"id":"hRsnw_WqTzOQV-7CBF79hQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_basic-local-1678127470","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"}]}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/hRsnw_WqTzOQV-7CBF79hQ
     method: GET
+    id: 3
   response:
     body: |
       {"id":"hRsnw_WqTzOQV-7CBF79hQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_basic-local-1678127470","is_enabled":true,"is_read_only":false,"filter":{"query":"source:redis"},"processors":[{"name":"Define date","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"processor from nested pipeline","is_enabled":true,"expression":"(time1-time2)*1000","target":"my_arithmetic","is_replace_missing":false,"type":"arithmetic-processor"},{"name":"Categorise severity level","is_enabled":true,"categories":[{"filter":{"query":"@severity: \"-\""},"name":"verbose"},{"filter":{"query":"@severity: \".\""},"name":"debug"}],"target":"redis.severity","type":"category-processor"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":[],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"type":"pipeline","name":"my nested pipeline","is_enabled":true,"filter":{"query":"source:kafka"},"processors":[{"name":"Define url parser","is_enabled":true,"sources":["http_test"],"target":"http_test.details","normalize_ending_slashes":false,"type":"url-parser"},{"name":"Define user agent parser","is_enabled":true,"sources":["http_agent"],"target":"http_agent.details","is_encoded":false,"type":"user-agent-parser"}]},{"name":"geo ip parse","is_enabled":true,"sources":["ip1"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"}]}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"filter":{"query":"source:kafka"},"is_enabled":false,"name":"tf-TestAccDatadogLogsPipeline_basic-local-1678127470-updated","processors":[{"is_enabled":true,"name":"test date remapper","sources":["verbose"],"type":"date-remapper"},{"is_enabled":true,"name":"","sources":["redis.severity"],"type":"status-remapper"},{"is_enabled":true,"name":"Simple attribute remapper to tag target type","override_on_conflict":false,"preserve_source":true,"source_type":"tag","sources":["db.instance"],"target":"db","target_type":"tag","type":"attribute-remapper"},{"is_enabled":true,"name":"Simple attribute remapper to attribute target type","override_on_conflict":false,"preserve_source":true,"source_type":"tag","sources":["db.instance"],"target":"db","target_format":"string","target_type":"attribute","type":"attribute-remapper"},{"grok":{"match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"is_enabled":true,"name":"Parsing Stack traces","samples":["sample1","sample2"],"source":"message","type":"grok-parser"},{"is_enabled":true,"is_replace_missing":true,"name":"string builder","target":"user.name","template":"%{user.name} is awesome","type":"string-builder-processor"},{"is_enabled":true,"name":"geo ip parse","sources":["ip1","ip2"],"target":"ip.address","type":"geo-ip-parser"},{"is_enabled":false,"lookup_table":["key,value","key2,value2"],"name":"","source":"ip1","target":"ip.address","type":"lookup-processor"},{"default_lookup":"default","is_enabled":true,"lookup_table":["key,value","key2,value2"],"name":"lookup processor with optional fields","source":"ip2","target":"ip.address","type":"lookup-processor"},{"is_enabled":true,"lookup_enrichment_table":"test_reference_table_do_not_delete","name":"reftablelookup","source":"sourcefield","target":"targetfield","type":"lookup-processor"}]}
@@ -83,6 +86,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/hRsnw_WqTzOQV-7CBF79hQ
     method: PUT
+    id: 4
   response:
     body: |
       {"id":"hRsnw_WqTzOQV-7CBF79hQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_basic-local-1678127470-updated","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test date remapper","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"Simple attribute remapper to tag target type","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"Simple attribute remapper to attribute target type","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"attribute","target_format":"string","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":["sample1","sample2"],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"name":"string builder","is_enabled":true,"template":"%{user.name} is awesome","target":"user.name","is_replace_missing":true,"type":"string-builder-processor"},{"name":"geo ip parse","is_enabled":true,"sources":["ip1","ip2"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value","key2,value2"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value","key2,value2"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"}]}
@@ -91,7 +95,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -100,6 +104,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/hRsnw_WqTzOQV-7CBF79hQ
     method: GET
+    id: 5
   response:
     body: |
       {"id":"hRsnw_WqTzOQV-7CBF79hQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_basic-local-1678127470-updated","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test date remapper","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"Simple attribute remapper to tag target type","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"Simple attribute remapper to attribute target type","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"attribute","target_format":"string","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":["sample1","sample2"],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"name":"string builder","is_enabled":true,"template":"%{user.name} is awesome","target":"user.name","is_replace_missing":true,"type":"string-builder-processor"},{"name":"geo ip parse","is_enabled":true,"sources":["ip1","ip2"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value","key2,value2"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value","key2,value2"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"}]}
@@ -108,7 +113,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -117,6 +122,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/hRsnw_WqTzOQV-7CBF79hQ
     method: GET
+    id: 6
   response:
     body: |
       {"id":"hRsnw_WqTzOQV-7CBF79hQ","type":"pipeline","name":"tf-TestAccDatadogLogsPipeline_basic-local-1678127470-updated","is_enabled":false,"is_read_only":false,"filter":{"query":"source:kafka"},"processors":[{"name":"test date remapper","is_enabled":true,"sources":["verbose"],"type":"date-remapper"},{"name":"","is_enabled":true,"sources":["redis.severity"],"type":"status-remapper"},{"name":"Simple attribute remapper to tag target type","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"tag","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"Simple attribute remapper to attribute target type","is_enabled":true,"sources":["db.instance"],"source_type":"tag","target":"db","target_type":"attribute","target_format":"string","preserve_source":true,"override_on_conflict":false,"type":"attribute-remapper"},{"name":"Parsing Stack traces","is_enabled":true,"source":"message","samples":["sample1","sample2"],"grok":{"support_rules":"date_parser %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}","match_rules":"rule %{date(\"yyyy-MM-dd HH:mm:ss,SSS\"):timestamp}"},"type":"grok-parser"},{"name":"string builder","is_enabled":true,"template":"%{user.name} is awesome","target":"user.name","is_replace_missing":true,"type":"string-builder-processor"},{"name":"geo ip parse","is_enabled":true,"sources":["ip1","ip2"],"target":"ip.address","ip_processing_behavior":"do-nothing","type":"geo-ip-parser"},{"name":"","is_enabled":false,"source":"ip1","target":"ip.address","lookup_table":["key,value","key2,value2"],"type":"lookup-processor"},{"name":"lookup processor with optional fields","is_enabled":true,"source":"ip2","target":"ip.address","lookup_table":["key,value","key2,value2"],"default_lookup":"default","type":"lookup-processor"},{"name":"reftablelookup","is_enabled":true,"source":"sourcefield","target":"targetfield","lookup_enrichment_table":"test_reference_table_do_not_delete","type":"lookup-processor"}]}
@@ -125,7 +131,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -134,6 +140,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/hRsnw_WqTzOQV-7CBF79hQ
     method: DELETE
+    id: 7
   response:
     body: |
       {}
@@ -142,7 +149,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -151,6 +158,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/hRsnw_WqTzOQV-7CBF79hQ
     method: GET
+    id: 8
   response:
     body: |
       {"error":{"code":"InvalidArgument","message":"Non existing pipeline"}}
@@ -159,4 +167,4 @@ interactions:
       - application/json
     status: 400 Bad Request
     code: 400
-    duration: ""
+    duration: "0ms"

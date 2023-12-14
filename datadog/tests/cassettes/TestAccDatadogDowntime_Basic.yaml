@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime
     method: POST
+    id: 0
   response:
     body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558324,"org_id":321813,"modified":1650558324,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_Basic-local-1650558281","downtime_type":0,"id":1895959478,"updater_id":null}'
     headers:
@@ -19,7 +19,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -28,6 +28,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/1895959478
     method: GET
+    id: 1
   response:
     body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558324,"org_id":321813,"modified":1650558324,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_Basic-local-1650558281","downtime_type":0,"id":1895959478,"updater_id":null}'
     headers:
@@ -35,7 +36,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -44,6 +45,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/1895959478
     method: GET
+    id: 2
   response:
     body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"child_id":null,"canceled":null,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558324,"org_id":321813,"modified":1650558324,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_Basic-local-1650558281","downtime_type":0,"id":1895959478,"updater_id":null}'
     headers:
@@ -51,7 +53,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -60,12 +62,13 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v1/downtime/1895959478
     method: DELETE
+    id: 3
   response:
     body: ""
     headers: {}
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -74,6 +77,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/1895959478
     method: GET
+    id: 4
   response:
     body: '{"recurrence":{"until_date":null,"until_occurrences":null,"week_days":null,"type":"days","period":1},"end":1735765200,"monitor_tags":["app:webserver","service"],"child_id":null,"canceled":1650558391,"monitor_id":null,"mute_first_recovery_notification":false,"created":1650558324,"org_id":321813,"modified":1650558391,"disabled":true,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["*"],"message":"tf-TestAccDatadogDowntime_Basic-local-1650558281","downtime_type":0,"id":1895959478,"updater_id":1445416}'
     headers:
@@ -81,4 +85,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
