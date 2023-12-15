@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: ""
@@ -9,6 +8,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
+    id: 0
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
@@ -16,7 +16,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -25,6 +25,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
+    id: 1
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
@@ -32,7 +33,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -41,6 +42,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
+    id: 2
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
@@ -48,7 +50,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -57,6 +59,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
+    id: 3
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
@@ -64,7 +67,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -73,6 +76,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
+    id: 4
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
@@ -80,7 +84,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -89,6 +93,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: GET
+    id: 5
   response:
     body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
     headers:
@@ -96,4 +101,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

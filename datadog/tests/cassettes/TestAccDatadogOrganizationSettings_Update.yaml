@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: ""
@@ -9,6 +8,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org
     method: GET
+    id: 0
   response:
     body: '{"orgs":[{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236083-2","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}]}'
     headers:
@@ -16,7 +16,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"name":"ttings_Update-local-1628236119","settings":{"private_widget_share":false,"saml":{"enabled":false},"saml_autocreate_access_role":"st","saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_strict_mode":{"enabled":false}}}
@@ -28,6 +28,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: PUT
+    id: 1
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -35,7 +36,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -44,6 +45,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: GET
+    id: 2
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -51,7 +53,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -60,6 +62,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: GET
+    id: 3
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -67,7 +70,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -76,6 +79,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: GET
+    id: 4
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -83,7 +87,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -92,6 +96,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: GET
+    id: 5
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":false,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":[],"enabled":false},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -99,7 +104,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"name":"ttings_Update-local-1628236119","settings":{"private_widget_share":true,"saml":{"enabled":false},"saml_autocreate_access_role":"st","saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_strict_mode":{"enabled":false}}}
@@ -111,6 +116,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: PUT
+    id: 6
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -118,7 +124,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -127,6 +133,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: GET
+    id: 7
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -134,7 +141,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -143,6 +150,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: GET
+    id: 8
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -150,7 +158,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"name":"ttings_Update-local-1628236119-2","settings":{"private_widget_share":true,"saml":{"enabled":false},"saml_autocreate_access_role":"st","saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_strict_mode":{"enabled":false}}}
@@ -162,6 +170,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: PUT
+    id: 9
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119-2","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -169,7 +178,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -178,6 +187,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
     method: GET
+    id: 10
   response:
     body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_Update-local-1628236119-2","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
     headers:
@@ -185,4 +195,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

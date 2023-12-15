@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/browser
     method: POST
+    id: 0
   response:
     body: |
       {"public_id":"rab-hts-ztf","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1682405337","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2023-04-25T06:48:59.417712+00:00","modified_at":"2023-04-25T06:48:59.417712+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"deleted_at":null,"monitor_id":117218133,"org_id":569509,"steps":[{"name":"click step","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/config-updated","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click","allowFailure":false,"isCritical":false,"noScreenshot":false}]}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/rab-hts-ztf
     method: GET
+    id: 1
   response:
     body: |
       {"public_id":"rab-hts-ztf","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1682405337","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2023-04-25T06:48:59.417712+00:00","modified_at":"2023-04-25T06:48:59.417712+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":117218133,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"click step","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/config-updated","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click","allowFailure":false,"isCritical":false,"noScreenshot":false}]}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/rab-hts-ztf
     method: GET
+    id: 2
   response:
     body: |
       {"public_id":"rab-hts-ztf","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1682405337","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2023-04-25T06:48:59.417712+00:00","modified_at":"2023-04-25T06:48:59.417712+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":117218133,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/rab-hts-ztf
     method: GET
+    id: 3
   response:
     body: |
       {"public_id":"rab-hts-ztf","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1682405337","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2023-04-25T06:48:59.417712+00:00","modified_at":"2023-04-25T06:48:59.417712+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":117218133,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -80,6 +83,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/rab-hts-ztf
     method: GET
+    id: 4
   response:
     body: |
       {"public_id":"rab-hts-ztf","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_Basic-local-1682405337","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2023-04-25T06:48:59.417712+00:00","modified_at":"2023-04-25T06:48:59.417712+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":117218133,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"click step","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/config-updated","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click","allowFailure":false,"isCritical":false,"noScreenshot":false}]}
@@ -88,7 +92,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"public_ids":["rab-hts-ztf"]}
@@ -100,6 +104,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
+    id: 5
   response:
     body: |
       {"deleted_tests":[{"public_id":"rab-hts-ztf","deleted_at":"2023-04-25T06:49:01.303470+00:00"}]}
@@ -108,7 +113,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -117,6 +122,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/rab-hts-ztf
     method: GET
+    id: 6
   response:
     body: '{"errors":["Synthetics test not found"]}'
     headers:
@@ -124,4 +130,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"

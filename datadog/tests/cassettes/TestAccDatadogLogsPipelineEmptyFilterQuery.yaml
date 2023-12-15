@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines
     method: POST
+    id: 0
   response:
     body: |
       {"is_enabled":true,"name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1670254535","filter":{"query":""},"is_read_only":false,"type":"pipeline","id":"B5AHvyA3Qm2ABMgMwA0FBw","processors":[{"is_enabled":true,"sources":["redis.severity"],"type":"status-remapper","name":""},{"is_enabled":true,"type":"category-processor","name":"sample category processor","categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity"},{"is_enabled":true,"filter":{"query":""},"type":"pipeline","name":"Nginx","processors":[]}]}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/B5AHvyA3Qm2ABMgMwA0FBw
     method: GET
+    id: 1
   response:
     body: |
       {"is_enabled":true,"name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1670254535","filter":{"query":""},"is_read_only":false,"type":"pipeline","id":"B5AHvyA3Qm2ABMgMwA0FBw","processors":[{"is_enabled":true,"sources":["redis.severity"],"type":"status-remapper","name":""},{"is_enabled":true,"type":"category-processor","name":"sample category processor","categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity"},{"is_enabled":true,"filter":{"query":""},"type":"pipeline","name":"Nginx","processors":[]}]}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/B5AHvyA3Qm2ABMgMwA0FBw
     method: GET
+    id: 2
   response:
     body: |
       {"is_enabled":true,"name":"tf-TestAccDatadogLogsPipelineEmptyFilterQuery-local-1670254535","filter":{"query":""},"is_read_only":false,"type":"pipeline","id":"B5AHvyA3Qm2ABMgMwA0FBw","processors":[{"is_enabled":true,"sources":["redis.severity"],"type":"status-remapper","name":""},{"is_enabled":true,"type":"category-processor","name":"sample category processor","categories":[{"filter":{"query":""},"name":"debug"}],"target":"foo.severity"},{"is_enabled":true,"filter":{"query":""},"type":"pipeline","name":"Nginx","processors":[]}]}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/B5AHvyA3Qm2ABMgMwA0FBw
     method: DELETE
+    id: 3
   response:
     body: |
       {}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -80,6 +83,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/pipelines/B5AHvyA3Qm2ABMgMwA0FBw
     method: GET
+    id: 4
   response:
     body: |
       {"error":{"message":"Non existing pipeline","code":"InvalidArgument"}}
@@ -88,4 +92,4 @@ interactions:
       - application/json
     status: 400 Bad Request
     code: 400
-    duration: ""
+    duration: "0ms"

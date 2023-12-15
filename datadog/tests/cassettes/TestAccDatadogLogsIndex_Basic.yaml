@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes
     method: POST
+    id: 0
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"non-existent-query"},"exclusion_filters":[],"daily_limit":200000}'
     headers:
@@ -19,7 +19,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -28,6 +28,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1627305201
     method: GET
+    id: 1
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"non-existent-query"},"exclusion_filters":[],"daily_limit":200000}'
     headers:
@@ -35,7 +36,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -44,6 +45,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1627305201
     method: GET
+    id: 2
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"non-existent-query"},"exclusion_filters":[],"daily_limit":200000}'
     headers:
@@ -51,7 +53,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"daily_limit":20000,"exclusion_filters":[{"filter":{"query":"app:coredns","sample_rate":0.97},"is_enabled":true,"name":"Filter coredns logs"}],"filter":{"query":"test:query"},"num_retention_days":15}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1627305201
     method: PUT
+    id: 3
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[{"is_enabled":true,"filter":{"query":"app:coredns","sample_rate":0.97},"name":"Filter coredns logs"}],"daily_limit":20000}'
     headers:
@@ -70,7 +73,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -79,6 +82,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1627305201
     method: GET
+    id: 4
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[{"is_enabled":true,"filter":{"query":"app:coredns","sample_rate":0.97},"name":"Filter coredns logs"}],"daily_limit":20000}'
     headers:
@@ -86,7 +90,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -95,6 +99,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1627305201
     method: GET
+    id: 5
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[{"is_enabled":true,"filter":{"query":"app:coredns","sample_rate":0.97},"name":"Filter coredns logs"}],"daily_limit":20000}'
     headers:
@@ -102,7 +107,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"daily_limit":20000,"disable_daily_limit":true,"exclusion_filters":[],"filter":{"query":"test:query"},"num_retention_days":15}
@@ -114,6 +119,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1627305201
     method: PUT
+    id: 6
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}'
     headers:
@@ -121,7 +127,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -130,6 +136,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/logs/config/indexes/tf-testaccdatadoglogsindex-basic-local-1627305201
     method: GET
+    id: 7
   response:
     body: '{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}'
     headers:
@@ -137,4 +144,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

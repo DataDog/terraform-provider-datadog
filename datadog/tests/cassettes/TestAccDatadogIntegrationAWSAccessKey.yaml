@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: POST
+    id: 0
   response:
     body: |
       {}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 1
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":false},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 2
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"route53":false,"api_gateway":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 3
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"auto_scaling":false,"opsworks":true},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"route53":false,"api_gateway":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -80,6 +83,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 4
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"auto_scaling":false,"opsworks":true},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"route53":false,"api_gateway":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -88,7 +92,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"access_key_id":"4957495653495349","account_id":"495749565349","account_specific_namespace_rules":{"auto_scaling":false,"opsworks":true},"cspm_resource_collection_enabled":false,"excluded_regions":["us-east-1","us-west-2"],"filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"metrics_collection_enabled":true,"resource_collection_enabled":false,"secret_access_key":"testacc-datadog-integration-secret"}
@@ -100,6 +104,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws?access_key_id=4957495653495349
     method: PUT
+    id: 5
   response:
     body: |
       {}
@@ -108,7 +113,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -117,6 +122,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 6
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":false},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -125,7 +131,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -134,6 +140,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 7
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":false},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"auto_scaling":false,"opsworks":true},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -142,7 +149,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -151,6 +158,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 8
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"route53":false,"api_gateway":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -159,7 +167,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -168,6 +176,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 9
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":false},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"auto_scaling":false,"opsworks":true},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -176,7 +185,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"access_key_id":"4957495653495349","account_id":"495749565349","account_specific_namespace_rules":{},"cspm_resource_collection_enabled":false,"excluded_regions":[],"filter_tags":[],"host_tags":[],"metrics_collection_enabled":true,"resource_collection_enabled":false,"secret_access_key":"testacc-datadog-integration-secret"}
@@ -188,6 +197,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws?access_key_id=4957495653495349
     method: PUT
+    id: 10
   response:
     body: |
       {}
@@ -196,7 +206,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -205,6 +215,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 11
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":false},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -213,7 +224,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -222,6 +233,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 12
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"auto_scaling":false,"opsworks":true},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":false},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -230,7 +242,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -239,6 +251,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 13
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"auto_scaling":false,"opsworks":true},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"api_gateway":true,"route53":false},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4957495653495349","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -247,7 +260,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"access_key_id":"4957495653495349","account_id":"495749565349"}
@@ -259,6 +272,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: DELETE
+    id: 14
   response:
     body: |
       {}
@@ -267,7 +281,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -276,6 +290,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/aws
     method: GET
+    id: 15
   response:
     body: |
       {"accounts":[{"account_id":"979910097554","role_name":"1234@testacc-datadog-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"opsworks":true,"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 979910097554\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"571021019953","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 571021019953\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"123456789188","role_name":"DatadogAWSAcctRoleName","filter_tags":["filter:thisTag"],"host_tags":["env:staging","account:123456"],"account_specific_namespace_rules":{"route53":false,"api_gateway":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 123456789188\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"661694029252","role_name":"DatadogAWSIntegrationRole","filter_tags":["testTag","test:Tag2"],"host_tags":["filter:one","filtertwo"],"account_specific_namespace_rules":{"opsworks":true},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 661694029252\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 4m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
@@ -284,4 +299,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

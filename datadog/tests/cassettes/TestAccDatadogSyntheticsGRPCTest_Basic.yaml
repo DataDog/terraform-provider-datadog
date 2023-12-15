@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api
     method: POST
+    id: 0
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:38.017604+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedJsonDescriptor":"eJx0kLFOwzAQhl/llAW6JEKMVWc6MCCK1MVSZNxr6uKczZ1dGlV9d+SkKSmIKdLl/+/7fIV0FPURFqCKwD76R1XMFSnyIVpPsNcHXbfJRRsc1lvrUGABkRPObzNBmw/dYL/I+rLhYEo86jY4lHKHzvkvz27Tb5/2fIrItXFahHQ79Jc5vs7xl6w07fj3vRnSdWDc2sF8+by+aI8aP8R+XFXwtkNoGDFaakCQD9YgbHBryebNpaJx+JRTyHBSBFBVsELaCOhrO485GFjprjeF+/7zip8JJc6AMSYmuY6D62ZwOis6T1R4SEOLIlnYeIraUpaLO4QkyHcC+SSlojE05Qx6EjlXLqd7mP+GSPAk+B9lfJH8QQTX3QDG31dG8R0AAP//k3vPfw==","host":"google.com","metadata":{"header":"value"},"method":"GET","port":50050,"service":"Hello","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","created_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":132772610,"org_id":569509,"modified_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/w2c-d9d-waz
     method: GET
+    id: 1
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:38.017604+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedJsonDescriptor":"eJx0kLFOwzAQhl/llAW6JEKMVWc6MCCK1MVSZNxr6uKczZ1dGlV9d+SkKSmIKdLl/+/7fIV0FPURFqCKwD76R1XMFSnyIVpPsNcHXbfJRRsc1lvrUGABkRPObzNBmw/dYL/I+rLhYEo86jY4lHKHzvkvz27Tb5/2fIrItXFahHQ79Jc5vs7xl6w07fj3vRnSdWDc2sF8+by+aI8aP8R+XFXwtkNoGDFaakCQD9YgbHBryebNpaJx+JRTyHBSBFBVsELaCOhrO485GFjprjeF+/7zip8JJc6AMSYmuY6D62ZwOis6T1R4SEOLIlnYeIraUpaLO4QkyHcC+SSlojE05Qx6EjlXLqd7mP+GSPAk+B9lfJH8QQTX3QDG31dG8R0AAP//k3vPfw==","host":"google.com","metadata":{"header":"value"},"method":"GET","port":50050,"service":"Hello","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","monitor_id":132772610,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/w2c-d9d-waz
     method: GET
+    id: 2
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:38.017604+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedJsonDescriptor":"eJx0kLFOwzAQhl/llAW6JEKMVWc6MCCK1MVSZNxr6uKczZ1dGlV9d+SkKSmIKdLl/+/7fIV0FPURFqCKwD76R1XMFSnyIVpPsNcHXbfJRRsc1lvrUGABkRPObzNBmw/dYL/I+rLhYEo86jY4lHKHzvkvz27Tb5/2fIrItXFahHQ79Jc5vs7xl6w07fj3vRnSdWDc2sF8+by+aI8aP8R+XFXwtkNoGDFaakCQD9YgbHBryebNpaJx+JRTyHBSBFBVsELaCOhrO485GFjprjeF+/7zip8JJc6AMSYmuY6D62ZwOis6T1R4SEOLIlnYeIraUpaLO4QkyHcC+SSlojE05Qx6EjlXLqd7mP+GSPAk+B9lfJH8QQTX3QDG31dG8R0AAP//k3vPfw==","host":"google.com","metadata":{"header":"value"},"method":"GET","port":50050,"service":"Hello","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","monitor_id":132772610,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/w2c-d9d-waz
     method: GET
+    id: 3
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:38.017604+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedJsonDescriptor":"eJx0kLFOwzAQhl/llAW6JEKMVWc6MCCK1MVSZNxr6uKczZ1dGlV9d+SkKSmIKdLl/+/7fIV0FPURFqCKwD76R1XMFSnyIVpPsNcHXbfJRRsc1lvrUGABkRPObzNBmw/dYL/I+rLhYEo86jY4lHKHzvkvz27Tb5/2fIrItXFahHQ79Jc5vs7xl6w07fj3vRnSdWDc2sF8+by+aI8aP8R+XFXwtkNoGDFaakCQD9YgbHBryebNpaJx+JRTyHBSBFBVsELaCOhrO485GFjprjeF+/7zip8JJc6AMSYmuY6D62ZwOis6T1R4SEOLIlnYeIraUpaLO4QkyHcC+SSlojE05Qx6EjlXLqd7mP+GSPAk+B9lfJH8QQTX3QDG31dG8R0AAP//k3vPfw==","host":"google.com","metadata":{"header":"value"},"method":"GET","port":50050,"service":"Hello","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","monitor_id":132772610,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -80,6 +83,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/w2c-d9d-waz
     method: GET
+    id: 4
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:38.017604+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedJsonDescriptor":"eJx0kLFOwzAQhl/llAW6JEKMVWc6MCCK1MVSZNxr6uKczZ1dGlV9d+SkKSmIKdLl/+/7fIV0FPURFqCKwD76R1XMFSnyIVpPsNcHXbfJRRsc1lvrUGABkRPObzNBmw/dYL/I+rLhYEo86jY4lHKHzvkvz27Tb5/2fIrItXFahHQ79Jc5vs7xl6w07fj3vRnSdWDc2sF8+by+aI8aP8R+XFXwtkNoGDFaakCQD9YgbHBryebNpaJx+JRTyHBSBFBVsELaCOhrO485GFjprjeF+/7zip8JJc6AMSYmuY6D62ZwOis6T1R4SEOLIlnYeIraUpaLO4QkyHcC+SSlojE05Qx6EjlXLqd7mP+GSPAk+B9lfJH8QQTX3QDG31dG8R0AAP//k3vPfw==","host":"google.com","metadata":{"header":"value"},"method":"GET","port":50050,"service":"Hello","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","monitor_id":132772610,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -88,7 +92,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -97,6 +101,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/w2c-d9d-waz
     method: GET
+    id: 5
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:38.017604+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedJsonDescriptor":"eJx0kLFOwzAQhl/llAW6JEKMVWc6MCCK1MVSZNxr6uKczZ1dGlV9d+SkKSmIKdLl/+/7fIV0FPURFqCKwD76R1XMFSnyIVpPsNcHXbfJRRsc1lvrUGABkRPObzNBmw/dYL/I+rLhYEo86jY4lHKHzvkvz27Tb5/2fIrItXFahHQ79Jc5vs7xl6w07fj3vRnSdWDc2sF8+by+aI8aP8R+XFXwtkNoGDFaakCQD9YgbHBryebNpaJx+JRTyHBSBFBVsELaCOhrO485GFjprjeF+/7zip8JJc6AMSYmuY6D62ZwOis6T1R4SEOLIlnYeIraUpaLO4QkyHcC+SSlojE05Qx6EjlXLqd7mP+GSPAk+B9lfJH8QQTX3QDG31dG8R0AAP//k3vPfw==","host":"google.com","metadata":{"header":"value"},"method":"GET","port":50050,"service":"Hello","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","monitor_id":132772610,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -105,7 +110,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -114,6 +119,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/w2c-d9d-waz
     method: GET
+    id: 6
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:38.017604+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"},{"operator":"is","target":"proto target","type":"grpcProto"},{"operator":"is","property":"property","target":"123","type":"grpcMetadata"}],"configVariables":[],"request":{"compressedJsonDescriptor":"eJx0kLFOwzAQhl/llAW6JEKMVWc6MCCK1MVSZNxr6uKczZ1dGlV9d+SkKSmIKdLl/+/7fIV0FPURFqCKwD76R1XMFSnyIVpPsNcHXbfJRRsc1lvrUGABkRPObzNBmw/dYL/I+rLhYEo86jY4lHKHzvkvz27Tb5/2fIrItXFahHQ79Jc5vs7xl6w07fj3vRnSdWDc2sF8+by+aI8aP8R+XFXwtkNoGDFaakCQD9YgbHBryebNpaJx+JRTyHBSBFBVsELaCOhrO485GFjprjeF+/7zip8JJc6AMSYmuY6D62ZwOis6T1R4SEOLIlnYeIraUpaLO4QkyHcC+SSlojE05Qx6EjlXLqd7mP+GSPAk+B9lfJH8QQTX3QDG31dG8R0AAP//k3vPfw==","host":"google.com","metadata":{"header":"value"},"method":"GET","port":50050,"service":"Hello","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","monitor_id":132772610,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -122,7 +128,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"}],"configVariables":[],"request":{"host":"google.com","metadata":{"header":"value-updated"},"method":"GET","port":50050,"service":"","timeout":60}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","options":{"min_location_failed":1,"tick_every":60},"status":"paused","subtype":"grpc","tags":["foo:bar","baz"],"type":"api"}
@@ -134,6 +140,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/w2c-d9d-waz
     method: PUT
+    id: 7
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:40.528581+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"}],"configVariables":[],"request":{"host":"google.com","metadata":{"header":"value-updated"},"method":"GET","port":50050,"service":"","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","created_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":132772610,"org_id":569509,"modified_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"overall_state_modified":"2023-10-09T12:55:40.574825+00:00"}
@@ -142,7 +149,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -151,6 +158,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/w2c-d9d-waz
     method: GET
+    id: 8
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:40.528581+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"}],"configVariables":[],"request":{"host":"google.com","metadata":{"header":"value-updated"},"method":"GET","port":50050,"service":"","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","monitor_id":132772610,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -159,7 +167,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -168,6 +176,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/w2c-d9d-waz
     method: GET
+    id: 9
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:40.528581+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"}],"configVariables":[],"request":{"host":"google.com","metadata":{"header":"value-updated"},"method":"GET","port":50050,"service":"","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","monitor_id":132772610,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -176,7 +185,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -185,6 +194,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/api/w2c-d9d-waz
     method: GET
+    id: 10
   response:
     body: |
       {"public_id":"w2c-d9d-waz","name":"tf-TestAccDatadogSyntheticsGRPCTest_Basic-local-1696856135","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-10-09T12:55:38.017604+00:00","modified_at":"2023-10-09T12:55:40.528581+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":1,"type":"grpcHealthcheckStatus"}],"configVariables":[],"request":{"host":"google.com","metadata":{"header":"value-updated"},"method":"GET","port":50050,"service":"","timeout":60}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"grpc","monitor_id":132772610,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
@@ -193,7 +203,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"public_ids":["w2c-d9d-waz"]}
@@ -205,6 +215,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
     method: POST
+    id: 11
   response:
     body: |
       {"deleted_tests":[{"public_id":"w2c-d9d-waz","deleted_at":"2023-10-09T12:55:42.044786+00:00"}]}
@@ -213,7 +224,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -222,6 +233,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/synthetics/tests/w2c-d9d-waz
     method: GET
+    id: 12
   response:
     body: '{"errors":["Synthetics test not found"]}'
     headers:
@@ -229,4 +241,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"
