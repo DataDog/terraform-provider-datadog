@@ -140,10 +140,10 @@ def get_terraform_primary_id(operations):
     primary_id = {}
     if operations.get(UPDATE_OPERATION) and operations[UPDATE_OPERATION]["path"].endswith("}"):
         primary_id["name"] = operations[UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
-        primary_id["schema"] = update_params.pop(primary_id)
+        primary_id["schema"] = update_params.pop(primary_id["name"])
     elif operations.get(GET_OPERATION) and operations[GET_OPERATION]["path"].endswith("}"):
         primary_id["name"] = operations[GET_OPERATION]["path"].split("/")[-1][1:-1]
-        primary_id["schema"] = get_params.pop(primary_id)
+        primary_id["schema"] = get_params.pop(primary_id["name"])
     
     return primary_id
 
