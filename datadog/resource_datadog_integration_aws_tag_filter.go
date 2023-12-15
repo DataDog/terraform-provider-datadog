@@ -29,6 +29,8 @@ func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 					Description: "Your AWS Account ID without dashes.",
 					Type:        schema.TypeString,
 					Required:    true,
+					// TODO: When backend is ready, add validation back.
+					// ValidateDiagFunc: validators.ValidateAWSAccountID,
 				},
 				"namespace": {
 					Description:      "The namespace associated with the tag filter entry.",
@@ -76,7 +78,11 @@ func resourceDatadogIntegrationAwsTagFilterCreate(ctx context.Context, d *schema
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", req.GetAccountId(), req.GetNamespace()))
-	return resourceDatadogIntegrationAwsTagFilterRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsTagFilterRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration tag filter resource for account id `%s` with namespace `%s` not found after creation", req.GetAccountId(), req.GetNamespace()))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsTagFilterUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -91,7 +97,11 @@ func resourceDatadogIntegrationAwsTagFilterUpdate(ctx context.Context, d *schema
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating aws tag filter")
 	}
 
-	return resourceDatadogIntegrationAwsTagFilterRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsTagFilterRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration tag filter resource for account id `%s` with namespace `%s` not found after creation", req.GetAccountId(), req.GetNamespace()))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsTagFilterRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
