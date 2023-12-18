@@ -32,14 +32,11 @@ func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogIntegrationAwsEventBridge(uniq string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`resource "datadog_integration_aws_event_bridge" "foo" {
-    body {
     account_id = "123456789012"
-    create_event_bus = True
+    create_event_bus = true
     event_generator_name = "app-alerts"
-    region = "us-east-1"
-    }
+    region = %s
 }`, uniq)
 }
 
