@@ -94,7 +94,7 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
+	r.updateStateAfterRead(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -122,7 +122,7 @@ func (r *integrationAwsEventBridgeResource) Create(ctx context.Context, request 
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateStateAfterWrite(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -139,7 +139,7 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 	}
 	body := datadogV1.NewAWSEventBridgeDeleteRequestWithDefaults()
 
-	_, httpResp, err := r.Api.DeleteAWSEventBridgeSource(r.Auth, body)
+	_, httpResp, err := r.Api.DeleteAWSEventBridgeSource(r.Auth, *body)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -148,46 +148,34 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 		return
 	}
 }
+func (r *integrationAwsEventBridgeResource) updateStateAfterRead(ctx context.Context, state *integrationAwsEventBridgeModel, resp *datadogV1.AWSEventBridgeListResponse) {
 
-func (r *integrationAwsEventBridgeResource) updateState(ctx context.Context, state *integrationAwsEventBridgeModel, resp *datadogV1.AWSEventBridgeListResponse) {
-	state.ID = types.StringValue(resp.GetUpdateMe())
+	/*
+		if isInstalled, ok := resp.GetIsInstalledOk(); ok {
+			state.IsInstalled = types.BoolValue(*isInstalled)
+		}
+	*/
+}
 
-	if isInstalled, ok := resp.GetIsInstalledOk(); ok {
-		state.IsInstalled = types.BoolValue(*isInstalled)
+func (r *integrationAwsEventBridgeResource) updateStateAfterWrite(ctx context.Context, state *integrationAwsEventBridgeModel, resp *datadogV1.AWSEventBridgeCreateResponse) {
+
+	if createEventBus, ok := resp.GetHasBusOk(); ok {
+		state.CreateEventBus = types.BoolValue(*createEventBus)
 	}
 
-	if accounts, ok := resp.GetAccountsOk(); ok && len(*accounts) > 0 {
-		state.Accounts = []*accountsModel{}
-		for _, accountsDd := range *accounts {
-			accountsTfItem := accountsModel{}
-			if accountId, ok := accountsDd.GetAccountIdOk(); ok {
-				accountsTfItem.AccountId = types.StringValue(*accountId)
-			}
-			if eventHubs, ok := accountsDd.GetEventHubsOk(); ok && len(*eventHubs) > 0 {
-				accountsTfItem.EventHubs = []*eventHubsModel{}
-				for _, eventHubsDd := range *eventHubs {
-					eventHubsTfItem := eventHubsModel{}
-					if name, ok := eventHubsDd.GetNameOk(); ok {
-						eventHubsTfItem.Name = types.StringValue(*name)
-					}
-					if region, ok := eventHubsDd.GetRegionOk(); ok {
-						eventHubsTfItem.Region = types.StringValue(*region)
-					}
+	if eventSourceName, ok := resp.GetEventSourceNameOk(); ok {
+		// Use EventSourceName as ID
+		state.ID = types.StringValue(*eventSourceName)
+	}
 
-					accountsTfItem.EventHubs = append(accountsTfItem.EventHubs, &eventHubsTfItem)
-				}
-			}
-			if tags, ok := accountsDd.GetTagsOk(); ok && len(*tags) > 0 {
-				accountsTfItem.Tags, _ = types.ListValueFrom(ctx, types.StringType, *tags)
-			}
-
-			state.Accounts = append(state.Accounts, &accountsTfItem)
-		}
+	if region, ok := resp.GetRegionOk(); ok {
+		state.Region = types.StringValue(*region)
 	}
 }
 
 func (r *integrationAwsEventBridgeResource) buildIntegrationAwsEventBridgeRequestBody(ctx context.Context, state *integrationAwsEventBridgeModel) (*datadogV1.AWSEventBridgeCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
+	req := datadogV1.NewAWSEventBridgeCreateRequestWithDefaults()
 
 	if !state.AccountId.IsNull() {
 		req.SetAccountId(state.AccountId.ValueString())
@@ -195,11 +183,11 @@ func (r *integrationAwsEventBridgeResource) buildIntegrationAwsEventBridgeReques
 	if !state.CreateEventBus.IsNull() {
 		req.SetCreateEventBus(state.CreateEventBus.ValueBool())
 	}
-	if !state.EventGeneratorName.IsNull() {
-		req.SetEventGeneratorName(state.EventGeneratorName.ValueString())
-	}
 	if !state.Region.IsNull() {
 		req.SetRegion(state.Region.ValueString())
+	}
+	if !state.EventGeneratorName.IsNull() {
+		req.SetEventGeneratorName(state.EventGeneratorName.ValueString())
 	}
 
 	return req, diags
