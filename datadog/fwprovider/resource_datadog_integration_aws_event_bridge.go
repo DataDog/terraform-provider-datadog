@@ -84,6 +84,7 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Event Bridge Source not found"))
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error listing AWS Event Bridge Sources"))
@@ -137,17 +138,29 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 	if response.Diagnostics.HasError() {
 		return
 	}
-	body := datadogV1.NewAWSEventBridgeDeleteRequestWithDefaults()
+	req := datadogV1.NewAWSEventBridgeDeleteRequestWithDefaults()
 
-	_, httpResp, err := r.Api.DeleteAWSEventBridgeSource(r.Auth, *body)
+	if !state.AccountId.IsNull() {
+		req.SetAccountId(state.AccountId.ValueString())
+	}
+	if !state.Region.IsNull() {
+		req.SetRegion(state.Region.ValueString())
+	}
+	if !state.EventGeneratorName.IsNull() {
+		req.SetEventGeneratorName(state.EventGeneratorName.ValueString())
+	}
+
+	_, httpResp, err := r.Api.DeleteAWSEventBridgeSource(r.Auth, *req)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "AWS Event Bridge Source not found"))
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error deleting AWS Event Bridge Source"))
 		return
 	}
 }
+
 func (r *integrationAwsEventBridgeResource) updateStateAfterRead(ctx context.Context, state *integrationAwsEventBridgeModel, resp *datadogV1.AWSEventBridgeListResponse) {
 
 	/*
