@@ -31,7 +31,7 @@ type datadogUsersDataSourceModel struct {
 
 	// Results
 	ID    types.String `tfsdk:"id"`
-	Users []UserModel  `tfsdk:"users"`
+	Users []*UserModel `tfsdk:"users"`
 }
 
 type datadogUsersDataSource struct {
@@ -125,7 +125,7 @@ func (d *datadogUsersDataSource) Read(ctx context.Context, req datasource.ReadRe
 }
 
 func (d *datadogUsersDataSource) updateState(state *datadogUsersDataSourceModel, usersData *[]datadogV2.User) {
-	var users []UserModel
+	var users []*UserModel
 	for _, user := range *usersData {
 		u := UserModel{
 			ID:    types.StringValue(user.GetId()),
@@ -133,7 +133,7 @@ func (d *datadogUsersDataSource) updateState(state *datadogUsersDataSourceModel,
 			Name:  types.StringValue(user.Attributes.GetName()),
 		}
 
-		users = append(users, u)
+		users = append(users, &u)
 	}
 
 	hashingData := fmt.Sprintf("%s:%s", state.Filter, state.FilterStatus)
