@@ -147,7 +147,8 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 		req.SetRegion(state.Region.ValueString())
 	}
 	if !state.EventGeneratorName.IsNull() {
-		req.SetEventGeneratorName(state.EventGeneratorName.ValueString())
+		// EventGeneratorName in DeleteRequest is the constructed full name, stored as ID in state
+		req.SetEventGeneratorName(state.ID.ValueString())
 	}
 
 	_, httpResp, err := r.Api.DeleteAWSEventBridgeSource(r.Auth, *req)
