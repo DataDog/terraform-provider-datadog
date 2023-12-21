@@ -30,7 +30,7 @@ data "datadog_users" "test" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `users` (List of Object) List of users. (see [below for nested schema](#nestedatt--users))
+- `users` (List of Object) List of users (see [below for nested schema](#nestedatt--users)).
 
 <a id="nestedatt--users"></a>
 ### Nested Schema for `users`
