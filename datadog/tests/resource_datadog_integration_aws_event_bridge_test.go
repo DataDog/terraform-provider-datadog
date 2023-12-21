@@ -15,6 +15,7 @@ import (
 func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
@@ -22,7 +23,7 @@ func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogIntegrationAwsEventBridgeDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogIntegrationAwsEventBridge(uniq),
+				Config: testAccCheckDatadogIntegrationAwsEventBridge(accountID, uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationAwsEventBridgeExists(providers.frameworkProvider),
 				),
@@ -31,7 +32,7 @@ func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogIntegrationAwsEventBridge(uniq string) string {
+func testAccCheckDatadogIntegrationAwsEventBridge(accountID string, uniq string) string {
 	return fmt.Sprintf(`
 	resource "datadog_integration_aws" "account" {
 		account_id                       = "%s"
@@ -40,11 +41,10 @@ func testAccCheckDatadogIntegrationAwsEventBridge(uniq string) string {
 
 	resource "datadog_integration_aws_event_bridge" "foo" {
 		account_id = "%s"
-		create_event_bus = true
-		event_generator_name = "test"
+		event_generator_name = "%s"
 		region = "us-east-1"
 		depends_on = [datadog_integration_aws.account]
-	}`, uniq, uniq)
+	}`, accountID, accountID, uniq)
 }
 
 func testAccCheckDatadogIntegrationAwsEventBridgeDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
