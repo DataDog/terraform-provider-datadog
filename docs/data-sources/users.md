@@ -3,7 +3,7 @@
 page_title: "datadog_users Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about existing users to use it in an other resources.
+  Use this data source to retrieve information about existing users for use in other resources.
 ---
 
 # datadog_users (Data Source)
