@@ -57,6 +57,7 @@ var Resources = []func() resource.Resource{
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
+	NewApplicationKeyDataSource,
 	NewDatadogDashboardListDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
