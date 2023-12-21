@@ -25,7 +25,7 @@ data "datadog_users" "test" {
 ### Optional
 
 - `filter` (String) Filter all users by the given string.
-- `filter_status` (String) Filter on status attribute. Comma separated list, with possible values Active, Pending, and Disabled
+- `filter_status` (String) Filter on status attribute. Comma-separated list with possible values of Active, Pending, and Disabled.
 
 ### Read-Only
 
