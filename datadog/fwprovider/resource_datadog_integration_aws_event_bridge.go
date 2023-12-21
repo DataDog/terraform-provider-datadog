@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -18,6 +19,8 @@ var (
 	_ resource.ResourceWithConfigure   = &integrationAwsEventBridgeResource{}
 	_ resource.ResourceWithImportState = &integrationAwsEventBridgeResource{}
 )
+
+var integrationAWSEventBridgeMutex = sync.Mutex{}
 
 type integrationAwsEventBridgeResource struct {
 	Api  *datadogV1.AWSIntegrationApi
@@ -140,6 +143,9 @@ func (r *integrationAwsEventBridgeResource) Create(ctx context.Context, request 
 		return
 	}
 
+	integrationAWSEventBridgeMutex.Lock()
+	defer integrationAWSEventBridgeMutex.Unlock()
+
 	body, diags := r.buildIntegrationAwsEventBridgeRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -171,6 +177,10 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	integrationAWSEventBridgeMutex.Lock()
+	defer integrationAWSEventBridgeMutex.Unlock()
+
 	req := datadogV1.NewAWSEventBridgeDeleteRequestWithDefaults()
 
 	if !state.AccountId.IsNull() {
