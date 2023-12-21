@@ -64,7 +64,7 @@ func (d *datadogUsersDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"filter_status": schema.StringAttribute{
 				Optional:    true,
-				Description: "ilter on status attribute. Comma separated list, with possible values Active, Pending, and Disabled",
+				Description: "Filter on status attribute. Comma separated list, with possible values Active, Pending, and Disabled",
 			},
 			// Not sure how the status filtering would be defined here
 			// computer values

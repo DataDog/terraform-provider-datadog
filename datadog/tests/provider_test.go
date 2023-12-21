@@ -84,7 +84,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_synthetics_test_test":                         "synthetics",
 	"tests/data_source_datadog_team_memberships_test":                        "team",
 	"tests/data_source_datadog_team_test":                                    "team",
-	"tests/data_source_datadog_user_test":                                    "user",
+	"tests/data_source_datadog_user_test":                                    "users",
 	"tests/data_source_datadog_users_test":                                   "users",
 	"tests/import_datadog_downtime_test":                                     "downtimes",
 	"tests/import_datadog_integration_pagerduty_test":                        "integration-pagerduty",
