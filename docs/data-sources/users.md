@@ -8,7 +8,7 @@ description: |-
 
 # datadog_users (Data Source)
 
-Use this data source to retrieve information about existing users to use it in an other resources.
+Use this data source to retrieve information about existing users for use in other resources.
 
 ## Example Usage
 
