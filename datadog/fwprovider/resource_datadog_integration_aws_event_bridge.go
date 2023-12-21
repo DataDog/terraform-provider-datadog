@@ -8,6 +8,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -47,23 +48,25 @@ func (r *integrationAwsEventBridgeResource) Metadata(_ context.Context, request 
 
 func (r *integrationAwsEventBridgeResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog IntegrationAwsEventBridge resource. This can be used to create and manage Datadog integration_aws_event_bridge.",
+		Description: "Provides a datadog_integration_aws_event_bridge resource. This can be used to create and manage Event Sources for each Datadog integrated AWS account.",
 		Attributes: map[string]schema.Attribute{
 			"account_id": schema.StringAttribute{
-				Optional:    true,
 				Description: "Your AWS Account ID without dashes.",
+				Required:    true,
 			},
 			"create_event_bus": schema.BoolAttribute{
-				Optional:    true,
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
 				Description: "True if Datadog should create the event bus in addition to the event source. Requires the `events:CreateEventBus` permission.",
+				Optional:    true,
 			},
 			"event_generator_name": schema.StringAttribute{
-				Optional:    true,
 				Description: "The given part of the event source name, which is then combined with an assigned suffix to form the full name.",
+				Required:    true,
 			},
 			"region": schema.StringAttribute{
-				Optional:    true,
 				Description: "The event source's [AWS region](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints).",
+				Required:    true,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -84,7 +87,6 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Event Bridge Source not found"))
 			return
 		}
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error listing AWS Event Bridge Sources"))
@@ -95,8 +97,40 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 		return
 	}
 
-	r.updateStateAfterRead(ctx, &state, &resp)
+	id := state.ID.ValueString()
 
+	found := false
+	matchedEventHub := integrationAwsEventBridgeModel{}
+
+	if accounts, ok := resp.GetAccountsOk(); ok && len(*accounts) > 0 {
+		for _, account := range *accounts {
+			response.Diagnostics.AddWarning("account", account.GetAccountId())
+			if found {
+				break
+			}
+			if eventhubs, ok := account.GetEventHubsOk(); ok && len(*eventhubs) > 0 {
+				for _, eventhub := range *eventhubs {
+					response.Diagnostics.AddWarning("name", *eventhub.Name)
+					if *eventhub.Name == id {
+						matchedEventHub.ID = types.StringValue(*eventhub.Name)
+						matchedEventHub.AccountId = types.StringValue(account.GetAccountId())
+						matchedEventHub.Region = types.StringValue(eventhub.GetRegion())
+						matchedEventHub.EventGeneratorName = types.StringValue(eventhub.GetName())
+						found = true
+						break
+					}
+				}
+			}
+		}
+	}
+
+	if !found {
+		response.State.RemoveResource(ctx)
+		response.Diagnostics.AddError("Import error", "No matching Event Source found")
+		return
+	}
+
+	r.updateStateAfterRead(ctx, &state, &matchedEventHub)
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -146,7 +180,7 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 	if !state.Region.IsNull() {
 		req.SetRegion(state.Region.ValueString())
 	}
-	if !state.EventGeneratorName.IsNull() {
+	if !state.ID.IsNull() {
 		// EventGeneratorName in DeleteRequest is the constructed full name, stored as ID in state
 		req.SetEventGeneratorName(state.ID.ValueString())
 	}
@@ -162,13 +196,11 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 	}
 }
 
-func (r *integrationAwsEventBridgeResource) updateStateAfterRead(ctx context.Context, state *integrationAwsEventBridgeModel, resp *datadogV1.AWSEventBridgeListResponse) {
-
-	/*
-		if isInstalled, ok := resp.GetIsInstalledOk(); ok {
-			state.IsInstalled = types.BoolValue(*isInstalled)
-		}
-	*/
+func (r *integrationAwsEventBridgeResource) updateStateAfterRead(ctx context.Context, state *integrationAwsEventBridgeModel, resp *integrationAwsEventBridgeModel) {
+	state.ID = resp.ID
+	state.AccountId = resp.AccountId
+	state.CreateEventBus = types.BoolValue(false)
+	state.Region = resp.Region
 }
 
 func (r *integrationAwsEventBridgeResource) updateStateAfterWrite(ctx context.Context, state *integrationAwsEventBridgeModel, resp *datadogV1.AWSEventBridgeCreateResponse) {

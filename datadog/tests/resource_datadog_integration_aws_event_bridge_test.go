@@ -32,12 +32,19 @@ func TestAccIntegrationAwsEventBridgeBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogIntegrationAwsEventBridge(uniq string) string {
-	return fmt.Sprintf(`resource "datadog_integration_aws_event_bridge" "foo" {
-    account_id = "123456789012"
-    create_event_bus = true
-    event_generator_name = "app-alerts"
-    region = %s
-}`, uniq)
+	return fmt.Sprintf(`
+	resource "datadog_integration_aws" "account" {
+		account_id                       = "%s"
+		role_name                        = "testacc-datadog-integration-role"
+	  }
+
+	resource "datadog_integration_aws_event_bridge" "foo" {
+		account_id = "%s"
+		create_event_bus = true
+		event_generator_name = "test"
+		region = "us-east-1"
+		depends_on = [datadog_integration_aws.account]
+	}`, uniq, uniq)
 }
 
 func testAccCheckDatadogIntegrationAwsEventBridgeDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
