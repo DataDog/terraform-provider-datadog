@@ -104,13 +104,11 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 
 	if accounts, ok := resp.GetAccountsOk(); ok && len(*accounts) > 0 {
 		for _, account := range *accounts {
-			response.Diagnostics.AddWarning("account", account.GetAccountId())
 			if found {
 				break
 			}
 			if eventhubs, ok := account.GetEventHubsOk(); ok && len(*eventhubs) > 0 {
 				for _, eventhub := range *eventhubs {
-					response.Diagnostics.AddWarning("name", *eventhub.Name)
 					if *eventhub.Name == id {
 						matchedEventHub.ID = types.StringValue(*eventhub.Name)
 						matchedEventHub.AccountId = types.StringValue(account.GetAccountId())
@@ -164,6 +162,7 @@ func (r *integrationAwsEventBridgeResource) Create(ctx context.Context, request 
 }
 
 func (r *integrationAwsEventBridgeResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	response.Diagnostics.AddError("Update not supported", "AWS Event Bridge Sources cannot be updated")
 }
 
 func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
