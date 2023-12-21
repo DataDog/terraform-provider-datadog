@@ -55,7 +55,7 @@ func (d *datadogUsersDataSource) Metadata(_ context.Context, req datasource.Meta
 
 func (d *datadogUsersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about existing users to use it in an other resources.",
+		Description: "Use this data source to retrieve information about existing users for use in other resources.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"filter": schema.StringAttribute{
@@ -64,13 +64,13 @@ func (d *datadogUsersDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"filter_status": schema.StringAttribute{
 				Optional:    true,
-				Description: "Filter on status attribute. Comma separated list, with possible values Active, Pending, and Disabled",
+				Description: "Filter on status attribute. Comma-separated list with possible values of Active, Pending, and Disabled.",
 			},
 			// Not sure how the status filtering would be defined here
 			// computer values
 			"users": schema.ListAttribute{
 				Computed:    true,
-				Description: "List of users.",
+				Description: "List of users",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
 						"id":    types.StringType,
