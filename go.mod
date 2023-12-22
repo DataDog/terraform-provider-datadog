@@ -97,3 +97,5 @@ require (
 )
 
 go 1.20
+
+replace github.com/DataDog/datadog-api-client-go/v2 => /home/therve/Projects/datadog-api-client-go

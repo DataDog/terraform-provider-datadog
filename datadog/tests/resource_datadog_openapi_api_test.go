@@ -1,4 +1,3 @@
-
 package test
 
 import (
@@ -9,8 +8,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -21,14 +20,12 @@ func TestAccOpenapiApiBasic(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:      		  testAccCheckDatadogOpenapiApiDestroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckDatadogOpenapiApiDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogOpenapiApi(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogOpenapiApiExists(providers.frameworkProvider),
-                        
-                        
 				),
 			},
 		},
@@ -36,7 +33,7 @@ func TestAccOpenapiApiBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogOpenapiApi(uniq string) string {
-// Update me to make use of the unique value
+	// Update me to make use of the unique value
 	return fmt.Sprintf(`resource "datadog_openapi_api" "foo" {
     spec_file = "UPDATE ME"
     body = "UPDATE ME"
@@ -58,12 +55,12 @@ func testAccCheckDatadogOpenapiApiDestroy(accProvider *fwprovider.FrameworkProvi
 func OpenapiApiDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-            if r.Type != "resource_datadog_openapi_api" {
-                continue
-            }
-                id := r.Primary.ID
+			if r.Type != "resource_datadog_openapi_api" {
+				continue
+			}
+			id := r.Primary.ID
 
-	        _, httpResp, err := apiInstances.GetAPIManagementApiV2().GetOpenAPI(auth, id,)
+			_, httpResp, err := apiInstances.GetAPIManagementApiV2().GetOpenAPI(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -91,12 +88,12 @@ func testAccCheckDatadogOpenapiApiExists(accProvider *fwprovider.FrameworkProvid
 
 func openapiApiExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-        if r.Type != "resource_datadog_openapi_api" {
-            continue
-        }
-            id := r.Primary.ID
+		if r.Type != "resource_datadog_openapi_api" {
+			continue
+		}
+		id := r.Primary.ID
 
-        _, httpResp, err := apiInstances.GetAPIManagementApiV2().GetOpenAPI(auth, id,)
+		_, httpResp, err := apiInstances.GetAPIManagementApiV2().GetOpenAPI(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving OpenapiApi")
 		}

@@ -32,6 +32,7 @@ var (
 )
 
 var Resources = []func() resource.Resource{
+	NewOpenapiApiResource,
 	NewAPIKeyResource,
 	NewApplicationKeyResource,
 	NewApmRetentionFilterResource,
