@@ -3,7 +3,7 @@ version: 1
 interactions:
 - request:
     body: |
-      {"account_id":"569948102559","account_specific_namespace_rules":{},"cspm_resource_collection_enabled":false,"excluded_regions":[],"filter_tags":[],"host_tags":[],"metrics_collection_enabled":true,"resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role"}
+      {"account_id":"529951579857","account_specific_namespace_rules":{},"cspm_resource_collection_enabled":false,"excluded_regions":[],"filter_tags":[],"host_tags":[],"metrics_collection_enabled":true,"resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role"}
     form: {}
     headers:
       Accept:
@@ -14,7 +14,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"external_id":"c9ca7ac0443b46ecbe381ad684878f6b"}
+      {"external_id":"ce12a5a342a244ebbfdfbd889c0cf00d"}
     headers:
       Content-Type:
       - application/json
@@ -31,7 +31,7 @@ interactions:
     method: GET
   response:
     body: |
-      {"accounts":[{"account_id":"569948102559","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"601427279990","role_name":"datadog-aws-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"lambda":false,"vpn":false,"iot":false,"mwaa":false,"dynamodb":false,"ebs":false,"dms":false,"route53resolver":false,"firehose":false,"sagemakerendpoints":false,"certificatemanager":false,"ses":false,"kinesis_analytics":false,"ecr":false,"elasticbeanstalk":false,"workspaces":false,"inspector":false,"gamelift":false,"polly":false,"dynamodbaccelerator":false,"translate":false,"directconnect":false,"kinesis":false,"documentdb":false,"bedrock":false,"textract":false,"codewhisperer":false,"sagemakerworkteam":false,"privatelinkservices":false,"cloudfront":false,"backup":false,"rdsproxy":false,"privatelinkendpoints":false,"sagemakertransformjobs":false,"lex":false,"trusted_advisor":false,"shield":false,"ml":false,"sagemaker":false,"swf":false,"athena":false,"redshift":false,"wafv2":false,"efs":false,"sagemakerprocessingjobs":false,"connect":false,"ec2spot":false,"elb":false,"cognito":false,"sagemakertrainingjobs":false,"glue":false,"elastictranscoder":false,"mediaconvert":false,"mq":false,"route53":false,"network_elb":false,"sagemakerlabelingjobs":false,"ecs":false,"budgeting":false,"service_quotas":false,"s3":false,"apprunner":false,"cloudwatch_events":false,"codebuild":false,"mediapackage":false,"ec2":false,"appsync":false,"fsx":false,"medialive":false,"waf":false,"usage":false,"application_elb":false,"cloudhsm":false,"mediaconnect":false,"msk":false,"sns":false,"neptune":false,"storage_gateway":false,"transitgateway":false,"billing":false,"mediatailor":false,"auto_scaling":false,"networkfirewall":false,"opsworks":false,"appstream":false,"api_gateway":false,"nat_gateway":false,"elasticinference":false,"es":false,"xray":false,"ec2api":false,"rekognition":false,"elasticache":false,"cloudwatch_logs":false,"sagemakermodelbuildingpipeline":false,"keyspaces":false,"s3storagelens":false,"cloudsearch":false,"mediastore":false,"kms":false,"rds":false,"step_functions":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 601427279990\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
+      {"accounts":[{"account_id":"601427279990","role_name":"datadog-aws-integration-role-katie","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"route53resolver":false,"cloudwatch_events":false,"elastictranscoder":false,"billing":false,"workspaces":false,"sagemakerendpoints":false,"ec2":false,"codewhisperer":false,"elasticache":false,"inspector":false,"sagemakermodelbuildingpipeline":false,"sagemakertrainingjobs":false,"redshift":false,"transitgateway":false,"textract":false,"privatelinkendpoints":false,"vpn":false,"service_quotas":false,"nat_gateway":false,"shield":false,"lex":false,"cloudfront":false,"xray":false,"budgeting":false,"msk":false,"mediatailor":false,"storage_gateway":false,"rds":false,"ml":false,"rekognition":false,"application_elb":false,"es":false,"mwaa":false,"dynamodb":false,"step_functions":false,"elb":false,"network_elb":false,"rdsproxy":false,"glue":false,"cloudwatch_logs":false,"swf":false,"opsworks":false,"s3":false,"kinesis_analytics":false,"sagemakerlabelingjobs":false,"s3storagelens":false,"mediaconnect":false,"mediaconvert":false,"athena":false,"cloudhsm":false,"trusted_advisor":false,"connect":false,"keyspaces":false,"translate":false,"gamelift":false,"mq":false,"neptune":false,"certificatemanager":false,"directconnect":false,"cognito":false,"waf":false,"ec2api":false,"ec2spot":false,"appsync":false,"privatelinkservices":false,"fsx":false,"mediastore":false,"ecs":false,"backup":false,"sns":false,"cloudsearch":false,"ecr":false,"auto_scaling":false,"bedrock":false,"route53":false,"ebs":false,"api_gateway":false,"mediapackage":false,"sagemakerprocessingjobs":false,"firehose":false,"iot":false,"medialive":false,"elasticbeanstalk":false,"lambda":false,"appstream":false,"kms":false,"dynamodbaccelerator":false,"efs":false,"polly":false,"dms":false,"ses":false,"sagemakerworkteam":false,"wafv2":false,"sagemakertransformjobs":false,"sagemaker":false,"codebuild":false,"elasticinference":false,"kinesis":false,"documentdb":false,"networkfirewall":false,"usage":false,"apprunner":false},"excluded_regions":["us-east-2","us-west-1","us-west-2","eu-west-1","eu-central-1","ap-southeast-1","ap-southeast-2","ap-northeast-1","ap-northeast-2","ap-northeast-3","sa-east-1","ap-south-1","ca-central-1","eu-west-2","eu-west-3","eu-north-1","af-south-1","ap-east-1","ap-south-2","ap-southeast-3","ap-southeast-4","eu-central-2","eu-south-1","eu-south-2","il-central-1","me-central-1","me-south-1"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 601427279990\nRegions affected: every region\nError was last seen 13m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"529951579857","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
     headers:
       Content-Type:
       - application/json
@@ -40,7 +40,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"account_id":"569948102559","create_event_bus":false,"event_generator_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1703197666","region":"us-east-1"}
+      {"account_id":"529951579857","create_event_bus":false,"event_generator_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1703271009","region":"us-east-1"}
     form: {}
     headers:
       Accept:
@@ -51,7 +51,7 @@ interactions:
     method: POST
   response:
     body: |
-      {"event_source_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1703197666-qfx7ahy3","status":"created","region":"us-east-1","has_bus":false}
+      {"status":"created","region":"us-east-1","event_source_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1703271009-mptaqa41","has_bus":false}
     headers:
       Content-Type:
       - application/json
@@ -68,7 +68,7 @@ interactions:
     method: GET
   response:
     body: |
-      {"accounts":[{"account_id":"569948102559","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"601427279990","role_name":"datadog-aws-integration-role","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"codebuild":false,"privatelinkendpoints":false,"cloudwatch_logs":false,"shield":false,"dynamodbaccelerator":false,"codewhisperer":false,"privatelinkservices":false,"backup":false,"sagemakerprocessingjobs":false,"sagemakerendpoints":false,"msk":false,"inspector":false,"polly":false,"mediastore":false,"dynamodb":false,"documentdb":false,"lex":false,"ec2api":false,"appsync":false,"sagemakerworkteam":false,"nat_gateway":false,"bedrock":false,"glue":false,"efs":false,"workspaces":false,"lambda":false,"neptune":false,"networkfirewall":false,"cloudfront":false,"sagemakerlabelingjobs":false,"ecs":false,"step_functions":false,"connect":false,"kms":false,"sagemakertransformjobs":false,"dms":false,"rdsproxy":false,"mediaconnect":false,"keyspaces":false,"cloudwatch_events":false,"network_elb":false,"redshift":false,"kinesis":false,"directconnect":false,"sagemakermodelbuildingpipeline":false,"opsworks":false,"s3":false,"billing":false,"budgeting":false,"mediatailor":false,"xray":false,"usage":false,"apprunner":false,"textract":false,"cloudsearch":false,"sagemakertrainingjobs":false,"api_gateway":false,"service_quotas":false,"rds":false,"elasticache":false,"sagemaker":false,"elb":false,"storage_gateway":false,"cognito":false,"gamelift":false,"application_elb":false,"s3storagelens":false,"firehose":false,"ecr":false,"iot":false,"kinesis_analytics":false,"mwaa":false,"elasticbeanstalk":false,"sns":false,"ml":false,"mediapackage":false,"route53":false,"ec2spot":false,"mq":false,"cloudhsm":false,"medialive":false,"elasticinference":false,"vpn":false,"waf":false,"es":false,"auto_scaling":false,"certificatemanager":false,"rekognition":false,"wafv2":false,"mediaconvert":false,"swf":false,"elastictranscoder":false,"translate":false,"fsx":false,"ses":false,"ebs":false,"transitgateway":false,"ec2":false,"route53resolver":false,"appstream":false,"trusted_advisor":false,"athena":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 601427279990\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
+      {"accounts":[{"account_id":"601427279990","role_name":"datadog-aws-integration-role-katie","filter_tags":["key:value"],"host_tags":["key:value","key2:value2"],"account_specific_namespace_rules":{"lex":false,"s3storagelens":false,"api_gateway":false,"mediaconvert":false,"appstream":false,"codebuild":false,"elb":false,"backup":false,"auto_scaling":false,"gamelift":false,"sagemakerendpoints":false,"documentdb":false,"translate":false,"cloudsearch":false,"cognito":false,"sagemakerprocessingjobs":false,"cloudhsm":false,"codewhisperer":false,"iot":false,"athena":false,"cloudwatch_logs":false,"ses":false,"billing":false,"networkfirewall":false,"rdsproxy":false,"storage_gateway":false,"s3":false,"xray":false,"lambda":false,"efs":false,"ml":false,"ec2api":false,"workspaces":false,"privatelinkservices":false,"ecr":false,"sns":false,"cloudwatch_events":false,"transitgateway":false,"sagemaker":false,"appsync":false,"step_functions":false,"keyspaces":false,"rds":false,"sagemakerlabelingjobs":false,"cloudfront":false,"elasticinference":false,"connect":false,"kms":false,"elasticache":false,"nat_gateway":false,"mwaa":false,"certificatemanager":false,"ec2":false,"privatelinkendpoints":false,"mq":false,"application_elb":false,"fsx":false,"mediastore":false,"rekognition":false,"glue":false,"route53resolver":false,"sagemakertransformjobs":false,"redshift":false,"neptune":false,"medialive":false,"msk":false,"ebs":false,"firehose":false,"waf":false,"mediatailor":false,"dynamodb":false,"sagemakermodelbuildingpipeline":false,"opsworks":false,"elasticbeanstalk":false,"bedrock":false,"network_elb":false,"trusted_advisor":false,"ec2spot":false,"textract":false,"sagemakerworkteam":false,"route53":false,"directconnect":false,"apprunner":false,"inspector":false,"wafv2":false,"es":false,"vpn":false,"mediapackage":false,"budgeting":false,"kinesis":false,"service_quotas":false,"kinesis_analytics":false,"elastictranscoder":false,"shield":false,"polly":false,"usage":false,"sagemakertrainingjobs":false,"dms":false,"swf":false,"dynamodbaccelerator":false,"ecs":false,"mediaconnect":false},"excluded_regions":["us-east-2","us-west-1","us-west-2","eu-west-1","eu-central-1","ap-southeast-1","ap-southeast-2","ap-northeast-1","ap-northeast-2","ap-northeast-3","sa-east-1","ap-south-1","ca-central-1","eu-west-2","eu-west-3","eu-north-1","af-south-1","ap-east-1","ap-south-2","ap-southeast-3","ap-southeast-4","eu-central-2","eu-south-1","eu-south-2","il-central-1","me-central-1","me-south-1"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 601427279990\nRegions affected: every region\nError was last seen 13m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"529951579857","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false}]}
     headers:
       Content-Type:
       - application/json
@@ -85,7 +85,7 @@ interactions:
     method: GET
   response:
     body: |
-      {"accounts":[{"accountId":"569948102559","tags":[],"eventHubs":[{"name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1703197666-qfx7ahy3","region":"us-east-1"}]},{"accountId":"601427279990","tags":["key:value","key2:value2"],"eventHubs":[{"name":"testadsfadsf-katie-tv2bxh6b","region":"us-east-1"},{"name":"terraform-test-12-tv2bxh6b","region":"us-east-1"}]}],"isInstalled":true}
+      {"accounts":[{"accountId":"601427279990","tags":["key:value","key2:value2"],"eventHubs":[{"name":"ktmq7854598735-tv2bxh6b","region":"us-east-1"}]},{"accountId":"529951579857","tags":[],"eventHubs":[{"name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1703271009-mptaqa41","region":"us-east-1"}]}],"isInstalled":true}
     headers:
       Content-Type:
       - application/json
@@ -94,7 +94,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"account_id":"569948102559","event_generator_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1703197666-qfx7ahy3","region":"us-east-1"}
+      {"account_id":"529951579857","event_generator_name":"tf-TestAccIntegrationAwsEventBridgeBasic-local-1703271009-mptaqa41","region":"us-east-1"}
     form: {}
     headers:
       Accept:
@@ -114,7 +114,7 @@ interactions:
     duration: ""
 - request:
     body: |
-      {"account_id":"569948102559","role_name":"testacc-datadog-integration-role"}
+      {"account_id":"529951579857","role_name":"testacc-datadog-integration-role"}
     form: {}
     headers:
       Accept:

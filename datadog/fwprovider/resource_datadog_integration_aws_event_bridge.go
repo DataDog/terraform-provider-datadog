@@ -100,8 +100,6 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 		return
 	}
 
-	id := state.ID.ValueString()
-
 	found := false
 	matchedEventHub := integrationAwsEventBridgeModel{}
 
@@ -112,7 +110,7 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 			}
 			if eventhubs, ok := account.GetEventHubsOk(); ok && len(*eventhubs) > 0 {
 				for _, eventhub := range *eventhubs {
-					if *eventhub.Name == id {
+					if *eventhub.Name == state.ID.ValueString() {
 						matchedEventHub.ID = types.StringValue(*eventhub.Name)
 						matchedEventHub.AccountId = types.StringValue(account.GetAccountId())
 						matchedEventHub.Region = types.StringValue(eventhub.GetRegion())
@@ -208,7 +206,6 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 func (r *integrationAwsEventBridgeResource) updateStateAfterRead(ctx context.Context, state *integrationAwsEventBridgeModel, resp *integrationAwsEventBridgeModel) {
 	state.ID = resp.ID
 	state.AccountId = resp.AccountId
-	state.CreateEventBus = types.BoolValue(false)
 	state.Region = resp.Region
 }
 
