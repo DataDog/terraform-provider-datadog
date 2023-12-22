@@ -56,8 +56,8 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	attachLambdaArnRequest := buildDatadogIntegrationAwsLambdaArnStruct(d)
 	response, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().CreateAWSLambdaARN(auth, *attachLambdaArnRequest)
@@ -121,8 +121,8 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(ctx context.Context, d *schema
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	accountID, lambdaArn, err := utils.AccountAndLambdaArnFromID(d.Id())
 	if err != nil {

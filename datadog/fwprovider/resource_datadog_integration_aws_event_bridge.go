@@ -2,7 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -10,6 +9,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -19,8 +21,6 @@ var (
 	_ resource.ResourceWithConfigure   = &integrationAwsEventBridgeResource{}
 	_ resource.ResourceWithImportState = &integrationAwsEventBridgeResource{}
 )
-
-var integrationAWSEventBridgeMutex = sync.Mutex{}
 
 type integrationAwsEventBridgeResource struct {
 	Api  *datadogV1.AWSIntegrationApi
@@ -56,20 +56,32 @@ func (r *integrationAwsEventBridgeResource) Schema(_ context.Context, _ resource
 			"account_id": schema.StringAttribute{
 				Description: "Your AWS Account ID without dashes.",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"create_event_bus": schema.BoolAttribute{
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
 				Description: "True if Datadog should create the event bus in addition to the event source. Requires the `events:CreateEventBus` permission.",
 				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
 			},
 			"event_generator_name": schema.StringAttribute{
 				Description: "The given part of the event source name, which is then combined with an assigned suffix to form the full name.",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"region": schema.StringAttribute{
 				Description: "The event source's [AWS region](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints).",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -141,8 +153,8 @@ func (r *integrationAwsEventBridgeResource) Create(ctx context.Context, request 
 		return
 	}
 
-	integrationAWSEventBridgeMutex.Lock()
-	defer integrationAWSEventBridgeMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	body, diags := r.buildIntegrationAwsEventBridgeRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
@@ -176,8 +188,8 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 		return
 	}
 
-	integrationAWSEventBridgeMutex.Lock()
-	defer integrationAWSEventBridgeMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	req := datadogV1.NewAWSEventBridgeDeleteRequestWithDefaults()
 

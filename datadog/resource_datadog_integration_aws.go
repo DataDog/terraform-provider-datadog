@@ -6,7 +6,6 @@ import (
 	"os"
 	"regexp"
 	"strconv"
-	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -17,7 +16,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-var integrationAwsMutex = sync.Mutex{}
 var accountAndRoleNameIDRegex = regexp.MustCompile("[\\d]+:.*")
 
 func resourceDatadogIntegrationAws() *schema.Resource {
@@ -185,8 +183,8 @@ func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
 	response, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSAccount(auth, *iaws)
@@ -266,8 +264,8 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
 
@@ -323,8 +321,8 @@ func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.Resource
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsDeleteStruct(d)
 
