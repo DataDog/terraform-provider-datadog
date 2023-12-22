@@ -95,8 +95,10 @@ func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.Resource
 }
 
 func updateMetricMetadataState(d *schema.ResourceData, metadata *datadogV1.MetricMetadata) diag.Diagnostics {
-	if err := d.Set("type", metadata.GetType()); err != nil {
-		return diag.FromErr(err)
+	if _, ok := d.GetOk("type"); !ok || metadata.GetType() != "distribution" {
+		if err := d.Set("type", metadata.GetType()); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("description", metadata.GetDescription()); err != nil {
 		return diag.FromErr(err)
