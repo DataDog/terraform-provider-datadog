@@ -3,7 +3,7 @@
 page_title: "datadog_integration_aws_event_bridge Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a datadogintegrationawseventbridge resource. This can be used to create and manage Event Sources for each Datadog integrated AWS account.
+  Provides a Datadog - Amazon Web Services integration EventBridge resource. This can be used to create and manage Event Sources for each Datadog integrated AWS account.
 ---
 
 # datadog_integration_aws_event_bridge (Resource)
