@@ -8,7 +8,7 @@ description: |-
 
 # datadog_integration_aws_event_bridge (Resource)
 
-Provides a datadog_integration_aws_event_bridge resource. This can be used to create and manage Event Sources for each Datadog-integrated AWS account.
+Provides a Datadog - Amazon Web Services integration EventBridge resource. This can be used to create and manage Event Sources for each Datadog integrated AWS account.
 
 ## Example Usage
 

@@ -51,7 +51,7 @@ func (r *integrationAwsEventBridgeResource) Metadata(_ context.Context, request 
 
 func (r *integrationAwsEventBridgeResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a datadog_integration_aws_event_bridge resource. This can be used to create and manage Event Sources for each Datadog integrated AWS account.",
+		Description: "Provides a Datadog - Amazon Web Services integration EventBridge resource. This can be used to create and manage Event Sources for each Datadog integrated AWS account.",
 		Attributes: map[string]schema.Attribute{
 			"account_id": schema.StringAttribute{
 				Description: "Your AWS Account ID without dashes.",
@@ -104,7 +104,7 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error listing AWS Event Bridge Sources"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error listing AWS EventBridge Event Sources"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -164,7 +164,7 @@ func (r *integrationAwsEventBridgeResource) Create(ctx context.Context, request 
 
 	resp, _, err := r.Api.CreateAWSEventBridgeSource(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error creating AWS Event Bridge Source"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error creating AWS EventBridge Event Source"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -178,7 +178,7 @@ func (r *integrationAwsEventBridgeResource) Create(ctx context.Context, request 
 }
 
 func (r *integrationAwsEventBridgeResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	response.Diagnostics.AddError("Update not supported", "AWS Event Bridge Sources cannot be updated")
+	response.Diagnostics.AddError("Update not supported", "AWS EventBridge Event Sources cannot be updated")
 }
 
 func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
@@ -207,10 +207,10 @@ func (r *integrationAwsEventBridgeResource) Delete(ctx context.Context, request 
 	_, httpResp, err := r.Api.DeleteAWSEventBridgeSource(r.Auth, *req)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "AWS Event Bridge Source not found"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "AWS EventBridge Event Source not found"))
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error deleting AWS Event Bridge Source"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "Error deleting AWS EventBridge Event Source"))
 		return
 	}
 }
