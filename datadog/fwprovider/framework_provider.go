@@ -33,6 +33,7 @@ var (
 
 var Resources = []func() resource.Resource{
 	NewAPIKeyResource,
+	NewApplicationKeyResource,
 	NewDashboardListResource,
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
