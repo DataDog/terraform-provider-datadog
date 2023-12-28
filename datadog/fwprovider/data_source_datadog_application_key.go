@@ -106,6 +106,8 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 		resp.Diagnostics.AddError("missing id or name parameter", "")
 		return
 	}
+
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *applicationKeyDataSource) updateState(state *applicationKeyDataSourceModel, applicationKeyData *datadogV2.FullApplicationKey) {
