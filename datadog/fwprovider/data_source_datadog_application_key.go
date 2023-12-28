@@ -39,7 +39,7 @@ func (d *applicationKeyDataSource) Schema(_ context.Context, req datasource.Sche
 		Description: "Use this data source to retrieve information about an existing application key.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				Description: "The ID of this resource.",
+				Description: "Id for Application Key.",
 				Optional:    true,
 			},
 			"name": schema.StringAttribute{
