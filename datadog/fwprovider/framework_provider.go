@@ -65,6 +65,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogTeamMembershipsDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
+	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
 }
 
