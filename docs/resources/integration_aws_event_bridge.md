@@ -34,7 +34,7 @@ resource "datadog_integration_aws_event_bridge" "foo" {
 
 ### Optional
 
-- `create_event_bus` (Boolean) True if Datadog should create the event bus in addition to the event source. Requires the `events:CreateEventBus` permission. Defaults to `false`.
+- `create_event_bus` (Boolean) True if Datadog should create the event bus in addition to the event source. Requires the `events:CreateEventBus` permission. Defaults to `true`.
 
 ### Read-Only
 
