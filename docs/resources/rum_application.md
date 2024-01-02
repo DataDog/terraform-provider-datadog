@@ -24,15 +24,15 @@ resource "datadog_rum_application" "rum_application" {
 
 ### Required
 
-- `name` (String) The name of the RUM application
+- `name` (String) Name of the RUM application.
 
 ### Optional
 
-- `type` (String) The RUM application type. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter` Defaults to `"browser"`.
+- `type` (String) Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`. Defaults to `"browser"`.
 
 ### Read-Only
 
-- `client_token` (String) The client token
+- `client_token` (String) The client token.
 - `id` (String) The ID of this resource.
 
 ## Import
