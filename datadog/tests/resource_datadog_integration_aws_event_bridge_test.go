@@ -42,6 +42,7 @@ func testAccCheckDatadogIntegrationAwsEventBridge(accountID string, uniq string)
 	resource "datadog_integration_aws_event_bridge" "foo" {
 		account_id = "%s"
 		event_generator_name = "%s"
+		create_event_bus = false
 		region = "us-east-1"
 		depends_on = [datadog_integration_aws.account]
 	}`, accountID, accountID, uniq)

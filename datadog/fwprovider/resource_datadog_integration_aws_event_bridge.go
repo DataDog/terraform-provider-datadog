@@ -62,7 +62,7 @@ func (r *integrationAwsEventBridgeResource) Schema(_ context.Context, _ resource
 			},
 			"create_event_bus": schema.BoolAttribute{
 				Computed:    true,
-				Default:     booldefault.StaticBool(false),
+				Default:     booldefault.StaticBool(true),
 				Description: "True if Datadog should create the event bus in addition to the event source. Requires the `events:CreateEventBus` permission.",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -126,7 +126,6 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 						matchedEventHub.ID = types.StringValue(*eventhub.Name)
 						matchedEventHub.AccountId = types.StringValue(account.GetAccountId())
 						matchedEventHub.Region = types.StringValue(eventhub.GetRegion())
-						matchedEventHub.EventGeneratorName = types.StringValue(eventhub.GetName())
 						found = true
 						break
 					}
