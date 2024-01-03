@@ -136,7 +136,7 @@ func (r *integrationAwsEventBridgeResource) Read(ctx context.Context, request re
 
 	if !found {
 		response.State.RemoveResource(ctx)
-		response.Diagnostics.AddError("Import error", "No matching Event Source found")
+		response.Diagnostics.AddWarning("Read error", "No matching Event Source found.")
 		return
 	}
 
