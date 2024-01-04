@@ -521,13 +521,27 @@ resource "datadog_powerpack" "timeseries_formula_powerpack" {
 			}
 		}
 	}
+	widget {
+		timeseries_definition {
+			request {
+				query {
+					cloud_cost_query {
+						data_source = "cloud_cost"
+						query = "sum:aws.cost.amortized{*}"
+						name = "query1"
+						aggregator = "sum"
+					}
+				}
+			}
+		}
+	}
 }
 `
 
 var datadogPowerpackTimeseriesFormulaTestAsserts = []string{
 	// Powerpack metadata
 	"description = Created using the Datadog provider in Terraform",
-	"widget.# = 4",
+	"widget.# = 5",
 	"tags.# = 1",
 	"tags.0 = tag:foo1",
 
@@ -578,6 +592,10 @@ var datadogPowerpackTimeseriesFormulaTestAsserts = []string{
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.measure = slo_status",
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.slo_query_type = metric",
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.additional_query_filters = *",
+	"widget.4.timeseries_definition.0.request.0.query.0.cloud_cost_query.0.data_source = cloud_cost",
+	"widget.4.timeseries_definition.0.request.0.query.0.cloud_cost_query.0.name = query1",
+	"widget.4.timeseries_definition.0.request.0.query.0.cloud_cost_query.0.aggregator = sum",
+	"widget.4.timeseries_definition.0.request.0.query.0.cloud_cost_query.0.query = sum:aws.cost.amortized{*}",
 
 	// Template Variables
 	"template_variables.# = 1",

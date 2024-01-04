@@ -648,7 +648,24 @@ resource "datadog_dashboard" "free_dashboard" {
       y      = 83
     }
   }
-
+  widget {
+    timeseries_definition {
+      request {
+        formula {
+          formula_expression = "query1"
+          alias              = "my cloud cost query"
+        }
+        query {
+          cloud_cost_query {
+            data_source = "cloud_cost"
+            query       = "sum:aws.cost.amortized{*}"
+            name        = "query1"
+            aggregator  = "sum"
+          }
+        }
+      }
+    }
+  }
   widget {
     powerpack_definition {
       powerpack_id     = "00000000-0000-0000-0000-000000000000"
