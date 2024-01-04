@@ -24,6 +24,7 @@ data "datadog_monitor" "test" {
 
 ### Optional
 
+- `monitor_id` (String) The ID of the monitor.
 - `monitor_tags_filter` (List of String) A list of monitor tags to limit the search. This filters on the tags set on the monitor itself.
 - `name_filter` (String) A monitor name to limit the search.
 - `tags_filter` (List of String) A list of tags to limit the search. This filters on the monitor scope.
