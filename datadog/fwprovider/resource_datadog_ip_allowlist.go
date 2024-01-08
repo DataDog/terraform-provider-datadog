@@ -42,9 +42,8 @@ func (e *ipAllowListEntry) EqualCidrBlock(other *ipAllowListEntry) bool {
 	return utils.NormalizeIPAddress(e.CidrBlock.String()) == utils.NormalizeIPAddress(other.CidrBlock.String())
 }
 
-// Metadata implements resource.ResourceWithImportState.
 func (r *ipAllowListResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "ip_allow_list"
+	response.TypeName = "ip_allowlist"
 }
 
 func (r *ipAllowListResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
