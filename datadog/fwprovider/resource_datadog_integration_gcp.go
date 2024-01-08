@@ -4,6 +4,9 @@ import (
 	"context"
 	"sync"
 
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -107,11 +110,14 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"host_filters": schema.StringAttribute{
 				Description: "Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
 				Optional:    true,
+				Computed:    true,
+				Default:     stringdefault.StaticString(""),
 			},
 			"automute": schema.BoolAttribute{
 				Description: "Silence monitors for expected GCE instance shutdowns.",
 				Optional:    true,
 				Computed:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 			"resource_collection_enabled": schema.BoolAttribute{
 				Description: "When enabled, Datadog scans for all resources in your GCP environment.",
@@ -122,11 +128,13 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Description: "Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires resource_collection_enabled to also be enabled.",
 				Optional:    true,
 				Computed:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 			"is_security_command_center_enabled": schema.BoolAttribute{
 				Description: "When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.",
 				Optional:    true,
 				Computed:    true,
+				Default:     booldefault.StaticBool(false),
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -156,6 +164,8 @@ func (r *integrationGcpResource) Read(ctx context.Context, request resource.Read
 	}
 
 	// Save data into Terraform state
+	r.updateState(ctx, &state, integration)
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -171,7 +181,7 @@ func (r *integrationGcpResource) Create(ctx context.Context, request resource.Cr
 	}
 
 	body, diags := r.buildIntegrationGcpRequestBodyBase(state)
-	r.addDefaultsToBody(body)
+	r.addDefaultsToBody(body, state)
 	r.addRequiredFieldsToBody(body, state)
 	r.addOptionalFieldsToBody(body, state)
 
@@ -194,9 +204,10 @@ func (r *integrationGcpResource) Create(ctx context.Context, request resource.Cr
 		response.Diagnostics.AddError("error retrieving GCP integration", "")
 		return
 	}
-	r.updateState(ctx, &state, integration)
 
 	// Save data into Terraform state
+	r.updateState(ctx, &state, integration)
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -206,6 +217,9 @@ func (r *integrationGcpResource) Update(ctx context.Context, request resource.Up
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	integrationGcpMutex.Lock()
+	defer integrationGcpMutex.Unlock()
 
 	body, diags := r.buildIntegrationGcpRequestBodyBase(state)
 	r.addOptionalFieldsToBody(body, state)
@@ -229,9 +243,10 @@ func (r *integrationGcpResource) Update(ctx context.Context, request resource.Up
 		response.Diagnostics.AddError("error retrieving GCP integration", "")
 		return
 	}
-	r.updateState(ctx, &state, integration)
 
 	// Save data into Terraform state
+	r.updateState(ctx, &state, integration)
+
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -241,6 +256,9 @@ func (r *integrationGcpResource) Delete(ctx context.Context, request resource.De
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	integrationGcpMutex.Lock()
+	defer integrationGcpMutex.Unlock()
 
 	body, diags := r.buildIntegrationGcpRequestBodyBase(state)
 
@@ -259,10 +277,17 @@ func (r *integrationGcpResource) Delete(ctx context.Context, request resource.De
 func (r *integrationGcpResource) updateState(ctx context.Context, state *integrationGcpModel, resp *datadogV1.GCPAccount) {
 	projectId := types.StringValue(resp.GetProjectId())
 	// ProjectID and ClientEmail are the only parameters required in all mutating API requests
-	state.ID = projectId
 	state.ProjectID = projectId
 	state.ClientEmail = types.StringValue(resp.GetClientEmail())
 
+	// Computed Values
+	state.Automute = types.BoolValue(resp.GetAutomute())
+	state.HostFilters = types.StringValue(resp.GetHostFilters())
+	state.CspmResourceCollectionEnabled = types.BoolValue(resp.GetIsCspmEnabled())
+	state.ResourceCollectionEnabled = types.BoolValue(resp.GetResourceCollectionEnabled())
+	state.IsSecurityCommandCenterEnabled = types.BoolValue(resp.GetIsSecurityCommandCenterEnabled())
+
+	// Non-computed values
 	if clientId, ok := resp.GetClientIdOk(); ok {
 		state.ClientId = types.StringValue(*clientId)
 	}
@@ -272,21 +297,7 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 	if privateKeyId, ok := resp.GetPrivateKeyIdOk(); ok {
 		state.PrivateKeyId = types.StringValue(*privateKeyId)
 	}
-	if automute, ok := resp.GetAutomuteOk(); ok {
-		state.Automute = types.BoolValue(*automute)
-	}
-	if hostFilters, ok := resp.GetHostFiltersOk(); ok && len(*hostFilters) > 0 {
-		state.HostFilters = types.StringValue(*hostFilters)
-	}
-	if resourceCollectionEnabled, ok := resp.GetResourceCollectionEnabledOk(); ok {
-		state.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
-	}
-	if isCspmEnabled, ok := resp.GetIsCspmEnabledOk(); ok {
-		state.CspmResourceCollectionEnabled = types.BoolValue(*isCspmEnabled)
-	}
-	if isSecurityCommandCenterEnabled, ok := resp.GetIsSecurityCommandCenterEnabledOk(); ok {
-		state.IsSecurityCommandCenterEnabled = types.BoolValue(*isSecurityCommandCenterEnabled)
-	}
+	state.ID = projectId
 }
 
 func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*datadogV1.GCPAccount, diag.Diagnostics) {
@@ -321,11 +332,11 @@ func (r *integrationGcpResource) buildIntegrationGcpRequestBodyBase(state integr
 	return body, diags
 }
 
-func (r *integrationGcpResource) addDefaultsToBody(body *datadogV1.GCPAccount) {
+func (r *integrationGcpResource) addDefaultsToBody(body *datadogV1.GCPAccount, state integrationGcpModel) {
 	body.SetType(defaultType)
 	body.SetAuthUri(defaultAuthURI)
 	body.SetAuthProviderX509CertUrl(defaultAuthProviderX509CertURL)
-	body.SetClientX509CertUrl(defaultClientX509CertURLPrefix)
+	body.SetClientX509CertUrl(defaultClientX509CertURLPrefix + state.ClientEmail.ValueString())
 	body.SetTokenUri(defaultTokenURI)
 }
 
@@ -336,19 +347,11 @@ func (r *integrationGcpResource) addRequiredFieldsToBody(body *datadogV1.GCPAcco
 }
 
 func (r *integrationGcpResource) addOptionalFieldsToBody(body *datadogV1.GCPAccount, state integrationGcpModel) {
-	if !state.Automute.IsUnknown() && !state.Automute.IsNull() {
-		body.SetAutomute(state.Automute.ValueBool())
-	}
-	if !state.CspmResourceCollectionEnabled.IsUnknown() && !state.CspmResourceCollectionEnabled.IsNull() {
-		body.SetIsCspmEnabled(state.CspmResourceCollectionEnabled.ValueBool())
-	}
-	if !state.ResourceCollectionEnabled.IsUnknown() && !state.ResourceCollectionEnabled.IsNull() {
+	body.SetAutomute(state.Automute.ValueBool())
+	body.SetIsCspmEnabled(state.CspmResourceCollectionEnabled.ValueBool())
+	body.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
+	body.SetHostFilters(state.HostFilters.ValueString())
+	if !state.ResourceCollectionEnabled.IsUnknown() {
 		body.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
-	}
-	if !state.IsSecurityCommandCenterEnabled.IsUnknown() && !state.IsSecurityCommandCenterEnabled.IsNull() {
-		body.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
-	}
-	if !state.HostFilters.IsUnknown() && !state.HostFilters.IsNull() {
-		body.SetHostFilters(state.HostFilters.ValueString())
 	}
 }
