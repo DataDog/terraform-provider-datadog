@@ -24,15 +24,9 @@ func (v cidrIpValidator) ValidateString(ctx context.Context, req validator.Strin
 	if req.ConfigValue.IsUnknown() || req.ConfigValue.IsNull() {
 		return
 	}
-
-	if _, _, err := net.ParseCIDR(req.ConfigValue.ValueString()); err != nil {
-		resp.Diagnostics.AddAttributeError(req.Path, "Invalid CIDR block", fmt.Sprintf("String %s must be a valid CIDR block", req.ConfigValue.ValueString()))
-	}
-
 	ip := net.ParseIP(req.ConfigValue.ValueString())
-
-	if ip == nil {
-		resp.Diagnostics.AddAttributeError(req.Path, "Invalid IP address", fmt.Sprintf("String %s must be a valid IP address", req.ConfigValue.ValueString()))
+	if _, _, err := net.ParseCIDR(req.ConfigValue.ValueString()); err != nil && ip == nil {
+		resp.Diagnostics.AddAttributeError(req.Path, "", fmt.Sprintf("String %s must be a valid CIDR block or IP address", req.ConfigValue.ValueString()))
 	}
 }
 
