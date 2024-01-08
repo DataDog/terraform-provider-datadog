@@ -69,7 +69,7 @@ func (r *integrationGcpResource) Metadata(_ context.Context, request resource.Me
 
 func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
+		Description: "This resource is deprecated — use the `datadog_integration_gcp_sts` resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
 			"project_id": schema.StringAttribute{
 				Description: "Your Google Cloud project ID found in your JSON service account key.",
@@ -269,7 +269,7 @@ func (r *integrationGcpResource) Delete(ctx context.Context, request resource.De
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting integration_gcp_sts"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting GCP integration"))
 		return
 	}
 }
