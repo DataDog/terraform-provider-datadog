@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -285,4 +286,22 @@ func ResourceIDAttribute() frameworkSchema.StringAttribute {
 			stringplanmodifier.UseStateForUnknown(),
 		},
 	}
+}
+
+func NormalizeIPAddress(ipAddress string) string {
+	_, ipNet, err := net.ParseCIDR(ipAddress)
+	if err != nil {
+		ip := net.ParseIP(ipAddress)
+		if ip == nil {
+			return ""
+		}
+		// ipAddress is a single IP address
+		// if it is ipv4, the prefix is 32. if ipv6, it is 128
+		prefix := "32"
+		if ip.DefaultMask() == nil {
+			prefix = "128"
+		}
+		return fmt.Sprintf("%v/%v", ip, prefix)
+	}
+	return ipNet.String()
 }
