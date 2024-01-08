@@ -29,6 +29,7 @@ type ipAllowListResource struct {
 }
 
 type ipAllowListResourceModel struct {
+	ID      types.String        `tfsdk:"id"`
 	Enabled types.Bool          `tfsdk:"enabled"`
 	Entry   []*ipAllowListEntry `tfsdk:"entry"`
 }
@@ -54,6 +55,7 @@ func (r *ipAllowListResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Whether the IP Allowlist is enabled.",
 				Required:    true,
 			},
+			"id": utils.ResourceIDAttribute(),
 		},
 		Blocks: map[string]schema.Block{
 			"entry": schema.SetNestedBlock{
@@ -137,6 +139,7 @@ func (r *ipAllowListResource) Create(ctx context.Context, request resource.Creat
 
 	ipAllowlistData := resp.GetData()
 
+	state.ID = types.StringValue(ipAllowlistData.GetId())
 	r.updateState(ctx, &state, ipAllowlistData.Attributes)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
