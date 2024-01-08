@@ -56,10 +56,10 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 
 ### Optional
 
-- `automute` (Boolean) Silence monitors for expected GCE instance shutdowns.
-- `cspm_resource_collection_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires resource_collection_enabled to also be enabled.
-- `host_filters` (String) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
-- `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.
+- `automute` (Boolean) Silence monitors for expected GCE instance shutdowns. Defaults to `false`.
+- `cspm_resource_collection_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires resource_collection_enabled to also be enabled. Defaults to `false`.
+- `host_filters` (String) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. Defaults to `""`.
+- `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account. Defaults to `false`.
 - `resource_collection_enabled` (Boolean) When enabled, Datadog scans for all resources in your GCP environment.
 
 ### Read-Only
