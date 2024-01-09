@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704721286","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":0,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
+            {"cases":null,"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704810503","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":0,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"queries":null,"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"ne6-2gx-o3n","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704721286","createdAt":1704721290386,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
+            {"id":"dta-p2t-l7u","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 856.767833ms
+        duration: 470.903625ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ne6-2gx-o3n
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dta-p2t-l7u
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"ne6-2gx-o3n","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704721286","createdAt":1704721290386,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
+            {"id":"dta-p2t-l7u","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 279.4915ms
+        duration: 148.782542ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ne6-2gx-o3n
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dta-p2t-l7u
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"ne6-2gx-o3n","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704721286","createdAt":1704721290386,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
+            {"id":"dta-p2t-l7u","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.90725ms
+        duration: 147.521666ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ne6-2gx-o3n
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dta-p2t-l7u
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"ne6-2gx-o3n","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704721286","createdAt":1704721290386,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
+            {"id":"dta-p2t-l7u","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 154.252ms
+        duration: 207.241958ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -156,14 +156,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704721286","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":0,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}]}
+            {"hasExtendedTitle":false,"isEnabled":true,"message":"third party rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704810503","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"third_party","evaluationWindow":0,"keepAlive":0,"maxSignalDuration":0,"thirdPartyRuleOptions":{"defaultNotifications":[],"defaultStatus":"info","rootQueries":[{"groupByFields":["instance-id"],"query":"source:guardduty @data.resourceType:*EC2*"},{"groupByFields":["@resourceProperties.bucketId"],"query":"source:guardduty @data.resourceType:*S3*"},{"groupByFields":[],"query":"source:guardduty"}],"signalTitleTemplate":""}},"thirdPartyCases":[{"name":"High severity alert","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]","status":"high"},{"name":"Low severity alert","notifications":[],"query":"@alert.severity:[1 TO 4]","status":"low"}]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ne6-2gx-o3n
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dta-p2t-l7u
         method: PUT
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"ne6-2gx-o3n","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704721286","createdAt":1704721290386,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
+            {"id":"dta-p2t-l7u","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 201.731375ms
+        duration: 189.910084ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ne6-2gx-o3n
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dta-p2t-l7u
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"ne6-2gx-o3n","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704721286","createdAt":1704721290386,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
+            {"id":"dta-p2t-l7u","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 150.269542ms
+        duration: 324.004083ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ne6-2gx-o3n
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dta-p2t-l7u
         method: GET
       response:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"ne6-2gx-o3n","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704721286","createdAt":1704721290386,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
+            {"id":"dta-p2t-l7u","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_ThirdParty-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@alert.severity:[5 TO 10]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""},{"query":"@alert.severity:[1 TO 4]","groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"none","name":""}],"options":{"keepAlive":0,"maxSignalDuration":0,"detectionMethod":"third_party","evaluationWindow":0,"thirdPartyRuleOptions":{"defaultStatus":"info","defaultNotifications":[],"rootQueries":[{"query":"source:guardduty @data.resourceType:*EC2*","groupByFields":["instance-id"]},{"query":"source:guardduty @data.resourceType:*S3*","groupByFields":["@resourceProperties.bucketId"]},{"query":"source:guardduty","groupByFields":[]}],"signalTitleTemplate":""},"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"]},{"name":"Low severity alert","status":"low","notifications":[]}],"message":"third party rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[],"thirdPartyCases":[{"name":"High severity alert","status":"high","notifications":["@slack-channel"],"query":"@alert.severity:[5 TO 10]"},{"name":"Low severity alert","status":"low","notifications":[],"query":"@alert.severity:[1 TO 4]"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 155.841666ms
+        duration: 144.265791ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ne6-2gx-o3n
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dta-p2t-l7u
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -282,7 +282,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 198.858416ms
+        duration: 196.050917ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -299,7 +299,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ne6-2gx-o3n
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dta-p2t-l7u
         method: GET
       response:
         proto: HTTP/1.1
@@ -311,10 +311,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"errors":["Threat detection rule not found: ne6-2gx-o3n"]}
+            {"errors":["Threat detection rule not found: dta-p2t-l7u"]}
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 144.253ms
+        duration: 155.391916ms
