@@ -21,7 +21,10 @@ func TestAccDatadogUsersDatasourceFilter(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUsersFilterConfig(uniq, email),
-				Check:  resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.email", email),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.email", email),
+					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.#", "1"),
+				),
 			},
 			{
 				Config: testAccDatasourceUsersFilterConfig(uniq, email),
@@ -48,31 +51,6 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 			},
 		},
 	})
-}
-
-func testAccDatasourceUsersConfig(uniq string) string {
-	return fmt.Sprintf(`
-data "datadog_users" "all_users" {
-	depends_on = [
-		datadog_user.user_0,
-		datadog_user.user_1,
-		datadog_user.user_2
-	]
-}
-
-resource "datadog_user" "user_0" {
-	name = "user 0"
-	email = "%[1]s0@example.com"
-}
-resource "datadog_user" "user_1" {
-	name = "user 1"
-	email = "%[1]s1@example.com"
-}
-resource "datadog_user" "user_2" {
-	name = "user 2"
-	email = "%[1]s2@example.com"
-}
-`, uniq)
 }
 
 func testAccDatasourceUsersFilterConfig(uniq, filter string) string {
