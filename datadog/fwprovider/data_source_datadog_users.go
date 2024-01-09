@@ -66,8 +66,8 @@ func (d *datadogUsersDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Optional:    true,
 				Description: "Filter on status attribute. Comma-separated list with possible values of Active, Pending, and Disabled.",
 			},
-			// Not sure how the status filtering would be defined here
-			// computer values
+
+			// computed values
 			"users": schema.ListAttribute{
 				Computed:    true,
 				Description: "List of users",
@@ -114,7 +114,7 @@ func (d *datadogUsersDataSource) Read(ctx context.Context, req datasource.ReadRe
 		}
 
 		users = append(users, ddResp.GetData()...)
-		if len(ddResp.GetData()) < 100 {
+		if int64(len(ddResp.GetData())) < pageSize {
 			break
 		}
 		pageNumber++
@@ -137,7 +137,7 @@ func (d *datadogUsersDataSource) updateState(state *datadogUsersDataSourceModel,
 	}
 
 	hashingData := fmt.Sprintf("%s:%s", state.Filter, state.FilterStatus)
-	sum := sha256.Sum256([]byte(hashingData))
+	sum := utils.ConvertToSha256(hashingData)
 
 	state.ID = types.StringValue(fmt.Sprintf("%x", sum))
 	state.Users = users
