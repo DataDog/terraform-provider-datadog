@@ -2,7 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"crypto/sha256"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
