@@ -98,13 +98,13 @@ func (d *datadogUsersDataSource) Read(ctx context.Context, req datasource.ReadRe
 		optionalParams.FilterStatus = state.FilterStatus.ValueStringPointer()
 	}
 
-	pageSize := int64(100)
+	pageSize := 100
 	pageNumber := int64(0)
+	optionalParams.WithPageSize(int64(pageSize))
 
 	var users []datadogV2.User
 	for {
-		optionalParams.PageNumber = &pageNumber
-		optionalParams.PageSize = &pageSize
+		optionalParams.WithPageNumber(pageNumber)
 
 		ddResp, _, err := d.Api.ListUsers(d.Auth, optionalParams)
 		if err != nil {
@@ -113,7 +113,7 @@ func (d *datadogUsersDataSource) Read(ctx context.Context, req datasource.ReadRe
 		}
 
 		users = append(users, ddResp.GetData()...)
-		if int64(len(ddResp.GetData())) < pageSize {
+		if len(ddResp.GetData()) < pageSize {
 			break
 		}
 		pageNumber++
@@ -135,9 +135,8 @@ func (d *datadogUsersDataSource) updateState(state *datadogUsersDataSourceModel,
 		users = append(users, &u)
 	}
 
-	hashingData := fmt.Sprintf("%s:%s", state.Filter, state.FilterStatus)
-	sum := utils.ConvertToSha256(hashingData)
+	hashingData := fmt.Sprintf("%s:%s", state.Filter.ValueString(), state.FilterStatus.ValueString())
 
-	state.ID = types.StringValue(fmt.Sprintf("%x", sum))
+	state.ID = types.StringValue(utils.ConvertToSha256(hashingData))
 	state.Users = users
 }
