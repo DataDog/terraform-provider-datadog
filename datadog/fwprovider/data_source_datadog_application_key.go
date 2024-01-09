@@ -69,7 +69,7 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 		return
 	}
 	if !state.Id.IsNull() {
-		ddResp, _, err := d.Api.GetApplicationKey(d.Auth, state.Id.ValueString())
+		ddResp, _, err := d.Api.GetCurrentUserApplicationKey(d.Auth, state.Id.ValueString())
 		if err != nil {
 			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting application key"))
 			return

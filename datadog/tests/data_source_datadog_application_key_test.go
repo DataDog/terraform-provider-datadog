@@ -17,7 +17,7 @@ func TestAccDatadogApplicationKeyDatasource_matchId(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	applicationKeyName := uniqueEntityName(ctx, t)
-
+	nonEmptyStringRegex := `[\S\s]+[\S]+`
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -30,6 +30,7 @@ func TestAccDatadogApplicationKeyDatasource_matchId(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_1", "name", fmt.Sprintf("%s 1", applicationKeyName)),
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_2", "name", fmt.Sprintf("%s 2", applicationKeyName)),
 					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "name", fmt.Sprintf("%s 1", applicationKeyName)),
+					resource.TestMatchResourceAttr("data.datadog_application_key.app_key", "key", regexp.MustCompile(nonEmptyStringRegex)),
 				),
 			},
 		},
@@ -44,6 +45,7 @@ func TestAccDatadogApplicationKeyDatasource_matchName(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
 
+	nonEmptyStringRegex := `[\S\s]+[\S]+`
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -56,6 +58,7 @@ func TestAccDatadogApplicationKeyDatasource_matchName(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_1", "name", fmt.Sprintf("%s 1", applicationKeyName)),
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_2", "name", fmt.Sprintf("%s 2", applicationKeyName)),
 					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "name", fmt.Sprintf("%s 1", applicationKeyName)),
+					resource.TestMatchResourceAttr("data.datadog_application_key.app_key", "key", regexp.MustCompile(nonEmptyStringRegex)),
 				),
 			},
 		},
