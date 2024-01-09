@@ -34,11 +34,12 @@ var (
 var Resources = []func() resource.Resource{
 	NewAPIKeyResource,
 	NewApplicationKeyResource,
-	NewDashboardListResource,
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
+	NewDashboardListResource,
 	NewDowntimeScheduleResource,
 	NewIntegrationAzureResource,
+	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -46,6 +47,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpStsResource,
 	NewRestrictionPolicyResource,
+	NewRumApplicationResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
@@ -59,14 +61,15 @@ var Resources = []func() resource.Resource{
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewApplicationKeyDataSource,
-	NewDatadogDashboardListDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
+	NewDatadogDashboardListDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogServiceAccountDatasource,
 	NewDatadogTeamDataSource,
 	NewDatadogTeamMembershipsDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
+	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
 }
 

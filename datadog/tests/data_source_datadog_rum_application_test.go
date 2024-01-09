@@ -11,12 +11,12 @@ import (
 
 func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRUMApplicationNameFilterConfig(uniq),
@@ -37,12 +37,12 @@ func TestAccDatadogRUMApplicationDatasourceNameFilter(t *testing.T) {
 
 func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceRUMApplicationIDConfig(uniq),
@@ -63,12 +63,12 @@ func TestAccDatadogRUMApplicationDatasourceIDFilter(t *testing.T) {
 
 func TestAccDatadogRUMApplicationDatasourceErrorMultiple(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceRUMApplicationMultiple(uniq),

@@ -663,7 +663,24 @@ resource "datadog_dashboard" "free_dashboard" {
       y      = 83
     }
   }
-
+  widget {
+    timeseries_definition {
+      request {
+        formula {
+          formula_expression = "query1"
+          alias              = "my cloud cost query"
+        }
+        query {
+          cloud_cost_query {
+            data_source = "cloud_cost"
+            query       = "sum:aws.cost.amortized{*}"
+            name        = "query1"
+            aggregator  = "sum"
+          }
+        }
+      }
+    }
+  }
   widget {
     powerpack_definition {
       powerpack_id     = "00000000-0000-0000-0000-000000000000"
@@ -1094,6 +1111,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--process_query))
@@ -1137,6 +1155,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--change_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.change_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--change_definition--request--query--event_query"></a>
@@ -1959,6 +1991,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--process_query))
@@ -2002,6 +2035,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--geomap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.geomap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--geomap_definition--request--query--event_query"></a>
@@ -2530,6 +2577,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--process_query))
@@ -2573,6 +2621,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query"></a>
@@ -3395,6 +3457,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--process_query))
@@ -3438,6 +3501,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query"></a>
@@ -3886,6 +3963,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--process_query))
@@ -3929,6 +4007,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query"></a>
@@ -5310,6 +5402,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--process_query))
@@ -5353,6 +5446,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query"></a>
@@ -5930,6 +6037,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--process_query))
@@ -5973,6 +6081,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query"></a>
@@ -6344,6 +6466,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--process_query))
@@ -6387,6 +6510,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -7466,6 +7603,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query))
@@ -7509,6 +7647,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.change_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query"></a>
@@ -7927,6 +8079,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query))
@@ -7970,6 +8123,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query"></a>
@@ -8459,6 +8626,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query))
@@ -8502,6 +8670,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query"></a>
@@ -9079,6 +9261,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query))
@@ -9122,6 +9305,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query"></a>
@@ -9456,6 +9653,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query))
@@ -9499,6 +9697,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -10605,6 +10817,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query))
@@ -10648,6 +10861,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query"></a>
@@ -11321,6 +11548,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query))
@@ -11364,6 +11592,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query"></a>
@@ -11970,6 +12212,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query))
@@ -12013,6 +12256,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query"></a>
@@ -12344,6 +12601,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query))
@@ -12387,6 +12645,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query"></a>
@@ -12965,6 +13237,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--process_query))
@@ -13008,6 +13281,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query"></a>
@@ -13681,6 +13968,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--process_query))
@@ -13724,6 +14012,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query"></a>
@@ -14330,6 +14632,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--process_query))
@@ -14373,6 +14676,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query"></a>
@@ -14771,6 +15088,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--process_query))
@@ -14814,6 +15132,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query"></a>
@@ -15206,6 +15538,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--process_query))
@@ -15249,6 +15582,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--heatmap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--query--event_query"></a>
@@ -16630,6 +16977,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--process_query))
@@ -16673,6 +17021,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--query_table_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.query_table_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--query_table_definition--request--query--event_query"></a>
@@ -17250,6 +17612,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--process_query))
@@ -17293,6 +17656,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--query_value_definition--request--query--event_query"></a>
@@ -17664,6 +18041,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--process_query))
@@ -17707,6 +18085,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -18786,6 +19178,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query))
@@ -18829,6 +19222,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query"></a>
@@ -19247,6 +19654,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query))
@@ -19290,6 +19698,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query"></a>
@@ -19779,6 +20201,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query))
@@ -19822,6 +20245,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query"></a>
@@ -20399,6 +20836,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query))
@@ -20442,6 +20880,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query"></a>
@@ -20776,6 +21228,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query))
@@ -20819,6 +21272,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -21925,6 +22392,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query))
@@ -21968,6 +22436,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query"></a>
@@ -22641,6 +23123,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query))
@@ -22684,6 +23167,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query"></a>
@@ -23290,6 +23787,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query))
@@ -23333,6 +23831,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query"></a>
@@ -23664,6 +24176,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query))
@@ -23707,6 +24220,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query"></a>
@@ -24285,6 +24812,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--process_query))
@@ -24328,6 +24856,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--query--event_query"></a>
@@ -25001,6 +25543,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--process_query))
@@ -25044,6 +25587,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query--event_query"></a>
@@ -25650,6 +26207,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--process_query))
@@ -25693,6 +26251,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--toplist_definition--request--query--event_query"></a>
@@ -26091,6 +26663,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--process_query))
@@ -26134,6 +26707,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--treemap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.treemap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--treemap_definition--request--query--event_query"></a>

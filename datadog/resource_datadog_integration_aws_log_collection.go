@@ -63,8 +63,8 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	accountID := d.Get("account_id").(string)
 
@@ -93,8 +93,8 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *sc
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().EnableAWSLogServices(auth, *enableLogCollectionServices)
@@ -141,8 +141,8 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *sc
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	accountID := d.Id()
 	services := []string{}

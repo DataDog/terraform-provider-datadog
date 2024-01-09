@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
@@ -69,6 +70,9 @@ var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
 
 // DatadogProvider holds a reference to the provider
 var DatadogProvider *schema.Provider
+
+// IntegrationAwsMutex mutex for AWS Integration resources
+var IntegrationAwsMutex = sync.Mutex{}
 
 // Resource minimal interface common to ResourceData and ResourceDiff
 type Resource interface {
