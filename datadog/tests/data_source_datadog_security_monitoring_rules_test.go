@@ -22,6 +22,10 @@ var allRules *[]datadogV2.SecurityMonitoringRuleResponse
 
 func TestAccDatadogSecurityMonitoringRuleDatasource(t *testing.T) {
 	t.Parallel()
+	if isRecording() || isReplaying() {
+		// Cassette is >100MB, too large for Github
+		t.Skip("This test doesn't support recording or replaying")
+	}
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	ruleName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
