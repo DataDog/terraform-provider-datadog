@@ -67,7 +67,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
 - `tags` (Set of String) Tags for generated signals.
-- `third_party_case` (Block List, Max: 10) Cases for generating signals for third party rules. Only required and accepted for third party rules (see [below for nested schema](#nestedblock--third_party_case))
+- `third_party_case` (Block List, Max: 10) Cases for generating signals for third-party rules. Only required and accepted for third-party rules (see [below for nested schema](#nestedblock--third_party_case))
 - `type` (String) The rule type. Valid values are `application_security`, `log_detection`, `workload_security`, `signal_correlation`. Defaults to `"log_detection"`.
 
 ### Read-Only
@@ -109,7 +109,7 @@ Optional:
 - `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`.
 - `max_signal_duration` (Number) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `new_value_options` (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
-- `third_party_rule_options` (Block List, Max: 1) Options for rules using the third party detection method. (see [below for nested schema](#nestedblock--options--third_party_rule_options))
+- `third_party_rule_options` (Block List, Max: 1) Options for rules using the third-party detection method. (see [below for nested schema](#nestedblock--options--third_party_rule_options))
 
 <a id="nestedblock--options--impossible_travel_options"></a>
 ### Nested Schema for `options.impossible_travel_options`
@@ -138,12 +138,12 @@ Optional:
 
 Required:
 
-- `default_status` (String) Severity of the default rule case, when none of the third party cases match. Valid values are `info`, `low`, `medium`, `high`, `critical`.
-- `root_query` (Block List, Min: 1, Max: 10) Queries to be combined with third party case queries. Each of them can have different group by fields, to aggregate differently based on the type of alert. (see [below for nested schema](#nestedblock--options--third_party_rule_options--root_query))
+- `default_status` (String) Severity of the default rule case, when none of the third-party cases match. Valid values are `info`, `low`, `medium`, `high`, `critical`.
+- `root_query` (Block List, Min: 1, Max: 10) Queries to be combined with third-party case queries. Each of them can have different group by fields, to aggregate differently based on the type of alert. (see [below for nested schema](#nestedblock--options--third_party_rule_options--root_query))
 
 Optional:
 
-- `default_notifications` (List of String) Notification targets for the default rule case, when none of the third party cases match.
+- `default_notifications` (List of String) Notification targets for the default rule case, when none of the third-party cases match.
 - `signal_title_template` (String) A template for the signal title; if omitted, the title is generated based on the case name.
 
 <a id="nestedblock--options--third_party_rule_options--root_query"></a>
@@ -151,7 +151,7 @@ Optional:
 
 Required:
 
-- `query` (String) Query to filter logs
+- `query` (String) Query to filter logs.
 
 Optional:
 
@@ -214,7 +214,7 @@ Optional:
 
 - `name` (String) Name of the case.
 - `notifications` (List of String) Notification targets for each rule case.
-- `query` (String) A query to associate a third party event to this case.
+- `query` (String) A query to associate a third-party event to this case.
 
 ## Import
 

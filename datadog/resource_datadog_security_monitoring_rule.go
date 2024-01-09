@@ -68,7 +68,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 		"third_party_case": {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Cases for generating signals for third party rules. Only required and accepted for third party rules",
+			Description: "Cases for generating signals for third-party rules. Only required and accepted for third-party rules",
 			MaxItems:    10,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
@@ -80,7 +80,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 					"query": {
 						Type:        schema.TypeString,
 						Optional:    true,
-						Description: "A query to associate a third party event to this case.",
+						Description: "A query to associate a third-party event to this case.",
 					},
 					"notifications": {
 						Type:        schema.TypeList,
@@ -222,20 +222,20 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:        schema.TypeList,
 						Optional:    true,
 						MaxItems:    1,
-						Description: "Options for rules using the third party detection method.",
+						Description: "Options for rules using the third-party detection method.",
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"default_notifications": {
 									Type:        schema.TypeList,
 									Optional:    true,
-									Description: "Notification targets for the default rule case, when none of the third party cases match.",
+									Description: "Notification targets for the default rule case, when none of the third-party cases match.",
 									Elem:        &schema.Schema{Type: schema.TypeString},
 								},
 								"default_status": {
 									Type:             schema.TypeString,
 									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
 									Required:         true,
-									Description:      "Severity of the default rule case, when none of the third party cases match.",
+									Description:      "Severity of the default rule case, when none of the third-party cases match.",
 								},
 								"signal_title_template": {
 									Type:        schema.TypeString,
@@ -246,13 +246,13 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 									Type:        schema.TypeList,
 									Required:    true,
 									MaxItems:    10,
-									Description: "Queries to be combined with third party case queries. Each of them can have different group by fields, to aggregate differently based on the type of alert.",
+									Description: "Queries to be combined with third-party case queries. Each of them can have different group by fields, to aggregate differently based on the type of alert.",
 									Elem: &schema.Resource{
 										Schema: map[string]*schema.Schema{
 											"query": {
 												Type:        schema.TypeString,
 												Required:    true,
-												Description: "Query to filter logs",
+												Description: "Query to filter logs.",
 											},
 											"group_by_fields": {
 												Type:        schema.TypeList,
