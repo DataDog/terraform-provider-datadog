@@ -69,6 +69,7 @@ var Datasources = []func() datasource.DataSource{
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
+	NewDatadogUsersDataSource,
 }
 
 // FrameworkProvider struct
