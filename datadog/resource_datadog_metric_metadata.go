@@ -30,7 +30,7 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 					Required:    true,
 				},
 				"type": {
-					Description: "Metric type such as `gauge` or `rate`.",
+					Description: "Metric type such as `count`, `gauge`, or `rate`. Updating a metric of type `distribution` is not supported. If you would like to see the `distribution` type returned, please contact Datadog support.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
