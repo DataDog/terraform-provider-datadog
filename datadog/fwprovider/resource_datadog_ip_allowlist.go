@@ -147,9 +147,8 @@ func (r *ipAllowListResource) Create(ctx context.Context, request resource.Creat
 }
 
 func (r *ipAllowListResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var plan, state ipAllowListResourceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	var state ipAllowListResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -160,7 +159,7 @@ func (r *ipAllowListResource) Update(ctx context.Context, request resource.Updat
 	}
 	resp, httpResp, err := r.Api.UpdateIPAllowlist(r.Auth, *ipAllowlistReq)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, ""), "error updating IP allowlist"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, " error updating IP allowlist"), ""))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
