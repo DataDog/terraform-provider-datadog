@@ -238,7 +238,7 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 
 func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
+	attributes := datadogV2.GCPSTSServiceAccountAttributes{}
 
 	if !state.Automute.IsNull() {
 		attributes.SetAutomute(state.Automute.ValueBool())
@@ -258,14 +258,14 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 
 	req := datadogV2.NewGCPSTSServiceAccountCreateRequestWithDefaults()
 	req.Data = datadogV2.NewGCPSTSServiceAccountDataWithDefaults()
-	req.Data.SetAttributes(*attributes)
+	req.Data.SetAttributes(attributes)
 
 	return req, diags
 }
 
 func (r *integrationGcpStsResource) buildIntegrationGcpStsUpdateRequestBody(ctx context.Context, state *integrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
+	attributes := datadogV2.GCPSTSServiceAccountAttributes{}
 
 	if !state.Automute.IsNull() {
 		attributes.SetAutomute(state.Automute.ValueBool())
@@ -285,7 +285,7 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsUpdateRequestBody(ctx 
 
 	req := datadogV2.NewGCPSTSServiceAccountUpdateRequestWithDefaults()
 	req.Data = datadogV2.NewGCPSTSServiceAccountUpdateRequestDataWithDefaults()
-	req.Data.SetAttributes(*attributes)
+	req.Data.SetAttributes(attributes)
 
 	return req, diags
 }
