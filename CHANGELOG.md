@@ -1,3 +1,23 @@
+## 3.35.0 (January 10, 2024)
+
+### IMPROVEMENTS
+* [datadog_rum_application] migrate to framework by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2215
+* [datadog_dashboard][datadog_powerpack] Support cloud cost query in F&F queries by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2211
+* [application_key] Migrate application key resource to framework by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/2224
+* [datadog_metric_metadata] correct consistency of type by @fl0Lec in https://github.com/DataDog/terraform-provider-datadog/pull/2222
+### FEATURES
+* [datadog_integration_aws_event_bridge] Add support for AWS Event Bridge integration by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2204
+* [datadog_users] Added support for the Users data source by @aldrickdev in https://github.com/DataDog/terraform-provider-datadog/pull/2220
+### NOTES
+* Bump datadog-api-client client to 2.21.0 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2234
+
+## New Contributors
+* @NBParis made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2223
+* @aldrickdev made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2220
+* @fl0Lec made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2222
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.34.0...v3.35.0
+
 ## 3.34.0 (December 14, 2023)
 
 ### BUGFIXES
