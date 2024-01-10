@@ -107,9 +107,11 @@ func (r *ipAllowListResource) Read(ctx context.Context, request resource.ReadReq
 		return
 	}
 	ipAllowListData := resp.GetData()
+
+	apiEntries, ok := ipAllowListData.Attributes.GetEntriesOk()
 	priorEntries := state.Entry
 
-	if apiEntries, ok := ipAllowListData.Attributes.GetEntriesOk(); ok && len(*apiEntries) > 0 && priorEntries != nil {
+	if !compareEntries(priorEntries, *apiEntries) && ok && priorEntries != nil {
 		r.updateIPAllowlistEntriesState(ctx, &state, apiEntries)
 	}
 
@@ -260,4 +262,16 @@ func buildIPAllowlistUpdateRequest(state ipAllowListResourceModel) (*datadogV2.I
 	ipAllowlistData.SetAttributes(*ipAllowlistAttributes)
 	ipAllowlistUpdateRequest.SetData(*ipAllowlistData)
 	return ipAllowlistUpdateRequest, nil
+}
+
+func compareEntries(slice1 []*ipAllowListEntry, slice2 []datadogV2.IPAllowlistEntry) bool {
+	if len(slice1) != len(slice2) {
+		return false
+	}
+	for i := range slice1 {
+		if slice1[i].CidrBlock.ValueString() != slice2[i].GetData().Attributes.GetCidrBlock() || slice1[i].Note.ValueString() != slice2[i].GetData().Attributes.GetNote() {
+			return false
+		}
+	}
+	return true
 }
