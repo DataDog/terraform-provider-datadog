@@ -79,7 +79,7 @@ resource "datadog_service_level_objective" "bar" {
 
 - `name` (String) Name of Datadog service level objective
 - `thresholds` (Block List, Min: 1) A list of thresholds and targets that define the service level objectives from the provided SLIs. (see [below for nested schema](#nestedblock--thresholds))
-- `type` (String) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Valid values are `metric`, `monitor`.
+- `type` (String) The type of the service level objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/service-level-objectives/#create-a-slo-object). Valid values are `metric`, `monitor`, `time_slice`.
 
 ### Optional
 
