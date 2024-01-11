@@ -63,6 +63,12 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 						resource_name, "text_replacement.0.type", "partial_replacement_from_beginning"),
 					resource.TestCheckResourceAttr(
 						resource_name, "text_replacement.0.replacement_string", ""),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.keywords.0", "credit card"),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.keywords.1", "cc"),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.character_count", "22"),
 				),
 			},
 			{
@@ -85,6 +91,12 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 						resource_name, "text_replacement.0.type", "partial_replacement_from_beginning"),
 					resource.TestCheckResourceAttr(
 						resource_name, "text_replacement.0.replacement_string", ""),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.keywords.0", "credit card"),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.keywords.1", "cc"),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.character_count", "22"),
 				),
 			},
 			{
@@ -195,6 +207,10 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		number_of_chars = 10
 		replacement_string = ""
 		type = "partial_replacement_from_beginning"
+	}
+	included_keyword_configuration {
+		keywords = ["credit card", "cc"]
+		character_count = 20
 	}
 }
 `, name)

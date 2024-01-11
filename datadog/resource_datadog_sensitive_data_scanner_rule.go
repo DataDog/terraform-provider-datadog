@@ -74,6 +74,28 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Description: "List of tags.",
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
+				"included_keyword_configuration": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"keywords": {
+								Type:        schema.TypeList,
+								Required:    true,
+								Description: "Keyword list that will be checked during scanning in order to validate a match. The number of keywords in the list must be lower or equal than 20.",
+								MaxItems:    20,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
+							"character_count": {
+								Type:        schema.TypeInt,
+								Required:    true,
+								Description: "Number of characters to look backward to find a keyword validating a match. It must be between 1 and 50 included.",
+							},
+						},
+					},
+				},
 				"text_replacement": {
 					Type:        schema.TypeList,
 					Optional:    true,
@@ -272,6 +294,20 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 
 	attributes.SetTextReplacement(textReplacement)
 
+	if _, ok := d.GetOk("included_keyword_configuration"); ok {
+		var includedKeywordConfiguration datadogV2.SensitiveDataScannerIncludedKeywordConfiguration
+
+		if keywords, ok := d.GetOk("included_keyword_configuration.0.keywords"); ok {
+			includedKeywordConfiguration.SetKeywords(keywords.([]string))
+		}
+
+		if characterCount, ok := d.GetOk("included_keyword_configuration.0.character_count"); ok {
+			includedKeywordConfiguration.SetCharacterCount(characterCount.(int64))
+		}
+
+		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
+	}
+
 	return attributes
 }
 
@@ -365,6 +401,23 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 			return diag.FromErr(err)
 		}
 	}
+
+	if incKw, ok := ruleAttributes.GetIncludedKeywordConfigurationOk(); ok && incKw != nil {
+		includedKeywordConfig := make(map[string]interface{})
+		includedKeywordConfigList := make([]map[string]interface{}, 0, 1)
+
+		if keywords, ok := incKw.GetKeywordsOk(); ok {
+			includedKeywordConfig["keywords"] = keywords
+		}
+		if characterCount, ok := incKw.GetCharacterCountOk(); ok {
+			includedKeywordConfig["character_count"] = characterCount
+		}
+		includedKeywordConfigList = append(includedKeywordConfigList, includedKeywordConfig)
+		if err := d.Set("included_keyword_configuration", includedKeywordConfigList); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
 	return nil
 }
 
