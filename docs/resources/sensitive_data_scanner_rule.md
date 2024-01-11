@@ -67,6 +67,7 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
 
 - `description` (String) Description of the rule.
 - `excluded_namespaces` (List of String) Attributes excluded from the scan. If namespaces is provided, it has to be a sub-path of the namespaces array.
+- `included_keyword_configuration` (Block List, Max: 1) Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. (see [below for nested schema](#nestedblock--included_keyword_configuration))
 - `is_enabled` (Boolean) Whether or not the rule is enabled.
 - `name` (String) Name of the rule.
 - `namespaces` (List of String) Attributes included in the scan. If namespaces is empty or missing, all attributes except excluded_namespaces are scanned. If both are missing the whole event is scanned.
@@ -78,6 +79,15 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedblock--included_keyword_configuration"></a>
+### Nested Schema for `included_keyword_configuration`
+
+Required:
+
+- `character_count` (Number) Number of characters to look backward to find a keyword validating a match. It must be between 1 and 50 included.
+- `keywords` (List of String) Keyword list that will be checked during scanning in order to validate a match. The number of keywords in the list must be lower or equal than 20.
+
 
 <a id="nestedblock--text_replacement"></a>
 ### Nested Schema for `text_replacement`
