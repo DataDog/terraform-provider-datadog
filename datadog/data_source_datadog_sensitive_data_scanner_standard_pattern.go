@@ -24,6 +24,12 @@ func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 					Required:    true,
 				},
 				// Computed
+				"included_keywords": {
+					Description: "List of recommended keywords to improve rule accuracy.",
+					Type:        schema.TypeList,
+					Computed:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
 				"name": {
 					Description: "Name of the standard pattern.",
 					Type:        schema.TypeString,
@@ -78,6 +84,9 @@ func dataSourceDatadogSensitiveDataScannerStandardPatternRead(ctx context.Contex
 }
 
 func dataSourceSensitiveDataScannerStandardPatternUpdate(d *schema.ResourceData, standardPattern *datadogV2.SensitiveDataScannerStandardPatternsResponseItem) diag.Diagnostics {
+	if err := d.Set("included_keywords", standardPattern.Attributes.GetIncludedKeywords()); err != nil {
+		return diag.FromErr(err)
+	}
 	if err := d.Set("name", standardPattern.Attributes.GetName()); err != nil {
 		return diag.FromErr(err)
 	}
