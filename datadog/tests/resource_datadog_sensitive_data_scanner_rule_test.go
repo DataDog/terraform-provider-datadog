@@ -68,7 +68,7 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						resource_name, "included_keyword_configuration.0.keywords.1", "cc"),
 					resource.TestCheckResourceAttr(
-						resource_name, "included_keyword_configuration.0.character_count", "22"),
+						resource_name, "included_keyword_configuration.0.character_count", "20"),
 				),
 			},
 			{
@@ -96,7 +96,7 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						resource_name, "included_keyword_configuration.0.keywords.1", "cc"),
 					resource.TestCheckResourceAttr(
-						resource_name, "included_keyword_configuration.0.character_count", "22"),
+						resource_name, "included_keyword_configuration.0.character_count", "20"),
 				),
 			},
 			{
@@ -285,6 +285,10 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 	group_id = datadog_sensitive_data_scanner_group.new_group.id
 	pattern = "regex"
 	tags = ["sensitive_data:true"]
+	included_keyword_configuration {
+		keywords = ["credit card", "cc"]
+		character_count = 20
+	}
 }
 `, name)
 }
