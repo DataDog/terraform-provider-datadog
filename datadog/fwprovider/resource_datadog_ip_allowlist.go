@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -49,7 +50,7 @@ func (r *ipAllowListResource) Metadata(_ context.Context, request resource.Metad
 
 func (r *ipAllowListResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "",
+		Description: "Provides the Datadog IP allowlist resource. This can be used to manage the Datadog IP allowlist",
 		Attributes: map[string]schema.Attribute{
 			"enabled": schema.BoolAttribute{
 				Description: "Whether the IP Allowlist is enabled.",
@@ -88,6 +89,7 @@ func (r *ipAllowListResource) Configure(_ context.Context, request resource.Conf
 }
 
 func (r *ipAllowListResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
 func (r *ipAllowListResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -115,7 +117,7 @@ func (r *ipAllowListResource) Read(ctx context.Context, request resource.ReadReq
 		r.updateIPAllowlistEntriesState(ctx, &state, apiEntries)
 	}
 
-	r.updateState(ctx, &state, ipAllowListData.Attributes)
+	r.updateEnableState(ctx, &state, ipAllowListData.Attributes)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 
 }
@@ -211,6 +213,14 @@ func (r *ipAllowListResource) updateState(ctx context.Context, state *ipAllowLis
 
 		if entries, ok := ipAllowlistAttrs.GetEntriesOk(); ok && len(*entries) > 0 {
 			r.updateIPAllowlistEntriesState(ctx, state, entries)
+		}
+	}
+}
+
+func (r *ipAllowListResource) updateEnableState(ctx context.Context, state *ipAllowListResourceModel, ipAllowlistAttrs *datadogV2.IPAllowlistAttributes) {
+	if ipAllowlistAttrs != nil {
+		if enabled, ok := ipAllowlistAttrs.GetEnabledOk(); ok && enabled != nil {
+			state.Enabled = types.BoolValue(*enabled)
 		}
 	}
 }
