@@ -297,9 +297,11 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 	if _, ok := d.GetOk("included_keyword_configuration"); ok {
 		var includedKeywordConfiguration datadogV2.SensitiveDataScannerIncludedKeywordConfiguration
 
-		if keywords, ok := d.GetOk("included_keyword_configuration.0.keywords"); ok {
-			includedKeywordConfiguration.SetKeywords(keywords.([]string))
+		keywords := []string{}
+		for _, kw := range d.Get("included_keyword_configuration.0.keywords").([]interface{}) {
+			keywords = append(keywords, kw.(string))
 		}
+		includedKeywordConfiguration.SetKeywords(keywords)
 
 		if characterCount, ok := d.GetOk("included_keyword_configuration.0.character_count"); ok {
 			includedKeywordConfiguration.SetCharacterCount(characterCount.(int64))
