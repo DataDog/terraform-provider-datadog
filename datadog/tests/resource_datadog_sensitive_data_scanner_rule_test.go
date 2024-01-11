@@ -249,6 +249,10 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		replacement_string = ""
 		type = "partial_replacement_from_beginning"
 	}
+	included_keyword_configuration {
+		keywords = ["credit card", "cc"]
+		character_count = 20
+	}
 }
 `, name)
 }
