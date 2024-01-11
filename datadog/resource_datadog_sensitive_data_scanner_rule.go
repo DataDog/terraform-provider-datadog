@@ -304,7 +304,7 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		includedKeywordConfiguration.SetKeywords(keywords)
 
 		if characterCount, ok := d.GetOk("included_keyword_configuration.0.character_count"); ok {
-			includedKeywordConfiguration.SetCharacterCount(characterCount.(int64))
+			includedKeywordConfiguration.SetCharacterCount(int64(characterCount.(int)))
 		}
 
 		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
