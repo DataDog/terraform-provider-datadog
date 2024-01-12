@@ -34,6 +34,10 @@ func TestAccDatadogIPAllowlist_CreateUpdate(t *testing.T) {
 						"cidr_block": "1.2.3.4/32",
 						"note":       "entry 2",
 					}),
+					resource.TestCheckTypeSetElemNestedAttrs("datadog_ip_allowlist.foo", "entry.*", map[string]string{
+						"cidr_block": "::/0",
+						"note":       "ipv6 entry",
+					}),
 				),
 			},
 			{
@@ -47,6 +51,10 @@ func TestAccDatadogIPAllowlist_CreateUpdate(t *testing.T) {
 					resource.TestCheckTypeSetElemNestedAttrs("datadog_ip_allowlist.foo", "entry.*", map[string]string{
 						"cidr_block": "1.2.3.4/32",
 						"note":       "fake entry",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs("datadog_ip_allowlist.foo", "entry.*", map[string]string{
+						"cidr_block": "::/0",
+						"note":       "ipv6 entry",
 					}),
 				),
 			},
@@ -93,6 +101,10 @@ resource "datadog_ip_allowlist" "foo" {
 		cidr_block = "1.2.3.4/32"
 		note = "entry 2"
 	}
+	entry{
+		cidr_block = "::/0"
+		note = "ipv6 entry"
+	}
 }`
 }
 
@@ -107,6 +119,10 @@ resource "datadog_ip_allowlist" "foo" {
 	entry {
 		cidr_block = "0.0.0.0/0"
 		note = "all"
+	}
+	entry{
+		cidr_block = "::/0"
+		note = "ipv6 entry"
 	}
 }`
 }
