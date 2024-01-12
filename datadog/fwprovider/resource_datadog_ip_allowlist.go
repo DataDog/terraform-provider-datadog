@@ -40,10 +40,6 @@ type ipAllowListEntry struct {
 	Note      types.String `tfsdk:"note"`
 }
 
-func (e *ipAllowListEntry) EqualCidrBlock(other *ipAllowListEntry) bool {
-	return utils.NormalizeIPAddress(e.CidrBlock.String()) == utils.NormalizeIPAddress(other.CidrBlock.String())
-}
-
 func (r *ipAllowListResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "ip_allowlist"
 }
