@@ -59,7 +59,7 @@ interactions:
     duration: "0ms"
 - request:
     body: |
-      {"data":{"attributes":{"enabled":true,"entries":[{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"0.0.0.0/0","note":"all"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
+      {"data":{"attributes":{"enabled":true,"entries":[{"data":{"attributes":{"cidr_block":"0.0.0.0/0","note":"all"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
     form: {}
     headers:
       Accept:

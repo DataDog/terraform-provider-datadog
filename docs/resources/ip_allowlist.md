@@ -32,7 +32,7 @@ Provides the Datadog IP allowlist resource. This can be used to manage the Datad
 
 Required:
 
-- `cidr_block` (String)
+- `cidr_block` (String) IP address or range of addresses.
 
 Optional:
 
