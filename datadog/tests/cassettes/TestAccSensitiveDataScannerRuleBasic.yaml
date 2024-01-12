@@ -31,13 +31,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},"meta":{"version":699}}
+            {"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},"meta":{"version":749}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 160.18225ms
+        duration: 249.08175ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"a description","excluded_namespaces":["username"],"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
+            {"data":{"attributes":{"description":"a description","excluded_namespaces":["username"],"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
         form: {}
         headers:
             Accept:
@@ -68,13 +68,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}},"meta":{"version":700}}
+            {"data":{"id":"2H6nzIgZTRSokYiO3D7HoA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}},"meta":{"version":750}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 235.370084ms
+        duration: 183.520167ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":700,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":750,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"2H6nzIgZTRSokYiO3D7HoA","type":"sensitive_data_scanner_rule"}]}}},{"id":"2H6nzIgZTRSokYiO3D7HoA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 161.310167ms
+        duration: 166.309833ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -136,13 +136,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":700,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":750,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"2H6nzIgZTRSokYiO3D7HoA","type":"sensitive_data_scanner_rule"}]}}},{"id":"2H6nzIgZTRSokYiO3D7HoA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 150.979125ms
+        duration: 223.691667ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -170,13 +170,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":700,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":750,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"2H6nzIgZTRSokYiO3D7HoA","type":"sensitive_data_scanner_rule"}]}}},{"id":"2H6nzIgZTRSokYiO3D7HoA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 153.229875ms
+        duration: 144.997334ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -204,13 +204,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":700,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":750,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"2H6nzIgZTRSokYiO3D7HoA","type":"sensitive_data_scanner_rule"}]}}},{"id":"2H6nzIgZTRSokYiO3D7HoA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 170.619167ms
+        duration: 236.678459ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -238,14 +238,51 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":700,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":750,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"2H6nzIgZTRSokYiO3D7HoA","type":"sensitive_data_scanner_rule"}]}}},{"id":"2H6nzIgZTRSokYiO3D7HoA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 158.192375ms
+        duration: 154.843084ms
     - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 12
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules/2H6nzIgZTRSokYiO3D7HoA
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 25
+        uncompressed: false
+        body: |
+            {"meta":{"version":751}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 362.572625ms
+    - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -257,14 +294,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"]},"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},"meta":{}}
+            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"my group","product_list":["logs"]},"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},"meta":{}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/groups/U_mLZBHaRhqh2vv2Q6wm3A
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/groups/_Pgwv1IySCqoAie7pdQ21Q
         method: PATCH
       response:
         proto: HTTP/2.0
@@ -275,68 +312,34 @@ interactions:
         content_length: 25
         uncompressed: false
         body: |
-            {"meta":{"version":701}}
+            {"meta":{"version":752}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 236.74475ms
-    - id: 8
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 495
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"},"meta":{}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules/gHJfMhtOQBSH66Vep9CTpA
-        method: PATCH
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 25
-        uncompressed: false
-        body: |
-            {"meta":{"version":702}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 270.871625ms
+        duration: 208.74975ms
     - id: 9
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 0
+        content_length: 570
         transfer_encoding: []
         trailer: {}
         host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
-        body: ""
+        body: |
+            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":false,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
         form: {}
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config
-        method: GET
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules
+        method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
@@ -346,13 +349,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":702,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"Efaqww-hT7aInk5sa5HJ6A","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}},"meta":{"version":753}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 213.814ms
+        duration: 176.470916ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -380,13 +383,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":702,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":753,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"Efaqww-hT7aInk5sa5HJ6A","type":"sensitive_data_scanner_rule"}]}}},{"id":"Efaqww-hT7aInk5sa5HJ6A","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 137.674666ms
+        duration: 152.161167ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -414,13 +417,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":702,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":753,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"Efaqww-hT7aInk5sa5HJ6A","type":"sensitive_data_scanner_rule"}]}}},{"id":"Efaqww-hT7aInk5sa5HJ6A","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 128.731125ms
+        duration: 132.731708ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -448,13 +451,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":702,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":753,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"Efaqww-hT7aInk5sa5HJ6A","type":"sensitive_data_scanner_rule"}]}}},{"id":"Efaqww-hT7aInk5sa5HJ6A","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 140.525417ms
+        duration: 168.71075ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -482,125 +485,14 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":702,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"gHJfMhtOQBSH66Vep9CTpA","type":"sensitive_data_scanner_rule"}]}}},{"id":"gHJfMhtOQBSH66Vep9CTpA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":753,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"Efaqww-hT7aInk5sa5HJ6A","type":"sensitive_data_scanner_rule"}]}}},{"id":"Efaqww-hT7aInk5sa5HJ6A","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.463583ms
+        duration: 145.920458ms
     - id: 14
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 12
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"meta":{}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules/gHJfMhtOQBSH66Vep9CTpA
-        method: DELETE
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 25
-        uncompressed: false
-        body: |
-            {"meta":{"version":703}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 164.776959ms
-    - id: 15
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 178
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"another group","product_list":["apm"]},"type":"sensitive_data_scanner_group"},"meta":{}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/groups
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},"meta":{"version":704}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 164.01025ms
-    - id: 16
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 569
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}},"meta":{"version":705}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 165.467833ms
-    - id: 17
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -627,13 +519,124 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":705,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":753,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"Efaqww-hT7aInk5sa5HJ6A","type":"sensitive_data_scanner_rule"}]}}},{"id":"Efaqww-hT7aInk5sa5HJ6A","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":false,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 132.552916ms
+        duration: 147.219ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 12
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules/Efaqww-hT7aInk5sa5HJ6A
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 25
+        uncompressed: false
+        body: |
+            {"meta":{"version":754}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 276.836459ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 179
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":false,"name":"another group","product_list":["apm"]},"type":"sensitive_data_scanner_group"},"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/groups
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},"meta":{"version":755}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 145.807167ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"}},"relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"_DHkNGBjTYeZVbC7Gj9IkA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}},"meta":{"version":756}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 166.877375ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -661,13 +664,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":705,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":756,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"_DHkNGBjTYeZVbC7Gj9IkA","type":"sensitive_data_scanner_rule"}]}}},{"id":"_DHkNGBjTYeZVbC7Gj9IkA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 131.445417ms
+        duration: 156.128167ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -695,13 +698,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":705,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":756,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"_DHkNGBjTYeZVbC7Gj9IkA","type":"sensitive_data_scanner_rule"}]}}},{"id":"_DHkNGBjTYeZVbC7Gj9IkA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 133.361667ms
+        duration: 135.383375ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -729,13 +732,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":705,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":756,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"_DHkNGBjTYeZVbC7Gj9IkA","type":"sensitive_data_scanner_rule"}]}}},{"id":"_DHkNGBjTYeZVbC7Gj9IkA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 137.403ms
+        duration: 273.995209ms
     - id: 21
       request:
         proto: HTTP/1.1
@@ -763,13 +766,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":705,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":756,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"_DHkNGBjTYeZVbC7Gj9IkA","type":"sensitive_data_scanner_rule"}]}}},{"id":"_DHkNGBjTYeZVbC7Gj9IkA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 224.641333ms
+        duration: 158.098542ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -797,13 +800,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":705,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":756,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"_DHkNGBjTYeZVbC7Gj9IkA","type":"sensitive_data_scanner_rule"}]}}},{"id":"_DHkNGBjTYeZVbC7Gj9IkA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 224.79725ms
+        duration: 202.436833ms
     - id: 23
       request:
         proto: HTTP/1.1
@@ -831,34 +834,68 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":705,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":756,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"_DHkNGBjTYeZVbC7Gj9IkA","type":"sensitive_data_scanner_rule"}]}}},{"id":"_DHkNGBjTYeZVbC7Gj9IkA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 145.952292ms
+        duration: 202.436667ms
     - id: 24
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 443
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":756,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"_DHkNGBjTYeZVbC7Gj9IkA","type":"sensitive_data_scanner_rule"}]}}},{"id":"_DHkNGBjTYeZVbC7Gj9IkA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"number_of_chars":10,"type":"partial_replacement_from_beginning"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 217.626875ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 12
         transfer_encoding: []
         trailer: {}
         host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"included_keyword_configuration":{"character_count":20,"keywords":["credit card","cc"]},"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"},"meta":{}}
+            {"meta":{}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules/qIjEKEnKSSOpVJD1O9vAOw
-        method: PATCH
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules/_DHkNGBjTYeZVbC7Gj9IkA
+        method: DELETE
       response:
         proto: HTTP/2.0
         proto_major: 2
@@ -868,65 +905,34 @@ interactions:
         content_length: 25
         uncompressed: false
         body: |
-            {"meta":{"version":706}}
+            {"meta":{"version":757}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 169.278167ms
-    - id: 25
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":706,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 173.522167ms
+        duration: 221.624458ms
     - id: 26
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 0
+        content_length: 430
         transfer_encoding: []
         trailer: {}
         host: api.datad0g.com
         remote_addr: ""
         request_uri: ""
-        body: ""
+        body: |
+            {"data":{"attributes":{"description":"another description","excluded_namespaces":["email"],"is_enabled":true,"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
         form: {}
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config
-        method: GET
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules
+        method: POST
       response:
         proto: HTTP/2.0
         proto_major: 2
@@ -936,13 +942,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":706,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"mu36RMAKTm2jKWkSgk71rA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}},"meta":{"version":758}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 133.388791ms
+        duration: 153.131541ms
     - id: 27
       request:
         proto: HTTP/1.1
@@ -970,13 +976,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":706,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":758,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"mu36RMAKTm2jKWkSgk71rA","type":"sensitive_data_scanner_rule"}]}}},{"id":"mu36RMAKTm2jKWkSgk71rA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 134.308792ms
+        duration: 153.782959ms
     - id: 28
       request:
         proto: HTTP/1.1
@@ -1004,125 +1010,14 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","type":"sensitive_data_scanner_group"},{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":706,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"U_mLZBHaRhqh2vv2Q6wm3A","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"MBukMl0wRBmZUP_Bi7grLg","attributes":{"name":"another group","is_enabled":true,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"qIjEKEnKSSOpVJD1O9vAOw","type":"sensitive_data_scanner_rule"}]}}},{"id":"qIjEKEnKSSOpVJD1O9vAOw","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1704984171","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description","included_keyword_configuration":{"keywords":["credit card","cc"],"character_count":20}},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"MBukMl0wRBmZUP_Bi7grLg","type":"sensitive_data_scanner_group"}}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":758,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"mu36RMAKTm2jKWkSgk71rA","type":"sensitive_data_scanner_rule"}]}}},{"id":"mu36RMAKTm2jKWkSgk71rA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 154.61125ms
+        duration: 128.030292ms
     - id: 29
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 12
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"meta":{}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/groups/U_mLZBHaRhqh2vv2Q6wm3A
-        method: DELETE
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 25
-        uncompressed: false
-        body: |
-            {"meta":{"version":707}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 201.480917ms
-    - id: 30
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 12
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"meta":{}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules/qIjEKEnKSSOpVJD1O9vAOw
-        method: DELETE
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 25
-        uncompressed: false
-        body: |
-            {"meta":{"version":708}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 171.320458ms
-    - id: 31
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 12
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"meta":{}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/groups/MBukMl0wRBmZUP_Bi7grLg
-        method: DELETE
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 25
-        uncompressed: false
-        body: |
-            {"meta":{"version":709}}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 236.731667ms
-    - id: 32
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -1149,10 +1044,189 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":709,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}}]}
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":758,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"mu36RMAKTm2jKWkSgk71rA","type":"sensitive_data_scanner_rule"}]}}},{"id":"mu36RMAKTm2jKWkSgk71rA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 158.07475ms
+        duration: 128.785209ms
+    - id: 30
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"},{"id":"_Pgwv1IySCqoAie7pdQ21Q","type":"sensitive_data_scanner_group"},{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":758,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"_Pgwv1IySCqoAie7pdQ21Q","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"eLxfig1IQdy_X4nZzxyKSQ","attributes":{"name":"another group","is_enabled":false,"filter":{"query":"*"},"product_list":["apm"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"mu36RMAKTm2jKWkSgk71rA","type":"sensitive_data_scanner_rule"}]}}},{"id":"mu36RMAKTm2jKWkSgk71rA","attributes":{"name":"tf-TestAccSensitiveDataScannerRuleBasic-local-1705054335","namespaces":[],"excluded_namespaces":["email"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"is_enabled":true,"description":"another description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"eLxfig1IQdy_X4nZzxyKSQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.421583ms
+    - id: 31
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 12
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/groups/_Pgwv1IySCqoAie7pdQ21Q
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 25
+        uncompressed: false
+        body: |
+            {"meta":{"version":759}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 239.235375ms
+    - id: 32
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 12
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/rules/mu36RMAKTm2jKWkSgk71rA
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 25
+        uncompressed: false
+        body: |
+            {"meta":{"version":760}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 218.856834ms
+    - id: 33
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 12
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config/groups/eLxfig1IQdy_X4nZzxyKSQ
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 25
+        uncompressed: false
+        body: |
+            {"meta":{"version":761}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 189.2815ms
+    - id: 34
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"},{"id":"IUfNAJiPRgCM5c6y15hDAQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":761,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true},"included":[{"id":"YPQGGU13RBGLfEm9WDdWxw","attributes":{"name":"dfd","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"F7ISTbJkTGa5STKPWUiRvg","type":"sensitive_data_scanner_rule"},{"id":"m0nvkaMwS1uV7fW9lNr0dw","type":"sensitive_data_scanner_rule"}]}}},{"id":"F7ISTbJkTGa5STKPWUiRvg","attributes":{"name":"AWS Access Key ID Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:credentials","sensitive_data:aws_access_key_id"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"OfGqX8R9TRqAcorxenl2fQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"m0nvkaMwS1uV7fW9lNr0dw","attributes":{"name":"IPv6 Address Scanner","namespaces":[],"excluded_namespaces":[],"text_replacement":{"type":"none"},"tags":["sensitive_data_category:ip_address","sensitive_data:ipv6_address"],"is_enabled":true},"type":"sensitive_data_scanner_rule","relationships":{"standard_pattern":{"data":{"id":"s3sEZP5fSTGSPLPS853VeQ","type":"sensitive_data_scanner_standard_pattern"}},"group":{"data":{"id":"YPQGGU13RBGLfEm9WDdWxw","type":"sensitive_data_scanner_group"}}}},{"id":"IUfNAJiPRgCM5c6y15hDAQ","attributes":{"name":"my group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"description":""},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"75c8c98216e17608c0b526e962c5e08cb526316a4a3aa5acd87f6f5018ab41f0","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 143.400708ms

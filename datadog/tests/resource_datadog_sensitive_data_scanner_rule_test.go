@@ -229,7 +229,7 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 
 resource "datadog_sensitive_data_scanner_group" "new_group" {
 	name = "another group"
-	is_enabled = true
+	is_enabled = false
 	product_list = ["apm"]
 	filter {
 		query = "*"
@@ -270,7 +270,7 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 
 resource "datadog_sensitive_data_scanner_group" "new_group" {
 	name = "another group"
-	is_enabled = true
+	is_enabled = false
 	product_list = ["apm"]
 	filter {
 		query = "*"
@@ -285,10 +285,6 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 	group_id = datadog_sensitive_data_scanner_group.new_group.id
 	pattern = "regex"
 	tags = ["sensitive_data:true"]
-	included_keyword_configuration {
-		keywords = ["credit card", "cc"]
-		character_count = 20
-	}
 }
 `, name)
 }

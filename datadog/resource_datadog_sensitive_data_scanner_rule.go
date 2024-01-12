@@ -78,6 +78,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
+					ForceNew:    true, // If the attribute is removed, we need to recreate the rule.
 					Description: "Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
