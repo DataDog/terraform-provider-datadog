@@ -223,6 +223,7 @@ func Provider() *schema.Provider {
 			"datadog_role":                                    dataSourceDatadogRole(),
 			"datadog_roles":                                   dataSourceDatadogRoles(),
 			"datadog_security_monitoring_rules":               dataSourceDatadogSecurityMonitoringRules(),
+			"datadog_security_monitoring_suppressions":        dataSourceDatadogSecurityMonitoringSuppressions(),
 			"datadog_security_monitoring_filters":             dataSourceDatadogSecurityMonitoringFilters(),
 			"datadog_sensitive_data_scanner_standard_pattern": dataSourceDatadogSensitiveDataScannerStandardPattern(),
 			"datadog_service_level_objective":                 dataSourceDatadogServiceLevelObjective(),
