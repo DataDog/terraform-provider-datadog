@@ -205,6 +205,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_security_monitoring_default_rule_test":           "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_test":                 "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_test":                   "security-monitoring",
+	"tests/resource_datadog_security_monitoring_suppression_test":            "security-monitoring",
 	"tests/resource_datadog_sensitive_data_scanner_group_order_test":         "sensitive-data-scanner",
 	"tests/resource_datadog_sensitive_data_scanner_group_test":               "sensitive-data-scanner",
 	"tests/resource_datadog_sensitive_data_scanner_rule_test":                "sensitive-data-scanner",
