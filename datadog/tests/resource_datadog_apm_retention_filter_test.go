@@ -31,7 +31,11 @@ func TestAccApmRetentionFilter(t *testing.T) {
 					testAccCheckDatadogApmRetentionFilterExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "filter.query", query),
-					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "rate", rate)),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "rate", rate),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "enabled", "true"),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.testtwo", "name", uniq+" - second"),
+					resource.TestCheckResourceAttr("datadog_apm_retention_filter.testtwo", "enabled", "false"),
+				),
 			},
 			{
 				Config: buildApmRetentionFilterResourceConfig(uniq, updatedQuery, updatedRate),
@@ -113,13 +117,23 @@ func ApmRetentionFilterExistsHelper(auth context.Context, s *terraform.State, ap
 func buildApmRetentionFilterResourceConfig(name, query string, rate string) string {
 	t := fmt.Sprintf(`
 		resource "datadog_apm_retention_filter" "test" {
-			name = "%s"
-			rate = "%s"
+			name = "%[1]s"
+			rate = "%[2]s"
 			filter {
-				query = "%s"
+				query = "%[3]s"
 			}
 			filter_type = "spans-sampling-processor"
 			enabled = true
+		}
+
+		resource "datadog_apm_retention_filter" "testtwo" {
+			name = "%[1]s - second"
+			rate = "%[2]s"
+			filter {
+				query = "%[3]s"
+			}
+			filter_type = "spans-sampling-processor"
+			enabled = false
 		}
 	`, name, rate, query)
 	return t

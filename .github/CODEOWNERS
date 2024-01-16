@@ -29,6 +29,7 @@ datadog/*service_account*                 @DataDog/integrations-tools-and-librar
 
 # Framework resources/data-sources
 datadog/**/*datadog_api_key*                    @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
+datadog/**/*datadog_apm_retention_filter*       @DataDog/integrations-tools-and-libraries @DataDog/apm-trace-intake
 datadog/**/*datadog_hosts*                      @DataDog/integrations-tools-and-libraries @DataDog/redapl-storage
 datadog/**/*datadog_ip_ranges*                  @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
 datadog/**/*datadog_integration_aws*            @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations

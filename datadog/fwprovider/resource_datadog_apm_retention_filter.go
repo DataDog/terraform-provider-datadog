@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -24,6 +25,8 @@ var (
 	_ resource.ResourceWithConfigure   = &ApmRetentionFilterResource{}
 	_ resource.ResourceWithImportState = &ApmRetentionFilterResource{}
 )
+
+var apmRetentionFilterMutex = sync.Mutex{}
 
 type ApmRetentionFilterResource struct {
 	Api  *datadogV2.APMRetentionFiltersApi
@@ -142,6 +145,9 @@ func (r *ApmRetentionFilterResource) Create(ctx context.Context, request resourc
 		return
 	}
 
+	apmRetentionFilterMutex.Lock()
+	defer apmRetentionFilterMutex.Unlock()
+
 	resp, _, err := r.Api.CreateApmRetentionFilter(r.Auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving retention filter"))
@@ -172,6 +178,9 @@ func (r *ApmRetentionFilterResource) Update(ctx context.Context, request resourc
 		return
 	}
 
+	apmRetentionFilterMutex.Lock()
+	defer apmRetentionFilterMutex.Unlock()
+
 	resp, _, err := r.Api.UpdateApmRetentionFilter(r.Auth, id, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving retention filter"))
@@ -195,6 +204,9 @@ func (r *ApmRetentionFilterResource) Delete(ctx context.Context, request resourc
 	}
 
 	id := state.ID.ValueString()
+
+	apmRetentionFilterMutex.Lock()
+	defer apmRetentionFilterMutex.Unlock()
 
 	httpResp, err := r.Api.DeleteApmRetentionFilter(r.Auth, id)
 	if err != nil {
