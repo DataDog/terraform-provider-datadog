@@ -55,3 +55,38 @@ resource "datadog_service_level_objective" "bar" {
 
   tags = ["foo:bar", "baz"]
 }
+
+resource "datadog_service_level_objective" "time_slice_slo" {
+  name        = "Example Time Slice SLO"
+  type        = "time_slice"
+  description = "My custom time slice SLO"
+  sli_specification {
+    time_slice {
+      query {
+        formulas {
+          formula = "query1"
+        }
+        queries {
+          metric_query {
+            name  = "query1"
+            query = "avg:my.custom.count.metric{*}.as_count()"
+          }
+        }
+      }
+      comparator = ">"
+      treshold   = 0.9
+    }
+  }
+
+  thresholds {
+    timeframe = "7d"
+    target    = 99.9
+    warning   = 99.99
+  }
+
+  timeframe         = "7d"
+  target_threshold  = 99.9
+  warning_threshold = 99.99
+
+  tags = ["service:myservice", "team:myteam"]
+}
