@@ -1,167 +1,320 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"cases":[{"condition":"first \u003e 3","name":"high case","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1679093106","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1679093106_random_id OR random_id)"}],"tags":["u:tomato","i:tomato"],"type":"workload_security"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"id":"jzg-tqe-ryq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1679093106","createdAt":1679093107379,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1679093106_random_id OR random_id)","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"condition":"first > 3","name":"high case","status":"high","notifications":[]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/jzg-tqe-ryq
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"id":"jzg-tqe-ryq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1679093106","createdAt":1679093107379,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1679093106_random_id OR random_id)","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"condition":"first > 3","name":"high case","status":"high","notifications":[]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/jzg-tqe-ryq
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"id":"jzg-tqe-ryq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1679093106","createdAt":1679093107379,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1679093106_random_id OR random_id)","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"condition":"first > 3","name":"high case","status":"high","notifications":[]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/jzg-tqe-ryq
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"id":"jzg-tqe-ryq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1679093106","createdAt":1679093107379,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1679093106_random_id OR random_id)","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"condition":"first > 3","name":"high case","status":"high","notifications":[]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"cases":[{"condition":"first \u003e 10","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1679093106","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["service"],"metric":"","metrics":[],"name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1679093106_random_id OR random_id)"}],"tags":["u:tomato","i:tomato"]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/jzg-tqe-ryq
-    method: PUT
-    id: 4
-  response:
-    body: |
-      {"id":"jzg-tqe-ryq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1679093106","createdAt":1679093107379,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1679093106_random_id OR random_id)","groupByFields":["service"],"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"condition":"first > 10","name":"high case (updated)","status":"medium","notifications":["@user"]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/jzg-tqe-ryq
-    method: GET
-    id: 5
-  response:
-    body: |
-      {"id":"jzg-tqe-ryq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1679093106","createdAt":1679093107379,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1679093106_random_id OR random_id)","groupByFields":["service"],"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"condition":"first > 10","name":"high case (updated)","status":"medium","notifications":["@user"]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/jzg-tqe-ryq
-    method: GET
-    id: 6
-  response:
-    body: |
-      {"id":"jzg-tqe-ryq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1679093106","createdAt":1679093107379,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1679093106_random_id OR random_id)","groupByFields":["service"],"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"condition":"first > 10","name":"high case (updated)","status":"medium","notifications":["@user"]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/jzg-tqe-ryq
-    method: DELETE
-    id: 7
-  response:
-    body: ""
-    headers: {}
-    status: 204 No Content
-    code: 204
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/jzg-tqe-ryq
-    method: GET
-    id: 8
-  response:
-    body: |
-      {"errors":["Threat detection rule not found: jzg-tqe-ryq"]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 651
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"first \u003e 3","name":"high case","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1704810503","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1704810503_random_id OR random_id)"}],"tags":["u:tomato","i:tomato"],"type":"workload_security"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"pwc-gll-h2w","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1704810503_random_id OR random_id)","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first > 3"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 432.831166ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pwc-gll-h2w
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"pwc-gll-h2w","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1704810503_random_id OR random_id)","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first > 3"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 430.099167ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pwc-gll-h2w
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"pwc-gll-h2w","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1704810503_random_id OR random_id)","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first > 3"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 283.5575ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pwc-gll-h2w
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"pwc-gll-h2w","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1704810503_random_id OR random_id)","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first > 3"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.978083ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 656
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"first \u003e 10","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1704810503","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["service"],"metric":"","metrics":[],"name":"first","query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1704810503_random_id OR random_id)"}],"tags":["u:tomato","i:tomato"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pwc-gll-h2w
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"pwc-gll-h2w","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1704810503_random_id OR random_id)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first > 10"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 357.186458ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pwc-gll-h2w
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"pwc-gll-h2w","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1704810503_random_id OR random_id)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first > 10"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 143.995958ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pwc-gll-h2w
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"pwc-gll-h2w","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_CwsRule-local-1704810503","createdAt":1704810507979,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@agent.rule_id:(tf_TestAccDatadogSecurityMonitoringRule_CwsRule_local_1704810503_random_id OR random_id)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first > 10"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"workload_security","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 172.275667ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pwc-gll-h2w
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 202.19225ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/pwc-gll-h2w
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["Threat detection rule not found: pwc-gll-h2w"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 135.621792ms

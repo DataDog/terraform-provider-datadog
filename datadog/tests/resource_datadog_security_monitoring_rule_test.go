@@ -214,6 +214,29 @@ func TestAccDatadogSecurityMonitoringRule_InvalidTypes(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_ThirdParty(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedThirdPartyConfig(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringCreatedThirdPartyCheck(accProvider, ruleName),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyConfig(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyCheck(accProvider, ruleName),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogSecurityMonitoringCreatedConfig(name string) string {
 	return testAccCheckDatadogSecurityMonitoringCreatedConfigWithId(name, "")
 }
@@ -1350,6 +1373,141 @@ func testAccCheckDatadogSecurityMonitorCreatedRequiredCheck(accProvider func() (
 			tfSecurityRuleName, "options.0.keep_alive", "600"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyConfig(ruleName string) string {
+	return fmt.Sprintf(`
+		resource "datadog_security_monitoring_rule" "acceptance_test" {
+			name = "%s"
+			message = "third party rule triggered"
+
+			third_party_case {
+				query         = "@alert.severity:[5 TO 10]"
+				name          = "High severity alert"
+				status        = "high"
+				notifications = ["@slack-channel"]
+			}
+
+			third_party_case {
+				query  = "@alert.severity:[1 TO 4]"
+				name   = "Low severity alert"
+				status = "low"
+			}
+
+			options {
+				detection_method = "third_party"
+
+				third_party_rule_options {
+					default_status = "info"
+
+					root_query {
+						query           = "source:guardduty @data.resourceType:*EC2*"
+						group_by_fields = ["instance-id"]
+					}
+
+					root_query {
+						query           = "source:guardduty"
+						group_by_fields = []
+					}
+				}
+			}
+		}
+	`, ruleName)
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "message", "third party rule triggered"),
+		// Cases and queries should not be set for third party rules
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "case.#", "0"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "query.#", "0"),
+		// Instead, third party cases should be set
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.0.query", "@alert.severity:[5 TO 10]"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.0.name", "High severity alert"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.0.status", "high"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.0.notifications.0", "@slack-channel"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.1.query", "@alert.severity:[1 TO 4]"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.1.name", "Low severity alert"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.1.status", "low"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.default_status", "info"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.root_query.0.query", "source:guardduty @data.resourceType:*EC2*"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.root_query.0.group_by_fields.0", "instance-id"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.root_query.1.query", "source:guardduty"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyConfig(ruleName string) string {
+	// Add an additional root query
+	return fmt.Sprintf(`
+		resource "datadog_security_monitoring_rule" "acceptance_test" {
+			name = "%s"
+			message = "third party rule triggered"
+
+			third_party_case {
+				query         = "@alert.severity:[5 TO 10]"
+				name          = "High severity alert"
+				status        = "high"
+				notifications = ["@slack-channel"]
+			}
+
+			third_party_case {
+				query  = "@alert.severity:[1 TO 4]"
+				name   = "Low severity alert"
+				status = "low"
+			}
+
+			options {
+				detection_method = "third_party"
+
+				third_party_rule_options {
+					default_status = "info"
+
+					root_query {
+						query           = "source:guardduty @data.resourceType:*EC2*"
+						group_by_fields = ["instance-id"]
+					}
+
+					root_query {
+						query           = "source:guardduty @data.resourceType:*S3*"
+						group_by_fields = ["@resourceProperties.bucketId"]
+					}
+
+					root_query {
+						query           = "source:guardduty"
+						group_by_fields = []
+					}
+				}
+			}
+		}
+	`, ruleName)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyCheck(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "message", "third party rule triggered"),
+		// Cases and queries should not be set for third party rules
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "case.#", "0"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "query.#", "0"),
+		// Instead, third party cases should be set
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.0.query", "@alert.severity:[5 TO 10]"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.0.name", "High severity alert"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.0.status", "high"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.0.notifications.0", "@slack-channel"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.1.query", "@alert.severity:[1 TO 4]"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.1.name", "Low severity alert"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "third_party_case.1.status", "low"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.default_status", "info"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.root_query.0.query", "source:guardduty @data.resourceType:*EC2*"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.root_query.0.group_by_fields.0", "instance-id"),
+		// The additional root query should be set
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.root_query.1.query", "source:guardduty @data.resourceType:*S3*"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.root_query.1.group_by_fields.0", "@resourceProperties.bucketId"),
+		resource.TestCheckResourceAttr(tfSecurityRuleName, "options.0.third_party_rule_options.0.root_query.2.query", "source:guardduty"),
 	)
 }
 
