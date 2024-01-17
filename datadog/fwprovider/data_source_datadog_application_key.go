@@ -118,6 +118,10 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 				resp.Diagnostics.AddError("your query returned more than one exact match, please try a more specific search criteria", "")
 				return
 			}
+			if exact_matches == 0 {
+				resp.Diagnostics.AddError("your query returned no exact matches, please try a less specific search criteria", "")
+				return
+			}
 		} else {
 			id := applicationKeysData[0].GetId()
 			applicationKeyResponse, _, err := d.Api.GetCurrentUserApplicationKey(d.Auth, id)

@@ -121,6 +121,10 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 				resp.Diagnostics.AddError("your query returned more than one exact match, please try a more specific search criteria", "")
 				return
 			}
+			if exact_matches == 0 {
+				resp.Diagnostics.AddError("your query returned no exact matches, please try a less specific search criteria", "")
+				return
+			}
 		} else {
 			id := apiKeysData[0].GetId()
 			ddResp, _, err := d.Api.GetAPIKey(d.Auth, id)
