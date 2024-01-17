@@ -27,14 +27,14 @@ type apiKeyDataSourceModel struct {
 }
 
 type apiKeyDataSource struct {
-	Api  *datadogV2.KeyManagementApi
-	Auth context.Context
+	api  *datadogV2.KeyManagementApi
+	auth context.Context
 }
 
 func (r *apiKeyDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.GetKeyManagementApiV2()
-	r.Auth = providerData.Auth
+	r.api = providerData.DatadogApiInstances.GetKeyManagementApiV2()
+	r.auth = providerData.Auth
 }
 
 func (d *apiKeyDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
@@ -74,7 +74,7 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	}
 
 	if !state.ID.IsNull() {
-		ddResp, _, err := d.Api.GetAPIKey(d.Auth, state.ID.ValueString())
+		ddResp, _, err := d.api.GetAPIKey(d.auth, state.ID.ValueString())
 		if err != nil {
 			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting api key"))
 			return
@@ -85,7 +85,7 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		optionalParams := datadogV2.NewListAPIKeysOptionalParameters()
 		optionalParams.WithFilter(state.Name.ValueString())
 
-		apiKeysResponse, _, err := d.Api.ListAPIKeys(d.Auth, *optionalParams)
+		apiKeysResponse, _, err := d.api.ListAPIKeys(d.auth, *optionalParams)
 		if err != nil {
 			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting api keys"))
 			return
@@ -108,7 +108,7 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 				if state.Name.ValueString() == apiKeyAttributes.GetName() {
 					exact_matches++
 					id := apiKeyPartialData.GetId()
-					ddResp, _, err := d.Api.GetAPIKey(d.Auth, id)
+					ddResp, _, err := d.api.GetAPIKey(d.auth, id)
 					if err != nil {
 						resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting api key"))
 						return
@@ -127,7 +127,7 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			}
 		} else {
 			id := apiKeysData[0].GetId()
-			ddResp, _, err := d.Api.GetAPIKey(d.Auth, id)
+			ddResp, _, err := d.api.GetAPIKey(d.auth, id)
 			if err != nil {
 				resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting api key"))
 				return
