@@ -20,9 +20,10 @@ func NewAPIKeyDataSource() datasource.DataSource {
 }
 
 type apiKeyDataSourceModel struct {
-	ID   types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Key  types.String `tfsdk:"key"`
+	ID         types.String `tfsdk:"id"`
+	Name       types.String `tfsdk:"name"`
+	ExactMatch types.Bool   `tfsdk:"exact_match"`
+	Key        types.String `tfsdk:"key"`
 }
 
 type apiKeyDataSource struct {
@@ -52,6 +53,10 @@ func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Description: "The ID of this resource.",
 				Optional:    true,
 			},
+			"exact_match": schema.BoolAttribute{
+				Description: "Whether to use exact match when searching by name.",
+				Optional:    true,
+			},
 			"key": schema.StringAttribute{
 				Description: "The value of the API Key.",
 				Computed:    true,
@@ -59,7 +64,6 @@ func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			},
 		},
 	}
-
 }
 
 func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
@@ -89,7 +93,7 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 
 		apiKeysData := apiKeysResponse.GetData()
 
-		if len(apiKeysData) > 1 {
+		if len(apiKeysData) > 1 && !state.ExactMatch.ValueBool() {
 			resp.Diagnostics.AddError("your query returned more than one result, please try a more specific search criteria", "")
 			return
 		}
@@ -97,17 +101,36 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			resp.Diagnostics.AddError("your query returned no result, please try a less specific search criteria", "")
 			return
 		}
-
-		apiKeyPartialData := apiKeysData[0]
-
-		id := apiKeyPartialData.GetId()
-		ddResp, _, err := d.Api.GetAPIKey(d.Auth, id)
-		if err != nil {
-			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting api key"))
-			return
+		if state.ExactMatch.ValueBool() {
+			exact_matches := 0
+			for _, apiKeyPartialData := range apiKeysData {
+				apiKeyAttributes := apiKeyPartialData.GetAttributes()
+				if state.Name.ValueString() == apiKeyAttributes.GetName() {
+					exact_matches++
+					id := apiKeyPartialData.GetId()
+					ddResp, _, err := d.Api.GetAPIKey(d.Auth, id)
+					if err != nil {
+						resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting api key"))
+						return
+					}
+					apiKeyData := ddResp.GetData()
+					d.updateState(&state, &apiKeyData)
+				}
+			}
+			if exact_matches > 1 {
+				resp.Diagnostics.AddError("your query returned more than one exact match, please try a more specific search criteria", "")
+				return
+			}
+		} else {
+			id := apiKeysData[0].GetId()
+			ddResp, _, err := d.Api.GetAPIKey(d.Auth, id)
+			if err != nil {
+				resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting api key"))
+				return
+			}
+			apiKeyData := ddResp.GetData()
+			d.updateState(&state, &apiKeyData)
 		}
-		apiKeyData := ddResp.GetData()
-		d.updateState(&state, &apiKeyData)
 	} else {
 		resp.Diagnostics.AddError("missing id or name parameter", "")
 		return

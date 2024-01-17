@@ -14,9 +14,10 @@ import (
 var _ datasource.DataSource = &applicationKeyDataSource{}
 
 type applicationKeyDataSourceModel struct {
-	Id   types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Key  types.String `tfsdk:"key"`
+	Id         types.String `tfsdk:"id"`
+	Name       types.String `tfsdk:"name"`
+	ExactMatch types.Bool   `tfsdk:"exact_match"`
+	Key        types.String `tfsdk:"key"`
 }
 
 type applicationKeyDataSource struct {
@@ -44,6 +45,10 @@ func (d *applicationKeyDataSource) Schema(_ context.Context, req datasource.Sche
 			},
 			"name": schema.StringAttribute{
 				Description: "Name for Application Key.",
+				Optional:    true,
+			},
+			"exact_match": schema.BoolAttribute{
+				Description: "Whether to use exact match when searching by name.",
 				Optional:    true,
 			},
 			"key": schema.StringAttribute{
@@ -85,7 +90,7 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 			return
 		}
 		applicationKeysData := applicationKeysResponse.GetData()
-		if len(applicationKeysData) > 1 {
+		if len(applicationKeysData) > 1 && !state.ExactMatch.ValueBool() {
 			resp.Diagnostics.AddError("your query returned more than one result, please try a more specific search criteria", "")
 			return
 		}
@@ -93,15 +98,36 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 			resp.Diagnostics.AddError("your query returned no result, please try a less specific search criteria", "")
 			return
 		}
-		applicationKeyPartialData := applicationKeysData[0]
-		id := applicationKeyPartialData.GetId()
-		applicationKeyResponse, _, err := d.Api.GetCurrentUserApplicationKey(d.Auth, id)
-		if err != nil {
-			resp.Diagnostics.AddError("error getting application key", "")
-			return
+		if state.ExactMatch.ValueBool() {
+			exact_matches := 0
+			for _, appKeyPartialData := range applicationKeysData {
+				appKeyAttributes := appKeyPartialData.GetAttributes()
+				if state.Name.ValueString() == appKeyAttributes.GetName() {
+					exact_matches++
+					id := appKeyPartialData.GetId()
+					ddResp, _, err := d.Api.GetCurrentUserApplicationKey(d.Auth, id)
+					if err != nil {
+						resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting application key"))
+						return
+					}
+					appKeyData := ddResp.GetData()
+					d.updateState(&state, &appKeyData)
+				}
+			}
+			if exact_matches > 1 {
+				resp.Diagnostics.AddError("your query returned more than one exact match, please try a more specific search criteria", "")
+				return
+			}
+		} else {
+			id := applicationKeysData[0].GetId()
+			applicationKeyResponse, _, err := d.Api.GetCurrentUserApplicationKey(d.Auth, id)
+			if err != nil {
+				resp.Diagnostics.AddError("error getting application key", "")
+				return
+			}
+			applicationKeyFullData := applicationKeyResponse.GetData()
+			d.updateState(&state, &applicationKeyFullData)
 		}
-		applicationKeyFullData := applicationKeyResponse.GetData()
-		d.updateState(&state, &applicationKeyFullData)
 	} else {
 		resp.Diagnostics.AddError("missing id or name parameter", "")
 		return
