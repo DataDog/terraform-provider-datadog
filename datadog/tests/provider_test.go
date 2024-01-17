@@ -74,6 +74,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_rum_application_test":                         "rum-application",
 	"tests/data_source_datadog_security_monitoring_filters_test":             "security-monitoring",
 	"tests/data_source_datadog_security_monitoring_rules_test":               "security-monitoring",
+	"tests/data_source_datadog_security_monitoring_suppressions_test":        "security-monitoring",
 	"tests/data_source_datadog_sensitive_data_scanner_group_order_test":      "sensitive-data-scanner",
 	"tests/data_source_datadog_sensitive_data_scanner_standard_pattern_test": "sensitive-data-scanner",
 	"tests/data_source_datadog_service_account_test":                         "users",

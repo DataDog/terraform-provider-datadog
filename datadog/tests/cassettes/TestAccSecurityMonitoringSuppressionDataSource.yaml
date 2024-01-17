@@ -1,0 +1,459 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","rule_query":"source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 427.851ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/rvx-mv0-rxk
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 159.341792ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/rvx-mv0-rxk
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 156.559375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"l0a-5z6-xob","attributes":{"name":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","enabled":true,"description":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","rule_query":"source:cloudtrail","suppression_query":"env:test","version":1,"creation_date":1705402735052,"update_date":1705402735052,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"b3e-u7h-fzf","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate-local-1705418042","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705418045009,"update_date":1705418045009,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"a8q-ojv-csp","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705445935","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705445935397,"update_date":1705445935397,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"aea-ivb-riu","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705460335","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705460336160,"update_date":1705460336160,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 157.708166ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/rvx-mv0-rxk
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 304.006125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"l0a-5z6-xob","attributes":{"name":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","enabled":true,"description":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","rule_query":"source:cloudtrail","suppression_query":"env:test","version":1,"creation_date":1705402735052,"update_date":1705402735052,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"b3e-u7h-fzf","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate-local-1705418042","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705418045009,"update_date":1705418045009,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"a8q-ojv-csp","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705445935","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705445935397,"update_date":1705445935397,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"aea-ivb-riu","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705460335","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705460336160,"update_date":1705460336160,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.030542ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"l0a-5z6-xob","attributes":{"name":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","enabled":true,"description":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","rule_query":"source:cloudtrail","suppression_query":"env:test","version":1,"creation_date":1705402735052,"update_date":1705402735052,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"b3e-u7h-fzf","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate-local-1705418042","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705418045009,"update_date":1705418045009,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"a8q-ojv-csp","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705445935","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705445935397,"update_date":1705445935397,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"aea-ivb-riu","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705460335","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705460336160,"update_date":1705460336160,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 148.468708ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"l0a-5z6-xob","attributes":{"name":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","enabled":true,"description":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","rule_query":"source:cloudtrail","suppression_query":"env:test","version":1,"creation_date":1705402735052,"update_date":1705402735052,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"b3e-u7h-fzf","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate-local-1705418042","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705418045009,"update_date":1705418045009,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"a8q-ojv-csp","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705445935","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705445935397,"update_date":1705445935397,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"aea-ivb-riu","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705460335","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705460336160,"update_date":1705460336160,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 145.217709ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"l0a-5z6-xob","attributes":{"name":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","enabled":true,"description":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","rule_query":"source:cloudtrail","suppression_query":"env:test","version":1,"creation_date":1705402735052,"update_date":1705402735052,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"b3e-u7h-fzf","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate-local-1705418042","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705418045009,"update_date":1705418045009,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"a8q-ojv-csp","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705445935","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705445935397,"update_date":1705445935397,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"aea-ivb-riu","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705460335","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705460336160,"update_date":1705460336160,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 151.084125ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/rvx-mv0-rxk
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.019292ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"l0a-5z6-xob","attributes":{"name":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","enabled":true,"description":"Example-Get_a_suppression_rule_returns_OK_response_1705402734","rule_query":"source:cloudtrail","suppression_query":"env:test","version":1,"creation_date":1705402735052,"update_date":1705402735052,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"b3e-u7h-fzf","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate-local-1705418042","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705418045009,"update_date":1705418045009,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"a8q-ojv-csp","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705445935","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705445935397,"update_date":1705445935397,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"aea-ivb-riu","attributes":{"name":"Example-Create_a_suppression_rule_returns_OK_response_1705460335","enabled":true,"description":"This rule suppresses low-severity signals in staging environments.","rule_query":"type:log_detection source:cloudtrail","suppression_query":"env:staging status:low","expiration_date":1703187336000,"version":1,"creation_date":1705460336160,"update_date":1705460336160,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"},{"id":"rvx-mv0-rxk","attributes":{"name":"tf-TestAccSecurityMonitoringSuppressionDataSource-local-1705492897","enabled":true,"description":"","rule_query":"source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705492899231,"update_date":1705492899231,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 159.929625ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/rvx-mv0-rxk
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 148.116042ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/rvx-mv0-rxk
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["not_found(Suppression with ID rvx-mv0-rxk not found)"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 140.169542ms
