@@ -4121,7 +4121,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.follow_redirects", "true"),
 			resource.TestCheckResourceAttr(
-					"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
 			resource.TestCheckResourceAttr(
