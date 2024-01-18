@@ -35,6 +35,10 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:one"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:two"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_integration_gcp_sts.foo", "account_tags.*", "accounttag:one"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_integration_gcp_sts.foo", "account_tags.*", "accounttag:two"),
 				),
 			},
 			{
@@ -49,6 +53,8 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "true"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_integration_gcp_sts.foo", "account_tags"),
 				),
 			},
 		},
@@ -76,6 +82,8 @@ func TestAccIntegrationGcpStsDefault(t *testing.T) {
 						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "false"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_integration_gcp_sts.foo", "account_tags"),
 				),
 			},
 		},
@@ -88,6 +96,7 @@ resource "datadog_integration_gcp_sts" "foo" {
     automute = "false"
     client_email = "%s@test-project.iam.gserviceaccount.com"
     host_filters = ["tag:one", "tag:two"]
+    account_tags = ["accounttag:one", "accounttag:two"]
     is_cspm_enabled = "false"
 }`, uniq)
 }

@@ -17,6 +17,7 @@ resource "google_service_account_iam_member" "sa_iam" {
 resource "datadog_integration_gcp_sts" "foo" {
   client_email    = google_service_account.datadog_integration.email
   host_filters    = ["filter_one", "filter_two"]
+  account_tags    = ["tag1:val1", "tag2:val2"]
   automute        = true
   is_cspm_enabled = false
 }

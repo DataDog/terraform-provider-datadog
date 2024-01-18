@@ -32,6 +32,7 @@ type integrationGcpStsModel struct {
 	DelegateAccountEmail types.String `tfsdk:"delegate_account_email"`
 	IsCspmEnabled        types.Bool   `tfsdk:"is_cspm_enabled"`
 	HostFilters          types.Set    `tfsdk:"host_filters"`
+	AccountTags          types.Set    `tfsdk:"account_tags"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -79,6 +80,11 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 			"host_filters": schema.SetAttribute{
 				Optional:    true,
 				Description: "Your Host Filters.",
+				ElementType: types.StringType,
+			},
+			"account_tags": schema.SetAttribute{
+				Optional:    true,
+				Description: "Tags to be associated with GCP metrics and service checks from your account.",
 				ElementType: types.StringType,
 			},
 			"id": utils.ResourceIDAttribute(),
@@ -256,6 +262,12 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	}
 	attributes.SetHostFilters(hostFilters)
 
+	accountTags := make([]string, 0)
+	if !state.AccountTags.IsNull() {
+		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
+	}
+	attributes.SetAccountTags(accountTags)
+
 	req := datadogV2.NewGCPSTSServiceAccountCreateRequestWithDefaults()
 	req.Data = datadogV2.NewGCPSTSServiceAccountDataWithDefaults()
 	req.Data.SetAttributes(attributes)
@@ -282,6 +294,12 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsUpdateRequestBody(ctx 
 		diags.Append(state.HostFilters.ElementsAs(ctx, &hostFilters, false)...)
 	}
 	attributes.SetHostFilters(hostFilters)
+
+	accountTags := make([]string, 0)
+	if !state.AccountTags.IsNull() {
+		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
+	}
+	attributes.SetAccountTags(accountTags)
 
 	req := datadogV2.NewGCPSTSServiceAccountUpdateRequestWithDefaults()
 	req.Data = datadogV2.NewGCPSTSServiceAccountUpdateRequestDataWithDefaults()
