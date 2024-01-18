@@ -4121,6 +4121,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.follow_redirects", "true"),
 			resource.TestCheckResourceAttr(
+					"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.Accept", "application/json"),
@@ -4297,6 +4299,7 @@ resource "datadog_synthetics_test" "multi" {
       timeout          = 30
       allow_insecure   = true
       follow_redirects = true
+	  no_saving_response_body = true
     }
     request_headers = {
       Accept             = "application/json"
