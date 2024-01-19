@@ -2003,12 +2003,11 @@ func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 
 		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
 			ci := ciRaw.([]interface{})[0]
-			testCiOptions := ci.(map[string]interface{})
-
-			ciOptions := datadogV1.SyntheticsTestCiOptions{}
-			ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
-
-			options.SetCi(ciOptions)
+			if testCiOptions, ok := ci.(map[string]interface{}); ok {
+				ciOptions := datadogV1.SyntheticsTestCiOptions{}
+				ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
+				options.SetCi(ciOptions)
+			}
 		}
 
 		if ignoreServerCertificateError, ok := d.GetOk("options_list.0.ignore_server_certificate_error"); ok {
