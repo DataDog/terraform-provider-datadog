@@ -4299,7 +4299,7 @@ resource "datadog_synthetics_test" "multi" {
       timeout          = 30
       allow_insecure   = true
       follow_redirects = true
-	  no_saving_response_body = true
+      no_saving_response_body = true
     }
     request_headers = {
       Accept             = "application/json"
