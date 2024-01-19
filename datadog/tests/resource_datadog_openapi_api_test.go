@@ -8,10 +8,23 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/google/uuid"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
+
+const apiContent = `
+info:
+  contact:
+    name: API team
+  description: My API description.
+  title: %s
+openapi: 3.0.0
+paths:
+  /api/my-api:
+    get:
+      description: An endpoint
+`
 
 func TestAccOpenapiApiBasic(t *testing.T) {
 	t.Parallel()
@@ -33,10 +46,20 @@ func TestAccOpenapiApiBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogOpenapiApi(uniq string) string {
-	// Update me to make use of the unique value
-	return fmt.Sprintf(`resource "datadog_openapi_api" "foo" {
-    spec_file = "UPDATE ME"
-    body = "UPDATE ME"
+	return fmt.Sprintf(`
+resource "datadog_openapi_api" "test-api" {
+    spec = <<EOT
+info:
+  contact:
+    name: API team
+  description: My API description.
+  title: %s
+openapi: 3.0.0
+paths:
+  /api/my-api:
+    get:
+      description: An endpoint
+    EOT
 }`, uniq)
 }
 
@@ -60,7 +83,8 @@ func OpenapiApiDestroyHelper(auth context.Context, s *terraform.State, apiInstan
 			}
 			id := r.Primary.ID
 
-			_, httpResp, err := apiInstances.GetAPIManagementApiV2().GetOpenAPI(auth, id)
+			uuid, _ := uuid.Parse(id)
+			_, httpResp, err := apiInstances.GetAPIManagementApiV2().GetOpenAPI(auth, uuid)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -93,7 +117,8 @@ func openapiApiExistsHelper(auth context.Context, s *terraform.State, apiInstanc
 		}
 		id := r.Primary.ID
 
-		_, httpResp, err := apiInstances.GetAPIManagementApiV2().GetOpenAPI(auth, id)
+		uuid, _ := uuid.Parse(id)
+		_, httpResp, err := apiInstances.GetAPIManagementApiV2().GetOpenAPI(auth, uuid)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving OpenapiApi")
 		}

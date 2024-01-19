@@ -33,6 +33,11 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 
+	config.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
+	config.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
+	config.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}

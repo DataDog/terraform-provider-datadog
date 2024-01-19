@@ -1,8 +1,9 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go/v2 v2.21.1-0.20240125185137-c5d2119fede6
+	github.com/DataDog/datadog-api-client-go/v2 v2.21.1-0.20240126170449-0d471e4f5276
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
+	github.com/google/uuid v1.5.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
 	github.com/hashicorp/go-cty v1.4.1-0.20200414143053-d3edf31b6320
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
@@ -41,7 +42,6 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/pprof v0.0.0-20210423192551-a2663126120b // indirect
-	github.com/google/uuid v1.3.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-checkpoint v0.5.0 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
@@ -97,5 +97,3 @@ require (
 )
 
 go 1.20
-
-replace github.com/DataDog/datadog-api-client-go/v2 => /home/therve/Projects/datadog-api-client-go

@@ -363,6 +363,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
 
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
+
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
 		if parseErr != nil {
