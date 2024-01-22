@@ -63,10 +63,10 @@ resource "datadog_service_level_objective" "time_slice_slo" {
   sli_specification {
     time_slice {
       query {
-        formulas {
+        formula {
           formula = "query1"
         }
-        queries {
+        query {
           metric_query {
             name  = "query1"
             query = "avg:my.custom.count.metric{*}.as_count()"
@@ -74,7 +74,7 @@ resource "datadog_service_level_objective" "time_slice_slo" {
         }
       }
       comparator = ">"
-      treshold   = 0.9
+      threshold  = 0.9
     }
   }
 
