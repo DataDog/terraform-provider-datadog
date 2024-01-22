@@ -24,7 +24,7 @@ resource "datadog_sensitive_data_scanner_rule" "myrule" {
     type               = "hash"
   }
   included_keyword_configuration {
-    keywords = ["cc", "credit card"]
+    keywords        = ["cc", "credit card"]
     character_count = 25
   }
 }
