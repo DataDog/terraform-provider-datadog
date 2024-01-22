@@ -86,7 +86,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 								Type:        schema.TypeList,
 								Required:    true,
 								Description: "Keyword list that will be checked during scanning in order to validate a match. The number of keywords in the list must be lower or equal than 30.",
-								MaxItems:    20,
+								MaxItems:    30,
 								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
 							"character_count": {
