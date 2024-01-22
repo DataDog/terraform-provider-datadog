@@ -23,6 +23,10 @@ resource "datadog_sensitive_data_scanner_rule" "myrule" {
     replacement_string = ""
     type               = "hash"
   }
+  included_keyword_configuration {
+    keywords = ["cc", "credit card"]
+    character_count = 25
+  }
 }
 
 data "datadog_sensitive_data_scanner_standard_pattern" "aws_sp" {
