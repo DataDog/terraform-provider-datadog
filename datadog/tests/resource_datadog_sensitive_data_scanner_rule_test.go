@@ -111,6 +111,10 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 
 func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)

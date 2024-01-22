@@ -55,6 +55,33 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 	})
 }
 
+func TestAccIntegrationGcpStsDefault(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIntegrationGcpStsDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationGcpStsDefault(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogIntegrationGcpStsExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "automute", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "false"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_integration_gcp_sts.foo", "host_filters"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogIntegrationGcpSts(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_gcp_sts" "foo" {
@@ -71,6 +98,14 @@ resource "datadog_integration_gcp_sts" "foo" {
     automute = "true"
     client_email = "%s@test-project.iam.gserviceaccount.com"
     is_cspm_enabled = "true"
+}`, uniq)
+}
+
+func testAccCheckDatadogIntegrationGcpStsDefault(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_integration_gcp_sts" "foo" {
+    automute = "true"
+    client_email = "%s@test-project.iam.gserviceaccount.com"
 }`, uniq)
 }
 

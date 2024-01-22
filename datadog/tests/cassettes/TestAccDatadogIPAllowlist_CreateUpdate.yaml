@@ -1,175 +1,329 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"data":{"attributes":{"enabled":false,"entries":[{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"entry 2"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"127.0.0.1/32","note":"entry 1"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/ip_allowlist
-    method: PATCH
-    id: 0
-  response:
-    body: |
-      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"cidr_block":"1.2.3.4/32","created_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 2","modified_at":"2023-02-23T17:07:48.337176+00:00"},"id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91"}},{"data":{"type":"ip_allowlist_entry","attributes":{"cidr_block":"127.0.0.1/32","created_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 1","modified_at":"2023-02-23T17:07:48.337176+00:00"},"id":"af4a2ae1-d53b-4cf4-927c-25654d778ac0"}}]}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/ip_allowlist
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 2","cidr_block":"1.2.3.4/32","modified_at":"2023-02-23T17:07:48.337176+00:00"},"id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91"}},{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 1","cidr_block":"127.0.0.1/32","modified_at":"2023-02-23T17:07:48.337176+00:00"},"id":"af4a2ae1-d53b-4cf4-927c-25654d778ac0"}}]}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/ip_allowlist
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 2","created_at":"2023-02-23T17:07:48.337176+00:00","cidr_block":"1.2.3.4/32"},"id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91"}},{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2023-02-23T17:07:48.337176+00:00","note":"entry 1","created_at":"2023-02-23T17:07:48.337176+00:00","cidr_block":"127.0.0.1/32"},"id":"af4a2ae1-d53b-4cf4-927c-25654d778ac0"}}]}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"enabled":true,"entries":[{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"0.0.0.0/0","note":"all"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/ip_allowlist
-    method: PATCH
-    id: 3
-  response:
-    body: |
-      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91","attributes":{"created_at":"2023-02-23T17:07:48.337176+00:00","modified_at":"2023-02-23T17:07:49.748461+00:00","cidr_block":"1.2.3.4/32","note":"fake entry"}}},{"data":{"type":"ip_allowlist_entry","id":"2ab4a65d-e466-447a-afb7-d30163d8e498","attributes":{"created_at":"2023-02-23T17:07:49.751819+00:00","modified_at":"2023-02-23T17:07:49.751819+00:00","cidr_block":"0.0.0.0/0","note":"all"}}}]}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/ip_allowlist
-    method: GET
-    id: 4
-  response:
-    body: |
-      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2023-02-23T17:07:49.751819+00:00","modified_at":"2023-02-23T17:07:49.751819+00:00","note":"all","cidr_block":"0.0.0.0/0"},"id":"2ab4a65d-e466-447a-afb7-d30163d8e498"}},{"data":{"type":"ip_allowlist_entry","attributes":{"created_at":"2023-02-23T17:07:48.337176+00:00","modified_at":"2023-02-23T17:07:49.748461+00:00","note":"fake entry","cidr_block":"1.2.3.4/32"},"id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91"}}]}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/ip_allowlist
-    method: GET
-    id: 5
-  response:
-    body: |
-      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","id":"2ab4a65d-e466-447a-afb7-d30163d8e498","attributes":{"modified_at":"2023-02-23T17:07:49.751819+00:00","note":"all","created_at":"2023-02-23T17:07:49.751819+00:00","cidr_block":"0.0.0.0/0"}}},{"data":{"type":"ip_allowlist_entry","id":"fdbcb955-64a3-4e1e-bf52-8b7cde1e1b91","attributes":{"modified_at":"2023-02-23T17:07:49.748461+00:00","note":"fake entry","created_at":"2023-02-23T17:07:48.337176+00:00","cidr_block":"1.2.3.4/32"}}}]}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"enabled":true,"entries":[{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/ip_allowlist
-    method: PATCH
-    id: 6
-  response:
-    body: '{"errors":["Cannot enable or keep enabled an IP Allowlist without the current IP address in it"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 400 Bad Request
-    code: 400
-    duration: "0ms"
-- request:
-    body: |
-      {"data":{"attributes":{"enabled":false,"entries":[]},"type":"ip_allowlist"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/ip_allowlist
-    method: PATCH
-    id: 7
-  response:
-    body: |
-      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[]}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/ip_allowlist
-    method: GET
-    id: 8
-  response:
-    body: |
-      {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[]}}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 366
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":false,"entries":[{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"entry 2"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"127.0.0.1/32","note":"entry 1"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"::/0","note":"ipv6 entry"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/ip_allowlist
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","id":"65c5d736-46b5-42e5-bad0-2ac8eaca6de5","attributes":{"note":"entry 2","cidr_block":"1.2.3.4/32","created_at":"2024-01-12T16:06:46.671882+00:00","modified_at":"2024-01-12T16:06:46.671882+00:00"}}},{"data":{"type":"ip_allowlist_entry","id":"7a874ede-36e2-4742-95af-1f9f109b5b71","attributes":{"note":"entry 1","cidr_block":"127.0.0.1/32","created_at":"2024-01-12T16:06:46.671882+00:00","modified_at":"2024-01-12T16:06:46.671882+00:00"}}},{"data":{"type":"ip_allowlist_entry","id":"40c38a6f-e850-453f-a6e3-ebb9398a77c8","attributes":{"note":"ipv6 entry","cidr_block":"::/0","created_at":"2024-01-12T16:06:46.671882+00:00","modified_at":"2024-01-12T16:06:46.671882+00:00"}}}]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 512.341216ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/ip_allowlist
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","id":"65c5d736-46b5-42e5-bad0-2ac8eaca6de5","attributes":{"note":"entry 2","created_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"1.2.3.4/32","modified_at":"2024-01-12T16:06:46.671882+00:00"}}},{"data":{"type":"ip_allowlist_entry","id":"7a874ede-36e2-4742-95af-1f9f109b5b71","attributes":{"note":"entry 1","created_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"127.0.0.1/32","modified_at":"2024-01-12T16:06:46.671882+00:00"}}},{"data":{"type":"ip_allowlist_entry","id":"40c38a6f-e850-453f-a6e3-ebb9398a77c8","attributes":{"note":"ipv6 entry","created_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"::/0","modified_at":"2024-01-12T16:06:46.671882+00:00"}}}]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 174.13143ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/ip_allowlist
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"1.2.3.4/32","created_at":"2024-01-12T16:06:46.671882+00:00","note":"entry 2"},"id":"65c5d736-46b5-42e5-bad0-2ac8eaca6de5"}},{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"127.0.0.1/32","created_at":"2024-01-12T16:06:46.671882+00:00","note":"entry 1"},"id":"7a874ede-36e2-4742-95af-1f9f109b5b71"}},{"data":{"type":"ip_allowlist_entry","attributes":{"modified_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"::/0","created_at":"2024-01-12T16:06:46.671882+00:00","note":"ipv6 entry"},"id":"40c38a6f-e850-453f-a6e3-ebb9398a77c8"}}]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 173.167744ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 361
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"entries":[{"data":{"attributes":{"cidr_block":"0.0.0.0/0","note":"all"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry"},"type":"ip_allowlist_entry"}},{"data":{"attributes":{"cidr_block":"::/0","note":"ipv6 entry"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/ip_allowlist
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"note":"ipv6 entry","created_at":"2024-01-12T16:06:46.671882+00:00","modified_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"::/0"},"id":"40c38a6f-e850-453f-a6e3-ebb9398a77c8"}},{"data":{"type":"ip_allowlist_entry","attributes":{"note":"all","created_at":"2024-01-12T16:06:49.040767+00:00","modified_at":"2024-01-12T16:06:49.040767+00:00","cidr_block":"0.0.0.0/0"},"id":"dbe1c027-682e-4781-ba30-856afe48456b"}},{"data":{"type":"ip_allowlist_entry","attributes":{"note":"fake entry","created_at":"2024-01-12T16:06:46.671882+00:00","modified_at":"2024-01-12T16:06:49.038293+00:00","cidr_block":"1.2.3.4/32"},"id":"65c5d736-46b5-42e5-bad0-2ac8eaca6de5"}}]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 195.627689ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/ip_allowlist
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"note":"all","created_at":"2024-01-12T16:06:49.040767+00:00","cidr_block":"0.0.0.0/0","modified_at":"2024-01-12T16:06:49.040767+00:00"},"id":"dbe1c027-682e-4781-ba30-856afe48456b"}},{"data":{"type":"ip_allowlist_entry","attributes":{"note":"fake entry","created_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"1.2.3.4/32","modified_at":"2024-01-12T16:06:49.038293+00:00"},"id":"65c5d736-46b5-42e5-bad0-2ac8eaca6de5"}},{"data":{"type":"ip_allowlist_entry","attributes":{"note":"ipv6 entry","created_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"::/0","modified_at":"2024-01-12T16:06:46.671882+00:00"},"id":"40c38a6f-e850-453f-a6e3-ebb9398a77c8"}}]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 217.166576ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/ip_allowlist
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":true,"entries":[{"data":{"type":"ip_allowlist_entry","attributes":{"note":"all","modified_at":"2024-01-12T16:06:49.040767+00:00","cidr_block":"0.0.0.0/0","created_at":"2024-01-12T16:06:49.040767+00:00"},"id":"dbe1c027-682e-4781-ba30-856afe48456b"}},{"data":{"type":"ip_allowlist_entry","attributes":{"note":"fake entry","modified_at":"2024-01-12T16:06:49.038293+00:00","cidr_block":"1.2.3.4/32","created_at":"2024-01-12T16:06:46.671882+00:00"},"id":"65c5d736-46b5-42e5-bad0-2ac8eaca6de5"}},{"data":{"type":"ip_allowlist_entry","attributes":{"note":"ipv6 entry","modified_at":"2024-01-12T16:06:46.671882+00:00","cidr_block":"::/0","created_at":"2024-01-12T16:06:46.671882+00:00"},"id":"40c38a6f-e850-453f-a6e3-ebb9398a77c8"}}]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 218.288945ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 175
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"entries":[{"data":{"attributes":{"cidr_block":"1.2.3.4/32","note":"fake entry"},"type":"ip_allowlist_entry"}}]},"type":"ip_allowlist"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/ip_allowlist
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Cannot enable or keep enabled an IP Allowlist without the current IP address in it"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 400 Bad Request
+        code: 400
+        duration: 337.30072ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 77
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":false,"entries":[]},"type":"ip_allowlist"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/ip_allowlist
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 319.129196ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/ip_allowlist
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"ip_allowlist","id":"4dee724d-00cc-11ea-a77b-570c9d03c6c5","attributes":{"enabled":false,"entries":[]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 169.360386ms

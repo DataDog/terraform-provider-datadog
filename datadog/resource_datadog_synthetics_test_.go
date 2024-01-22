@@ -1559,6 +1559,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
 				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
 				request.SetPersistCookies(requestMap["persist_cookies"].(bool))
+				request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
 			}
 
 			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), map[string]interface{}{})
@@ -2002,12 +2003,11 @@ func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 
 		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
 			ci := ciRaw.([]interface{})[0]
-			testCiOptions := ci.(map[string]interface{})
-
-			ciOptions := datadogV1.SyntheticsTestCiOptions{}
-			ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
-
-			options.SetCi(ciOptions)
+			if testCiOptions, ok := ci.(map[string]interface{}); ok {
+				ciOptions := datadogV1.SyntheticsTestCiOptions{}
+				ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
+				options.SetCi(ciOptions)
+			}
 		}
 
 		if ignoreServerCertificateError, ok := d.GetOk("options_list.0.ignore_server_certificate_error"); ok {

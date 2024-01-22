@@ -33,6 +33,7 @@ var (
 
 var Resources = []func() resource.Resource{
 	NewAPIKeyResource,
+	NewApplicationKeyResource,
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
 	NewDashboardListResource,
@@ -45,6 +46,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpStsResource,
+	NewIpAllowListResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
 	NewSensitiveDataScannerGroupOrder,
@@ -59,6 +61,7 @@ var Resources = []func() resource.Resource{
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
+	NewApplicationKeyDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
@@ -69,6 +72,7 @@ var Datasources = []func() datasource.DataSource{
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
+	NewDatadogUsersDataSource,
 }
 
 // FrameworkProvider struct

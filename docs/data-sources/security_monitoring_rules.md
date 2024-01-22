@@ -51,6 +51,7 @@ Read-Only:
 - `query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--query))
 - `signal_query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_query))
 - `tags` (Set of String)
+- `third_party_case` (List of Object) (see [below for nested schema](#nestedobjatt--rules--third_party_case))
 - `type` (String)
 
 <a id="nestedobjatt--rules--case"></a>
@@ -85,6 +86,7 @@ Read-Only:
 - `keep_alive` (Number)
 - `max_signal_duration` (Number)
 - `new_value_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--new_value_options))
+- `third_party_rule_options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--third_party_rule_options))
 
 <a id="nestedobjatt--rules--options--impossible_travel_options"></a>
 ### Nested Schema for `rules.options.impossible_travel_options`
@@ -103,6 +105,26 @@ Read-Only:
 - `learning_duration` (Number)
 - `learning_method` (String)
 - `learning_threshold` (Number)
+
+
+<a id="nestedobjatt--rules--options--third_party_rule_options"></a>
+### Nested Schema for `rules.options.third_party_rule_options`
+
+Read-Only:
+
+- `default_notifications` (List of String)
+- `default_status` (String)
+- `root_query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options--third_party_rule_options--root_query))
+- `signal_title_template` (String)
+
+<a id="nestedobjatt--rules--options--third_party_rule_options--root_query"></a>
+### Nested Schema for `rules.options.third_party_rule_options.signal_title_template`
+
+Read-Only:
+
+- `group_by_fields` (List of String)
+- `query` (String)
+
 
 
 
@@ -141,3 +163,14 @@ Read-Only:
 - `default_rule_id` (String)
 - `name` (String)
 - `rule_id` (String)
+
+
+<a id="nestedobjatt--rules--third_party_case"></a>
+### Nested Schema for `rules.third_party_case`
+
+Read-Only:
+
+- `name` (String)
+- `notifications` (List of String)
+- `query` (String)
+- `status` (String)
