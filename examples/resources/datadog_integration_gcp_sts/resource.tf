@@ -1,6 +1,6 @@
 # Create new integration_gcp_sts resource
 
-// Service account should have compute.viewer, monitoring.viewer, and cloudasset.viewer roles.
+// Service account should have compute.viewer, monitoring.viewer, cloudasset.viewer, and browser roles.
 resource "google_service_account" "datadog_integration" {
   account_id   = "datadogintegration"
   display_name = "Datadog Integration"
