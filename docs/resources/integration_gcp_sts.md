@@ -15,7 +15,7 @@ Provides a Datadog Integration GCP Sts resource. This can be used to create and 
 ```terraform
 # Create new integration_gcp_sts resource
 
-// Service account should have compute.viewer, monitoring.viewer, cloudasset.viewer, and browser roles.
+// Service account should have compute.viewer, monitoring.viewer, cloudasset.viewer, and browser roles (the browser role is only required in the default project of the service account).
 resource "google_service_account" "datadog_integration" {
   account_id   = "datadogintegration"
   display_name = "Datadog Integration"
