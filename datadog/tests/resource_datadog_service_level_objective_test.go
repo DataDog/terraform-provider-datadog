@@ -53,6 +53,53 @@ resource "datadog_service_level_objective" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogServiceLevelObjectiveTimeSliceConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_service_level_objective" "foo" {
+  name = "%s"
+  type = "time_slice"
+  description = "some description about foo SLO"
+  sli_specification {
+    time_slice {
+      query {
+        formula {
+          formula_expression = "(query1-query2)/query1"
+        }
+        query {
+          metric_query {
+            name        = "query1"
+            query       = "sum:trace.grpc.server.hits{service:monitor-history-reader}"
+		  }
+        }
+        query {
+          metric_query {
+            name        = "query2"
+            data_source = "metrics"
+            query       = "sum:trace.grpc.server.errors{service:monitor-history-reader}"
+		  }
+        }
+      }
+      comparator = ">"
+      threshold  = 0.99
+    }
+  }
+
+  thresholds {
+	timeframe = "7d"
+	target = 99
+	warning = 99.5
+  }
+
+  timeframe = "7d"
+
+  target_threshold = 99
+
+  warning_threshold = 99.5
+
+  tags = ["foo:bar", "baz"]
+}`, uniq)
+}
+
 func testAccCheckDatadogServiceLevelObjectiveInvalidMonitorConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_level_objective" "bar" {
@@ -241,6 +288,84 @@ func TestAccDatadogServiceLevelObjective_InvalidMonitor(t *testing.T) {
 			{
 				Config:      testAccCheckDatadogServiceLevelObjectiveInvalidMonitorConfig(sloName),
 				ExpectError: regexp.MustCompile("error finding monitor to add to SLO"),
+			},
+		},
+	})
+}
+
+func TestAccDatadogServiceLevelObjective_TimeSlice(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	sloName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogServiceLevelObjectiveTimeSliceConfig(sloName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceLevelObjectiveExists(accProvider, "datadog_service_level_objective.foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "name", sloName),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "description", "some description about foo SLO"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "type", "time_slice"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.formula.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.formula.0.formula_expression", "(query1-query2)/query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.query.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.query.0.metric_query.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.query.0.metric_query.0.name", "query1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.query.0.metric_query.0.data_source", "metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.query.0.metric_query.0.query", "sum:trace.grpc.server.hits{service:monitor-history-reader}"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.query.1.metric_query.0.name", "query2"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.query.1.metric_query.0.data_source", "metrics"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.query.0.query.1.metric_query.0.query", "sum:trace.grpc.server.errors{service:monitor-history-reader}"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.comparator", ">"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "sli_specification.0.time_slice.0.threshold", "0.99"),
+					// Thresholds are a TypeList, that are sorted by timeframe alphabetically.
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.0.timeframe", "7d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.0.target", "99"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "thresholds.0.warning", "99.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "timeframe", "7d"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "target_threshold", "99"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "warning_threshold", "99.5"),
+					resource.TestCheckResourceAttr(
+						"datadog_service_level_objective.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_level_objective.foo", "tags.*", "foo:bar"),
+				),
 			},
 		},
 	})
