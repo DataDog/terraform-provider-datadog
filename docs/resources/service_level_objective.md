@@ -79,7 +79,7 @@ resource "datadog_service_level_objective" "time_slice_slo" {
     time_slice {
       query {
         formula {
-          formula = "query1"
+          formula_expression = "query1"
         }
         query {
           metric_query {
