@@ -103,6 +103,7 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		}
 		if state.ExactMatch.ValueBool() {
 			exact_matches := 0
+			var apiKeyData datadogV2.FullAPIKey
 			for _, apiKeyPartialData := range apiKeysData {
 				apiKeyAttributes := apiKeyPartialData.GetAttributes()
 				if state.Name.ValueString() == apiKeyAttributes.GetName() {
@@ -113,8 +114,7 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 						resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting api key"))
 						return
 					}
-					apiKeyData := ddResp.GetData()
-					d.updateState(&state, &apiKeyData)
+					apiKeyData = ddResp.GetData()
 				}
 			}
 			if exact_matches > 1 {
@@ -125,6 +125,7 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 				resp.Diagnostics.AddError("your query returned no exact matches, please try a less specific search criteria", "")
 				return
 			}
+			d.updateState(&state, &apiKeyData)
 		} else {
 			id := apiKeysData[0].GetId()
 			ddResp, _, err := d.Api.GetAPIKey(d.Auth, id)

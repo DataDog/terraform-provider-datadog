@@ -100,6 +100,7 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 		}
 		if state.ExactMatch.ValueBool() {
 			exact_matches := 0
+			var applicationKeyData datadogV2.FullApplicationKey
 			for _, appKeyPartialData := range applicationKeysData {
 				appKeyAttributes := appKeyPartialData.GetAttributes()
 				if state.Name.ValueString() == appKeyAttributes.GetName() {
@@ -110,8 +111,7 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 						resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting application key"))
 						return
 					}
-					appKeyData := ddResp.GetData()
-					d.updateState(&state, &appKeyData)
+					applicationKeyData = ddResp.GetData()
 				}
 			}
 			if exact_matches > 1 {
@@ -122,6 +122,7 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 				resp.Diagnostics.AddError("your query returned no exact matches, please try a less specific search criteria", "")
 				return
 			}
+			d.updateState(&state, &applicationKeyData)
 		} else {
 			id := applicationKeysData[0].GetId()
 			applicationKeyResponse, _, err := d.Api.GetCurrentUserApplicationKey(d.Auth, id)
