@@ -357,7 +357,7 @@ func buildSLOTimeSliceQueryStruct(d []interface{}) *datadogV1.SLOTimeSliceQuery 
 	return ret
 }
 
-func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest) {
+func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest, error) {
 
 	slo := datadogV1.NewServiceLevelObjectiveWithDefaults()
 	slo.SetName(d.Get("name").(string))
@@ -383,6 +383,8 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 			}
 			slo.SetMonitorIds(s)
 			slor.SetMonitorIds(s)
+		} else {
+			return nil, nil, fmt.Errorf("monitor_ids is required for monitor SLOs")
 		}
 		if attr, ok := d.GetOk("groups"); ok {
 			s := make([]string, 0)
@@ -415,6 +417,8 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 					}
 				}
 			}
+		} else {
+			return nil, nil, fmt.Errorf("sli_specification is required for time slice SLOs")
 		}
 		slo.SetSliSpecification(sliSpec)
 		slor.SetSliSpecification(sliSpec)
@@ -437,6 +441,8 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 					queries[0]["denominator"].(string),
 					queries[0]["numerator"].(string)))
 			}
+		} else {
+			return nil, nil, fmt.Errorf("query is required for metric SLOs")
 		}
 	}
 
@@ -508,7 +514,7 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 		}
 	}
 
-	return slo, slor
+	return slo, slor, nil
 }
 
 func floatOk(val interface{}) (float64, bool) {
@@ -538,7 +544,10 @@ func resourceDatadogServiceLevelObjectiveCreate(ctx context.Context, d *schema.R
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	_, slor := buildServiceLevelObjectiveStructs(d)
+	_, slor, err := buildServiceLevelObjectiveStructs(d)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	sloResp, httpResponse, err := apiInstances.GetServiceLevelObjectivesApiV1().CreateSLO(auth, *slor)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating service level objective")
@@ -784,8 +793,11 @@ func resourceDatadogServiceLevelObjectiveUpdate(ctx context.Context, d *schema.R
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	slo, _ := buildServiceLevelObjectiveStructs(d)
+	slo, _, err := buildServiceLevelObjectiveStructs(d)
 
+	if err != nil {
+		return diag.FromErr(err)
+	}
 	updatedSLO, httpResponse, err := apiInstances.GetServiceLevelObjectivesApiV1().UpdateSLO(auth, d.Id(), *slo)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating service level objective")
