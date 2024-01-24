@@ -29,6 +29,7 @@ Read-Only:
 - `description` (String)
 - `enabled` (Boolean)
 - `expiration_date` (String)
+- `id` (String)
 - `name` (String)
 - `rule_query` (String)
 - `suppression_query` (String)
