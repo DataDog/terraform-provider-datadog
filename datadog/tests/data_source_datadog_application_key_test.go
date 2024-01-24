@@ -63,6 +63,46 @@ func TestAccDatadogApplicationKeyDatasource_matchName(t *testing.T) {
 					resource.TestCheckResourceAttrSet("data.datadog_application_key.app_key", "id"),
 				),
 			},
+			{
+				Config: testAccDatasourceAppKeyExactMatch(applicationKeyName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, "datadog_application_key.app_key_1"),
+					resource.TestCheckResourceAttr("datadog_application_key.app_key_1", "name", applicationKeyName),
+					resource.TestCheckResourceAttr("datadog_application_key.app_key_2", "name", fmt.Sprintf("%s 2", applicationKeyName)),
+					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "name", applicationKeyName),
+					resource.TestMatchResourceAttr("data.datadog_application_key.app_key", "key", regexp.MustCompile(nonEmptyStringRegex)),
+					resource.TestCheckResourceAttrSet("data.datadog_application_key.app_key", "id"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogApplicationKeyDatasource_exactMatchName(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	applicationKeyName := uniqueEntityName(ctx, t)
+
+	nonEmptyStringRegex := `[\S\s]+[\S]+`
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceAppKeyExactMatch(applicationKeyName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, "datadog_application_key.app_key_1"),
+					resource.TestCheckResourceAttr("datadog_application_key.app_key_1", "name", applicationKeyName),
+					resource.TestCheckResourceAttr("datadog_application_key.app_key_2", "name", fmt.Sprintf("%s 2", applicationKeyName)),
+					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "name", applicationKeyName),
+					resource.TestMatchResourceAttr("data.datadog_application_key.app_key", "key", regexp.MustCompile(nonEmptyStringRegex)),
+					resource.TestCheckResourceAttrSet("data.datadog_application_key.app_key", "id"),
+				),
+			},
 		},
 	})
 }
@@ -178,7 +218,26 @@ data "datadog_application_key" "app_key" {
 }
 
 func testAccDatasourceApplicationKeyMissingParametersConfig() string {
-	return fmt.Sprintf(`
+	return `
 data "datadog_application_key" "app_key" {
-}`)
+}`
+}
+
+func testAccDatasourceAppKeyExactMatch(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_application_key" "app_key_1" {
+  name = "%s"
+}
+
+resource "datadog_application_key" "app_key_2" {
+  name = "%s 2"
+}
+data "datadog_application_key" "app_key" {
+  depends_on = [
+    datadog_application_key.app_key_1,
+    datadog_application_key.app_key_2,
+  ]
+  exact_match = true
+  name = "%s"
+}`, uniq, uniq, uniq)
 }

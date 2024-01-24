@@ -23,6 +23,7 @@ data "datadog_api_key" "foo" {
 
 ### Optional
 
+- `exact_match` (Boolean) Whether to use exact match when searching by name.
 - `id` (String) The ID of this resource.
 - `name` (String) Name for API Key.
 

@@ -23,6 +23,7 @@ data "datadog_application_key" "foo" {
 
 ### Optional
 
+- `exact_match` (Boolean) Whether to use exact match when searching by name.
 - `id` (String) Id for Application Key.
 - `name` (String) Name for Application Key.
 
