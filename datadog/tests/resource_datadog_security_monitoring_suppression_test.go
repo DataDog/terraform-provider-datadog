@@ -6,23 +6,21 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 // Create a suppression and update its rule query and description without adding an expiration date
 func TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	suppressionName := uniqueEntityName(ctx, t)
 	resourceName := "datadog_security_monitoring_suppression.suppression_test"
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckSecurityMonitoringSuppressionDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create suppression
 			{
@@ -36,14 +34,13 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate(t
 				}
 				`, suppressionName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckSecurityMonitoringSuppressionExists(accProvider, resourceName),
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
 					checkSecurityMonitoringSuppressionContent(
 						resourceName,
 						suppressionName,
 						"suppression for terraform provider test",
 						"severity:low source:cloudtrail",
 						"env:staging",
-						"",
 					),
 				),
 			},
@@ -59,14 +56,13 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate(t
 				}
 				`, suppressionName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckSecurityMonitoringSuppressionExists(accProvider, resourceName),
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
 					checkSecurityMonitoringSuppressionContent(
 						resourceName,
 						suppressionName,
 						"updated suppression for terraform provider test",
 						"severity:low source:(cloudtrail OR azure)",
 						"env:staging",
-						"",
 					),
 				),
 			},
@@ -76,10 +72,9 @@ func TestAccSecurityMonitoringSuppression_CreateAndUpdateWithoutExpirationDate(t
 
 // Create a suppression without an expiration date, add one, then remove it
 func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	suppressionName := uniqueEntityName(ctx, t)
 	resourceName := "datadog_security_monitoring_suppression.suppression_test_with_expiration_date"
-	accProvider := testAccProvider(t, accProviders)
 
 	configWithoutExpirationDate := fmt.Sprintf(`
 	resource "datadog_security_monitoring_suppression" "suppression_test_with_expiration_date" {
@@ -105,22 +100,21 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 	}
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckSecurityMonitoringSuppressionDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			// Create without expiration date
 			{
 				Config: configWithoutExpirationDate,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckSecurityMonitoringSuppressionExists(accProvider, resourceName),
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
 					checkSecurityMonitoringSuppressionContent(
 						resourceName,
 						suppressionName,
 						"suppression for terraform provider test",
 						"severity:low source:cloudtrail",
 						"env:staging",
-						"",
 					),
 				),
 			},
@@ -128,8 +122,8 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 			{
 				Config: configWithExpirationDate("2024-01-22T12:00:00Z"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckSecurityMonitoringSuppressionExists(accProvider, resourceName),
-					checkSecurityMonitoringSuppressionContent(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContentWithExpirationDate(
 						resourceName,
 						suppressionName,
 						"suppression for terraform provider test",
@@ -143,8 +137,8 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 			{
 				Config: configWithExpirationDate("2024-01-22T13:00:00+01:00"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckSecurityMonitoringSuppressionExists(accProvider, resourceName),
-					checkSecurityMonitoringSuppressionContent(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContentWithExpirationDate(
 						resourceName,
 						suppressionName,
 						"suppression for terraform provider test",
@@ -158,8 +152,8 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 			{
 				Config: configWithExpirationDate("2024-01-22T15:30:00+01:00"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckSecurityMonitoringSuppressionExists(accProvider, resourceName),
-					checkSecurityMonitoringSuppressionContent(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContentWithExpirationDate(
 						resourceName,
 						suppressionName,
 						"suppression for terraform provider test",
@@ -173,14 +167,13 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 			{
 				Config: configWithoutExpirationDate,
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckSecurityMonitoringSuppressionExists(accProvider, resourceName),
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
 					checkSecurityMonitoringSuppressionContent(
 						resourceName,
 						suppressionName,
 						"suppression for terraform provider test",
 						"severity:low source:cloudtrail",
 						"env:staging",
-						"",
 					),
 				),
 			},
@@ -188,7 +181,18 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 	})
 }
 
-func checkSecurityMonitoringSuppressionContent(resourceName string, name string, description string, ruleQuery string, suppressionQuery string, expirationDate string) resource.TestCheckFunc {
+func checkSecurityMonitoringSuppressionContent(resourceName string, name string, description string, ruleQuery string, suppressionQuery string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(resourceName, "name", name),
+		resource.TestCheckResourceAttr(resourceName, "description", description),
+		resource.TestCheckResourceAttr(resourceName, "enabled", "true"),
+		resource.TestCheckResourceAttr(resourceName, "rule_query", ruleQuery),
+		resource.TestCheckResourceAttr(resourceName, "suppression_query", suppressionQuery),
+		resource.TestCheckNoResourceAttr(resourceName, "expiration_date"),
+	)
+}
+
+func checkSecurityMonitoringSuppressionContentWithExpirationDate(resourceName string, name string, description string, ruleQuery string, suppressionQuery string, expirationDate string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(resourceName, "name", name),
 		resource.TestCheckResourceAttr(resourceName, "description", description),
@@ -199,7 +203,7 @@ func checkSecurityMonitoringSuppressionContent(resourceName string, name string,
 	)
 }
 
-func testAccCheckSecurityMonitoringSuppressionExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
+func testAccCheckSecurityMonitoringSuppressionExists(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		resource, ok := s.RootModule().Resources[resourceName]
 		if !ok {
@@ -210,16 +214,10 @@ func testAccCheckSecurityMonitoringSuppressionExists(accProvider func() (*schema
 			return fmt.Errorf("resource %s is not of type datadog_security_monitoring_suppression, found %s instead", resourceName, resource.Type)
 		}
 
-		provider, err := accProvider()
-		if err != nil {
-			return err
-		}
+		auth := accProvider.Auth
+		apiInstances := accProvider.DatadogApiInstances
 
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
-
-		_, _, err = apiInstances.GetSecurityMonitoringApiV2().GetSecurityMonitoringSuppression(auth, resource.Primary.ID)
+		_, _, err := apiInstances.GetSecurityMonitoringApiV2().GetSecurityMonitoringSuppression(auth, resource.Primary.ID)
 		if err != nil {
 			return fmt.Errorf("received an error retrieving suppression: %s", err)
 		}
@@ -228,16 +226,10 @@ func testAccCheckSecurityMonitoringSuppressionExists(accProvider func() (*schema
 	}
 }
 
-func testAccCheckSecurityMonitoringSuppressionDestroy(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testAccCheckSecurityMonitoringSuppressionDestroy(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, err := accProvider()
-		if err != nil {
-			return err
-		}
-
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
+		auth := accProvider.Auth
+		apiInstances := accProvider.DatadogApiInstances
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_security_monitoring_suppression" {
