@@ -74,6 +74,7 @@ var Datasources = []func() datasource.DataSource{
 	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
+	NewSecurityMonitoringSuppressionDataSource,
 }
 
 // FrameworkProvider struct
