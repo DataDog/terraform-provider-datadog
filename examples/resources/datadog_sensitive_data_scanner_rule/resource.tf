@@ -25,7 +25,7 @@ resource "datadog_sensitive_data_scanner_rule" "myrule" {
   }
   included_keyword_configuration {
     keywords        = ["cc", "credit card"]
-    character_count = 25
+    character_count = 30
   }
 }
 
