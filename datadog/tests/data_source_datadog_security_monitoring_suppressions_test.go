@@ -6,15 +6,13 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 func TestAccSecurityMonitoringSuppressionDataSource(t *testing.T) {
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	suppressionName := uniqueEntityName(ctx, t)
 	dataSourceName := "data.datadog_security_monitoring_suppressions.my_data_source"
@@ -29,14 +27,14 @@ func TestAccSecurityMonitoringSuppressionDataSource(t *testing.T) {
 	`, suppressionName)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckSecurityMonitoringSuppressionDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				// Create a suppression to have at least one
 				Config: suppressionConfig,
-				Check:  testAccCheckSecurityMonitoringSuppressionExists(accProvider, "datadog_security_monitoring_suppression.suppression_for_data_source_test"),
+				Check:  testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, "datadog_security_monitoring_suppression.suppression_for_data_source_test"),
 			},
 			{
 				Config: fmt.Sprintf(`
@@ -44,27 +42,21 @@ func TestAccSecurityMonitoringSuppressionDataSource(t *testing.T) {
 
 				data "datadog_security_monitoring_suppressions" "my_data_source" {}
 				`, suppressionConfig),
-				Check: checkSecurityMonitoringSuppressionsDataSourceContent(accProvider, dataSourceName, suppressionName),
+				Check: checkSecurityMonitoringSuppressionsDataSourceContent(providers.frameworkProvider, dataSourceName, suppressionName),
 			},
 		},
 	})
 }
 
-func checkSecurityMonitoringSuppressionsDataSourceContent(accProvider func() (*schema.Provider, error), dataSourceName string, suppressionName string) resource.TestCheckFunc {
+func checkSecurityMonitoringSuppressionsDataSourceContent(accProvider *fwprovider.FrameworkProvider, dataSourceName string, suppressionName string) resource.TestCheckFunc {
 	return func(state *terraform.State) error {
 		res, ok := state.RootModule().Resources[dataSourceName]
 		if !ok {
 			return fmt.Errorf("resource missing from state: %s", dataSourceName)
 		}
 
-		provider, err := accProvider()
-		if err != nil {
-			return err
-		}
-
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		auth := providerConf.Auth
-		apiInstances := providerConf.DatadogApiInstances
+		auth := accProvider.Auth
+		apiInstances := accProvider.DatadogApiInstances
 
 		allSuppressionsResponse, _, err := apiInstances.GetSecurityMonitoringApiV2().ListSecurityMonitoringSuppressions(auth)
 		if err != nil {
