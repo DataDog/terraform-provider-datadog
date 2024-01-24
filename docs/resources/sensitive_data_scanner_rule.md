@@ -90,7 +90,7 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
 Required:
 
 - `character_count` (Number) Number of characters to look backward to find a keyword validating a match. It must be between 1 and 50 included.
-- `keywords` (List of String) Keyword list that will be checked during scanning in order to validate a match. The number of keywords in the list must be lower or equal than 30.
+- `keywords` (List of String) Keyword list that is checked during scanning in order to validate a match. The number of keywords in the list must be lower than or equal to 30.
 
 
 <a id="nestedblock--text_replacement"></a>
