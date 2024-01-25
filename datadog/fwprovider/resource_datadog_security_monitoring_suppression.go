@@ -209,12 +209,11 @@ func (r *securityMonitoringSuppressionResource) buildUpdateSecurityMonitoringSup
 	attributes.SetName(name)
 	attributes.Description = description
 	attributes.SetEnabled(enabled)
-	// Expiration date needs to be set via AdditionalProperties because it needs to be explicitly
-	// set to null if it's not in the Terraform definition.
-	// If omitted, the API leaves the expiration date unchanged instead of removing it
-	// The ExpirationDate field of SecurityMonitoringSuppressionUpdateAttributes has the omitempty tag, so if it is nil,
-	// it is omitted from the JSON payload.
-	attributes.AdditionalProperties = map[string]interface{}{"expiration_date": expirationDate}
+	if expirationDate != nil {
+		attributes.SetExpirationDate(*expirationDate)
+	} else {
+		attributes.SetExpirationDateNil()
+	}
 	attributes.SetRuleQuery(ruleQuery)
 	attributes.SetSuppressionQuery(suppressionQuery)
 
