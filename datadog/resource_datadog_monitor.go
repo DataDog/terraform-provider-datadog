@@ -627,7 +627,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 					if rrule, ok := firstRecurrence["rrule"].(string); ok {
 						recurrence.SetRrule(rrule)
 					}
-					if start, ok := firstRecurrence["start"].(string); ok {
+					if start, ok := firstRecurrence["start"].(string); ok && start != "" {
 						recurrence.SetStart(start)
 					}
 					if timezone, ok := firstRecurrence["timezone"].(string); ok {
