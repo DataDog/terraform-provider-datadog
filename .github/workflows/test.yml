@@ -121,10 +121,11 @@ jobs:
         with:
           tofu_version: 1.6.1
           tofu_wrapper: false        
-      - name: Set TF_ACC_TERRAFORM_PATH env var
-        run: echo "TF_ACC_TERRAFORM_PATH=$(which tofu)" >> $GITHUB_ENV
-      - name: Set TF_ACC_PROVIDER_HOST env var
-        run: echo "TF_ACC_PROVIDER_HOST=\"registry.opentofu.org\"" >> $GITHUB_ENV
+      - name: Set Terraform env vars
+        run: |
+          echo "TF_ACC_TERRAFORM_PATH=$(which tofu)" >> $GITHUB_ENV
+          echo "TF_ACC_PROVIDER_HOST=registry.opentofu.org" >> $GITHUB_ENV
+          echo "TF_ACC_PROVIDER_NAMESPACE=DataDog" >> $GITHUB_ENV
       - name: Set regex for tests to run
         shell: bash
         run: |
