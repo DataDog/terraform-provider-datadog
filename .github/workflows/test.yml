@@ -125,7 +125,6 @@ jobs:
         run: |
           echo "TF_ACC_TERRAFORM_PATH=$(which tofu)" >> $GITHUB_ENV
           echo "TF_ACC_PROVIDER_HOST=registry.opentofu.org" >> $GITHUB_ENV
-          echo "TF_ACC_PROVIDER_NAMESPACE=DataDog" >> $GITHUB_ENV
       - name: Set regex for tests to run
         shell: bash
         run: |
