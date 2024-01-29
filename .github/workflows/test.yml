@@ -104,3 +104,44 @@ jobs:
           [[ -z "${TESTARGS}" ]] && echo "Skipping tests" || make testall
         env:
           RECORD: false
+  
+  test-tofu:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
+          cache: true
+      - uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: 1.6.1
+          tofu_wrapper: false        
+      - name: Set Terraform env vars
+        run: |
+          echo "TF_ACC_TERRAFORM_PATH=$(which tofu)" >> $GITHUB_ENV
+          echo "TF_ACC_PROVIDER_HOST=registry.opentofu.org" >> $GITHUB_ENV
+      - name: Set regex for tests to run
+        shell: bash
+        run: |
+          test_re=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- datadog/*.go datadog/*/*.go datadog/internal/* go.mod go.sum | \
+            sed 's/.*_datadog_\(.*\).*.go/\1/' | sed 's/.*\/.*\/\(.*\).*.go/\1/' | \
+            sed -E 's+test|_++g' | \
+            sed -e "s/\(.*\)/\\(?i\\)\1/" | \
+            xargs | sed -e 's/ /|/g')
+          
+          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ "${{ github.head_ref }}" = release/* ]] || [[ "${{ github.event_name }}" == "schedule" ]]; then
+            echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
+          elif [[ ! -z "$test_re" ]]; then
+            echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_ENV
+          fi
+      - name: Test
+        shell: bash
+        run: |
+          [[ -z "${TESTARGS}" ]] && echo "Skipping tests" || make testall
+        env:
+          RECORD: false
