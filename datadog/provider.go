@@ -24,7 +24,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
-// a
 func init() {
 	// Set descriptions to support markdown syntax, this will be used in document generation
 	// and the language server.
