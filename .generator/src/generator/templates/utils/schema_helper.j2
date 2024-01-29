@@ -1,0 +1,53 @@
+{%- macro typePrimitiveSchema(name, schema, required=False) %}
+"{{ name }}": schema.{{ get_terraform_schema_type(schema) }}Attribute{
+    {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
+    Description: "{{ schema.description|sanitize_description if schema.description else "UPDATE ME" }}",
+},
+{%- endmacro %}
+
+{%- macro typePrimitiveArraySchema(name, schema, required=False) %}
+"{{ name }}": schema.{{ get_terraform_schema_type(schema) }}Attribute{
+    {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
+    Description: "{{ schema.description|sanitize_description if schema.description else "UPDATE ME" }}",
+    ElementType: types.{{ get_terraform_schema_type(schema.get("items")) }}Type,
+},
+{%- endmacro %}
+
+{%- macro baseBlockListAttrSchemaBuilder(name, schema, required=False) %}
+{%- set itemSchema = schema.get("items") %}
+"{{ name }}": schema.ListNestedBlock{
+    NestedObject: schema.NestedBlockObject{
+    {{- baseBlockContent(itemSchema) }}
+    },
+},
+{%- endmacro %}
+
+{%- macro baseBlockObjAttrSchemaBuilder(name, schema, required=False) %}
+"{{ name }}": schema.SingleNestedBlock{
+    {{- baseBlockContent(schema) }}
+},
+{%- endmacro %}
+
+{%- macro baseBlockContent(schema) %}
+{%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
+    Attributes: map[string]schema.Attribute{
+        {%- for name, schema in primitiveAttr.items() %}
+        {{- typePrimitiveSchema(name, schema, required=schema.get("required")) }}
+        {%- endfor %}
+
+        {%- for name, schema in primitiveArrAttr.items() %}
+        {{- typePrimitiveArraySchema(name, schema, required=schema.get("required")) }}
+        {%- endfor %}
+    },
+        {%- if nonPrimitiveObjAttr or nonPrimitiveListAttr %}
+    Blocks: map[string]schema.Block{
+        {%- for name, schema in nonPrimitiveListAttr.items() %}
+        {{- baseBlockListAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
+        {%- endfor %}
+
+        {%- for name, schema in nonPrimitiveObjAttr.items() %}
+        {{- baseBlockObjAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
+        {%- endfor %}
+    },
+    {%- endif %}
+{%- endmacro %}
