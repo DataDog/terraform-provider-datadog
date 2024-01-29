@@ -3,12 +3,12 @@
 page_title: "datadog_sensitive_data_scanner_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog SensitiveDataScannerRule resource. This can be used to create and manage Datadog sensitivedatascanner_rule.
+  Provides a Datadog SensitiveDataScannerRule resource. This can be used to create and manage Datadog sensitivedatascanner_rule. Setting the create_before_destroy lifecycle Meta-argument to true is highly recommended if modifying the included_keyword_configuration field to avoid unexpectedly disabling Sensitive Data Scanner groups.
 ---
 
 # datadog_sensitive_data_scanner_rule (Resource)
 
-Provides a Datadog SensitiveDataScannerRule resource. This can be used to create and manage Datadog sensitive_data_scanner_rule.
+Provides a Datadog SensitiveDataScannerRule resource. This can be used to create and manage Datadog sensitive_data_scanner_rule. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying the `included_keyword_configuration` field to avoid unexpectedly disabling Sensitive Data Scanner groups.
 
 ## Example Usage
 
@@ -26,6 +26,11 @@ resource "datadog_sensitive_data_scanner_group" "mygroup" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "myrule" {
+  lifecycle {
+    // Use this meta-argument to avoid disabling the group when modifying the 
+    // `included_keyword_configuration` field
+    create_before_destroy = true
+  }
   name                = "My new rule"
   description         = "Another description"
   group_id            = datadog_sensitive_data_scanner_group.mygroup.id
@@ -41,10 +46,6 @@ resource "datadog_sensitive_data_scanner_rule" "myrule" {
   included_keyword_configuration {
     keywords        = ["cc", "credit card"]
     character_count = 30
-  }
-  lifecycle {
-    // Prefer using this meta-argument in sensitive data scanner rules
-    create_before_destroy = true
   }
 }
 
@@ -75,7 +76,7 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
 
 - `description` (String) Description of the rule.
 - `excluded_namespaces` (List of String) Attributes excluded from the scan. If namespaces is provided, it has to be a sub-path of the namespaces array.
-- `included_keyword_configuration` (Block List, Max: 1) Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. (see [below for nested schema](#nestedblock--included_keyword_configuration))
+- `included_keyword_configuration` (Block List, Max: 1) Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying this field to avoid unexpectedly disabling Sensitive Data Scanner groups. (see [below for nested schema](#nestedblock--included_keyword_configuration))
 - `is_enabled` (Boolean) Whether or not the rule is enabled.
 - `name` (String) Name of the rule.
 - `namespaces` (List of String) Attributes included in the scan. If namespaces is empty or missing, all attributes except excluded_namespaces are scanned. If both are missing the whole event is scanned.
@@ -93,8 +94,8 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
 
 Required:
 
-- `character_count` (Number) Number of characters to look backward to find a keyword validating a match. It must be between 1 and 50 included.
-- `keywords` (List of String) Keyword list that will be checked during scanning in order to validate a match. The number of keywords in the list must be lower or equal than 30.
+- `character_count` (Number) Number of characters before the match to find a keyword validating the match. It must be between 1 and 50 (inclusive).
+- `keywords` (List of String) Keyword list that is checked during scanning in order to validate a match. The number of keywords in the list must be lower than or equal to 30.
 
 
 <a id="nestedblock--text_replacement"></a>

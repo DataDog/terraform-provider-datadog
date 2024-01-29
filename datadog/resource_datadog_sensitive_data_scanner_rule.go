@@ -13,7 +13,7 @@ import (
 
 func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog SensitiveDataScannerRule resource. This can be used to create and manage Datadog sensitive_data_scanner_rule.",
+		Description:   "Provides a Datadog SensitiveDataScannerRule resource. This can be used to create and manage Datadog sensitive_data_scanner_rule. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying the `included_keyword_configuration` field to avoid unexpectedly disabling Sensitive Data Scanner groups.",
 		ReadContext:   resourceDatadogSensitiveDataScannerRuleRead,
 		CreateContext: resourceDatadogSensitiveDataScannerRuleCreate,
 		UpdateContext: resourceDatadogSensitiveDataScannerRuleUpdate,
@@ -79,20 +79,20 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Optional:    true,
 					MaxItems:    1,
 					ForceNew:    true, // If the attribute is removed, we need to recreate the rule.
-					Description: "Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded.",
+					Description: "Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying this field to avoid unexpectedly disabling Sensitive Data Scanner groups.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"keywords": {
 								Type:        schema.TypeList,
 								Required:    true,
-								Description: "Keyword list that will be checked during scanning in order to validate a match. The number of keywords in the list must be lower or equal than 30.",
+								Description: "Keyword list that is checked during scanning in order to validate a match. The number of keywords in the list must be lower than or equal to 30.",
 								MaxItems:    30,
 								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
 							"character_count": {
 								Type:        schema.TypeInt,
 								Required:    true,
-								Description: "Number of characters to look backward to find a keyword validating a match. It must be between 1 and 50 included.",
+								Description: "Number of characters before the match to find a keyword validating the match. It must be between 1 and 50 (inclusive).",
 							},
 						},
 					},

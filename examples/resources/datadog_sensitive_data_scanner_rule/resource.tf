@@ -11,6 +11,11 @@ resource "datadog_sensitive_data_scanner_group" "mygroup" {
 }
 
 resource "datadog_sensitive_data_scanner_rule" "myrule" {
+  lifecycle {
+    // Use this meta-argument to avoid disabling the group when modifying the 
+    // `included_keyword_configuration` field
+    create_before_destroy = true
+  }
   name                = "My new rule"
   description         = "Another description"
   group_id            = datadog_sensitive_data_scanner_group.mygroup.id
@@ -26,10 +31,6 @@ resource "datadog_sensitive_data_scanner_rule" "myrule" {
   included_keyword_configuration {
     keywords        = ["cc", "credit card"]
     character_count = 30
-  }
-  lifecycle {
-    // Prefer using this meta-argument in sensitive data scanner rules
-    create_before_destroy = true
   }
 }
 
