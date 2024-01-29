@@ -695,7 +695,7 @@ IMPROVEMENTS:
 -   `datadog_service_level_objective`: Mark `target_display` and `warning_display display` values as computed ([#1286](https://github.com/DataDog/terraform-provider-datadog/pull/1286))
 -   `datadog_synthetics_test`: Add support for UDP tests ([#1277](https://github.com/DataDog/terraform-provider-datadog/pull/1277))
 -   `datadog_dashboard`: Implement support for Change widgets using formulas and functions ([#1191](https://github.com/DataDog/terraform-provider-datadog/pull/1191))
--   `datadog_monitor`: Update `new_group_delay` and `new_host_delay` docs ([#1281](https://github.com/DataDog/terraform-provider-datadog/pull/1281))
+-   `datadog_monitor`: Update `new_group_delay` and `new_host_delay` docs ([#1293](https://github.com/DataDog/terraform-provider-datadog/pull/1293))
 
 BUGFIXES:
 
