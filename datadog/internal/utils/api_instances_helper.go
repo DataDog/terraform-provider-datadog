@@ -44,6 +44,7 @@ type ApiInstances struct {
 	webhooksIntegrationApiV1              *datadogV1.WebhooksIntegrationApi
 
 	//V2 APIs
+	apiManagementAPIV2         *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2   *datadogV2.APMRetentionFiltersApi
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
@@ -616,4 +617,12 @@ func (i *ApiInstances) GetApmRetentionFiltersApiV2() *datadogV2.APMRetentionFilt
 		i.apmRetentionFiltersApiV2 = datadogV2.NewAPMRetentionFiltersApi(i.HttpClient)
 	}
 	return i.apmRetentionFiltersApiV2
+}
+
+// GetAPIManagementApiV2 get instance of APIManagementApi
+func (i *ApiInstances) GetAPIManagementApiV2() *datadogV2.APIManagementApi {
+	if i.apiManagementAPIV2 == nil {
+		i.apiManagementAPIV2 = datadogV2.NewAPIManagementApi(i.HttpClient)
+	}
+	return i.apiManagementAPIV2
 }
