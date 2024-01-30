@@ -13,19 +13,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-const apiContent = `
-info:
-  contact:
-    name: API team
-  description: My API description.
-  title: %s
-openapi: 3.0.0
-paths:
-  /api/my-api:
-    get:
-      description: An endpoint
-`
-
 func TestAccOpenapiApiBasic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
