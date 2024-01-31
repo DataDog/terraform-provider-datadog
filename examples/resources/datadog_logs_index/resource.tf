@@ -1,9 +1,14 @@
 # A sample Datadog logs index resource definition.
 
 resource "datadog_logs_index" "sample_index" {
-  name           = "your index"
-  daily_limit    = 200000
-  retention_days = 7
+  name        = "your index"
+  daily_limit = 200000
+  daily_limit_reset {
+    reset_time       = "14:00"
+    reset_utc_offset = "+02:00"
+  }
+  daily_limit_warning_threshold_percentage = 50
+  retention_days                           = 7
   filter {
     query = "*"
   }
