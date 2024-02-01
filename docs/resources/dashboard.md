@@ -12790,7 +12790,7 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of graphs to display in the widget.
-- `static_splits` (Block List, Max: 100) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--static_splits))
+- `static_splits` (Block List, Max: 500) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--static_splits))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--split_config--sort"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.split_config.sort`
@@ -24365,7 +24365,7 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of graphs to display in the widget.
-- `static_splits` (Block List, Max: 100) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--static_splits))
+- `static_splits` (Block List, Max: 500) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--static_splits))
 
 <a id="nestedblock--widget--split_graph_definition--split_config--sort"></a>
 ### Nested Schema for `widget.split_graph_definition.split_config.sort`

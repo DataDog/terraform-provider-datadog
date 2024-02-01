@@ -8126,9 +8126,10 @@ func getSplitConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"split_dimensions": getSplitDimensionSchema(),
 		"limit": {
-			Description: "Maximum number of graphs to display in the widget.",
-			Type:        schema.TypeInt,
-			Optional:    true,
+			Description:  "Maximum number of graphs to display in the widget.",
+			Type:         schema.TypeInt,
+			Optional:     true,
+			ValidateFunc: validation.IntBetween(1, 500),
 		},
 		"sort":          getSplitSortSchema(),
 		"static_splits": getStaticSplitsSchema(),
@@ -8201,7 +8202,7 @@ func getStaticSplitsSchema() *schema.Schema {
 		Description: "The property by which the graph splits",
 		Type:        schema.TypeList,
 		Optional:    true,
-		MaxItems:    100,
+		MaxItems:    500,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"split_vector": getSplitVectorSchema(),
