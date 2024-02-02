@@ -1,4 +1,4 @@
-package datadog // here
+package datadog
 
 import (
 	"context"
