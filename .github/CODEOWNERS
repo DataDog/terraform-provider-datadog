@@ -12,7 +12,7 @@ datadog/*datadog_dashboard*               @DataDog/integrations-tools-and-librar
 datadog/*datadog_downtime*                @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
 datadog/*datadog_integration_aws*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
 datadog/*datadog_integration_gcp*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
-datadog/*datadog_integration_pagerduty*   @DataDog/integrations-tools-and-libraries @DataDog/web-integrations @DataDog/saas-integrations @DataDog/saas-integrations
+datadog/*datadog_integration_pagerduty*   @DataDog/integrations-tools-and-libraries @DataDog/saas-integrations @DataDog/saas-integrations
 datadog/*datadog_integration_opsgenie*    @DataDog/integrations-tools-and-libraries @Datadog/collaboration-integrations
 datadog/*datadog_logs*                    @DataDog/integrations-tools-and-libraries @DataDog/logs-backend @DataDog/logs-app
 datadog/*datadog_metric*                  @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation
@@ -34,9 +34,9 @@ datadog/**/*datadog_hosts*                      @DataDog/integrations-tools-and-
 datadog/**/*datadog_ip_ranges*                  @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
 datadog/**/*datadog_integration_aws*            @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
 datadog/**/*datadog_integration_azure*          @DataDog/integrations-tools-and-libraries @DataDog/azure-integrations
-datadog/**/*datadog_integration_cloudflare*     @DataDog/integrations-tools-and-libraries @DataDog/web-integrations @DataDog/saas-integrations
-datadog/**/*datadog_integration_confluent*      @DataDog/integrations-tools-and-libraries @DataDog/web-integrations @DataDog/saas-integrations
-datadog/**/*datadog_integration_fastly*         @DataDog/integrations-tools-and-libraries @DataDog/web-integrations @DataDog/saas-integrations
+datadog/**/*datadog_integration_cloudflare*     @DataDog/integrations-tools-and-libraries @DataDog/saas-integrations
+datadog/**/*datadog_integration_confluent*      @DataDog/integrations-tools-and-libraries @DataDog/saas-integrations
+datadog/**/*datadog_integration_fastly*         @DataDog/integrations-tools-and-libraries @DataDog/saas-integrations
 datadog/**/*datadog_integration_gcp_sts*        @DataDog/integrations-tools-and-libraries @DataDog/gcp-integrations
 datadog/**/*datadog_restriction_policy*         @DataDog/integrations-tools-and-libraries @DataDog/aaa-granular-access
 datadog/**/*datadog_sensitive_data_scanner*     @DataDog/integrations-tools-and-libraries @DataDog/logs-app @DataDog/sensitive-data-scanner
