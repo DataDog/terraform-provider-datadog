@@ -102,6 +102,7 @@ func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateReque
 	return userRequest
 }
 
+// Note: when migrating to Framework, use buildDatadogUserV2UpdateStructFw from datadog/resource_datadog_service_account.go
 func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userID string) *datadogV2.UserUpdateRequest {
 	userAttributes := datadogV2.NewUserUpdateAttributesWithDefaults()
 	userAttributes.SetEmail(d.Get("email").(string))
@@ -120,6 +121,7 @@ func buildDatadogUserV2UpdateStruct(d *schema.ResourceData, userID string) *data
 	return userRequest
 }
 
+// Note: when migrating to Framework, use updateRolesFw from datadog/resource_datadog_service_account.go
 func updateRoles(meta interface{}, userID string, oldRoles *schema.Set, newRoles *schema.Set) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances

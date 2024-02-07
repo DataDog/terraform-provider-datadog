@@ -27,12 +27,11 @@ type serviceAccountResource struct {
 	Auth                context.Context
 }
 type serviceAccountResourceModel struct {
-	ID             types.String `tfsdk:"id"`
-	Disabled       types.Bool   `tfsdk:"disabled"`
-	Email          types.String `tfsdk:"email"`
-	Name           types.String `tfsdk:"name"`
-	Roles          types.Set    `tfsdk:"roles"`
-	ServiceAccount types.Bool   `tfsdk:"service_account"`
+	ID       types.String `tfsdk:"id"`
+	Disabled types.Bool   `tfsdk:"disabled"`
+	Email    types.String `tfsdk:"email"`
+	Name     types.String `tfsdk:"name"`
+	Roles    types.Set    `tfsdk:"roles"`
 }
 
 func NewServiceAccountResource() resource.Resource {
@@ -61,6 +60,7 @@ func (r *serviceAccountResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 			"disabled": schema.BoolAttribute{
 				Description: "Whether the service account is disabled.",
+				Computed:    true,
 				Optional:    true,
 				Default:     booldefault.StaticBool(false),
 			},
@@ -147,7 +147,7 @@ func (r *serviceAccountResource) Create(ctx context.Context, request resource.Cr
 
 		if len(responseData) > 1 {
 			for _, user := range responseData {
-				if user.Attributes.GetEmail() == email && user.Attributes.GetServiceAccount() == state.ServiceAccount.ValueBool() {
+				if user.Attributes.GetEmail() == email && user.Attributes.GetServiceAccount() {
 					existingServiceAccount = &user
 					break
 				}
@@ -162,7 +162,7 @@ func (r *serviceAccountResource) Create(ctx context.Context, request resource.Cr
 		}
 
 		userID = existingServiceAccount.GetId()
-		userRequest := buildDatadogUserV2UpdateStruct(state, userID)
+		userRequest := buildDatadogUserV2UpdateStructFw(state, userID)
 
 		updatedUser, _, err := r.Api.UpdateUser(r.Auth, userID, *userRequest)
 
@@ -186,7 +186,7 @@ func (r *serviceAccountResource) Create(ctx context.Context, request resource.Cr
 			oldRoles, _ = types.SetValueFrom(ctx, types.StringType, &oldRolesWithExisting)
 		}
 
-		if err := r.updateRoles(ctx, userID, oldRoles, newRoles); err != nil {
+		if err := r.updateRolesFw(ctx, userID, oldRoles, newRoles); err != nil {
 			response.Diagnostics.Append(err)
 			return
 		}
@@ -224,13 +224,13 @@ func (r *serviceAccountResource) Update(ctx context.Context, request resource.Up
 		oldRoles := state.Roles
 		newRoles := plan.Roles
 
-		if err := r.updateRoles(ctx, state.ID.ValueString(), oldRoles, newRoles); err != nil {
+		if err := r.updateRolesFw(ctx, state.ID.ValueString(), oldRoles, newRoles); err != nil {
 			response.Diagnostics.Append(err)
 			return
 		}
 	}
 
-	userRequest := buildDatadogUserV2UpdateStruct(state, state.ID.ValueString())
+	userRequest := buildDatadogUserV2UpdateStructFw(state, state.ID.ValueString())
 	updatedUser, _, err := r.Api.UpdateUser(r.Auth, state.ID.ValueString(), *userRequest)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating service account"))
@@ -316,7 +316,7 @@ func buildDatadogServiceAccountV2Request(ctx context.Context, state *serviceAcco
 	return serviceAccountRequest, diags
 }
 
-func buildDatadogUserV2UpdateStruct(state serviceAccountResourceModel, userID string) *datadogV2.UserUpdateRequest {
+func buildDatadogUserV2UpdateStructFw(state serviceAccountResourceModel, userID string) *datadogV2.UserUpdateRequest {
 	userAttributes := datadogV2.NewUserUpdateAttributesWithDefaults()
 	userAttributes.SetEmail(state.Email.ValueString())
 	if !state.Name.IsNull() {
@@ -333,7 +333,7 @@ func buildDatadogUserV2UpdateStruct(state serviceAccountResourceModel, userID st
 	return userRequest
 }
 
-func (r *serviceAccountResource) updateRoles(ctx context.Context, userID string, oldRoles types.Set, newRoles types.Set) diag.Diagnostic {
+func (r *serviceAccountResource) updateRolesFw(ctx context.Context, userID string, oldRoles types.Set, newRoles types.Set) diag.Diagnostic {
 
 	oldRolesSlice := []string{}
 	newRolesSlice := []string{}

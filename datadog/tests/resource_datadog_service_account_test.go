@@ -7,17 +7,18 @@ import (
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
 func TestServiceAccountCreate(t *testing.T) {
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogUserV2FwDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: generateServiceAccountConfig("some_linked_users_email@test.com", "Service account linked to some user", []string{"data.datadog_role.ro_role.id"}),
@@ -38,13 +39,12 @@ func TestServiceAccountCreate(t *testing.T) {
 
 func TestServiceAccountUpdate(t *testing.T) {
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogUserV2Destroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogUserV2FwDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: generateServiceAccountConfig("some_linked_users_email@test.com", "Service account linked to some user", []string{"data.datadog_role.ro_role.id"}),
@@ -89,4 +89,16 @@ func generateServiceAccountConfig(email, name string, roles []string) string {
           roles = [%v]
         }
   `, email, name, strings.Join(roles, ","))
+}
+
+func testAccCheckDatadogUserV2FwDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		if err := datadogUserV2DestroyHelper(auth, s, apiInstances); err != nil {
+			return err
+		}
+		return nil
+	}
 }
