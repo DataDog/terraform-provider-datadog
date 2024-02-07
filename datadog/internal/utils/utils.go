@@ -305,3 +305,18 @@ func NormalizeIPAddress(ipAddress string) string {
 	}
 	return ipNet.String()
 }
+
+func StringSliceDifference(slice1, slice2 []string) []string {
+	elements := make(map[interface{}]bool)
+	for _, val := range slice2 {
+		elements[val] = true
+	}
+
+	var diff []string
+	for _, val := range slice1 {
+		if !elements[val] {
+			diff = append(diff, val)
+		}
+	}
+	return diff
+}

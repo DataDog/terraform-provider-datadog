@@ -190,7 +190,6 @@ func Provider() *schema.Provider {
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
 			"datadog_powerpack":                            resourceDatadogPowerpack(),
 			"datadog_role":                                 resourceDatadogRole(),
-			"datadog_service_account":                      resourceDatadogServiceAccount(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_security_monitoring_filter":           resourceDatadogSecurityMonitoringFilter(),
