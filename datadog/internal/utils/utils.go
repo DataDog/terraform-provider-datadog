@@ -307,7 +307,7 @@ func NormalizeIPAddress(ipAddress string) string {
 }
 
 func StringSliceDifference(slice1, slice2 []string) []string {
-	elements := make(map[interface{}]bool)
+	elements := make(map[string]bool)
 	for _, val := range slice2 {
 		elements[val] = true
 	}
