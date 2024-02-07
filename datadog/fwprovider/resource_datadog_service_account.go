@@ -214,15 +214,15 @@ func (r *serviceAccountResource) Create(ctx context.Context, request resource.Cr
 }
 
 func (r *serviceAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state, plan serviceAccountResourceModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	response.Diagnostics.Append(request.Plan.Get(ctx, &plan)...)
+	var state, prev_state serviceAccountResourceModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	response.Diagnostics.Append(request.State.Get(ctx, &prev_state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
-	if !plan.Roles.Equal(state.Roles) {
-		oldRoles := state.Roles
-		newRoles := plan.Roles
+	if !prev_state.Roles.Equal(state.Roles) {
+		newRoles := state.Roles
+		oldRoles := prev_state.Roles
 
 		if err := r.updateRolesFw(ctx, state.ID.ValueString(), oldRoles, newRoles); err != nil {
 			response.Diagnostics.Append(err)
