@@ -1,3 +1,31 @@
+## 3.36.0 (February 7, 2024)
+
+### BUGFIXES
+* [datadog_synthetics_test] Fix no_saving_response_body option to the request config for multi api test by @RomainGuarinoni in https://github.com/DataDog/terraform-provider-datadog/pull/2249
+* [datadog_synthetics_test] Check if ci options block is valid by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2252
+* [datadog_apm_retention_filter] User mutex to prevent concurrent operation by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2244
+* [datadog_monitor] Omit recurrence start field if its an empty string by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2258
+### IMPROVEMENTS
+* [ip_allow_list] Migrate ip allow list to framework by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/2239
+* [datadog_service_level_objective] Add support for time-slice SLOs by @ddjamesfrullo in https://github.com/DataDog/terraform-provider-datadog/pull/2245
+* [datadog_api_key][datadog_application_key] Add exact_match option to data sources by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2247
+* [datadog_sensitive_data_scanner] Handle new `included_keyword_configuration` attribute in scanning rule by @artslidd in https://github.com/DataDog/terraform-provider-datadog/pull/2238
+* [datadog_dashboards] Bump limit for allowed graphs in split graph widget by @adil-alimbetov in https://github.com/DataDog/terraform-provider-datadog/pull/2265
+* [datadog_logs_index] Add daily limit reset options to log indexes by @Prepager in https://github.com/DataDog/terraform-provider-datadog/pull/2263
+### FEATURES
+* [security_monitoring_rule] Support Third Party rules by @pietrodll in https://github.com/DataDog/terraform-provider-datadog/pull/2231
+* [datadog_security_monitoring_suppression] Add support for suppressions by @pietrodll in https://github.com/DataDog/terraform-provider-datadog/pull/2246
+* [datadog_openapi_api] Add support for API management resource by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/2262
+
+## New Contributors
+* @RomainGuarinoni made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2249
+* @buraizu made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2254
+* @michellealbright12 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2259
+* @dsinn made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2253
+* @artslidd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2238
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.35.0...v3.36.0
+
 ## 3.35.0 (January 10, 2024)
 
 ### IMPROVEMENTS
