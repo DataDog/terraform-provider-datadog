@@ -55,7 +55,7 @@ func (r *serviceAccountResource) Schema(_ context.Context, _ resource.SchemaRequ
 		Description: "Provides a Datadog service account resource. This can be used to create and manage Datadog service accounts.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "Name for the service account.",
 			},
 			"disabled": schema.BoolAttribute{
