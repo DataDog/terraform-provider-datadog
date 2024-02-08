@@ -44,7 +44,6 @@ func testAccDatasourceServiceAccountConfig(email string, name string) string {
 	resource "datadog_service_account" "foo" {
 		email = "%[1]s"
 		name = "%[2]s"
-		roles = []
 	}`, email, name)
 }
 
@@ -78,7 +77,6 @@ func testAccDatasourceServiceAccountConfigID(email string, name string) string {
 	resource "datadog_service_account" "foo" {
 		email = "%s"
 		name = "%s"
-		roles = []
 	}`, email, name)
 }
 
