@@ -98,8 +98,8 @@ func (r *serviceAccountResource) Read(ctx context.Context, request resource.Read
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting user"))
 		return
 	}
-	if err := updateServiceAccountStateV2(ctx, &state, &userResponse); err != nil {
-		response.Diagnostics.Append(err...)
+	if diags := updateServiceAccountStateV2(ctx, &state, &userResponse); diags.HasError() {
+		response.Diagnostics.Append(diags...)
 		return
 	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -191,8 +191,8 @@ func (r *serviceAccountResource) Create(ctx context.Context, request resource.Cr
 			return
 		}
 
-		if err := updateServiceAccountStateV2(ctx, &state, &updatedUser); err != nil {
-			response.Diagnostics.Append(err...)
+		if diags := updateServiceAccountStateV2(ctx, &state, &updatedUser); diags.HasError() {
+			response.Diagnostics.Append(diags...)
 			return
 		}
 	} else {
@@ -205,8 +205,8 @@ func (r *serviceAccountResource) Create(ctx context.Context, request resource.Cr
 	}
 
 	state.ID = types.StringValue(userID)
-	if err := updateServiceAccountStateV2(ctx, &state, &createResponse); err != nil {
-		response.Diagnostics.Append(err...)
+	if diags := updateServiceAccountStateV2(ctx, &state, &createResponse); diags.HasError() {
+		response.Diagnostics.Append(diags...)
 		return
 	}
 
@@ -240,8 +240,8 @@ func (r *serviceAccountResource) Update(ctx context.Context, request resource.Up
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
 		return
 	}
-	if err := updateServiceAccountStateV2(ctx, &state, &updatedUser); err != nil {
-		response.Diagnostics.Append(err...)
+	if diags := updateServiceAccountStateV2(ctx, &state, &updatedUser); diags.HasError() {
+		response.Diagnostics.Append(diags...)
 		return
 	}
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -266,20 +266,22 @@ func (r *serviceAccountResource) Delete(ctx context.Context, request resource.De
 func updateServiceAccountStateV2(ctx context.Context, state *serviceAccountResourceModel, user *datadogV2.UserResponse) diag.Diagnostics {
 	userData := user.GetData()
 	userAttributes := userData.GetAttributes()
-	userRelations := userData.GetRelationships()
-	userRolesRelations := userRelations.GetRoles()
-	userRoles := userRolesRelations.GetData()
 
 	state.Email = types.StringValue(userAttributes.GetEmail())
 	state.Name = types.StringValue(userAttributes.GetName())
 	state.Disabled = types.BoolValue(userAttributes.GetDisabled())
-
-	roles := make([]string, len(userRoles))
-	for i, userRole := range userRoles {
-		roles[i] = userRole.GetId()
-	}
 	diags := diag.Diagnostics{}
-	state.Roles, diags = types.SetValueFrom(ctx, types.StringType, roles)
+	if !state.Roles.IsNull() {
+		userRelations := userData.GetRelationships()
+		userRolesRelations := userRelations.GetRoles()
+		userRoles := userRolesRelations.GetData()
+
+		roles := make([]string, len(userRoles))
+		for i, userRole := range userRoles {
+			roles[i] = userRole.GetId()
+		}
+		state.Roles, diags = types.SetValueFrom(ctx, types.StringType, roles)
+	}
 	return diags
 }
 
