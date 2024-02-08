@@ -18,7 +18,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 const defaultNoDataTimeframeMinutes = 10
@@ -456,10 +455,9 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"query": {
-											Type:         schema.TypeString,
-											ValidateFunc: validation.StringIsNotEmpty,
-											Required:     true,
-											Description:  "The events search string.",
+											Type:        schema.TypeString,
+											Required:    true,
+											Description: "The events search string.",
 										},
 									},
 								},
@@ -1145,12 +1143,10 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 				terraformQuery["indexes"] = indexes
 			}
 			if search, ok := terraformEventQueryDefinition.GetSearchOk(); ok {
-				if len(search.GetQuery()) > 0 {
-					terraformSearch := map[string]interface{}{}
-					terraformSearch["query"] = search.GetQuery()
-					terraformSearchList := []map[string]interface{}{terraformSearch}
-					terraformQuery["search"] = terraformSearchList
-				}
+				terraformSearch := map[string]interface{}{}
+				terraformSearch["query"] = search.GetQuery()
+				terraformSearchList := []map[string]interface{}{terraformSearch}
+				terraformQuery["search"] = terraformSearchList
 			}
 			if compute, ok := terraformEventQueryDefinition.GetComputeOk(); ok {
 				terraformCompute := map[string]interface{}{}
