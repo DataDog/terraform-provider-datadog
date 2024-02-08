@@ -344,11 +344,11 @@ resource "datadog_synthetics_test" "grpc" {
   type    = "api"
   subtype = "grpc"
   request_definition {
-    method                = "GET"
-    host                  = "google.com"
-    port                  = 50050
-    service               = "Hello"
-    proto_json_descriptor = <<EOT
+    method           = "GET"
+    host             = "google.com"
+    port             = 50050
+    service          = "Hello"
+    plain_proto_file = <<EOT
 syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "io.grpc.examples.helloworld";
@@ -609,8 +609,9 @@ Optional:
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - `persist_cookies` (Boolean) Persist cookies across redirects.
+- `plain_proto_file` (String) The content of a proto file as a string
 - `port` (Number) Port to use when performing the test.
-- `proto_json_descriptor` (String) A protobuf JSON descriptor.
+- `proto_json_descriptor` (String, Deprecated) A protobuf JSON descriptor. **Deprecated.** Use `plain_proto_file` instead
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
@@ -954,8 +955,9 @@ Optional:
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - `persist_cookies` (Boolean) Persist cookies across redirects.
+- `plain_proto_file` (String) The content of a proto file as a string
 - `port` (Number) Port to use when performing the test.
-- `proto_json_descriptor` (String) A protobuf JSON descriptor.
+- `proto_json_descriptor` (String, Deprecated) A protobuf JSON descriptor. **Deprecated.** Use `plain_proto_file` instead
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).

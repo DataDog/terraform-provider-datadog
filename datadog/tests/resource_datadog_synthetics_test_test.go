@@ -2358,7 +2358,7 @@ resource "datadog_synthetics_test" "websocket" {
 }`, uniq)
 }
 
-var compressedJsonDescriptor = `syntax = "proto3";
+var compressedProtoFile = `syntax = "proto3";
 
 option java_multiple_files = true;
 option java_package = "io.grpc.examples.helloworld";
@@ -2401,7 +2401,7 @@ func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", "Hello"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.grpc", "request_definition.0.proto_json_descriptor", compressedJsonDescriptor),
+				"datadog_synthetics_test.grpc", "request_definition.0.plain_proto_file", compressedProtoFile),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
 			resource.TestCheckResourceAttr(
@@ -2469,7 +2469,7 @@ resource "datadog_synthetics_test" "grpc" {
 		host   = "google.com"
 		port   = 50050
 		service = "Hello"
-		proto_json_descriptor = <<EOT
+		plain_proto_file = <<EOT
 %[2]sEOT
 	}
 
@@ -2512,7 +2512,7 @@ resource "datadog_synthetics_test" "grpc" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
-}`, uniq, compressedJsonDescriptor)
+}`, uniq, compressedProtoFile)
 }
 
 func updateSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
