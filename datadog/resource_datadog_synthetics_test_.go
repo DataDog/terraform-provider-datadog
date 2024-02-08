@@ -236,10 +236,10 @@ func syntheticsTestRequest() *schema.Resource {
 				Description: "A protobuf JSON descriptor.",
 				Type:        schema.TypeString,
 				Optional:    true,
-				Deprecated:  "Use `plain_proto_file` instead",
+				Deprecated:  "Use `plain_proto_file` instead.",
 			},
 			"plain_proto_file": {
-				Description: "The content of a proto file as a string",
+				Description: "The content of a proto file as a string.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
