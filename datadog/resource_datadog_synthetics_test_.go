@@ -9,7 +9,7 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	_nethttp "net/http"
 	"regexp"
@@ -234,6 +234,12 @@ func syntheticsTestRequest() *schema.Resource {
 			},
 			"proto_json_descriptor": {
 				Description: "A protobuf JSON descriptor.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Deprecated:  "Use `plain_proto_file` instead",
+			},
+			"plain_proto_file": {
+				Description: "The content of a proto file as a string",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -1488,6 +1494,16 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 		request.SetCompressedJsonDescriptor(encodedCompressedJsonDescriptor)
 	}
+	if attr, ok := d.GetOk("request_definition.0.plain_proto_file"); ok {
+		stringifiedValue, _ := json.Marshal(attr.(string))
+		var compressedValue bytes.Buffer
+		zl := zlib.NewWriter(&compressedValue)
+		zl.Write(stringifiedValue)
+		zl.Close()
+		encodedCompressedProtoFile := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
+
+		request.SetCompressedProtoFile(encodedCompressedProtoFile)
+	}
 
 	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
 
@@ -2375,11 +2391,23 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 		decodedBytes := bytes.NewReader(decodedValue)
 		zl, _ := zlib.NewReader(decodedBytes)
 		defer zl.Close()
-		compressedJsonDescriptor, _ := ioutil.ReadAll(zl)
+		compressedJsonDescriptor, _ := io.ReadAll(zl)
 		var result string
 		_ = json.Unmarshal(compressedJsonDescriptor, &result)
 
 		localRequest["proto_json_descriptor"] = result
+	}
+	if request.HasCompressedProtoFile() {
+		decodedValue, _ := b64.StdEncoding.DecodeString(request.GetCompressedProtoFile())
+		decodedBytes := bytes.NewReader(decodedValue)
+		zl, _ := zlib.NewReader(decodedBytes)
+		defer zl.Close()
+		compressedProtoFile, _ := io.ReadAll(zl)
+		var result string
+		json.Unmarshal(compressedProtoFile, &result)
+
+		localRequest["plain_proto_file"] = result
+
 	}
 
 	return localRequest
