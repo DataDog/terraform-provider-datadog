@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -23,7 +22,7 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogServiceAccountApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: generateServiceAccountApplicationKeyConfig("some_linked_users_email@test.com", "Service account linked to some user", uniq, []string{"data.datadog_role.ro_role.id"}),
+				Config: testAccCheckDatadogServiceAccountApplicationKey(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogServiceAccountApplicationKeyExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
@@ -36,12 +35,10 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 						"datadog_service_account_application_key.foo", "last4"),
 					resource.TestCheckResourceAttrPair(
 						"datadog_service_account_application_key.foo", "service_account_id", "datadog_service_account.bar", "id"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_account.bar", "roles.#", "1"),
 				),
 			},
 			{
-				Config: generateServiceAccountApplicationKeyConfig("some_linked_users_email@test.com", "Service account linked to some user", uniqUpdated, []string{"data.datadog_role.ro_role.id"}),
+				Config: testAccCheckDatadogServiceAccountApplicationKey(uniqUpdated),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogServiceAccountApplicationKeyExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
@@ -54,8 +51,6 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 						"datadog_service_account_application_key.foo", "last4"),
 					resource.TestCheckResourceAttrPair(
 						"datadog_service_account_application_key.foo", "service_account_id", "datadog_service_account.bar", "id"),
-					resource.TestCheckResourceAttr(
-						"datadog_service_account.bar", "roles.#", "1"),
 				),
 			},
 		},
@@ -74,7 +69,7 @@ func TestAccServiceAccountApplicationKeyBasic_import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogServiceAccountApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: generateServiceAccountApplicationKeyConfig("some_linked_users_email@test.com", "Service account linked to some user", uniq, []string{"data.datadog_role.ro_role.id"}),
+				Config: testAccCheckDatadogServiceAccountApplicationKey(uniq),
 			},
 			{
 				ResourceName: resourceName,
@@ -91,22 +86,17 @@ func TestAccServiceAccountApplicationKeyBasic_import(t *testing.T) {
 	})
 }
 
-func generateServiceAccountApplicationKeyConfig(email, name, uniq string, roles []string) string {
+func testAccCheckDatadogServiceAccountApplicationKey(uniq string) string {
 	return fmt.Sprintf(`
-        data "datadog_role" "ro_role" {
-          filter = "Datadog Read Only Role"
-        }
+resource "datadog_service_account" "bar" {
+	email = "new@example.com"
+	name  = "testTerraformServiceAccountApplicationKeys"
+}
 
-        resource "datadog_service_account" "bar" {
-          email = "%v"
-          name = "%v"
-          roles = [%v]
-        }
-
-		resource "datadog_service_account_application_key" "foo" {
-			service_account_id = datadog_service_account.bar.id
-			name = "%s"
-		}`, email, name, strings.Join(roles, ","), uniq)
+resource "datadog_service_account_application_key" "foo" {
+    service_account_id = datadog_service_account.bar.id
+    name = "%s"
+}`, uniq)
 }
 
 func testAccCheckDatadogServiceAccountApplicationKeyDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
