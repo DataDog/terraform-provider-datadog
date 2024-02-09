@@ -78,6 +78,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_sensitive_data_scanner_group_order_test":      "sensitive-data-scanner",
 	"tests/data_source_datadog_sensitive_data_scanner_standard_pattern_test": "sensitive-data-scanner",
 	"tests/data_source_datadog_service_account_test":                         "users",
+	"tests/data_source_datadog_service_definitions_test":                     "service-definitions",
 	"tests/data_source_datadog_service_level_objective_test":                 "service-level-objectives",
 	"tests/data_source_datadog_service_level_objectives_test":                "service-level-objectives",
 	"tests/data_source_datadog_synthetics_global_variable_test":              "synthetics",
