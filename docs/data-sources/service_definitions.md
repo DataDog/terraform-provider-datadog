@@ -3,12 +3,12 @@
 page_title: "datadog_service_definitions Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about existing Datadog team memberships.
+  Use this data source to retrieve information about existing Datadog service definitions.
 ---
 
 # datadog_service_definitions (Data Source)
 
-Use this data source to retrieve information about existing Datadog team memberships.
+Use this data source to retrieve information about existing Datadog service definitions.
 
 ## Example Usage
 
