@@ -540,7 +540,7 @@ func (i *ApiInstances) GetServiceAccountsApiV2() *datadogV2.ServiceAccountsApi {
 	return i.serviceAccountsApiV2
 }
 
-// GetServiceDefinitionsApiV2 get instance of ServiceAccountsApi
+// GetServiceDefinitionsApiV2 get instance of ServiceDefinitionsApi
 func (i *ApiInstances) GetServiceDefinitionApiV2() *datadogV2.ServiceDefinitionApi {
 	if i.serviceDefinitionsApiV2 == nil {
 		i.serviceDefinitionsApiV2 = datadogV2.NewServiceDefinitionApi(i.HttpClient)
