@@ -1,3 +1,14 @@
+## 3.36.1 (February 13, 2024)
+
+### BUGFIXES
+* [datadog_monitor] Sync search query validation with backend API by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2275
+* [datadog_logs_index] Fix permadiff on omitted reset time by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2280
+### FEATURES
+* [datadog_synthetics_test] Add plain_proto_file and deprecate compressed_json_descriptor by @AlaricCalmette in https://github.com/DataDog/terraform-provider-datadog/pull/2273
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.36.0...v3.36.1
+
 ## 3.36.0 (February 7, 2024)
 
 ### BUGFIXES
