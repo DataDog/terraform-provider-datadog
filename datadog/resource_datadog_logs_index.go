@@ -39,6 +39,7 @@ var indexSchema = map[string]*schema.Schema{
 		Description:      "Object containing options to override the default daily limit reset time.",
 		Type:             schema.TypeList,
 		Optional:         true,
+		Computed:         true,
 		MaxItems:         1,
 		DiffSuppressFunc: suppressDiffWhenDisabledDailyLimit,
 		Elem: &schema.Resource{
@@ -185,8 +186,14 @@ func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) di
 	if err := d.Set("daily_limit", index.GetDailyLimit()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("daily_limit_reset", buildTerraformIndexDailyLimitReset(index.GetDailyLimitReset())); err != nil {
-		return diag.FromErr(err)
+	if daily_limit_reset, ok := index.GetDailyLimitResetOk(); ok {
+		if err := d.Set("daily_limit_reset", buildTerraformIndexDailyLimitReset(*daily_limit_reset)); err != nil {
+			return diag.FromErr(err)
+		}
+	} else {
+		if err := d.Set("daily_limit_reset", nil); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	if err := d.Set("daily_limit_warning_threshold_percentage", index.GetDailyLimitWarningThresholdPercentage()); err != nil {
 		return diag.FromErr(err)
