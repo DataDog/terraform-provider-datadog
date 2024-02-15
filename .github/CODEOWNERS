@@ -21,7 +21,7 @@ datadog/*datadog_screenboard*             @DataDog/integrations-tools-and-librar
 datadog/*security_monitoring*             @DataDog/integrations-tools-and-libraries @DataDog/k9-cloud-security-platform
 datadog/*datadog_service_definition*      @DataDog/integrations-tools-and-libraries @DataDog/service-catalog
 datadog/*datadog_service_level_objective* @DataDog/integrations-tools-and-libraries @DataDog/slo-app
-datadog/*datadog_synthetics*              @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
+datadog/*datadog_synthetics*              @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app @DataDog/synthetics-ct
 datadog/*datadog_timeboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
 datadog/*datadog_user*                    @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
 datadog/*cloud_configuration*             @DataDog/integrations-tools-and-libraries @DataDog/k9-cloud-security-posture-management
@@ -42,5 +42,5 @@ datadog/**/*datadog_restriction_policy*         @DataDog/integrations-tools-and-
 datadog/**/*datadog_sensitive_data_scanner*     @DataDog/integrations-tools-and-libraries @DataDog/logs-app @DataDog/sensitive-data-scanner
 datadog/**/*datadog_service_account*            @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
 datadog/**/*datadog_spans_metric*               @DataDog/integrations-tools-and-libraries @DataDog/apm-trace-intake
-datadog/**/*datadog_synthetics_concurrency_cap* @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
+datadog/**/*datadog_synthetics_concurrency_cap* @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app @DataDog/synthetics-ct
 datadog/**/*datadog_team*                       @DataDog/integrations-tools-and-libraries @DataDog/core-app
