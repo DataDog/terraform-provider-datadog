@@ -19,8 +19,13 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 		ReadContext:   resourceDatadogIntegrationPagerdutySORead,
 		UpdateContext: resourceDatadogIntegrationPagerdutySOUpdate,
 		DeleteContext: resourceDatadogIntegrationPagerdutySODelete,
-		// since the API never returns service_key, it's impossible to meaningfully import resources
-		Importer: nil,
+		// The API never returns service_key, importing this resource can be used
+		// to avoid recreating an existing one, but the lifecycle of the `service_key`
+		// won't be manageable through it and should probably be in an `ignore_changes`
+		// block.
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
