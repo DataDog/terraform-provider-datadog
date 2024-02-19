@@ -81,6 +81,14 @@ func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.Resource
 	auth := providerConf.Auth
 
 	id, m := buildMetricMetadataStruct(d)
+
+	// Datadog API only has partial supports for the distribution type in metrics endpoints,
+	// and sending the distribution type field in the request payload will result in a 400 error.
+	// This is an interium workaround so that users can still initialize resources with distribution metric.
+	if m.GetType() == "distribution" {
+		m.SetType("")
+	}
+
 	createdMetadata, httpResponse, err := apiInstances.GetMetricsApiV1().UpdateMetricMetadata(auth, id, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating metric metadata")
@@ -148,7 +156,10 @@ func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.Resource
 	m := &datadogV1.MetricMetadata{}
 	id := d.Get("metric").(string)
 
-	if attr, ok := d.GetOk("type"); ok {
+	// Datadog API only has partial supports for the distribution type in metrics endpoints,
+	// and sending the distribution type field in the request payload will result in a 400 error.
+	// This is an interium workaround so that users can still update other fields of distribution metric metadata.
+	if attr, ok := d.GetOk("type"); ok && attr.(string) != "distribution" {
 		m.SetType(attr.(string))
 	}
 	if attr, ok := d.GetOk("description"); ok {
