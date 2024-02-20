@@ -293,6 +293,7 @@ func testCheckUserHasRole(username string, roleSource string) resource.TestCheck
 	}
 }
 
+// TODO: Migrate it to testAccCheckDatadogUserV2FwDestroy in service account test when migrating to framework
 func testAccCheckDatadogUserV2Destroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
