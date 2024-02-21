@@ -19,13 +19,6 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-var (
-	_ resource.ResourceWithConfigure   = &integrationGcpResource{}
-	_ resource.ResourceWithImportState = &integrationGcpResource{}
-)
-
-var integrationGcpMutex = sync.Mutex{}
-
 const (
 	defaultType                    = "service_account"
 	defaultAuthURI                 = "https://accounts.google.com/o/oauth2/auth"
@@ -34,9 +27,15 @@ const (
 	defaultClientX509CertURLPrefix = "https://www.googleapis.com/robot/v1/metadata/x509/"
 )
 
+var (
+	integrationGcpMutex sync.Mutex
+	_                   resource.ResourceWithConfigure   = (*integrationGcpResource)(nil)
+	_                   resource.ResourceWithImportState = (*integrationGcpResource)(nil)
+)
+
 type integrationGcpResource struct {
-	Api  *datadogV1.GCPIntegrationApi
-	Auth context.Context
+	api  *datadogV1.GCPIntegrationApi
+	auth context.Context
 }
 
 type integrationGcpModel struct {
@@ -59,8 +58,8 @@ func NewIntegrationGcpResource() resource.Resource {
 
 func (r *integrationGcpResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.GetGCPIntegrationApiV1()
-	r.Auth = providerData.Auth
+	r.api = providerData.DatadogApiInstances.GetGCPIntegrationApiV1()
+	r.auth = providerData.Auth
 }
 
 func (r *integrationGcpResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -69,7 +68,7 @@ func (r *integrationGcpResource) Metadata(_ context.Context, request resource.Me
 
 func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "This resource is deprecated — use the `datadog_integration_gcp_sts` resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
+		Description: "This resource is deprecated—use the `datadog_integration_gcp_sts` resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
 			"project_id": schema.StringAttribute{
 				Description: "Your Google Cloud project ID found in your JSON service account key.",
@@ -152,9 +151,9 @@ func (r *integrationGcpResource) Read(ctx context.Context, request resource.Read
 		return
 	}
 
-	integration, diags := r.getGCPIntegration(state)
-	if diags.HasError() {
-		response.Diagnostics.Append(diags...)
+	integration, err := r.getGCPIntegration(state)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing GCP integration"))
 		return
 	}
 
@@ -171,16 +170,16 @@ func (r *integrationGcpResource) Read(ctx context.Context, request resource.Read
 
 func (r *integrationGcpResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state integrationGcpModel
-
-	integrationGcpMutex.Lock()
-	defer integrationGcpMutex.Unlock()
-
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	body, diags := r.buildIntegrationGcpRequestBodyBase(state)
+	integrationGcpMutex.Lock()
+	defer integrationGcpMutex.Unlock()
+
+	diags := diag.Diagnostics{}
+	body := r.buildIntegrationGcpRequestBodyBase(state)
 	r.addDefaultsToBody(body, state)
 	r.addRequiredFieldsToBody(body, state)
 	r.addOptionalFieldsToBody(body, state)
@@ -190,14 +189,14 @@ func (r *integrationGcpResource) Create(ctx context.Context, request resource.Cr
 		return
 	}
 
-	_, _, err := r.Api.CreateGCPIntegration(r.Auth, *body)
+	_, _, err := r.api.CreateGCPIntegration(r.auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating GCP integration"))
 		return
 	}
-	integration, diags := r.getGCPIntegration(state)
-	if diags.HasError() {
-		response.Diagnostics.Append(diags...)
+	integration, err := r.getGCPIntegration(state)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing GCP integration"))
 		return
 	}
 	if integration == nil {
@@ -221,7 +220,8 @@ func (r *integrationGcpResource) Update(ctx context.Context, request resource.Up
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	body, diags := r.buildIntegrationGcpRequestBodyBase(state)
+	diags := diag.Diagnostics{}
+	body := r.buildIntegrationGcpRequestBodyBase(state)
 	r.addOptionalFieldsToBody(body, state)
 
 	response.Diagnostics.Append(diags...)
@@ -229,14 +229,14 @@ func (r *integrationGcpResource) Update(ctx context.Context, request resource.Up
 		return
 	}
 
-	_, _, err := r.Api.UpdateGCPIntegration(r.Auth, *body)
+	_, _, err := r.api.UpdateGCPIntegration(r.auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating GCP integration"))
 		return
 	}
-	integration, diags := r.getGCPIntegration(state)
-	if diags.HasError() {
-		response.Diagnostics.Append(diags...)
+	integration, err := r.getGCPIntegration(state)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing GCP integration"))
 		return
 	}
 	if integration == nil {
@@ -260,11 +260,12 @@ func (r *integrationGcpResource) Delete(ctx context.Context, request resource.De
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	body, diags := r.buildIntegrationGcpRequestBodyBase(state)
+	diags := diag.Diagnostics{}
+	body := r.buildIntegrationGcpRequestBodyBase(state)
 
 	response.Diagnostics.Append(diags...)
 
-	_, httpResp, err := r.Api.DeleteGCPIntegration(r.Auth, *body)
+	_, httpResp, err := r.api.DeleteGCPIntegration(r.auth, *body)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -277,6 +278,7 @@ func (r *integrationGcpResource) Delete(ctx context.Context, request resource.De
 func (r *integrationGcpResource) updateState(ctx context.Context, state *integrationGcpModel, resp *datadogV1.GCPAccount) {
 	projectId := types.StringValue(resp.GetProjectId())
 	// ProjectID and ClientEmail are the only parameters required in all mutating API requests
+	state.ID = projectId
 	state.ProjectID = projectId
 	state.ClientEmail = types.StringValue(resp.GetClientEmail())
 
@@ -297,39 +299,32 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 	if privateKeyId, ok := resp.GetPrivateKeyIdOk(); ok {
 		state.PrivateKeyId = types.StringValue(*privateKeyId)
 	}
-	state.ID = projectId
 }
 
-func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*datadogV1.GCPAccount, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
-	resp, _, err := r.Api.ListGCPIntegration(r.Auth)
+func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*datadogV1.GCPAccount, error) {
+	resp, _, err := r.api.ListGCPIntegration(r.auth)
 	if err != nil {
-		diags.Append(utils.FrameworkErrorDiag(err, "error listing GCP integration"))
-		return nil, diags
+		return nil, err
 	}
 
-	var account *datadogV1.GCPAccount
 	for _, integration := range resp {
 		if integration.GetProjectId() == state.ProjectID.ValueString() && integration.GetClientEmail() == state.ClientEmail.ValueString() {
 			if err := utils.CheckForUnparsed(integration); err != nil {
-				diags.AddError("response contains unparsedObject", err.Error())
-				return nil, diags
+				return nil, err
 			}
-			account = &integration
-			break
+			return &integration, nil
 		}
 	}
 
-	return account, diags
+	return nil, nil // Leave handling of how to deal with nil account to the caller
 }
 
-func (r *integrationGcpResource) buildIntegrationGcpRequestBodyBase(state integrationGcpModel) (*datadogV1.GCPAccount, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
+func (r *integrationGcpResource) buildIntegrationGcpRequestBodyBase(state integrationGcpModel) *datadogV1.GCPAccount {
 	body := datadogV1.NewGCPAccountWithDefaults()
 	body.SetProjectId(state.ProjectID.ValueString())
 	body.SetClientEmail(state.ClientEmail.ValueString())
 
-	return body, diags
+	return body
 }
 
 func (r *integrationGcpResource) addDefaultsToBody(body *datadogV1.GCPAccount, state integrationGcpModel) {
