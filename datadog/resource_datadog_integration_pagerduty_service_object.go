@@ -2,6 +2,8 @@ package datadog
 
 import (
 	"context"
+	"fmt"
+	"os"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -19,12 +21,8 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 		ReadContext:   resourceDatadogIntegrationPagerdutySORead,
 		UpdateContext: resourceDatadogIntegrationPagerdutySOUpdate,
 		DeleteContext: resourceDatadogIntegrationPagerdutySODelete,
-		// The API never returns service_key, importing this resource can be used
-		// to avoid recreating an existing one, but the lifecycle of the `service_key`
-		// won't be manageable through it and should probably be in an `ignore_changes`
-		// block.
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: resourceDatadogIntegrationPagerdutySOImport,
 		},
 
 		SchemaFunc: func() map[string]*schema.Schema {
@@ -141,4 +139,19 @@ func resourceDatadogIntegrationPagerdutySODelete(ctx context.Context, d *schema.
 	}
 
 	return nil
+}
+
+func resourceDatadogIntegrationPagerdutySOImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	originalId := d.Id()
+	if diagErr := resourceDatadogIntegrationPagerdutySORead(ctx, d, meta); diagErr != nil {
+		return nil, fmt.Errorf(diagErr[0].Summary)
+	}
+
+	// We can assume resource was not found for import when `id` is set to nil in the read step
+	if d.Id() == "" {
+		return nil, fmt.Errorf("error importing pagerduty service object. Resource with id `%s` does not exist", originalId)
+	}
+
+	d.Set("service_key", os.Getenv("SERVICE_KEY"))
+	return []*schema.ResourceData{d}, nil
 }
