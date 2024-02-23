@@ -266,6 +266,12 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	if isCspmEnabled, ok := attributes.GetIsCspmEnabledOk(); ok {
 		state.IsCspmEnabled = types.BoolValue(*isCspmEnabled)
 	}
+	if isSecurityCommandCenterEnabled, ok := attributes.GetIsSecurityCommandCenterEnabledOk(); ok {
+		state.IsSecurityCommandCenterEnabled = types.BoolValue(*isSecurityCommandCenterEnabled)
+	}
+	if resourceCollectionEnabled, ok := attributes.GetResourceCollectionEnabledOk(); ok {
+		state.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
+	}
 }
 
 func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel) (datadogV2.GCPSTSServiceAccountAttributes, diag.Diagnostics) {
