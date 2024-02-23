@@ -66,7 +66,6 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				Computed:    true,
 				Description: "Silence monitors for expected GCE instance shutdowns.",
-				Default:     booldefault.StaticBool(false),
 			},
 			"client_email": schema.StringAttribute{
 				Required:    true,
@@ -91,7 +90,6 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				Computed:    true,
 				Description: "Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.",
-				Default:     booldefault.StaticBool(false),
 			},
 			"is_security_command_center_enabled": schema.BoolAttribute{
 				Description: "When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.",
@@ -300,7 +298,7 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	}
 	attributes.SetHostFilters(hostFilters)
 
-	if !state.IsSecurityCommandCenterEnabled.IsNull() {
+	if !state.IsSecurityCommandCenterEnabled.IsUnknown() {
 		attributes.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
 	}
 	if !state.ResourceCollectionEnabled.IsUnknown() {
