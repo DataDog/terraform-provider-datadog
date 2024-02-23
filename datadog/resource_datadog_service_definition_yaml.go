@@ -199,6 +199,19 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 			delete(attrMap, "integrations")
 		}
 	}
+	if ci_pipeline_fingerprints, ok := attrMap["ci-pipeline-fingerprints"].([]interface{}); ok {
+		if len(ci_pipeline_fingerprints) == 0 {
+			delete(attrMap, "ci-pipeline-fingerprints")
+		} else {
+			sortedFingerprints := make([]string, 0)
+			for _, fingerprint := range ci_pipeline_fingerprints {
+				sortedFingerprints = append(sortedFingerprints, fingerprint.(string))
+			}
+			sort.Strings(sortedFingerprints)
+			attrMap["ci-pipeline-fingerprints"] = sortedFingerprints
+		}
+	}
+
 	return attrMap
 }
 
@@ -309,6 +322,14 @@ func isValidDatadogServiceDefinition(attrMap map[string]interface{}, k string) (
 
 	if schemaVersion, ok := attrMap["dd-service"].(string); !ok || schemaVersion == "" {
 		errors = append(errors, fmt.Errorf("dd-service is missing: %q", k))
+	}
+
+	if tags, ok := attrMap["tags"].([]interface{}); ok {
+		for _, tag := range tags {
+			if _, ok := tag.(string); !ok {
+				errors = append(errors, fmt.Errorf("tag must be a string, but found %s", tag))
+			}
+		}
 	}
 
 	return warnings, errors

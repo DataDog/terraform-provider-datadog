@@ -663,6 +663,45 @@ resource "datadog_dashboard" "free_dashboard" {
       y      = 83
     }
   }
+  widget {
+    timeseries_definition {
+      request {
+        formula {
+          formula_expression = "query1"
+          alias              = "my cloud cost query"
+        }
+        query {
+          cloud_cost_query {
+            data_source = "cloud_cost"
+            query       = "sum:aws.cost.amortized{*}"
+            name        = "query1"
+            aggregator  = "sum"
+          }
+        }
+      }
+    }
+  }
+  widget {
+    powerpack_definition {
+      powerpack_id     = "00000000-0000-0000-0000-000000000000"
+      background_color = "blue"
+      banner_img       = "https://example.org/example.png"
+      show_title       = true
+      title            = "Powerpack Widget"
+      template_variables {
+        controlled_externally {
+          name   = "var_2"
+          values = ["autoscaling"]
+          prefix = "service_name"
+        }
+        controlled_by_powerpack {
+          name   = "var_3"
+          prefix = "timeframe"
+          values = ["default", "values", "here"]
+        }
+      }
+    }
+  }
 
   template_variable {
     name    = "var_1"
@@ -773,6 +812,7 @@ Optional:
 - `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--log_stream_definition))
 - `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--note_definition))
+- `powerpack_definition` (Block List, Max: 1) The definition for a Powerpack widget. (see [below for nested schema](#nestedblock--widget--powerpack_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--query_value_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--run_workflow_definition))
@@ -803,7 +843,7 @@ Required:
 
 Optional:
 
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -832,7 +872,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--change_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -1071,6 +1111,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--process_query))
@@ -1114,6 +1155,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--change_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.change_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--change_definition--request--query--event_query"></a>
@@ -1373,7 +1428,7 @@ Optional:
 
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -1386,7 +1441,7 @@ Optional:
 Optional:
 
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -1728,7 +1783,7 @@ Required:
 Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -1744,7 +1799,7 @@ Required:
 
 Optional:
 
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -1775,7 +1830,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--style))
 - `title` (String) The title of the widget.
@@ -1936,6 +1991,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--process_query))
@@ -1979,6 +2035,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--geomap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.geomap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--geomap_definition--request--query--event_query"></a>
@@ -2208,6 +2278,7 @@ Optional:
 - `log_stream_definition` (Block List, Max: 1) The definition for an Log Stream widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--log_stream_definition))
 - `manage_status_definition` (Block List, Max: 1) The definition for an Manage Status widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--manage_status_definition))
 - `note_definition` (Block List, Max: 1) The definition for a Note widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--note_definition))
+- `powerpack_definition` (Block List, Max: 1) The definition for a Powerpack widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition))
 - `query_table_definition` (Block List, Max: 1) The definition for a Query Table widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition))
 - `query_value_definition` (Block List, Max: 1) The definition for a Query Value widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition))
 - `run_workflow_definition` (Block List, Max: 1) The definition for a Run Workflow widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition))
@@ -2238,7 +2309,7 @@ Required:
 
 Optional:
 
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -2267,7 +2338,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -2506,6 +2577,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--process_query))
@@ -2549,6 +2621,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query"></a>
@@ -2808,7 +2894,7 @@ Optional:
 
 - `group` (String) The check group to use in the widget.
 - `group_by` (List of String) When `grouping = "cluster"`, indicates a list of tags to use for grouping.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags` (List of String) A list of tags to use in the widget.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -2821,7 +2907,7 @@ Optional:
 Optional:
 
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -3163,7 +3249,7 @@ Required:
 Optional:
 
 - `event_size` (String) The size to use to display an event. Valid values are `s`, `l`.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -3179,7 +3265,7 @@ Required:
 
 Optional:
 
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `tags_execution` (String) The execution method for multi-value filters, options: `and` or `or`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -3210,7 +3296,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--style))
 - `title` (String) The title of the widget.
@@ -3371,6 +3457,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--process_query))
@@ -3414,6 +3501,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query"></a>
@@ -3614,7 +3715,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--event))
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -3862,6 +3963,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--process_query))
@@ -3905,6 +4007,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query"></a>
@@ -4878,7 +4994,7 @@ Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
 - `indexes` (List of String) An array of index names to query in the stream.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - `query` (String) The query to use in the widget.
 - `show_date_column` (Boolean) If the date column should be displayed.
@@ -4938,6 +5054,57 @@ Optional:
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
+<a id="nestedblock--widget--group_definition--widget--powerpack_definition"></a>
+### Nested Schema for `widget.group_definition.widget.powerpack_definition`
+
+Required:
+
+- `powerpack_id` (String) UUID of the associated powerpack.
+
+Optional:
+
+- `background_color` (String) The background color of the powerpack title.
+- `banner_img` (String) URL of image to display as a banner for the powerpack.
+- `show_title` (Boolean) Whether to show the title of the powerpack.
+- `template_variables` (Block List, Max: 1) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition--template_variables))
+- `title` (String) Title of the powerpack.
+
+<a id="nestedblock--widget--group_definition--widget--powerpack_definition--template_variables"></a>
+### Nested Schema for `widget.group_definition.widget.powerpack_definition.template_variables`
+
+Optional:
+
+- `controlled_by_powerpack` (Block List) Template variables controlled at the powerpack level. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition--template_variables--controlled_by_powerpack))
+- `controlled_externally` (Block List) Template variables controlled by the external resource, such as the dashboard this powerpack is on. (see [below for nested schema](#nestedblock--widget--group_definition--widget--powerpack_definition--template_variables--controlled_externally))
+
+<a id="nestedblock--widget--group_definition--widget--powerpack_definition--template_variables--controlled_by_powerpack"></a>
+### Nested Schema for `widget.group_definition.widget.powerpack_definition.template_variables.controlled_by_powerpack`
+
+Required:
+
+- `name` (String) The name of the variable.
+- `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.
+
+Optional:
+
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+
+
+<a id="nestedblock--widget--group_definition--widget--powerpack_definition--template_variables--controlled_externally"></a>
+### Nested Schema for `widget.group_definition.widget.powerpack_definition.template_variables.controlled_externally`
+
+Required:
+
+- `name` (String) The name of the variable.
+- `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.
+
+Optional:
+
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+
+
+
+
 <a id="nestedblock--widget--group_definition--widget--query_table_definition"></a>
 ### Nested Schema for `widget.group_definition.widget.query_table_definition`
 
@@ -4945,7 +5112,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -5235,6 +5402,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--process_query))
@@ -5278,6 +5446,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query"></a>
@@ -5533,7 +5715,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
@@ -5855,6 +6037,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--process_query))
@@ -5898,6 +6081,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query"></a>
@@ -6180,7 +6377,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--custom_link))
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--group_definition--widget--run_workflow_definition--input))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -6213,7 +6410,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -6269,6 +6466,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--process_query))
@@ -6312,6 +6510,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.scatterplot_definition.request.scatterplot_table.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -7128,7 +7340,7 @@ Required:
 Optional:
 
 - `has_uniform_y_axes` (Boolean) Normalize y axes across graphs.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition"></a>
@@ -7152,7 +7364,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -7391,6 +7603,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query))
@@ -7434,6 +7647,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.change_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query"></a>
@@ -7691,7 +7918,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--style))
 - `title` (String) The title of the widget.
@@ -7852,6 +8079,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query))
@@ -7895,6 +8123,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query"></a>
@@ -8094,7 +8336,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -8384,6 +8626,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query))
@@ -8427,6 +8670,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query"></a>
@@ -8682,7 +8939,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
@@ -9004,6 +9261,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query))
@@ -9047,6 +9305,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query"></a>
@@ -9325,7 +9597,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -9381,6 +9653,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query))
@@ -9424,6 +9697,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -10145,7 +10432,7 @@ Optional:
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_table))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
@@ -10530,6 +10817,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query))
@@ -10573,6 +10861,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query"></a>
@@ -10838,7 +11140,7 @@ Optional:
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--right_yaxis))
@@ -11246,6 +11548,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query))
@@ -11289,6 +11592,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query"></a>
@@ -11576,7 +11893,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -11895,6 +12212,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query))
@@ -11938,6 +12256,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query"></a>
@@ -12269,6 +12601,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query))
@@ -12312,6 +12645,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query"></a>
@@ -12443,7 +12790,7 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of graphs to display in the widget.
-- `static_splits` (Block List, Max: 100) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--static_splits))
+- `static_splits` (Block List, Max: 500) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--split_config--static_splits))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--split_config--sort"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.split_config.sort`
@@ -12505,7 +12852,7 @@ Optional:
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--legend_table))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
@@ -12890,6 +13237,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--process_query))
@@ -12933,6 +13281,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query"></a>
@@ -13198,7 +13560,7 @@ Optional:
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--right_yaxis))
@@ -13606,6 +13968,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--process_query))
@@ -13649,6 +14012,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query"></a>
@@ -13936,7 +14313,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -14255,6 +14632,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--process_query))
@@ -14298,6 +14676,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query"></a>
@@ -14607,7 +14999,7 @@ Required:
 Optional:
 
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
 - `show_errors` (Boolean) Whether to show the error metrics or not.
@@ -14696,6 +15088,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--process_query))
@@ -14739,6 +15132,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query"></a>
@@ -14865,12 +15272,12 @@ Required:
 
 - `height` (Number) The height of the widget.
 - `width` (Number) The width of the widget.
-- `x` (Number) The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.
-- `y` (Number) The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.
+- `x` (Number) The position of the widget on the x (horizontal) axis. Must be greater than or equal to 0.
+- `y` (Number) The position of the widget on the y (vertical) axis. Must be greater than or equal to 0.
 
 Optional:
 
-- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.
+- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.
 
 
 
@@ -14883,7 +15290,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--custom_link))
 - `event` (Block List) The definition of the event to overlay on the graph. Multiple `event` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--event))
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--heatmap_definition--request))
 - `show_legend` (Boolean) Whether or not to show the legend on this widget.
 - `title` (String) The title of the widget.
@@ -15131,6 +15538,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--process_query))
@@ -15174,6 +15582,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--heatmap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.heatmap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--query--event_query"></a>
@@ -16147,7 +16569,7 @@ Optional:
 
 - `columns` (List of String) Stringified list of columns to use, for example: `["column1","column2","column3"]`.
 - `indexes` (List of String) An array of index names to query in the stream.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `message_display` (String) The number of log lines to display. Valid values are `inline`, `expanded-md`, `expanded-lg`.
 - `query` (String) The query to use in the widget.
 - `show_date_column` (Boolean) If the date column should be displayed.
@@ -16207,6 +16629,57 @@ Optional:
 - `vertical_align` (String) The vertical alignment for the widget. Valid values are `center`, `top`, `bottom`.
 
 
+<a id="nestedblock--widget--powerpack_definition"></a>
+### Nested Schema for `widget.powerpack_definition`
+
+Required:
+
+- `powerpack_id` (String) UUID of the associated powerpack.
+
+Optional:
+
+- `background_color` (String) The background color of the powerpack title.
+- `banner_img` (String) URL of image to display as a banner for the powerpack.
+- `show_title` (Boolean) Whether to show the title of the powerpack.
+- `template_variables` (Block List, Max: 1) The list of template variables for this powerpack. (see [below for nested schema](#nestedblock--widget--powerpack_definition--template_variables))
+- `title` (String) Title of the powerpack.
+
+<a id="nestedblock--widget--powerpack_definition--template_variables"></a>
+### Nested Schema for `widget.powerpack_definition.template_variables`
+
+Optional:
+
+- `controlled_by_powerpack` (Block List) Template variables controlled at the powerpack level. (see [below for nested schema](#nestedblock--widget--powerpack_definition--template_variables--controlled_by_powerpack))
+- `controlled_externally` (Block List) Template variables controlled by the external resource, such as the dashboard this powerpack is on. (see [below for nested schema](#nestedblock--widget--powerpack_definition--template_variables--controlled_externally))
+
+<a id="nestedblock--widget--powerpack_definition--template_variables--controlled_by_powerpack"></a>
+### Nested Schema for `widget.powerpack_definition.template_variables.controlled_by_powerpack`
+
+Required:
+
+- `name` (String) The name of the variable.
+- `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.
+
+Optional:
+
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+
+
+<a id="nestedblock--widget--powerpack_definition--template_variables--controlled_externally"></a>
+### Nested Schema for `widget.powerpack_definition.template_variables.controlled_externally`
+
+Required:
+
+- `name` (String) The name of the variable.
+- `values` (List of String) One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.
+
+Optional:
+
+- `prefix` (String) The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.
+
+
+
+
 <a id="nestedblock--widget--query_table_definition"></a>
 ### Nested Schema for `widget.query_table_definition`
 
@@ -16214,7 +16687,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_table_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -16504,6 +16977,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--process_query))
@@ -16547,6 +17021,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--query_table_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.query_table_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--query_table_definition--request--query--event_query"></a>
@@ -16802,7 +17290,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
@@ -17124,6 +17612,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--process_query))
@@ -17167,6 +17656,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--query_value_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.query_value_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--query_value_definition--request--query--event_query"></a>
@@ -17449,7 +17952,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--custom_link))
 - `input` (Block List) Array of workflow inputs to map to dashboard template variables. (see [below for nested schema](#nestedblock--widget--run_workflow_definition--input))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -17482,7 +17985,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -17538,6 +18041,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--process_query))
@@ -17581,6 +18085,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query"></a>
+### Nested Schema for `widget.scatterplot_definition.request.scatterplot_table.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -18397,7 +18915,7 @@ Required:
 Optional:
 
 - `has_uniform_y_axes` (Boolean) Normalize y axes across graphs.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `title` (String) The title of the widget.
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition"></a>
@@ -18421,7 +18939,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple request blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the request block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -18660,6 +19178,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--process_query))
@@ -18703,6 +19222,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query"></a>
@@ -18960,7 +19493,7 @@ Required:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request))
 - `style` (Block List, Max: 1) The style of the widget graph. One nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--style))
 - `title` (String) The title of the widget.
@@ -19121,6 +19654,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--process_query))
@@ -19164,6 +19698,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query"></a>
@@ -19363,7 +19911,7 @@ Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--custom_link))
 - `has_search_bar` (String) Controls the display of the search bar. Valid values are `always`, `never`, `auto`.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query`, `apm_stats_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -19653,6 +20201,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--process_query))
@@ -19696,6 +20245,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query"></a>
@@ -19951,7 +20514,7 @@ Optional:
 - `autoscale` (Boolean) A Boolean indicating whether to automatically scale the tile.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--custom_link))
 - `custom_unit` (String) The unit for the value displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `precision` (Number) The precision to use when displaying the tile.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request))
 - `text_align` (String) The alignment of the widget's text. Valid values are `center`, `left`, `right`.
@@ -20273,6 +20836,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--process_query))
@@ -20316,6 +20880,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query"></a>
@@ -20594,7 +21172,7 @@ Optional:
 
 - `color_by_groups` (List of String) List of groups used for colors.
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List, Max: 1) A nested block describing the request to use when displaying the widget. Exactly one `request` block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -20650,6 +21228,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--process_query))
@@ -20693,6 +21272,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.scatterplot_definition.request.scatterplot_table.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -21414,7 +22007,7 @@ Optional:
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--legend_table))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
@@ -21799,6 +22392,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--process_query))
@@ -21842,6 +22436,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query"></a>
@@ -22107,7 +22715,7 @@ Optional:
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--right_yaxis))
@@ -22515,6 +23123,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--process_query))
@@ -22558,6 +23167,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query"></a>
@@ -22845,7 +23468,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -23164,6 +23787,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--process_query))
@@ -23207,6 +23831,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query"></a>
@@ -23538,6 +24176,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--process_query))
@@ -23581,6 +24220,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query"></a>
@@ -23712,7 +24365,7 @@ Required:
 Optional:
 
 - `limit` (Number) Maximum number of graphs to display in the widget.
-- `static_splits` (Block List, Max: 100) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--static_splits))
+- `static_splits` (Block List, Max: 500) The property by which the graph splits (see [below for nested schema](#nestedblock--widget--split_graph_definition--split_config--static_splits))
 
 <a id="nestedblock--widget--split_graph_definition--split_config--sort"></a>
 ### Nested Schema for `widget.split_graph_definition.split_config.sort`
@@ -23774,7 +24427,7 @@ Optional:
 - `hide_total` (Boolean) Whether or not to show the total value in the widget.
 - `legend_inline` (Block List, Max: 1) Used to configure the inline legend. Cannot be used in conjunction with legend_table. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_inline))
 - `legend_table` (Block List, Max: 1) Used to configure the table legend. Cannot be used in conjunction with legend_inline. (see [below for nested schema](#nestedblock--widget--sunburst_definition--legend_table))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) Nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed with the structure below (exactly one of `q`, `log_query` or `rum_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--sunburst_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. One of `left`, `center`, or `right`. Valid values are `center`, `left`, `right`.
@@ -24159,6 +24812,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--process_query))
@@ -24202,6 +24856,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.sunburst_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--query--event_query"></a>
@@ -24467,7 +25135,7 @@ Optional:
 - `legend_columns` (Set of String) A list of columns to display in the legend. Valid values are `value`, `avg`, `sum`, `min`, `max`.
 - `legend_layout` (String) The layout of the legend displayed in the widget. Valid values are `auto`, `horizontal`, `vertical`.
 - `legend_size` (String) The size of the legend displayed in the widget.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `marker` (Block List) A nested block describing the marker to use when displaying the widget. The structure of this block is described below. Multiple `marker` blocks are allowed within a given `tile_def` block. (see [below for nested schema](#nestedblock--widget--timeseries_definition--marker))
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `network_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--timeseries_definition--request))
 - `right_yaxis` (Block List, Max: 1) A nested block describing the right Y-Axis Controls. See the `on_right_yaxis` property for which request will use this axis. The structure of this block is described below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--right_yaxis))
@@ -24875,6 +25543,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--process_query))
@@ -24918,6 +25587,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.timeseries_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query--event_query"></a>
@@ -25205,7 +25888,7 @@ Optional:
 Optional:
 
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
@@ -25524,6 +26207,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--process_query))
@@ -25567,6 +26251,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--toplist_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.toplist_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--toplist_definition--request--query--event_query"></a>
@@ -25876,7 +26574,7 @@ Required:
 Optional:
 
 - `display_format` (String) The number of columns to display. Valid values are `one_column`, `two_column`, `three_column`.
-- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `1y`, `alert`.
+- `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `show_breakdown` (Boolean) Whether to show the latency breakdown or not.
 - `show_distribution` (Boolean) Whether to show the latency distribution or not.
 - `show_errors` (Boolean) Whether to show the error metrics or not.
@@ -25965,6 +26663,7 @@ Optional:
 
 - `apm_dependency_stats_query` (Block List, Max: 1) The APM Dependency Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_dependency_stats_query))
 - `apm_resource_stats_query` (Block List, Max: 1) The APM Resource Stats query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--apm_resource_stats_query))
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--cloud_cost_query))
 - `event_query` (Block List, Max: 1) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query))
 - `metric_query` (Block List, Max: 1) A timeseries formula and functions metrics query. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--metric_query))
 - `process_query` (Block List, Max: 1) The process query using formulas and functions. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--process_query))
@@ -26008,6 +26707,20 @@ Optional:
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
 - `resource_name` (String) APM resource.
+
+
+<a id="nestedblock--widget--treemap_definition--request--query--cloud_cost_query"></a>
+### Nested Schema for `widget.treemap_definition.request.query.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
 
 
 <a id="nestedblock--widget--treemap_definition--request--query--event_query"></a>
@@ -26134,12 +26847,12 @@ Required:
 
 - `height` (Number) The height of the widget.
 - `width` (Number) The width of the widget.
-- `x` (Number) The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.
-- `y` (Number) The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.
+- `x` (Number) The position of the widget on the x (horizontal) axis. Must be greater than or equal to 0.
+- `y` (Number) The position of the widget on the y (vertical) axis. Must be greater than or equal to 0.
 
 Optional:
 
-- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.
+- `is_column_break` (Boolean) Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.
 
 ## Import
 

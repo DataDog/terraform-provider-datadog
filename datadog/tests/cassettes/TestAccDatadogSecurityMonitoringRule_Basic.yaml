@@ -1,210 +1,425 @@
 ---
-version: 1
+version: 2
 interactions:
-- request:
-    body: |
-      {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"","name":"second","query":"does not really match much either"},{"aggregation":"sum","distinctFields":[],"groupByFields":["host"],"metric":"@network.bytes_read","name":"third","query":"does not really match much either"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
-    method: POST
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407","createdAt":1679093408626,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"condition":"first > 3 || second > 10","name":"high case","status":"high","notifications":["@user"]},{"condition":"first > 0 || second > 0","name":"warning case","status":"medium","notifications":[]},{"condition":"third > 9000","name":"low case","status":"low","notifications":[]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: GET
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407","createdAt":1679093408626,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"condition":"first > 3 || second > 10","name":"high case","status":"high","notifications":["@user"]},{"condition":"first > 0 || second > 0","name":"warning case","status":"medium","notifications":[]},{"condition":"third > 9000","name":"low case","status":"low","notifications":[]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: GET
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407","createdAt":1679093408626,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"condition":"first > 3 || second > 10","name":"high case","status":"high","notifications":["@user"]},{"condition":"first > 0 || second > 0","name":"warning case","status":"medium","notifications":[]},{"condition":"third > 9000","name":"low case","status":"low","notifications":[]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: GET
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407","createdAt":1679093408626,"creationAuthorId":1445416,"isDefault":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"condition":"first > 3 || second > 10","name":"high case","status":"high","notifications":["@user"]},{"condition":"first > 0 || second > 0","name":"warning case","status":"medium","notifications":[]},{"condition":"third > 9000","name":"low case","status":"low","notifications":[]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: |
-      {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"","metrics":[],"name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: PUT
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407 - updated","createdAt":1679093408626,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"first_updated > 3","name":"high case (updated)","status":"medium","notifications":["@user"]},{"condition":"first_updated > 0","name":"warning case (updated)","status":"high","notifications":[]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: GET
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407 - updated","createdAt":1679093408626,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"first_updated > 3","name":"high case (updated)","status":"medium","notifications":["@user"]},{"condition":"first_updated > 0","name":"warning case (updated)","status":"high","notifications":[]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: GET
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407 - updated","createdAt":1679093408626,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"first_updated > 3","name":"high case (updated)","status":"medium","notifications":["@user"]},{"condition":"first_updated > 0","name":"warning case (updated)","status":"high","notifications":[]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: GET
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407 - updated","createdAt":1679093408626,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"first_updated > 3","name":"high case (updated)","status":"medium","notifications":["@user"]},{"condition":"first_updated > 0","name":"warning case (updated)","status":"high","notifications":[]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: GET
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407 - updated","createdAt":1679093408626,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"first_updated > 3","name":"high case (updated)","status":"medium","notifications":["@user"]},{"condition":"first_updated > 0","name":"warning case (updated)","status":"high","notifications":[]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: GET
-  response:
-    body: |
-      {"id":"7jk-ebb-s0v","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1679093407 - updated","createdAt":1679093408626,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"condition":"first_updated > 3","name":"high case (updated)","status":"medium","notifications":["@user"]},{"condition":"first_updated > 0","name":"warning case (updated)","status":"high","notifications":[]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: DELETE
-  response:
-    body: ""
-    headers: {}
-    status: 204 No Content
-    code: 204
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/7jk-ebb-s0v
-    method: GET
-  response:
-    body: |
-      {"errors":["Threat detection rule not found: 7jk-ebb-s0v"]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: ""
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1295
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","distinctFields":[],"groupByFields":["host"],"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503","createdAt":1704810507996,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 456.816167ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503","createdAt":1704810507996,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 195.416792ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503","createdAt":1704810507996,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 157.296416ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503","createdAt":1704810507996,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 261.082917ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 847
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"","metrics":[],"name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503 - updated","createdAt":1704810507996,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 283.687125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503 - updated","createdAt":1704810507996,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 163.680708ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503 - updated","createdAt":1704810507996,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 146.982625ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503 - updated","createdAt":1704810507996,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 141.921208ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503 - updated","createdAt":1704810507996,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 136.398334ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"wm4-ove-kyq","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_Basic-local-1704810503 - updated","createdAt":1704810507996,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 141.132916ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 336.175833ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/wm4-ove-kyq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["Threat detection rule not found: wm4-ove-kyq"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 138.16825ms

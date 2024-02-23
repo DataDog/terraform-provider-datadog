@@ -400,6 +400,51 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 // Template Variable helpers
 //
 
+func getPpkTemplateVariableSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"controlled_externally": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Template variables controlled by the external resource, such as the dashboard this powerpack is on.",
+			Elem: &schema.Resource{
+				Schema: getPpkTemplateVariableContentSchema(),
+			},
+		},
+		"controlled_by_powerpack": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Template variables controlled at the powerpack level.",
+			Elem: &schema.Resource{
+				Schema: getPpkTemplateVariableContentSchema(),
+			},
+		},
+	}
+}
+
+func getPpkTemplateVariableContentSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The name of the variable.",
+		},
+		"prefix": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.",
+		},
+		"values": {
+			Type:     schema.TypeList,
+			Required: true,
+			Elem: &schema.Schema{
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringIsNotEmpty,
+			},
+			Description: "One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.",
+		},
+	}
+}
+
 func getTemplateVariableSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
@@ -434,6 +479,49 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 			Description: "The list of values that the template variable drop-down is be limited to",
 		},
 	}
+}
+
+func buildDatadogPowerpackTVarContents(contents []interface{}) []datadogV1.PowerpackTemplateVariableContents {
+	tVarContents := make([]datadogV1.PowerpackTemplateVariableContents, len(contents))
+	for ind, tvp := range contents {
+		typecastTvp := tvp.(map[string]interface{})
+		tvar := datadogV1.NewPowerpackTemplateVariableContentsWithDefaults()
+		if name, ok := typecastTvp["name"].(string); ok {
+			tvar.SetName(name)
+		}
+		if v, ok := typecastTvp["values"].([]interface{}); ok && len(v) != 0 {
+			var values []string
+			for _, s := range v {
+				values = append(values, s.(string))
+			}
+			tvar.SetValues(values)
+		}
+		if prefix, ok := typecastTvp["prefix"].(string); ok {
+			tvar.SetPrefix(prefix)
+		}
+		tVarContents[ind] = *tvar
+	}
+	return tVarContents
+}
+
+func buildTerraformPowerpackTVarContents(tVarContents []datadogV1.PowerpackTemplateVariableContents) []map[string]interface{} {
+	ppkTvarContents := make([]map[string]interface{}, len(tVarContents))
+	for i, templateVariable := range tVarContents {
+		terraformTemplateVariable := map[string]interface{}{}
+		if v, ok := templateVariable.GetNameOk(); ok {
+			terraformTemplateVariable["name"] = *v
+		}
+		if v := templateVariable.GetPrefix(); len(v) > 0 {
+			terraformTemplateVariable["prefix"] = v
+		}
+		if v, ok := templateVariable.GetValuesOk(); ok && len(*v) > 0 {
+			var tags []string
+			tags = append(tags, *v...)
+			terraformTemplateVariable["values"] = tags
+		}
+		ppkTvarContents[i] = terraformTemplateVariable
+	}
+	return ppkTvarContents
 }
 
 func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datadogV1.DashboardTemplateVariable {
@@ -695,7 +783,7 @@ func buildTerraformNotifyList(datadogNotifyList *[]string) *[]string {
 // The generic widget schema is a combination of the schema for a non-group widget
 // and the schema for a Group Widget (which can contains only non-group widgets)
 func getWidgetSchema() map[string]*schema.Schema {
-	widgetSchema := getNonGroupWidgetSchema()
+	widgetSchema := getNonGroupWidgetSchema(false)
 	widgetSchema["group_definition"] = &schema.Schema{
 		Type:        schema.TypeList,
 		Optional:    true,
@@ -708,8 +796,8 @@ func getWidgetSchema() map[string]*schema.Schema {
 	return widgetSchema
 }
 
-func getNonGroupWidgetSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+func getNonGroupWidgetSchema(isPowerpackSchema bool) map[string]*schema.Schema {
+	s := map[string]*schema.Schema{
 		"widget_layout": {
 			Type:        schema.TypeList,
 			MaxItems:    1,
@@ -995,7 +1083,20 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 				Schema: getRunWorkflowDefinitionSchema(),
 			},
 		},
-		"split_graph_definition": {
+	}
+
+	// Non powerpack specific widgets
+	if !isPowerpackSchema {
+		s["powerpack_definition"] = &schema.Schema{
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Powerpack widget.",
+			Elem: &schema.Resource{
+				Schema: getPowerpackDefinitionSchema(),
+			},
+		}
+		s["split_graph_definition"] = &schema.Schema{
 			Type:        schema.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -1003,8 +1104,10 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: getSplitGraphDefinitionSchema(),
 			},
-		},
+		}
 	}
+
+	return s
 }
 
 func getSplitGraphSourceWidgetSchema() map[string]*schema.Schema {
@@ -1248,6 +1351,14 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 				return nil, err
 			}
 			definition = datadogV1.SplitGraphWidgetDefinitionAsWidgetDefinition(datadogDefinition)
+		}
+	} else if def, ok := terraformWidget["powerpack_definition"].([]interface{}); ok && len(def) > 0 {
+		if powerpackDefinition, ok := def[0].(map[string]interface{}); ok {
+			datadogDefinition, err := buildDatadogPowerpackDefinition(powerpackDefinition)
+			if err != nil {
+				return nil, err
+			}
+			definition = datadogV1.PowerpackWidgetDefinitionAsWidgetDefinition(datadogDefinition)
 		}
 	} else {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
@@ -1500,6 +1611,12 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 			return nil, err
 		}
 		terraformWidget["split_graph_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.PowerpackWidgetDefinition != nil {
+		terraformDefinition, err := buildTerraformPowerpackDefinition(widgetDefinition.PowerpackWidgetDefinition)
+		if err != nil {
+			return nil, err
+		}
+		terraformWidget["powerpack_definition"] = []map[string]interface{}{terraformDefinition}
 	} else {
 		return nil, fmt.Errorf("unsupported widget type: %s", widgetDefinition.GetActualInstance())
 	}
@@ -1548,12 +1665,12 @@ func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadog
 func getWidgetLayoutSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"x": {
-			Description: "The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.",
+			Description: "The position of the widget on the x (horizontal) axis. Must be greater than or equal to 0.",
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
 		"y": {
-			Description: "The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.",
+			Description: "The position of the widget on the y (vertical) axis. Must be greater than or equal to 0.",
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
@@ -1568,7 +1685,7 @@ func getWidgetLayoutSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"is_column_break": {
-			Description: "Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.",
+			Description: "Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -1598,7 +1715,7 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "The list of widgets in this group.",
 			Elem: &schema.Resource{
-				Schema: getNonGroupWidgetSchema(),
+				Schema: getNonGroupWidgetSchema(false),
 			},
 		},
 		"layout_type": {
@@ -2048,6 +2165,8 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogChangeRequest.SetQueries(queries)
@@ -4145,6 +4264,8 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryValueRequest.SetQueries(queries)
@@ -4417,6 +4538,8 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryTableRequest.SetQueries(queries)
@@ -4772,6 +4895,8 @@ func buildDatadogScatterplotTableRequest(terraformRequest map[string]interface{}
 				queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 			} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 				queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+			} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 			}
 		}
 		datadogScatterplotTableRequest.SetQueries(queries)
@@ -6343,6 +6468,8 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogSunburstRequest.SetQueries(queries)
@@ -6983,6 +7110,38 @@ func getFormulaQuerySchema() *schema.Schema {
 						},
 					},
 				},
+				"cloud_cost_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "The Cloud Cost query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionCloudCostDataSourceFromValue),
+								Description:      "The data source for cloud cost queries.",
+							},
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The cloud cost query definition.",
+							},
+							"aggregator": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+								Description:      "The aggregation methods available for cloud cost queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the query for use in formulas.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -7328,6 +7487,19 @@ func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) *datado
 	return &definition
 }
 
+func buildDatadogFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionCloudCostDataSource(data["data_source"].(string))
+
+	CloudCostQuery := datadogV1.NewFormulaAndFunctionCloudCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
+
+	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
+		CloudCostQuery.SetAggregator(datadogV1.WidgetAggregator(v))
+	}
+
+	definition := datadogV1.FormulaAndFunctionCloudCostQueryDefinitionAsFormulaAndFunctionQueryDefinition(CloudCostQuery)
+	return &definition
+}
+
 func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadogV1.TimeseriesWidgetRequest {
 	datadogRequests := make([]datadogV1.TimeseriesWidgetRequest, len(*terraformRequests))
 	for i, r := range *terraformRequests {
@@ -7372,6 +7544,8 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTimeseriesRequest.SetQueries(queries)
@@ -7651,8 +7825,9 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
-
 			}
 			datadogToplistRequest.SetQueries(queries)
 			// Toplist requests for formulas and functions always has a response format of "scalar"
@@ -7858,6 +8033,51 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 }
 
 //
+// Powerpack Definition helpers
+//
+
+func getPowerpackDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"background_color": {
+			Description: "The background color of the powerpack title.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"banner_img": {
+			Description: "URL of image to display as a banner for the powerpack.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"powerpack_id": {
+			Description:  "UUID of the associated powerpack.",
+			Type:         schema.TypeString,
+			Required:     true,
+			ValidateFunc: validation.StringIsNotEmpty,
+		},
+		"show_title": {
+			Description: "Whether to show the title of the powerpack.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+		"template_variables": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The list of template variables for this powerpack.",
+			Elem: &schema.Resource{
+				Schema: getPpkTemplateVariableSchema(),
+			},
+		},
+		"title": {
+			Description:  "Title of the powerpack.",
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validation.StringIsNotEmpty,
+		},
+	}
+}
+
+//
 // Split Graph Definition helpers
 //
 
@@ -7906,9 +8126,10 @@ func getSplitConfigSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"split_dimensions": getSplitDimensionSchema(),
 		"limit": {
-			Description: "Maximum number of graphs to display in the widget.",
-			Type:        schema.TypeInt,
-			Optional:    true,
+			Description:  "Maximum number of graphs to display in the widget.",
+			Type:         schema.TypeInt,
+			Optional:     true,
+			ValidateFunc: validation.IntBetween(1, 500),
 		},
 		"sort":          getSplitSortSchema(),
 		"static_splits": getStaticSplitsSchema(),
@@ -7981,7 +8202,7 @@ func getStaticSplitsSchema() *schema.Schema {
 		Description: "The property by which the graph splits",
 		Type:        schema.TypeList,
 		Optional:    true,
-		MaxItems:    100,
+		MaxItems:    500,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"split_vector": getSplitVectorSchema(),
@@ -8047,6 +8268,49 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 		datadogDefinition.Time = &datadogV1.WidgetTime{
 			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
 		}
+	}
+
+	return datadogDefinition, nil
+}
+
+func buildDatadogPowerpackDefinition(terraformDefinition map[string]interface{}) (*datadogV1.PowerpackWidgetDefinition, error) {
+	datadogDefinition := datadogV1.NewPowerpackWidgetDefinitionWithDefaults()
+	// Required params
+	//type, powerpack_id
+
+	powerpack_type, _ := datadogV1.NewPowerpackWidgetDefinitionTypeFromValue("powerpack")
+	datadogDefinition.SetType(*powerpack_type)
+
+	if powerpack_id, ok := terraformDefinition["powerpack_id"].(string); ok && powerpack_id != "" {
+		datadogDefinition.SetPowerpackId(powerpack_id)
+	}
+
+	if background_color, ok := terraformDefinition["background_color"].(string); ok && background_color != "" {
+		datadogDefinition.SetBackgroundColor(background_color)
+	}
+
+	if banner_img, ok := terraformDefinition["banner_img"].(string); ok && banner_img != "" {
+		datadogDefinition.SetBannerImg(banner_img)
+	}
+
+	if show_title, ok := terraformDefinition["show_title"].(bool); ok {
+		datadogDefinition.SetShowTitle(show_title)
+	}
+
+	if template_variables, ok := terraformDefinition["template_variables"].([]interface{}); ok {
+		ppkTVars := datadogV1.NewPowerpackTemplateVariablesWithDefaults()
+		tvars := template_variables[0].(map[string]interface{})
+		if tfControlledByPowerpack, ok := tvars["controlled_by_powerpack"].([]interface{}); ok {
+			ppkTVars.SetControlledByPowerpack(buildDatadogPowerpackTVarContents(tfControlledByPowerpack))
+		}
+		if tfControlledExternally, ok := tvars["controlled_externally"].([]interface{}); ok {
+			ppkTVars.SetControlledExternally(buildDatadogPowerpackTVarContents(tfControlledExternally))
+		}
+		datadogDefinition.SetTemplateVariables(*ppkTVars)
+	}
+
+	if title, ok := terraformDefinition["title"].(string); ok && title != "" {
+		datadogDefinition.SetTitle(title)
 	}
 
 	return datadogDefinition, nil
@@ -8153,6 +8417,44 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 		terraformDefinition["live_span"] = v.GetLiveSpan()
+	}
+
+	return terraformDefinition, nil
+}
+
+func buildTerraformPowerpackDefinition(datadogDefinition *datadogV1.PowerpackWidgetDefinition) (map[string]interface{}, error) {
+	terraformDefinition := map[string]interface{}{}
+	// Required params: powerpack_id
+	if v, ok := datadogDefinition.GetPowerpackIdOk(); ok {
+		terraformDefinition["powerpack_id"] = v
+	}
+	if v, ok := datadogDefinition.GetBackgroundColorOk(); ok {
+		terraformDefinition["background_color"] = v
+	}
+	if v, ok := datadogDefinition.GetBannerImgOk(); ok {
+		terraformDefinition["banner_img"] = v
+	}
+	if v, ok := datadogDefinition.GetShowTitleOk(); ok {
+		terraformDefinition["show_title"] = v
+	}
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = v
+	}
+	if templateVariables, ok := datadogDefinition.GetTemplateVariablesOk(); ok {
+		terraformTemplateVariables := make([]map[string]interface{}, 1)
+		terraformTemplateVariable := map[string]interface{}{}
+
+		if ddControlledByPowerpack, ok := templateVariables.GetControlledByPowerpackOk(); ok {
+			controlledByPowerpackTVars := buildTerraformPowerpackTVarContents(*ddControlledByPowerpack)
+			terraformTemplateVariable["controlled_by_powerpack"] = controlledByPowerpackTVars
+		}
+		if ddControlledExternally, ok := templateVariables.GetControlledExternallyOk(); ok {
+			controlledExternallyTVars := buildTerraformPowerpackTVarContents(*ddControlledExternally)
+			terraformTemplateVariable["controlled_externally"] = controlledExternallyTVars
+		}
+		terraformTemplateVariables[0] = terraformTemplateVariable
+
+		terraformDefinition["template_variables"] = terraformTemplateVariables
 	}
 
 	return terraformDefinition, nil
@@ -8413,7 +8715,8 @@ func buildDatadogTreemapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTreemapRequest.SetQueries(queries)
@@ -9102,20 +9405,21 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	if terraformGroupBys, ok := terraformQuery["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
 		datadogGroupBys := make([]datadogV1.LogQueryDefinitionGroupBy, len(terraformGroupBys))
 		for i, g := range terraformGroupBys {
-			groupBy := g.(map[string]interface{})
-			// Facet
-			datadogGroupBy := datadogV1.NewLogQueryDefinitionGroupBy(groupBy["facet"].(string))
-			// Limit
-			if v, ok := groupBy["limit"].(int); ok && v != 0 {
-				datadogGroupBy.SetLimit(int64(v))
-			}
-			// Sort
-			if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
-				if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
-					datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
+			if groupBy, ok := g.(map[string]interface{}); ok {
+				// Facet
+				datadogGroupBy := datadogV1.NewLogQueryDefinitionGroupBy(groupBy["facet"].(string))
+				// Limit
+				if v, ok := groupBy["limit"].(int); ok && v != 0 {
+					datadogGroupBy.SetLimit(int64(v))
 				}
+				// Sort
+				if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
+					if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
+						datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
+					}
+				}
+				datadogGroupBys[i] = *datadogGroupBy
 			}
-			datadogGroupBys[i] = *datadogGroupBy
 		}
 		datadogQuery.SetGroupBy(datadogGroupBys)
 	}
@@ -9364,6 +9668,25 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			terraformSLOQuery := map[string]interface{}{}
 			terraformSLOQuery["slo_query"] = terraformQueries
 			queries[i] = terraformSLOQuery
+		}
+		terraformCloudCostQueryDefinition := query.FormulaAndFunctionCloudCostQueryDefinition
+		if terraformCloudCostQueryDefinition != nil {
+			if dataSource, ok := terraformCloudCostQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if aggregator, ok := terraformCloudCostQueryDefinition.GetAggregatorOk(); ok {
+				terraformQuery["aggregator"] = aggregator
+			}
+			if name, ok := terraformCloudCostQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if query, ok := terraformCloudCostQueryDefinition.GetQueryOk(); ok {
+				terraformQuery["query"] = query
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformCloudCostQuery := map[string]interface{}{}
+			terraformCloudCostQuery["cloud_cost_query"] = terraformQueries
+			queries[i] = terraformCloudCostQuery
 		}
 	}
 	return queries

@@ -1,99 +1,213 @@
 ---
-version: 1
+version: 2
 interactions:
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/logs/config/indexes
-    method: GET
-  response:
-    body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/logs/config/indexes
-    method: GET
-  response:
-    body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/logs/config/indexes
-    method: GET
-  response:
-    body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/logs/config/indexes
-    method: GET
-  response:
-    body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/logs/config/indexes
-    method: GET
-  response:
-    body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/logs/config/indexes
-    method: GET
-  response:
-    body: '{"indexes":[{"num_retention_days":15,"name":"main","is_rate_limited":false,"filter":{"query":""},"exclusion_filters":[],"daily_limit":null},{"num_retention_days":15,"name":"test-index","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"test-index-2","is_rate_limited":false,"filter":{"query":"query"},"exclusion_filters":[],"daily_limit":20202020},{"num_retention_days":15,"name":"tf-testaccdatadoglogsindex-basic-local-1627305201","is_rate_limited":false,"filter":{"query":"test:query"},"exclusion_filters":[],"daily_limit":null}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"indexes":[{"name":"main","filter":{"query":""},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[]}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 781.653833ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"indexes":[{"name":"main","filter":{"query":""},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[]}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 182.287167ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"indexes":[{"name":"main","filter":{"query":""},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[]}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 154.958917ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"indexes":[{"name":"main","filter":{"query":""},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[]}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 170.140291ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"indexes":[{"name":"main","filter":{"query":""},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[]}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 193.594542ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/indexes
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"indexes":[{"name":"main","filter":{"query":""},"num_retention_days":15,"daily_limit":null,"is_rate_limited":false,"daily_limit_reset":null,"daily_limit_warning_threshold_percentage":null,"exclusion_filters":[]}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 182.443625ms

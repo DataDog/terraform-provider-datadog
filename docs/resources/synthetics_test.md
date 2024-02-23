@@ -288,6 +288,31 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Test a downloaded file"
+    type = "assertFileDownload"
+    params {
+      file = jsonencode(
+        {
+          md5 = "abcdef1234567890" // MD5 hash of the file
+          sizeCheck = {
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
+          }
+          nameCheck = {
+            type = "contains" // "contains", "equals", "isEmpty", "matchRegex", 
+            // "notContains", "notIsEmpty", "notEquals", 
+            // "notStartsWith", "startsWith"
+            value = ".xls"
+          }
+        }
+      )
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -319,11 +344,11 @@ resource "datadog_synthetics_test" "grpc" {
   type    = "api"
   subtype = "grpc"
   request_definition {
-    method                = "GET"
-    host                  = "google.com"
-    port                  = 50050
-    service               = "Hello"
-    proto_json_descriptor = <<EOT
+    method           = "GET"
+    host             = "google.com"
+    port             = 50050
+    service          = "Hello"
+    plain_proto_file = <<EOT
 syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "io.grpc.examples.helloworld";
@@ -584,8 +609,9 @@ Optional:
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - `persist_cookies` (Boolean) Persist cookies across redirects.
+- `plain_proto_file` (String) The content of a proto file as a string.
 - `port` (Number) Port to use when performing the test.
-- `proto_json_descriptor` (String) A protobuf JSON descriptor.
+- `proto_json_descriptor` (String, Deprecated) A protobuf JSON descriptor. **Deprecated.** Use `plain_proto_file` instead.
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
@@ -688,7 +714,7 @@ Optional:
 - `element` (String) Element to use for the step, json encoded string.
 - `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
 - `email` (String) Details of the email for an "assert email" step.
-- `file` (String) For an "assert download" step.
+- `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
 - `files` (String) Details of the files for an "upload files" step, json encoded string.
 - `modifiers` (List of String) Modifier to use for a "press key" step.
 - `playing_tab_id` (String) ID of the tab to play the subtest.
@@ -929,8 +955,9 @@ Optional:
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - `persist_cookies` (Boolean) Persist cookies across redirects.
+- `plain_proto_file` (String) The content of a proto file as a string.
 - `port` (Number) Port to use when performing the test.
-- `proto_json_descriptor` (String) A protobuf JSON descriptor.
+- `proto_json_descriptor` (String, Deprecated) A protobuf JSON descriptor. **Deprecated.** Use `plain_proto_file` instead.
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).

@@ -32,16 +32,24 @@ var (
 )
 
 var Resources = []func() resource.Resource{
+	NewOpenapiApiResource,
 	NewAPIKeyResource,
+	NewApplicationKeyResource,
+	NewApmRetentionFilterResource,
+	NewApmRetentionFiltersOrderResource,
 	NewDashboardListResource,
 	NewDowntimeScheduleResource,
+	NewIntegrationAzureResource,
+	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
 	NewIntegrationGcpStsResource,
+	NewIpAllowListResource,
 	NewRestrictionPolicyResource,
+	NewRumApplicationResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
@@ -50,10 +58,14 @@ var Resources = []func() resource.Resource{
 	NewTeamMembershipResource,
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
+	NewSecurityMonitoringSuppressionResource,
+	NewServiceAccountResource,
 }
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
+	NewApplicationKeyDataSource,
+	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogServiceAccountDatasource,
@@ -61,7 +73,10 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogTeamMembershipsDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
+	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
+	NewDatadogUsersDataSource,
+	NewSecurityMonitoringSuppressionDataSource,
 }
 
 // FrameworkProvider struct
@@ -348,6 +363,11 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig := datadog.NewConfiguration()
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
+
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())

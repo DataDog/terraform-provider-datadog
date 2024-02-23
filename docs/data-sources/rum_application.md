@@ -18,11 +18,11 @@ Use this data source to retrieve a Datadog RUM Application.
 ### Optional
 
 - `id` (String) ID of the RUM application. Cannot be used with name and type filters.
-- `name_filter` (String) The name used to search for a RUM application
-- `type_filter` (String) The type used to search for a RUM application
+- `name_filter` (String) The name used to search for a RUM application.
+- `type_filter` (String) The type used to search for a RUM application.
 
 ### Read-Only
 
-- `client_token` (String) The client token
-- `name` (String) The name of the RUM application
-- `type` (String) The RUM application type. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`
+- `client_token` (String) The client token.
+- `name` (String) Name of the RUM application.
+- `type` (String) Type of the RUM application. Supported values are `browser`, `ios`, `android`, `react-native`, `flutter`.

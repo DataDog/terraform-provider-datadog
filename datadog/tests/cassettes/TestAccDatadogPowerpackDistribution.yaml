@@ -1,0 +1,111 @@
+version: 2
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","type":"group","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"}},{"definition":{"legend_size":"2","requests":[{"apm_stats_query":{"env":"env","name":"name","primary_tag":"tag:*","row_type":"resource","service":"service"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"}}]}},"name":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","tags":["tag:foo1"],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"81fb7a8e-8e1e-11ee-bfc3-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","type":"group","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":6929538711580703},{"definition":{"legend_size":"2","requests":[{"apm_stats_query":{"env":"env","name":"name","primary_tag":"tag:*","row_type":"resource","service":"service"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":6957352204942390}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/81fb7a8e-8e1e-11ee-bfc3-da7ad0900002
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"81fb7a8e-8e1e-11ee-bfc3-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","type":"group","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":6929538711580703},{"definition":{"legend_size":"2","requests":[{"apm_stats_query":{"env":"env","name":"name","primary_tag":"tag:*","row_type":"resource","service":"service"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":6957352204942390}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/81fb7a8e-8e1e-11ee-bfc3-da7ad0900002
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"81fb7a8e-8e1e-11ee-bfc3-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","type":"group","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":6929538711580703},{"definition":{"legend_size":"2","requests":[{"apm_stats_query":{"env":"env","name":"name","primary_tag":"tag:*","row_type":"resource","service":"service"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":6957352204942390}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/81fb7a8e-8e1e-11ee-bfc3-da7ad0900002
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"81fb7a8e-8e1e-11ee-bfc3-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDistribution-local-1701197215","type":"group","widgets":[{"definition":{"legend_size":"2","requests":[{"q":"avg:system.cpu.user{account:prod} by {service,account}","style":{"palette":"purple"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":6929538711580703},{"definition":{"legend_size":"2","requests":[{"apm_stats_query":{"env":"env","name":"name","primary_tag":"tag:*","row_type":"resource","service":"service"}}],"show_legend":true,"title":"Avg of system.cpu.user over account:prod by service,account","title_align":"left","title_size":"16","type":"distribution"},"id":6957352204942390}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/powerpacks/81fb7a8e-8e1e-11ee-bfc3-da7ad0900002
+    method: DELETE
+    id: 4
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/81fb7a8e-8e1e-11ee-bfc3-da7ad0900002
+    method: GET
+    id: 5
+  response:
+    body: '{"errors":["Powerpack with ID 81fb7a8e-8e1e-11ee-bfc3-da7ad0900002 not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

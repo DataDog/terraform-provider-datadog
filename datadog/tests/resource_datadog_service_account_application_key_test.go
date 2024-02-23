@@ -14,6 +14,9 @@ import (
 
 func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	uniqUpdated := uniq + "updated"
@@ -59,6 +62,9 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 
 func TestAccServiceAccountApplicationKeyBasic_import(t *testing.T) {
 	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
 	resourceName := "datadog_service_account_application_key.foo"
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)

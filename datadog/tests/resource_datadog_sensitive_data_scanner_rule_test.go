@@ -63,6 +63,12 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 						resource_name, "text_replacement.0.type", "partial_replacement_from_beginning"),
 					resource.TestCheckResourceAttr(
 						resource_name, "text_replacement.0.replacement_string", ""),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.keywords.0", "credit card"),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.keywords.1", "cc"),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.character_count", "20"),
 				),
 			},
 			{
@@ -85,6 +91,12 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 						resource_name, "text_replacement.0.type", "partial_replacement_from_beginning"),
 					resource.TestCheckResourceAttr(
 						resource_name, "text_replacement.0.replacement_string", ""),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.keywords.0", "credit card"),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.keywords.1", "cc"),
+					resource.TestCheckResourceAttr(
+						resource_name, "included_keyword_configuration.0.character_count", "20"),
 				),
 			},
 			{
@@ -111,6 +123,10 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 
 func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -192,6 +208,10 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		replacement_string = ""
 		type = "partial_replacement_from_beginning"
 	}
+	included_keyword_configuration {
+		keywords = ["credit card", "cc"]
+		character_count = 20
+	}
 }
 `, name)
 }
@@ -209,7 +229,7 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 
 resource "datadog_sensitive_data_scanner_group" "new_group" {
 	name = "another group"
-	is_enabled = true
+	is_enabled = false
 	product_list = ["apm"]
 	filter {
 		query = "*"
@@ -229,6 +249,10 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 		replacement_string = ""
 		type = "partial_replacement_from_beginning"
 	}
+	included_keyword_configuration {
+		keywords = ["credit card", "cc"]
+		character_count = 20
+	}
 }
 `, name)
 }
@@ -246,7 +270,7 @@ resource "datadog_sensitive_data_scanner_group" "sample_group" {
 
 resource "datadog_sensitive_data_scanner_group" "new_group" {
 	name = "another group"
-	is_enabled = true
+	is_enabled = false
 	product_list = ["apm"]
 	filter {
 		query = "*"

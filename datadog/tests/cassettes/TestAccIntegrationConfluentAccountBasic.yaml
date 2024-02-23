@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts
     method: POST
+    id: 0
   response:
     body: |
       {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":["foo:bar"],"api_key":"tf-TestAccIntegrationConfluentAccountBasic-local-1680633323","resources":[]},"id":"6l0bv6ckrf"}}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 201 Created
     code: 201
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/6l0bv6ckrf
     method: GET
+    id: 1
   response:
     body: |
       {"data":{"type":"confluent-cloud-accounts","attributes":{"api_key":"tf-TestAccIntegrationConfluentAccountBasic-local-1680633323","resources":[],"tags":["foo:bar"]},"id":"6l0bv6ckrf"}}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/6l0bv6ckrf
     method: DELETE
+    id: 2
   response:
     body: ""
     headers:
@@ -53,4 +55,4 @@ interactions:
       - text/html; charset=utf-8
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"

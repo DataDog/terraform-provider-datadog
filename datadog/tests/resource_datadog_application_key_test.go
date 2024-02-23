@@ -5,11 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -18,31 +17,30 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
 	applicationKeyNameUpdate := applicationKeyName + "-2"
 	resourceName := "datadog_application_key.foo"
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApplicationKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogApplicationKeyConfigRequired(applicationKeyName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogApplicationKeyExists(accProvider, resourceName),
+					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", applicationKeyName),
-					testAccCheckDatadogApplicationKeyValueMatches(accProvider, resourceName),
+					testAccCheckDatadogApplicationKeyValueMatches(providers.frameworkProvider, resourceName),
 				),
 			},
 			{
 				Config: testAccCheckDatadogApplicationKeyConfigRequired(applicationKeyNameUpdate),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogApplicationKeyExists(accProvider, resourceName),
+					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", applicationKeyNameUpdate),
-					testAccCheckDatadogApplicationKeyValueMatches(accProvider, resourceName),
+					testAccCheckDatadogApplicationKeyValueMatches(providers.frameworkProvider, resourceName),
 				),
 			},
 		},
@@ -55,14 +53,13 @@ func TestDatadogApplicationKey_import(t *testing.T) {
 	}
 	t.Parallel()
 	resourceName := "datadog_application_key.foo"
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApplicationKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogApplicationKeyConfigRequired(applicationKeyName),
@@ -83,12 +80,10 @@ resource "datadog_application_key" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogApplicationKeyExists(accProvider func() (*schema.Provider, error), n string) resource.TestCheckFunc {
+func testAccCheckDatadogApplicationKeyExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		if err := datadogApplicationKeyExistsHelper(auth, s, apiInstances, n); err != nil {
 			return err
@@ -105,12 +100,10 @@ func datadogApplicationKeyExistsHelper(ctx context.Context, s *terraform.State, 
 	return nil
 }
 
-func testAccCheckDatadogApplicationKeyValueMatches(accProvider func() (*schema.Provider, error), n string) resource.TestCheckFunc {
+func testAccCheckDatadogApplicationKeyValueMatches(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		if err := datadogApplicationKeyValueMatches(auth, s, apiInstances, n); err != nil {
 			return err
@@ -134,14 +127,12 @@ func datadogApplicationKeyValueMatches(ctx context.Context, s *terraform.State, 
 	return nil
 }
 
-func testAccCheckDatadogApplicationKeyDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckDatadogApplicationKeyDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiIntances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
-		if err := datadogApplicationKeyDestroyHelper(auth, s, apiInstances); err != nil {
+		if err := datadogApplicationKeyDestroyHelper(auth, s, apiIntances); err != nil {
 			return err
 		}
 		return nil

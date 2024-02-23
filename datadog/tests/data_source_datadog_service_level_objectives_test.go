@@ -13,8 +13,7 @@ import (
 func TestAccDatadogServiceLevelObjectivesDatasource(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	firstSLOName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
-	secondSLOName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
+	sloName := strings.ToLower(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -23,20 +22,32 @@ func TestAccDatadogServiceLevelObjectivesDatasource(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatasourceServiceLevelObjectivesIdsConfig(firstSLOName),
-				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, firstSLOName),
+				Config: testAccDatasourceServiceLevelObjectivesIdsConfig(sloName),
+				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, sloName),
 			},
 			{
-				Config: testAccDatasourceServiceLevelObjectivesNameFilterConfig(firstSLOName, secondSLOName),
-				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, firstSLOName),
+				Config: testAccDatasourceServiceLevelObjectivesNameFilterConfig(sloName),
+				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, sloName),
 			},
 			{
-				Config: testAccDatasourceServiceLevelObjectivesTagsFilterConfig(firstSLOName),
-				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, firstSLOName),
+				Config: testAccDatasourceServiceLevelObjectivesWithQueryNameFilterConfig(sloName),
+				Check:  checkServiceLevelObjectivesSingleResultDatasourceAttrs(accProvider, sloName),
 			},
 			{
-				Config: testAccDatasourceServiceLevelObjectivesMetricsFilterConfig(firstSLOName),
-				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, firstSLOName),
+				Config: testAccDatasourceServiceLevelObjectivesTagsFilterConfig(sloName),
+				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, sloName),
+			},
+			{
+				Config: testAccDatasourceServiceLevelObjectivesWithQueryTagsFilterConfig(sloName),
+				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, sloName),
+			},
+			{
+				Config: testAccDatasourceServiceLevelObjectivesMetricsFilterConfig(sloName),
+				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, sloName),
+			},
+			{
+				Config: testAccDatasourceServiceLevelObjectivesWithQueryMetricsFilterConfig(sloName),
+				Check:  checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider, sloName),
 			},
 		},
 	})
@@ -67,11 +78,11 @@ func checkServiceLevelObjectivesMultipleResultsDatasourceAttrs(accProvider func(
 func testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_service_level_objective" "foo" {
-  name = "%s"
+  name = "%[1]s"
   type = "metric"
   description = "some description about foo SLO"
   query {
-	numerator = "sum:%s{type:good}.as_count()"
+	numerator = "sum:%[1]s{type:good}.as_count()"
 	denominator = "sum:my.metric{*}.as_count()"
   }
 
@@ -95,8 +106,8 @@ resource "datadog_service_level_objective" "foo" {
 	target = 99
   }
 
-  tags = ["%s"]
-}`, uniq, uniq, uniq)
+  tags = ["%[1]s", "foo:%[1]s"]
+}`, uniq)
 }
 
 func testAccDatasourceServiceLevelObjectivesIdsConfig(uniq string) string {
@@ -112,7 +123,7 @@ data "datadog_service_level_objectives" "foo" {
 	)
 }
 
-func testAccDatasourceServiceLevelObjectivesNameFilterConfig(firstSLOName string, secondSLOName string) string {
+func testAccDatasourceServiceLevelObjectivesNameFilterConfig(sloName string) string {
 	return fmt.Sprintf(`
 %s
 %s
@@ -124,9 +135,27 @@ data "datadog_service_level_objectives" "foo" {
   name_query = "%s"
 }
 `,
-		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(firstSLOName),
-		strings.ReplaceAll(testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(secondSLOName), "\"foo\"", "\"bar\""),
-		firstSLOName,
+		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(sloName),
+		strings.ReplaceAll(testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(sloName), "\"foo\"", "\"bar\""),
+		sloName,
+	)
+}
+
+func testAccDatasourceServiceLevelObjectivesWithQueryNameFilterConfig(sloName string) string {
+	return fmt.Sprintf(`
+%s
+%s
+data "datadog_service_level_objectives" "foo" {
+  depends_on = [
+    datadog_service_level_objective.foo,
+    datadog_service_level_objective.bar,
+  ]
+  query = "%s"
+}
+`,
+		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(sloName),
+		strings.ReplaceAll(testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(sloName), "\"foo\"", "\"bar\""),
+		sloName,
 	)
 }
 
@@ -139,7 +168,25 @@ data "datadog_service_level_objectives" "foo" {
     datadog_service_level_objective.foo,
     datadog_service_level_objective.bar,
   ]
-  tags_query = "%s"
+  tags_query = "foo:%s"
+}
+`,
+		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq),
+		strings.ReplaceAll(testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq), "\"foo\"", "\"bar\""),
+		strings.ToLower(uniq),
+	)
+}
+
+func testAccDatasourceServiceLevelObjectivesWithQueryTagsFilterConfig(uniq string) string {
+	return fmt.Sprintf(`
+%s
+%s
+data "datadog_service_level_objectives" "foo" {
+  depends_on = [
+    datadog_service_level_objective.foo,
+    datadog_service_level_objective.bar,
+  ]
+  query = "foo:%s"
 }
 `,
 		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq),
@@ -158,6 +205,24 @@ data "datadog_service_level_objectives" "foo" {
     datadog_service_level_objective.bar,
   ]
   metrics_query = "%s"
+}
+`,
+		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq),
+		strings.ReplaceAll(testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq), "\"foo\"", "\"bar\""),
+		uniq,
+	)
+}
+
+func testAccDatasourceServiceLevelObjectivesWithQueryMetricsFilterConfig(uniq string) string {
+	return fmt.Sprintf(`
+%s
+%s
+data "datadog_service_level_objectives" "foo" {
+  depends_on = [
+    datadog_service_level_objective.foo,
+    datadog_service_level_objective.bar,
+  ]
+  query = "%s"
 }
 `,
 		testAccCheckDatadogServiceLevelObjectiveUniqueTagMetricConfig(uniq),

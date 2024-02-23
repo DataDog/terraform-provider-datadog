@@ -5,30 +5,28 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestAccDatadogRUMApplication_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	appName := uniqueEntityName(ctx, t)
 	appNameUpdated := fmt.Sprintf("%s-updated", appName)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogRUMApplicationDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogRUMApplicationDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogRUMApplicationConfig(appName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogRUMApplicationExists(accProvider, "datadog_rum_application.some_app"),
+					testAccCheckDatadogRUMApplicationExists(providers.frameworkProvider, "datadog_rum_application.some_app"),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_application.some_app", "name", appName),
 					resource.TestCheckResourceAttr(
@@ -38,7 +36,7 @@ func TestAccDatadogRUMApplication_Basic(t *testing.T) {
 			{
 				Config: testAccCheckDatadogRUMApplicationConfig(appNameUpdated),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogRUMApplicationExists(accProvider, "datadog_rum_application.some_app"),
+					testAccCheckDatadogRUMApplicationExists(providers.frameworkProvider, "datadog_rum_application.some_app"),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_application.some_app", "name", appNameUpdated),
 				),
@@ -56,12 +54,10 @@ func testAccCheckDatadogRUMApplicationConfig(uniq string) string {
     `, uniq)
 }
 
-func testAccCheckDatadogRUMApplicationExists(accProvider func() (*schema.Provider, error), resourceName string) resource.TestCheckFunc {
+func testAccCheckDatadogRUMApplicationExists(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, r := range s.RootModule().Resources {
 			id := r.Primary.ID
@@ -73,12 +69,10 @@ func testAccCheckDatadogRUMApplicationExists(accProvider func() (*schema.Provide
 	}
 }
 
-func testAccCheckDatadogRUMApplicationDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckDatadogRUMApplicationDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		apps, _, err := apiInstances.GetRumApiV2().GetRUMApplications(auth)
 		if err != nil {

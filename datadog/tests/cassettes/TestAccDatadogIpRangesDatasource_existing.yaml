@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: ""
@@ -9,6 +8,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 0
   response:
     body: |
       {
@@ -265,7 +265,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -274,6 +274,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 1
   response:
     body: |
       {
@@ -530,7 +531,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -539,6 +540,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 2
   response:
     body: |
       {
@@ -795,7 +797,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -804,6 +806,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 3
   response:
     body: |
       {
@@ -1060,7 +1063,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1069,6 +1072,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 4
   response:
     body: |
       {
@@ -1325,4 +1329,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

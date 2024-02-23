@@ -1,88 +1,177 @@
 ---
-version: 1
+version: 2
 interactions:
-- request:
-    body: |
-      {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1665663120","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","name":"","query":"does not really match much"}],"type":"log_detection"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules
-    method: POST
-  response:
-    body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665663121765,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ccr-aoo-xc2","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1665663120"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ccr-aoo-xc2
-    method: GET
-  response:
-    body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665663121765,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ccr-aoo-xc2","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1665663120"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ccr-aoo-xc2
-    method: GET
-  response:
-    body: |
-      {"creationAuthorId":1445416,"tags":[],"isEnabled":true,"hasExtendedTitle":false,"message":"acceptance rule triggered","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"maxSignalDuration":900,"keepAlive":600},"version":1,"createdAt":1665663121765,"filters":[],"queries":[{"query":"does not really match much","groupByFields":["host"],"aggregation":"count","name":"","distinctFields":[]}],"isDeleted":false,"cases":[{"status":"high","notifications":[],"name":"","condition":"a > 0"}],"type":"log_detection","id":"ccr-aoo-xc2","isDefault":false,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1665663120"}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ccr-aoo-xc2
-    method: DELETE
-  response:
-    body: ""
-    headers: {}
-    status: 204 No Content
-    code: 204
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/security_monitoring/rules/ccr-aoo-xc2
-    method: GET
-  response:
-    body: |
-      {"errors":["Threat detection rule not found: ccr-aoo-xc2"]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: ""
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 556
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1704810503","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"uvq-fjl-nhq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1704810503","createdAt":1704810508005,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 419.553625ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uvq-fjl-nhq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"uvq-fjl-nhq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1704810503","createdAt":1704810508005,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 169.987666ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uvq-fjl-nhq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"uvq-fjl-nhq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_Import-local-1704810503","createdAt":1704810508005,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 287.221584ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uvq-fjl-nhq
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 170.774292ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/uvq-fjl-nhq
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["Threat detection rule not found: uvq-fjl-nhq"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 314.359292ms

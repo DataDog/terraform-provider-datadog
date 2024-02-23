@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime
     method: POST
+    id: 0
   response:
     body: '{"recurrence":null,"end":1735765200,"monitor_tags":["foo:bar"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:X","host:Y"],"message":"Example Datadog downtime message.","downtime_type":2,"id":1176984748,"updater_id":null}'
     headers:
@@ -19,7 +19,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -28,6 +28,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/1176984748
     method: GET
+    id: 1
   response:
     body: '{"recurrence":null,"end":1735765200,"monitor_tags":["foo:bar"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:X","host:Y"],"message":"Example Datadog downtime message.","downtime_type":2,"id":1176984748,"updater_id":null}'
     headers:
@@ -35,7 +36,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -44,6 +45,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/1176984748
     method: GET
+    id: 2
   response:
     body: '{"recurrence":null,"end":1735765200,"monitor_tags":["foo:bar"],"child_id":null,"canceled":null,"monitor_id":null,"org_id":321813,"disabled":false,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:X","host:Y"],"message":"Example Datadog downtime message.","downtime_type":2,"id":1176984748,"updater_id":null}'
     headers:
@@ -51,7 +53,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -60,6 +62,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/1176984748
     method: DELETE
+    id: 3
   response:
     body: ""
     headers:
@@ -67,7 +70,7 @@ interactions:
       - application/json
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -76,6 +79,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/1176984748
     method: GET
+    id: 4
   response:
     body: '{"recurrence":null,"end":1735765200,"monitor_tags":["foo:bar"],"child_id":null,"canceled":1615587021,"monitor_id":null,"org_id":321813,"disabled":true,"start":1735707600,"creator_id":1445416,"parent_id":null,"timezone":"UTC","active":false,"scope":["host:X","host:Y"],"message":"Example Datadog downtime message.","downtime_type":2,"id":1176984748,"updater_id":1445416}'
     headers:
@@ -83,4 +87,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

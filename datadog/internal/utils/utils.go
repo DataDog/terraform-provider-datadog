@@ -5,10 +5,12 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
@@ -69,6 +71,9 @@ var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
 
 // DatadogProvider holds a reference to the provider
 var DatadogProvider *schema.Provider
+
+// IntegrationAwsMutex mutex for AWS Integration resources
+var IntegrationAwsMutex = sync.Mutex{}
 
 // Resource minimal interface common to ResourceData and ResourceDiff
 type Resource interface {
@@ -281,4 +286,37 @@ func ResourceIDAttribute() frameworkSchema.StringAttribute {
 			stringplanmodifier.UseStateForUnknown(),
 		},
 	}
+}
+
+func NormalizeIPAddress(ipAddress string) string {
+	_, ipNet, err := net.ParseCIDR(ipAddress)
+	if err != nil {
+		ip := net.ParseIP(ipAddress)
+		if ip == nil {
+			return ""
+		}
+		// ipAddress is a single IP address
+		// if it is ipv4, the prefix is 32. if ipv6, it is 128
+		prefix := "32"
+		if ip.DefaultMask() == nil {
+			prefix = "128"
+		}
+		return fmt.Sprintf("%v/%v", ip, prefix)
+	}
+	return ipNet.String()
+}
+
+func StringSliceDifference(slice1, slice2 []string) []string {
+	elements := make(map[string]bool)
+	for _, val := range slice2 {
+		elements[val] = true
+	}
+
+	var diff []string
+	for _, val := range slice1 {
+		if !elements[val] {
+			diff = append(diff, val)
+		}
+	}
+	return diff
 }

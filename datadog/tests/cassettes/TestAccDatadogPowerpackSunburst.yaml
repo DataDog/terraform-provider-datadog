@@ -1,0 +1,111 @@
+version: 2
+interactions:
+- request:
+    body: |
+      {"data":{"attributes":{"description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","type":"group","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"legend":{"hide_percent":false,"hide_value":true,"type":"automatic"},"requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar","style":{"palette":"dog_classic"}}],"type":"sunburst"}},{"definition":{"hide_total":true,"legend":{"type":"table"},"requests":[{"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"type":"sunburst"}}]}},"name":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","tags":["tag:foo1"],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"e44c644c-8e1d-11ee-a695-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","type":"group","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"legend":{"hide_percent":false,"hide_value":true,"type":"automatic"},"requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar","style":{"palette":"dog_classic"}}],"type":"sunburst"},"id":56233138432733},{"definition":{"hide_total":true,"legend":{"type":"table"},"requests":[{"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"type":"sunburst"},"id":6607157068212363}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/e44c644c-8e1d-11ee-a695-da7ad0900002
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"e44c644c-8e1d-11ee-a695-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","type":"group","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"legend":{"hide_percent":false,"hide_value":true,"type":"automatic"},"requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar","style":{"palette":"dog_classic"}}],"type":"sunburst"},"id":56233138432733},{"definition":{"hide_total":true,"legend":{"type":"table"},"requests":[{"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"type":"sunburst"},"id":6607157068212363}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/e44c644c-8e1d-11ee-a695-da7ad0900002
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"e44c644c-8e1d-11ee-a695-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","type":"group","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"legend":{"hide_percent":false,"hide_value":true,"type":"automatic"},"requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar","style":{"palette":"dog_classic"}}],"type":"sunburst"},"id":56233138432733},{"definition":{"hide_total":true,"legend":{"type":"table"},"requests":[{"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"type":"sunburst"},"id":6607157068212363}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/e44c644c-8e1d-11ee-a695-da7ad0900002
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"data":{"type":"powerpack","id":"e44c644c-8e1d-11ee-a695-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackSunburst-local-1701196951","type":"group","widgets":[{"definition":{"custom_links":[{"label":"Test Custom Link label","link":"https://app.datadoghq.com/dashboard/lists"}],"legend":{"hide_percent":false,"hide_value":true,"type":"automatic"},"requests":[{"formulas":[{"alias":"my ff query","formula":"my_query_1 + my_query_2"}],"queries":[{"aggregator":"sum","data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{foo:bar} by {env}"}],"response_format":"scalar","style":{"palette":"dog_classic"}}],"type":"sunburst"},"id":56233138432733},{"definition":{"hide_total":true,"legend":{"type":"table"},"requests":[{"queries":[{"compute":{"aggregation":"count"},"data_source":"rum","indexes":["*"],"name":"query1","search":{"query":"abc"}}],"response_format":"scalar"}],"type":"sunburst"},"id":6607157068212363}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0"}}}},"included":[{"type":"users","id":"3ad549bf-eba0-11e9-a77a-0705486660d0","attributes":{"name":null,"email":"frog@datadoghq.com"}}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+    url: https://api.datadoghq.com/api/v2/powerpacks/e44c644c-8e1d-11ee-a695-da7ad0900002
+    method: DELETE
+    id: 4
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+    status: 204 No Content
+    code: 204
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/powerpacks/e44c644c-8e1d-11ee-a695-da7ad0900002
+    method: GET
+    id: 5
+  response:
+    body: '{"errors":["Powerpack with ID e44c644c-8e1d-11ee-a695-da7ad0900002 not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

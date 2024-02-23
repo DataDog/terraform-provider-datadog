@@ -34,6 +34,30 @@ func dataSourceDatadogLogsIndexes() *schema.Resource {
 								Type:        schema.TypeInt,
 								Computed:    true,
 							},
+							"daily_limit_reset": {
+								Description: "Object containing options to override the default daily limit reset time.",
+								Type:        schema.TypeList,
+								Computed:    true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"reset_time": {
+											Description: "String in `HH:00` format representing the time of day the daily limit should be reset. The hours between 00 and 23 (inclusive).",
+											Type:        schema.TypeString,
+											Computed:    true,
+										},
+										"reset_utc_offset": {
+											Description: "String in `(-|+)HH:00` format representing the UTC offset to apply to the given reset time. The hours between -12 and +14 (inclusive).",
+											Type:        schema.TypeString,
+											Computed:    true,
+										},
+									},
+								},
+							},
+							"daily_limit_warning_threshold_percentage": {
+								Description: "The percentage threshold of the daily quota at which a Datadog warning event is generated.",
+								Type:        schema.TypeFloat,
+								Computed:    true,
+							},
 							"retention_days": {
 								Description: "The number of days before logs are deleted from this index.",
 								Type:        schema.TypeInt,
@@ -123,8 +147,10 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 		}
 
 		tfLogsIndexes[i] = map[string]interface{}{
-			"name":             l.GetName(),
-			"daily_limit":      l.GetDailyLimit(),
+			"name":              l.GetName(),
+			"daily_limit":       l.GetDailyLimit(),
+			"daily_limit_reset": buildTerraformIndexDailyLimitReset(l.GetDailyLimitReset()),
+			"daily_limit_warning_threshold_percentage": l.GetDailyLimitWarningThresholdPercentage(),
 			"retention_days":   l.GetNumRetentionDays(),
 			"filter":           buildTerraformIndexFilter(l.GetFilter()),
 			"exclusion_filter": buildTerraformExclusionFilters(l.GetExclusionFilters()),

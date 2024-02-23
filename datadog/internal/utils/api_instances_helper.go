@@ -44,6 +44,8 @@ type ApiInstances struct {
 	webhooksIntegrationApiV1              *datadogV1.WebhooksIntegrationApi
 
 	//V2 APIs
+	apiManagementAPIV2         *datadogV2.APIManagementApi
+	apmRetentionFiltersApiV2   *datadogV2.APMRetentionFiltersApi
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
 	cloudflareIntegrationApiV2 *datadogV2.CloudflareIntegrationApi
@@ -67,6 +69,7 @@ type ApiInstances struct {
 	opsgenieIntegrationApiV2   *datadogV2.OpsgenieIntegrationApi
 	organizationsApiV2         *datadogV2.OrganizationsApi
 	processesApiV2             *datadogV2.ProcessesApi
+	powerpackApiV2             *datadogV2.PowerpackApi
 	restrictionPolicyApiV2     *datadogV2.RestrictionPoliciesApi
 	rolesApiV2                 *datadogV2.RolesApi
 	rumApiV2                   *datadogV2.RUMApi
@@ -487,6 +490,14 @@ func (i *ApiInstances) GetProcessesApiV2() *datadogV2.ProcessesApi {
 	return i.processesApiV2
 }
 
+// GetPowerpackApiV2 get instance of PowerpackApi
+func (i *ApiInstances) GetPowerpackApiV2() *datadogV2.PowerpackApi {
+	if i.powerpackApiV2 == nil {
+		i.powerpackApiV2 = datadogV2.NewPowerpackApi(i.HttpClient)
+	}
+	return i.powerpackApiV2
+}
+
 // GetRolesApiV2 get instance of RolesApi
 func (i *ApiInstances) GetRolesApiV2() *datadogV2.RolesApi {
 	if i.rolesApiV2 == nil {
@@ -598,4 +609,20 @@ func (i *ApiInstances) GetSyntheticsApiV2() *datadogV2.SyntheticsApi {
 		i.syntheticsApiV2 = datadogV2.NewSyntheticsApi(i.HttpClient)
 	}
 	return i.syntheticsApiV2
+}
+
+// GetSpansMetricsApiV2 get instance of SpansMetricsApi
+func (i *ApiInstances) GetApmRetentionFiltersApiV2() *datadogV2.APMRetentionFiltersApi {
+	if i.apmRetentionFiltersApiV2 == nil {
+		i.apmRetentionFiltersApiV2 = datadogV2.NewAPMRetentionFiltersApi(i.HttpClient)
+	}
+	return i.apmRetentionFiltersApiV2
+}
+
+// GetAPIManagementApiV2 get instance of APIManagementApi
+func (i *ApiInstances) GetAPIManagementApiV2() *datadogV2.APIManagementApi {
+	if i.apiManagementAPIV2 == nil {
+		i.apiManagementAPIV2 = datadogV2.NewAPIManagementApi(i.HttpClient)
+	}
+	return i.apiManagementAPIV2
 }

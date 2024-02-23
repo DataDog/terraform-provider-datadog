@@ -6,22 +6,21 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func TestAccDatadogIPAllowlist_CreateUpdate(t *testing.T) {
-	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogIPAllowlistDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogIPAllowlistDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogIPAllowlistConfig(),
@@ -34,6 +33,10 @@ func TestAccDatadogIPAllowlist_CreateUpdate(t *testing.T) {
 					resource.TestCheckTypeSetElemNestedAttrs("datadog_ip_allowlist.foo", "entry.*", map[string]string{
 						"cidr_block": "1.2.3.4/32",
 						"note":       "entry 2",
+					}),
+					resource.TestCheckTypeSetElemNestedAttrs("datadog_ip_allowlist.foo", "entry.*", map[string]string{
+						"cidr_block": "::/0",
+						"note":       "ipv6 entry",
 					}),
 				),
 			},
@@ -49,6 +52,10 @@ func TestAccDatadogIPAllowlist_CreateUpdate(t *testing.T) {
 						"cidr_block": "1.2.3.4/32",
 						"note":       "fake entry",
 					}),
+					resource.TestCheckTypeSetElemNestedAttrs("datadog_ip_allowlist.foo", "entry.*", map[string]string{
+						"cidr_block": "::/0",
+						"note":       "ipv6 entry",
+					}),
 				),
 			},
 			{
@@ -59,12 +66,10 @@ func TestAccDatadogIPAllowlist_CreateUpdate(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogIPAllowlistDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckDatadogIPAllowlistDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_ip_allowlist" {
@@ -96,6 +101,10 @@ resource "datadog_ip_allowlist" "foo" {
 		cidr_block = "1.2.3.4/32"
 		note = "entry 2"
 	}
+	entry{
+		cidr_block = "::/0"
+		note = "ipv6 entry"
+	}
 }`
 }
 
@@ -110,6 +119,10 @@ resource "datadog_ip_allowlist" "foo" {
 	entry {
 		cidr_block = "0.0.0.0/0"
 		note = "all"
+	}
+	entry{
+		cidr_block = "::/0"
+		note = "ipv6 entry"
 	}
 }`
 }

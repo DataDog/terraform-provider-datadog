@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
+    id: 0
   response:
     body: |
       {}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
@@ -32,6 +32,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
+    id: 1
   response:
     body: |
       {}
@@ -40,7 +41,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
@@ -52,6 +53,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/validate
     method: POST
+    id: 2
   response:
     body: |
       {}
@@ -60,7 +62,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
@@ -72,6 +74,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor
     method: POST
+    id: 3
   response:
     body: |
       {"id":122223059,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{}},"multi":true,"created_at":1686931336000,"created":"2023-06-16T16:02:16.489796+00:00","modified":"2023-06-16T16:02:16.489796+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -80,7 +83,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"end":1686945734,"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","monitor_id":122223059,"scope":["*"],"start":1686942134,"timezone":"UTC"}
@@ -92,6 +95,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime
     method: POST
+    id: 4
   response:
     body: |
       {"id":3016082800,"monitor_id":122223059,"org_id":321813,"start":1686942134,"end":1686945734,"canceled":null,"created":1686931336,"modified":1686931336,"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","active":false,"disabled":false,"recurrence":null,"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":1445416,"updater_id":null,"downtime_type":0,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"2a544efa-0c5f-11ee-9912-da7ad0900002","scope":["*"]}
@@ -100,7 +104,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -109,6 +113,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/3016082800
     method: GET
+    id: 5
   response:
     body: |
       {"id":3016082800,"monitor_id":122223059,"org_id":321813,"start":1686942134,"end":1686945734,"canceled":null,"created":1686931336,"modified":1686931336,"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","active":false,"disabled":false,"recurrence":null,"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":1445416,"updater_id":null,"downtime_type":0,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"2a544efa-0c5f-11ee-9912-da7ad0900002","scope":["*"]}
@@ -117,7 +122,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
@@ -129,6 +134,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/122223059/validate
     method: POST
+    id: 6
   response:
     body: |
       {}
@@ -137,7 +143,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -146,6 +152,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/122223059
     method: GET
+    id: 7
   response:
     body: |
       {"id":122223059,"org_id":321813,"type":"metric alert","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","message":"some message Notify: @hipchat-channel","tags":[],"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2.0,"warning":1.0},"notify_audit":false,"silenced":{"*":1686945734}},"multi":true,"created_at":1686931336000,"created":"2023-06-16T16:02:16.489796+00:00","modified":"2023-06-16T16:02:16.489796+00:00","deleted":null,"restricted_roles":null,"priority":null,"overall_state_modified":null,"overall_state":"No Data","creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com","id":1445416}}
@@ -154,7 +161,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
@@ -166,6 +173,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/122223059/validate
     method: POST
+    id: 8
   response:
     body: |
       {}
@@ -174,7 +182,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -183,6 +191,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/3016082800
     method: GET
+    id: 9
   response:
     body: |
       {"id":3016082800,"monitor_id":122223059,"org_id":321813,"start":1686942134,"end":1686945734,"canceled":null,"created":1686931336,"modified":1686931336,"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","active":false,"disabled":false,"recurrence":null,"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":1445416,"updater_id":null,"downtime_type":0,"status":"scheduled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"2a544efa-0c5f-11ee-9912-da7ad0900002","scope":["*"]}
@@ -191,7 +200,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"message":"some message Notify: @hipchat-channel","name":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","options":{"escalation_message":"the situation has escalated @pagerduty","include_tags":true,"new_host_delay":300,"no_data_timeframe":10,"notify_no_data":false,"require_full_window":true,"thresholds":{"critical":2,"warning":1}},"priority":0,"query":"avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} \u003e 2","restricted_roles":null,"tags":[],"type":"metric alert"}
@@ -203,6 +212,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/122223059/validate
     method: POST
+    id: 10
   response:
     body: |
       {}
@@ -211,7 +221,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -220,6 +230,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v1/downtime/3016082800
     method: DELETE
+    id: 11
   response:
     body: ""
     headers:
@@ -227,7 +238,7 @@ interactions:
       - text/html; charset=utf-8
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -236,6 +247,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/monitor/122223059
     method: DELETE
+    id: 12
   response:
     body: |
       {"deleted_monitor_id":122223059}
@@ -244,7 +256,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -253,6 +265,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/downtime/3016082800
     method: GET
+    id: 13
   response:
     body: |
       {"id":3016082800,"monitor_id":122223059,"org_id":321813,"start":1686942134,"end":1686945734,"canceled":1686931338,"created":1686931336,"modified":1686931338,"message":"tf-TestAccDatadogDowntime_BasicWithMonitor-local-1686931334","active":false,"disabled":true,"recurrence":null,"timezone":"UTC","parent_id":null,"child_id":null,"creator_id":1445416,"updater_id":1445416,"downtime_type":0,"status":"canceled","monitor_tags":["*"],"mute_first_recovery_notification":false,"notify_end_types":["expired"],"notify_end_states":["alert","no data","warn"],"uuid":"2a544efa-0c5f-11ee-9912-da7ad0900002","scope":["*"]}
@@ -261,4 +274,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

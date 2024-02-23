@@ -837,7 +837,7 @@ func testAccCheckDatadogMonitorDestroy(accProvider func() (*schema.Provider, err
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		if err := destroyHelper(auth, s, apiInstances); err != nil {
+		if err := destroyMonitorHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
@@ -1014,6 +1014,113 @@ resource "datadog_monitor" "foo" {
   scheduling_options {
 	evaluation_window {
 	  hour_starts = "0"
+	}
+  }
+}`, uniq)
+}
+
+func TestAccDatadogMonitor_SchedulingOptionsCustomSchedule(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.timezone", "America/New_York"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.start", "2023-11-10T12:31:00"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "metric alert"
+  message = "a message"
+  priority = 3
+
+  query = "avg(last_1h):avg:system.load.5{*} > 0.5"
+
+  monitor_thresholds {
+	critical = "0.5"
+  }
+
+  scheduling_options {
+	custom_schedule {
+		recurrence {
+			rrule = "FREQ=DAILY;INTERVAL=1"
+			timezone = "America/New_York"
+			start = "2023-11-10T12:31:00"
+		}
+	}
+  }
+}`, uniq)
+}
+
+func TestAccDatadogMonitor_SchedulingOptionsCustomScheduleNoStart(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.timezone", "America/New_York"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorWithSchedulingOptionsCustomScheduleNoStart(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "metric alert"
+  message = "a message"
+  priority = 3
+  
+  query = "avg(last_1h):avg:system.load.5{*} > 0.5"
+
+  monitor_thresholds {
+	critical = "0.5"
+  }
+
+  scheduling_options {
+	custom_schedule {
+		recurrence {
+			rrule = "FREQ=DAILY;INTERVAL=1"
+			timezone = "America/New_York"
+		}
 	}
   }
 }`, uniq)
@@ -1568,9 +1675,13 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
-func destroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
-	err := utils.Retry(2, 10, func() error {
-		for _, r := range s.RootModule().Resources {
+func destroyMonitorHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_monitor" {
+			continue
+		}
+
+		err := utils.Retry(2, 10, func() error {
 			i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
 			_, httpresp, err := apiInstances.GetMonitorsApiV1().GetMonitor(ctx, i)
 			if err != nil {
@@ -1580,10 +1691,14 @@ func destroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 			}
 			return &utils.RetryableError{Prob: "Monitor still exists"}
+		})
+
+		if err != nil {
+			return err
 		}
-		return nil
-	})
-	return err
+	}
+
+	return nil
 }
 
 func existsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {

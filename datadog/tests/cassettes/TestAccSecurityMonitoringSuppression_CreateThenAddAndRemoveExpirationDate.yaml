@@ -1,0 +1,751 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 302
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705419992562,"update_date":1705419992562,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 151.7115ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705419992562,"update_date":1705419992562,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.704958ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705419992562,"update_date":1705419992562,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 144.386834ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":1,"creation_date":1705419992562,"update_date":1705419992562,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 152.249208ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"expiration_date":1705924800000,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705924800000,"version":2,"creation_date":1705419992562,"update_date":1705419994608,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 157.934833ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705924800000,"version":2,"creation_date":1705419992562,"update_date":1705419994608,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.875542ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705924800000,"version":2,"creation_date":1705419992562,"update_date":1705419994608,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 171.907125ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705924800000,"version":2,"creation_date":1705419992562,"update_date":1705419994608,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 145.435625ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"expiration_date":1705924800000,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705924800000,"version":3,"creation_date":1705419992562,"update_date":1705419996684,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 178.172083ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705924800000,"version":3,"creation_date":1705419992562,"update_date":1705419996684,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 159.435916ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705924800000,"version":3,"creation_date":1705419992562,"update_date":1705419996684,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 162.931792ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705924800000,"version":3,"creation_date":1705419992562,"update_date":1705419996684,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 171.506708ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"expiration_date":1705933800000,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705933800000,"version":4,"creation_date":1705419992562,"update_date":1705419998808,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 167.859708ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705933800000,"version":4,"creation_date":1705419992562,"update_date":1705419998808,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.115417ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705933800000,"version":4,"creation_date":1705419992562,"update_date":1705419998808,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 160.929292ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","expiration_date":1705933800000,"version":4,"creation_date":1705419992562,"update_date":1705419998808,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 150.693791ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 325
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":5,"creation_date":1705419992562,"update_date":1705420000750,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 150.42175ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":5,"creation_date":1705419992562,"update_date":1705420000750,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 144.479667ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"ipt-cev-yza","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate-local-1705419991","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","version":5,"creation_date":1705419992562,"update_date":1705420000750,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.670458ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 144.745542ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/ipt-cev-yza
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["not_found(Suppression with ID ipt-cev-yza not found)"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 146.199334ms

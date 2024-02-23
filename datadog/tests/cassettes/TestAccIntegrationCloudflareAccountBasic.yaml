@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts
     method: POST
+    id: 0
   response:
     body: |
       {"data":{"type":"cloudflare-accounts","attributes":{"email":"test-email@example.com","name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1681129590"},"id":"9e9054f8a21fd8dd20feee8e9fa31447"}}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 201 Created
     code: 201
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts/9e9054f8a21fd8dd20feee8e9fa31447
     method: GET
+    id: 1
   response:
     body: |
       {"data":{"type":"cloudflare-accounts","id":"9e9054f8a21fd8dd20feee8e9fa31447","attributes":{"email":"test-email@example.com","name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1681129590"}}}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts/9e9054f8a21fd8dd20feee8e9fa31447
     method: DELETE
+    id: 2
   response:
     body: ""
     headers:
@@ -53,4 +55,4 @@ interactions:
       - text/html; charset=utf-8
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"

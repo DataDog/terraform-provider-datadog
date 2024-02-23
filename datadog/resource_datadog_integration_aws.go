@@ -6,9 +6,9 @@ import (
 	"os"
 	"regexp"
 	"strconv"
-	"sync"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -16,7 +16,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-var integrationAwsMutex = sync.Mutex{}
 var accountAndRoleNameIDRegex = regexp.MustCompile("[\\d]+:.*")
 
 func resourceDatadogIntegrationAws() *schema.Resource {
@@ -33,10 +32,10 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description:   "Your AWS Account ID without dashes.",
-					Type:          schema.TypeString,
-					Optional:      true,
-					ConflictsWith: []string{"access_key_id", "secret_access_key"},
+					Description:      "Your AWS Account ID without dashes.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateAWSAccountID,
 				},
 				"role_name": {
 					Description:   "Your Datadog role delegation name.",
@@ -76,14 +75,14 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				"access_key_id": {
 					Description:   "Your AWS access key ID. Only required if your AWS account is a GovCloud or China account.",
 					Type:          schema.TypeString,
-					ConflictsWith: []string{"account_id", "role_name"},
+					ConflictsWith: []string{"role_name"},
 					Optional:      true,
 				},
 				"secret_access_key": {
 					Description:   "Your AWS secret access key. Only required if your AWS account is a GovCloud or China account.",
 					Type:          schema.TypeString,
 					Sensitive:     true,
-					ConflictsWith: []string{"account_id", "role_name"},
+					ConflictsWith: []string{"role_name"},
 					Optional:      true,
 				},
 				"metrics_collection_enabled": {
@@ -184,8 +183,8 @@ func resourceDatadogIntegrationAwsCreate(ctx context.Context, d *schema.Resource
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
 	response, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSAccount(auth, *iaws)
@@ -241,7 +240,9 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 	for _, integration := range integrations.GetAccounts() {
 		if (accountID != "" && integration.GetAccountId() == accountID && integration.GetRoleName() == roleName) ||
 			(accessKeyID != "" && integration.GetAccessKeyId() == accessKeyID) {
-			d.Set("account_id", integration.GetAccountId())
+			if account_id, ok := integration.GetAccountIdOk(); ok {
+				d.Set("account_id", account_id)
+			}
 			d.Set("role_name", integration.GetRoleName())
 			d.Set("access_key_id", integration.GetAccessKeyId())
 			d.Set("filter_tags", integration.GetFilterTags())
@@ -263,8 +264,8 @@ func resourceDatadogIntegrationAwsUpdate(ctx context.Context, d *schema.Resource
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsStruct(d)
 
@@ -320,8 +321,8 @@ func resourceDatadogIntegrationAwsDelete(ctx context.Context, d *schema.Resource
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	iaws := buildDatadogIntegrationAwsDeleteStruct(d)
 

@@ -247,6 +247,31 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Test a downloaded file"
+    type = "assertFileDownload"
+    params {
+      file = jsonencode(
+        {
+          md5 = "abcdef1234567890" // MD5 hash of the file
+          sizeCheck = {
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
+          }
+          nameCheck = {
+            type = "contains" // "contains", "equals", "isEmpty", "matchRegex", 
+            // "notContains", "notIsEmpty", "notEquals", 
+            // "notStartsWith", "startsWith"
+            value = ".xls"
+          }
+        }
+      )
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -278,11 +303,11 @@ resource "datadog_synthetics_test" "grpc" {
   type    = "api"
   subtype = "grpc"
   request_definition {
-    method                = "GET"
-    host                  = "google.com"
-    port                  = 50050
-    service               = "Hello"
-    proto_json_descriptor = <<EOT
+    method           = "GET"
+    host             = "google.com"
+    port             = 50050
+    service          = "Hello"
+    plain_proto_file = <<EOT
 syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "io.grpc.examples.helloworld";

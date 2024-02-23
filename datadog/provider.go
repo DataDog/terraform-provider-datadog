@@ -158,7 +158,6 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"datadog_application_key":                      resourceDatadogApplicationKey(),
 			"datadog_authn_mapping":                        resourceDatadogAuthnMapping(),
 			"datadog_child_organization":                   resourceDatadogChildOrganization(),
 			"datadog_cloud_configuration_rule":             resourceDatadogCloudConfigurationRule(),
@@ -170,13 +169,11 @@ func Provider() *schema.Provider {
 			"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
 			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
 			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
-			"datadog_integration_azure":                    resourceDatadogIntegrationAzure(),
 			"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
 			"datadog_integration_opsgenie_service_object":  resourceDatadogIntegrationOpsgenieService(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
 			"datadog_integration_slack_channel":            resourceDatadogIntegrationSlackChannel(),
-			"datadog_ip_allowlist":                         resourceDatadogIPAllowlist(),
 			"datadog_logs_archive":                         resourceDatadogLogsArchive(),
 			"datadog_logs_archive_order":                   resourceDatadogLogsArchiveOrder(),
 			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
@@ -191,9 +188,8 @@ func Provider() *schema.Provider {
 			"datadog_monitor_config_policy":                resourceDatadogMonitorConfigPolicy(),
 			"datadog_monitor_json":                         resourceDatadogMonitorJSON(),
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
+			"datadog_powerpack":                            resourceDatadogPowerpack(),
 			"datadog_role":                                 resourceDatadogRole(),
-			"datadog_rum_application":                      resourceDatadogRUMApplication(),
-			"datadog_service_account":                      resourceDatadogServiceAccount(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_security_monitoring_filter":           resourceDatadogSecurityMonitoringFilter(),
@@ -211,7 +207,6 @@ func Provider() *schema.Provider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"datadog_application_key":                         dataSourceDatadogApplicationKey(),
 			"datadog_cloud_workload_security_agent_rules":     dataSourceDatadogCloudWorkloadSecurityAgentRules(),
 			"datadog_dashboard":                               dataSourceDatadogDashboard(),
 			"datadog_integration_aws_logs_services":           dataSourceDatadogIntegrationAWSLogsServices(),
@@ -225,7 +220,6 @@ func Provider() *schema.Provider {
 			"datadog_permissions":                             dataSourceDatadogPermissions(),
 			"datadog_role":                                    dataSourceDatadogRole(),
 			"datadog_roles":                                   dataSourceDatadogRoles(),
-			"datadog_rum_application":                         dataSourceDatadogRUMApplication(),
 			"datadog_security_monitoring_rules":               dataSourceDatadogSecurityMonitoringRules(),
 			"datadog_security_monitoring_filters":             dataSourceDatadogSecurityMonitoringFilters(),
 			"datadog_sensitive_data_scanner_standard_pattern": dataSourceDatadogSensitiveDataScannerStandardPattern(),
@@ -296,7 +290,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewLoggingHTTPTransport(c.Transport)
 	communityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
 		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
 		"go-datadog-api",

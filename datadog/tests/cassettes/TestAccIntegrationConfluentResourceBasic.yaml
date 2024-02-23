@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts
     method: POST
+    id: 0
   response:
     body: |
       {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","resources":[]},"id":"d89d7d5298d6197a1ae380de17721b26"}}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 201 Created
     code: 201
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"data":{"attributes":{"enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910","type":"confluent-cloud-resources"}}
@@ -32,6 +32,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources
     method: POST
+    id: 1
   response:
     body: |
       {"data":{"type":"confluent-cloud-resources","attributes":{"enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]},"id":"12345678910"}}
@@ -40,7 +41,7 @@ interactions:
       - application/json
     status: 201 Created
     code: 201
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -49,6 +50,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
     method: GET
+    id: 2
   response:
     body: |
       {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"resources":[{"enable_custom_metrics":false,"id":"12345678910","tags":["mytag","mytag2:myvalue"],"resource_type":"kafka"}],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062"},"id":"d89d7d5298d6197a1ae380de17721b26"}}
@@ -57,7 +59,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -66,6 +68,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: GET
+    id: 3
   response:
     body: |
       {"data":{"type":"confluent-cloud-resources","id":"12345678910","attributes":{"tags":["mytag","mytag2:myvalue"],"resource_type":"kafka","enable_custom_metrics":false}}}
@@ -74,7 +77,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -83,6 +86,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
     method: GET
+    id: 4
   response:
     body: |
       {"data":{"type":"confluent-cloud-accounts","id":"d89d7d5298d6197a1ae380de17721b26","attributes":{"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","resources":[{"id":"12345678910","enable_custom_metrics":false,"resource_type":"kafka","tags":["mytag","mytag2:myvalue"]}],"tags":[]}}}
@@ -91,7 +95,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -100,6 +104,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: GET
+    id: 5
   response:
     body: |
       {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag","mytag2:myvalue"],"enable_custom_metrics":false,"resource_type":"kafka"},"id":"12345678910"}}
@@ -108,7 +113,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"data":{"attributes":{"enable_custom_metrics":true,"resource_type":"connector","tags":["mytag"]},"id":"12345678910","type":"confluent-cloud-resources"}}
@@ -120,6 +125,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: PATCH
+    id: 6
   response:
     body: |
       {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag"],"resource_type":"connector","enable_custom_metrics":true},"id":"12345678910"}}
@@ -128,7 +134,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -137,6 +143,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
     method: GET
+    id: 7
   response:
     body: |
       {"data":{"type":"confluent-cloud-accounts","attributes":{"tags":[],"api_key":"tf-TestAccIntegrationConfluentResourceBasic-local-1689861062","resources":[{"resource_type":"connector","tags":["mytag"],"id":"12345678910","enable_custom_metrics":true}]},"id":"d89d7d5298d6197a1ae380de17721b26"}}
@@ -145,7 +152,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -154,6 +161,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: GET
+    id: 8
   response:
     body: |
       {"data":{"type":"confluent-cloud-resources","attributes":{"tags":["mytag"],"enable_custom_metrics":true,"resource_type":"connector"},"id":"12345678910"}}
@@ -162,7 +170,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -171,6 +179,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26/resources/12345678910
     method: DELETE
+    id: 9
   response:
     body: ""
     headers:
@@ -178,7 +187,7 @@ interactions:
       - text/html; charset=utf-8
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -187,6 +196,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v2/integrations/confluent-cloud/accounts/d89d7d5298d6197a1ae380de17721b26
     method: DELETE
+    id: 10
   response:
     body: ""
     headers:
@@ -194,4 +204,4 @@ interactions:
       - text/html; charset=utf-8
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"

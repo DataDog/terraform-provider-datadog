@@ -1,0 +1,114 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 446
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: "--b83b2fd69da78bf28017af4b8c09378bf61fa1caa18e15bf1b49ab6e16f4\r\nContent-Disposition: form-data; name=\"openapi_spec_file\"; filename=\".\"\r\nContent-Type: application/octet-stream\r\n\r\ninfo:\n  contact:\n    name: API team\n  description: My API description.\n  title: tf-TestAccOpenapiApiBasic-local-1706532394\nopenapi: 3.0.0\npaths:\n  /api/my-api:\n    get:\n      description: An endpoint\n\r\n--b83b2fd69da78bf28017af4b8c09378bf61fa1caa18e15bf1b49ab6e16f4--\r\n"
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - multipart/form-data; boundary=b83b2fd69da78bf28017af4b8c09378bf61fa1caa18e15bf1b49ab6e16f4
+        url: https://api.datadoghq.com/api/v2/apicatalog/openapi
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 104
+        uncompressed: false
+        body: '{"data":{"id":"3326a3a7-6d74-48b7-9a63-bd7b5656ed6f","type":"api","attributes":{"failed_endpoints":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 409.277916ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/apicatalog/api/3326a3a7-6d74-48b7-9a63-bd7b5656ed6f/openapi
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 200
+        uncompressed: false
+        body: |
+            info:
+              contact:
+                name: API team
+              description: My API description.
+              title: tf-TestAccOpenapiApiBasic-local-1706532394
+            openapi: 3.0.0
+            paths:
+              /api/my-api:
+                get:
+                  description: An endpoint
+        headers:
+            Content-Type:
+                - multipart/form-data
+        status: 200 OK
+        code: 200
+        duration: 113.217858ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/apicatalog/api/3326a3a7-6d74-48b7-9a63-bd7b5656ed6f
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 204 No Content
+        code: 204
+        duration: 117.394279ms

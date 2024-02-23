@@ -76,7 +76,7 @@ We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes fo
 - `renotify_interval` (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
 - `renotify_occurrences` (Number) The number of re-notification messages that should be sent on the current status.
 - `renotify_statuses` (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
-- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. Defaults to `true`.
+- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. If there's a custom_schedule set, `require_full_window` must be false and will be ignored. Defaults to `true`.
 - `restricted_roles` (Set of String) A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.
 - `scheduling_options` (Block List) Configuration options for scheduling. (see [below for nested schema](#nestedblock--scheduling_options))
 - `tags` (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
@@ -114,9 +114,31 @@ Optional:
 <a id="nestedblock--scheduling_options"></a>
 ### Nested Schema for `scheduling_options`
 
+Optional:
+
+- `custom_schedule` (Block List) Configuration options for the custom schedules. If `start` is omitted, the monitor creation time will be used. (see [below for nested schema](#nestedblock--scheduling_options--custom_schedule))
+- `evaluation_window` (Block List) Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together. (see [below for nested schema](#nestedblock--scheduling_options--evaluation_window))
+
+<a id="nestedblock--scheduling_options--custom_schedule"></a>
+### Nested Schema for `scheduling_options.custom_schedule`
+
 Required:
 
-- `evaluation_window` (Block List, Min: 1) Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together. (see [below for nested schema](#nestedblock--scheduling_options--evaluation_window))
+- `recurrence` (Block List, Min: 1, Max: 1) A list of recurrence definitions. Length must be 1. (see [below for nested schema](#nestedblock--scheduling_options--custom_schedule--recurrence))
+
+<a id="nestedblock--scheduling_options--custom_schedule--recurrence"></a>
+### Nested Schema for `scheduling_options.custom_schedule.recurrence`
+
+Required:
+
+- `rrule` (String) Must be a valid `rrule`. See API docs for supported fields
+- `timezone` (String) 'tz database' format. Example: `America/New_York` or `UTC`
+
+Optional:
+
+- `start` (String) Time to start recurrence cycle. Similar to DTSTART. Expected format 'YYYY-MM-DDThh:mm:ss'
+
+
 
 <a id="nestedblock--scheduling_options--evaluation_window"></a>
 ### Nested Schema for `scheduling_options.evaluation_window`

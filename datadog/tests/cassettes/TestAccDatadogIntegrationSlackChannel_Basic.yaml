@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: ""
@@ -9,6 +8,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 0
   response:
     body: |
       {
@@ -418,7 +418,7 @@ interactions:
       - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -427,6 +427,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 1
   response:
     body: |
       {
@@ -834,7 +835,7 @@ interactions:
       - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: '{"service_hooks":[{"account":"test_account","url":"https://ddog-client-test.slack.com/fake-account-hook"}]}'
     form: {}
@@ -843,6 +844,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/slack
     method: POST
+    id: 2
   response:
     body: ""
     headers:
@@ -850,7 +852,7 @@ interactions:
       - text/plain
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -859,6 +861,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 3
   response:
     body: |
       {
@@ -1268,7 +1271,7 @@ interactions:
       - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1277,6 +1280,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 4
   response:
     body: |
       {
@@ -1686,7 +1690,7 @@ interactions:
       - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -1695,6 +1699,7 @@ interactions:
       - application/json
     url: https://ip-ranges.datadoghq.com/
     method: GET
+    id: 5
   response:
     body: |
       {
@@ -2104,7 +2109,7 @@ interactions:
       - 1.1 9ef00004ef0e93efae76c75d3a2df1b4.cloudfront.net (CloudFront)
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"display":{"message":true,"notified":true,"snapshot":true,"tags":true},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092"}
@@ -2116,6 +2121,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels
     method: POST
+    id: 6
   response:
     body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
@@ -2123,7 +2129,7 @@ interactions:
       - application/json
     status: 201 Created
     code: 201
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -2132,6 +2138,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
     method: GET
+    id: 7
   response:
     body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
@@ -2139,7 +2146,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -2148,6 +2155,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
     method: GET
+    id: 8
   response:
     body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
@@ -2155,7 +2163,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -2164,6 +2172,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
     method: GET
+    id: 9
   response:
     body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":true,"message":true,"snapshot":true,"tags":true}}'
     headers:
@@ -2171,7 +2180,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"display":{"message":false,"notified":false,"snapshot":false,"tags":false},"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092"}
@@ -2183,6 +2192,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
     method: PATCH
+    id: 10
   response:
     body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
@@ -2190,7 +2200,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -2199,6 +2209,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
     method: GET
+    id: 11
   response:
     body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
@@ -2206,7 +2217,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -2215,6 +2226,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
     method: GET
+    id: 12
   response:
     body: '{"name":"#tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092","display":{"notified":false,"message":false,"snapshot":false,"tags":false}}'
     headers:
@@ -2222,7 +2234,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -2231,9 +2243,10 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/integration/slack/configuration/accounts/test_account/channels/%23tfTestAccDatadogIntegrationSlackChannelBasiclocal1615587092
     method: DELETE
+    id: 13
   response:
     body: ""
-    headers:
+    headers: null
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"

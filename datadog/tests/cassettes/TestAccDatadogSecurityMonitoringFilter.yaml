@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters
     method: POST
+    id: 0
   response:
     body: |
       {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
     method: GET
+    id: 1
   response:
     body: |
       {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
     method: GET
+    id: 2
   response:
     body: |
       {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
     method: GET
+    id: 3
   response:
     body: |
       {"data":{"attributes":{"is_enabled":true,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"neither does it","name":"second"}],"version":1,"query":"first query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"data":{"attributes":{"exclusion_filters":[{"name":"first","query":"does not really match much"},{"name":"third","query":"I am new"}],"filtered_data_type":"logs","is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","version":1},"type":"security_filters"}}
@@ -83,6 +86,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
     method: PATCH
+    id: 4
   response:
     body: |
       {"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
@@ -91,7 +95,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -100,6 +104,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
     method: GET
+    id: 5
   response:
     body: |
       {"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
@@ -108,7 +113,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -117,6 +122,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
     method: GET
+    id: 6
   response:
     body: |
       {"data":{"attributes":{"is_enabled":false,"name":"tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","filtered_data_type":"logs","exclusion_filters":[{"query":"does not really match much","name":"first"},{"query":"I am new","name":"third"}],"version":2,"query":"new query - tf-TestAccDatadogSecurityMonitoringFilter-local-1665663120","is_builtin":false},"type":"security_filters","id":"zfq-8b1-bv4"}}
@@ -125,7 +131,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -134,6 +140,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
     method: DELETE
+    id: 7
   response:
     body: ""
     headers:
@@ -141,7 +148,7 @@ interactions:
       - text/html; charset=utf-8
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -150,6 +157,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/security_filters/zfq-8b1-bv4
     method: GET
+    id: 8
   response:
     body: |
       {"errors":["not_found(Security filter with id 'zfq-8b1-bv4' not found)"]}
@@ -158,4 +166,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"

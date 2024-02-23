@@ -516,7 +516,7 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITest(ctx, accProvider, t),
 		},
@@ -2358,7 +2358,7 @@ resource "datadog_synthetics_test" "websocket" {
 }`, uniq)
 }
 
-var compressedJsonDescriptor = `syntax = "proto3";
+var compressedProtoFile = `syntax = "proto3";
 
 option java_multiple_files = true;
 option java_package = "io.grpc.examples.helloworld";
@@ -2401,7 +2401,7 @@ func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", "Hello"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.grpc", "request_definition.0.proto_json_descriptor", compressedJsonDescriptor),
+				"datadog_synthetics_test.grpc", "request_definition.0.plain_proto_file", compressedProtoFile),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
 			resource.TestCheckResourceAttr(
@@ -2469,7 +2469,7 @@ resource "datadog_synthetics_test" "grpc" {
 		host   = "google.com"
 		port   = 50050
 		service = "Hello"
-		proto_json_descriptor = <<EOT
+		plain_proto_file = <<EOT
 %[2]sEOT
 	}
 
@@ -2512,7 +2512,7 @@ resource "datadog_synthetics_test" "grpc" {
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
-}`, uniq, compressedJsonDescriptor)
+}`, uniq, compressedProtoFile)
 }
 
 func updateSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
@@ -4121,6 +4121,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.follow_redirects", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.Accept", "application/json"),
@@ -4297,6 +4299,7 @@ resource "datadog_synthetics_test" "multi" {
       timeout          = 30
       allow_insecure   = true
       follow_redirects = true
+      no_saving_response_body = true
     }
     request_headers = {
       Accept             = "application/json"
@@ -4457,6 +4460,10 @@ func testSyntheticsTestIsDestroyed(accProvider func() (*schema.Provider, error))
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_synthetics_test" {
+				continue
+			}
+
 			if _, _, err := apiInstances.GetSyntheticsApiV1().GetTest(auth, r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue
