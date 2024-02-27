@@ -82,9 +82,9 @@ func resourceDatadogMetricMetadataCreate(ctx context.Context, d *schema.Resource
 
 	id, m := buildMetricMetadataStruct(d)
 
-	// Datadog API only has partial supports for the distribution type in metrics endpoints,
-	// and sending the distribution type field in the request payload will result in a 400 error.
-	// This is an interium workaround so that users can still initialize resources with distribution metric.
+	// The Datadog API returns type `distribution` for distribution metrics only when a feature flag is enabled.
+	// The API currently only partially supports recieving the distribution type in the request payload, so we skip
+	// sending the type to avoid a 400 error. For users without the feature flag, this shouldn't affect anything.
 	if m.GetType() == "distribution" {
 		m.SetType("")
 	}
@@ -156,9 +156,9 @@ func resourceDatadogMetricMetadataUpdate(ctx context.Context, d *schema.Resource
 	m := &datadogV1.MetricMetadata{}
 	id := d.Get("metric").(string)
 
-	// Datadog API only has partial supports for the distribution type in metrics endpoints,
-	// and sending the distribution type field in the request payload will result in a 400 error.
-	// This is an interium workaround so that users can still update other fields of distribution metric metadata.
+	// The Datadog API returns type `distribution` for distribution metrics only when a feature flag is enabled.
+	// The API currently only partially supports recieving the distribution type in the request payload, so we skip
+	// sending the type to avoid a 400 error. For users without the feature flag, this shouldn't affect anything.
 	if attr, ok := d.GetOk("type"); ok && attr.(string) != "distribution" {
 		m.SetType(attr.(string))
 	}
