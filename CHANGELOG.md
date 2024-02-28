@@ -1,3 +1,19 @@
+## 3.37.0 (February 28, 2024)
+
+### IMPROVEMENTS
+* [datadog_service_account] Migrate resource to framework by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/2269
+* [datadog_integration_pagerduty_service_object] Add importer by @ruben-chainalysis in https://github.com/DataDog/terraform-provider-datadog/pull/2286
+* [provider] Update go version by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/2295
+### NOTES
+* [datadog_security_monitoring_suppression] Add an example for suppression by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/2288
+
+## New Contributors
+* @Drarig29 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2282
+* @ruben-chainalysis made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2286
+* @smaeda-ks made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2287
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.36.1...v3.37.0
+
 ## 3.36.1 (February 13, 2024)
 
 ### BUGFIXES
