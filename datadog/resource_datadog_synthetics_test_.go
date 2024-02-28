@@ -243,6 +243,7 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"http_version": syntheticsHttpVersionOption(),
 		},
 	}
 }
@@ -754,12 +755,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
-				"http_version": {
-					Description:      "HTTP version to use for a Synthetics API test.",
-					Type:             schema.TypeString,
-					Optional:         true,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsHTTPVersionFromValue),
-				},
+				"http_version": syntheticsHttpVersionOption(),
 			},
 		},
 	}
@@ -1209,6 +1205,15 @@ func syntheticsFollowRedirectsOption() *schema.Schema {
 	}
 }
 
+func syntheticsHttpVersionOption() *schema.Schema {
+	return &schema.Schema{
+		Description:      "HTTP version to use for an HTTP request in an API test or step.",
+		Type:             schema.TypeString,
+		Optional:         true,
+		ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsHTTPVersionFromValue),
+	}
+}
+
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -1576,6 +1581,9 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
 				request.SetPersistCookies(requestMap["persist_cookies"].(bool))
 				request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
+				if v, ok := requestMap["http_version"].(string); ok && v != "" {
+					request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(v))
+				}
 			}
 
 			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), map[string]interface{}{})
@@ -2385,6 +2393,9 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	}
 	if request.HasPersistCookies() {
 		localRequest["persist_cookies"] = request.GetPersistCookies()
+	}
+	if request.HasHttpVersion() {
+		localRequest["http_version"] = request.GetHttpVersion()
 	}
 	if request.HasCompressedJsonDescriptor() {
 		decodedValue, _ := b64.StdEncoding.DecodeString(request.GetCompressedJsonDescriptor())

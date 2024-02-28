@@ -627,6 +627,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.ignore_server_certificate_error", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.http_version", "http2"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "message", "Notify @datadog.user"),
@@ -4123,6 +4125,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.http_version", "http2"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.Accept", "application/json"),
@@ -4300,6 +4304,7 @@ resource "datadog_synthetics_test" "multi" {
       allow_insecure   = true
       follow_redirects = true
       no_saving_response_body = true
+      http_version = "http2"
     }
     request_headers = {
       Accept             = "application/json"
