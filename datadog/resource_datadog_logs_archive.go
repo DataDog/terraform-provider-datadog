@@ -72,7 +72,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 							"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},
 							"path":         {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
 							"client_email": {Description: "Your client email.", Type: schema.TypeString, Required: true},
-							"project_id":   {Description: "Your project id.", Type: schema.TypeString, Required: true},
+							"project_id":   {Description: "Your project id.", Type: schema.TypeString, Optional: true},
 						},
 					},
 				},
