@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -177,16 +178,18 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 
 		var existingUser *datadogV2.User
 		// Find user ID by listing user and filtering by email
-		listResponse, _, err := apiInstances.GetUsersApiV2().ListUsers(auth,
+		listResponse, httpResp, err := apiInstances.GetUsersApiV2().ListUsers(auth,
 			*datadogV2.NewListUsersOptionalParameters().WithFilter(email))
 		if err != nil {
-			return utils.TranslateClientErrorDiag(err, httpresp, "error searching user")
+			return utils.TranslateClientErrorDiag(err, httpResp, "error searching user")
 		}
 		if err := utils.CheckForUnparsed(listResponse); err != nil {
 			return diag.FromErr(err)
 		}
 		responseData := listResponse.GetData()
-		if len(responseData) > 1 {
+		if len(responseData) == 1 {
+			existingUser = &responseData[0]
+		} else if len(responseData) > 1 {
 			for _, user := range responseData {
 				if user.Attributes.GetEmail() == email {
 					existingUser = &user
@@ -197,7 +200,7 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 				return diag.Errorf("could not find single user with email %s", email)
 			}
 		} else {
-			existingUser = &responseData[0]
+			return utils.TranslateClientErrorDiag(errors.New("error retrieving user"), httpResp, "list users returned no results")
 		}
 
 		userID = existingUser.GetId()
