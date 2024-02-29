@@ -138,6 +138,8 @@ func resourceDatadogSensitiveDataScannerGroupRead(ctx context.Context, d *schema
 
 	if groupFound := findSensitiveDataScannerGroupHelper(groupId, resp); groupFound != nil {
 		return updateSensitiveDataScannerGroupState(d, groupFound.Attributes)
+	} else {
+		d.SetId("")
 	}
 
 	return nil
