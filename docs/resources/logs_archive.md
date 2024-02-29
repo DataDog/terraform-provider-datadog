@@ -68,11 +68,11 @@ Required:
 
 - `bucket` (String) Name of your GCS bucket.
 - `client_email` (String) Your client email.
-- `project_id` (String) Your project id.
 
 Optional:
 
 - `path` (String) Path where the archive is stored.
+- `project_id` (String) Your project id.
 
 
 <a id="nestedblock--s3_archive"></a>
