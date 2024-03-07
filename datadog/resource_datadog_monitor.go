@@ -350,12 +350,14 @@ func resourceDatadogMonitor() *schema.Resource {
 				"scheduling_options": {
 					Description: "Configuration options for scheduling.",
 					Type:        schema.TypeList,
+					MaxItems:    1,
 					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"evaluation_window": {
 								Description: "Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together.",
 								Type:        schema.TypeList,
+								MaxItems:    1,
 								Optional:    true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
@@ -380,6 +382,7 @@ func resourceDatadogMonitor() *schema.Resource {
 							"custom_schedule": {
 								Description: "Configuration options for the custom schedules. If `start` is omitted, the monitor creation time will be used.",
 								Type:        schema.TypeList,
+								MaxItems:    1,
 								Optional:    true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
