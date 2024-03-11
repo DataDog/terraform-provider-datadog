@@ -377,8 +377,8 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 	}
 	integration := datadogV2.NewLogsArchiveIntegrationGCS(
 		clientEmail.(string),
-		projectID.(string),
 	)
+	integration.SetProjectId(projectID.(string))
 	bucket, ok := d["bucket"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("bucket is not defined")
