@@ -185,4 +185,3 @@ func dataSourceDatadogCSMThreatsAgentRulesRead(ctx context.Context, d *schema.Re
 
 	return diags
 }
-
