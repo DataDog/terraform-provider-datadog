@@ -4103,7 +4103,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "4"),
+				"datadog_synthetics_test.multi", "api_step.#", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -4248,6 +4248,20 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.username", "username"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.host", "fakehost.io"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.service", "OboService"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.port", "8443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.method", "GetOboUserJwt"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.message", "{\"user_uuid\": \"1234\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.call_type", "unary"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.plain_proto_file", "syntax = \"proto3\";\npackage pb;\noption go_package = \"github.com/DataDog/dd-source/domains/aaa_authn/apps/apis/obo/pb\";\nmessage GetOboUserJwtRequest {\n  string user_uuid = 1; \n}\nmessage GetOboJwtResponse {\n  string jwt = 1;\n}\nservice OboService {\n  rpc GetOboUserJwt(GetOboUserJwtRequest) returns (GetOboJwtResponse);\n}\n"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
@@ -4427,6 +4441,33 @@ resource "datadog_synthetics_test" "multi" {
       type     = "statusCode"
       operator = "is"
       target   = "200"
+    }
+  }
+
+  api_step {
+    name    = "GRPC step"
+    subtype = "grpc"
+    request_definition {
+      call_type = "unary"
+      method           = "GetOboUserJwt"
+      host             = "fakehost.io"
+      port             = 8443
+      service          = "OboService"
+      message = "{\"user_uuid\": \"1234\"}"
+      plain_proto_file = <<EOT
+syntax = "proto3";
+package pb;
+option go_package = "github.com/DataDog/dd-source/domains/aaa_authn/apps/apis/obo/pb";
+message GetOboUserJwtRequest {
+  string user_uuid = 1; 
+}
+message GetOboJwtResponse {
+  string jwt = 1;
+}
+service OboService {
+  rpc GetOboUserJwt(GetOboUserJwtRequest) returns (GetOboJwtResponse);
+}
+EOT
     }
   }
 }
