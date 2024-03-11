@@ -26,7 +26,7 @@ type userRoleResource struct {
 	Auth context.Context
 }
 
-type userRoleModel struct {
+type UserRoleModel struct {
 	ID     types.String `tfsdk:"id"`
 	RoleId types.String `tfsdk:"role_id"`
 	UserId types.String `tfsdk:"user_id"`
@@ -83,7 +83,7 @@ func (r *userRoleResource) ImportState(ctx context.Context, request resource.Imp
 }
 
 func (r *userRoleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state userRoleModel
+	var state UserRoleModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -120,7 +120,7 @@ func (r *userRoleResource) Read(ctx context.Context, request resource.ReadReques
 }
 
 func (r *userRoleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state userRoleModel
+	var state UserRoleModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -153,7 +153,7 @@ func (r *userRoleResource) Update(ctx context.Context, request resource.UpdateRe
 }
 
 func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state userRoleModel
+	var state UserRoleModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -180,7 +180,7 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *userRoleResource) buildUserRoleRequestBody(ctx context.Context, state *userRoleModel) (*datadogV2.RelationshipToUser, diag.Diagnostics) {
+func (r *userRoleResource) buildUserRoleRequestBody(ctx context.Context, state *UserRoleModel) (*datadogV2.RelationshipToUser, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
 	relationship := &datadogV2.RelationshipToUser{
@@ -191,7 +191,7 @@ func (r *userRoleResource) buildUserRoleRequestBody(ctx context.Context, state *
 	return relationship, diags
 }
 
-func (r *userRoleResource) updateStateFromUserResponse(ctx context.Context, state *userRoleModel, resp []datadogV2.User) {
+func (r *userRoleResource) updateStateFromUserResponse(ctx context.Context, state *UserRoleModel, resp []datadogV2.User) {
 	for _, user := range resp {
 		if user.GetId() == state.UserId.ValueString() {
 			state.UserId = types.StringValue(user.GetId())
