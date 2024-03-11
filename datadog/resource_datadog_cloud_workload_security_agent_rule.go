@@ -27,6 +27,23 @@ func resourceDatadogCloudWorkloadSecurityAgentRule() *schema.Resource {
 	}
 }
 
+func resourceDatadogCSMThreatsAgentRule() *schema.Resource {
+	return &schema.Resource{
+		Description:   "Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules.",
+		CreateContext: resourceDatadogCSMThreatsAgentRuleCreate,
+		ReadContext:   resourceDatadogCSMThreatsAgentRuleRead,
+		UpdateContext: resourceDatadogCSMThreatsAgentRuleUpdate,
+		DeleteContext: resourceDatadogCSMThreatsAgentRuleDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
+
+		SchemaFunc: func() map[string]*schema.Schema {
+			return cloudWorkloadSecurityAgentRuleSchema()
+		},
+	}
+}
+
 func cloudWorkloadSecurityAgentRuleSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"description": {
@@ -104,6 +121,77 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d 
 	agentRuleUpdate := buildCwsAgentRuleUpdatePayload(d)
 
 	agentRuleResponse, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().UpdateCloudWorkloadSecurityAgentRule(auth, agentRuleId, *agentRuleUpdate)
+
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating cloud workload security agent rule")
+	}
+
+	return updateCloudWorkloadSecurityAgentRuleState(d, &agentRuleResponse)
+}
+
+func resourceDatadogCSMThreatsAgentRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	agentRuleId := d.Id()
+
+	if httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().DeleteCSMThreatsAgentRule(auth, agentRuleId); err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting cloud workload security agent rule")
+	}
+
+	return nil
+}
+
+func resourceDatadogCSMThreatsAgentRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	agentRuleCreate := buildCwsAgentRuleCreatePayload(d)
+
+	response, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().CreateCSMThreatsAgentRule(auth, *agentRuleCreate)
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating cloud workload security agent rule")
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		return diag.FromErr(err)
+	}
+
+	return updateCloudWorkloadSecurityAgentRuleState(d, &response)
+}
+
+func resourceDatadogCSMThreatsAgentRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	id := d.Id()
+	agentRuleResponse, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().GetCSMThreatsAgentRule(auth, id)
+	if err != nil {
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error fetching cloud workload security agent rule")
+	}
+	if err := utils.CheckForUnparsed(agentRuleResponse); err != nil {
+		return diag.FromErr(err)
+	}
+
+	return updateCloudWorkloadSecurityAgentRuleState(d, &agentRuleResponse)
+}
+
+func resourceDatadogCSMThreatsAgentRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	agentRuleId := d.Id()
+
+	agentRuleUpdate := buildCwsAgentRuleUpdatePayload(d)
+
+	agentRuleResponse, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().UpdateCSMThreatsAgentRule(auth, agentRuleId, *agentRuleUpdate)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating cloud workload security agent rule")

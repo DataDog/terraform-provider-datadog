@@ -34,6 +34,25 @@ func TestAccDatadogCloudWorkloadSecurityAgentRulesDatasource(t *testing.T) {
 	})
 }
 
+func TestAccDatadogCSMThreatsAgentRulesDatasource(t *testing.T) {
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDataSourceCSMThreatsAgentRules(),
+				Check: resource.ComposeTestCheckFunc(
+					csmThreatsCheckAgentRulesCount(accProvider),
+				),
+			},
+		},
+	})
+}
+
 func cloudWorkloadSecurityCheckAgentRulesCount(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
@@ -42,6 +61,21 @@ func cloudWorkloadSecurityCheckAgentRulesCount(accProvider func() (*schema.Provi
 		apiInstances := providerConf.DatadogApiInstances
 
 		agentRulesResponse, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCloudWorkloadSecurityAgentRules(auth)
+		if err != nil {
+			return err
+		}
+		return cloudWorkloadSecurityAgentRulesCount(state, len(agentRulesResponse.Data))
+	}
+}
+
+func csmThreatsCheckAgentRulesCount(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
+	return func(state *terraform.State) error {
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		auth := providerConf.Auth
+		apiInstances := providerConf.DatadogApiInstances
+
+		agentRulesResponse, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCSMThreatsAgentRules(auth)
 		if err != nil {
 			return err
 		}
@@ -63,6 +97,13 @@ func cloudWorkloadSecurityAgentRulesCount(state *terraform.State, responseCount 
 func testAccDataSourceCloudWorkloadSecurityAgentRules() string {
 	return `
 data "datadog_cloud_workload_security_agent_rules" "acceptance_test" {
+}
+`
+}
+
+func testAccDataSourceCSMThreatsAgentRules() string {
+	return `
+data "datadog_csm_threats_agent_rules" "acceptance_test" {
 }
 `
 }
