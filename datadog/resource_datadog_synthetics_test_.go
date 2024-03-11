@@ -1565,17 +1565,14 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			requests := stepMap["request_definition"].([]interface{})
 			if len(requests) > 0 && requests[0] != nil {
 				requestMap := requests[0].(map[string]interface{})
-				request.SetMethod(requestMap["method"].(string))
-				request.SetUrl(requestMap["url"].(string))
-				request.SetBody(requestMap["body"].(string))
-				if v, ok := requestMap["body_type"].(string); ok && v != "" {
-					request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
-				}
 				request.SetTimeout(float64(requestMap["timeout"].(int)))
 				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
-				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
-				request.SetPersistCookies(requestMap["persist_cookies"].(bool))
-				request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
+				if stepMap["subtype"] == "http" {
+					setHTTPStepRequest(requestMap, &request)
+				}
+				if stepMap["subtype"] == "grpc" {
+					setGRPCStepRequest(requestMap, &request)
+				}
 			}
 
 			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), map[string]interface{}{})
@@ -3450,4 +3447,49 @@ func convertStepParamsKey(key string) string {
 	}
 
 	return key
+}
+
+func setHTTPStepRequest(requestMap map[string]interface{}, request *datadogV1.SyntheticsTestRequest) {
+	request.SetMethod(requestMap["method"].(string))
+	request.SetUrl(requestMap["url"].(string))
+	request.SetBody(requestMap["body"].(string))
+	if v, ok := requestMap["body_type"].(string); ok && v != "" {
+		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
+	}
+	request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
+	request.SetPersistCookies(requestMap["persist_cookies"].(bool))
+	request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
+}
+
+func setGRPCStepRequest(requestMap map[string]interface{}, request *datadogV1.SyntheticsTestRequest) {
+	request.SetCallType(datadogV1.SyntheticsTestCallType(requestMap["call_type"].(string)))
+	request.SetService(requestMap["service"].(string))
+	request.SetHost(requestMap["host"].(string))
+	request.SetPort(int64(requestMap["port"].(int)))
+	if requestMap["call_type"].(string) == "unary" {
+		request.SetMessage(requestMap["message"].(string))
+		request.SetMethod(requestMap["method"].(string))
+	}
+	if requestMap["plain_proto_file"] != nil {
+		stringifiedValue, _ := json.Marshal(requestMap["plain_proto_file"].(string))
+		var compressedValue bytes.Buffer
+		zl := zlib.NewWriter(&compressedValue)
+		zl.Write(stringifiedValue)
+		zl.Close()
+		encodedCompressedProtoFile := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
+
+		request.SetCompressedProtoFile(encodedCompressedProtoFile)
+	}
+
+	// This is effectively useless as it wil not work but is necessary for the state to be in sync
+	if requestMap["proto_json_descriptor"] != nil {
+		stringifiedValue, _ := json.Marshal(requestMap["proto_json_descriptor"].(string))
+		var compressedValue bytes.Buffer
+		zl := zlib.NewWriter(&compressedValue)
+		zl.Write(stringifiedValue)
+		zl.Close()
+		encodedCompressedJsonDescriptor := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
+
+		request.SetCompressedJsonDescriptor(encodedCompressedJsonDescriptor)
+	}
 }
