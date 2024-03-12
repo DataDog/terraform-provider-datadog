@@ -2,7 +2,6 @@ package datadog
 
 import (
 	"context"
-	"errors"
 	"log"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -189,7 +188,8 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		responseData := listResponse.GetData()
 		if len(responseData) == 1 {
 			existingUser = &responseData[0]
-		} else if len(responseData) > 1 {
+		}
+		if len(responseData) > 1 {
 			for _, user := range responseData {
 				if user.Attributes.GetEmail() == email {
 					existingUser = &user
@@ -199,8 +199,11 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 			if existingUser == nil {
 				return diag.Errorf("could not find single user with email %s", email)
 			}
-		} else {
-			return utils.TranslateClientErrorDiag(errors.New("error retrieving user"), httpResp, "list users returned no results")
+		}
+		if existingUser == nil {
+			// We already raised an exception if multiple users were found but no exact email match.
+			// If user is nil at this stage, we can assume a user with the same handle already exists.
+			return diag.Errorf("user with the handle %s already exists", email)
 		}
 
 		userID = existingUser.GetId()
