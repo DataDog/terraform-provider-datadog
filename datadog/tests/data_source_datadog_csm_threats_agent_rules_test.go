@@ -13,9 +13,9 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 )
 
-const tfAgentRulesSource = "data.datadog_cloud_workload_security_agent_rules.acceptance_test"
+const tfCsmThreatsAgentRulesSource = "data.datadog_csm_threats_agent_rules.acceptance_test"
 
-func TestAccDatadogCloudWorkloadSecurityAgentRulesDatasource(t *testing.T) {
+func TestAccDatadogCSMThreatsAgentRulesDatasource(t *testing.T) {
 	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
@@ -25,23 +25,23 @@ func TestAccDatadogCloudWorkloadSecurityAgentRulesDatasource(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDataSourceCloudWorkloadSecurityAgentRules(),
+				Config: testAccDataSourceCSMThreatsAgentRules(),
 				Check: resource.ComposeTestCheckFunc(
-					cloudWorkloadSecurityCheckAgentRulesCount(accProvider),
+					csmThreatsCheckAgentRulesCount(accProvider),
 				),
 			},
 		},
 	})
 }
 
-func cloudWorkloadSecurityCheckAgentRulesCount(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
+func csmThreatsCheckAgentRulesCount(accProvider func() (*schema.Provider, error)) func(state *terraform.State) error {
 	return func(state *terraform.State) error {
 		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		auth := providerConf.Auth
 		apiInstances := providerConf.DatadogApiInstances
 
-		agentRulesResponse, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCloudWorkloadSecurityAgentRules(auth)
+		agentRulesResponse, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCSMThreatsAgentRules(auth)
 		if err != nil {
 			return err
 		}
@@ -49,8 +49,8 @@ func cloudWorkloadSecurityCheckAgentRulesCount(accProvider func() (*schema.Provi
 	}
 }
 
-func cloudWorkloadSecurityAgentRulesCount(state *terraform.State, responseCount int) error {
-	resourceAttributes := state.RootModule().Resources[tfAgentRulesSource].Primary.Attributes
+func csmThreatsAgentRulesCount(state *terraform.State, responseCount int) error {
+	resourceAttributes := state.RootModule().Resources[tfCsmThreatsAgentRulesSource].Primary.Attributes
 	agentRulesCount, _ := strconv.Atoi(resourceAttributes["agent_rules.#"])
 
 	if agentRulesCount != responseCount {
@@ -60,9 +60,9 @@ func cloudWorkloadSecurityAgentRulesCount(state *terraform.State, responseCount 
 	return nil
 }
 
-func testAccDataSourceCloudWorkloadSecurityAgentRules() string {
+func testAccDataSourceCSMThreatsAgentRules() string {
 	return `
-data "datadog_cloud_workload_security_agent_rules" "acceptance_test" {
+data "datadog_csm_threats_agent_rules" "acceptance_test" {
 }
 `
 }

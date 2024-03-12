@@ -10,24 +10,24 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func resourceDatadogCloudWorkloadSecurityAgentRule() *schema.Resource {
+func resourceDatadogCSMThreatsAgentRule() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules.",
-		CreateContext: resourceDatadogCloudWorkloadSecurityAgentRuleCreate,
-		ReadContext:   resourceDatadogCloudWorkloadSecurityAgentRuleRead,
-		UpdateContext: resourceDatadogCloudWorkloadSecurityAgentRuleUpdate,
-		DeleteContext: resourceDatadogCloudWorkloadSecurityAgentRuleDelete,
+		Description:   "Provides a Datadog CSM Threats Agent Rule API resource for agent rules.",
+		CreateContext: resourceDatadogCSMThreatsAgentRuleCreate,
+		ReadContext:   resourceDatadogCSMThreatsAgentRuleRead,
+		UpdateContext: resourceDatadogCSMThreatsAgentRuleUpdate,
+		DeleteContext: resourceDatadogCSMThreatsAgentRuleDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		SchemaFunc: func() map[string]*schema.Schema {
-			return cloudWorkloadSecurityAgentRuleSchema()
+			return csmThreatsAgentRuleSchema()
 		},
 	}
 }
 
-func cloudWorkloadSecurityAgentRuleSchema() map[string]*schema.Schema {
+func csmThreatsAgentRuleSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"description": {
 			Type:        schema.TypeString,
@@ -55,16 +55,30 @@ func cloudWorkloadSecurityAgentRuleSchema() map[string]*schema.Schema {
 	}
 }
 
-func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogCSMThreatsAgentRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	agentRuleId := d.Id()
+
+	if httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().DeleteCSMThreatsAgentRule(auth, agentRuleId); err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting csm threats agent rule")
+	}
+
+	return nil
+}
+
+func resourceDatadogCSMThreatsAgentRuleCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	agentRuleCreate := buildCwsAgentRuleCreatePayload(d)
 
-	response, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().CreateCloudWorkloadSecurityAgentRule(auth, *agentRuleCreate)
+	response, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().CreateCSMThreatsAgentRule(auth, *agentRuleCreate)
 	if err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating cloud workload security agent rule")
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating csm threats agent rule")
 	}
 	if err := utils.CheckForUnparsed(response); err != nil {
 		return diag.FromErr(err)
@@ -73,13 +87,13 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d 
 	return updateCloudWorkloadSecurityAgentRuleState(d, &response)
 }
 
-func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogCSMThreatsAgentRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	id := d.Id()
-	agentRuleResponse, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().GetCloudWorkloadSecurityAgentRule(auth, id)
+	agentRuleResponse, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().GetCSMThreatsAgentRule(auth, id)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -94,7 +108,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *s
 	return updateCloudWorkloadSecurityAgentRuleState(d, &agentRuleResponse)
 }
 
-func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func resourceDatadogCSMThreatsAgentRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
@@ -103,7 +117,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d 
 
 	agentRuleUpdate := buildCwsAgentRuleUpdatePayload(d)
 
-	agentRuleResponse, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().UpdateCloudWorkloadSecurityAgentRule(auth, agentRuleId, *agentRuleUpdate)
+	agentRuleResponse, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().UpdateCSMThreatsAgentRule(auth, agentRuleId, *agentRuleUpdate)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating cloud workload security agent rule")
@@ -112,21 +126,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d 
 	return updateCloudWorkloadSecurityAgentRuleState(d, &agentRuleResponse)
 }
 
-func resourceDatadogCloudWorkloadSecurityAgentRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	agentRuleId := d.Id()
-
-	if httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().DeleteCloudWorkloadSecurityAgentRule(auth, agentRuleId); err != nil {
-		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting cloud workload security agent rule")
-	}
-
-	return nil
-}
-
-func updateCloudWorkloadSecurityAgentRuleState(d *schema.ResourceData, agentRuleResponse *datadogV2.CloudWorkloadSecurityAgentRuleResponse) diag.Diagnostics {
+func updateCSMThreatsAgentRuleState(d *schema.ResourceData, agentRuleResponse *datadogV2.CloudWorkloadSecurityAgentRuleResponse) diag.Diagnostics {
 	data := agentRuleResponse.GetData()
 	d.SetId(data.GetId())
 
@@ -140,7 +140,7 @@ func updateCloudWorkloadSecurityAgentRuleState(d *schema.ResourceData, agentRule
 	return nil
 }
 
-func buildCwsAgentRuleUpdatePayload(d *schema.ResourceData) *datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest {
+func buildCSMThreatsAgentRuleUpdatePayload(d *schema.ResourceData) *datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest {
 	payload := datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest{}
 	payload.Data.Type = datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE
 
@@ -157,7 +157,7 @@ func buildCwsAgentRuleUpdatePayload(d *schema.ResourceData) *datadogV2.CloudWork
 	return &payload
 }
 
-func buildCwsAgentRuleCreatePayload(d *schema.ResourceData) *datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest {
+func buildCSMThreatsAgentRuleCreatePayload(d *schema.ResourceData) *datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest {
 	payload := datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest{}
 	payload.Data.Type = datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE
 

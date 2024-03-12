@@ -10,10 +10,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
+func dataSourceDatadogCSMThreatsAgentRules() *schema.Resource {
 	return &schema.Resource{
 		Description: "Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources.",
-		ReadContext: dataSourceDatadogCloudWorkloadSecurityAgentRulesRead,
+		ReadContext: dataSourceDatadogCSMThreatsAgentRulesRead,
 
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
@@ -57,13 +57,13 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
 	}
 }
 
-func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+func dataSourceDatadogCSMThreatsAgentRulesRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
 	agentRules := make([]map[string]interface{}, 0)
-	response, httpresp, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCloudWorkloadSecurityAgentRules(auth)
+	response, httpresp, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCSMThreatsAgentRules(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing agent rules")
 	}
