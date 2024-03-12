@@ -3,12 +3,12 @@
 page_title: "datadog_csm_threats_agent_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules.
+  Provides a Datadog CSM Threats Agent Rule API resource for agent rules.
 ---
 
 # datadog_csm_threats_agent_rule (Resource)
 
-Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules.
+Provides a Datadog CSM Threats Agent Rule API resource for agent rules.
 
 
 
