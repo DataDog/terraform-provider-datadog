@@ -73,26 +73,18 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 
 func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about existing suppression rules, and use them in other resources.",
+		Description: "Use this data source to retrieve information about existing agent rules, and use them in other resources.",
 		Attributes: map[string]schema.Attribute{
-			"id": utils.ResourceIDAttribute(),
-			"suppression_ids": schema.ListAttribute{
+			"agent_rules": schema.ListAttribute{
 				Computed:    true,
-				Description: "List of IDs of suppressions",
-				ElementType: types.StringType,
-			},
-			"suppressions": schema.ListAttribute{
-				Computed:    true,
-				Description: "List of suppressions",
+				Description: "List of agent_rules",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
-						"id":                types.StringType,
-						"name":              types.StringType,
-						"description":       types.StringType,
-						"enabled":           types.BoolType,
-						"expiration_date":   types.StringType,
-						"rule_query":        types.StringType,
-						"suppression_query": types.StringType,
+						"id":          types.StringType,
+						"name":        types.StringType,
+						"description": types.StringType,
+						"enabled":     types.BoolType,
+						"expression":  types.StringType,
 					},
 				},
 			},
