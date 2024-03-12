@@ -44,7 +44,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 			// Update description
 			{
 				Config: fmt.Sprintf(`
-				resource "datadog_security_monitoring_suppression" "suppression_test" {
+				resource "datadog_csm_threats_agent_rule" "agent_rule_for_test" {
 					name              = "%s"
 					description       = "updated agent rule for terraform provider test"
 					enabled           = true
@@ -52,7 +52,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 				}
 				`, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, resourceName),
 					checkCSMThreatsAgentRuleContent(
 						resourceName,
 						agentRuleName,
@@ -90,7 +90,7 @@ func testAccCheckCSMThreatsAgentRuleExists(accProvider *fwprovider.FrameworkProv
 
 		_, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().GetCSMThreatsAgentRule(auth, resource.Primary.ID)
 		if err != nil {
-			return fmt.Errorf("received an error retrieving suppression: %s", err)
+			return fmt.Errorf("received an error retrieving agent rule: %s", err)
 		}
 
 		return nil
@@ -109,7 +109,7 @@ func testAccCheckCSMThreatsAgentRuleDestroy(accProvider *fwprovider.FrameworkPro
 					return errors.New("agent rule still exists")
 				}
 				if httpResponse == nil || httpResponse.StatusCode != 404 {
-					return fmt.Errorf("received an error while getting the suppression: %s", err)
+					return fmt.Errorf("received an error while getting the agent rule: %s", err)
 				}
 			}
 		}

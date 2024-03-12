@@ -56,7 +56,7 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 		auth := accProvider.Auth
 		apiInstances := accProvider.DatadogApiInstances
 
-		allSuppressionsResponse, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCSMThreatsAgentRules(auth)
+		allAgentRulesResponse, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCSMThreatsAgentRules(auth)
 		if err != nil {
 			return err
 		}
@@ -64,7 +64,7 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 		// Check the agentRule we created is in the API response
 		agentRuleId := ""
 		ruleName := ""
-		for _, rule := range allSuppressionsResponse.GetData() {
+		for _, rule := range allAgentRulesResponse.GetData() {
 			if rule.Attributes.GetName() == agentRuleName {
 				agentRuleId = rule.GetId()
 				ruleName = rule.Attributes.GetName()
@@ -73,7 +73,7 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 		}
 
 		if agentRuleId == "" {
-			return fmt.Errorf("suppression with name '%s' not found in API responses", agentRuleName)
+			return fmt.Errorf("agent rule with name '%s' not found in API responses", agentRuleName)
 		}
 
 		resourceAttributes := res.Primary.Attributes
