@@ -241,9 +241,12 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]int
 	result := make(map[string]interface{})
 	integration := destination.GetIntegration()
 	result["client_email"] = integration.GetClientEmail()
-	result["project_id"] = integration.GetProjectId()
 	result["bucket"] = destination.GetBucket()
 	result["path"] = destination.GetPath()
+	if v, ok := integration.GetProjectIdOk(); ok {
+		result["project_id"] = *v
+	}
+
 	return result
 }
 
@@ -371,14 +374,9 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("client_email is not defined")
 	}
-	projectID, ok := d["project_id"]
-	if !ok {
-		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("project_id is not defined")
-	}
 	integration := datadogV2.NewLogsArchiveIntegrationGCS(
 		clientEmail.(string),
 	)
-	integration.SetProjectId(projectID.(string))
 	bucket, ok := d["bucket"]
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("bucket is not defined")
@@ -387,6 +385,11 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 	if !ok {
 		path = ""
 	}
+	projectID, ok := d["project_id"]
+	if ok && projectID != "" {
+		integration.SetProjectId(projectID.(string))
+	}
+
 	destination := datadogV2.NewLogsArchiveDestinationGCS(
 		bucket.(string),
 		*integration,
