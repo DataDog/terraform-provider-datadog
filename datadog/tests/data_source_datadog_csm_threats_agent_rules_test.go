@@ -45,7 +45,7 @@ func csmThreatsCheckAgentRulesCount(accProvider func() (*schema.Provider, error)
 		if err != nil {
 			return err
 		}
-		return cloudWorkloadSecurityAgentRulesCount(state, len(agentRulesResponse.Data))
+		return csmThreatsAgentRulesCount(state, len(agentRulesResponse.Data))
 	}
 }
 
