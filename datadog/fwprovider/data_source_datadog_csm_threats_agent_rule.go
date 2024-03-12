@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &datadogTeamDataSource{}
+	_ datasource.DataSourceWithConfigure = &csmThreatsAgentRulesDataSource{}
 )
 
 type csmThreatsAgentRulesDataSource struct {
