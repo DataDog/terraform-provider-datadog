@@ -16,20 +16,16 @@ import (
 func TestAccUserRoleBasic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 	username := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogTeamMembershipDestroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckDatadogUserRoleDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogTeamMembership(uniq, username),
+				Config: testAccCheckDatadogUserRole(username),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogTeamMembershipExists(providers.frameworkProvider),
-
-					resource.TestCheckResourceAttr(
-						"datadog_user_role.foo", "role", "admin"),
+					testAccCheckDatadogUserRoleExists(providers.frameworkProvider),
 				),
 			},
 		},
@@ -37,7 +33,6 @@ func TestAccUserRoleBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogUserRole(username string) string {
-	// Update me to make use of the unique value
 	return fmt.Sprintf(`
 data "datadog_role" "std_role" {
 	filter = "Datadog Standard Role"
@@ -45,11 +40,14 @@ data "datadog_role" "std_role" {
 	  
 resource "datadog_user" "foo" {
 	email = "%s"
+	lifecycle {
+		ignore_changes = [ roles ]
+	}
 }
 	  
 # Create new user_role resource
 resource "datadog_user_role" "foo" {
-	role_id = datadog_role.std_role.id
+	role_id = data.datadog_role.std_role.id
 	user_id = datadog_user.foo.id
 }`, username)
 }

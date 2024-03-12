@@ -27,6 +27,7 @@ type userRoleResource struct {
 }
 
 type UserRoleModel struct {
+	ID     types.String `tfsdk:"id"`
 	RoleId types.String `tfsdk:"role_id"`
 	UserId types.String `tfsdk:"user_id"`
 }
@@ -49,6 +50,7 @@ func (r *userRoleResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog UserRole resource. This can be used to create and manage Datadog user_role.",
 		Attributes: map[string]schema.Attribute{
+			"id": utils.ResourceIDAttribute(),
 			"role_id": schema.StringAttribute{
 				Required:    true,
 				Description: "ID of the role that the user is assigned to.",
@@ -203,7 +205,9 @@ func (r *userRoleResource) buildUserRoleRequestBody(ctx context.Context, state *
 func (r *userRoleResource) updatedStateFromUserResponse(ctx context.Context, state *UserRoleModel, resp []datadogV2.User) bool {
 	for _, user := range resp {
 		if user.GetId() == state.UserId.ValueString() {
-			state.UserId = types.StringValue(user.GetId())
+			userId := user.GetId()
+			state.ID = types.StringValue(state.RoleId.ValueString() + ":" + userId)
+			state.UserId = types.StringValue(userId)
 			return true
 		}
 	}

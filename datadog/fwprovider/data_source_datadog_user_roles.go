@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -22,6 +23,7 @@ type datadogUserRolesDataSourceModel struct {
 	Filter     types.String `tfsdk:"filter"`
 	ExactMatch types.Bool   `tfsdk:"exact_match"`
 	// Results
+	ID        types.String     `tfsdk:"id"`
 	UserRoles []*UserRoleModel `tfsdk:"user_roles"`
 }
 
@@ -51,6 +53,7 @@ func (d *datadogUserRolesDataSource) Schema(_ context.Context, _ datasource.Sche
 		Description: "Use this data source to retrieve information about existing Datadog user role assignments.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource Parameters
+			"id": utils.ResourceIDAttribute(),
 			"role_id": schema.StringAttribute{
 				Description: "The role's identifier.",
 				Required:    true,
@@ -69,6 +72,7 @@ func (d *datadogUserRolesDataSource) Schema(_ context.Context, _ datasource.Sche
 				Description: "List of users assigned to role.",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
+						"id":      types.StringType,
 						"role_id": types.StringType,
 						"user_id": types.StringType,
 					},
@@ -120,6 +124,8 @@ func (d *datadogUserRolesDataSource) Read(ctx context.Context, req datasource.Re
 }
 
 func (r *datadogUserRolesDataSource) updateState(state *datadogUserRolesDataSourceModel, roleUsers *[]datadogV2.User) {
+	roleId := state.RoleID.ValueString()
+
 	exactMatch := state.ExactMatch.ValueBool()
 	filterKeyword := state.Filter.ValueString()
 	var userRoles []*UserRoleModel
@@ -129,23 +135,29 @@ func (r *datadogUserRolesDataSource) updateState(state *datadogUserRolesDataSour
 			if u, _, err := r.UsersApi.GetUser(r.Auth, user.GetId()); err == nil {
 				attributes := u.Data.GetAttributes()
 				if attributes.GetName() == filterKeyword {
+					userId := user.GetId()
 					userRole := UserRoleModel{
-						RoleId: types.StringValue(string(state.RoleID.ValueString())),
-						UserId: types.StringValue(user.GetId()),
+						ID:     types.StringValue(fmt.Sprintf("%s:%s", roleId, userId)),
+						RoleId: types.StringValue(roleId),
+						UserId: types.StringValue(userId),
 					}
 
 					userRoles = append(userRoles, &userRole)
 				}
 			}
 		} else {
+			userId := user.GetId()
+			roleId := state.RoleID.ValueString()
 			userRole := UserRoleModel{
-				RoleId: types.StringValue(state.RoleID.ValueString()),
-				UserId: types.StringValue(user.GetId()),
+				ID:     types.StringValue(fmt.Sprintf("%s:%s", roleId, userId)),
+				RoleId: types.StringValue(roleId),
+				UserId: types.StringValue(userId),
 			}
 
 			userRoles = append(userRoles, &userRole)
 		}
 	}
 
+	state.ID = types.StringValue(fmt.Sprintf("%s:%s", roleId, state.Filter.ValueString()))
 	state.UserRoles = userRoles
 }
