@@ -162,6 +162,7 @@ func Provider() *schema.Provider {
 			"datadog_child_organization":                   resourceDatadogChildOrganization(),
 			"datadog_cloud_configuration_rule":             resourceDatadogCloudConfigurationRule(),
 			"datadog_cloud_workload_security_agent_rule":   resourceDatadogCloudWorkloadSecurityAgentRule(),
+			"datadog_csm_threats_agent_rule":               resourceDatadogCSMThreatsAgentRule(),
 			"datadog_dashboard":                            resourceDatadogDashboard(),
 			"datadog_dashboard_json":                       resourceDatadogDashboardJSON(),
 			"datadog_downtime":                             resourceDatadogDowntime(),
@@ -208,6 +209,7 @@ func Provider() *schema.Provider {
 
 		DataSourcesMap: map[string]*schema.Resource{
 			"datadog_cloud_workload_security_agent_rules":     dataSourceDatadogCloudWorkloadSecurityAgentRules(),
+			"datadog_csm_threats_agent_rules":                 dataSourceDatadogCSMThreatsAgentRules(),
 			"datadog_dashboard":                               dataSourceDatadogDashboard(),
 			"datadog_integration_aws_logs_services":           dataSourceDatadogIntegrationAWSLogsServices(),
 			"datadog_logs_archives_order":                     dataSourceDatadogLogsArchivesOrder(),
