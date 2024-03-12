@@ -27,7 +27,6 @@ type userRoleResource struct {
 }
 
 type UserRoleModel struct {
-	ID     types.String `tfsdk:"id"`
 	RoleId types.String `tfsdk:"role_id"`
 	UserId types.String `tfsdk:"user_id"`
 }
@@ -66,7 +65,6 @@ func (r *userRoleResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"id": utils.ResourceIDAttribute(),
 		},
 	}
 }
@@ -89,15 +87,22 @@ func (r *userRoleResource) Read(ctx context.Context, request resource.ReadReques
 		return
 	}
 	roleId := state.RoleId.ValueString()
+
 	pageSize := int64(100)
 	pageNumber := int64(0)
 
 	var roleUsers []datadogV2.User
 	for {
-		resp, _, err := r.Api.ListRoleUsers(r.Auth, roleId, *datadogV2.NewListRoleUsersOptionalParameters().
+		resp, httpResp, err := r.Api.ListRoleUsers(r.Auth, roleId, *datadogV2.NewListRoleUsersOptionalParameters().
 			WithPageSize(pageSize).
 			WithPageNumber(pageNumber))
 		if err != nil {
+			if httpResp != nil && httpResp.StatusCode == 404 {
+				// Role no longer exists, remove the mapping
+				response.State.RemoveResource(ctx)
+				return
+			}
+
 			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RoleUsers"))
 			return
 		}
@@ -114,8 +119,15 @@ func (r *userRoleResource) Read(ctx context.Context, request resource.ReadReques
 		pageNumber++
 	}
 
+	// Verify user is still assigned the role
+	for _, user := range roleUsers {
+		if user.GetId() == state.UserId.ValueString() {
+			r.updateStateFromUser(ctx, &state, user)
+			break
+		}
+	}
+
 	// Save data into Terraform state
-	r.updateStateFromUserResponse(ctx, &state, roleUsers)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -168,10 +180,11 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	roleId := state.RoleId.ValueString()
 	resp, httpResp, err := r.Api.RemoveUserFromRole(r.Auth, roleId, *body)
 	if err != nil {
-		if httpResp != nil && httpResp.StatusCode == 404 {
+		if httpResp != nil && (httpResp.StatusCode == 404 || httpResp.StatusCode == 400) {
+			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting team_membership"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting user_role"))
 		return
 	}
 
@@ -195,7 +208,14 @@ func (r *userRoleResource) updateStateFromUserResponse(ctx context.Context, stat
 	for _, user := range resp {
 		if user.GetId() == state.UserId.ValueString() {
 			state.UserId = types.StringValue(user.GetId())
-			break
+			return
 		}
+	}
+}
+
+func (r *userRoleResource) updateStateFromUser(ctx context.Context, state *UserRoleModel, user datadogV2.User) {
+	if user.GetId() == state.UserId.ValueString() {
+		state.UserId = types.StringValue(user.GetId())
+		return
 	}
 }

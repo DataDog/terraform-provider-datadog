@@ -58,6 +58,7 @@ var Resources = []func() resource.Resource{
 	NewTeamMembershipResource,
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
+	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
 	NewServiceAccountResource,
 }
@@ -76,6 +77,7 @@ var Datasources = []func() datasource.DataSource{
 	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
+	NewDatadogUserRolesDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
 }
 
