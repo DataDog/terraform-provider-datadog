@@ -119,16 +119,12 @@ func (r *userRoleResource) Read(ctx context.Context, request resource.ReadReques
 		pageNumber++
 	}
 
-	// Verify user is still assigned the role
-	for _, user := range roleUsers {
-		if user.GetId() == state.UserId.ValueString() {
-			r.updateStateFromUser(ctx, &state, user)
-			break
-		}
-	}
+	updated := r.updatedStateFromUserResponse(ctx, &state, roleUsers)
 
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	// Delete state if updated is false, since that means the user doesn't exist
+	if !updated {
+		response.State.RemoveResource(ctx)
+	}
 }
 
 func (r *userRoleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
@@ -156,7 +152,7 @@ func (r *userRoleResource) Create(ctx context.Context, request resource.CreateRe
 	}
 
 	// Save data into Terraform state
-	r.updateStateFromUserResponse(ctx, &state, resp.GetData())
+	r.updatedStateFromUserResponse(ctx, &state, resp.GetData())
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -180,7 +176,7 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	roleId := state.RoleId.ValueString()
 	resp, httpResp, err := r.Api.RemoveUserFromRole(r.Auth, roleId, *body)
 	if err != nil {
-		if httpResp != nil && (httpResp.StatusCode == 404 || httpResp.StatusCode == 400) {
+		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
 			return
 		}
@@ -189,7 +185,7 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	}
 
 	// Save data into Terraform state
-	r.updateStateFromUserResponse(ctx, &state, resp.GetData())
+	r.updatedStateFromUserResponse(ctx, &state, resp.GetData())
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -204,18 +200,12 @@ func (r *userRoleResource) buildUserRoleRequestBody(ctx context.Context, state *
 	return relationship, diags
 }
 
-func (r *userRoleResource) updateStateFromUserResponse(ctx context.Context, state *UserRoleModel, resp []datadogV2.User) {
+func (r *userRoleResource) updatedStateFromUserResponse(ctx context.Context, state *UserRoleModel, resp []datadogV2.User) bool {
 	for _, user := range resp {
 		if user.GetId() == state.UserId.ValueString() {
 			state.UserId = types.StringValue(user.GetId())
-			return
+			return true
 		}
 	}
-}
-
-func (r *userRoleResource) updateStateFromUser(ctx context.Context, state *UserRoleModel, user datadogV2.User) {
-	if user.GetId() == state.UserId.ValueString() {
-		state.UserId = types.StringValue(user.GetId())
-		return
-	}
+	return false
 }

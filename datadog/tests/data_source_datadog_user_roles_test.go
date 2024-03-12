@@ -74,7 +74,7 @@ func testAccDatasourceUserRolesExactMatchConfig(uniq, exactMatch string) string 
 data "datadog_user_roles" "foo" {
 	role_id        = datadog_role.std_role.id
 	exact_match    = %[2]s
-	filter_keyword = "Foo Bar"
+	filter         = "Foo Bar"
 	depends_on     = [ datadog_user_role.foo, datadog_user_role.bar ]
 }
 

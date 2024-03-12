@@ -2,7 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -23,7 +22,6 @@ type datadogUserRolesDataSourceModel struct {
 	Filter     types.String `tfsdk:"filter"`
 	ExactMatch types.Bool   `tfsdk:"exact_match"`
 	// Results
-	ID        types.String     `tfsdk:"id"`
 	UserRoles []*UserRoleModel `tfsdk:"user_roles"`
 }
 
@@ -52,8 +50,6 @@ func (d *datadogUserRolesDataSource) Schema(_ context.Context, _ datasource.Sche
 	resp.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about existing Datadog user role assignments.",
 		Attributes: map[string]schema.Attribute{
-			// Datasource ID
-			"id": utils.ResourceIDAttribute(),
 			// Datasource Parameters
 			"role_id": schema.StringAttribute{
 				Description: "The role's identifier.",
@@ -75,7 +71,6 @@ func (d *datadogUserRolesDataSource) Schema(_ context.Context, _ datasource.Sche
 					AttrTypes: map[string]attr.Type{
 						"role_id": types.StringType,
 						"user_id": types.StringType,
-						"id":      types.StringType,
 					},
 				},
 			},
@@ -108,7 +103,7 @@ func (d *datadogUserRolesDataSource) Read(ctx context.Context, req datasource.Re
 
 		ddResp, _, err := d.Api.ListRoleUsers(d.Auth, roleID, optionalParams)
 		if err != nil {
-			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting team memberships"))
+			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting user roles"))
 			return
 		}
 
@@ -125,8 +120,6 @@ func (d *datadogUserRolesDataSource) Read(ctx context.Context, req datasource.Re
 }
 
 func (r *datadogUserRolesDataSource) updateState(state *datadogUserRolesDataSourceModel, roleUsers *[]datadogV2.User) {
-	state.ID = types.StringValue(fmt.Sprintf("%s:%s", state.RoleID.ValueString(), state.Filter.ValueString()))
-
 	exactMatch := state.ExactMatch.ValueBool()
 	filterKeyword := state.Filter.ValueString()
 	var userRoles []*UserRoleModel
