@@ -22,7 +22,7 @@ type csmThreatsAgentRulesDataSource struct {
 }
 
 type csmThreatsAgentRuleDataSourceModel struct {
-	AgentRules   []csmThreatsAgentRuleModel `tfsdk:"agent_rules"`
+	AgentRules []csmThreatsAgentRuleModel `tfsdk:"agent_rules"`
 }
 
 func NewCsmThreatsAgentRulesDataSource() datasource.DataSource {

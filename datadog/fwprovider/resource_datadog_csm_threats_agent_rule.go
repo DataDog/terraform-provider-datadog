@@ -18,11 +18,11 @@ var (
 )
 
 type csmThreatsAgentRuleModel struct {
-	Id               types.String `tfsdk:"id"`
-	Name             types.String `tfsdk:"name"`
-	Description      types.String `tfsdk:"description"`
-	Enabled          types.Bool   `tfsdk:"enabled"`
-	Expression   types.String `tfsdk:"expression"`
+	Id          types.String `tfsdk:"id"`
+	Name        types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
+	Expression  types.String `tfsdk:"expression"`
 }
 
 type csmThreatsAgentRuleResource struct {
