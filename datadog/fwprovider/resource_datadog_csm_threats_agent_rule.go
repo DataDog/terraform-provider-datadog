@@ -31,7 +31,7 @@ type csmThreatsAgentRuleResource struct {
 }
 
 func NewCSMThreatsAgentRuleResource() resource.Resource {
-	return &securityMonitoringSuppressionResource{}
+	return &csmThreatsAgentRuleResource{}
 }
 
 func (r *csmThreatsAgentRuleResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -88,7 +88,7 @@ func (r *csmThreatsAgentRuleResource) Create(ctx context.Context, request resour
 
 	res, _, err := r.api.CreateCSMThreatsAgentRule(r.auth, *agentRulePayload)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating agent rule suppression"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating agent rule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(response); err != nil {
@@ -115,7 +115,7 @@ func (r *csmThreatsAgentRuleResource) Read(ctx context.Context, request resource
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error fetching security monitoring suppression"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error fetching agent rule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(response); err != nil {
@@ -142,7 +142,7 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 
 	res, _, err := r.api.UpdateCSMThreatsAgentRule(r.auth, state.Id.ValueString(), *agentRulePayload)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating security monitoring suppression"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating agent rule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(response); err != nil {
@@ -168,7 +168,7 @@ func (r *csmThreatsAgentRuleResource) Delete(ctx context.Context, request resour
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting suppression"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting agent rule"))
 		return
 	}
 }
