@@ -46,6 +46,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationConfluentResourceResource,
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
+	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewIpAllowListResource,
 	NewRestrictionPolicyResource,
