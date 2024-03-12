@@ -203,7 +203,24 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		if existingUser == nil {
 			// We already raised an exception if multiple users were found but no exact email match.
 			// If user is nil at this stage, we can assume a user with the same handle already exists.
-			return diag.Errorf("user with the handle %s already exists", email)
+			// Find the user and raise a helpful error message.
+			var existingUserWithHandle *datadogV2.User
+			resp, _ := apiInstances.GetUsersApiV2().ListUsersWithPagination(auth, *datadogV2.NewListUsersOptionalParameters().WithPageSize(500))
+			for paginationResult := range resp {
+				if paginationResult.Error != nil {
+					return diag.Errorf("error listing users: %s", paginationResult.Error)
+				}
+				if paginationResult.Item.Attributes.GetHandle() == email {
+					existingUserWithHandle = &paginationResult.Item
+					break
+				}
+			}
+			if existingUserWithHandle != nil {
+				return diag.Errorf("user with id '%s' already exists with handle %s", existingUserWithHandle.GetId(), email)
+			}
+
+			// Catch all error
+			return diag.Errorf("error retrieving user with email/handle %s", email)
 		}
 
 		userID = existingUser.GetId()
