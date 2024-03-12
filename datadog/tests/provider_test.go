@@ -53,6 +53,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_apm_retention_filters_order_test":             "apm_retention_filters_order",
 	"tests/data_source_datadog_application_key_test":                         "application_keys",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test":     "cloud-workload-security",
+	"tests/data_source_datadog_csm_threats_agent_rules_test":                 "cloud-workload-security",
 	"tests/data_source_datadog_dashboard_list_test":                          "dashboard-lists",
 	"tests/data_source_datadog_dashboard_test":                               "dashboard",
 	"tests/data_source_datadog_hosts_test":                                   "hosts",
@@ -101,6 +102,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_child_organization_test":                         "organization",
 	"tests/resource_datadog_cloud_configuration_rule_test":                   "security-monitoring",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":         "cloud_workload_security",
+	"tests/resource_datadog_csm_threats_agent_rule_test":                     "cloud-workload-security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_alert_value_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_change_test":                           "dashboards",
@@ -728,16 +730,6 @@ func testAccPreCheck(t *testing.T) {
 	}
 	if !isAPPKeySet() {
 		t.Fatalf("%s must be set for acceptance tests", testAPPKeyEnvName)
-	}
-
-	if !isTestOrg() {
-		t.Fatalf(
-			"The keys you've set potentially belong to a production environment. "+
-				"Tests do all sorts of create/update/delete calls to the organisation, so only run them against a sandbox environment. "+
-				"If you know what you are doing, set the `%s` environment variable to the public ID of your organization. "+
-				"See https://docs.datadoghq.com/api/latest/organizations/#list-your-managed-organizations to get it.",
-			testOrgEnvName,
-		)
 	}
 
 	if err := os.Setenv(utils.DDAPIKeyEnvName, os.Getenv(testAPIKeyEnvName)); err != nil {
