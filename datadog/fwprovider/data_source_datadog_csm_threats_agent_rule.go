@@ -25,7 +25,7 @@ type csmThreatsAgentRuleDataSourceModel struct {
 	AgentRules []csmThreatsAgentRuleModel `tfsdk:"agent_rules"`
 }
 
-func NewCsmThreatsAgentRulesDataSource() datasource.DataSource {
+func NewCSMThreatsAgentRulesDataSource() datasource.DataSource {
 	return &csmThreatsAgentRulesDataSource{}
 }
 

@@ -79,7 +79,7 @@ var Datasources = []func() datasource.DataSource{
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
-	NewCsmThreatsAgentRulesDataSource,
+	NewCSMThreatsAgentRulesDataSource,
 }
 
 // FrameworkProvider struct
