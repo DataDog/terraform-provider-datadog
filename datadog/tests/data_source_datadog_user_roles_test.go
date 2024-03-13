@@ -37,11 +37,11 @@ func TestAccDatadogUserRolesDatasourceExactMatch(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUserRolesExactMatchConfig(uniq, "false"),
-				Check:  resource.TestCheckResourceAttr("datadog_user_roles.ur", "user_roles.#", "2"),
+				Check:  resource.TestCheckResourceAttr("data.datadog_user_roles.ur", "user_roles.#", "2"),
 			},
 			{
 				Config: testAccDatasourceUserRolesExactMatchConfig(uniq, "true"),
-				Check:  resource.TestCheckResourceAttr("datadog_user_roles.ur", "user_roles.#", "1"),
+				Check:  resource.TestCheckResourceAttr("data.datadog_user_roles.ur", "user_roles.#", "1"),
 			},
 		},
 	})
