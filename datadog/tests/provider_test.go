@@ -418,11 +418,12 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 	return result[:12]
 }
 
-func randomAgentRuleName(length int) string {
+func randomAgentRuleName() string {
 	var charset = "abcdefghijklmnopqrstuvwxyz"
+	nameLength := 10
 	var buf bytes.Buffer
-	buf.Grow(length)
-	for i := 0; i < length; i++ {
+	buf.Grow(nameLength)
+	for i := 0; i < nameLength; i++ {
 		buf.WriteString(string(charset[rand.Intn(len(charset))]))
 	}
 	return buf.String()

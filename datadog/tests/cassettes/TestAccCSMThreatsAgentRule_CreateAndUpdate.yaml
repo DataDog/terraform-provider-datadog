@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"dqyjfxecog"},"type":"agent_rule"}}
+            {"data":{"attributes":{"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"iglzsfprdl"},"type":"agent_rule"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 457
         uncompressed: false
-        body: '{"data":{"id":"t70-q6o-bct","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710337917400,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"dqyjfxecog","updateDate":1710337917400,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        body: '{"data":{"id":"226-dlz-vhq","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710342133781,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"iglzsfprdl","updateDate":1710342133781,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 567.978291ms
+        duration: 722.775625ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -52,22 +52,24 @@ interactions:
         form: {}
         headers:
             Accept:
-                - '*/*'
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/t70-q6o-bct
-        method: DELETE
+                - application/json
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/226-dlz-vhq
+        method: GET
       response:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 0
+        content_length: 457
         uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 476.934209ms
+        body: '{"data":{"id":"226-dlz-vhq","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710342133000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"iglzsfprdl","updateDate":1710342133000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 263.79275ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -84,7 +86,206 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/t70-q6o-bct
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/226-dlz-vhq
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 457
+        uncompressed: false
+        body: '{"data":{"id":"226-dlz-vhq","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710342133000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"iglzsfprdl","updateDate":1710342133000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 292.496541ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/226-dlz-vhq
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 457
+        uncompressed: false
+        body: '{"data":{"id":"226-dlz-vhq","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710342133000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"iglzsfprdl","updateDate":1710342133000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 238.234542ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 143
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"updated agent rule for terraform provider test","enabled":true},"id":"226-dlz-vhq","type":"agent_rule"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/226-dlz-vhq
+        method: PATCH
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 494
+        uncompressed: false
+        body: '{"data":{"id":"226-dlz-vhq","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710342133000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"iglzsfprdl","updateDate":1710342136763,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 671.337959ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/226-dlz-vhq
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 494
+        uncompressed: false
+        body: '{"data":{"id":"226-dlz-vhq","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710342133000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"iglzsfprdl","updateDate":1710342136000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 286.955959ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/226-dlz-vhq
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 494
+        uncompressed: false
+        body: '{"data":{"id":"226-dlz-vhq","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710342133000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"iglzsfprdl","updateDate":1710342136000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 262.63ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/226-dlz-vhq
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 526.441167ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datad0g.com/api/v2/remote_config/products/cws/agent_rules/226-dlz-vhq
         method: GET
       response:
         proto: HTTP/2.0
@@ -101,4 +302,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 211.728ms
+        duration: 217.303708ms

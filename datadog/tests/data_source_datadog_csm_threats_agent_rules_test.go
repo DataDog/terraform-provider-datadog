@@ -15,9 +15,8 @@ import (
 func TestAccCSMThreatsAgentRuleDataSource(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	agentRuleName := randomAgentRuleName(10)
+	agentRuleName := randomAgentRuleName()
 	dataSourceName := "data.datadog_csm_threats_agent_rules.my_data_source"
-
 	agentRuleConfig := fmt.Sprintf(`
 	resource "datadog_csm_threats_agent_rule" "agent_rule_for_data_source_test" {
 		name              = "%s"
@@ -73,13 +72,12 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 				break
 			}
 		}
-
 		if agentRuleId == "" {
 			return fmt.Errorf("agent rule with name '%s' not found in API responses", agentRuleName)
 		}
 
+		// Check that the data_source fetched is correct
 		resourceAttributes := res.Primary.Attributes
-
 		agentRulesIdsCount, err := strconv.Atoi(resourceAttributes["agent_rules_ids.#"])
 		if err != nil {
 			return err
@@ -88,17 +86,15 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 		if err != nil {
 			return err
 		}
-
 		if agentRulesCount != agentRulesIdsCount {
 			return fmt.Errorf("the data source contains %d agent rules IDs but %d agent rules", agentRulesIdsCount, agentRulesCount)
 		}
 
-		// Find in which position is the suppression we created, and check its values
+		// Find in which position is the agent rule we created, and check its values
 		idx := 0
 		for idx < agentRulesIdsCount && resourceAttributes[fmt.Sprintf("agent_rules_ids.%d", idx)] != agentRuleId {
 			idx++
 		}
-
 		if idx == len(resourceAttributes) {
 			return fmt.Errorf("agent rule with ID '%s' not found in data source", agentRuleId)
 		}
