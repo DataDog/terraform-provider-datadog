@@ -216,7 +216,7 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 				}
 			}
 			if existingUserWithHandle != nil {
-				return diag.Errorf("user with id '%s' already exists with handle %s", existingUserWithHandle.GetId(), email)
+				return diag.Errorf("user with id %q already exists with handle %q", existingUserWithHandle.GetId(), email)
 			}
 
 			// Catch all error
