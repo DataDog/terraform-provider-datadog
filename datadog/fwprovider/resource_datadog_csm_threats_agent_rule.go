@@ -35,7 +35,7 @@ func NewCSMThreatsAgentRuleResource() resource.Resource {
 }
 
 func (r *csmThreatsAgentRuleResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "agent_rule"
+	response.TypeName = "csm_threats_agent_rule"
 }
 
 func (r *csmThreatsAgentRuleResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
