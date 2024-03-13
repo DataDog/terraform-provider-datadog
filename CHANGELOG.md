@@ -1,3 +1,24 @@
+## 3.38.0 (March 13, 2024)
+
+### BUGFIXES
+* [datadog_sensitive_data_scanner_group] Mark resource as missing when not found by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2301
+* [datadog_monitor] Check eval window cast before using by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2307
+* [datadog_logs_archive] Fix project id for logsArchive by @Malo10LeGoff in https://github.com/DataDog/terraform-provider-datadog/pull/2312
+* [datadog_users] Don't panic if no users is found by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2302
+### IMPROVEMENTS
+* [datadog_logs_archive] Make project id optional in GCS destination by @artslidd in https://github.com/DataDog/terraform-provider-datadog/pull/2299
+* [datadog_integration_gcp] Migrate to FW Provider, Add ResourceCollectionEnabled and IsSecurityCommandCenterEnabled fields by @smuhit in https://github.com/DataDog/terraform-provider-datadog/pull/2230
+### FEATURES
+* [datadog_integration_gcp_sts] Add Account tags, ResourceCollectionEnabled and IsSecurityCommandCenterEnabled support to gcp tf module by @dtru-ddog in https://github.com/DataDog/terraform-provider-datadog/pull/2134
+### NOTES
+* [datadog_provider] Bump datadog-api-client-go version  by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2318
+
+## New Contributors
+* @smuhit made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2230
+* @Malo10LeGoff made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2312
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.37.0...v3.38.0
+
 ## 3.37.0 (February 28, 2024)
 
 ### IMPROVEMENTS
