@@ -50,7 +50,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"automute":true,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1704918354@test-project.iam.gserviceaccount.com","host_filters":[],"is_cspm_enabled":false},"type":"gcp_service_account"}}
+            {"data":{"attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1704918354@test-project.iam.gserviceaccount.com","host_filters":[],"is_cspm_enabled":false,"is_security_command_center_enabled":false},"type":"gcp_service_account"}}
         form: {}
         headers:
             Accept:
