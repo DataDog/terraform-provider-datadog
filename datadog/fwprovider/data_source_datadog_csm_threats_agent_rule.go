@@ -57,7 +57,7 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 
 	data := res.GetData()
 	agentRuleIds := make([]string, len(data))
-	agent_rules := make([]csmThreatsAgentRuleModel, len(data))
+	agentRules := make([]csmThreatsAgentRuleModel, len(data))
 
 	for idx, agentRule := range res.GetData() {
 		var agentRuleModel csmThreatsAgentRuleModel
@@ -69,31 +69,31 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 		agentRuleModel.Expression = types.StringValue(*attributes.Expression)
 
 		agentRuleIds[idx] = agentRule.GetId()
-		agent_rules[idx] = agentRuleModel
+		agentRules[idx] = agentRuleModel
 	}
 
 	state.Id = types.StringValue(strings.Join(agentRuleIds, "--"))
 	tfAgentRuleIds, diags := types.ListValueFrom(ctx, types.StringType, agentRuleIds)
 	response.Diagnostics.Append(diags...)
 	state.AgentRulesIds = tfAgentRuleIds
-	state.AgentRules = agent_rules
+	state.AgentRules = agentRules
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about existing agent rules, and use them in other resources.",
+		Description: "Use this data source to retrieve information about existing Agent rules.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"agent_rules_ids": schema.ListAttribute{
 				Computed:    true,
-				Description: "List of IDs of the agent rules",
+				Description: "List of IDs of the Agent rules",
 				ElementType: types.StringType,
 			},
 			"agent_rules": schema.ListAttribute{
 				Computed:    true,
-				Description: "List of agent_rules",
+				Description: "List of Agent rules",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
 						"id":          types.StringType,

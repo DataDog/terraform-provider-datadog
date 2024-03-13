@@ -33,7 +33,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 				}
 				`, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, "datadog_csm_threats_agent_rule.agent_rule_for_data_source_test"),
+					testAccCheckCSMThreatsAgentRuleExists(providers.frameworkProvider, "datadog_csm_threats_agent_rule.agent_rule_test"),
 					checkCSMThreatsAgentRuleContent(
 						resourceName,
 						agentRuleName,

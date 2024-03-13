@@ -83,7 +83,6 @@ func (r *csmThreatsAgentRuleResource) Create(ctx context.Context, request resour
 	}
 
 	agentRulePayload, err := r.buildCreateCSMThreatsAgentRulePayload(&state)
-
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
 	}
@@ -110,7 +109,6 @@ func (r *csmThreatsAgentRuleResource) Read(ctx context.Context, request resource
 	}
 
 	agentRuleId := state.Id.ValueString()
-
 	res, httpResponse, err := r.api.GetCSMThreatsAgentRule(r.auth, agentRuleId)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
@@ -137,7 +135,6 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 	}
 
 	agentRulePayload, err := r.buildUpdateCSMThreatsAgentRulePayload(&state)
-
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
 	}
@@ -182,7 +179,7 @@ func (r *csmThreatsAgentRuleResource) Delete(ctx context.Context, request resour
 }
 
 func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest, error) {
-	name, description, enabled, expression := r.extractAgentRuleAttributesFromResource(state)
+	_, name, description, enabled, expression := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleCreateAttributes{}
 	attributes.Expression = expression
@@ -195,24 +192,26 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 }
 
 func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest, error) {
-	_, description, _, _ := r.extractAgentRuleAttributesFromResource(state)
+	agentRuleId, _, description, enabled, _ := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleUpdateAttributes{}
 	attributes.Description = description
+	attributes.Enabled = &enabled
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
-	data.Id = state.Id.ValueStringPointer()
+	data.Id = &agentRuleId
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateRequest(*data), nil
 }
 
-func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(state *csmThreatsAgentRuleModel) (string, *string, bool, string) {
+func (r *csmThreatsAgentRuleResource) extractAgentRuleAttributesFromResource(state *csmThreatsAgentRuleModel) (string, string, *string, bool, string) {
 	// Mandatory fields
+	id := state.Id.ValueString()
 	name := state.Name.ValueString()
 	enabled := state.Enabled.ValueBool()
 	expression := state.Expression.ValueString()
 	description := state.Description.ValueStringPointer()
 
-	return name, description, enabled, expression
+	return id, name, description, enabled, expression
 }
 
 func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Context, state *csmThreatsAgentRuleModel, res *datadogV2.CloudWorkloadSecurityAgentRuleResponse) {
@@ -221,14 +220,7 @@ func (r *csmThreatsAgentRuleResource) updateStateFromResponse(ctx context.Contex
 	attributes := res.Data.Attributes
 
 	state.Name = types.StringValue(attributes.GetName())
-
-	// Only update the state if the description is not empty, or if it's not null in the plan
-	// If the description is null in the TF config, it is omitted from the API call
-	// The API returns an empty string, which, if put in the state, would result in a mismatch between state and config
-	if description := attributes.GetDescription(); description != "" || !state.Description.IsNull() {
-		state.Description = types.StringValue(description)
-	}
-
+	state.Description = types.StringValue(attributes.GetDescription())
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
 	state.Expression = types.StringValue(attributes.GetExpression())
 }
