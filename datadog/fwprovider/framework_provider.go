@@ -60,6 +60,7 @@ var Resources = []func() resource.Resource{
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
 	NewSecurityMonitoringSuppressionResource,
+	NewCSMThreatsAgentRuleResource,
 	NewServiceAccountResource,
 }
 
@@ -78,6 +79,7 @@ var Datasources = []func() datasource.DataSource{
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
+	NewCsmThreatsAgentRulesDataSource,
 }
 
 // FrameworkProvider struct
