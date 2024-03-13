@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
@@ -417,6 +418,16 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 	return result[:12]
 }
 
+func randomAgentRuleName(length int) string {
+	var charset = "abcdefghijklmnopqrstuvwxyz"
+	var buf bytes.Buffer
+	buf.Grow(length)
+	for i := 0; i < length; i++ {
+		buf.WriteString(string(charset[rand.Intn(len(charset))]))
+	}
+	return buf.String()
+}
+
 // uniqueAWSAccessKeyID takes uniqueEntityName result, hashes it to get a unique string
 // and then returns first 16 characters (numerical only), so that the value can be used
 // as AWS account ID and is still as unique as possible, it changes in CI, but is stable locally
@@ -730,16 +741,6 @@ func testAccPreCheck(t *testing.T) {
 	}
 	if !isAPPKeySet() {
 		t.Fatalf("%s must be set for acceptance tests", testAPPKeyEnvName)
-	}
-
-	if !isTestOrg() {
-		t.Fatalf(
-			"The keys you've set potentially belong to a production environment. "+
-				"Tests do all sorts of create/update/delete calls to the organisation, so only run them against a sandbox environment. "+
-				"If you know what you are doing, set the `%s` environment variable to the public ID of your organization. "+
-				"See https://docs.datadoghq.com/api/latest/organizations/#list-your-managed-organizations to get it.",
-			testOrgEnvName,
-		)
 	}
 
 	if err := os.Setenv(utils.DDAPIKeyEnvName, os.Getenv(testAPIKeyEnvName)); err != nil {

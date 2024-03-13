@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -21,8 +22,10 @@ type csmThreatsAgentRulesDataSource struct {
 	auth context.Context
 }
 
-type csmThreatsAgentRuleDataSourceModel struct {
-	AgentRules []csmThreatsAgentRuleModel `tfsdk:"agent_rules"`
+type csmThreatsAgentRulesDataSourceModel struct {
+	Id            types.String               `tfsdk:"id"`
+	AgentRulesIds types.List                 `tfsdk:"agent_rules_ids"`
+	AgentRules    []csmThreatsAgentRuleModel `tfsdk:"agent_rules"`
 }
 
 func NewCSMThreatsAgentRulesDataSource() datasource.DataSource {
@@ -36,11 +39,11 @@ func (r *csmThreatsAgentRulesDataSource) Configure(_ context.Context, request da
 }
 
 func (*csmThreatsAgentRulesDataSource) Metadata(_ context.Context, _ datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = "agent_rule"
+	response.TypeName = "csm_threats_agent_rules"
 }
 
 func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state csmThreatsAgentRuleDataSourceModel
+	var state csmThreatsAgentRulesDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -48,14 +51,15 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 
 	res, _, err := r.api.ListCSMThreatsAgentRules(r.auth)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error while fetching suppressions"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error while fetching agent rules"))
 		return
 	}
 
 	data := res.GetData()
+	agentRuleIds := make([]string, len(data))
 	agent_rules := make([]csmThreatsAgentRuleModel, len(data))
 
-	for _, agentRule := range res.GetData() {
+	for idx, agentRule := range res.GetData() {
 		var agentRuleModel csmThreatsAgentRuleModel
 		agentRuleModel.Id = types.StringValue(agentRule.GetId())
 		attributes := agentRule.Attributes
@@ -63,9 +67,15 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 		agentRuleModel.Description = types.StringValue(attributes.GetDescription())
 		agentRuleModel.Enabled = types.BoolValue(attributes.GetEnabled())
 		agentRuleModel.Expression = types.StringValue(*attributes.Expression)
-		agent_rules = append(agent_rules, agentRuleModel)
+
+		agentRuleIds[idx] = agentRule.GetId()
+		agent_rules[idx] = agentRuleModel
 	}
 
+	state.Id = types.StringValue(strings.Join(agentRuleIds, "--"))
+	tfAgentRuleIds, diags := types.ListValueFrom(ctx, types.StringType, agentRuleIds)
+	response.Diagnostics.Append(diags...)
+	state.AgentRulesIds = tfAgentRuleIds
 	state.AgentRules = agent_rules
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -75,6 +85,12 @@ func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.Sc
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about existing agent rules, and use them in other resources.",
 		Attributes: map[string]schema.Attribute{
+			"id": utils.ResourceIDAttribute(),
+			"agent_rules_ids": schema.ListAttribute{
+				Computed:    true,
+				Description: "List of IDs of the agent rules",
+				ElementType: types.StringType,
+			},
 			"agent_rules": schema.ListAttribute{
 				Computed:    true,
 				Description: "List of agent_rules",

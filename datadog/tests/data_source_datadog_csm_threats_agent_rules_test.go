@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -12,15 +13,15 @@ import (
 )
 
 func TestAccCSMThreatsAgentRuleDataSource(t *testing.T) {
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	agentRuleName := uniqueEntityName(ctx, t)
-	dataSourceName := "data.datadog_csm_threats_agent_rule.my_data_source"
+	agentRuleName := randomAgentRuleName(10)
+	dataSourceName := "data.datadog_csm_threats_agent_rules.my_data_source"
 
 	agentRuleConfig := fmt.Sprintf(`
 	resource "datadog_csm_threats_agent_rule" "agent_rule_for_data_source_test" {
 		name              = "%s"
-		enabled           = true
+		enabled           = false
 		description       = "im a rule"
 		expression 		  = "open.file.name == \"etc/shadow/password\""
 	}
@@ -78,8 +79,23 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 		}
 
 		resourceAttributes := res.Primary.Attributes
+
+		agentRulesIdsCount, err := strconv.Atoi(resourceAttributes["agent_rules_ids.#"])
+		if err != nil {
+			return err
+		}
+		agentRulesCount, err := strconv.Atoi(resourceAttributes["agent_rules.#"])
+		if err != nil {
+			return err
+		}
+
+		if agentRulesCount != agentRulesIdsCount {
+			return fmt.Errorf("the data source contains %d agent rules IDs but %d agent rules", agentRulesIdsCount, agentRulesCount)
+		}
+
+		// Find in which position is the suppression we created, and check its values
 		idx := 0
-		for idx < len(resourceAttributes) && resourceAttributes[fmt.Sprintf("agent_rules.%d", idx)] != agentRuleId {
+		for idx < agentRulesIdsCount && resourceAttributes[fmt.Sprintf("agent_rules_ids.%d", idx)] != agentRuleId {
 			idx++
 		}
 
@@ -88,7 +104,10 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 		}
 
 		return resource.ComposeTestCheckFunc(
-			resource.TestCheckResourceAttr(dataSourceName, ruleName, agentRuleName),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.name", idx), ruleName),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.enabled", idx), "false"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.description", idx), "im a rule"),
+			resource.TestCheckResourceAttr(dataSourceName, fmt.Sprintf("agent_rules.%d.expression", idx), "open.file.name == \"etc/shadow/password\""),
 		)(state)
 	}
 }

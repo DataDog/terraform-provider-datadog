@@ -2,6 +2,8 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -142,7 +144,13 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 
 	res, _, err := r.api.UpdateCSMThreatsAgentRule(r.auth, state.Id.ValueString(), *agentRulePayload)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating agent rule"))
+		payload := agentRulePayload
+		jsonPayload, merr := json.Marshal(payload)
+		if merr != nil {
+			return
+		}
+		cerr := fmt.Errorf("error %s updating agent rule for payload %s", err.Error(), jsonPayload)
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(cerr, "error updating agent rule for payload"))
 		return
 	}
 	if err := utils.CheckForUnparsed(response); err != nil {
@@ -187,13 +195,13 @@ func (r *csmThreatsAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(stat
 }
 
 func (r *csmThreatsAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(state *csmThreatsAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest, error) {
-	_, description, enabled, _ := r.extractAgentRuleAttributesFromResource(state)
+	_, description, _, _ := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleUpdateAttributes{}
 	attributes.Description = description
-	attributes.Enabled = &enabled
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
+	data.Id = state.Id.ValueStringPointer()
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateRequest(*data), nil
 }
 

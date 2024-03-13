@@ -14,9 +14,9 @@ import (
 
 // Create an agent rule and update its description
 func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	agentRuleName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_csm_threats_agent_rules.agent_rule_test"
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	agentRuleName := randomAgentRuleName(10)
+	resourceName := "datadog_csm_threats_agent_rule.agent_rule_test"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -25,7 +25,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`
-				resource "datadog_csm_threats_agent_rule" "agent_rule_for_test" {
+				resource "datadog_csm_threats_agent_rule" "agent_rule_test" {
 					name              = "%s"
 					enabled           = true
 					description       = "im a rule"
@@ -45,10 +45,10 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 			// Update description
 			{
 				Config: fmt.Sprintf(`
-				resource "datadog_csm_threats_agent_rule" "agent_rule_for_test" {
+				resource "datadog_csm_threats_agent_rule" "agent_rule_test" {
 					name              = "%s"
-					description       = "updated agent rule for terraform provider test"
 					enabled           = true
+					description       = "updated agent rule for terraform provider test"
 					expression 		  = "open.file.name == \"etc/shadow/password\""
 				}
 				`, agentRuleName),
