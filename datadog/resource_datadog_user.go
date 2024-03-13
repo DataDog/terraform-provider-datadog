@@ -177,15 +177,18 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 
 		var existingUser *datadogV2.User
 		// Find user ID by listing user and filtering by email
-		listResponse, _, err := apiInstances.GetUsersApiV2().ListUsers(auth,
+		listResponse, httpResp, err := apiInstances.GetUsersApiV2().ListUsers(auth,
 			*datadogV2.NewListUsersOptionalParameters().WithFilter(email))
 		if err != nil {
-			return utils.TranslateClientErrorDiag(err, httpresp, "error searching user")
+			return utils.TranslateClientErrorDiag(err, httpResp, "error searching user")
 		}
 		if err := utils.CheckForUnparsed(listResponse); err != nil {
 			return diag.FromErr(err)
 		}
 		responseData := listResponse.GetData()
+		if len(responseData) == 1 {
+			existingUser = &responseData[0]
+		}
 		if len(responseData) > 1 {
 			for _, user := range responseData {
 				if user.Attributes.GetEmail() == email {
@@ -196,8 +199,28 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 			if existingUser == nil {
 				return diag.Errorf("could not find single user with email %s", email)
 			}
-		} else {
-			existingUser = &responseData[0]
+		}
+		if existingUser == nil {
+			// We already raised an exception if multiple users were found but no exact email match.
+			// If user is nil at this stage, we can assume a user with the same handle already exists.
+			// Find the user and raise a helpful error message.
+			var existingUserWithHandle *datadogV2.User
+			resp, _ := apiInstances.GetUsersApiV2().ListUsersWithPagination(auth, *datadogV2.NewListUsersOptionalParameters().WithPageSize(500))
+			for paginationResult := range resp {
+				if paginationResult.Error != nil {
+					return diag.Errorf("error listing users: %s", paginationResult.Error)
+				}
+				if paginationResult.Item.Attributes.GetHandle() == email {
+					existingUserWithHandle = &paginationResult.Item
+					break
+				}
+			}
+			if existingUserWithHandle != nil {
+				return diag.Errorf("user with id %q already exists with handle %q", existingUserWithHandle.GetId(), email)
+			}
+
+			// Catch all error
+			return diag.Errorf("error retrieving user with email/handle %s", email)
 		}
 
 		userID = existingUser.GetId()
