@@ -9,34 +9,34 @@ interactions:
         content_length: 164
         transfer_encoding: []
         trailer: {}
-        host: app.datadoghq.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"qmutmqztwv"},"type":"agent_rule"}}
+            {"data":{"attributes":{"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","name":"dscxwahuof"},"type":"agent_rule"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://app.datadoghq.com/api/v2/remote_config/products/cws/agent_rules
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules
         method: POST
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 457
         uncompressed: false
-        body: '{"data":{"id":"bln-21d-vxl","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710346420475,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"qmutmqztwv","updateDate":1710346420475,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        body: '{"data":{"id":"kp7-6p5-k4a","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710348270043,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"dscxwahuof","updateDate":1710348270043,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 553.457625ms
+        duration: 682.857542ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -45,7 +45,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: app.datadoghq.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -53,23 +53,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://app.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/bln-21d-vxl
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/kp7-6p5-k4a
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 457
         uncompressed: false
-        body: '{"data":{"id":"bln-21d-vxl","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710346420000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"qmutmqztwv","updateDate":1710346420000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        body: '{"data":{"id":"kp7-6p5-k4a","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710348270000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"dscxwahuof","updateDate":1710348270000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 209.848458ms
+        duration: 594.819291ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -78,7 +78,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: app.datadoghq.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -86,23 +86,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://app.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/bln-21d-vxl
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/kp7-6p5-k4a
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 457
         uncompressed: false
-        body: '{"data":{"id":"bln-21d-vxl","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710346420000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"qmutmqztwv","updateDate":1710346420000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        body: '{"data":{"id":"kp7-6p5-k4a","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710348270000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"dscxwahuof","updateDate":1710348270000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 324.737416ms
+        duration: 359.8325ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -111,7 +111,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: app.datadoghq.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -119,23 +119,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://app.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/bln-21d-vxl
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/kp7-6p5-k4a
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 457
         uncompressed: false
-        body: '{"data":{"id":"bln-21d-vxl","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710346420000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"qmutmqztwv","updateDate":1710346420000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        body: '{"data":{"id":"kp7-6p5-k4a","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710348270000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"im a rule","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"dscxwahuof","updateDate":1710348270000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 224.897084ms
+        duration: 216.409875ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -144,34 +144,34 @@ interactions:
         content_length: 143
         transfer_encoding: []
         trailer: {}
-        host: app.datadoghq.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"updated agent rule for terraform provider test","enabled":true},"id":"bln-21d-vxl","type":"agent_rule"}}
+            {"data":{"attributes":{"description":"updated agent rule for terraform provider test","enabled":true},"id":"kp7-6p5-k4a","type":"agent_rule"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://app.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/bln-21d-vxl
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/kp7-6p5-k4a
         method: PATCH
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 494
         uncompressed: false
-        body: '{"data":{"id":"bln-21d-vxl","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710346420000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"qmutmqztwv","updateDate":1710346423304,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        body: '{"data":{"id":"kp7-6p5-k4a","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710348270000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"dscxwahuof","updateDate":1710348273403,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 517.98475ms
+        duration: 737.356792ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -180,7 +180,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: app.datadoghq.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -188,23 +188,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://app.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/bln-21d-vxl
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/kp7-6p5-k4a
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 494
         uncompressed: false
-        body: '{"data":{"id":"bln-21d-vxl","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710346420000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"qmutmqztwv","updateDate":1710346423000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        body: '{"data":{"id":"kp7-6p5-k4a","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710348270000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"dscxwahuof","updateDate":1710348273000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 266.4845ms
+        duration: 299.899083ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -213,7 +213,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: app.datadoghq.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -221,23 +221,23 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://app.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/bln-21d-vxl
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/kp7-6p5-k4a
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 494
         uncompressed: false
-        body: '{"data":{"id":"bln-21d-vxl","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710346420000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"qmutmqztwv","updateDate":1710346423000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
+        body: '{"data":{"id":"kp7-6p5-k4a","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710348270000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"dscxwahuof","updateDate":1710348273000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 258.168125ms
+        duration: 356.398292ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -246,7 +246,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: app.datadoghq.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -254,21 +254,23 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://app.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/bln-21d-vxl
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/kp7-6p5-k4a
         method: DELETE
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
         content_length: 0
         uncompressed: false
         body: ""
-        headers: {}
+        headers:
+            Content-Type:
+                - application/json
         status: 204 No Content
         code: 204
-        duration: 497.951333ms
+        duration: 1.0509665s
     - id: 8
       request:
         proto: HTTP/1.1
@@ -277,7 +279,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: app.datadoghq.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -285,21 +287,20 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://app.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/bln-21d-vxl
+        url: https://api.datadoghq.com/api/v2/remote_config/products/cws/agent_rules/kp7-6p5-k4a
         method: GET
       response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 44
+        content_length: 494
         uncompressed: false
-        body: |
-            {"errors":[{"title":"failed to get rule"}]}
+        body: '{"data":{"id":"kp7-6p5-k4a","type":"agent_rule","attributes":{"category":"File Activity","creationDate":1710348270000,"creator":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"},"defaultRule":false,"description":"updated agent rule for terraform provider test","enabled":true,"expression":"open.file.name == \"etc/shadow/password\"","filters":["os == \"linux\""],"name":"dscxwahuof","updateDate":1710348273000,"updater":{"name":"Malo Le Goff","handle":"malo.legoff@datadoghq.com"}}}}'
         headers:
             Content-Type:
                 - application/json
-        status: 404 Not Found
-        code: 404
-        duration: 194.885709ms
+        status: 200 OK
+        code: 200
+        duration: 293.581458ms
