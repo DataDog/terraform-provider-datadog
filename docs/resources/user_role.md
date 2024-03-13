@@ -42,6 +42,10 @@ resource "datadog_user_role" "foo" {
 - `role_id` (String) ID of the role that the user is assigned to.
 - `user_id` (String) The ID of the user.
 
+### Read-Only
+
+- `id` (String) The ID of this resource.
+
 ## Import
 
 Import is supported using the following syntax:

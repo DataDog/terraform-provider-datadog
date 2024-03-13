@@ -26,6 +26,7 @@ Use this data source to retrieve information about existing Datadog user role as
 
 ### Read-Only
 
+- `id` (String) The ID of this resource.
 - `user_roles` (List of Object) List of users assigned to role. (see [below for nested schema](#nestedatt--user_roles))
 
 <a id="nestedatt--user_roles"></a>
@@ -33,5 +34,6 @@ Use this data source to retrieve information about existing Datadog user role as
 
 Read-Only:
 
+- `id` (String)
 - `role_id` (String)
 - `user_id` (String)
