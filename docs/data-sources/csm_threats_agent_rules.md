@@ -3,12 +3,12 @@
 page_title: "datadog_csm_threats_agent_rules Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about existing agent rules, and use them in other resources.
+  Use this data source to retrieve information about existing Agent rules.
 ---
 
 # datadog_csm_threats_agent_rules (Data Source)
 
-Use this data source to retrieve information about existing agent rules, and use them in other resources.
+Use this data source to retrieve information about existing Agent rules.
 
 
 
@@ -17,8 +17,8 @@ Use this data source to retrieve information about existing agent rules, and use
 
 ### Read-Only
 
-- `agent_rules` (List of Object) List of agent_rules (see [below for nested schema](#nestedatt--agent_rules))
-- `agent_rules_ids` (List of String) List of IDs of the agent rules
+- `agent_rules` (List of Object) List of Agent rules (see [below for nested schema](#nestedatt--agent_rules))
+- `agent_rules_ids` (List of String) List of IDs of the Agent rules
 - `id` (String) The ID of this resource.
 
 <a id="nestedatt--agent_rules"></a>
