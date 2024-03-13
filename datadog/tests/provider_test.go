@@ -744,6 +744,16 @@ func testAccPreCheck(t *testing.T) {
 		t.Fatalf("%s must be set for acceptance tests", testAPPKeyEnvName)
 	}
 
+	if !isTestOrg() {
+		t.Fatalf(
+			"The keys you've set potentially belong to a production environment. "+
+				"Tests do all sorts of create/update/delete calls to the organisation, so only run them against a sandbox environment. "+
+				"If you know what you are doing, set the `%s` environment variable to the public ID of your organization. "+
+				"See https://docs.datadoghq.com/api/latest/organizations/#list-your-managed-organizations to get it.",
+			testOrgEnvName,
+		)
+	}
+
 	if err := os.Setenv(utils.DDAPIKeyEnvName, os.Getenv(testAPIKeyEnvName)); err != nil {
 		t.Fatalf("Error setting API key: %v", err)
 	}

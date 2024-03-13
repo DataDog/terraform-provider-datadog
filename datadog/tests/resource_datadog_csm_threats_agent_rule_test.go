@@ -15,7 +15,7 @@ import (
 // Create an agent rule and update its description
 func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	
+
 	agentRuleName := randomAgentRuleName()
 	resourceName := "datadog_csm_threats_agent_rule.agent_rule_test"
 	resource.Test(t, resource.TestCase{

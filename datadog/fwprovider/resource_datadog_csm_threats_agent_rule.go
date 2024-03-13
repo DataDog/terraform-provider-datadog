@@ -2,8 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -141,13 +139,7 @@ func (r *csmThreatsAgentRuleResource) Update(ctx context.Context, request resour
 
 	res, _, err := r.api.UpdateCSMThreatsAgentRule(r.auth, state.Id.ValueString(), *agentRulePayload)
 	if err != nil {
-		payload := agentRulePayload
-		jsonPayload, merr := json.Marshal(payload)
-		if merr != nil {
-			return
-		}
-		cerr := fmt.Errorf("error %s updating agent rule for payload %s", err.Error(), jsonPayload)
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(cerr, "error updating agent rule for payload"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating agent rule"))
 		return
 	}
 	if err := utils.CheckForUnparsed(response); err != nil {
