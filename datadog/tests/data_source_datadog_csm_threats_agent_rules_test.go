@@ -13,9 +13,9 @@ import (
 )
 
 func TestAccCSMThreatsAgentRuleDataSource(t *testing.T) {
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	agentRuleName := randomAgentRuleName()
+	agentRuleName := uniqueAgentRuleName(ctx)
 	dataSourceName := "data.datadog_csm_threats_agent_rules.my_data_source"
 	agentRuleConfig := fmt.Sprintf(`
 	resource "datadog_csm_threats_agent_rule" "agent_rule_for_data_source_test" {
