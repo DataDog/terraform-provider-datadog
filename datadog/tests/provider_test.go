@@ -418,9 +418,8 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 	return result[:12]
 }
 
-// uniqueAgentRuleName takes uniqueEntityName result, hashes it to get a unique string
-// and then returns first 10 characters (alphas only), so that the value can be used
-// as agent rule name and is still as unique as possible, it changes in CI, but is stable locally
+// uniqueAgentRuleName takes the current/frozen time and uses it to generate a unique agent
+// rule name that changes in CI, but is stable locally.
 func uniqueAgentRuleName(ctx context.Context) string {
 	var seededRand *rand.Rand = rand.New(rand.NewSource(clockFromContext(ctx).Now().Unix()))
 	var charset = "abcdefghijklmnopqrstuvwxyz"
