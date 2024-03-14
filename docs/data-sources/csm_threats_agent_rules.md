@@ -18,7 +18,7 @@ Use this data source to retrieve information about existing Agent rules.
 ### Read-Only
 
 - `agent_rules` (List of Object) List of Agent rules (see [below for nested schema](#nestedatt--agent_rules))
-- `agent_rules_ids` (List of String) List of IDs of the Agent rules
+- `agent_rules_ids` (List of String) List of IDs for the Agent rules.
 - `id` (String) The ID of this resource.
 
 <a id="nestedatt--agent_rules"></a>

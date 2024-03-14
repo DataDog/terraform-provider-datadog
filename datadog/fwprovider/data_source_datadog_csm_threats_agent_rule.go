@@ -88,7 +88,7 @@ func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.Sc
 			"id": utils.ResourceIDAttribute(),
 			"agent_rules_ids": schema.ListAttribute{
 				Computed:    true,
-				Description: "List of IDs of the Agent rules",
+				Description: "List of IDs for the Agent rules.",
 				ElementType: types.StringType,
 			},
 			"agent_rules": schema.ListAttribute{

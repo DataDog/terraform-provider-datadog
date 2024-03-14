@@ -51,19 +51,19 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
 				Required:    true,
-				Description: "The name of the agent rule.",
+				Description: "The name of the Agent rule.",
 			},
 			"description": schema.StringAttribute{
 				Optional:    true,
-				Description: "A description for the agent rule.",
+				Description: "A description for the Agent rule.",
 			},
 			"enabled": schema.BoolAttribute{
 				Required:    true,
-				Description: "Whether the agent rule is enabled.",
+				Description: "Indicates Whether the Agent rule is enabled.",
 			},
 			"expression": schema.StringAttribute{
 				Optional:    true,
-				Description: "The SECL expression of the agent rule",
+				Description: "The SECL expression of the Agent rule",
 			},
 		},
 	}

@@ -26,13 +26,13 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 
 ### Required
 
-- `enabled` (Boolean) Whether the agent rule is enabled.
-- `name` (String) The name of the agent rule.
+- `enabled` (Boolean) Indicates Whether the Agent rule is enabled.
+- `name` (String) The name of the Agent rule.
 
 ### Optional
 
-- `description` (String) A description for the agent rule.
-- `expression` (String) The SECL expression of the agent rule
+- `description` (String) A description for the Agent rule.
+- `expression` (String) The SECL expression of the Agent rule
 
 ### Read-Only
 
@@ -43,6 +43,6 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 Import is supported using the following syntax:
 
 ```shell
-# CSM Agent Rules can be imported using ID, for example:
+# CSM Agent Rules can be imported using ID. For example:
 terraform import datadog_csm_threats_agent_rule.my_agent_rule m0o-hto-lkb
 ```
