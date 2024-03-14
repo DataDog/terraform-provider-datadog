@@ -418,13 +418,16 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 	return result[:12]
 }
 
-func randomAgentRuleName() string {
+// uniqueAgentRuleName takes the current/frozen time and uses it to generate a unique agent
+// rule name that changes in CI, but is stable locally.
+func uniqueAgentRuleName(ctx context.Context) string {
+	var seededRand *rand.Rand = rand.New(rand.NewSource(clockFromContext(ctx).Now().Unix()))
 	var charset = "abcdefghijklmnopqrstuvwxyz"
 	nameLength := 10
 	var buf bytes.Buffer
 	buf.Grow(nameLength)
 	for i := 0; i < nameLength; i++ {
-		buf.WriteString(string(charset[rand.Intn(len(charset))]))
+		buf.WriteString(string(charset[seededRand.Intn(len(charset))]))
 	}
 	return buf.String()
 }
