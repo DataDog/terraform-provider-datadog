@@ -15,9 +15,9 @@ Provides a Datadog dashboard resource. This can be used to create and manage Dat
 ```terraform
 # Example Ordered Layout
 resource "datadog_dashboard" "ordered_dashboard" {
-  title        = "Ordered Layout Dashboard"
-  description  = "Created using the Datadog provider in Terraform"
-  layout_type  = "ordered"
+  title       = "Ordered Layout Dashboard"
+  description = "Created using the Datadog provider in Terraform"
+  layout_type = "ordered"
 
   widget {
     alert_graph_definition {
@@ -411,9 +411,9 @@ resource "datadog_dashboard" "ordered_dashboard" {
 
 # Example Free Layout
 resource "datadog_dashboard" "free_dashboard" {
-  title        = "Free Layout Dashboard"
-  description  = "Created using the Datadog provider in Terraform"
-  layout_type  = "free"
+  title       = "Free Layout Dashboard"
+  description = "Created using the Datadog provider in Terraform"
+  layout_type = "free"
 
   widget {
     event_stream_definition {
