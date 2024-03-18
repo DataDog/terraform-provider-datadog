@@ -3,7 +3,7 @@
 page_title: "datadog_openapi_api Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog OpenapiApi resource. This can be used to create and manage Datadog openapi_api.
+  Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's API catalog https://docs.datadoghq.com/api_catalog/ with an OpenAPI https://www.openapis.org/ specifications file.
 ---
 
 # datadog_openapi_api (Resource)
@@ -13,7 +13,7 @@ Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's [
 ## Example Usage
 
 ```terraform
-# Uploads an OpenAPI file from the given local path to Datadog's API catalog.
+# Uploads an OpenAPI file from the given local path to Datadog's API catalog
 
 resource "datadog_openapi_api" "my-api" {
   spec = file("./path/my-api.yaml")
@@ -29,11 +29,11 @@ resource "datadog_openapi_api" "my-api" {
 
 ### Read-Only
 
-- `id` (String) The API ID of this resource in Datadog.
+- `id` (String) The ID of this resource.
 
 ## Import
 
-You can import APIs from Datadog, given an existing API ID using the following syntax:
+Import is supported using the following syntax:
 
 ```shell
 terraform import datadog_openapi_api.new_list "90646597-5fdb-4a17-a240-647003f8c028"
