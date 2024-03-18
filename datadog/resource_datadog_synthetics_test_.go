@@ -3481,7 +3481,7 @@ func setGRPCStepRequest(requestMap map[string]interface{}, request *datadogV1.Sy
 		request.SetCompressedProtoFile(encodedCompressedProtoFile)
 	}
 
-	// This is effectively useless as it wil not work but is necessary for the state to be in sync
+	// This is effectively useless as it will not work but is necessary for the state to be in sync
 	if requestMap["proto_json_descriptor"] != nil {
 		stringifiedValue, _ := json.Marshal(requestMap["proto_json_descriptor"].(string))
 		var compressedValue bytes.Buffer
