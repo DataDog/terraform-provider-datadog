@@ -4453,7 +4453,7 @@ resource "datadog_synthetics_test" "multi" {
       host             = "fakehost.io"
       port             = 8443
       service          = "OboService"
-      message = "{\"user_uuid\": \"1234\"}"
+      message          = "{\"user_uuid\": \"1234\"}"
       plain_proto_file = <<EOT
 syntax = "proto3";
 package pb;
