@@ -29,7 +29,7 @@ resource "datadog_openapi_api" "my-api" {
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) The API ID of this resource in Datadog.
 
 ## Import
 
