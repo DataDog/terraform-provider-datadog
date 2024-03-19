@@ -2,6 +2,9 @@ package fwprovider
 
 import (
 	"context"
+	"crypto/sha256"
+	"fmt"
+	"log"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -72,13 +75,28 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 		agentRules[idx] = agentRuleModel
 	}
 
-	state.Id = types.StringValue(strings.Join(agentRuleIds, "--"))
+	stateId := strings.Join(agentRuleIds, "--")
+	state.Id = types.StringValue(computeAgentRulesDataSourceID(&stateId))
 	tfAgentRuleIds, diags := types.ListValueFrom(ctx, types.StringType, agentRuleIds)
 	response.Diagnostics.Append(diags...)
 	state.AgentRulesIds = tfAgentRuleIds
 	state.AgentRules = agentRules
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func computeAgentRulesDataSourceID(agentruleIds *string) string {
+	// Key for hashing
+	var b strings.Builder
+	if agentruleIds != nil {
+		b.WriteString(*agentruleIds)
+	}
+	keyStr := b.String()
+	h := sha256.New()
+	log.Println("HASHKEY", keyStr)
+	h.Write([]byte(keyStr))
+
+	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
