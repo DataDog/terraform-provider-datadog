@@ -338,9 +338,11 @@ func buildTerraformIndexDailyLimitReset(ddDailyLimitReset datadogV1.LogsDailyLim
 }
 
 func buildDatadogExclusionFilters(tfEFilters []interface{}) *[]datadogV1.LogsExclusion {
-	ddEFilters := make([]datadogV1.LogsExclusion, len(tfEFilters))
-	for i, tfEFilter := range tfEFilters {
-		ddEFilters[i] = *buildDatadogExclusionFilter(tfEFilter.(map[string]interface{}))
+	var ddEFilters []datadogV1.LogsExclusion
+	for _, tfEFilter := range tfEFilters {
+		if v, ok := tfEFilter.(map[string]interface{}); ok {
+			ddEFilters = append(ddEFilters, *buildDatadogExclusionFilter(v))
+		}
 	}
 	return &ddEFilters
 }
