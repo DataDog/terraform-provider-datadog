@@ -3,17 +3,17 @@
 page_title: "datadog_openapi_api Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog OpenapiApi resource. This can be used to create and manage Datadog openapi_api.
+  Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's API catalog https://docs.datadoghq.com/api_catalog/ with an OpenAPI https://www.openapis.org/ specifications file.
 ---
 
 # datadog_openapi_api (Resource)
 
-Provides a Datadog OpenapiApi resource. This can be used to create and manage Datadog openapi_api.
+Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's [API catalog](https://docs.datadoghq.com/api_catalog/) with an [OpenAPI](https://www.openapis.org/) specifications file.
 
 ## Example Usage
 
 ```terraform
-# Create new openapi_api resource
+# Uploads an OpenAPI file from the given local path to Datadog's API catalog
 
 resource "datadog_openapi_api" "my-api" {
   spec = file("./path/my-api.yaml")
@@ -25,11 +25,11 @@ resource "datadog_openapi_api" "my-api" {
 
 ### Required
 
-- `spec` (String) The OpenAPI spec.
+- `spec` (String) The textual content of the OpenAPI specification. Use [`file()`](https://developer.hashicorp.com/terraform/language/functions/file) in order to reference another file in the repository (see exmaple).
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) The API ID of this resource in Datadog.
 
 ## Import
 
