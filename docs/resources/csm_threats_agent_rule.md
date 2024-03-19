@@ -27,12 +27,12 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 ### Required
 
 - `enabled` (Boolean) Indicates Whether the Agent rule is enabled.
+- `expression` (String) The SECL expression of the Agent rule
 - `name` (String) The name of the Agent rule.
 
 ### Optional
 
 - `description` (String) A description for the Agent rule.
-- `expression` (String) The SECL expression of the Agent rule
 
 ### Read-Only
 

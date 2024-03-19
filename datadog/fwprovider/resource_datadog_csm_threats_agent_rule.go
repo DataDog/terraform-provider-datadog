@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -62,7 +61,6 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 			"description": schema.StringAttribute{
 				Optional:    true,
 				Description: "A description for the Agent rule.",
-				Default:     stringdefault.StaticString(""),
 			},
 			"enabled": schema.BoolAttribute{
 				Required:    true,
