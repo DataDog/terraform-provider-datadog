@@ -32,7 +32,7 @@ resource "datadog_csm_threats_agent_rule" "my_agent_rule" {
 
 ### Optional
 
-- `description` (String) A description for the Agent rule.
+- `description` (String) A description for the Agent rule. Defaults to `""`.
 
 ### Read-Only
 
