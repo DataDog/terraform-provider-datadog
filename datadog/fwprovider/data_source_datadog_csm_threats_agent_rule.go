@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -93,7 +92,6 @@ func computeAgentRulesDataSourceID(agentruleIds *string) string {
 	}
 	keyStr := b.String()
 	h := sha256.New()
-	log.Println("HASHKEY", keyStr)
 	h.Write([]byte(keyStr))
 
 	return fmt.Sprintf("%x", h.Sum(nil))
