@@ -62,8 +62,8 @@ func (r *csmThreatsAgentRuleResource) Schema(_ context.Context, _ resource.Schem
 			"description": schema.StringAttribute{
 				Optional:    true,
 				Description: "A description for the Agent rule.",
-				Default: stringdefault.StaticString(""),
-				Computed: true,
+				Default:     stringdefault.StaticString(""),
+				Computed:    true,
 			},
 			"enabled": schema.BoolAttribute{
 				Required:    true,
