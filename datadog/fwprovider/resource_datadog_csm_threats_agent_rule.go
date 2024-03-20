@@ -122,9 +122,6 @@ func (r *csmThreatsAgentRuleResource) Read(ctx context.Context, request resource
 		return
 	}
 
-	csmThreatsMutex.Lock()
-	defer csmThreatsMutex.Unlock()
-
 	agentRuleId := state.Id.ValueString()
 	res, httpResponse, err := r.api.GetCSMThreatsAgentRule(r.auth, agentRuleId)
 	if err != nil {
