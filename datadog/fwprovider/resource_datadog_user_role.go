@@ -121,7 +121,7 @@ func (r *userRoleResource) Read(ctx context.Context, request resource.ReadReques
 		pageNumber++
 	}
 
-	updated := r.updatedStateFromUserResponse(ctx, &state, roleUsers)
+	updated := r.updatedStateFromUserResponse(ctx, &state, roleUsers, false)
 
 	// Delete state if updated is false, since that means the user doesn't exist
 	if !updated {
@@ -154,7 +154,7 @@ func (r *userRoleResource) Create(ctx context.Context, request resource.CreateRe
 	}
 
 	// Save data into Terraform state
-	r.updatedStateFromUserResponse(ctx, &state, resp.GetData())
+	r.updatedStateFromUserResponse(ctx, &state, resp.GetData(), true)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -187,7 +187,7 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	}
 
 	// Save data into Terraform state
-	r.updatedStateFromUserResponse(ctx, &state, resp.GetData())
+	r.updatedStateFromUserResponse(ctx, &state, resp.GetData(), true)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -202,7 +202,14 @@ func (r *userRoleResource) buildUserRoleRequestBody(ctx context.Context, state *
 	return relationship, diags
 }
 
-func (r *userRoleResource) updatedStateFromUserResponse(ctx context.Context, state *UserRoleModel, resp []datadogV2.User) bool {
+func (r *userRoleResource) updatedStateFromUserResponse(ctx context.Context, state *UserRoleModel, resp []datadogV2.User, force bool) bool {
+	// if force, just set the state to the user and role ID that's already in the state
+	// this is useful for create/delete since the API doesn't return all the users
+	if force {
+		state.ID = types.StringValue(state.RoleId.ValueString() + ":" + state.UserId.ValueString())
+		return true
+	}
+
 	for _, user := range resp {
 		if user.GetId() == state.UserId.ValueString() {
 			userId := user.GetId()

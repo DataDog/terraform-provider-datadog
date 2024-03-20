@@ -81,19 +81,22 @@ func buildDatadogUserV2Struct(d *schema.ResourceData) *datadogV2.UserCreateReque
 	userCreate := datadogV2.NewUserCreateDataWithDefaults()
 	userCreate.SetAttributes(*userAttributes)
 
+	userRelationships := datadogV2.NewUserRelationships()
+
 	roles := d.Get("roles").(*schema.Set).List()
-	rolesData := make([]datadogV2.RelationshipToRoleData, len(roles))
-	for i, role := range roles {
-		roleData := datadogV2.NewRelationshipToRoleData()
-		roleData.SetId(role.(string))
-		rolesData[i] = *roleData
+	if len(roles) > 0 {
+		rolesData := make([]datadogV2.RelationshipToRoleData, len(roles))
+		for i, role := range roles {
+			roleData := datadogV2.NewRelationshipToRoleData()
+			roleData.SetId(role.(string))
+			rolesData[i] = *roleData
+		}
+
+		toRoles := datadogV2.NewRelationshipToRoles()
+		toRoles.SetData(rolesData)
+		userRelationships.SetRoles(*toRoles)
 	}
 
-	toRoles := datadogV2.NewRelationshipToRoles()
-	toRoles.SetData(rolesData)
-
-	userRelationships := datadogV2.NewUserRelationships()
-	userRelationships.SetRoles(*toRoles)
 	userCreate.SetRelationships(*userRelationships)
 
 	userRequest := datadogV2.NewUserCreateRequestWithDefaults()
