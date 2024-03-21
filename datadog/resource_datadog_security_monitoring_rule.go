@@ -1346,6 +1346,8 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 	if v, ok := d.GetOk("filter"); ok {
 		tfFilters := v.([]interface{})
 		payload.SetFilters(buildPayloadFilters(tfFilters))
+	} else {
+		payload.SetFilters([]datadogV2.SecurityMonitoringFilter{})
 	}
 
 	return &payload, nil
