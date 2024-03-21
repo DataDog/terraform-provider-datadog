@@ -46,6 +46,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationConfluentResourceResource,
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
+	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewIpAllowListResource,
 	NewRestrictionPolicyResource,
@@ -60,6 +61,7 @@ var Resources = []func() resource.Resource{
 	NewTeamResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
+	NewCSMThreatsAgentRuleResource,
 	NewServiceAccountResource,
 }
 
@@ -79,6 +81,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogUsersDataSource,
 	NewDatadogUserRolesDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
+	NewCSMThreatsAgentRulesDataSource,
 }
 
 // FrameworkProvider struct

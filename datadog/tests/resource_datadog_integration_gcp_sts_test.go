@@ -31,10 +31,20 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 						"datadog_integration_gcp_sts.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "is_security_command_center_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "resource_collection_enabled", "false"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:one"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:two"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_integration_gcp_sts.foo", "account_tags.*", "a:tag"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_integration_gcp_sts.foo", "account_tags.*", "another:one"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_integration_gcp_sts.foo", "account_tags.*", "and:another"),
 				),
 			},
 			{
@@ -47,8 +57,14 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 						"datadog_integration_gcp_sts.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "is_security_command_center_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "resource_collection_enabled", "true"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters"),
+					resource.TestCheckNoResourceAttr(
+						"datadog_integration_gcp_sts.foo", "account_tags"),
 				),
 			},
 		},
@@ -89,6 +105,9 @@ resource "datadog_integration_gcp_sts" "foo" {
     client_email = "%s@test-project.iam.gserviceaccount.com"
     host_filters = ["tag:one", "tag:two"]
     is_cspm_enabled = "false"
+    resource_collection_enabled = "false"
+    is_security_command_center_enabled = "false"
+    account_tags = ["a:tag", "another:one", "and:another"]
 }`, uniq)
 }
 
@@ -98,6 +117,8 @@ resource "datadog_integration_gcp_sts" "foo" {
     automute = "true"
     client_email = "%s@test-project.iam.gserviceaccount.com"
     is_cspm_enabled = "true"
+    resource_collection_enabled = "true"
+    is_security_command_center_enabled = "true"
 }`, uniq)
 }
 

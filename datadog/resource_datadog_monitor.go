@@ -350,12 +350,14 @@ func resourceDatadogMonitor() *schema.Resource {
 				"scheduling_options": {
 					Description: "Configuration options for scheduling.",
 					Type:        schema.TypeList,
+					MaxItems:    1,
 					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"evaluation_window": {
 								Description: "Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together.",
 								Type:        schema.TypeList,
+								MaxItems:    1,
 								Optional:    true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
@@ -380,6 +382,7 @@ func resourceDatadogMonitor() *schema.Resource {
 							"custom_schedule": {
 								Description: "Configuration options for the custom schedules. If `start` is omitted, the monitor creation time will be used.",
 								Type:        schema.TypeList,
+								MaxItems:    1,
 								Optional:    true,
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
@@ -600,21 +603,22 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 			scheduling_options := datadogV1.NewMonitorOptionsSchedulingOptions()
 			evaluation_window_list, evaluation_list_found := scheduling_options_map["evaluation_window"].([]interface{})
 			if evaluation_list_found && len(evaluation_window_list) > 0 {
-				evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
-				evaluation_window_map := evaluation_window_list[0].(map[string]interface{})
-				day_month_scheduling := false
-				if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
-					evaluation_window.SetDayStarts(day_starts)
-					day_month_scheduling = true
+				if evaluation_window_map, evaluation_window_ok := evaluation_window_list[0].(map[string]interface{}); evaluation_window_ok {
+					evaluation_window := datadogV1.NewMonitorOptionsSchedulingOptionsEvaluationWindow()
+					day_month_scheduling := false
+					if day_starts, ok := evaluation_window_map["day_starts"].(string); ok && day_starts != "" {
+						evaluation_window.SetDayStarts(day_starts)
+						day_month_scheduling = true
+					}
+					if month_starts, ok := evaluation_window_map["month_starts"].(int); ok && month_starts != 0 {
+						evaluation_window.SetMonthStarts(int32(month_starts))
+						day_month_scheduling = true
+					}
+					if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
+						evaluation_window.SetHourStarts(int32(hour_starts))
+					}
+					scheduling_options.SetEvaluationWindow(*evaluation_window)
 				}
-				if month_starts, ok := evaluation_window_map["month_starts"].(int); ok && month_starts != 0 {
-					evaluation_window.SetMonthStarts(int32(month_starts))
-					day_month_scheduling = true
-				}
-				if hour_starts, ok := evaluation_window_map["hour_starts"].(int); ok && !day_month_scheduling {
-					evaluation_window.SetHourStarts(int32(hour_starts))
-				}
-				scheduling_options.SetEvaluationWindow(*evaluation_window)
 			}
 			custom_schedule_map, custom_schedule_found := scheduling_options_map["custom_schedule"].([]interface{})
 			if custom_schedule_found && len(custom_schedule_map) > 0 {

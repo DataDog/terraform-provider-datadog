@@ -9,6 +9,9 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	frameworkSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/google/uuid"
@@ -47,11 +50,17 @@ func (r *openapiApiResource) Metadata(_ context.Context, request resource.Metada
 
 func (r *openapiApiResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog OpenapiApi resource. This can be used to create and manage Datadog openapi_api.",
+		Description: "Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's [API catalog](https://docs.datadoghq.com/api_catalog/) with an [OpenAPI](https://www.openapis.org/) specifications file.",
 		Attributes: map[string]schema.Attribute{
-			"id": utils.ResourceIDAttribute(),
+			"id": frameworkSchema.StringAttribute{
+				Description: "The API ID of this resource in Datadog.",
+				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"spec": schema.StringAttribute{
-				Description: "The OpenAPI spec.",
+				Description: "The textual content of the OpenAPI specification. Use [`file()`](https://developer.hashicorp.com/terraform/language/functions/file) in order to reference another file in the repository (see exmaple).",
 				Required:    true,
 			},
 		},

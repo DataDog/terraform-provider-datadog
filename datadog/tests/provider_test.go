@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
@@ -53,6 +54,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_apm_retention_filters_order_test":             "apm_retention_filters_order",
 	"tests/data_source_datadog_application_key_test":                         "application_keys",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test":     "cloud-workload-security",
+	"tests/data_source_datadog_csm_threats_agent_rules_test":                 "cloud-workload-security",
 	"tests/data_source_datadog_dashboard_list_test":                          "dashboard-lists",
 	"tests/data_source_datadog_dashboard_test":                               "dashboard",
 	"tests/data_source_datadog_hosts_test":                                   "hosts",
@@ -102,6 +104,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_child_organization_test":                         "organization",
 	"tests/resource_datadog_cloud_configuration_rule_test":                   "security-monitoring",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":         "cloud_workload_security",
+	"tests/resource_datadog_csm_threats_agent_rule_test":                     "cloud-workload-security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_alert_value_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_change_test":                           "dashboards",
@@ -415,6 +418,20 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
 	}
 	return result[:12]
+}
+
+// uniqueAgentRuleName takes the current/frozen time and uses it to generate a unique agent
+// rule name that changes in CI, but is stable locally.
+func uniqueAgentRuleName(ctx context.Context) string {
+	var seededRand *rand.Rand = rand.New(rand.NewSource(clockFromContext(ctx).Now().Unix()))
+	var charset = "abcdefghijklmnopqrstuvwxyz"
+	nameLength := 10
+	var buf bytes.Buffer
+	buf.Grow(nameLength)
+	for i := 0; i < nameLength; i++ {
+		buf.WriteString(string(charset[seededRand.Intn(len(charset))]))
+	}
+	return buf.String()
 }
 
 // uniqueAWSAccessKeyID takes uniqueEntityName result, hashes it to get a unique string
