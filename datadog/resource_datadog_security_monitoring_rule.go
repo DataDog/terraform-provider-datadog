@@ -1342,13 +1342,8 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 		}
 		payload.SetTags(tags)
 	}
-
-	if v, ok := d.GetOk("filter"); ok {
-		tfFilters := v.([]interface{})
-		payload.SetFilters(buildPayloadFilters(tfFilters))
-	} else {
-		payload.SetFilters([]datadogV2.SecurityMonitoringFilter{})
-	}
+	tfFilters := d.Get("filter")
+	payload.SetFilters(buildPayloadFilters(tfFilters.([]interface{})))
 
 	return &payload, nil
 }
