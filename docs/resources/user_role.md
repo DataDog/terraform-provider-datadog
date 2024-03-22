@@ -27,9 +27,9 @@ resource "datadog_user" "foo" {
   email = "new@example.com"
 }
 
-# Create new team_membership resource
+# Create new user_role resource
 resource "datadog_user_role" "foo" {
-  team_id = datadog_role.foo.id
+  role_id = datadog_role.foo.id
   user_id = datadog_user.foo.id
 }
 ```
