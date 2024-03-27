@@ -45,6 +45,7 @@ func resourceDatadogUser() *schema.Resource {
 					Type:        schema.TypeSet,
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
+					Deprecated:  "`roles` has been deprecated in favor of the new `datadog_user_role` resource.",
 				},
 				"send_user_invitation": {
 					Description: "Whether an invitation email should be sent when the user is created.",
@@ -235,19 +236,21 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 		}
 
 		// Update roles
-		_, newRolesI := d.GetChange("roles")
-		newRoles := newRolesI.(*schema.Set)
-		oldRoles := schema.NewSet(newRoles.F, []interface{}{})
-		for _, existingRole := range updatedUser.Data.Relationships.Roles.GetData() {
-			oldRoles.Add(existingRole.GetId())
-		}
+		if _, ok := d.GetOk("roles"); ok {
+			_, newRolesI := d.GetChange("roles")
+			newRoles := newRolesI.(*schema.Set)
+			oldRoles := schema.NewSet(newRoles.F, []interface{}{})
+			for _, existingRole := range updatedUser.Data.Relationships.Roles.GetData() {
+				oldRoles.Add(existingRole.GetId())
+			}
 
-		if err := updateRoles(meta, userID, oldRoles, newRoles); err != nil {
-			return err
-		}
+			if err := updateRoles(meta, userID, oldRoles, newRoles); err != nil {
+				return err
+			}
 
-		if err := updateUserStateV2(d, &updatedUser); err != nil {
-			return err
+			if err := updateUserStateV2(d, &updatedUser); err != nil {
+				return err
+			}
 		}
 		updated = true
 	} else {
@@ -353,8 +356,9 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+	_, ok := d.GetOk("roles")
 
-	if d.HasChange("roles") {
+	if ok && d.HasChange("roles") {
 		oldRolesI, newRolesI := d.GetChange("roles")
 		oldRoles := oldRolesI.(*schema.Set)
 		newRoles := newRolesI.(*schema.Set)
