@@ -235,7 +235,7 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 			return diag.FromErr(err)
 		}
 
-		// Update roles
+		// Update roles if provided
 		if _, ok := d.GetOk("roles"); ok {
 			_, newRolesI := d.GetChange("roles")
 			newRoles := newRolesI.(*schema.Set)
