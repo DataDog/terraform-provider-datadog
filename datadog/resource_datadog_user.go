@@ -235,22 +235,20 @@ func resourceDatadogUserCreate(ctx context.Context, d *schema.ResourceData, meta
 			return diag.FromErr(err)
 		}
 
-		// Update roles if provided
-		if _, ok := d.GetOk("roles"); ok {
-			_, newRolesI := d.GetChange("roles")
-			newRoles := newRolesI.(*schema.Set)
-			oldRoles := schema.NewSet(newRoles.F, []interface{}{})
-			for _, existingRole := range updatedUser.Data.Relationships.Roles.GetData() {
-				oldRoles.Add(existingRole.GetId())
-			}
+		// Update roles
+		_, newRolesI := d.GetChange("roles")
+		newRoles := newRolesI.(*schema.Set)
+		oldRoles := schema.NewSet(newRoles.F, []interface{}{})
+		for _, existingRole := range updatedUser.Data.Relationships.Roles.GetData() {
+			oldRoles.Add(existingRole.GetId())
+		}
 
-			if err := updateRoles(meta, userID, oldRoles, newRoles); err != nil {
-				return err
-			}
+		if err := updateRoles(meta, userID, oldRoles, newRoles); err != nil {
+			return err
+		}
 
-			if err := updateUserStateV2(d, &updatedUser); err != nil {
-				return err
-			}
+		if err := updateUserStateV2(d, &updatedUser); err != nil {
+			return err
 		}
 		updated = true
 	} else {
@@ -356,9 +354,10 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	_, ok := d.GetOk("roles")
 
-	if ok && d.HasChange("roles") {
+	isRolesOmitted := d.GetRawConfig().AsValueMap()["roles"].IsNull()
+
+	if !isRolesOmitted && d.HasChange("roles") {
 		oldRolesI, newRolesI := d.GetChange("roles")
 		oldRoles := oldRolesI.(*schema.Set)
 		newRoles := newRolesI.(*schema.Set)
