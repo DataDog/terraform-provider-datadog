@@ -354,7 +354,9 @@ func resourceDatadogUserUpdate(ctx context.Context, d *schema.ResourceData, meta
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	if d.HasChange("roles") {
+	isRolesOmitted := d.GetRawConfig().AsValueMap()["roles"].IsNull()
+
+	if !isRolesOmitted && d.HasChange("roles") {
 		oldRolesI, newRolesI := d.GetChange("roles")
 		oldRoles := oldRolesI.(*schema.Set)
 		newRoles := newRolesI.(*schema.Set)
