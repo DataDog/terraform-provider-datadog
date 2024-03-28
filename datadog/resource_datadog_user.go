@@ -45,7 +45,6 @@ func resourceDatadogUser() *schema.Resource {
 					Type:        schema.TypeSet,
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
-					Deprecated:  "`roles` has been deprecated in favor of the new `datadog_user_role` resource.",
 				},
 				"send_user_invitation": {
 					Description: "Whether an invitation email should be sent when the user is created.",
