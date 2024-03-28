@@ -3,12 +3,12 @@
 page_title: "datadog_user_role Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog UserRole resource. This can be used to create and manage Datadog user_role.
+  Provides a Datadog UserRole resource. This can be used to create and manage Datadog user_role. Note that this resource is in beta and is subject to change.
 ---
 
 # datadog_user_role (Resource)
 
-Provides a Datadog UserRole resource. This can be used to create and manage Datadog user_role.
+Provides a Datadog UserRole resource. This can be used to create and manage Datadog user_role. Note that this resource is in beta and is subject to change.
 
 ## Example Usage
 
@@ -53,5 +53,5 @@ Import is supported using the following syntax:
 ```shell
 # This resource is imported using user_id and role_id seperated by `:`.
 
-terraform import datadog_user_role.foo "${user_id}:${role_id}"
+terraform import datadog_user_role.foo "${role_id}:${user_id}"
 ```

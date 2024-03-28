@@ -48,7 +48,7 @@ func (r *userRoleResource) Metadata(_ context.Context, request resource.Metadata
 
 func (r *userRoleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog UserRole resource. This can be used to create and manage Datadog user_role.",
+		Description: "Provides a Datadog UserRole resource. This can be used to create and manage Datadog user_role. Note that this resource is in beta and is subject to change.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"role_id": schema.StringAttribute{

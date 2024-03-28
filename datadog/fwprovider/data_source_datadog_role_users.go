@@ -14,43 +14,43 @@ import (
 )
 
 var (
-	_ datasource.DataSource = &datadogUserRolesDataSource{}
+	_ datasource.DataSource = &datadogRoleUsersDataSource{}
 )
 
-type datadogUserRolesDataSourceModel struct {
+type datadogRoleUsersDataSourceModel struct {
 	// Query Parameters
 	RoleID     types.String `tfsdk:"role_id"`
 	Filter     types.String `tfsdk:"filter"`
 	ExactMatch types.Bool   `tfsdk:"exact_match"`
 	// Results
 	ID        types.String     `tfsdk:"id"`
-	UserRoles []*UserRoleModel `tfsdk:"user_roles"`
+	RoleUsers []*UserRoleModel `tfsdk:"role_users"`
 }
 
-func NewDatadogUserRolesDataSource() datasource.DataSource {
-	return &datadogUserRolesDataSource{}
+func NewDatadogRoleUsersDataSource() datasource.DataSource {
+	return &datadogRoleUsersDataSource{}
 }
 
-type datadogUserRolesDataSource struct {
+type datadogRoleUsersDataSource struct {
 	Api      *datadogV2.RolesApi
 	UsersApi *datadogV2.UsersApi
 	Auth     context.Context
 }
 
-func (r *datadogUserRolesDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (r *datadogRoleUsersDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetRolesApiV2()
 	r.UsersApi = providerData.DatadogApiInstances.GetUsersApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (d *datadogUserRolesDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "user_roles"
+func (d *datadogRoleUsersDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+	resp.TypeName = "role_users"
 }
 
-func (d *datadogUserRolesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *datadogRoleUsersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about existing Datadog user role assignments.",
+		Description: "Use this data source to retrieve information about existing Datadog role users assignments. Note that this data source is in beta and is subject to change.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource Parameters
 			"id": utils.ResourceIDAttribute(),
@@ -67,7 +67,7 @@ func (d *datadogUserRolesDataSource) Schema(_ context.Context, _ datasource.Sche
 				Optional:    true,
 			},
 			// Computed values
-			"user_roles": schema.ListAttribute{
+			"role_users": schema.ListAttribute{
 				Computed:    true,
 				Description: "List of users assigned to role.",
 				ElementType: types.ObjectType{
@@ -83,8 +83,8 @@ func (d *datadogUserRolesDataSource) Schema(_ context.Context, _ datasource.Sche
 
 }
 
-func (d *datadogUserRolesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state datadogUserRolesDataSourceModel
+func (d *datadogRoleUsersDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state datadogRoleUsersDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -123,7 +123,7 @@ func (d *datadogUserRolesDataSource) Read(ctx context.Context, req datasource.Re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *datadogUserRolesDataSource) updateState(state *datadogUserRolesDataSourceModel, roleUsers *[]datadogV2.User) {
+func (r *datadogRoleUsersDataSource) updateState(state *datadogRoleUsersDataSourceModel, roleUsers *[]datadogV2.User) {
 	roleId := state.RoleID.ValueString()
 
 	exactMatch := state.ExactMatch.ValueBool()
@@ -159,5 +159,5 @@ func (r *datadogUserRolesDataSource) updateState(state *datadogUserRolesDataSour
 	}
 
 	state.ID = types.StringValue(fmt.Sprintf("%s:%s", roleId, state.Filter.ValueString()))
-	state.UserRoles = userRoles
+	state.RoleUsers = userRoles
 }

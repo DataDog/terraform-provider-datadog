@@ -79,7 +79,7 @@ var Datasources = []func() datasource.DataSource{
 	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
-	NewDatadogUserRolesDataSource,
+	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 }
