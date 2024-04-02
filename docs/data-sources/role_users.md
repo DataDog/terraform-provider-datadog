@@ -34,6 +34,5 @@ Use this data source to retrieve information about existing Datadog role users a
 
 Read-Only:
 
-- `id` (String)
 - `role_id` (String)
 - `user_id` (String)

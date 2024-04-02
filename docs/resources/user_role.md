@@ -3,34 +3,31 @@
 page_title: "datadog_user_role Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog UserRole resource. This can be used to create and manage Datadog user_role. Note that this resource is in beta and is subject to change.
+  Provides a Datadog UserRole resource. This can be used to create and manage datadoguserrole, but should not be used with the datadog_user role attribute. Note that this resource is in beta and is subject to change.
 ---
 
 # datadog_user_role (Resource)
 
-Provides a Datadog UserRole resource. This can be used to create and manage Datadog user_role. Note that this resource is in beta and is subject to change.
+Provides a Datadog UserRole resource. This can be used to create and manage datadog_user_role, but should not be used with the datadog_user role attribute. Note that this resource is in beta and is subject to change.
 
 ## Example Usage
 
 ```terraform
-resource "datadog_role" "foo" {
+resource "datadog_role" "monitor_writer_role" {
   name = "foo"
-  permission {
-    id = data.datadog_permissions.bar.permissions.monitors_downtime
-  }
   permission {
     id = data.datadog_permissions.bar.permissions.monitors_write
   }
 }
 
-resource "datadog_user" "foo" {
+resource "datadog_user" "new_user" {
   email = "new@example.com"
 }
 
 # Create new user_role resource
-resource "datadog_user_role" "foo" {
-  role_id = datadog_role.foo.id
-  user_id = datadog_user.foo.id
+resource "datadog_user_role" "new_user_with_monitor_writer_role" {
+  role_id = datadog_role.monitor_writer_role.id
+  user_id = datadog_user.new_user.id
 }
 ```
 
@@ -53,5 +50,5 @@ Import is supported using the following syntax:
 ```shell
 # This resource is imported using user_id and role_id seperated by `:`.
 
-terraform import datadog_user_role.foo "${role_id}:${user_id}"
+terraform import datadog_user_role.user_with_admin_role "${role_id}:${user_id}"
 ```

@@ -44,6 +44,7 @@ func resourceDatadogUser() *schema.Resource {
 					Description: "A list a role IDs to assign to the user.",
 					Type:        schema.TypeSet,
 					Optional:    true,
+					Computed:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"send_user_invitation": {
