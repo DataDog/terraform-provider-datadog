@@ -412,7 +412,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 		"filter": {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Additional queries to filter matched events before they are processed.",
+			Description: "Additional queries to filter matched events before they are processed. **Note**: This field is deprecated for log detection, signal correlation, and workload security rules.",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"query": {
