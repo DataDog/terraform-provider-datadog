@@ -51,9 +51,6 @@ func testAccDatasourceRoleUsersConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_user" "foo" {
 	email = "%s@example.com"
-	lifecycle {
-		ignore_changes = [ roles ]
-	}
 }
 
 data "datadog_role" "std_role" {
@@ -81,17 +78,11 @@ data "datadog_role" "std_role" {
 resource "datadog_user" "foo" {
 	email = "%[1]s@example.com"
 	name  = "Foo BarBar"
-	lifecycle {
-		ignore_changes = [ roles ]
-	}
 }
 
 resource "datadog_user" "bar" {
 	email = "%[1]s1@example.com"
 	name  = "Foo Bar"
-	lifecycle {
-		ignore_changes = [ roles ]
-	}
 }
 
 resource "datadog_user_role" "foo" {

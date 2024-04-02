@@ -40,9 +40,6 @@ data "datadog_role" "std_role" {
 	  
 resource "datadog_user" "foo" {
 	email = "%s"
-	lifecycle {
-		ignore_changes = [ roles ]
-	}
 }
 	  
 # Create new user_role resource
