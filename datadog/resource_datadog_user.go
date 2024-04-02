@@ -130,17 +130,6 @@ func updateRoles(meta interface{}, userID string, oldRoles *schema.Set, newRoles
 	rolesToRemove := oldRoles.Difference(newRoles)
 	rolesToAdd := newRoles.Difference(oldRoles)
 
-	for _, roleI := range rolesToRemove.List() {
-		role := roleI.(string)
-		userRelation := datadogV2.NewRelationshipToUserWithDefaults()
-		userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
-		userRelationData.SetId(userID)
-		userRelation.SetData(*userRelationData)
-		_, httpResponse, err := apiInstances.GetRolesApiV2().RemoveUserFromRole(auth, role, *userRelation)
-		if err != nil {
-			return utils.TranslateClientErrorDiag(err, httpResponse, "error removing user from role")
-		}
-	}
 	for _, roleI := range rolesToAdd.List() {
 		role := roleI.(string)
 		roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
@@ -150,6 +139,17 @@ func updateRoles(meta interface{}, userID string, oldRoles *schema.Set, newRoles
 		_, httpResponse, err := apiInstances.GetRolesApiV2().AddUserToRole(auth, role, *roleRelation)
 		if err != nil {
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error adding user to role")
+		}
+	}
+	for _, roleI := range rolesToRemove.List() {
+		role := roleI.(string)
+		userRelation := datadogV2.NewRelationshipToUserWithDefaults()
+		userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+		userRelationData.SetId(userID)
+		userRelation.SetData(*userRelationData)
+		_, httpResponse, err := apiInstances.GetRolesApiV2().RemoveUserFromRole(auth, role, *userRelation)
+		if err != nil {
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error removing user from role")
 		}
 	}
 
