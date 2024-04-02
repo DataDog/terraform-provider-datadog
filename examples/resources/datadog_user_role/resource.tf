@@ -1,5 +1,5 @@
 resource "datadog_role" "monitor_writer_role" {
-  name = "foo"
+  name = "Monitor Writer Role"
   permission {
     id = data.datadog_permissions.bar.permissions.monitors_write
   }
