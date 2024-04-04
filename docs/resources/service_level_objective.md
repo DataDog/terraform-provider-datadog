@@ -166,7 +166,7 @@ Required:
 
 Required:
 
-- `time_slice` (Block List, Min: 1, Max: 1) The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. (see [below for nested schema](#nestedblock--sli_specification--time_slice))
+- `time_slice` (Block List, Min: 1, Max: 1) The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. Optionally, a fourth part, the query interval, can be provided. (see [below for nested schema](#nestedblock--sli_specification--time_slice))
 
 <a id="nestedblock--sli_specification--time_slice"></a>
 ### Nested Schema for `sli_specification.time_slice`
@@ -176,6 +176,10 @@ Required:
 - `comparator` (String) The comparator used to compare the SLI value to the threshold. Valid values are `>`, `>=`, `<`, `<=`.
 - `query` (Block List, Min: 1, Max: 1) A timeseries query, containing named data-source-specific queries and a formula involving the named queries. (see [below for nested schema](#nestedblock--sli_specification--time_slice--query))
 - `threshold` (Number) The threshold value to which each SLI value will be compared.
+
+Optional:
+
+- `query_interval_seconds` (Number) The interval used when querying data, which defines the size of a time slice. Valid values are `60`, `300`. Defaults to `300`.
 
 <a id="nestedblock--sli_specification--time_slice--query"></a>
 ### Nested Schema for `sli_specification.time_slice.query`

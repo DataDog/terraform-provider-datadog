@@ -248,7 +248,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 								MinItems:    1,
 								MaxItems:    1,
 								Required:    true,
-								Description: "The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold.",
+								Description: "The time slice condition, composed of 3 parts: 1. The timeseries query, 2. The comparator, and 3. The threshold. Optionally, a fourth part, the query interval, can be provided.",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"comparator": {
@@ -263,6 +263,13 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 											Description: "The threshold value to which each SLI value will be compared.",
 										},
 										"query": getTimeseriesQuerySchema(),
+										"query_interval_seconds": {
+											Type:             schema.TypeInt,
+											Optional:         true,
+											Default:          300,
+											Description:      "The interval used when querying data, which defines the size of a time slice.",
+											ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSLOTimeSliceIntervalFromValue),
+										},
 									},
 								},
 							},
@@ -413,6 +420,13 @@ func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.Servi
 						}
 						if threshold, ok := rawTimeSliceCond["threshold"].(float64); ok {
 							sliSpec.SLOTimeSliceSpec.TimeSlice.SetThreshold(threshold)
+						}
+						if queryInterval, ok := rawTimeSliceCond["query_interval_seconds"].(int); ok {
+							// Terraform doesn't have a way to represent an optional int, and so we
+							// will get a 0 value if the user doesn't specify a query_interval_seconds.
+							if queryInterval != 0 {
+								sliSpec.SLOTimeSliceSpec.TimeSlice.SetQueryIntervalSeconds(datadogV1.SLOTimeSliceInterval(queryInterval))
+							}
 						}
 					}
 				}
@@ -615,6 +629,9 @@ func buildTerraformSliSpecification(sliSpec *datadogV1.SLOSliSpec) []map[string]
 			"comparator": comparator,
 			"threshold":  threshold,
 			"query":      rawQuery,
+		}
+		if queryInterval, ok := sliSpec.SLOTimeSliceSpec.TimeSlice.GetQueryIntervalSecondsOk(); ok {
+			rawTimeSliceCond["query_interval_seconds"] = *queryInterval
 		}
 		rawTimeSliceSpec = append(rawTimeSliceSpec, rawTimeSliceCond)
 		rawSliSpec = append(rawSliSpec, map[string]interface{}{"time_slice": rawTimeSliceSpec})
