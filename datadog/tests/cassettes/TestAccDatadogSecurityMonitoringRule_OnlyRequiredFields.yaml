@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1704810503","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
+            {"cases":[{"condition":"a \u003e 0","name":"","notifications":[],"status":"high"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1712060621","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"","query":"does not really match much"}],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dic-aov-mn1","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1704810503","createdAt":1704810507962,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
+            {"id":"zhi-7li-ahv","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1712060621","createdAt":1712060623994,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 456.753ms
+        duration: 471.627542ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dic-aov-mn1
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zhi-7li-ahv
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dic-aov-mn1","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1704810503","createdAt":1704810507962,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
+            {"id":"zhi-7li-ahv","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1712060621","createdAt":1712060623994,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 343.832542ms
+        duration: 147.693834ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dic-aov-mn1
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zhi-7li-ahv
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dic-aov-mn1","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1704810503","createdAt":1704810507962,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
+            {"id":"zhi-7li-ahv","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1712060621","createdAt":1712060623994,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 186.356625ms
+        duration: 160.135333ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dic-aov-mn1
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zhi-7li-ahv
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,33 +137,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dic-aov-mn1","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1704810503","createdAt":1704810507962,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
+            {"id":"zhi-7li-ahv","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1712060621","createdAt":1712060623994,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":""}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"","status":"high","notifications":[],"condition":"a > 0"}],"message":"acceptance rule triggered","tags":[],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 205.328333ms
+        duration: 146.616709ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 860
+        content_length: 794
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1704810503 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"","metrics":[],"name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
+            {"cases":[{"condition":"first_updated \u003e 3","name":"high case (updated)","notifications":["@user"],"status":"medium"},{"condition":"first_updated \u003e 0","name":"warning case (updated)","notifications":[],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1712060621 - updated","options":{"decreaseCriticalityBasedOnEnv":false,"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["service"],"metric":"","metrics":[],"name":"first_updated","query":"does not really match much (updated)"}],"tags":["u:tomato","i:tomato"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dic-aov-mn1
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zhi-7li-ahv
         method: PUT
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dic-aov-mn1","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1704810503 - updated","createdAt":1704810507962,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+            {"id":"zhi-7li-ahv","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1712060621 - updated","createdAt":1712060623994,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 361.90175ms
+        duration: 192.629792ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dic-aov-mn1
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zhi-7li-ahv
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dic-aov-mn1","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1704810503 - updated","createdAt":1704810507962,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+            {"id":"zhi-7li-ahv","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1712060621 - updated","createdAt":1712060623994,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 136.485292ms
+        duration: 152.237583ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dic-aov-mn1
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zhi-7li-ahv
         method: GET
       response:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dic-aov-mn1","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1704810503 - updated","createdAt":1704810507962,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+            {"id":"zhi-7li-ahv","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields-local-1712060621 - updated","createdAt":1712060623994,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much (updated)","groupByFields":["service"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"first_updated"}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60,"decreaseCriticalityBasedOnEnv":false},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 3"},{"name":"warning case (updated)","status":"high","notifications":[],"condition":"first_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 142.038583ms
+        duration: 189.456541ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dic-aov-mn1
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zhi-7li-ahv
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -282,7 +282,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 216.247709ms
+        duration: 262.36275ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -299,7 +299,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/dic-aov-mn1
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/zhi-7li-ahv
         method: GET
       response:
         proto: HTTP/1.1
@@ -311,10 +311,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"errors":["Threat detection rule not found: dic-aov-mn1"]}
+            {"errors":["Threat detection rule not found: zhi-7li-ahv"]}
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 142.63425ms
+        duration: 146.9975ms

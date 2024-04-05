@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1314
+        content_length: 1182
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_0","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","distinctFields":[],"groupByFields":["host"],"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_1","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","distinctFields":[],"groupByFields":["host"],"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -32,26 +32,26 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"afc-iwk-v4i","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_0","createdAt":1704810508022,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"sxf-rjh-ijn","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_1","createdAt":1712060624076,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 416.914167ms
+        duration: 469.826416ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1314
+        content_length: 1182
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_1","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","distinctFields":[],"groupByFields":["host"],"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
+            {"cases":[{"condition":"first \u003e 3 || second \u003e 10","name":"high case","notifications":["@user"],"status":"high"},{"condition":"first \u003e 0 || second \u003e 0","name":"warning case","notifications":[],"status":"medium"},{"condition":"third \u003e 9000","name":"low case","notifications":[],"status":"low"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_0","options":{"decreaseCriticalityBasedOnEnv":true,"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","distinctFields":[],"groupByFields":["host"],"metric":"","metrics":[],"name":"first","query":"does not really match much"},{"aggregation":"cardinality","distinctFields":["@orgId"],"groupByFields":["host"],"metric":"","metrics":[],"name":"second","query":"does not really match much either"},{"aggregation":"sum","distinctFields":[],"groupByFields":["host"],"metric":"@network.bytes_read","metrics":[],"name":"third","query":"does not really match much either"}],"tags":["u:tomato","i:tomato"],"type":"log_detection"}
         form: {}
         headers:
             Accept:
@@ -70,26 +70,26 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"0so-4vi-vws","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_1","createdAt":1704810508034,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"2is-vro-afq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_0","createdAt":1712060624089,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 434.595ms
+        duration: 473.848084ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 835
+        content_length: 703
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first \u003e 0 \u0026\u0026 second \u003e 0","name":"high case","notifications":["@user"],"status":"high"}],"filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"event_count","correlatedByFields":["host"],"name":"first","ruleId":"afc-iwk-v4i"},{"aggregation":"event_count","correlatedByFields":["host"],"correlatedQueryIndex":1,"name":"second","ruleId":"0so-4vi-vws"}],"tags":["alert:red","attack:advanced"],"type":"signal_correlation"}
+            {"cases":[{"condition":"first \u003e 0 \u0026\u0026 second \u003e 0","name":"high case","notifications":["@user"],"status":"high"}],"hasExtendedTitle":true,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"event_count","correlatedByFields":["host"],"name":"first","ruleId":"2is-vro-afq"},{"aggregation":"event_count","correlatedByFields":["host"],"correlatedQueryIndex":1,"name":"second","ruleId":"sxf-rjh-ijn"}],"tags":["alert:red","attack:advanced"],"type":"signal_correlation"}
         form: {}
         headers:
             Accept:
@@ -108,13 +108,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"fxj-f3p-gaw","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503","createdAt":1704810508244,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first","ruleId":"afc-iwk-v4i","correlatedByFields":["host"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second","ruleId":"0so-4vi-vws","correlatedByFields":["host"],"correlatedQueryIndex":1}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 0 && second > 0"}],"message":"acceptance rule triggered","tags":["attack:advanced","alert:red"],"hasExtendedTitle":true,"type":"signal_correlation","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"shx-3si-fmo","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621","createdAt":1712060624267,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first","ruleId":"2is-vro-afq","correlatedByFields":["host"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second","ruleId":"sxf-rjh-ijn","correlatedByFields":["host"],"correlatedQueryIndex":1}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 0 && second > 0"}],"message":"acceptance rule triggered","tags":["attack:advanced","alert:red"],"hasExtendedTitle":true,"type":"signal_correlation","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 166.834333ms
+        duration: 149.334375ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -131,7 +131,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fxj-f3p-gaw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/shx-3si-fmo
         method: GET
       response:
         proto: HTTP/1.1
@@ -143,13 +143,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"fxj-f3p-gaw","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503","createdAt":1704810508244,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first","ruleId":"afc-iwk-v4i","correlatedByFields":["host"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second","ruleId":"0so-4vi-vws","correlatedByFields":["host"],"correlatedQueryIndex":1}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 0 && second > 0"}],"message":"acceptance rule triggered","tags":["attack:advanced","alert:red"],"hasExtendedTitle":true,"type":"signal_correlation","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"shx-3si-fmo","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621","createdAt":1712060624267,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first","ruleId":"2is-vro-afq","correlatedByFields":["host"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second","ruleId":"sxf-rjh-ijn","correlatedByFields":["host"],"correlatedQueryIndex":1}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 0 && second > 0"}],"message":"acceptance rule triggered","tags":["attack:advanced","alert:red"],"hasExtendedTitle":true,"type":"signal_correlation","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 278.609959ms
+        duration: 160.379042ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -166,7 +166,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/afc-iwk-v4i
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2is-vro-afq
         method: GET
       response:
         proto: HTTP/1.1
@@ -178,13 +178,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"afc-iwk-v4i","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_0","createdAt":1704810508022,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"2is-vro-afq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_0","createdAt":1712060624089,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 149.731542ms
+        duration: 154.669375ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -201,7 +201,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0so-4vi-vws
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sxf-rjh-ijn
         method: GET
       response:
         proto: HTTP/1.1
@@ -213,13 +213,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"0so-4vi-vws","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_1","createdAt":1704810508034,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"sxf-rjh-ijn","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_1","createdAt":1712060624076,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 162.464125ms
+        duration: 139.032291ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -236,7 +236,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/afc-iwk-v4i
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sxf-rjh-ijn
         method: GET
       response:
         proto: HTTP/1.1
@@ -248,13 +248,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"afc-iwk-v4i","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_0","createdAt":1704810508022,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"sxf-rjh-ijn","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_1","createdAt":1712060624076,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 138.803625ms
+        duration: 154.770708ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -271,7 +271,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0so-4vi-vws
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2is-vro-afq
         method: GET
       response:
         proto: HTTP/1.1
@@ -283,13 +283,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"0so-4vi-vws","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_1","createdAt":1704810508034,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"2is-vro-afq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_0","createdAt":1712060624089,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 248.988292ms
+        duration: 146.529792ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -306,7 +306,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fxj-f3p-gaw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/shx-3si-fmo
         method: GET
       response:
         proto: HTTP/1.1
@@ -318,13 +318,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"fxj-f3p-gaw","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503","createdAt":1704810508244,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first","ruleId":"afc-iwk-v4i","correlatedByFields":["host"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second","ruleId":"0so-4vi-vws","correlatedByFields":["host"],"correlatedQueryIndex":1}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 0 && second > 0"}],"message":"acceptance rule triggered","tags":["attack:advanced","alert:red"],"hasExtendedTitle":true,"type":"signal_correlation","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"shx-3si-fmo","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621","createdAt":1712060624267,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first","ruleId":"2is-vro-afq","correlatedByFields":["host"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second","ruleId":"sxf-rjh-ijn","correlatedByFields":["host"],"correlatedQueryIndex":1}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 0 && second > 0"}],"message":"acceptance rule triggered","tags":["attack:advanced","alert:red"],"hasExtendedTitle":true,"type":"signal_correlation","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 260.102167ms
+        duration: 143.456583ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -341,7 +341,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0so-4vi-vws
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2is-vro-afq
         method: GET
       response:
         proto: HTTP/1.1
@@ -353,13 +353,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"0so-4vi-vws","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_1","createdAt":1704810508034,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"2is-vro-afq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_0","createdAt":1712060624089,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 315.325416ms
+        duration: 140.632ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -376,7 +376,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/afc-iwk-v4i
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sxf-rjh-ijn
         method: GET
       response:
         proto: HTTP/1.1
@@ -388,13 +388,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"afc-iwk-v4i","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_0","createdAt":1704810508022,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"sxf-rjh-ijn","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_1","createdAt":1712060624076,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 315.168667ms
+        duration: 147.956417ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -411,7 +411,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fxj-f3p-gaw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/shx-3si-fmo
         method: GET
       response:
         proto: HTTP/1.1
@@ -423,33 +423,33 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"fxj-f3p-gaw","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503","createdAt":1704810508244,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first","ruleId":"afc-iwk-v4i","correlatedByFields":["host"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second","ruleId":"0so-4vi-vws","correlatedByFields":["host"],"correlatedQueryIndex":1}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 0 && second > 0"}],"message":"acceptance rule triggered","tags":["attack:advanced","alert:red"],"hasExtendedTitle":true,"type":"signal_correlation","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"shx-3si-fmo","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621","createdAt":1712060624267,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first","ruleId":"2is-vro-afq","correlatedByFields":["host"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second","ruleId":"sxf-rjh-ijn","correlatedByFields":["host"],"correlatedQueryIndex":1}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 0 && second > 0"}],"message":"acceptance rule triggered","tags":["attack:advanced","alert:red"],"hasExtendedTitle":true,"type":"signal_correlation","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 142.926333ms
+        duration: 147.349958ms
     - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 823
+        content_length: 757
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"condition":"first_updated \u003e 0 \u0026\u0026 second_updated \u003e 0","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"filters":[{"action":"suppress","query":"does not really suppress (updated)"}],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503 - updated","options":{"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"event_count","correlatedByFields":["service"],"name":"first_updated","ruleId":"afc-iwk-v4i"},{"aggregation":"event_count","correlatedByFields":["service"],"correlatedQueryIndex":0,"name":"second_updated","ruleId":"0so-4vi-vws"}],"tags":["alert:red","attack:advanced"]}
+            {"cases":[{"condition":"first_updated \u003e 0 \u0026\u0026 second_updated \u003e 0","name":"high case (updated)","notifications":["@user"],"status":"medium"}],"filters":[],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621 - updated","options":{"detectionMethod":"threshold","evaluationWindow":60,"keepAlive":300,"maxSignalDuration":600},"queries":[{"aggregation":"event_count","correlatedByFields":["service"],"name":"first_updated","ruleId":"2is-vro-afq"},{"aggregation":"event_count","correlatedByFields":["service"],"correlatedQueryIndex":0,"name":"second_updated","ruleId":"sxf-rjh-ijn"}],"tags":["alert:red","attack:advanced"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fxj-f3p-gaw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/shx-3si-fmo
         method: PUT
       response:
         proto: HTTP/1.1
@@ -461,13 +461,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"fxj-f3p-gaw","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503 - updated","createdAt":1704810508244,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first_updated","ruleId":"afc-iwk-v4i","correlatedByFields":["service"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second_updated","ruleId":"0so-4vi-vws","correlatedByFields":["service"],"correlatedQueryIndex":0}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 0 && second_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["attack:advanced","alert:red"],"hasExtendedTitle":false,"type":"signal_correlation","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+            {"id":"shx-3si-fmo","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621 - updated","createdAt":1712060624267,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first_updated","ruleId":"2is-vro-afq","correlatedByFields":["service"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second_updated","ruleId":"sxf-rjh-ijn","correlatedByFields":["service"],"correlatedQueryIndex":0}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 0 && second_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["attack:advanced","alert:red"],"hasExtendedTitle":false,"type":"signal_correlation","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 270.902167ms
+        duration: 221.453625ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -484,7 +484,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fxj-f3p-gaw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/shx-3si-fmo
         method: GET
       response:
         proto: HTTP/1.1
@@ -496,13 +496,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"fxj-f3p-gaw","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503 - updated","createdAt":1704810508244,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first_updated","ruleId":"afc-iwk-v4i","correlatedByFields":["service"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second_updated","ruleId":"0so-4vi-vws","correlatedByFields":["service"],"correlatedQueryIndex":0}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 0 && second_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["attack:advanced","alert:red"],"hasExtendedTitle":false,"type":"signal_correlation","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+            {"id":"shx-3si-fmo","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621 - updated","createdAt":1712060624267,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first_updated","ruleId":"2is-vro-afq","correlatedByFields":["service"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second_updated","ruleId":"sxf-rjh-ijn","correlatedByFields":["service"],"correlatedQueryIndex":0}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 0 && second_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["attack:advanced","alert:red"],"hasExtendedTitle":false,"type":"signal_correlation","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.391792ms
+        duration: 152.25475ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -519,7 +519,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/afc-iwk-v4i
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2is-vro-afq
         method: GET
       response:
         proto: HTTP/1.1
@@ -531,13 +531,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"afc-iwk-v4i","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_0","createdAt":1704810508022,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"2is-vro-afq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_0","createdAt":1712060624089,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 137.477625ms
+        duration: 145.549209ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -554,7 +554,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0so-4vi-vws
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sxf-rjh-ijn
         method: GET
       response:
         proto: HTTP/1.1
@@ -566,13 +566,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"0so-4vi-vws","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_1","createdAt":1704810508034,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"sxf-rjh-ijn","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_1","createdAt":1712060624076,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 145.13725ms
+        duration: 143.459333ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -589,7 +589,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/afc-iwk-v4i
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sxf-rjh-ijn
         method: GET
       response:
         proto: HTTP/1.1
@@ -601,13 +601,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"afc-iwk-v4i","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_0","createdAt":1704810508022,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"sxf-rjh-ijn","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_1","createdAt":1712060624076,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 142.524625ms
+        duration: 158.944459ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -624,7 +624,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0so-4vi-vws
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2is-vro-afq
         method: GET
       response:
         proto: HTTP/1.1
@@ -636,13 +636,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"0so-4vi-vws","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503_rule_1","createdAt":1704810508034,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[{"action":"suppress","query":"does not really suppress"},{"action":"require","query":"does not really require neither"}]}
+            {"id":"2is-vro-afq","version":1,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621_rule_0","createdAt":1712060624089,"creationAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"does not really match much","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":["@orgId"],"aggregation":"cardinality","name":"second"},{"query":"does not really match much either","groupByFields":["host"],"hasOptionalGroupByFields":false,"distinctFields":[],"metric":"@network.bytes_read","metrics":["@network.bytes_read"],"aggregation":"sum","name":"third"}],"options":{"keepAlive":600,"maxSignalDuration":900,"detectionMethod":"threshold","evaluationWindow":300,"decreaseCriticalityBasedOnEnv":true},"cases":[{"name":"high case","status":"high","notifications":["@user"],"condition":"first > 3 || second > 10"},{"name":"warning case","status":"medium","notifications":[],"condition":"first > 0 || second > 0"},{"name":"low case","status":"low","notifications":[],"condition":"third > 9000"}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":true,"type":"log_detection","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 176.969416ms
+        duration: 265.792792ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -659,7 +659,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fxj-f3p-gaw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/shx-3si-fmo
         method: GET
       response:
         proto: HTTP/1.1
@@ -671,13 +671,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"fxj-f3p-gaw","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1704810503 - updated","createdAt":1704810508244,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first_updated","ruleId":"afc-iwk-v4i","correlatedByFields":["service"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second_updated","ruleId":"0so-4vi-vws","correlatedByFields":["service"],"correlatedQueryIndex":0}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 0 && second_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["attack:advanced","alert:red"],"hasExtendedTitle":false,"type":"signal_correlation","filters":[{"action":"suppress","query":"does not really suppress (updated)"}]}
+            {"id":"shx-3si-fmo","version":2,"name":"tf-TestAccDatadogSecurityMonitoringRule_SignalCorrelation-local-1712060621 - updated","createdAt":1712060624267,"creationAuthorId":1445416,"updateAuthorId":1445416,"isDefault":false,"isPartner":false,"isEnabled":true,"isDeleted":false,"isDeprecated":false,"queries":[{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"first_updated","ruleId":"2is-vro-afq","correlatedByFields":["service"]},{"groupByFields":[],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"event_count","name":"second_updated","ruleId":"sxf-rjh-ijn","correlatedByFields":["service"],"correlatedQueryIndex":0}],"options":{"keepAlive":300,"maxSignalDuration":600,"detectionMethod":"threshold","evaluationWindow":60},"cases":[{"name":"high case (updated)","status":"medium","notifications":["@user"],"condition":"first_updated > 0 && second_updated > 0"}],"message":"acceptance rule triggered (updated)","tags":["attack:advanced","alert:red"],"hasExtendedTitle":false,"type":"signal_correlation","filters":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 136.882792ms
+        duration: 152.48825ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -694,7 +694,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fxj-f3p-gaw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/shx-3si-fmo
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -708,7 +708,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 182.951459ms
+        duration: 249.1785ms
     - id: 20
       request:
         proto: HTTP/1.1
@@ -725,7 +725,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/afc-iwk-v4i
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sxf-rjh-ijn
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -739,7 +739,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 180.562875ms
+        duration: 195.106792ms
     - id: 21
       request:
         proto: HTTP/1.1
@@ -756,7 +756,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0so-4vi-vws
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2is-vro-afq
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -770,7 +770,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 361.349375ms
+        duration: 214.243833ms
     - id: 22
       request:
         proto: HTTP/1.1
@@ -787,7 +787,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/fxj-f3p-gaw
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/shx-3si-fmo
         method: GET
       response:
         proto: HTTP/1.1
@@ -799,13 +799,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"errors":["Threat detection rule not found: fxj-f3p-gaw"]}
+            {"errors":["Threat detection rule not found: shx-3si-fmo"]}
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 146.776167ms
+        duration: 143.23825ms
     - id: 23
       request:
         proto: HTTP/1.1
@@ -822,7 +822,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/afc-iwk-v4i
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/2is-vro-afq
         method: GET
       response:
         proto: HTTP/1.1
@@ -834,13 +834,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"errors":["Threat detection rule not found: afc-iwk-v4i"]}
+            {"errors":["Threat detection rule not found: 2is-vro-afq"]}
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 135.116917ms
+        duration: 165.160667ms
     - id: 24
       request:
         proto: HTTP/1.1
@@ -857,7 +857,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/0so-4vi-vws
+        url: https://api.datadoghq.com/api/v2/security_monitoring/rules/sxf-rjh-ijn
         method: GET
       response:
         proto: HTTP/1.1
@@ -869,10 +869,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"errors":["Threat detection rule not found: 0so-4vi-vws"]}
+            {"errors":["Threat detection rule not found: sxf-rjh-ijn"]}
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 138.295625ms
+        duration: 149.729291ms
