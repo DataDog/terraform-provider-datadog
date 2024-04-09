@@ -314,7 +314,7 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "true"),
+						"datadog_monitor.foo", "locked", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
@@ -464,7 +464,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "true"),
+						"datadog_monitor.foo", "locked", "false"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_monitor.foo", "tags.#"),
 					resource.TestCheckResourceAttr(
@@ -1309,7 +1309,7 @@ resource "datadog_monitor" "foo" {
   timeout_h = 10
   include_tags = false
   require_full_window = false
-  locked = true
+  locked = false
   tags = ["baz:qux", "quux"]
   notification_preset_name = "show_all"
 }`, uniq)
@@ -1342,7 +1342,7 @@ resource "datadog_monitor" "foo" {
   timeout_h = 10
   include_tags = false
   require_full_window = false
-  locked = true
+  locked = false
   notification_preset_name = "show_all"
 }`, uniq)
 }
