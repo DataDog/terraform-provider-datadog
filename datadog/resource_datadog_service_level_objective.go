@@ -335,28 +335,31 @@ func buildSLOTimeSliceQueryStruct(d []interface{}) *datadogV1.SLOTimeSliceQuery 
 	ret.Formulas = make([]datadogV1.SLOFormula, 0)
 	ret.Queries = make([]datadogV1.SLODataSourceQueryDefinition, 0)
 	if (len(d)) > 0 {
-		raw := d[0].(map[string]interface{})
-		if rawFormulas, ok := raw["formula"].([]interface{}); ok {
-			for _, rawFormulaEl := range rawFormulas {
-				rawFormula := rawFormulaEl.(map[string]interface{})
-				if formula, ok := rawFormula["formula_expression"].(string); ok {
-					ret.Formulas = append(ret.Formulas, *datadogV1.NewSLOFormula(formula))
+		if raw, ok := d[0].(map[string]interface{}); ok {
+			if rawFormulas, ok := raw["formula"].([]interface{}); ok {
+				for _, rawFormulaEl := range rawFormulas {
+					if rawFormula, ok := rawFormulaEl.(map[string]interface{}); ok {
+						if formula, ok := rawFormula["formula_expression"].(string); ok {
+							ret.Formulas = append(ret.Formulas, *datadogV1.NewSLOFormula(formula))
+						}
+					}
 				}
 			}
-		}
-		if rawQueries, ok := raw["query"].([]interface{}); ok {
-			for _, rawQueryEl := range rawQueries {
-				rawQuery := rawQueryEl.(map[string]interface{})
-				rawMetricQueries := rawQuery["metric_query"].([]interface{})
-				if len(rawMetricQueries) >= 1 {
-					rawMetricQuery := rawMetricQueries[0].(map[string]interface{})
-					name := rawMetricQuery["name"].(string)
-					query := rawMetricQuery["query"].(string)
-					rawDataSource := rawMetricQuery["data_source"].(string)
-					dataSource, _ := datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue(rawDataSource)
-					ret.Queries = append(ret.Queries,
-						datadogV1.FormulaAndFunctionMetricQueryDefinitionAsSLODataSourceQueryDefinition(
-							datadogV1.NewFormulaAndFunctionMetricQueryDefinition(*dataSource, name, query)))
+			if rawQueries, ok := raw["query"].([]interface{}); ok {
+				for _, rawQueryEl := range rawQueries {
+					rawQuery := rawQueryEl.(map[string]interface{})
+					rawMetricQueries := rawQuery["metric_query"].([]interface{})
+					if len(rawMetricQueries) >= 1 {
+						if rawMetricQuery, ok := rawMetricQueries[0].(map[string]interface{}); ok {
+							name := rawMetricQuery["name"].(string)
+							query := rawMetricQuery["query"].(string)
+							rawDataSource := rawMetricQuery["data_source"].(string)
+							dataSource, _ := datadogV1.NewFormulaAndFunctionMetricDataSourceFromValue(rawDataSource)
+							ret.Queries = append(ret.Queries,
+								datadogV1.FormulaAndFunctionMetricQueryDefinitionAsSLODataSourceQueryDefinition(
+									datadogV1.NewFormulaAndFunctionMetricQueryDefinition(*dataSource, name, query)))
+						}
+					}
 				}
 			}
 		}
