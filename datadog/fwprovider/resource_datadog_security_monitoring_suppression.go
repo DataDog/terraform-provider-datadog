@@ -73,7 +73,7 @@ func (r *securityMonitoringSuppressionResource) Schema(_ context.Context, _ reso
 				Description: "The rule query of the suppression rule, with the same syntax as the search bar for detection rules.",
 			},
 			"suppression_query": schema.StringAttribute{
-				Required:    true,
+				Optional:    true,
 				Description: "The suppression query of the suppression rule. If a signal matches this query, it is suppressed and is not triggered. Same syntax as the queries to search signals in the signal explorer.",
 			},
 		},
@@ -191,7 +191,8 @@ func (r *securityMonitoringSuppressionResource) buildCreateSecurityMonitoringSup
 		return nil, err
 	}
 
-	attributes := datadogV2.NewSecurityMonitoringSuppressionCreateAttributes(enabled, name, ruleQuery, suppressionQuery)
+	attributes := datadogV2.NewSecurityMonitoringSuppressionCreateAttributes(enabled, name, ruleQuery)
+	attributes.SuppressionQuery = suppressionQuery
 	attributes.Description = description
 	attributes.ExpirationDate = expirationDate
 
@@ -216,30 +217,30 @@ func (r *securityMonitoringSuppressionResource) buildUpdateSecurityMonitoringSup
 		attributes.SetExpirationDateNil()
 	}
 	attributes.SetRuleQuery(ruleQuery)
-	attributes.SetSuppressionQuery(suppressionQuery)
+	attributes.SuppressionQuery = suppressionQuery
 
 	data := datadogV2.NewSecurityMonitoringSuppressionUpdateData(*attributes, datadogV2.SECURITYMONITORINGSUPPRESSIONTYPE_SUPPRESSIONS)
 	return datadogV2.NewSecurityMonitoringSuppressionUpdateRequest(*data), nil
 }
 
-func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFromResource(state *securityMonitoringSuppressionModel) (string, *string, bool, *int64, string, string, error) {
+func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFromResource(state *securityMonitoringSuppressionModel) (string, *string, bool, *int64, string, *string, error) {
 	// Mandatory fields
 
 	name := state.Name.ValueString()
 	enabled := state.Enabled.ValueBool()
 	ruleQuery := state.RuleQuery.ValueString()
-	suppressionQuery := state.SuppressionQuery.ValueString()
 
 	// Optional fields
 
 	description := state.Description.ValueStringPointer()
+	suppressionQuery := state.SuppressionQuery.ValueStringPointer()
 	var expirationDate *int64
 
 	if tfExpirationDate := state.ExpirationDate.ValueStringPointer(); tfExpirationDate != nil {
 		expirationDateTime, err := time.Parse(time.RFC3339, *tfExpirationDate)
 
 		if err != nil {
-			return "", nil, false, nil, "", "", err
+			return "", nil, false, nil, "", nil, err
 		}
 
 		expirationDateTimestamp := expirationDateTime.UnixMilli()
