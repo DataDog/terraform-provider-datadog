@@ -302,16 +302,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
         decrease_criticality_based_on_env = true
     }
 
-	filter {
-        query = "does not really suppress"
-        action = "suppress"
-    }
-
-	filter {
-        query = "does not really require neither"
-        action = "require"
-    }
-
     tags = ["i:tomato", "u:tomato"]
 }
 `, suffix, name)
@@ -392,14 +382,6 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider func() (*s
 			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.decrease_criticality_based_on_env", "true"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.1.action", "require"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.1.query", "does not really require neither"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckTypeSetElemAttr(
@@ -776,11 +758,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         max_signal_duration = 600
     }
 
-	filter {
-        query = "does not really suppress (updated)"
-        action = "suppress"
-    }
-
     tags = ["u:tomato", "i:tomato"]
 }
 `, name)
@@ -829,10 +806,6 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schem
 			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.decrease_criticality_based_on_env", "false"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "u:tomato"),
 		resource.TestCheckTypeSetElemAttr(
@@ -1033,11 +1006,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         max_signal_duration = 600
     }
 
-	filter {
-        query = "does not really suppress (updated)"
-        action = "suppress"
-    }
-
     tags = ["u:tomato", "i:tomato"]
 }
 `, name)
@@ -1081,16 +1049,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		evaluation_window = 300
 		keep_alive = 600
 		max_signal_duration = 900
-	}
-
-	filter {
-		query = "does not really suppress"
-		action = "suppress"
-	}
-
-	filter {
-		query = "does not really require neither"
-		action = "require"
 	}
 
 	type = "signal_correlation"
@@ -1151,14 +1109,6 @@ func testAccCheckDatadogSecurityMonitorCreatedSignalCorrelationCheck(accProvider
 			tfSecurityRuleName, "options.0.keep_alive", "600"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.1.action", "require"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.1.query", "does not really require neither"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "alert:red"),
 		resource.TestCheckTypeSetElemAttr(
@@ -1204,11 +1154,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		evaluation_window = 60
 		keep_alive = 300
 		max_signal_duration = 600
-	}
-
-	filter {
-		query = "does not really suppress (updated)"
-		action = "suppress"
 	}
 
 	type = "signal_correlation"
@@ -1263,10 +1208,6 @@ func testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvid
 			tfSecurityRuleName, "options.0.keep_alive", "300"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "alert:red"),
 		resource.TestCheckTypeSetElemAttr(
@@ -1313,10 +1254,6 @@ func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider func()
 			tfSecurityRuleName, "options.0.keep_alive", "300"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "u:tomato"),
 		resource.TestCheckTypeSetElemAttr(
