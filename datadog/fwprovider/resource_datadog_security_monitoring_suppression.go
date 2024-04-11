@@ -191,7 +191,8 @@ func (r *securityMonitoringSuppressionResource) buildCreateSecurityMonitoringSup
 		return nil, err
 	}
 
-	attributes := datadogV2.NewSecurityMonitoringSuppressionCreateAttributes(enabled, name, ruleQuery, suppressionQuery)
+	attributes := datadogV2.NewSecurityMonitoringSuppressionCreateAttributes(enabled, name, ruleQuery)
+	attributes.SetSuppressionQuery(suppressionQuery)
 	attributes.Description = description
 	attributes.ExpirationDate = expirationDate
 
