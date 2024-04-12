@@ -39,7 +39,12 @@ func resourceDatadogAuthnMapping() *schema.Resource {
 				"role": {
 					Description: "The ID of a role to attach to all users with the corresponding key and value.",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
+				},
+				"team": {
+					Description: "The ID of a team to add all users with the corresponding key and value to.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 			}
 		},
