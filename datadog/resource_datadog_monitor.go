@@ -641,7 +641,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 					scheduling_options.SetCustomSchedule(*custom_schedule)
 				}
 			}
-			if len(scheduling_options_list) > 0 {
+			if scheduling_options.HasCustomSchedule() || scheduling_options.HasEvaluationWindow() {
 				o.SetSchedulingOptions(*scheduling_options)
 			}
 
