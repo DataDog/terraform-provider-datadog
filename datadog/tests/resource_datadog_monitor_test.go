@@ -958,6 +958,47 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogMonitorWithEmptySchedulingOptions(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%[1]s"
+  type = "metric alert"
+  message = "%[1]s"
+  priority = 3
+
+  query = "avg(last_1h):avg:system.load.5{*} > 4"
+
+  monitor_thresholds {
+	critical = "4"
+  }
+
+  scheduling_options {}
+}`, uniq)
+}
+
+func TestAccDatadogMonitor_EmptySchedulingOptions(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithEmptySchedulingOptions(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogMonitor_SchedulingOptionsHourStart(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)

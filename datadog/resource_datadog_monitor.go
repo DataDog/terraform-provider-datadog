@@ -960,7 +960,6 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		}
 	}
 
-	log.Printf("[DEBUG] monitor: %+v", m)
 	if err := d.Set("name", m.GetName()); err != nil {
 		return diag.FromErr(err)
 	}
