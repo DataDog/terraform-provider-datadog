@@ -26,6 +26,7 @@ Use this data source to retrieve information about existing suppression rules, a
 
 Read-Only:
 
+- `data_exclusion_query` (String)
 - `description` (String)
 - `enabled` (Boolean)
 - `expiration_date` (String)
