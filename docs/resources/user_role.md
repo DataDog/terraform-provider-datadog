@@ -3,12 +3,12 @@
 page_title: "datadog_user_role Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog UserRole resource. This can be used to create and manage datadoguserrole, but should not be used with the datadog_user role attribute. Note that this resource is in beta and is subject to change.
+  Provides a Datadog UserRole resource. This can be used to create and manage Datadog User Roles. Conflicts may occur if used together with the datadog_user resource's roles attribute. This resource is in beta and is subject to change.
 ---
 
 # datadog_user_role (Resource)
 
-Provides a Datadog UserRole resource. This can be used to create and manage datadog_user_role, but should not be used with the datadog_user role attribute. Note that this resource is in beta and is subject to change.
+Provides a Datadog UserRole resource. This can be used to create and manage Datadog User Roles. Conflicts may occur if used together with the `datadog_user` resource's `roles` attribute. This resource is in beta and is subject to change.
 
 ## Example Usage
 

@@ -37,11 +37,11 @@ func testAccCheckDatadogUserRole(username string) string {
 data "datadog_role" "std_role" {
 	filter = "Datadog Standard Role"
 }
-	  
+
 resource "datadog_user" "foo" {
 	email = "%s"
 }
-	  
+
 # Create new user_role resource
 resource "datadog_user_role" "foo" {
 	role_id = data.datadog_role.std_role.id

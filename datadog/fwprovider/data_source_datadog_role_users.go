@@ -55,7 +55,7 @@ func (d *datadogRoleUsersDataSource) Metadata(_ context.Context, req datasource.
 
 func (d *datadogRoleUsersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about existing Datadog role users assignments. Note that this data source is in beta and is subject to change.",
+		Description: "Use this data source to retrieve information about existing Datadog role users assignments. This data source is in beta and is subject to change.",
 		Attributes: map[string]schema.Attribute{
 			// Datasource Parameters
 			"id": utils.ResourceIDAttribute(),

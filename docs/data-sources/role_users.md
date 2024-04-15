@@ -3,12 +3,12 @@
 page_title: "datadog_role_users Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about existing Datadog role users assignments. Note that this data source is in beta and is subject to change.
+  Use this data source to retrieve information about existing Datadog role users assignments. This data source is in beta and is subject to change.
 ---
 
 # datadog_role_users (Data Source)
 
-Use this data source to retrieve information about existing Datadog role users assignments. Note that this data source is in beta and is subject to change.
+Use this data source to retrieve information about existing Datadog role users assignments. This data source is in beta and is subject to change.
 
 
 

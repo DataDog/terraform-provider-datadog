@@ -50,20 +50,20 @@ func TestAccDatadogRoleUsersDatasourceExactMatch(t *testing.T) {
 func testAccDatasourceRoleUsersConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_user" "foo" {
-	email = "%s@example.com"
+	email = "%[1]s@example.com"
 }
 
-data "datadog_role" "std_role" {
-	filter = "Datadog Standard Role"
+resource "datadog_role" "uniq_role" {
+	name = "%[1]s"
 }
 
 resource "datadog_user_role" "foo" {
-	role_id = data.datadog_role.std_role.id
+	role_id = datadog_role.uniq_role.id
 	user_id = datadog_user.foo.id
 }
 
 data "datadog_role_users" "foo" {
-	role_id    = data.datadog_role.std_role.id
+	role_id    = datadog_role.uniq_role.id
 	depends_on = [ datadog_user_role.foo ]
 }
 `, uniq)
@@ -71,8 +71,8 @@ data "datadog_role_users" "foo" {
 
 func testAccDatasourceRoleUsersExactMatchConfig(uniq, exactMatch string) string {
 	return fmt.Sprintf(`
-data "datadog_role" "std_role" {
-	filter = "Datadog Standard Role"
+resource "datadog_role" "uniq_role" {
+	name = "%[1]s"
 }
 
 resource "datadog_user" "foo" {
@@ -86,17 +86,17 @@ resource "datadog_user" "bar" {
 }
 
 resource "datadog_user_role" "foo" {
-	role_id = data.datadog_role.std_role.id
+	role_id = datadog_role.uniq_role.id
 	user_id = datadog_user.foo.id
 }
 
 resource "datadog_user_role" "bar" {
-	role_id = data.datadog_role.std_role.id
+	role_id = datadog_role.uniq_role.id
 	user_id = datadog_user.bar.id
 }
 
 data "datadog_role_users" "ru" {
-	role_id        = data.datadog_role.std_role.id
+	role_id        = datadog_role.uniq_role.id
 	exact_match    = %[2]s
 	filter         = "Foo Bar"
 	depends_on     = [ datadog_user_role.foo, datadog_user_role.bar ]
