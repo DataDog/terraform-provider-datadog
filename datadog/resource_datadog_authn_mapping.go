@@ -226,13 +226,13 @@ func buildAuthNMappingUpdateRequest(d *schema.ResourceData) *datadogV2.AuthNMapp
 }
 
 func buildRoleRelations(d *schema.ResourceData) *datadogV2.RelationshipToRole {
-	roleRelations := datadogV2.NewRelationshipToRoleWithDefaults()
-	roleRelationsData := datadogV2.NewRelationshipToRoleDataWithDefaults()
-
 	role := d.Get("role")
-	if role == nil {
+	if role == nil || role == "" {
 		return nil
 	}
+
+	roleRelations := datadogV2.NewRelationshipToRoleWithDefaults()
+	roleRelationsData := datadogV2.NewRelationshipToRoleDataWithDefaults()
 
 	roleRelationsData.SetId(role.(string))
 	roleRelations.SetData(*roleRelationsData)
@@ -240,13 +240,13 @@ func buildRoleRelations(d *schema.ResourceData) *datadogV2.RelationshipToRole {
 }
 
 func buildTeamRelations(d *schema.ResourceData) *datadogV2.RelationshipToTeam {
-	teamRelations := datadogV2.NewRelationshipToTeamWithDefaults()
-	teamRelationsData := datadogV2.NewRelationshipToTeamDataWithDefaults()
-
 	team := d.Get("team")
-	if team == nil {
+	if team == nil || team == "" {
 		return nil
 	}
+
+	teamRelations := datadogV2.NewRelationshipToTeamWithDefaults()
+	teamRelationsData := datadogV2.NewRelationshipToTeamDataWithDefaults()
 
 	teamRelationsData.SetId(team.(string))
 	teamRelations.SetData(*teamRelationsData)

@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -13,8 +14,8 @@ import (
 
 func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	// uniq := strings.ToLower(uniqueEntityName(ctx, t))
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -37,6 +38,15 @@ func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "key", "key_2"),
 					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "value", "value_2"),
 					testCheckAuthNMappingHasRole("datadog_authn_mapping.foo", "data.datadog_role.standard_role"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogAuthNMappingTeamConfig(uniq, "key_1", "value_1"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAuthNMappingExists(providers.frameworkProvider, "datadog_authn_mapping.foo-team"),
+					resource.TestCheckResourceAttr("datadog_authn_mapping.foo-team", "key", "key_1"),
+					resource.TestCheckResourceAttr("datadog_authn_mapping.foo-team", "value", "value_1"),
+					testCheckAuthNMappingHasTeam("datadog_authn_mapping.foo-team", "datadog_team.foo"),
 				),
 			},
 		},
@@ -89,10 +99,10 @@ func testAccCheckDatadogAuthNMappingTeamConfig(uniq, key string, val string) str
 	}
 	  
 	# Create a new AuthN mapping
-	resource "datadog_authn_mapping" "foo" {
+	resource "datadog_authn_mapping" "foo-team" {
 	  key   = "%s"
 	  value = "%s"
-	  team  = data.datadog_team.foo.id
+	  team  = datadog_team.foo.id
 	}`, uniq, uniq, key, val)
 }
 
@@ -156,5 +166,14 @@ func testCheckAuthNMappingHasRole(authNMappingName string, roleSource string) re
 		roleID := rootModule.Resources[roleSource].Primary.Attributes["id"]
 
 		return resource.TestCheckResourceAttr(authNMappingName, "role", roleID)(s)
+	}
+}
+
+func testCheckAuthNMappingHasTeam(authNMappingName string, teamSource string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rootModule := s.RootModule()
+		teamID := rootModule.Resources[teamSource].Primary.Attributes["id"]
+
+		return resource.TestCheckResourceAttr(authNMappingName, "team", teamID)(s)
 	}
 }
