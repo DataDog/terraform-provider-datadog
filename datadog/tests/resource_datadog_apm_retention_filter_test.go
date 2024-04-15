@@ -132,7 +132,7 @@ func buildApmRetentionFilterResourceConfig(name, query string, rate string) stri
 			filter {
 				query = "%[3]s"
 			}
-			filter_type = "spans-sampling-processor"
+			filter_type = "spans-appsec-sampling-processor"
 			enabled = false
 		}
 	`, name, rate, query)

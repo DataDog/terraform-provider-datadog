@@ -157,19 +157,15 @@ func buildAuthNMappingCreateRequest(d *schema.ResourceData) *datadogV2.AuthNMapp
 	authNMappingCreateRequest := datadogV2.NewAuthNMappingCreateRequestWithDefaults()
 	authNMappingCreateData := datadogV2.NewAuthNMappingCreateDataWithDefaults()
 	authNMappingCreateAttrs := datadogV2.NewAuthNMappingCreateAttributesWithDefaults()
-	authNMappingRelations := datadogV2.NewAuthNMappingCreateRelationshipsWithDefaults()
 
 	// Set AuthN mapping Attributes
 	authNMappingCreateAttrs.SetAttributeKey(d.Get("key").(string))
 	authNMappingCreateAttrs.SetAttributeValue(d.Get("value").(string))
 
 	// Set AuthN mapping Relationships
-	roleRelations := buildRoleRelations(d)
-	authNMappingRelations.SetRole(*roleRelations)
 
 	// Set AuthN mapping create data
 	authNMappingCreateData.SetAttributes(*authNMappingCreateAttrs)
-	authNMappingCreateData.SetRelationships(*authNMappingRelations)
 
 	// Set AuthN mapping create request
 	authNMappingCreateRequest.SetData(*authNMappingCreateData)
@@ -180,19 +176,15 @@ func buildAuthNMappingUpdateRequest(d *schema.ResourceData) *datadogV2.AuthNMapp
 	authNMappingUpdateRequest := datadogV2.NewAuthNMappingUpdateRequestWithDefaults()
 	authNMappingUpdateData := datadogV2.NewAuthNMappingUpdateDataWithDefaults()
 	authNMappingUpdateAttrs := datadogV2.NewAuthNMappingUpdateAttributesWithDefaults()
-	authNMappingRelations := datadogV2.NewAuthNMappingUpdateRelationshipsWithDefaults()
 
 	// Set AuthN mapping Attributes
 	authNMappingUpdateAttrs.SetAttributeKey(d.Get("key").(string))
 	authNMappingUpdateAttrs.SetAttributeValue(d.Get("value").(string))
 
 	// Set AuthN mapping Relationships
-	roleRelations := buildRoleRelations(d)
-	authNMappingRelations.SetRole(*roleRelations)
 
 	// Set AuthN mapping update data
 	authNMappingUpdateData.SetAttributes(*authNMappingUpdateAttrs)
-	authNMappingUpdateData.SetRelationships(*authNMappingRelations)
 	authNMappingUpdateData.SetId(d.Id())
 
 	// Set AuthN mapping update request

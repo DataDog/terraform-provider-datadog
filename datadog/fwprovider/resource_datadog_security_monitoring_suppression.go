@@ -185,13 +185,13 @@ func (r *securityMonitoringSuppressionResource) Delete(ctx context.Context, requ
 }
 
 func (r *securityMonitoringSuppressionResource) buildCreateSecurityMonitoringSuppressionPayload(state *securityMonitoringSuppressionModel) (*datadogV2.SecurityMonitoringSuppressionCreateRequest, error) {
-	name, description, enabled, expirationDate, ruleQuery, suppressionQuery, err := r.extractSuppressionAttributesFromResource(state)
+	name, description, enabled, expirationDate, ruleQuery, _, err := r.extractSuppressionAttributesFromResource(state)
 
 	if err != nil {
 		return nil, err
 	}
 
-	attributes := datadogV2.NewSecurityMonitoringSuppressionCreateAttributes(enabled, name, ruleQuery, suppressionQuery)
+	attributes := datadogV2.NewSecurityMonitoringSuppressionCreateAttributes(enabled, name, ruleQuery)
 	attributes.Description = description
 	attributes.ExpirationDate = expirationDate
 

@@ -67,6 +67,7 @@ func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 			"name": schema.StringAttribute{
 				Description: "The name of the retention filter.",
 				Required:    true,
+				Validators:  []validator.String{validators.Float64Between(1, 255)},
 			},
 			"id": utils.ResourceIDAttribute(),
 			"enabled": schema.BoolAttribute{
@@ -76,7 +77,7 @@ func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 			"filter_type": schema.StringAttribute{
 				Description: "The type of the retention filter, currently only spans-processing-sampling is available.",
 				Required:    true,
-				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewRetentionFilterTypeFromValue)},
+				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewRetentionFilterAllTypeFromValue)},
 			},
 			"rate": schema.StringAttribute{
 				Description: "Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.",
@@ -132,13 +133,56 @@ func (r *ApmRetentionFilterResource) Read(ctx context.Context, request resource.
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
+func (r *ApmRetentionFilterResource) getAndUpdate(state *ApmRetentionFilterModel, ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	resp, _, err := r.Api.ListApmRetentionFilters(r.Auth)
+	if err != nil {
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		return
+	}
+	for _, rfa := range resp.Data {
+		if string(rfa.Attributes.GetFilterType()) == state.FilterType.ValueString() {
+			state.ID = types.StringValue(rfa.Id)
+			state.Name = types.StringValue(rfa.Attributes.GetName())
+			break
+		}
+	}
+
+	body, diags := r.buildApmRetentionFilterUpdateRequestBody(ctx, state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	apmRetentionFilterMutex.Lock()
+	defer apmRetentionFilterMutex.Unlock()
+
+	respUpdate, _, err := r.Api.UpdateApmRetentionFilter(r.Auth, state.ID.ValueString(), *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving retention filter"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+	r.updateState(ctx, state, &respUpdate)
+
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
 func (r *ApmRetentionFilterResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state ApmRetentionFilterModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
-
+	if state.FilterType.ValueString() != "spans-processing-sampling" {
+		r.getAndUpdate(&state, ctx, request, response)
+		return
+	}
 	body, diags := r.buildRetentionFilterCreateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -263,10 +307,10 @@ func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(ctx c
 
 func (r *ApmRetentionFilterResource) buildApmRetentionFilterUpdateRequestBody(ctx context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewRetentionFilterCreateAttributesWithDefaults()
+	attributes := datadogV2.NewRetentionFilterUpdateAttributesWithDefaults()
 
 	attributes.SetName(state.Name.ValueString())
-	attributes.SetFilterType(datadogV2.RetentionFilterType(state.FilterType.ValueString()))
+	attributes.SetFilterType(datadogV2.RetentionFilterAllType(state.FilterType.ValueString()))
 	fValue, err := strconv.ParseFloat(state.Rate.ValueString(), 64)
 	if err != nil {
 		diags.AddError("rate", fmt.Sprintf("error parsing rate: %s", err))
