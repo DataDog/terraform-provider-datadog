@@ -3,30 +3,29 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogAuthNMappingDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogAuthNMappingDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAuthNMappingConfig("key_1", "value_1"),
+				Config: testAccCheckDatadogAuthNMappingRoleConfig("key_1", "value_1"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogAuthNMappingExists(accProvider, "datadog_authn_mapping.foo"),
+					testAccCheckDatadogAuthNMappingExists(providers.frameworkProvider, "datadog_authn_mapping.foo"),
 					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "key", "key_1"),
 					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "value", "value_1"),
 					testCheckAuthNMappingHasRole("datadog_authn_mapping.foo", "data.datadog_role.ro_role"),
@@ -35,10 +34,19 @@ func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 			{
 				Config: testAccCheckDatadogAuthNMappingConfigUpdated("key_2", "value_2"),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogAuthNMappingExists(accProvider, "datadog_authn_mapping.foo"),
+					testAccCheckDatadogAuthNMappingExists(providers.frameworkProvider, "datadog_authn_mapping.foo"),
 					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "key", "key_2"),
 					resource.TestCheckResourceAttr("datadog_authn_mapping.foo", "value", "value_2"),
 					testCheckAuthNMappingHasRole("datadog_authn_mapping.foo", "data.datadog_role.standard_role"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogAuthNMappingTeamConfig(uniq, "key_1", "value_1"),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogAuthNMappingExists(providers.frameworkProvider, "datadog_authn_mapping.foo-team"),
+					resource.TestCheckResourceAttr("datadog_authn_mapping.foo-team", "key", "key_1"),
+					resource.TestCheckResourceAttr("datadog_authn_mapping.foo-team", "value", "value_1"),
+					testCheckAuthNMappingHasTeam("datadog_authn_mapping.foo-team", "datadog_team.foo"),
 				),
 			},
 		},
@@ -47,16 +55,15 @@ func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 
 func TestAccDatadogAuthNMapping_import(t *testing.T) {
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogAuthNMappingDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogAuthNMappingDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAuthNMappingConfig("key_1", "value_1"),
+				Config: testAccCheckDatadogAuthNMappingRoleConfig("key_1", "value_1"),
 			},
 			{
 				ResourceName:      "datadog_authn_mapping.foo",
@@ -67,8 +74,8 @@ func TestAccDatadogAuthNMapping_import(t *testing.T) {
 	})
 }
 
-// Create Terraform Config for AuthN Mapping
-func testAccCheckDatadogAuthNMappingConfig(key string, val string) string {
+// Create Terraform Config for AuthN Mapping with role
+func testAccCheckDatadogAuthNMappingRoleConfig(key string, val string) string {
 	return fmt.Sprintf(`
 	data "datadog_role" "ro_role" {
 		filter = "Datadog Read Only Role"
@@ -80,6 +87,23 @@ func testAccCheckDatadogAuthNMappingConfig(key string, val string) string {
 	  value = "%s"
 	  role  = data.datadog_role.ro_role.id
 	}`, key, val)
+}
+
+// Create Terraform Config for AuthN Mapping with team
+func testAccCheckDatadogAuthNMappingTeamConfig(uniq, key string, val string) string {
+	return fmt.Sprintf(`
+	resource "datadog_team" "foo" {
+		description = "Example team"
+		handle      = "%s"
+		name        = "%s"
+	}
+	  
+	# Create a new AuthN mapping
+	resource "datadog_authn_mapping" "foo-team" {
+	  key   = "%s"
+	  value = "%s"
+	  team  = datadog_team.foo.id
+	}`, uniq, uniq, key, val)
 }
 
 // Update Terraform Config for AuthN Mapping
@@ -97,12 +121,10 @@ func testAccCheckDatadogAuthNMappingConfigUpdated(key string, val string) string
 }
 
 // Check if AuthN Mapping Exists
-func testAccCheckDatadogAuthNMappingExists(accProvider func() (*schema.Provider, error), authNMappingName string) resource.TestCheckFunc {
+func testAccCheckDatadogAuthNMappingExists(accProvider *fwprovider.FrameworkProvider, authNMappingName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		id := s.RootModule().Resources[authNMappingName].Primary.ID
 		_, httpresp, err := apiInstances.GetAuthNMappingsApiV2().GetAuthNMapping(auth, id)
@@ -114,12 +136,10 @@ func testAccCheckDatadogAuthNMappingExists(accProvider func() (*schema.Provider,
 }
 
 // Verify that AuthNMapping is destroyed after test run
-func testAccCheckDatadogAuthNMappingDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckDatadogAuthNMappingDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_authn_mapping" {
@@ -146,5 +166,14 @@ func testCheckAuthNMappingHasRole(authNMappingName string, roleSource string) re
 		roleID := rootModule.Resources[roleSource].Primary.Attributes["id"]
 
 		return resource.TestCheckResourceAttr(authNMappingName, "role", roleID)(s)
+	}
+}
+
+func testCheckAuthNMappingHasTeam(authNMappingName string, teamSource string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		rootModule := s.RootModule()
+		teamID := rootModule.Resources[teamSource].Primary.Attributes["id"]
+
+		return resource.TestCheckResourceAttr(authNMappingName, "team", teamID)(s)
 	}
 }
