@@ -597,7 +597,7 @@ Optional:
 
 - `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
 - `body` (String) The request body.
-- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
+- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
@@ -945,7 +945,7 @@ Optional:
 Optional:
 
 - `body` (String) The request body.
-- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
+- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
