@@ -628,7 +628,6 @@ func buildCreateSignalPayload(d utils.Resource) (*datadogV2.SecurityMonitoringSi
 	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
 	buildCreateCommonPayload(d, &payload)
 	payload.SetCases(buildCreatePayloadCases(d))
-
 	if queries, err := buildCreateSignalPayloadQueries(d); err == nil {
 		payload.SetQueries(queries)
 	} else {
@@ -1454,8 +1453,10 @@ func resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx context.Context, dif
 
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
-	if payload, err := buildCreatePayload(diff); err != nil {
-		if httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().ValidateSecurityMonitoringRule(ctx, *payload); err != nil {
+	auth := providerConf.Auth
+
+	if payload, err := buildCreatePayload(diff); err == nil {
+		if httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().ValidateSecurityMonitoringRule(auth, *payload); err != nil || httpResponse == nil {
 			return utils.TranslateClientError(err, httpResponse, "error validating security monitoring rule")
 		}
 	}

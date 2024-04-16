@@ -85,6 +85,10 @@ func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule(t *testing.T) {
 				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigImpossibleTravelRule(ruleName),
 				Check:  testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvider, ruleName),
 			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigInvalidRule(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitorInvalidRuleCheckCreateRule(accProvider, ruleName),
+			},
 		},
 	})
 }
