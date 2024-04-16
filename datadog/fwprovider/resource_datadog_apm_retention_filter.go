@@ -263,10 +263,10 @@ func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(ctx c
 
 func (r *ApmRetentionFilterResource) buildApmRetentionFilterUpdateRequestBody(ctx context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewRetentionFilterCreateAttributesWithDefaults()
+	attributes := datadogV2.NewRetentionFilterUpdateAttributesWithDefaults()
 
 	attributes.SetName(state.Name.ValueString())
-	attributes.SetFilterType(datadogV2.RetentionFilterType(state.FilterType.ValueString()))
+	attributes.SetFilterType(datadogV2.RetentionFilterAllType(state.FilterType.ValueString()))
 	fValue, err := strconv.ParseFloat(state.Rate.ValueString(), 64)
 	if err != nil {
 		diags.AddError("rate", fmt.Sprintf("error parsing rate: %s", err))
