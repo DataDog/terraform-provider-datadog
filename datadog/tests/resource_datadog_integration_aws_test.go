@@ -67,6 +67,9 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"cspm_resource_collection_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"extended_resource_collection_enabled", "false"),
 				),
 			}, {
 				Config: testAccDatadogIntegrationAWSUpdateConfig(accountID),
@@ -108,6 +111,9 @@ func TestAccDatadogIntegrationAWS(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws.account",
 						"cspm_resource_collection_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_aws.account",
+						"extended_resource_collection_enabled", "true"),
 				),
 			},
 			{
