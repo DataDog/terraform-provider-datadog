@@ -41,7 +41,7 @@ resource "datadog_integration_aws" "sandbox" {
 - `filter_tags` (List of String) Array of EC2 tags (in the form `key:value`) defines a filter that Datadog uses when collecting metrics from EC2. Wildcards, such as `?` (for single characters) and `*` (for multiple characters) can also be used. Only hosts that match one of the defined tags will be imported into Datadog. The rest will be ignored. Host matching a given tag can also be excluded by adding `!` before the tag. e.x. `env:production,instance-type:c1.*,!region:us-east-1`.
 - `host_tags` (List of String) Array of tags (in the form `key:value`) to add to all hosts and metrics reporting through this integration.
 - `metrics_collection_enabled` (String) Whether Datadog collects metrics for this AWS account.
-- `resource_collection_enabled` (String, Deprecated) Whether Datadog collects a standard set of resources from your AWS account. **Deprecated.** Deprecated in favor of 'extended_resource_collection_enabled'.
+- `resource_collection_enabled` (String, Deprecated) Whether Datadog collects a standard set of resources from your AWS account. **Deprecated.** Deprecated in favor of `extended_resource_collection_enabled`.
 - `role_name` (String) Your Datadog role delegation name.
 - `secret_access_key` (String, Sensitive) Your AWS secret access key. Only required if your AWS account is a GovCloud or China account.
 

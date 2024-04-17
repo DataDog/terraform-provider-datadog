@@ -95,7 +95,7 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				"resource_collection_enabled": {
 					Type:         schema.TypeString,
 					Description:  "Whether Datadog collects a standard set of resources from your AWS account.",
-					Deprecated:   "Deprecated in favor of 'extended_resource_collection_enabled'.",
+					Deprecated:   "Deprecated in favor of `extended_resource_collection_enabled`.",
 					Computed:     true,
 					Optional:     true,
 					ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
