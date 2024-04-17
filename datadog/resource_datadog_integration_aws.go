@@ -183,9 +183,11 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 		iaws.SetCspmResourceCollectionEnabled(vBool)
 	}
 
-	if v, ok := d.GetOk("extended_resource_collection_enabled"); ok && v.(string) != "" || iaws.GetCspmResourceCollectionEnabled() {
+	if d.GetRawConfig().GetAttr("extended_resource_collection_enabled").IsNull() && iaws.GetCspmResourceCollectionEnabled() {
+		iaws.SetExtendedResourceCollectionEnabled(true)
+	} else if v, ok := d.GetOk("extended_resource_collection_enabled"); ok && v.(string) != "" {
 		vBool, _ := strconv.ParseBool(v.(string))
-		iaws.SetExtendedResourceCollectionEnabled(vBool || iaws.GetCspmResourceCollectionEnabled())
+		iaws.SetExtendedResourceCollectionEnabled(vBool)
 	}
 
 	return iaws
