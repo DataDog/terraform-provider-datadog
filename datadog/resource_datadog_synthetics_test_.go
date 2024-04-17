@@ -70,6 +70,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
 				"request_metadata":           syntheticsTestRequestMetadata(),
+				"request_file":               syntheticsTestRequestFile(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"browser_variable":           syntheticsBrowserVariable(),
 				"config_variable":            syntheticsConfigVariable(),
@@ -853,6 +854,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"request_basicauth":          syntheticsTestRequestBasicAuth(),
 				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
+				"request_file":               syntheticsTestRequestFile(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"allow_failure": {
 					Description: "Determines whether or not to continue with test if this step fails.",
@@ -868,6 +870,49 @@ func syntheticsTestAPIStep() *schema.Schema {
 			},
 		},
 	}
+}
+
+func syntheticsTestRequestFile() *schema.Schema {
+	requestFilesSchema := schema.Schema{
+		Description: "Files to be used as part of the request in the test.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"content": {
+					Type:         schema.TypeString,
+					Description:  "Content of the file.",
+					Optional:     true,
+					ValidateFunc: validation.StringLenBetween(1, 3145728),
+				},
+				"bucket_key": {
+					Type:        schema.TypeString,
+					Description: "Bucket key of the file.",
+					Computed:    true,
+				},
+				"name": {
+					Type:         schema.TypeString,
+					Description:  "Name of the file.",
+					Required:     true,
+					ValidateFunc: validation.StringLenBetween(1, 1500),
+				},
+				"size": {
+					Type:         schema.TypeInt,
+					Description:  "Size of the file.",
+					Required:     true,
+					ValidateFunc: validation.IntBetween(1, 3145728),
+				},
+				"type": {
+					Type:         schema.TypeString,
+					Description:  "Type of the file.",
+					Required:     true,
+					ValidateFunc: validation.StringLenBetween(1, 1500),
+				},
+			},
+		},
+	}
+
+	return &requestFilesSchema
 }
 
 func syntheticsTestBrowserStep() *schema.Schema {
@@ -1453,6 +1498,35 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
+	}
+
+	if attr, ok := d.GetOk("request_file"); ok && attr != nil {
+		files := []datadogV1.SyntheticsTestRequestBodyFile{}
+		for _, f := range attr.([]interface{}) {
+			fileMap := f.(map[string]interface{})
+			file := datadogV1.SyntheticsTestRequestBodyFile{}
+
+			file.SetName(fileMap["name"].(string))
+			file.SetType(fileMap["type"].(string))
+			file.SetSize(int64(fileMap["size"].(int)))
+
+			if content, ok := fileMap["content"]; ok && content != "" {
+				file.SetContent(content.(string))
+			}
+
+			// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
+			// Hence, the provider is uploading the file every time the resource is modified.
+			// Always adding the bucket key to the request would prevent updating the file content.
+			// Always omitting the existing bucket key from the request update the file every time the resource is updated.
+			// We purposely choose the latter.
+			// if bucketKey, ok := fileMap["bucket_key"]; ok && bucketKey != "" {
+			// 	file.SetBucketKey(bucketKey.(string))
+			// }
+
+			files = append(files, file)
+		}
+
+		request.SetFiles(files)
 	}
 	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
@@ -3103,6 +3177,27 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		localProxy["headers"] = proxy.GetHeaders()
 
 		d.Set("request_proxy", []map[string]interface{}{localProxy})
+	}
+
+	if files, ok := actualRequest.GetFilesOk(); ok && files != nil {
+		localFiles := make([]map[string]interface{}, len(*files))
+		for i, file := range *files {
+			// The file content is kept from the existing localFile from the state,
+			// as the response from the backend contains the bucket key rather than the content.
+			localFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
+			localFile["name"] = file.GetName()
+			localFile["type"] = file.GetType()
+			localFile["size"] = file.GetSize()
+
+			if bucket_key, ok := file.GetBucketKeyOk(); ok {
+				localFile["bucket_key"] = bucket_key
+			}
+			localFiles[i] = localFile
+		}
+
+		if err := d.Set("request_file", localFiles); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	actualAssertions := config.GetAssertions()
