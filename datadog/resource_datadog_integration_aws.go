@@ -102,7 +102,7 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				},
 				"extended_resource_collection_enabled": {
 					Type:         schema.TypeString,
-					Description:  "Whether Datadog collects additional attributes and configuration information about the resources in your AWS account. If `cspm_resource_collection` is enabled, this will be automatically enabled as well.",
+					Description:  "Whether Datadog collects additional attributes and configuration information about the resources in your AWS account. Required for `cspm_resource_collection_enabled`.",
 					Computed:     true,
 					Optional:     true,
 					ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
