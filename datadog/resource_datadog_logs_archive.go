@@ -185,7 +185,7 @@ func updateLogsArchiveStateForRead(d *schema.ResourceData, ddArchive *datadogV2.
 	if err := d.Set("query", ddArchive.Data.Attributes.Query); err != nil {
 		return diag.FromErr(err)
 	}
-	archiveType, destination, err := buildDestination(ddArchive.Data.Attributes.Destination)
+	archiveType, destination, err := buildDestinationForRead(ddArchive.Data.Attributes.Destination)
 	if err != nil {
 		return diag.FromErr(err)
 	}
