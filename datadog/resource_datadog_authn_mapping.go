@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 )
 
 func resourceDatadogAuthnMapping() *schema.Resource {
@@ -39,7 +39,12 @@ func resourceDatadogAuthnMapping() *schema.Resource {
 				"role": {
 					Description: "The ID of a role to attach to all users with the corresponding key and value.",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
+				},
+				"team": {
+					Description: "The ID of a team to add all users with the corresponding key and value to.",
+					Type:        schema.TypeString,
+					Optional:    true,
 				},
 			}
 		},
@@ -157,19 +162,29 @@ func buildAuthNMappingCreateRequest(d *schema.ResourceData) *datadogV2.AuthNMapp
 	authNMappingCreateRequest := datadogV2.NewAuthNMappingCreateRequestWithDefaults()
 	authNMappingCreateData := datadogV2.NewAuthNMappingCreateDataWithDefaults()
 	authNMappingCreateAttrs := datadogV2.NewAuthNMappingCreateAttributesWithDefaults()
-	authNMappingRelations := datadogV2.NewAuthNMappingCreateRelationshipsWithDefaults()
 
 	// Set AuthN mapping Attributes
 	authNMappingCreateAttrs.SetAttributeKey(d.Get("key").(string))
 	authNMappingCreateAttrs.SetAttributeValue(d.Get("value").(string))
 
 	// Set AuthN mapping Relationships
-	roleRelations := buildRoleRelations(d)
-	authNMappingRelations.SetRole(*roleRelations)
+	relationships := datadogV2.AuthNMappingCreateRelationships{}
+	roleRelation := buildRoleRelations(d)
+	teamRelation := buildTeamRelations(d)
+	if roleRelation != nil {
+		relationshipToRole := datadogV2.NewAuthNMappingRelationshipToRoleWithDefaults()
+		relationshipToRole.SetRole(*roleRelation)
+		relationships.AuthNMappingRelationshipToRole = relationshipToRole
+	}
+	if teamRelation != nil {
+		relationshipToTeam := datadogV2.NewAuthNMappingRelationshipToTeamWithDefaults()
+		relationshipToTeam.SetTeam(*teamRelation)
+		relationships.AuthNMappingRelationshipToTeam = relationshipToTeam
+	}
 
 	// Set AuthN mapping create data
 	authNMappingCreateData.SetAttributes(*authNMappingCreateAttrs)
-	authNMappingCreateData.SetRelationships(*authNMappingRelations)
+	authNMappingCreateData.SetRelationships(relationships)
 
 	// Set AuthN mapping create request
 	authNMappingCreateRequest.SetData(*authNMappingCreateData)
@@ -180,19 +195,29 @@ func buildAuthNMappingUpdateRequest(d *schema.ResourceData) *datadogV2.AuthNMapp
 	authNMappingUpdateRequest := datadogV2.NewAuthNMappingUpdateRequestWithDefaults()
 	authNMappingUpdateData := datadogV2.NewAuthNMappingUpdateDataWithDefaults()
 	authNMappingUpdateAttrs := datadogV2.NewAuthNMappingUpdateAttributesWithDefaults()
-	authNMappingRelations := datadogV2.NewAuthNMappingUpdateRelationshipsWithDefaults()
 
 	// Set AuthN mapping Attributes
 	authNMappingUpdateAttrs.SetAttributeKey(d.Get("key").(string))
 	authNMappingUpdateAttrs.SetAttributeValue(d.Get("value").(string))
 
 	// Set AuthN mapping Relationships
-	roleRelations := buildRoleRelations(d)
-	authNMappingRelations.SetRole(*roleRelations)
+	relationships := datadogV2.AuthNMappingUpdateRelationships{}
+	roleRelation := buildRoleRelations(d)
+	teamRelation := buildTeamRelations(d)
+	if roleRelation != nil {
+		relationshipToRole := datadogV2.NewAuthNMappingRelationshipToRoleWithDefaults()
+		relationshipToRole.SetRole(*roleRelation)
+		relationships.AuthNMappingRelationshipToRole = relationshipToRole
+	}
+	if teamRelation != nil {
+		relationshipToTeam := datadogV2.NewAuthNMappingRelationshipToTeamWithDefaults()
+		relationshipToTeam.SetTeam(*teamRelation)
+		relationships.AuthNMappingRelationshipToTeam = relationshipToTeam
+	}
 
 	// Set AuthN mapping update data
 	authNMappingUpdateData.SetAttributes(*authNMappingUpdateAttrs)
-	authNMappingUpdateData.SetRelationships(*authNMappingRelations)
+	authNMappingUpdateData.SetRelationships(relationships)
 	authNMappingUpdateData.SetId(d.Id())
 
 	// Set AuthN mapping update request
@@ -201,9 +226,29 @@ func buildAuthNMappingUpdateRequest(d *schema.ResourceData) *datadogV2.AuthNMapp
 }
 
 func buildRoleRelations(d *schema.ResourceData) *datadogV2.RelationshipToRole {
+	role := d.Get("role")
+	if role == nil || role == "" {
+		return nil
+	}
+
 	roleRelations := datadogV2.NewRelationshipToRoleWithDefaults()
 	roleRelationsData := datadogV2.NewRelationshipToRoleDataWithDefaults()
-	roleRelationsData.SetId(d.Get("role").(string))
+
+	roleRelationsData.SetId(role.(string))
 	roleRelations.SetData(*roleRelationsData)
 	return roleRelations
+}
+
+func buildTeamRelations(d *schema.ResourceData) *datadogV2.RelationshipToTeam {
+	team := d.Get("team")
+	if team == nil || team == "" {
+		return nil
+	}
+
+	teamRelations := datadogV2.NewRelationshipToTeamWithDefaults()
+	teamRelationsData := datadogV2.NewRelationshipToTeamDataWithDefaults()
+
+	teamRelationsData.SetId(team.(string))
+	teamRelations.SetData(*teamRelationsData)
+	return teamRelations
 }
