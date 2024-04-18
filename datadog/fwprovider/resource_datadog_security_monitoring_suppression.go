@@ -75,7 +75,7 @@ func (r *securityMonitoringSuppressionResource) Schema(_ context.Context, _ reso
 			},
 			"suppression_query": schema.StringAttribute{
 				Optional:    true,
-				Description: "The suppression query of the suppression rule. If a signal matches this query, it is suppressed and is not triggered. Same syntax as the queries to search signals in the signal explorer.",
+				Description: "The suppression query of the suppression rule. If a signal matches this query, it is suppressed and is not triggered. It uses the same syntax as the queries to search signals in the Signals Explorer.",
 			},
 			"data_exclusion_query": schema.StringAttribute{
 				Optional:    true,
