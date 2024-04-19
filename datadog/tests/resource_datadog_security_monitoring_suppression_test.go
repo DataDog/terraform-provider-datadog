@@ -182,6 +182,114 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 	})
 }
 
+// Create a suppression with a suppression query, then replace it with an exclusion query, then add another suppression query
+func TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery(t *testing.T) {
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	suppressionName := uniqueEntityName(ctx, t)
+	resourceName := "datadog_security_monitoring_suppression.suppression_test_exclusion"
+	dataExclusionQuery := "@account_name:staging"
+	suppressionQuery := "@usr.team:internal-security-testing"
+
+	configWithSuppressionQuery := fmt.Sprintf(`
+	resource "datadog_security_monitoring_suppression" "suppression_test_exclusion" {
+		name              = "%s"
+		description       = "suppression for terraform provider test"
+		enabled           = true
+		rule_query        = "severity:low source:cloudtrail"
+		suppression_query = "%s"
+	}
+	`, suppressionName, suppressionQuery)
+
+	configWithDataExclusionQuery := fmt.Sprintf(`
+	resource "datadog_security_monitoring_suppression" "suppression_test_exclusion" {
+		name                   = "%s"
+		description            = "suppression for terraform provider test"
+		enabled                = true
+		rule_query             = "severity:low source:cloudtrail"
+		data_exclusion_query   = "%s"
+	}
+	`, suppressionName, dataExclusionQuery)
+
+	configWithBoth := fmt.Sprintf(`
+	resource "datadog_security_monitoring_suppression" "suppression_test_exclusion" {
+		name                   = "%s"
+		description            = "suppression for terraform provider test"
+		enabled                = true
+		rule_query             = "severity:low source:cloudtrail"
+		suppression_query      = "%s"
+		data_exclusion_query   = "%s"
+	}
+	`, suppressionName, suppressionQuery, dataExclusionQuery)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckSecurityMonitoringSuppressionDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			// Create with suppression query
+			{
+				Config: configWithSuppressionQuery,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContentWithDataExclusionQuery(
+						resourceName,
+						suppressionName,
+						"suppression for terraform provider test",
+						"severity:low source:cloudtrail",
+						&suppressionQuery,
+						nil,
+					),
+				),
+			},
+			// Replace by data exclusion query
+			{
+				Config: configWithDataExclusionQuery,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContentWithDataExclusionQuery(
+						resourceName,
+						suppressionName,
+						"suppression for terraform provider test",
+						"severity:low source:cloudtrail",
+						nil,
+						&dataExclusionQuery,
+					),
+				),
+			},
+			// Add the suppression query without removing the exclusion query
+			{
+				Config: configWithBoth,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContentWithDataExclusionQuery(
+						resourceName,
+						suppressionName,
+						"suppression for terraform provider test",
+						"severity:low source:cloudtrail",
+						&suppressionQuery,
+						&dataExclusionQuery,
+					),
+				),
+			},
+			// Remove exclusion query
+			{
+				Config: configWithSuppressionQuery,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
+					checkSecurityMonitoringSuppressionContentWithDataExclusionQuery(
+						resourceName,
+						suppressionName,
+						"suppression for terraform provider test",
+						"severity:low source:cloudtrail",
+						&suppressionQuery,
+						nil,
+					),
+				),
+			},
+		},
+	})
+}
+
 func checkSecurityMonitoringSuppressionContent(resourceName string, name string, description string, ruleQuery string, suppressionQuery string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(resourceName, "name", name),
@@ -190,6 +298,7 @@ func checkSecurityMonitoringSuppressionContent(resourceName string, name string,
 		resource.TestCheckResourceAttr(resourceName, "rule_query", ruleQuery),
 		resource.TestCheckResourceAttr(resourceName, "suppression_query", suppressionQuery),
 		resource.TestCheckNoResourceAttr(resourceName, "expiration_date"),
+		resource.TestCheckNoResourceAttr(resourceName, "data_exclusion_query"),
 	)
 }
 
@@ -201,9 +310,29 @@ func checkSecurityMonitoringSuppressionContentWithExpirationDate(resourceName st
 		resource.TestCheckResourceAttr(resourceName, "rule_query", ruleQuery),
 		resource.TestCheckResourceAttr(resourceName, "suppression_query", suppressionQuery),
 		resource.TestCheckResourceAttr(resourceName, "expiration_date", expirationDate),
+		resource.TestCheckNoResourceAttr(resourceName, "data_exclusion_query"),
 	)
 }
 
+func testCheckOptionalResourceAttr(name string, key string, value *string) resource.TestCheckFunc {
+	if value == nil {
+		return resource.TestCheckNoResourceAttr(name, key)
+	} else {
+		return resource.TestCheckResourceAttr(name, key, *value)
+	}
+}
+
+func checkSecurityMonitoringSuppressionContentWithDataExclusionQuery(resourceName string, name string, description string, ruleQuery string, suppressionQuery *string, dataExclusionQuery *string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(resourceName, "name", name),
+		resource.TestCheckResourceAttr(resourceName, "description", description),
+		resource.TestCheckResourceAttr(resourceName, "enabled", "true"),
+		resource.TestCheckResourceAttr(resourceName, "rule_query", ruleQuery),
+		testCheckOptionalResourceAttr(resourceName, "suppression_query", suppressionQuery),
+		testCheckOptionalResourceAttr(resourceName, "data_exclusion_query", dataExclusionQuery),
+		resource.TestCheckNoResourceAttr(resourceName, "expiration_date"),
+	)
+}
 func testAccCheckSecurityMonitoringSuppressionExists(accProvider *fwprovider.FrameworkProvider, resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		resource, ok := s.RootModule().Resources[resourceName]
