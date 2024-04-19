@@ -69,6 +69,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `tags` (Set of String) Tags for generated signals.
 - `third_party_case` (Block List, Max: 10) Cases for generating signals for third-party rules. Only required and accepted for third-party rules (see [below for nested schema](#nestedblock--third_party_case))
 - `type` (String) The rule type. Valid values are `application_security`, `log_detection`, `workload_security`, `signal_correlation`. Defaults to `"log_detection"`.
+- `validate` (Boolean) Whether or not to validate the SLO.
 
 ### Read-Only
 
