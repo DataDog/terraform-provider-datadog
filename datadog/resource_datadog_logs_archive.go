@@ -117,10 +117,10 @@ func resourceDatadogLogsArchiveCreate(ctx context.Context, d *schema.ResourceDat
 		return diag.FromErr(err)
 	}
 	d.SetId(*createdArchive.GetData().Id)
-	return updateLogsArchiveState(d, &createdArchive, ddArchive)
+	return updateLogsArchiveState(d, &createdArchive)
 }
 
-func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArchive, requestArchive *datadogV2.LogsArchiveCreateRequest) diag.Diagnostics {
+func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArchive) diag.Diagnostics {
 	if !ddArchive.HasData() {
 		d.SetId("")
 		return nil
@@ -131,7 +131,7 @@ func updateLogsArchiveState(d *schema.ResourceData, ddArchive *datadogV2.LogsArc
 	if err := d.Set("query", ddArchive.Data.Attributes.Query); err != nil {
 		return diag.FromErr(err)
 	}
-	archiveType, destination, err := buildDestination(ddArchive.Data.Attributes.Destination, requestArchive.Data.Attributes.Destination)
+	archiveType, destination, err := buildDestination(ddArchive.Data.Attributes.Destination)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -160,8 +160,7 @@ func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData,
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
-	//empty object just for syntax
-	archiveCreateReq := datadogV2.LogsArchiveCreateRequest{}
+
 	ddArchive, httpresp, err := apiInstances.GetLogsArchivesApiV2().GetLogsArchive(auth, d.Id())
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
@@ -173,7 +172,7 @@ func resourceDatadogLogsArchiveRead(ctx context.Context, d *schema.ResourceData,
 	if err := utils.CheckForUnparsed(ddArchive); err != nil {
 		return diag.FromErr(err)
 	}
-	return updateLogsArchiveState(d, &ddArchive, &archiveCreateReq)
+	return updateLogsArchiveState(d, &ddArchive)
 }
 
 func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -192,7 +191,7 @@ func resourceDatadogLogsArchiveUpdate(ctx context.Context, d *schema.ResourceDat
 	if err := utils.CheckForUnparsed(updatedArchive); err != nil {
 		return diag.FromErr(err)
 	}
-	return updateLogsArchiveState(d, &updatedArchive, ddArchive)
+	return updateLogsArchiveState(d, &updatedArchive)
 }
 
 func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -211,20 +210,10 @@ func resourceDatadogLogsArchiveDelete(ctx context.Context, d *schema.ResourceDat
 }
 
 // Model to map
-func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestination, requestDestination datadogV2.LogsArchiveCreateRequestDestination) (string, map[string]interface{}, error) {
+func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestination) (string, map[string]interface{}, error) {
 	emptyDestination := map[string]interface{}{}
 	if archiveDestination.IsSet() && archiveDestination.Get() != nil {
 		destination := archiveDestination.Get().GetActualInstance()
-		switch d := destination.(type) {
-		case *datadogV2.LogsArchiveDestinationAzure:
-			return "azure", buildAzureMap(*d), nil
-		case *datadogV2.LogsArchiveDestinationGCS:
-			return "gcs", buildGCSMap(*d), nil
-		case *datadogV2.LogsArchiveDestinationS3:
-			return "s3", buildS3Map(*d), nil
-		}
-	} else if requestDestination.GetActualInstance() != nil {
-		destination := requestDestination.GetActualInstance()
 		switch d := destination.(type) {
 		case *datadogV2.LogsArchiveDestinationAzure:
 			return "azure", buildAzureMap(*d), nil
