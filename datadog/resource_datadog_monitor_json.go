@@ -91,6 +91,9 @@ func resourceDatadogMonitorJSON() *schema.Resource {
 						if val := reflect.ValueOf(attrMap["restricted_roles"]); !val.IsValid() {
 							utils.DeleteKeyInMap(attrMap, []string{"restricted_roles"})
 						}
+						if val := reflect.ValueOf(attrMap["restriction_policy"]); !val.IsValid() {
+							utils.DeleteKeyInMap(attrMap, []string{"restriction_policy"})
+						}
 
 						res, _ := structure.FlattenJsonToString(attrMap)
 						return res
@@ -210,6 +213,9 @@ func updateMonitorJSONState(d *schema.ResourceData, monitor map[string]interface
 	// returns a `null` value on creation. If null we remove the field from state to avoid unnecessary diffs.
 	if val := reflect.ValueOf(monitor["restricted_roles"]); !val.IsValid() {
 		utils.DeleteKeyInMap(monitor, []string{"restricted_roles"})
+	}
+	if val := reflect.ValueOf(monitor["restriction_policy"]); !val.IsValid() {
+		utils.DeleteKeyInMap(monitor, []string{"restriction_policy"})
 	}
 
 	monitorString, err := structure.FlattenJsonToString(monitor)
