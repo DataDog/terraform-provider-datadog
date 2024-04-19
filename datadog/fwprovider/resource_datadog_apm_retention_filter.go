@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -76,7 +77,7 @@ func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 			"filter_type": schema.StringAttribute{
 				Description: "The type of the retention filter, currently only spans-processing-sampling is available.",
 				Required:    true,
-				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewRetentionFilterTypeFromValue)},
+				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewRetentionFilterAllTypeFromValue)},
 			},
 			"rate": schema.StringAttribute{
 				Description: "Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.",
@@ -132,10 +133,71 @@ func (r *ApmRetentionFilterResource) Read(ctx context.Context, request resource.
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
+type CommonRequest struct {
+	Diagnostics diag.Diagnostics
+	State       *tfsdk.State
+}
+
+func NewCommonRequest(diag diag.Diagnostics, state *tfsdk.State) CommonRequest {
+	return CommonRequest{
+		Diagnostics: diag,
+		State:       state,
+	}
+}
+
+func (r *ApmRetentionFilterResource) getAndUpdate(state *ApmRetentionFilterModel, ctx context.Context, response CommonRequest) {
+	resp, _, err := r.Api.ListApmRetentionFilters(r.Auth)
+	if err != nil {
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		return
+	}
+	var id string
+	var filterName string
+	for _, rfa := range resp.Data {
+		if string(rfa.Attributes.GetFilterType()) == state.FilterType.ValueString() {
+			state.ID = types.StringValue(rfa.Id)
+			id = rfa.Id
+			filterName = rfa.Attributes.GetName()
+			break
+		}
+	}
+
+	body, diags := r.buildApmRetentionFilterUpdateRequestBody(ctx, state)
+	body.Data.Attributes.SetName(filterName)
+
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	apmRetentionFilterMutex.Lock()
+	defer apmRetentionFilterMutex.Unlock()
+
+	respUpdate, _, err := r.Api.UpdateApmRetentionFilter(r.Auth, id, *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error dd retention filter"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+	r.updateState(ctx, state, &respUpdate)
+
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
 func (r *ApmRetentionFilterResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state ApmRetentionFilterModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		return
+	}
+	if state.FilterType.ValueString() != "spans-sampling-processor" {
+		r.getAndUpdate(&state, ctx, NewCommonRequest(response.Diagnostics, &response.State))
 		return
 	}
 
@@ -150,14 +212,14 @@ func (r *ApmRetentionFilterResource) Create(ctx context.Context, request resourc
 
 	resp, _, err := r.Api.CreateApmRetentionFilter(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving retention filter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating retention filter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.updateStateForCreate(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -167,6 +229,11 @@ func (r *ApmRetentionFilterResource) Update(ctx context.Context, request resourc
 	var state ApmRetentionFilterModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if state.FilterType.ValueString() != "spans-sampling-processor" {
+		r.getAndUpdate(&state, ctx, NewCommonRequest(response.Diagnostics, &response.State))
 		return
 	}
 
@@ -183,7 +250,7 @@ func (r *ApmRetentionFilterResource) Update(ctx context.Context, request resourc
 
 	resp, _, err := r.Api.UpdateApmRetentionFilter(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving retention filter"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating retention filter"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -203,6 +270,10 @@ func (r *ApmRetentionFilterResource) Delete(ctx context.Context, request resourc
 		return
 	}
 
+	// Default filters cannot be deleted, skip the deletion
+	if state.FilterType.ValueString() != "spans-sampling-processor" {
+		return
+	}
 	id := state.ID.ValueString()
 
 	apmRetentionFilterMutex.Lock()
@@ -219,6 +290,30 @@ func (r *ApmRetentionFilterResource) Delete(ctx context.Context, request resourc
 }
 
 func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *ApmRetentionFilterModel, resp *datadogV2.RetentionFilterResponse) {
+	state.ID = types.StringValue(resp.Data.GetId())
+	// Ignore the name if it is a default filter, since it is not editable
+	if *resp.Data.Attributes.FilterType == datadogV2.RETENTIONFILTERALLTYPE_SPANS_SAMPLING_PROCESSOR {
+		state.Name = types.StringValue(resp.Data.Attributes.GetName())
+	}
+	// Make sure we maintain the same precision as config
+	// Otherwise we will run into inconsistent state errors
+	configVal := state.Rate.ValueString()
+	precision := -1
+	if i := strings.IndexByte(configVal, '.'); i > -1 {
+		precision = len(configVal) - i - 1
+	}
+	state.Rate = types.StringValue(strconv.FormatFloat(resp.Data.Attributes.GetRate(), 'f', precision, 64))
+
+	if state.Filter == nil {
+		filter := retentionFilterModel{}
+		state.Filter = &filter
+	}
+	state.Filter.Query = types.StringValue(*resp.Data.Attributes.GetFilter().Query)
+	state.Enabled = types.BoolValue(*resp.Data.Attributes.Enabled)
+	state.FilterType = types.StringValue(string(resp.Data.Attributes.GetFilterType()))
+}
+
+func (r *ApmRetentionFilterResource) updateStateForCreate(ctx context.Context, state *ApmRetentionFilterModel, resp *datadogV2.RetentionFilterCreateResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 	state.Name = types.StringValue(resp.Data.Attributes.GetName())
 

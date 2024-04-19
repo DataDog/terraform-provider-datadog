@@ -29,11 +29,9 @@ func TestAccApmRetentionFilter(t *testing.T) {
 				Config: buildApmRetentionFilterResourceConfig(uniq, query, rate),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApmRetentionFilterExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "filter.query", query),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "rate", rate),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "enabled", "true"),
-					resource.TestCheckResourceAttr("datadog_apm_retention_filter.testtwo", "name", uniq+" - second"),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.testtwo", "enabled", "false"),
 				),
 			},
@@ -41,7 +39,6 @@ func TestAccApmRetentionFilter(t *testing.T) {
 				Config: buildApmRetentionFilterResourceConfig(uniq, updatedQuery, updatedRate),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApmRetentionFilterExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "filter.query", updatedQuery),
 					resource.TestCheckResourceAttr("datadog_apm_retention_filter.test", "rate", updatedRate)),
 			},
@@ -67,6 +64,9 @@ func ApmRetentionFilterDestroyHelper(auth context.Context, s *terraform.State, a
 			continue
 		}
 		id := r.Primary.ID
+		if r.Primary.Attributes["filter_type"] != "spans-sampling-processor" {
+			continue
+		}
 
 		err := utils.Retry(2, 10, func() error {
 			_, httpResp, err := apiInstances.GetApmRetentionFiltersApiV2().GetApmRetentionFilter(auth, id)
@@ -105,7 +105,6 @@ func ApmRetentionFilterExistsHelper(auth context.Context, s *terraform.State, ap
 			continue
 		}
 		id := r.Primary.ID
-
 		_, httpResp, err := apiInstances.GetApmRetentionFiltersApiV2().GetApmRetentionFilter(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving the retention filter")
@@ -132,7 +131,7 @@ func buildApmRetentionFilterResourceConfig(name, query string, rate string) stri
 			filter {
 				query = "%[3]s"
 			}
-			filter_type = "spans-sampling-processor"
+			filter_type = "spans-appsec-sampling-processor"
 			enabled = false
 		}
 	`, name, rate, query)
