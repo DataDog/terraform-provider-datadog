@@ -31,12 +31,13 @@ resource "datadog_security_monitoring_suppression" "my_suppression" {
 - `enabled` (Boolean) Whether the suppression rule is enabled.
 - `name` (String) The name of the suppression rule.
 - `rule_query` (String) The rule query of the suppression rule, with the same syntax as the search bar for detection rules.
-- `suppression_query` (String) The suppression query of the suppression rule. If a signal matches this query, it is suppressed and is not triggered. Same syntax as the queries to search signals in the signal explorer.
 
 ### Optional
 
+- `data_exclusion_query` (String) An exclusion query on the input data of the security rules, which could be logs, Agent events, or other types of data based on the security rule. Events matching this query are ignored by any detection rules referenced in the suppression rule.
 - `description` (String) A description for the suppression rule.
 - `expiration_date` (String) A RFC3339 timestamp giving an expiration date for the suppression rule. After this date, it won't suppress signals anymore.
+- `suppression_query` (String) The suppression query of the suppression rule. If a signal matches this query, it is suppressed and is not triggered. It uses the same syntax as the queries to search signals in the Signals Explorer.
 
 ### Read-Only
 
