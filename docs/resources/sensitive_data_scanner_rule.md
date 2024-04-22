@@ -82,10 +82,10 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
 - `name` (String) Name of the rule.
 - `namespaces` (List of String) Attributes included in the scan. If namespaces is empty or missing, all attributes except excluded_namespaces are scanned. If both are missing the whole event is scanned.
 - `pattern` (String) Not included if there is a relationship to a standard pattern.
+- `priority` (Number) Priority level of the rule. Used to order sensitive data discovered in the sds summary page. It must be bertween 0 and 5.
 - `standard_pattern_id` (String) Id of the standard pattern the rule refers to. If provided, then pattern must not be provided.
 - `tags` (List of String) List of tags.
 - `text_replacement` (Block List, Max: 1) Object describing how the scanned event will be replaced. Defaults to `type: none` (see [below for nested schema](#nestedblock--text_replacement))
-- `priority` (Int) Field used to set the rule priority level. Used in the sensitive data scanner summary page to order discovery by priority. It must be between 1 and 5 (1 being the highest priority)
 
 ### Read-Only
 
