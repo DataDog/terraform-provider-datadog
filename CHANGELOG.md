@@ -1,9 +1,3 @@
-## 3.39.0 (April 22, 2024)
-
-### IMPROVEMENTS
-
-* [datadog_sensitive_data_scanner_rule] Add priority level in the rule in https://github.com/DataDog/terraform-provider-datadog/pull/2376
-
 ## 3.38.0 (March 13, 2024)
 
 ### BUGFIXES
