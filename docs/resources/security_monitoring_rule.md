@@ -59,7 +59,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 
 ### Optional
 
-- `case` (Block List, Max: 10) Cases for generatinggit  signals. (see [below for nested schema](#nestedblock--case))
+- `case` (Block List, Max: 10) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
 - `enabled` (Boolean) Whether the rule is enabled. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. **Note**: This field is deprecated for log detection, signal correlation, and workload security rules. (see [below for nested schema](#nestedblock--filter))
 - `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title. Defaults to `false`.
