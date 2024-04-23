@@ -442,7 +442,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Default:     "log_detection",
 		},
 		"validate": {
-			Description: "Whether or not to validate the SLO.",
+			Description: "Whether or not to validate the Rule.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 			DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
@@ -1445,7 +1445,7 @@ func resourceDatadogSecurityMonitoringRuleDelete(ctx context.Context, d *schema.
 }
 
 func resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-	if validate, ok := diff.GetOkExists("validate"); !ok || (ok && !validate.(bool)) {
+	if validate, ok := diff.GetOkExists("validate"); !ok || !validate.(bool) {
 		// Explicitly skip validation
 		log.Printf("[DEBUG] Validate is %v, skipping validation", validate.(bool))
 		return nil
@@ -1459,6 +1459,8 @@ func resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx context.Context, dif
 		if httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().ValidateSecurityMonitoringRule(auth, *payload); err != nil || httpResponse == nil {
 			return utils.TranslateClientError(err, httpResponse, "error validating security monitoring rule")
 		}
+	} else {
+		log.Printf("[DEBUG] Skipping validation due to an error: %v", err)
 	}
 	return nil
 }
