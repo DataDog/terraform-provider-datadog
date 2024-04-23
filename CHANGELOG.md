@@ -1,3 +1,37 @@
+## 3.39.0 (April 23, 2024)
+
+### BUGFIXES
+* [synthetics] support http_version in multi-step API tests by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2323
+* [datadog_logs_index] Don't panic on empty exclusion filter by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2328
+* [datadog_csm_threats_agent_rules] Add a by resource lock to prevent 409s by @Malo10LeGoff in https://github.com/DataDog/terraform-provider-datadog/pull/2332
+* [datadog_security_monitoring_rule] Explicitly remove filters when none remain in config by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2334
+* [datadog_user] Re-order role updates by @srosenthal-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2346
+* [datadog_monitor] Handle empty `scheduling_options` struct by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2359
+* [datadog_monitor_json] Ignore the POST null for the restriction_policy field by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2373
+### IMPROVEMENTS
+* [datadog_service_level_objective] Add query_interval_seconds to time-slice SLO condition parameters by @ddjamesfrullo in https://github.com/DataDog/terraform-provider-datadog/pull/2349
+* [framework_provider] handle empty import id by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2361
+* [datadog_integration_aws] Add extended resource collection field by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2365
+### FEATURES
+* [datadog_csm_threats_agent_rules] Add ressource and datasource for CSM Threats agent rule by @Malo10LeGoff in https://github.com/DataDog/terraform-provider-datadog/pull/2316
+* [datadog_user_role] Creating a new `datadog_user_role` resource by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/2311
+* [datadog_authn_mapping] Add team relationship support to AuthNMappings resource by @eric-wood in https://github.com/DataDog/terraform-provider-datadog/pull/2363
+* [datadog_security_monitoring_suppression] Add data_exclusion_query by @pietrodll in https://github.com/DataDog/terraform-provider-datadog/pull/2360
+### NOTES
+* [security_monitoring_rule] Deprecate filter field for some rule types by @pietrodll in https://github.com/DataDog/terraform-provider-datadog/pull/2347
+
+## New Contributors
+* @anton-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2322
+* @etnbrd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2324
+* @barweiss made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2325
+* @tim-chaplin-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2339
+* @srosenthal-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2346
+* @JonasBak made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2317
+* @wangwillson1 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2311
+* @eric-wood made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2363
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.38.0...v3.39.0
+
 ## 3.38.0 (March 13, 2024)
 
 ### BUGFIXES
