@@ -89,6 +89,25 @@ func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_CreateInvalidRule(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogSecurityMonitoringCreatedConfigInvalidRule(ruleName),
+				ExpectError: regexp.MustCompile("Max signal duration must be greater than or equal to keep alive"),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSecurityMonitoringRule_CwsRule(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -251,6 +270,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
     name = "%s"
     message = "acceptance rule triggered"
     enabled = false
+    validate = true
     has_extended_title = true
 
     query {
@@ -395,6 +415,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "acceptance rule triggered"
     enabled = false
+    validate = true
 
     query {
         name = "first"
@@ -421,6 +442,42 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     }
 
     tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+func testAccCheckDatadogSecurityMonitoringCreatedConfigInvalidRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "validation failed"
+    enabled = true
+    validate = true
+	has_extended_title = true
+
+    query {
+        aggregation = "count"
+		distinct_fields = []
+		group_by_fields = ["@userIdentity.assumed_role"]
+        name = ""
+        query = "source:source_here"
+    }
+
+    case {
+        status = "high"
+		name = ""
+		condition = "a > 0"
+        notifications = []
+    }
+
+    options {
+		detection_method = "threshold"
+		evaluation_window = 1800
+        keep_alive = 3600
+        max_signal_duration = 1800
+    }
+
+    tags = ["env:prod", "team:security"]
+	type = "log_detection"
 }
 `, name)
 }
@@ -475,6 +532,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "impossible travel rule triggered"
     enabled = false
+    validate = true
 
     query {
         name = "my_query"
@@ -615,12 +673,17 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvi
 	)
 }
 
+func testAccCheckDatadogSecurityMonitorInvalidRuleCheckCreateRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName)
+}
+
 func testAccCheckDatadogSecurityMonitoringCreatedConfigCwsRule(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_rule" "acceptance_test" {
 	name = "%s"
 	message = "acceptance rule triggered"
 	enabled = false
+    validate = true
 
 	query {
 		name = "first"
@@ -655,6 +718,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 	name = "%s"
 	message = "acceptance rule triggered"
 	enabled = false
+    validate = true
 
 	query {
 		name = "first"
@@ -729,6 +793,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s - updated"
     message = "acceptance rule triggered (updated)"
     enabled = true
+    validate = true
     has_extended_title = false
 
     query {
@@ -819,6 +884,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s - updated"
     message = "acceptance rule triggered (updated)"
     enabled = true
+	validate = true
 
     query {
         name = "first"
@@ -902,6 +968,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "acceptance rule triggered (updated)"
     enabled = true
+    validate = true
 
     query {
 		name = "first"
@@ -978,6 +1045,7 @@ func testAccCheckDatadogSecurityMonitoringEnabledDefaultConfig(name string) stri
 resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s - updated"
     message = "acceptance rule triggered (updated)"
+    validate = true
 
     query {
         name = "first_updated"
@@ -1021,6 +1089,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 	name = "%s"
 	message = "acceptance rule triggered"
 	enabled = false
+	// Skipping validation for SignalCorrection rule due to the issue to render the ruleId in the query.
+	validate = false
 	has_extended_title = true
 
 	signal_query {
@@ -1126,6 +1196,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 	name = "%s - updated"
 	message = "acceptance rule triggered (updated)"
 	enabled = true
+	validate = false
 	has_extended_title = false
 
 	signal_query {
@@ -1266,6 +1337,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(name string) str
 resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "acceptance rule triggered"
+    validate = true
 
     query {
         query = "does not really match much"
@@ -1318,6 +1390,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyConfig(ruleName strin
 		resource "datadog_security_monitoring_rule" "acceptance_test" {
 			name = "%s"
 			message = "third party rule triggered"
+		    validate = true
 
 			third_party_case {
 				query         = "@alert.severity:[5 TO 10]"
@@ -1382,6 +1455,7 @@ func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyConfig(ruleName strin
 		resource "datadog_security_monitoring_rule" "acceptance_test" {
 			name = "%s"
 			message = "third party rule triggered"
+    		validate = true
 
 			third_party_case {
 				query         = "@alert.severity:[5 TO 10]"

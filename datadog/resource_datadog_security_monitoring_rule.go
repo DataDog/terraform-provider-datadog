@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -20,6 +21,7 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 		ReadContext:   resourceDatadogSecurityMonitoringRuleRead,
 		UpdateContext: resourceDatadogSecurityMonitoringRuleUpdate,
 		DeleteContext: resourceDatadogSecurityMonitoringRuleDelete,
+		CustomizeDiff: resourceDatadogSecurityMonitoringRuleCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -439,6 +441,15 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Description: "The rule type.",
 			Default:     "log_detection",
 		},
+		"validate": {
+			Description: "Whether or not to validate the SLO.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+			DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+				// This is never sent to the backend, so it should never generate a diff
+				return true
+			},
+		},
 	}
 }
 
@@ -510,7 +521,7 @@ func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.
 	return nil
 }
 
-func isSignalCorrelationSchema(d *schema.ResourceData) bool {
+func isSignalCorrelationSchema(d utils.Resource) bool {
 	if v, ok := d.GetOk("type"); ok {
 		_, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(v.(string))
 		return err == nil
@@ -518,7 +529,7 @@ func isSignalCorrelationSchema(d *schema.ResourceData) bool {
 	return false
 }
 
-func checkQueryConsistency(d *schema.ResourceData) error {
+func checkQueryConsistency(d utils.Resource) error {
 	query := d.Get("query").([]interface{})
 	signalQuery := d.Get("signal_query").([]interface{})
 	if len(query) > 0 && len(signalQuery) > 0 {
@@ -534,7 +545,7 @@ func checkQueryConsistency(d *schema.ResourceData) error {
 	return nil
 }
 
-func buildCreatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRuleCreatePayload, error) {
+func buildCreatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleCreatePayload, error) {
 
 	if err := checkQueryConsistency(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, err
@@ -549,7 +560,7 @@ func buildCreatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 	return &createPayload, err
 }
 
-func buildCreateCommonPayload(d *schema.ResourceData, payload securityMonitoringRuleCreateInterface) {
+func buildCreateCommonPayload(d utils.Resource, payload securityMonitoringRuleCreateInterface) {
 	payload.SetIsEnabled(d.Get("enabled").(bool))
 	payload.SetMessage(d.Get("message").(string))
 	payload.SetName(d.Get("name").(string))
@@ -576,7 +587,7 @@ func buildCreateCommonPayload(d *schema.ResourceData, payload securityMonitoring
 	}
 }
 
-func isThirdPartyRule(d *schema.ResourceData) bool {
+func isThirdPartyRule(d utils.Resource) bool {
 	tfOptionsList, ok := d.GetOk("options")
 
 	if !ok {
@@ -592,7 +603,7 @@ func isThirdPartyRule(d *schema.ResourceData) bool {
 	}
 }
 
-func buildCreateStandardPayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
+func buildCreateStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringStandardRuleCreatePayload{}
 	buildCreateCommonPayload(d, &payload)
 
@@ -613,7 +624,7 @@ func buildCreateStandardPayload(d *schema.ResourceData) (*datadogV2.SecurityMoni
 	return &payload, nil
 }
 
-func buildCreateSignalPayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
+func buildCreateSignalPayload(d utils.Resource) (*datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
 	buildCreateCommonPayload(d, &payload)
 	payload.SetCases(buildCreatePayloadCases(d))
@@ -635,7 +646,7 @@ func buildCreateSignalPayload(d *schema.ResourceData) (*datadogV2.SecurityMonito
 	return &payload, nil
 }
 
-func buildCreatePayloadCases(d *schema.ResourceData) []datadogV2.SecurityMonitoringRuleCaseCreate {
+func buildCreatePayloadCases(d utils.Resource) []datadogV2.SecurityMonitoringRuleCaseCreate {
 	tfCases := d.Get("case").([]interface{})
 	payloadCases := make([]datadogV2.SecurityMonitoringRuleCaseCreate, len(tfCases))
 
@@ -678,7 +689,7 @@ func buildPayloadThirdPartyCase(tfThirdPartyCase map[string]interface{}) *datado
 	return thirdPartyCase
 }
 
-func buildPayloadThirdPartyCases(d *schema.ResourceData) []datadogV2.SecurityMonitoringThirdPartyRuleCaseCreate {
+func buildPayloadThirdPartyCases(d utils.Resource) []datadogV2.SecurityMonitoringThirdPartyRuleCaseCreate {
 	tfThirdPartyCases := d.Get("third_party_case").([]interface{})
 	payloadThirdPartyCases := make([]datadogV2.SecurityMonitoringThirdPartyRuleCaseCreate, len(tfThirdPartyCases))
 
@@ -858,7 +869,7 @@ func extractMapFromInterface(tfOptionsList []interface{}) map[string]interface{}
 	return tfOptions
 }
 
-func buildCreateStandardPayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonitoringStandardRuleQuery {
+func buildCreateStandardPayloadQueries(d utils.Resource) []datadogV2.SecurityMonitoringStandardRuleQuery {
 	tfQueries := d.Get("query").([]interface{})
 	payloadQueries := make([]datadogV2.SecurityMonitoringStandardRuleQuery, len(tfQueries))
 	for idx, tfQuery := range tfQueries {
@@ -898,7 +909,7 @@ func buildCreateStandardPayloadQueries(d *schema.ResourceData) []datadogV2.Secur
 	return payloadQueries
 }
 
-func buildCreateSignalPayloadQueries(d *schema.ResourceData) ([]datadogV2.SecurityMonitoringSignalRuleQuery, error) {
+func buildCreateSignalPayloadQueries(d utils.Resource) ([]datadogV2.SecurityMonitoringSignalRuleQuery, error) {
 	tfQueries := d.Get("signal_query").([]interface{})
 	payloadQueries := make([]datadogV2.SecurityMonitoringSignalRuleQuery, len(tfQueries))
 	for idx, tfQuery := range tfQueries {
@@ -1431,5 +1442,22 @@ func resourceDatadogSecurityMonitoringRuleDelete(ctx context.Context, d *schema.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting security monitoring rule")
 	}
 
+	return nil
+}
+
+func resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
+		// Explicitly skip validation
+		log.Printf("[DEBUG] Validate is %v, skipping validation", validate.(bool))
+		return nil
+	}
+
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	if payload, err := buildCreatePayload(diff); err != nil {
+		if httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().ValidateSecurityMonitoringRule(ctx, *payload); err != nil {
+			return utils.TranslateClientError(err, httpResponse, "error validating security monitoring rule")
+		}
+	}
 	return nil
 }
