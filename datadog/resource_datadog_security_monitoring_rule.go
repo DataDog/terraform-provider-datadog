@@ -27,13 +27,13 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 		},
 
 		SchemaFunc: func() map[string]*schema.Schema {
-			return datadogSecurityMonitoringRuleSchema()
+			return datadogSecurityMonitoringRuleSchema( /* includeValidate= */ true)
 		},
 	}
 }
 
-func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schema.Schema {
+	basicSchema := map[string]*schema.Schema{
 		"case": {
 			Type:        schema.TypeList,
 			Optional:    true,
@@ -441,7 +441,9 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 			Description: "The rule type.",
 			Default:     "log_detection",
 		},
-		"validate": {
+	}
+	if includeValidate {
+		basicSchema["validate"] = &schema.Schema{
 			Description: "Whether or not to validate the Rule.",
 			Type:        schema.TypeBool,
 			Optional:    true,
@@ -449,8 +451,9 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 				// This is never sent to the backend, so it should never generate a diff
 				return true
 			},
-		},
+		}
 	}
+	return basicSchema
 }
 
 // securityMonitoringRuleInterface Common Interface to securityMonitoringRuleCreateInterface and SecurityMonitoringRuleReadInterface
