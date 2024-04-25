@@ -53,7 +53,6 @@ Read-Only:
 - `tags` (Set of String)
 - `third_party_case` (List of Object) (see [below for nested schema](#nestedobjatt--rules--third_party_case))
 - `type` (String)
-- `validate` (Boolean)
 
 <a id="nestedobjatt--rules--case"></a>
 ### Nested Schema for `rules.case`
