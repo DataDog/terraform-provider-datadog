@@ -6,6 +6,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -131,6 +132,13 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 							},
 						},
 					},
+				},
+				"priority": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					Computed:     true,
+					Description:  "Priority level of the rule (optional). Used to order sensitive data discovered in the sds summary page. It must be between 1 and 5 (1 being the most important).",
+					ValidateFunc: validation.IntBetween(1, 5),
 				},
 			}
 		},
@@ -311,6 +319,10 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
 	}
 
+	if priority, ok := d.GetOk("priority"); ok {
+		attributes.SetPriority(int64(priority.(int)))
+	}
+
 	return attributes
 }
 
@@ -419,6 +431,10 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 		if err := d.Set("included_keyword_configuration", includedKeywordConfigList); err != nil {
 			return diag.FromErr(err)
 		}
+	}
+
+	if err := d.Set("priority", ruleAttributes.GetPriority()); err != nil {
+		return diag.FromErr(err)
 	}
 
 	return nil
