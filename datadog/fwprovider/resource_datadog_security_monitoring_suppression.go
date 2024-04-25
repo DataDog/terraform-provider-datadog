@@ -100,6 +100,7 @@ func (r *securityMonitoringSuppressionResource) Create(ctx context.Context, requ
 
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
+		return
 	}
 
 	res, _, err := r.api.CreateSecurityMonitoringSuppression(r.auth, *suppressionPayload)
@@ -154,6 +155,7 @@ func (r *securityMonitoringSuppressionResource) Update(ctx context.Context, requ
 
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
+		return
 	}
 
 	res, _, err := r.api.UpdateSecurityMonitoringSuppression(r.auth, state.Id.ValueString(), *suppressionPayload)
