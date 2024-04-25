@@ -136,6 +136,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 				"priority": {
 					Type:         schema.TypeInt,
 					Optional:     true,
+					Computed:     true,
 					Description:  "Priority level of the rule (optional). Used to order sensitive data discovered in the sds summary page. It must be between 1 and 5 (1 being the most important).",
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
