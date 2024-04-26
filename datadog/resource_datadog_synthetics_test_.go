@@ -73,6 +73,11 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"assertion":                  syntheticsAPIAssertion(),
 				"browser_variable":           syntheticsBrowserVariable(),
 				"config_variable":            syntheticsConfigVariable(),
+				"variables_from_script": {
+					Description: "Variables defined from JavaScript code for API HTTP tests.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"device_ids": {
 					Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
 					Type:        schema.TypeList,
@@ -1549,6 +1554,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 
 	config.SetConfigVariables(configVariables)
+
+	if attr, ok := d.GetOk("variables_from_script"); ok && attr != nil {
+		config.SetVariablesFromScript(attr.(string))
+	}
 
 	if attr, ok := d.GetOk("api_step"); ok && syntheticsTest.GetSubtype() == "multi" {
 		steps := []datadogV1.SyntheticsAPIStep{}
@@ -3135,6 +3144,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	if err := d.Set("config_variable", localConfigVariables); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("variables_from_script", config.GetVariablesFromScript()); err != nil {
 		return diag.FromErr(err)
 	}
 

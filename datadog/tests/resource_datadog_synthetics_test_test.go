@@ -569,6 +569,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "variables_from_script", "dd.variable.set('FOO', 'hello');"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
@@ -689,6 +691,7 @@ resource "datadog_synthetics_test" "foo" {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "123456789"
 	}
+	variables_from_script = "dd.variable.set('FOO', 'hello');"
 
 	request_basicauth {
 		type = "ntlm"
