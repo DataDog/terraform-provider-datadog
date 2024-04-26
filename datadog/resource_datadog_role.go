@@ -41,6 +41,7 @@ func resourceDatadogRole() *schema.Resource {
 					Optional:    true,
 					Description: "Set of objects containing the permission ID and the name of the permissions granted to this role.",
 					Elem:        GetRolePermissionSchema(),
+					Computed:    true,
 				},
 				"user_count": {
 					Type:        schema.TypeInt,
