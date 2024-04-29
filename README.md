@@ -5,7 +5,7 @@
 -   Website: https://www.terraform.io
 -   Mailing list: [Google Groups](http://groups.google.com/group/terraform-tool)
 
-<img src="https://cdn.rawgit.com/hashicorp/terraform-website/master/public/img/logo-hashicorp.svg" width="600px">
+<img alt="Terraform" src="https://www.datocms-assets.com/2885/1629941242-logo-terraform-main.svg" width="600px">
 
 ## Requirements
 
