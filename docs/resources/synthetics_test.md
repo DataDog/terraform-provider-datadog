@@ -339,15 +339,19 @@ resource "datadog_synthetics_test" "test_browser" {
 }
 
 # Example Usage (GRPC API test)
-# Create a new Datadog GRPC API test starting on google.org:50050
+# Create a new Datadog GRPC API test calling host google.org on port 50050
+# targeting service Greeter in the package helloworld with the method SayHello
+# and the message {"name": "John"}
 resource "datadog_synthetics_test" "grpc" {
   type    = "api"
   subtype = "grpc"
   request_definition {
-    method           = "GET"
+    method           = "SayHello"
     host             = "google.com"
     port             = 50050
-    service          = "Hello"
+    service          = "helloworld.Greeter"
+    call_type        = "unary"
+    message          = "{\"name\": \"John\"}"
     plain_proto_file = <<EOT
 syntax = "proto3";
 option java_multiple_files = true;
@@ -357,16 +361,16 @@ option objc_class_prefix = "HLW";
 package helloworld;
 // The greeting service definition.
 service Greeter {
-	// Sends a greeting
-	rpc SayHello (HelloRequest) returns (HelloReply) {}
+    // Sends a greeting
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
 }
 // The request message containing the user's name.
 message HelloRequest {
-	string name = 1;
+    string name = 1;
 }
 // The response message containing the greetings
 message HelloReply {
-	string message = 1;
+    string message = 1;
 }
 EOT
   }
@@ -398,10 +402,10 @@ EOT
   options_list {
     tick_every = 60
   }
-  name    = "GRPC API test"
+  name    = "GRPC API test with proto"
   message = "Notify @datadog.user"
   tags    = ["foo:bar", "baz"]
-  status  = "paused"
+  status  = "live"
 }
 ```
 
