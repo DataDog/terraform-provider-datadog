@@ -128,7 +128,7 @@ func TestAccDatadogOrganizationSettings_Update(t *testing.T) {
 	})
 }
 
-func TestDatadogOrganizationSettings_import(t *testing.T) {
+func TestAccDatadogOrganizationSettings_Import(t *testing.T) {
 	if !isReplaying() {
 		t.Skip("This test only supports replaying")
 	}
