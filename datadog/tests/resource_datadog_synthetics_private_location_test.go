@@ -16,7 +16,6 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	privateLocationName := uniqueEntityName(ctx, t)
-	roleName := uniqueEntityName(ctx, t) + "_role"
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -25,7 +24,7 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 		CheckDestroy:      testSyntheticsPrivateLocationIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createSyntheticsPrivateLocationConfig(privateLocationName, roleName),
+				Config: createSyntheticsPrivateLocationConfig(privateLocationName),
 			},
 			{
 				ResourceName:            "datadog_synthetics_private_location.foo",
@@ -70,9 +69,8 @@ func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 
 func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	privateLocationName := uniqueEntityName(ctx, t)
-	roleName := uniqueEntityName(ctx, t) + "_role"
 	return resource.TestStep{
-		Config: createSyntheticsPrivateLocationConfig(privateLocationName, roleName),
+		Config: createSyntheticsPrivateLocationConfig(privateLocationName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsPrivateLocationExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -85,8 +83,6 @@ func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider func()
 				"datadog_synthetics_private_location.foo", "tags.0", "foo:bar"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_private_location.foo", "tags.1", "baz"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_private_location.foo", "metadata.0.restricted_roles.#", "1"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_private_location.foo", "config"),
 			resource.TestCheckResourceAttrSet(
@@ -95,27 +91,19 @@ func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider func()
 	}
 }
 
-func createSyntheticsPrivateLocationConfig(uniqPrivateLocation string, uniqRole string) string {
+func createSyntheticsPrivateLocationConfig(uniqPrivateLocation string) string {
 	return fmt.Sprintf(`
-resource "datadog_role" "rbac_role" {
-	name = "%s"
-}
-
 resource "datadog_synthetics_private_location" "foo" {
 	name = "%s"
 	description = "a private location"
 	tags = ["foo:bar", "baz"]
-	metadata {
-		restricted_roles = ["${datadog_role.rbac_role.id}"]
-	}
-}`, uniqRole, uniqPrivateLocation)
+}`, uniqPrivateLocation)
 }
 
 func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	privateLocationName := uniqueEntityName(ctx, t) + "_updated"
-	roleName := uniqueEntityName(ctx, t) + "_role_updated"
 	return resource.TestStep{
-		Config: updateSyntheticsPrivateLocationConfig(privateLocationName, roleName),
+		Config: updateSyntheticsPrivateLocationConfig(privateLocationName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsPrivateLocationExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -130,8 +118,6 @@ func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider func()
 				"datadog_synthetics_private_location.foo", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_private_location.foo", "tags.2", "env:test"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_private_location.foo", "metadata.0.restricted_roles.#", "1"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_private_location.foo", "config"),
 			resource.TestCheckResourceAttrSet(
@@ -140,20 +126,13 @@ func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider func()
 	}
 }
 
-func updateSyntheticsPrivateLocationConfig(uniqPrivateLocation string, uniqRole string) string {
+func updateSyntheticsPrivateLocationConfig(uniqPrivateLocation string) string {
 	return fmt.Sprintf(`
-resource "datadog_role" "rbac_role" {
-	name = "%s"
-}
-
 resource "datadog_synthetics_private_location" "foo" {
 	name = "%s"
 	description = "an updated private location"
 	tags = ["foo:bar", "baz", "env:test"]
-	metadata {
-		restricted_roles = ["${datadog_role.rbac_role.id}"]
-	}
-}`, uniqRole, uniqPrivateLocation)
+}`, uniqPrivateLocation)
 }
 
 func testSyntheticsPrivateLocationExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {

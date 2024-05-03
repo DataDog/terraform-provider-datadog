@@ -21,7 +21,6 @@ func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	variableName := getUniqueVariableName(ctx, t)
-	roleName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -30,7 +29,7 @@ func TestAccDatadogSyntheticsGlobalVariable_importBasic(t *testing.T) {
 		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: createSyntheticsGlobalVariableConfig(variableName, roleName),
+				Config: createSyntheticsGlobalVariableConfig(variableName),
 			},
 			{
 				ResourceName:      "datadog_synthetics_global_variable.foo",
@@ -135,9 +134,8 @@ func TestAccDatadogSyntheticsGlobalVariableFromTest_LocalVariable(t *testing.T) 
 
 func createSyntheticsGlobalVariableStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	variableName := getUniqueVariableName(ctx, t)
-	roleName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
-		Config: createSyntheticsGlobalVariableConfig(variableName, roleName),
+		Config: createSyntheticsGlobalVariableConfig(variableName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsResourceExists(accProvider),
 			resource.TestCheckResourceAttr(
@@ -152,25 +150,18 @@ func createSyntheticsGlobalVariableStep(ctx context.Context, accProvider func() 
 				"datadog_synthetics_global_variable.foo", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_global_variable.foo", "value", "variable-value"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_global_variable.foo", "restricted_roles.#", "1"),
 		),
 	}
 }
 
-func createSyntheticsGlobalVariableConfig(uniqVariableName string, uniqRoleName string) string {
+func createSyntheticsGlobalVariableConfig(uniqVariableName string) string {
 	return fmt.Sprintf(`
-resource "datadog_role" "rbac_role" {
-	name = "%s"
-}
-
 resource "datadog_synthetics_global_variable" "foo" {
 	name = "%s"
 	description = "a global variable"
 	tags = ["foo:bar", "baz"]
 	value = "variable-value"
-	restricted_roles = ["${datadog_role.rbac_role.id}"]
-}`, uniqRoleName, uniqVariableName)
+}`, uniqVariableName)
 }
 
 func updateSyntheticsGlobalVariableStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {

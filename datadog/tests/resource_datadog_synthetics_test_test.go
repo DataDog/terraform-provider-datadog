@@ -623,8 +623,6 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0_list.#", "0"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.restricted_roles.#", "1"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.ci.0.execution_rule", "blocking"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.ignore_server_certificate_error", "true"),
@@ -664,10 +662,6 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 
 func createSyntheticsAPITestConfig(uniq string, variableName string) string {
 	return fmt.Sprintf(`
-resource "datadog_role" "bar" {
-	name      = "%[1]s"
-}
-
 resource "datadog_synthetics_global_variable" "global_variable" {
   name        = "%[2]s"
   description = "a global variable"
@@ -746,7 +740,6 @@ resource "datadog_synthetics_test" "foo" {
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
-		restricted_roles = ["${datadog_role.bar.id}"]
 		ci {
 			execution_rule = "blocking"
 		}
@@ -2698,8 +2691,6 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_priority", "5"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.restricted_roles.#", "1"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.application_id", "rum-app-id"),
@@ -2775,9 +2766,6 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 
 func createSyntheticsBrowserTestConfig(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_role" "bar" {
-	name      = "%[1]s"
-}
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
 
@@ -2825,7 +2813,6 @@ resource "datadog_synthetics_test" "bar" {
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
-		restricted_roles = ["${datadog_role.bar.id}"]
 
 		no_screenshot = true
 
@@ -4096,8 +4083,6 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "options_list.0.restricted_roles.#", "1"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "message", "Notify @datadog.user"),
@@ -4265,10 +4250,6 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 
 func createSyntheticsMultistepAPITestConfig(testName string, variableName string) string {
 	return fmt.Sprintf(`
-resource "datadog_role" "bar" {
-	name      = "%[1]s"
-}
-
 resource "datadog_synthetics_global_variable" "global_variable" {
   name        = "%[2]s"
   description = "a global variable"
@@ -4284,7 +4265,6 @@ resource "datadog_synthetics_test" "multi" {
     tick_every           = 900
     min_failure_duration = 0
     min_location_failed  = 1
-	restricted_roles = ["${datadog_role.bar.id}"]
 }
   name    = "%[1]s"
   message = "Notify @datadog.user"
