@@ -2286,7 +2286,9 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
 		for _, s := range attr.([]interface{}) {
-			tags = append(tags, s.(string))
+			if tag, ok := s.(string); ok {
+				tags = append(tags, tag)
+			}
 		}
 	}
 	syntheticsTest.SetTags(tags)
