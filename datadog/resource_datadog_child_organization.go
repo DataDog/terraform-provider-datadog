@@ -224,6 +224,7 @@ func buildDatadogOrganizationCreateV1Struct(d *schema.ResourceData) *datadogV1.O
 }
 
 func updateOrganizationState(d *schema.ResourceData, org *datadogV1.Organization) diag.Diagnostics {
+	d.SetId(org.GetPublicId())
 	d.Set("name", org.GetName())
 	d.Set("public_id", org.GetPublicId())
 	d.Set("description", org.GetDescription())
@@ -333,14 +334,11 @@ func resourceDatadogChildOrganizationCreate(ctx context.Context, d *schema.Resou
 	applicationKey := resp.GetApplicationKey()
 	user := resp.GetUser()
 
-	publicId := org.GetPublicId()
-	d.SetId(publicId)
-
-	updateOrganizationApiKeyState(d, &apiKey)
-	updateOrganizationApplicationKeyState(d, &applicationKey)
-	updateOrganizationUserState(d, &user)
-
-	return updateOrganizationState(d, &org)
+	diags := updateOrganizationState(d, &org)
+	diags = append(diags, updateOrganizationApiKeyState(d, &apiKey)...)
+	diags = append(diags, updateOrganizationApplicationKeyState(d, &applicationKey)...)
+	diags = append(diags, updateOrganizationUserState(d, &user)...)
+	return diags
 }
 
 func resourceDatadogChildOrganizationRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {

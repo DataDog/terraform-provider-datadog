@@ -9,15 +9,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccDatadogOrganizationSettings_Update(t *testing.T) {
+func preludeAccDatadogOrganizationSettings(t *testing.T) {
+	// Temporarily comment this whole function to update the cassettes recording
 	if !isReplaying() {
 		t.Skip("This test only supports replaying")
 	}
 	t.Parallel()
+}
+
+func TestAccDatadogOrganizationSettings_Update(t *testing.T) {
+	preludeAccDatadogOrganizationSettings(t)
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	uniqueEntity := uniqueEntityName(ctx, t)
-	organizationName := fmt.Sprint(uniqueEntity[len(uniqueEntity)-30:])
-	organizationName2 := organizationName + "-2"
+	organizationName := uniqueOrgName(ctx, "update")
+	organizationName2 := uniqueOrgName(ctx, "updat2")
 	resourceName := "datadog_organization_settings.foo"
 
 	resource.Test(t, resource.TestCase{
@@ -129,14 +133,10 @@ func TestAccDatadogOrganizationSettings_Update(t *testing.T) {
 }
 
 func TestAccDatadogOrganizationSettings_Import(t *testing.T) {
-	if !isReplaying() {
-		t.Skip("This test only supports replaying")
-	}
-	t.Parallel()
+	preludeAccDatadogOrganizationSettings(t)
 	resourceName := "datadog_organization_settings.foo"
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	uniqueEntity := uniqueEntityName(ctx, t)
-	organizationName := fmt.Sprint(uniqueEntity[len(uniqueEntity)-30:])
+	organizationName := uniqueOrgName(ctx, "import")
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -154,13 +154,88 @@ func TestAccDatadogOrganizationSettings_Import(t *testing.T) {
 	})
 }
 
-func TestAccDatadogOrganizationSettings_IncorrectName(t *testing.T) {
-	if !isReplaying() {
-		t.Skip("This test only supports replaying")
-	}
-	t.Parallel()
+func TestAccDatadogOrganizationSettings_SecurityContacts(t *testing.T) {
+	preludeAccDatadogOrganizationSettings(t)
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	organizationName := uniqueEntityName(ctx, t) + "qwertyuiopasdfghjklzxcvbnm0123456" // 32 characters
+	organizationName := uniqueOrgName(ctx, "secCon")
+	cfg := func(extra string) string {
+		return fmt.Sprintf(`
+			resource datadog_organization_settings foo {
+				name = "%s"
+				%s
+			}
+		`, organizationName, extra)
+	}
+
+	resource.Test(t, resource.TestCase{
+		IsUnitTest:        true,
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      cfg(`security_contacts = [null]`),
+				ExpectError: regexp.MustCompile("Error: Null value found in list"),
+			},
+			{
+				Config:      cfg(`security_contacts = ["foo@example@org"]`),
+				ExpectError: regexp.MustCompile("Error: not a email: foo@example@org"),
+			},
+		},
+	})
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: cfg(``),
+			},
+			{
+				Config: cfg(`security_contacts = ["foo@example.org"]`),
+			},
+			{
+				Config: cfg(`security_contacts = ["foo@example.org", "bar@example.org"]`),
+			},
+			{
+				Config:   cfg(`security_contacts = ["foo@example.org", "bar@example.org"]`),
+				PlanOnly: true, // no change
+			},
+			{
+				ResourceName:      "datadog_organization_settings.foo",
+				Config:            cfg(``),
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				Config:   cfg(`security_contacts = null`),
+				PlanOnly: true, // not configured, no change
+			},
+			{
+				Config:   cfg(``),
+				PlanOnly: true, // not configured, no change
+			},
+		},
+	})
+
+	// Starting from scratch, unset the security contacts (test an edge case around zero-values plans)
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: cfg(`security_contacts = []`),
+			},
+			{
+				Config:   cfg(`security_contacts = []`),
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+func TestAccDatadogOrganizationSettings_IncorrectName(t *testing.T) {
+	preludeAccDatadogOrganizationSettings(t)
+	_, accProviders := testAccProviders(context.Background(), t)
+	organizationName := "very-long-and-boring-name-longer-than-32-characters"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -172,6 +247,16 @@ func TestAccDatadogOrganizationSettings_IncorrectName(t *testing.T) {
 			},
 		},
 	})
+}
+
+// uniqueOrgName returns an organization name for a particular test, whose id must be 6 char long at most.
+// uniqueEntityName is not suitable because org names are limited to 32 characters.
+func uniqueOrgName(ctx context.Context, id string) string {
+	r := fmt.Sprintf("tf-plugin-test-%s-%d", id, clockFromContext(ctx).Now().Unix()%1e9)
+	if len(r) > 32 {
+		panic("uniqueOrgName is too long: " + r)
+	}
+	return r
 }
 
 func testAccCheckDatadogOrganizationSettingsConfig_Required(uniq string) string {
