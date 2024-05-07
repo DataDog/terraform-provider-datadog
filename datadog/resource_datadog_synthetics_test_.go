@@ -111,7 +111,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Description: "A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).",
 					Type:        schema.TypeList,
 					Optional:    true,
-					Elem:        &schema.Schema{Type: schema.TypeString},
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+					},
 				},
 				"status": {
 					Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.",
