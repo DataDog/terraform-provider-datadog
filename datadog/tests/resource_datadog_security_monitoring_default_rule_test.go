@@ -35,6 +35,11 @@ func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 				Config: testAccDatadogSecurityMonitoringDefaultRuleDynamicCriticality(),
 				Check:  testAccCheckDatadogSecurityMonitoringDefaultDynamicCriticality(),
 			},
+			// Add a tag to the list of tags
+			{
+				Config: testAccDatadogSecurityMonitoringDefaultRuleAddTag(),
+				Check:  testAccCheckDatadogSecurityMonitoringDefaultRuleAddTag(),
+			},
 		},
 	})
 }
@@ -118,5 +123,24 @@ func testAccCheckDatadogSecurityMonitoringDefaultDynamicCriticality() resource.T
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(
 			tfSecurityDefaultRuleName, "options.0.decrease_criticality_based_on_env", "true"),
+	)
+}
+
+func testAccDatadogSecurityMonitoringDefaultRuleAddTag() string {
+	return `
+resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+	tags = ["source:cloudtrail", "testtag:newtag"]
+}
+`
+}
+
+func testAccCheckDatadogSecurityMonitoringDefaultRuleAddTag() resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "tags.#", "2"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityDefaultRuleName, "tags.*", "source:cloudtrail"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityDefaultRuleName, "tags.*", "testtag:newtag"),
 	)
 }

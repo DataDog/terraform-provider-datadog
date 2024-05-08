@@ -100,6 +100,13 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 					Computed:    true,
 					Description: "The rule type.",
 				},
+
+				"tags": {
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "Tags for generated signals.",
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
 			}
 		},
 	}
@@ -198,6 +205,8 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	}
 
 	d.Set("options", &ruleOptions)
+
+	d.Set("tags", rule.GetTags())
 
 	return securityMonitoringRuleDeprecationWarning(rule)
 }
@@ -335,6 +344,15 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 	payload.Filters = payloadFilters
 
 	payload.Options = buildDefaultRulePayloadOptions(d)
+
+	if v, ok := d.GetOk("tags"); ok {
+		tfTags := v.(*schema.Set)
+		tags := make([]string, tfTags.Len())
+		for i, value := range tfTags.List() {
+			tags[i] = value.(string)
+		}
+		payload.SetTags(tags)
+	}
 
 	return &payload, true, nil
 }
