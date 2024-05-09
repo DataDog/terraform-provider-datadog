@@ -20,7 +20,7 @@ var (
 )
 
 type csmThreatsAgentRulesDataSource struct {
-	api  *datadogV2.CloudWorkloadSecurityApi
+	api  *datadogV2.CSMThreatsApi
 	auth context.Context
 }
 
