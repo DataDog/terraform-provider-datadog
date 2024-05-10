@@ -112,16 +112,16 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 func testAccDatadogSecurityMonitoringDefaultRuleDynamicCriticality() string {
 	return `
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
-    options {
-        decrease_criticality_based_on_env = true
-    }
+	options {
+		decrease_criticality_based_on_env = true
+	}
 
 	tags = [
 		"iaas:aws",
-        "scope:amazon",
-        "security:attack",
-        "source:cloudtrail",
-        "tactic:TA0007-discovery",
+		"scope:amazon",
+		"security:attack",
+		"source:cloudtrail",
+		"tactic:TA0007-discovery",
 	]
 }
 `
@@ -138,15 +138,15 @@ func testAccDatadogSecurityMonitoringDefaultRuleAddTag() string {
 	return `
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 	options {
-        decrease_criticality_based_on_env = true
-    }
+		decrease_criticality_based_on_env = true
+		}
 	
 	tags = [
 		"iaas:aws",
-        "scope:amazon",
-        "security:attack",
-        "source:cloudtrail",
-        "tactic:TA0007-discovery",
+		"scope:amazon",
+		"security:attack",
+		"source:cloudtrail",
+		"tactic:TA0007-discovery",
 		"testtag:newtag",
 	]
 }

@@ -104,7 +104,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 				"tags": {
 					Type:        schema.TypeSet,
 					Optional:    true,
-					Description: "Tags for generated signals.",
+					Description: "Tags for generated signals. Tags must contain all OOTB rule tags.",
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 			}
