@@ -45,10 +45,10 @@ func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSecurityMonitoringDefaultRule_DeprecationWarning(t *testing.T) {
-	// if !isReplaying() {
-	// 	t.Skip("this is a replay-only test")
-	// 	return
-	// }
+	if !isReplaying() {
+		t.Skip("this is a replay-only test")
+		return
+	}
 
 	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
