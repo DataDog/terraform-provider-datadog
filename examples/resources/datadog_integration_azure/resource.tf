@@ -7,7 +7,7 @@ resource "datadog_integration_azure" "sandbox" {
   app_service_plan_filters    = "examplefilter:true,example:another"
   container_app_filters       = "examplefilter:true,example:one_more"
   automute                    = true
+  resource_collection_enabled = true
   cspm_enabled                = true
   custom_metrics_enabled      = false
-  resource_collection_enabled = true
 }

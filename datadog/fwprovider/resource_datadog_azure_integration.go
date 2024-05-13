@@ -82,6 +82,7 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 			},
 			"resource_collection_enabled": schema.BoolAttribute{
 				Computed:    true,
+				Default:     booldefault.StaticBool(true),
 				Optional:    true,
 				Description: "When enabled, Datadog collects metadata and configuration info from cloud resources (such as compute instances, databases, and load balancers) monitored by this app registration.",
 			},
