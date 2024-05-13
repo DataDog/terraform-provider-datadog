@@ -46,7 +46,7 @@ resource "datadog_integration_azure" "sandbox" {
 Note: This requires `resource_collection_enabled` to be set to true. Defaults to `false`.
 - `custom_metrics_enabled` (Boolean) Enable custom metrics for your organization. Defaults to `false`.
 - `host_filters` (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red` Defaults to `""`.
-- `resource_collection_enabled` (Boolean) When enabled, Datadog collects metadata and configuration info from cloud resources (such as compute instances, databases, and load balancers) monitored by this app registration.
+- `resource_collection_enabled` (Boolean) When enabled, Datadog collects metadata and configuration info from cloud resources (such as compute instances, databases, and load balancers) monitored by this app registration. Defaults to `true`.
 
 ### Read-Only
 
