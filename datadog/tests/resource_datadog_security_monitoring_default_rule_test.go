@@ -45,10 +45,10 @@ func TestAccDatadogSecurityMonitoringDefaultRule_Basic(t *testing.T) {
 }
 
 func TestAccDatadogSecurityMonitoringDefaultRule_DeprecationWarning(t *testing.T) {
-	if !isReplaying() {
-		t.Skip("this is a replay-only test")
-		return
-	}
+	// if !isReplaying() {
+	// 	t.Skip("this is a replay-only test")
+	// 	return
+	// }
 
 	t.Parallel()
 	_, accProviders := testAccProviders(context.Background(), t)
@@ -142,12 +142,9 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 
 func testAccCheckDatadogSecurityMonitoringDefaultRuleAddTag() resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
-		// Should have 6 tags including the 5 default tags
 		resource.TestCheckResourceAttr(
-			tfSecurityDefaultRuleName, "tags.#", "6"),
-		resource.TestCheckTypeSetElemAttr(
-			tfSecurityDefaultRuleName, "tags.*", "iaas:aws"),
-		resource.TestCheckTypeSetElemAttr(
-			tfSecurityDefaultRuleName, "tags.*", "testtag:newtag"),
+			tfSecurityDefaultRuleName, "custom_tags.#", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "custom_tags.0", "testtag:newtag"),
 	)
 }
