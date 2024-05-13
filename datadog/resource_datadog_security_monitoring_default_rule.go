@@ -206,7 +206,19 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 	d.Set("options", &ruleOptions)
 
-	d.Set("tags", rule.GetTags())
+	defaultTags := make(map[string]bool)
+	for _, defaultTag := range rule.GetDefaultTags() {
+		defaultTags[defaultTag] = true
+	}
+
+	customTags := []string{}
+	for _, tag := range rule.GetTags() {
+		if _, ok := defaultTags[tag]; !ok {
+			customTags = append(customTags, tag)
+		}
+	}
+
+	d.Set("custom_tags", customTags)
 
 	return securityMonitoringRuleDeprecationWarning(rule)
 }

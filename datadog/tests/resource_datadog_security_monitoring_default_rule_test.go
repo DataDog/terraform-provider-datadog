@@ -133,7 +133,7 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 		decrease_criticality_based_on_env = true
 		}
 	
-	tags = [
+	custom_tags = [
 		"testtag:newtag",
 	]
 }
