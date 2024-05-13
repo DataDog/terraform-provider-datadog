@@ -101,10 +101,10 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 					Description: "The rule type.",
 				},
 
-				"tags": {
+				"custom_tags": {
 					Type:        schema.TypeSet,
 					Optional:    true,
-					Description: "Tags for generated signals. Tags must contain all OOTB rule tags.",
+					Description: "Custom tags for generated signals.",
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 			}
@@ -345,14 +345,26 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 
 	payload.Options = buildDefaultRulePayloadOptions(d)
 
-	if v, ok := d.GetOk("tags"); ok {
-		tfTags := v.(*schema.Set)
-		tags := make([]string, tfTags.Len())
-		for i, value := range tfTags.List() {
-			tags[i] = value.(string)
-		}
-		payload.SetTags(tags)
+	defaultTags := currentState.GetDefaultTags()
+	tags := make(map[string]bool)
+	for _, tag := range defaultTags {
+		tags[tag] = true
 	}
+
+	if v, ok := d.GetOk("custom_tags"); ok {
+		tfTags := v.(*schema.Set)
+		for _, value := range tfTags.List() {
+			customTag := value.(string)
+			tags[customTag] = true
+		}
+	}
+
+	payloadTags := make([]string, 0, len(tags))
+	for tag := range tags {
+		payloadTags = append(payloadTags, tag)
+	}
+
+	payload.SetTags(payloadTags)
 
 	return &payload, true, nil
 }

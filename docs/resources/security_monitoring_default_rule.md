@@ -30,10 +30,10 @@ resource "datadog_security_monitoring_default_rule" "adefaultrule" {
 ### Optional
 
 - `case` (Block List, Max: 10) Cases of the rule, this is used to update notifications. (see [below for nested schema](#nestedblock--case))
+- `custom_tags` (Set of String) Custom tags for generated signals.
 - `enabled` (Boolean) Enable the rule. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
 - `options` (Block List, Max: 1) Options on default rules. Note that only a subset of fields can be updated on default rule options. (see [below for nested schema](#nestedblock--options))
-- `tags` (Set of String) Tags for generated signals. Tags must contain all OOTB rule tags.
 
 ### Read-Only
 

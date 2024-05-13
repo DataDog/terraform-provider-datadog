@@ -49,7 +49,7 @@ type ApiInstances struct {
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
 	cloudflareIntegrationApiV2 *datadogV2.CloudflareIntegrationApi
-	cloudWorkloadSecurityApiV2 *datadogV2.CloudWorkloadSecurityApi
+	csmThreatsApi              *datadogV2.CSMThreatsApi
 	confluentCloudApiV2        *datadogV2.ConfluentCloudApi
 	dashboardListsApiV2        *datadogV2.DashboardListsApi
 	downtimesApiV2             *datadogV2.DowntimesApi
@@ -347,12 +347,12 @@ func (i *ApiInstances) GetAuthNMappingsApiV2() *datadogV2.AuthNMappingsApi {
 	return i.authNMappingsApiV2
 }
 
-// GetCloudWorkloadSecurityApiV2 get instance of CloudWorkloadSecurityApi
-func (i *ApiInstances) GetCloudWorkloadSecurityApiV2() *datadogV2.CloudWorkloadSecurityApi {
-	if i.cloudWorkloadSecurityApiV2 == nil {
-		i.cloudWorkloadSecurityApiV2 = datadogV2.NewCloudWorkloadSecurityApi(i.HttpClient)
+// GetCSMThreatsApiV2 get instance of CSMThreatsApi
+func (i *ApiInstances) GetCSMThreatsApiV2() *datadogV2.CSMThreatsApi {
+	if i.csmThreatsApi == nil {
+		i.csmThreatsApi = datadogV2.NewCSMThreatsApi(i.HttpClient)
 	}
-	return i.cloudWorkloadSecurityApiV2
+	return i.csmThreatsApi
 }
 
 // GetDowntimesApiV2 get instance of DowntimesApi

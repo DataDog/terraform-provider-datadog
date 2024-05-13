@@ -115,14 +115,6 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 	options {
 		decrease_criticality_based_on_env = true
 	}
-
-	tags = [
-		"iaas:aws",
-		"scope:amazon",
-		"security:attack",
-		"source:cloudtrail",
-		"tactic:TA0007-discovery",
-	]
 }
 `
 }
@@ -142,11 +134,6 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 		}
 	
 	tags = [
-		"iaas:aws",
-		"scope:amazon",
-		"security:attack",
-		"source:cloudtrail",
-		"tactic:TA0007-discovery",
 		"testtag:newtag",
 	]
 }
@@ -155,8 +142,11 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 
 func testAccCheckDatadogSecurityMonitoringDefaultRuleAddTag() resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
+		// Should have 6 tags including the 5 default tags
 		resource.TestCheckResourceAttr(
 			tfSecurityDefaultRuleName, "tags.#", "6"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityDefaultRuleName, "tags.*", "iaas:aws"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityDefaultRuleName, "tags.*", "testtag:newtag"),
 	)

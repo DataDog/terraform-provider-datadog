@@ -57,7 +57,7 @@ func checkCSMThreatsAgentRulesDataSourceContent(accProvider *fwprovider.Framewor
 		auth := accProvider.Auth
 		apiInstances := accProvider.DatadogApiInstances
 
-		allAgentRulesResponse, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCSMThreatsAgentRules(auth)
+		allAgentRulesResponse, _, err := apiInstances.GetCSMThreatsApiV2().ListCSMThreatsAgentRules(auth)
 		if err != nil {
 			return err
 		}

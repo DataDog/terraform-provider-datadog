@@ -63,7 +63,7 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d
 	auth := providerConf.Auth
 
 	agentRules := make([]map[string]interface{}, 0)
-	response, httpresp, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCloudWorkloadSecurityAgentRules(auth)
+	response, httpresp, err := apiInstances.GetCSMThreatsApiV2().ListCloudWorkloadSecurityAgentRules(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing agent rules")
 	}

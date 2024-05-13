@@ -62,7 +62,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleCreate(ctx context.Context, d 
 
 	agentRuleCreate := buildCwsAgentRuleCreatePayload(d)
 
-	response, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().CreateCloudWorkloadSecurityAgentRule(auth, *agentRuleCreate)
+	response, httpResponse, err := apiInstances.GetCSMThreatsApiV2().CreateCloudWorkloadSecurityAgentRule(auth, *agentRuleCreate)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating cloud workload security agent rule")
 	}
@@ -79,7 +79,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleRead(ctx context.Context, d *s
 	auth := providerConf.Auth
 
 	id := d.Id()
-	agentRuleResponse, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().GetCloudWorkloadSecurityAgentRule(auth, id)
+	agentRuleResponse, httpResponse, err := apiInstances.GetCSMThreatsApiV2().GetCloudWorkloadSecurityAgentRule(auth, id)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			d.SetId("")
@@ -103,7 +103,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleUpdate(ctx context.Context, d 
 
 	agentRuleUpdate := buildCwsAgentRuleUpdatePayload(d)
 
-	agentRuleResponse, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().UpdateCloudWorkloadSecurityAgentRule(auth, agentRuleId, *agentRuleUpdate)
+	agentRuleResponse, httpResponse, err := apiInstances.GetCSMThreatsApiV2().UpdateCloudWorkloadSecurityAgentRule(auth, agentRuleId, *agentRuleUpdate)
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error updating cloud workload security agent rule")
@@ -119,7 +119,7 @@ func resourceDatadogCloudWorkloadSecurityAgentRuleDelete(ctx context.Context, d 
 
 	agentRuleId := d.Id()
 
-	if httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().DeleteCloudWorkloadSecurityAgentRule(auth, agentRuleId); err != nil {
+	if httpResponse, err := apiInstances.GetCSMThreatsApiV2().DeleteCloudWorkloadSecurityAgentRule(auth, agentRuleId); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting cloud workload security agent rule")
 	}
 

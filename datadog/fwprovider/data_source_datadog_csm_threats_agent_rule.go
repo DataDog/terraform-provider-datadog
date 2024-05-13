@@ -20,7 +20,7 @@ var (
 )
 
 type csmThreatsAgentRulesDataSource struct {
-	api  *datadogV2.CloudWorkloadSecurityApi
+	api  *datadogV2.CSMThreatsApi
 	auth context.Context
 }
 
@@ -36,7 +36,7 @@ func NewCSMThreatsAgentRulesDataSource() datasource.DataSource {
 
 func (r *csmThreatsAgentRulesDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
-	r.api = providerData.DatadogApiInstances.GetCloudWorkloadSecurityApiV2()
+	r.api = providerData.DatadogApiInstances.GetCSMThreatsApiV2()
 	r.auth = providerData.Auth
 }
 
