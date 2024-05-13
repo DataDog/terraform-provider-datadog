@@ -106,7 +106,7 @@ func TranslateClientError(err error, httpresp *http.Response, msg string) error 
 	}
 
 	if httpresp != nil && httpresp.Request != nil {
-		msg = fmt.Sprintf("%s from %s", msg, httpresp.Request.URL.String())
+		msg = fmt.Sprintf("%s from %s", msg, httpresp.Request.URL.EscapedPath())
 	}
 
 	if apiErr, ok := err.(CustomRequestAPIError); ok {

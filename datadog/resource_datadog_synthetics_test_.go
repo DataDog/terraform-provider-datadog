@@ -73,6 +73,11 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"assertion":                  syntheticsAPIAssertion(),
 				"browser_variable":           syntheticsBrowserVariable(),
 				"config_variable":            syntheticsConfigVariable(),
+				"variables_from_script": {
+					Description: "Variables defined from JavaScript code for API HTTP tests.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"device_ids": {
 					Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
 					Type:        schema.TypeList,
@@ -106,7 +111,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Description: "A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).",
 					Type:        schema.TypeList,
 					Optional:    true,
-					Elem:        &schema.Schema{Type: schema.TypeString},
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+					},
 				},
 				"status": {
 					Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.",
@@ -1550,6 +1558,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	config.SetConfigVariables(configVariables)
 
+	if attr, ok := d.GetOk("variables_from_script"); ok && attr != nil {
+		config.SetVariablesFromScript(attr.(string))
+	}
+
 	if attr, ok := d.GetOk("api_step"); ok && syntheticsTest.GetSubtype() == "multi" {
 		steps := []datadogV1.SyntheticsAPIStep{}
 
@@ -2277,7 +2289,9 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
 		for _, s := range attr.([]interface{}) {
-			tags = append(tags, s.(string))
+			if tag, ok := s.(string); ok {
+				tags = append(tags, tag)
+			}
 		}
 	}
 	syntheticsTest.SetTags(tags)
@@ -3135,6 +3149,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	if err := d.Set("config_variable", localConfigVariables); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("variables_from_script", config.GetVariablesFromScript()); err != nil {
 		return diag.FromErr(err)
 	}
 

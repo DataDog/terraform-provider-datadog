@@ -95,6 +95,14 @@ func resourceDatadogIntegrationAws() *schema.Resource {
 				"resource_collection_enabled": {
 					Type:         schema.TypeString,
 					Description:  "Whether Datadog collects a standard set of resources from your AWS account.",
+					Deprecated:   "Deprecated in favor of `extended_resource_collection_enabled`.",
+					Computed:     true,
+					Optional:     true,
+					ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
+				},
+				"extended_resource_collection_enabled": {
+					Type:         schema.TypeString,
+					Description:  "Whether Datadog collects additional attributes and configuration information about the resources in your AWS account. Required for `cspm_resource_collection_enabled`.",
 					Computed:     true,
 					Optional:     true,
 					ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
@@ -175,6 +183,13 @@ func buildDatadogIntegrationAwsStruct(d *schema.ResourceData) *datadogV1.AWSAcco
 		iaws.SetCspmResourceCollectionEnabled(vBool)
 	}
 
+	if d.GetRawConfig().GetAttr("extended_resource_collection_enabled").IsNull() && iaws.GetCspmResourceCollectionEnabled() {
+		iaws.SetExtendedResourceCollectionEnabled(true)
+	} else if v, ok := d.GetOk("extended_resource_collection_enabled"); ok && v.(string) != "" {
+		vBool, _ := strconv.ParseBool(v.(string))
+		iaws.SetExtendedResourceCollectionEnabled(vBool)
+	}
+
 	return iaws
 }
 
@@ -251,6 +266,7 @@ func resourceDatadogIntegrationAwsRead(ctx context.Context, d *schema.ResourceDa
 			d.Set("excluded_regions", integration.GetExcludedRegions())
 			d.Set("metrics_collection_enabled", strconv.FormatBool(integration.GetMetricsCollectionEnabled()))
 			d.Set("resource_collection_enabled", strconv.FormatBool(integration.GetResourceCollectionEnabled()))
+			d.Set("extended_resource_collection_enabled", strconv.FormatBool(integration.GetExtendedResourceCollectionEnabled()))
 			d.Set("cspm_resource_collection_enabled", strconv.FormatBool(integration.GetCspmResourceCollectionEnabled()))
 			return nil
 		}

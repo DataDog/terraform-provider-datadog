@@ -89,6 +89,25 @@ func TestAccDatadogSecurityMonitoringRule_ImpossibleTravelRule(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_CreateInvalidRule(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogSecurityMonitoringCreatedConfigInvalidRule(ruleName),
+				ExpectError: regexp.MustCompile("Max signal duration must be greater than or equal to keep alive"),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSecurityMonitoringRule_CwsRule(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -251,6 +270,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
     name = "%s"
     message = "acceptance rule triggered"
     enabled = false
+    validate = true
     has_extended_title = true
 
     query {
@@ -300,16 +320,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
         keep_alive = 600
         max_signal_duration = 900
         decrease_criticality_based_on_env = true
-    }
-
-	filter {
-        query = "does not really suppress"
-        action = "suppress"
-    }
-
-	filter {
-        query = "does not really require neither"
-        action = "require"
     }
 
     tags = ["i:tomato", "u:tomato"]
@@ -392,14 +402,6 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider func() (*s
 			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.decrease_criticality_based_on_env", "true"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.1.action", "require"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.1.query", "does not really require neither"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckTypeSetElemAttr(
@@ -413,6 +415,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "acceptance rule triggered"
     enabled = false
+    validate = true
 
     query {
         name = "first"
@@ -439,6 +442,42 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     }
 
     tags = ["i:tomato", "u:tomato"]
+}
+`, name)
+}
+func testAccCheckDatadogSecurityMonitoringCreatedConfigInvalidRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+    name = "%s"
+    message = "validation failed"
+    enabled = true
+    validate = true
+	has_extended_title = true
+
+    query {
+        aggregation = "count"
+		distinct_fields = []
+		group_by_fields = ["@userIdentity.assumed_role"]
+        name = ""
+        query = "source:source_here"
+    }
+
+    case {
+        status = "high"
+		name = ""
+		condition = "a > 0"
+        notifications = []
+    }
+
+    options {
+		detection_method = "threshold"
+		evaluation_window = 1800
+        keep_alive = 3600
+        max_signal_duration = 1800
+    }
+
+    tags = ["env:prod", "team:security"]
+	type = "log_detection"
 }
 `, name)
 }
@@ -493,6 +532,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "impossible travel rule triggered"
     enabled = false
+    validate = true
 
     query {
         name = "my_query"
@@ -633,12 +673,17 @@ func testAccCheckDatadogSecurityMonitorUpdatedCheckImpossibleTravelRule(accProvi
 	)
 }
 
+func testAccCheckDatadogSecurityMonitorInvalidRuleCheckCreateRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName)
+}
+
 func testAccCheckDatadogSecurityMonitoringCreatedConfigCwsRule(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_rule" "acceptance_test" {
 	name = "%s"
 	message = "acceptance rule triggered"
 	enabled = false
+    validate = true
 
 	query {
 		name = "first"
@@ -673,6 +718,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 	name = "%s"
 	message = "acceptance rule triggered"
 	enabled = false
+    validate = true
 
 	query {
 		name = "first"
@@ -747,6 +793,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s - updated"
     message = "acceptance rule triggered (updated)"
     enabled = true
+    validate = true
     has_extended_title = false
 
     query {
@@ -774,11 +821,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         evaluation_window = 60
         keep_alive = 300
         max_signal_duration = 600
-    }
-
-	filter {
-        query = "does not really suppress (updated)"
-        action = "suppress"
     }
 
     tags = ["u:tomato", "i:tomato"]
@@ -829,10 +871,6 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schem
 			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.decrease_criticality_based_on_env", "false"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "u:tomato"),
 		resource.TestCheckTypeSetElemAttr(
@@ -846,6 +884,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s - updated"
     message = "acceptance rule triggered (updated)"
     enabled = true
+	validate = true
 
     query {
         name = "first"
@@ -929,6 +968,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "acceptance rule triggered (updated)"
     enabled = true
+    validate = true
 
     query {
 		name = "first"
@@ -1005,6 +1045,7 @@ func testAccCheckDatadogSecurityMonitoringEnabledDefaultConfig(name string) stri
 resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s - updated"
     message = "acceptance rule triggered (updated)"
+    validate = true
 
     query {
         name = "first_updated"
@@ -1033,11 +1074,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         max_signal_duration = 600
     }
 
-	filter {
-        query = "does not really suppress (updated)"
-        action = "suppress"
-    }
-
     tags = ["u:tomato", "i:tomato"]
 }
 `, name)
@@ -1053,6 +1089,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 	name = "%s"
 	message = "acceptance rule triggered"
 	enabled = false
+	// Skipping validation for SignalCorrection rule due to the issue to render the ruleId in the query.
+	validate = false
 	has_extended_title = true
 
 	signal_query {
@@ -1081,16 +1119,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		evaluation_window = 300
 		keep_alive = 600
 		max_signal_duration = 900
-	}
-
-	filter {
-		query = "does not really suppress"
-		action = "suppress"
-	}
-
-	filter {
-		query = "does not really require neither"
-		action = "require"
 	}
 
 	type = "signal_correlation"
@@ -1151,14 +1179,6 @@ func testAccCheckDatadogSecurityMonitorCreatedSignalCorrelationCheck(accProvider
 			tfSecurityRuleName, "options.0.keep_alive", "600"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.1.action", "require"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.1.query", "does not really require neither"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "alert:red"),
 		resource.TestCheckTypeSetElemAttr(
@@ -1176,6 +1196,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 	name = "%s - updated"
 	message = "acceptance rule triggered (updated)"
 	enabled = true
+	validate = false
 	has_extended_title = false
 
 	signal_query {
@@ -1204,11 +1225,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		evaluation_window = 60
 		keep_alive = 300
 		max_signal_duration = 600
-	}
-
-	filter {
-		query = "does not really suppress (updated)"
-		action = "suppress"
 	}
 
 	type = "signal_correlation"
@@ -1263,10 +1279,6 @@ func testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvid
 			tfSecurityRuleName, "options.0.keep_alive", "300"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "alert:red"),
 		resource.TestCheckTypeSetElemAttr(
@@ -1313,10 +1325,6 @@ func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider func()
 			tfSecurityRuleName, "options.0.keep_alive", "300"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "options.0.max_signal_duration", "600"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.action", "suppress"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "filter.0.query", "does not really suppress (updated)"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "u:tomato"),
 		resource.TestCheckTypeSetElemAttr(
@@ -1329,6 +1337,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(name string) str
 resource "datadog_security_monitoring_rule" "acceptance_test" {
     name = "%s"
     message = "acceptance rule triggered"
+    validate = true
 
     query {
         query = "does not really match much"
@@ -1381,6 +1390,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyConfig(ruleName strin
 		resource "datadog_security_monitoring_rule" "acceptance_test" {
 			name = "%s"
 			message = "third party rule triggered"
+		    validate = true
 
 			third_party_case {
 				query         = "@alert.severity:[5 TO 10]"
@@ -1445,6 +1455,7 @@ func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyConfig(ruleName strin
 		resource "datadog_security_monitoring_rule" "acceptance_test" {
 			name = "%s"
 			message = "third party rule triggered"
+    		validate = true
 
 			third_party_case {
 				query         = "@alert.severity:[5 TO 10]"

@@ -87,13 +87,13 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 		notificationsField: {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Notification targets for signals. Defaults to empty list.",
+			Description: "This function will be deprecated soon. Use the notification rules function instead. Notification targets for signals. Defaults to empty list.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		groupByField: {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Fields to group by when generating signals, e.g. @resource. Defaults to empty list.",
+			Description: "Defaults to empty list. This function will be deprecated soon. Use the notification rules function instead. Fields to group by when generating signals, e.g. @resource.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		tagsField: {

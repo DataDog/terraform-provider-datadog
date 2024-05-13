@@ -64,8 +64,6 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "baz"),
@@ -129,8 +127,6 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "baz"),
@@ -181,8 +177,6 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 						"datadog_monitor.foo", "renotify_statuses.*", "warn"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
@@ -256,8 +250,6 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "baz"),
@@ -313,8 +305,6 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "include_tags", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
@@ -408,8 +398,6 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "baz"),
@@ -463,8 +451,6 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "include_tags", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "true"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_monitor.foo", "tags.#"),
 					resource.TestCheckResourceAttr(
@@ -972,6 +958,47 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogMonitorWithEmptySchedulingOptions(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%[1]s"
+  type = "metric alert"
+  message = "%[1]s"
+  priority = 3
+
+  query = "avg(last_1h):avg:system.load.5{*} > 4"
+
+  monitor_thresholds {
+	critical = "4"
+  }
+
+  scheduling_options {}
+}`, uniq)
+}
+
+func TestAccDatadogMonitor_EmptySchedulingOptions(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithEmptySchedulingOptions(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogMonitor_SchedulingOptionsHourStart(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -1154,7 +1181,6 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "baz"]
   notification_preset_name = "hide_query"
 }`, uniq)
@@ -1179,7 +1205,6 @@ resource "datadog_monitor" "foo" {
   timeout_h = 1
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "bar:baz"]
 }`, uniq)
 }
@@ -1212,7 +1237,6 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "baz"]
 }`, uniq)
 }
@@ -1243,7 +1267,6 @@ resource "datadog_monitor" "foo" {
   timeout_h           = 1
   include_tags        = true
   require_full_window = true
-  locked              = false
 
   tags = ["foo:bar", "baz"]
 }`, uniq)
@@ -1275,7 +1298,6 @@ resource "datadog_monitor" "foo" {
   timeout_h           = 1
   include_tags        = true
   require_full_window = true
-  locked              = false
 
   tags = ["foo:bar", "baz"]
 }`, uniq)
@@ -1309,7 +1331,6 @@ resource "datadog_monitor" "foo" {
   timeout_h = 10
   include_tags = false
   require_full_window = false
-  locked = true
   tags = ["baz:qux", "quux"]
   notification_preset_name = "show_all"
 }`, uniq)
@@ -1342,7 +1363,6 @@ resource "datadog_monitor" "foo" {
   timeout_h = 10
   include_tags = false
   require_full_window = false
-  locked = true
   notification_preset_name = "show_all"
 }`, uniq)
 }
@@ -1429,7 +1449,6 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "baz"]
   enable_logs_sample = true
   groupby_simple_monitor = true
@@ -1463,7 +1482,6 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "baz"]
   enable_logs_sample = true
   notify_by = ["status"]

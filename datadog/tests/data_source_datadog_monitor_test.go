@@ -89,8 +89,6 @@ func checkDatasourceAttrs(accProvider func() (*schema.Provider, error), uniq str
 		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "require_full_window", "true"),
 		resource.TestCheckResourceAttr(
-			"data.datadog_monitor.foo", "locked", "false"),
-		resource.TestCheckResourceAttr(
 			"data.datadog_monitor.foo", "tags.#", "2"),
 		resource.TestCheckTypeSetElemAttr(
 			"data.datadog_monitor.foo", "tags.*", "baz"),
@@ -139,7 +137,6 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["test_datasource_monitor:%s", "baz"]
 }`, uniq, uniq, uniq)
 }

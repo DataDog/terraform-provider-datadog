@@ -59,6 +59,7 @@ var Resources = []func() resource.Resource{
 	NewTeamMembershipResource,
 	NewTeamPermissionSettingResource,
 	NewTeamResource,
+	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
 	NewCSMThreatsAgentRuleResource,
 	NewServiceAccountResource,
@@ -78,6 +79,7 @@ var Datasources = []func() datasource.DataSource{
 	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
+	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 }
@@ -515,6 +517,10 @@ func (r *FrameworkResourceWrapper) Delete(ctx context.Context, req resource.Dele
 
 func (r *FrameworkResourceWrapper) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	if rCasted, ok := (*r.innerResource).(resource.ResourceWithImportState); ok {
+		if req.ID == "" {
+			resp.Diagnostics.AddError("resource ID is required for import and cannot be empty", "")
+			return
+		}
 		rCasted.ImportState(ctx, req, resp)
 		return
 	}

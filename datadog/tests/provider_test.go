@@ -72,6 +72,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_permissions_test":                             "permissions",
 	"tests/data_source_datadog_restriction_policy_test":                      "restriction-policy",
 	"tests/data_source_datadog_role_test":                                    "roles",
+	"tests/data_source_datadog_role_users_test":                              "roles",
 	"tests/data_source_datadog_roles_test":                                   "roles",
 	"tests/data_source_datadog_rum_application_test":                         "rum-application",
 	"tests/data_source_datadog_security_monitoring_filters_test":             "security-monitoring",
@@ -230,6 +231,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_team_test":                                       "team",
 	"tests/resource_datadog_timeboard_test":                                  "dashboards",
 	"tests/resource_datadog_user_test":                                       "users",
+	"tests/resource_datadog_user_role_test":                                  "roles",
 	"tests/resource_datadog_webhook_custom_variable_test":                    "webhook_custom_variable",
 	"tests/resource_datadog_webhook_test":                                    "webhook",
 }

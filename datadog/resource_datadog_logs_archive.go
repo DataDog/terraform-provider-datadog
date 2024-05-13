@@ -223,7 +223,7 @@ func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestinatio
 			return "s3", buildS3Map(*d), nil
 		}
 	}
-	return "", emptyDestination, fmt.Errorf("destination should be not null")
+	return "", emptyDestination, fmt.Errorf("failed to get archive definition, please make sure the user associated with your application key has Logs Read Archives permission")
 }
 
 func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) map[string]interface{} {

@@ -339,15 +339,19 @@ resource "datadog_synthetics_test" "test_browser" {
 }
 
 # Example Usage (GRPC API test)
-# Create a new Datadog GRPC API test starting on google.org:50050
+# Create a new Datadog GRPC API test calling host google.org on port 50050
+# targeting service Greeter in the package helloworld with the method SayHello
+# and the message {"name": "John"}
 resource "datadog_synthetics_test" "grpc" {
   type    = "api"
   subtype = "grpc"
   request_definition {
-    method           = "GET"
+    method           = "SayHello"
     host             = "google.com"
     port             = 50050
-    service          = "Hello"
+    service          = "helloworld.Greeter"
+    call_type        = "unary"
+    message          = "{\"name\": \"John\"}"
     plain_proto_file = <<EOT
 syntax = "proto3";
 option java_multiple_files = true;
@@ -357,16 +361,16 @@ option objc_class_prefix = "HLW";
 package helloworld;
 // The greeting service definition.
 service Greeter {
-	// Sends a greeting
-	rpc SayHello (HelloRequest) returns (HelloReply) {}
+    // Sends a greeting
+    rpc SayHello (HelloRequest) returns (HelloReply) {}
 }
 // The request message containing the user's name.
 message HelloRequest {
-	string name = 1;
+    string name = 1;
 }
 // The response message containing the greetings
 message HelloReply {
-	string message = 1;
+    string message = 1;
 }
 EOT
   }
@@ -398,10 +402,10 @@ EOT
   options_list {
     tick_every = 60
   }
-  name    = "GRPC API test"
+  name    = "GRPC API test with proto"
   message = "Notify @datadog.user"
   tags    = ["foo:bar", "baz"]
-  status  = "paused"
+  status  = "live"
 }
 ```
 
@@ -435,6 +439,7 @@ EOT
 - `set_cookie` (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
 - `subtype` (String) The subtype of the Synthetic API test. Defaults to `http`. Valid values are `http`, `ssl`, `tcp`, `dns`, `multi`, `icmp`, `udp`, `websocket`, `grpc`.
 - `tags` (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
+- `variables_from_script` (String) Variables defined from JavaScript code for API HTTP tests.
 
 ### Read-Only
 
@@ -597,7 +602,7 @@ Optional:
 
 - `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
 - `body` (String) The request body.
-- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
+- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
@@ -945,7 +950,7 @@ Optional:
 Optional:
 
 - `body` (String) The request body.
-- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
+- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).

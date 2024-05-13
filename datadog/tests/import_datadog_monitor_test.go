@@ -108,7 +108,6 @@ resource "datadog_monitor" "foo" {
   timeout_h = 10
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "bar:baz"]
 }`, uniq)
 }
@@ -139,7 +138,6 @@ resource "datadog_monitor" "foo" {
   timeout_h = 10
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "bar:baz"]
 }`, uniq)
 }
@@ -173,7 +171,6 @@ resource "datadog_monitor" "foo" {
   timeout_h = 10
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "bar:baz"]
 }`, uniq)
 }
