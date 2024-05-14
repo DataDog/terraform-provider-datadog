@@ -115,6 +115,10 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 	options {
 		decrease_criticality_based_on_env = true
 	}
+
+	custom_tags = [
+		"testtag:newtag",
+	]
 }
 `
 }
@@ -131,7 +135,7 @@ func testAccDatadogSecurityMonitoringDefaultRuleAddTag() string {
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 	options {
 		decrease_criticality_based_on_env = true
-		}
+	}
 	
 	custom_tags = [
 		"testtag:newtag",
