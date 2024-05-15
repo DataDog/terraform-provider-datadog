@@ -3,12 +3,12 @@
 page_title: "datadog_cloud_workload_security_agent_rules Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources.
+  Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources (this resource is going to be deprecated soon).
 ---
 
 # datadog_cloud_workload_security_agent_rules (Data Source)
 
-Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources.
+Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources (this resource is going to be deprecated soon).
 
 ## Example Usage
 

@@ -12,7 +12,7 @@ import (
 
 func resourceDatadogCloudWorkloadSecurityAgentRule() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules.",
+		Description:   "Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules (this resource is going to be deprecated soon).",
 		CreateContext: resourceDatadogCloudWorkloadSecurityAgentRuleCreate,
 		ReadContext:   resourceDatadogCloudWorkloadSecurityAgentRuleRead,
 		UpdateContext: resourceDatadogCloudWorkloadSecurityAgentRuleUpdate,

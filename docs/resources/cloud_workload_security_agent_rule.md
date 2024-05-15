@@ -3,12 +3,12 @@
 page_title: "datadog_cloud_workload_security_agent_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules.
+  Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules (this resource is going to be deprecated soon).
 ---
 
 # datadog_cloud_workload_security_agent_rule (Resource)
 
-Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules.
+Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules (this resource is going to be deprecated soon).
 
 ## Example Usage
 
