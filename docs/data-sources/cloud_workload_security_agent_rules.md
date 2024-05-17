@@ -3,12 +3,12 @@
 page_title: "datadog_cloud_workload_security_agent_rules Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources. Deprecated, use CSM Threats Agent Rules instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/csmthreatsagent_rules
+  Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources. Deprecated, use datadogcsmthreatsagentrules data source instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/csmthreatsagent_rules
 ---
 
 # datadog_cloud_workload_security_agent_rules (Data Source)
 
-Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources. Deprecated, use CSM Threats Agent Rules instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/csm_threats_agent_rules
+Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources. Deprecated, use datadog_csm_threats_agent_rules data source instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/csm_threats_agent_rules
 
 ## Example Usage
 

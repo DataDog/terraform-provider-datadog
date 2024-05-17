@@ -12,8 +12,8 @@ import (
 
 func resourceDatadogCloudWorkloadSecurityAgentRule() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules. Deprecated, use CSM Threats Agent Rule instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule",
-		DeprecationMessage: "This resource is deprecated — use the datadog_csm_threats_agent_rules resource instead.",
+		Description:   "Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules. Deprecated, use datadog_csm_threats_agent_rules resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule",
+		DeprecationMessage: "This resource is deprecated — use the datadog_csm_threats_agent_rules resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule",
 		CreateContext: resourceDatadogCloudWorkloadSecurityAgentRuleCreate,
 		ReadContext:   resourceDatadogCloudWorkloadSecurityAgentRuleRead,
 		UpdateContext: resourceDatadogCloudWorkloadSecurityAgentRuleUpdate,
