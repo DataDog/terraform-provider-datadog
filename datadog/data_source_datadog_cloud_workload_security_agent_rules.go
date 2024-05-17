@@ -12,7 +12,7 @@ import (
 
 func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources (this data source is going to be deprecated soon).",
+		Description: "Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources. Deprecated, use CSM Threats Agent Rules instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/csm_threats_agent_rules",
 		ReadContext: dataSourceDatadogCloudWorkloadSecurityAgentRulesRead,
 
 		SchemaFunc: func() map[string]*schema.Schema {
