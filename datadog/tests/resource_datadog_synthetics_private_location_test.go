@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"log"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -14,6 +15,10 @@ import (
 
 func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 	t.Parallel()
+	if !isReplaying() {
+		log.Println("Skipping private locations tests in non replaying mode")
+		return
+	}
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	privateLocationName := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
@@ -38,6 +43,10 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 	t.Parallel()
+	if !isReplaying() {
+		log.Println("Skipping private locations tests in non replaying mode")
+		return
+	}
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -53,6 +62,10 @@ func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 	t.Parallel()
+	if !isReplaying() {
+		log.Println("Skipping private locations tests in non replaying mode")
+		return
+	}
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
 
