@@ -131,7 +131,7 @@ func (r *integrationAzureResource) Read(ctx context.Context, request resource.Re
 		return
 	}
 
-	account, diags := r.getAzureAccount(ctx, &state)
+	account, diags := r.getAzureAccount(ctx, state.TenantName.ValueString(), state.ClientId.ValueString())
 	if diags.HasError() {
 		response.Diagnostics.Append(diags...)
 		return
@@ -140,7 +140,7 @@ func (r *integrationAzureResource) Read(ctx context.Context, request resource.Re
 		response.State.RemoveResource(ctx)
 		return
 	}
-	r.updateState(ctx, &state, account)
+	r.updateState(ctx, &state, account, false)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -166,7 +166,7 @@ func (r *integrationAzureResource) Create(ctx context.Context, request resource.
 
 	state.ID = types.StringValue(fmt.Sprintf("%s:%s", state.TenantName.ValueString(), state.ClientId.ValueString()))
 
-	account, diags := r.getAzureAccount(ctx, &state)
+	account, diags := r.getAzureAccount(ctx, state.TenantName.ValueString(), state.ClientId.ValueString())
 	if diags.HasError() {
 		response.Diagnostics.Append(diags...)
 		return
@@ -176,7 +176,7 @@ func (r *integrationAzureResource) Create(ctx context.Context, request resource.
 		return
 	}
 
-	r.updateState(ctx, &state, account)
+	r.updateState(ctx, &state, account, false)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -184,7 +184,10 @@ func (r *integrationAzureResource) Create(ctx context.Context, request resource.
 
 func (r *integrationAzureResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
 	var state integrationAzureModel
+	var prev_state integrationAzureModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	response.Diagnostics.Append(request.State.Get(ctx, &prev_state)...)
+
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -192,22 +195,19 @@ func (r *integrationAzureResource) Update(ctx context.Context, request resource.
 	integrationAzureMutex.Lock()
 	defer integrationAzureMutex.Unlock()
 
-	tenantName, clientId, err := utils.TenantAndClientFromID(state.ID.ValueString())
-	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, ""))
-		return
-	}
-	body := r.buildIntegrationAzureRequestBody(ctx, &state, tenantName, clientId, true)
+	prevTenantName := prev_state.TenantName
+	prevClientId := prev_state.ClientId
 
-	_, _, err = r.Api.UpdateAzureIntegration(r.Auth, *body)
+	body := r.buildIntegrationAzureRequestBody(ctx, &state, prevTenantName.ValueString(), prevClientId.ValueString(), true)
+
+	_, _, err := r.Api.UpdateAzureIntegration(r.Auth, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating Azure integration"))
 		return
 	}
 
-	state.ID = types.StringValue(fmt.Sprintf("%s:%s", state.TenantName.ValueString(), state.ClientId.ValueString()))
+	account, diags := r.getAzureAccount(ctx, state.TenantName.ValueString(), state.ClientId.ValueString())
 
-	account, diags := r.getAzureAccount(ctx, &state)
 	if diags.HasError() {
 		response.Diagnostics.Append(diags...)
 		return
@@ -217,7 +217,7 @@ func (r *integrationAzureResource) Update(ctx context.Context, request resource.
 		return
 	}
 
-	r.updateState(ctx, &state, account)
+	r.updateState(ctx, &state, account, true)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -250,7 +250,7 @@ func (r *integrationAzureResource) Delete(ctx context.Context, request resource.
 	}
 }
 
-func (r *integrationAzureResource) updateState(ctx context.Context, state *integrationAzureModel, account *datadogV1.AzureAccount) {
+func (r *integrationAzureResource) updateState(ctx context.Context, state *integrationAzureModel, account *datadogV1.AzureAccount, update bool) {
 	state.TenantName = types.StringValue(account.GetTenantName())
 	state.ClientId = types.StringValue(account.GetClientId())
 	state.Automute = types.BoolValue(account.GetAutomute())
@@ -271,17 +271,13 @@ func (r *integrationAzureResource) updateState(ctx context.Context, state *integ
 		state.ContainerAppFilters = types.StringValue(*containerAppFilters)
 	}
 
-	state.ID = types.StringValue(fmt.Sprintf("%s:%s", account.GetTenantName(), account.GetClientId()))
+	if !update {
+		state.ID = types.StringValue(fmt.Sprintf("%s:%s", account.GetTenantName(), account.GetClientId()))
+	}
 }
 
-func (r *integrationAzureResource) getAzureAccount(ctx context.Context, state *integrationAzureModel) (*datadogV1.AzureAccount, diag.Diagnostics) {
+func (r *integrationAzureResource) getAzureAccount(ctx context.Context, tenantName string, clientId string) (*datadogV1.AzureAccount, diag.Diagnostics) {
 	var diags diag.Diagnostics
-
-	tenantName, clientId, err := utils.TenantAndClientFromID(state.ID.ValueString())
-	if err != nil {
-		diags.Append(utils.FrameworkErrorDiag(err, ""))
-		return nil, diags
-	}
 
 	resp, _, err := r.Api.ListAzureIntegration(r.Auth)
 	if err != nil {
