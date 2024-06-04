@@ -347,8 +347,8 @@ func (i *ApiInstances) GetAuthNMappingsApiV2() *datadogV2.AuthNMappingsApi {
 	return i.authNMappingsApiV2
 }
 
-// GetCloudWorkloadSecurityApiV2 get instance of CloudWorkloadSecurityApi
-func (i *ApiInstances) GetCloudWorkloadSecurityApiV2() *datadogV2.CSMThreatsApi {
+// GetCSMThreatsApiV2 get instance of CSMThreatsApi
+func (i *ApiInstances) GetCSMThreatsApiV2() *datadogV2.CSMThreatsApi {
 	if i.csmThreatsApiV2 == nil {
 		i.csmThreatsApiV2 = datadogV2.NewCSMThreatsApi(i.HttpClient)
 	}

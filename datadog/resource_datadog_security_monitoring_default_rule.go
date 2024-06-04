@@ -100,6 +100,13 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 					Computed:    true,
 					Description: "The rule type.",
 				},
+
+				"custom_tags": {
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Description: "Custom tags for generated signals.",
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
 			}
 		},
 	}
@@ -198,6 +205,20 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 	}
 
 	d.Set("options", &ruleOptions)
+
+	defaultTags := make(map[string]bool)
+	for _, defaultTag := range rule.GetDefaultTags() {
+		defaultTags[defaultTag] = true
+	}
+
+	customTags := []string{}
+	for _, tag := range rule.GetTags() {
+		if _, ok := defaultTags[tag]; !ok {
+			customTags = append(customTags, tag)
+		}
+	}
+
+	d.Set("custom_tags", customTags)
 
 	return securityMonitoringRuleDeprecationWarning(rule)
 }
@@ -335,6 +356,27 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 	payload.Filters = payloadFilters
 
 	payload.Options = buildDefaultRulePayloadOptions(d)
+
+	defaultTags := currentState.GetDefaultTags()
+	tags := make(map[string]bool)
+	for _, tag := range defaultTags {
+		tags[tag] = true
+	}
+
+	if v, ok := d.GetOk("custom_tags"); ok {
+		tfTags := v.(*schema.Set)
+		for _, value := range tfTags.List() {
+			customTag := value.(string)
+			tags[customTag] = true
+		}
+	}
+
+	payloadTags := make([]string, 0, len(tags))
+	for tag := range tags {
+		payloadTags = append(payloadTags, tag)
+	}
+
+	payload.SetTags(payloadTags)
 
 	return &payload, true, nil
 }

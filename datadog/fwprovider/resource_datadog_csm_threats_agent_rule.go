@@ -45,7 +45,7 @@ func (r *csmThreatsAgentRuleResource) Metadata(_ context.Context, request resour
 
 func (r *csmThreatsAgentRuleResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
-	r.api = providerData.DatadogApiInstances.GetCloudWorkloadSecurityApiV2()
+	r.api = providerData.DatadogApiInstances.GetCSMThreatsApiV2()
 	r.auth = providerData.Auth
 }
 

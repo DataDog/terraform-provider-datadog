@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"sync"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 
@@ -18,8 +19,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &integrationGcpStsResource{}
-	_ resource.ResourceWithImportState = &integrationGcpStsResource{}
+	integrationGcpStsMutex sync.Mutex
+	_                      resource.ResourceWithConfigure   = &integrationGcpStsResource{}
+	_                      resource.ResourceWithImportState = &integrationGcpStsResource{}
 )
 
 type integrationGcpStsResource struct {
@@ -155,6 +157,9 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 		return
 	}
 
+	integrationGcpStsMutex.Lock()
+	defer integrationGcpStsMutex.Unlock()
+
 	// This resource is special and uses datadog delagate account.
 	// The datadog delegate account cannot mutated after creation hence it is safe
 	// to call MakeGCPSTSDelegate multiple times. And to ensure it is created, we call it once before creating
@@ -199,6 +204,9 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 		return
 	}
 
+	integrationGcpStsMutex.Lock()
+	defer integrationGcpStsMutex.Unlock()
+
 	id := state.ID.ValueString()
 
 	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
@@ -232,6 +240,9 @@ func (r *integrationGcpStsResource) Delete(ctx context.Context, request resource
 	if response.Diagnostics.HasError() {
 		return
 	}
+
+	integrationGcpStsMutex.Lock()
+	defer integrationGcpStsMutex.Unlock()
 
 	id := state.ID.ValueString()
 
