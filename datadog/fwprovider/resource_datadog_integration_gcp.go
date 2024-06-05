@@ -122,6 +122,7 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Description: "When enabled, Datadog scans for all resources in your GCP environment.",
 				Optional:    true,
 				Computed:    true,
+				Default:     booldefault.StaticBool(true),
 			},
 			"cspm_resource_collection_enabled": schema.BoolAttribute{
 				Description: "Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.",

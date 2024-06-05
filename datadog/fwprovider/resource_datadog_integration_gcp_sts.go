@@ -103,6 +103,7 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Description: "When enabled, Datadog scans for all resources in your GCP environment.",
 				Optional:    true,
 				Computed:    true,
+				Default:     booldefault.StaticBool(true),
 			}, "id": utils.ResourceIDAttribute(),
 		},
 	}
