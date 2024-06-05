@@ -719,7 +719,7 @@ Optional:
 - `delay` (Number) Delay between each key stroke for a "type test" step.
 - `element` (String) Element to use for the step, json encoded string.
 - `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
-- `email` (String) Details of the email for an "assert email" step.
+- `email` (String) Details of the email for an "assert email" step, json encoded string.
 - `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
 - `files` (String) Details of the files for an "upload files" step, json encoded string.
 - `modifiers` (List of String) Modifier to use for a "press key" step.
