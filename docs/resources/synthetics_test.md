@@ -432,6 +432,7 @@ EOT
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
 - `request_definition` (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
+- `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--request_file))
 - `request_headers` (Map of String) Header name and value map.
 - `request_metadata` (Map of String) Metadata to include when performing the gRPC test.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
@@ -462,6 +463,7 @@ Optional:
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
 - `request_definition` (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
+- `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--api_step--request_file))
 - `request_headers` (Map of String) Header name and value map.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
@@ -623,6 +625,24 @@ Optional:
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
 - `url` (String) The URL to send the request to.
+
+
+<a id="nestedblock--api_step--request_file"></a>
+### Nested Schema for `api_step.request_file`
+
+Required:
+
+- `name` (String) Name of the file.
+- `size` (Number) Size of the file.
+- `type` (String) Type of the file.
+
+Optional:
+
+- `content` (String) Content of the file.
+
+Read-Only:
+
+- `bucket_key` (String) Bucket key of the file.
 
 
 <a id="nestedblock--api_step--request_proxy"></a>
@@ -970,6 +990,24 @@ Optional:
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
 - `url` (String) The URL to send the request to.
+
+
+<a id="nestedblock--request_file"></a>
+### Nested Schema for `request_file`
+
+Required:
+
+- `name` (String) Name of the file.
+- `size` (Number) Size of the file.
+- `type` (String) Type of the file.
+
+Optional:
+
+- `content` (String) Content of the file.
+
+Read-Only:
+
+- `bucket_key` (String) Bucket key of the file.
 
 
 <a id="nestedblock--request_proxy"></a>
