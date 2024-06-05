@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -631,6 +632,8 @@ func createSyntheticsAPIRequestFileBlock(file datadogV1.SyntheticsTestRequestBod
 `, *file.Content, *file.Name, *file.Size, *file.Type)
 }
 
+var bucketKeyRegex, _ = regexp.Compile("^api-upload-file/[a-z0-9]{3}-[a-z0-9]{3}-[a-z0-9]{3}/[-:._0-9Ta-z]*\\.json$")
+
 func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
 	bodyType := "multipart/form-data"
 	return resource.TestStep{
@@ -657,8 +660,24 @@ func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider func() (
 				"datadog_synthetics_test.foo", "request_file.0.type", *files[0].Type),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_file.0.content", *files[0].Content),
+			resource.TestMatchResourceAttr(
+				"datadog_synthetics_test.foo", "request_file.0.bucket_key", bucketKeyRegex),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.foo", "monitor_id"),
+			func(s *terraform.State) error {
+				for _, r := range s.RootModule().Resources {
+					if r.Type == "datadog_synthetics_test" {
+						// We aren't sure yet how to let the provider check if the content was updated to upload it again.
+						// Hence, the provider is uploading the file every time the resource is modified.
+						// Checking if the bucket key is different from the previous one allows to make sure the file is uploaded every time.
+						if previousBucketKey != nil && r.Primary.Attributes["request_file.0.bucket_key"] == *previousBucketKey && bucketKeyShouldUpdate {
+							return fmt.Errorf("Terraform plan is not uploading and updating the bucket key: %s", *previousBucketKey)
+						}
+						*previousBucketKey = r.Primary.Attributes["request_file.0.bucket_key"]
+					}
+				}
+				return nil
+			},
 		),
 	}
 }
