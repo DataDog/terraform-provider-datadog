@@ -83,7 +83,10 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 						"automute", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
-						"cspm_resource_collection_enabled", "false"), // false by default
+						"resource_collection_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"cspm_resource_collection_enabled", "false"),
 				),
 			},
 			{
@@ -111,6 +114,12 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"automute", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"resource_collection_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"cspm_resource_collection_enabled", "false"),
 				),
 			},
 			{
@@ -138,6 +147,12 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"automute", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"resource_collection_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration",
+						"cspm_resource_collection_enabled", "false"),
 				),
 			},
 		},

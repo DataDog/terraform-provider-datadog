@@ -90,6 +90,8 @@ func TestAccIntegrationGcpStsDefault(t *testing.T) {
 						"datadog_integration_gcp_sts.foo", "client_email", fmt.Sprintf("%s@test-project.iam.gserviceaccount.com", uniq)),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "resource_collection_enabled", "true"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters"),
 				),
