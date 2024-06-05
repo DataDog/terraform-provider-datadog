@@ -245,7 +245,7 @@ func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *Apm
 	state.FilterType = types.StringValue(filterType)
 }
 
-func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(ctx context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterCreateRequest, diag.Diagnostics) {
+func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(_ context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
 	attributes := datadogV2.NewRetentionFilterCreateAttributesWithDefaults()
@@ -266,7 +266,7 @@ func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(ctx c
 	return req, diags
 }
 
-func (r *ApmRetentionFilterResource) buildApmRetentionFilterUpdateRequestBody(ctx context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterUpdateRequest, diag.Diagnostics) {
+func (r *ApmRetentionFilterResource) buildApmRetentionFilterUpdateRequestBody(_ context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewRetentionFilterUpdateAttributesWithDefaults()
 
