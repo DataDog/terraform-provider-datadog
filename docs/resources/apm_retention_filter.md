@@ -31,7 +31,7 @@ resource "datadog_apm_retention_filter" "foo" {
 ### Required
 
 - `enabled` (Boolean) the status of the retention filter.
-- `filter_type` (String) The type of the retention filter, currently only spans-processing-sampling is available. Valid values are `spans-sampling-processor`.
+- `filter_type` (String) The type of the retention filter, currently only spans-processing-sampling is available. Valid values are `spans-sampling-processor`, `spans-errors-sampling-processor`, `spans-appsec-sampling-processor`.
 - `name` (String) The name of the retention filter.
 - `rate` (String) Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.
 
@@ -57,4 +57,28 @@ Import is supported using the following syntax:
 ```shell
 # Import existing APM retention filter 
 terraform import datadog_apm_retention_filter.foo <filter_id>
+
+# Import default APM retention filter.
+# Note: default filter name and query cannot be updated
+
+# terraform version < 1.5.0
+# Import using default filter id
+terraform import datadog_apm_retention_filter.foo <filter_id>
+
+# terraform version >= 1.5.0
+# Generate terraform configuration file using terraform plan command and import block
+# See: https://developer.hashicorp.com/terraform/language/import
+: '
+# main.tf
+```
+import {
+  to = datadog_apm_retention_filter.error_default
+  id = "<default_filter_id>"
+}
+```
+
+# Generate terraform configuration
+'
+terraform plan -generate-config-out=generated.tf
+terraform apply
 ```
