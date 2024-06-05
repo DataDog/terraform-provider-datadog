@@ -121,7 +121,7 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 			},
 			// Add expiration date
 			{
-				Config: configWithExpirationDate("2024-01-22T12:00:00Z"),
+				Config: configWithExpirationDate("2099-01-22T12:00:00Z"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
 					checkSecurityMonitoringSuppressionContentWithExpirationDate(
@@ -130,13 +130,13 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 						"suppression for terraform provider test",
 						"severity:low source:cloudtrail",
 						"env:staging",
-						"2024-01-22T12:00:00Z",
+						"2099-01-22T12:00:00Z",
 					),
 				),
 			},
 			// Change the timezone of the expiration date, without changing the value
 			{
-				Config: configWithExpirationDate("2024-01-22T13:00:00+01:00"),
+				Config: configWithExpirationDate("2099-01-22T13:00:00+01:00"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
 					checkSecurityMonitoringSuppressionContentWithExpirationDate(
@@ -145,13 +145,13 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 						"suppression for terraform provider test",
 						"severity:low source:cloudtrail",
 						"env:staging",
-						"2024-01-22T13:00:00+01:00",
+						"2099-01-22T13:00:00+01:00",
 					),
 				),
 			},
 			// Change the expiration date
 			{
-				Config: configWithExpirationDate("2024-01-22T15:30:00+01:00"),
+				Config: configWithExpirationDate("2099-01-22T15:30:00+01:00"),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckSecurityMonitoringSuppressionExists(providers.frameworkProvider, resourceName),
 					checkSecurityMonitoringSuppressionContentWithExpirationDate(
@@ -160,7 +160,7 @@ func TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveExpirationDate(t
 						"suppression for terraform provider test",
 						"severity:low source:cloudtrail",
 						"env:staging",
-						"2024-01-22T15:30:00+01:00",
+						"2099-01-22T15:30:00+01:00",
 					),
 				),
 			},
