@@ -36,7 +36,7 @@ func testAccCheckDatadogIntegrationAzureConfigUpdated(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_azure" "an_azure_integration" {
   tenant_name   = "%s"
-  client_id     = "testc7f6-1234-5678-9101-3fcbf464test"
+  client_id     = "testc7f5-1234-5678-9101-3fcbf464test"
   client_secret = "testingx./Sw*g/Y33t..R1cH+hScMDt"
   app_service_plan_filters = "bar:baz,stinky:pete"
   container_app_filters = "bazinga:bazingo,woody:pride"
@@ -103,7 +103,7 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 						"tenant_name", tenantName),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
-						"client_id", "testc7f6-1234-5678-9101-3fcbf464test"),
+						"client_id", "testc7f5-1234-5678-9101-3fcbf464test"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
 						"client_secret", "testingx./Sw*g/Y33t..R1cH+hScMDt"),
