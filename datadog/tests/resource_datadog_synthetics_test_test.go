@@ -781,11 +781,11 @@ func createSyntheticsAPIRequestFileStruct(fileName string, originalFileName stri
 	fileSize := int64(len(fileContent))
 
 	return datadogV1.SyntheticsTestRequestBodyFile{
-		Name:    		  	&fileName,
-		OriginalFileName: 	&originalFileName ,
-		Content: 		  	&fileContent,
-		Type:   		  	&fileType,
-		Size:    		  	&fileSize,
+		Name:             &fileName,
+		OriginalFileName: &originalFileName,
+		Content:          &fileContent,
+		Type:             &fileType,
+		Size:             &fileSize,
 	}
 }
 
