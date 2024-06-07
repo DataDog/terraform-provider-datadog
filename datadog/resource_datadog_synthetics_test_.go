@@ -2600,17 +2600,11 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 			if v, ok := assertionTarget.GetOperatorOk(); ok {
 				localAssertion["operator"] = string(*v)
 			}
-			if assertionTarget.HasProperty() {
-				localAssertion["property"] = assertionTarget.GetProperty()
-			}
 			if target := assertionTarget.GetTarget(); target != nil {
 				localAssertion["target"] = convertToString(target)
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
-			}
-			if assertionTarget.HasTimingsScope() {
-				localAssertion["timings_scope"] = assertionTarget.GetTimingsScope()
 			}
 		}
 		localAssertions[i] = localAssertion
