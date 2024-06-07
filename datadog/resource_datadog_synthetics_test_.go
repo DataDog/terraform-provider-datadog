@@ -1003,7 +1003,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 				},
 				"element": {
-					Description: "Element to use for the step, json encoded string.",
+					Description: "Element to use for the step, JSON encoded string.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -1060,7 +1060,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					},
 				},
 				"email": {
-					Description: `Details of the email for an "assert email" step.`,
+					Description: `Details of the email for an "assert email" step, JSON encoded string.`,
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1073,7 +1073,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					},
 				},
 				"files": {
-					Description: `Details of the files for an "upload files" step, json encoded string.`,
+					Description: `Details of the files for an "upload files" step, JSON encoded string.`,
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
