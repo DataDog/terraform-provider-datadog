@@ -1454,16 +1454,5 @@ func resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx context.Context, dif
 		return nil
 	}
 
-	providerConf := meta.(*ProviderConfiguration)
-	apiInstances := providerConf.DatadogApiInstances
-	auth := providerConf.Auth
-
-	if payload, err := buildCreatePayload(diff); err == nil {
-		if httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().ValidateSecurityMonitoringRule(auth, *payload); err != nil || httpResponse == nil {
-			return utils.TranslateClientError(err, httpResponse, "error validating security monitoring rule")
-		}
-	} else {
-		log.Printf("[DEBUG] Skipping validation due to an error: %v", err)
-	}
 	return nil
 }
