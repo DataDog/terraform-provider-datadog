@@ -30,6 +30,10 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsAPITestConfig(testName, variableName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_test.foo", "assertions.5.operator", "md5"),
+				),
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.foo",
