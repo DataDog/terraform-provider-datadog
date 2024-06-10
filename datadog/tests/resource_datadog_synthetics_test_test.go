@@ -874,6 +874,11 @@ resource "datadog_synthetics_test" "foo" {
 		target = "200"
 	}
 	assertion {
+		type = "bodyHash"
+		operator = "md5"
+		target = "a"
+	}
+	assertion {
 		type = "responseTime"
 		operator = "lessThan"
 		target = "2000"
