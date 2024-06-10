@@ -563,6 +563,21 @@ func buildCreatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleCrea
 	return &createPayload, err
 }
 
+func buildValidatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleValidatePayload, error) {
+
+	if err := checkQueryConsistency(d); err != nil {
+		return &datadogV2.SecurityMonitoringRuleValidatePayload{}, err
+	}
+	if isSignalCorrelationSchema(d) {
+		payload, err := buildSignalPayload(d)
+		createPayload := datadogV2.SecurityMonitoringSignalRulePayloadAsSecurityMonitoringRuleValidatePayload(payload)
+		return &createPayload, err
+	}
+	payload, err := buildStandardPayload(d)
+	createPayload := datadogV2.SecurityMonitoringStandardRulePayloadAsSecurityMonitoringRuleValidatePayload(payload)
+	return &createPayload, err
+}
+
 func buildCreateCommonPayload(d utils.Resource, payload securityMonitoringRuleCreateInterface) {
 	payload.SetIsEnabled(d.Get("enabled").(bool))
 	payload.SetMessage(d.Get("message").(string))
@@ -627,8 +642,50 @@ func buildCreateStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoring
 	return &payload, nil
 }
 
+func buildStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoringStandardRulePayload, error) {
+	payload := datadogV2.SecurityMonitoringStandardRulePayload{}
+	buildCreateCommonPayload(d, &payload)
+
+	if isThirdPartyRule(d) {
+		payload.SetThirdPartyCases(buildPayloadThirdPartyCases(d))
+	} else {
+		payload.SetCases(buildCreatePayloadCases(d))
+		payload.SetQueries(buildCreateStandardPayloadQueries(d))
+	}
+
+	if v, ok := d.GetOk("type"); ok {
+		if ruleType, err := datadogV2.NewSecurityMonitoringRuleTypeCreateFromValue(v.(string)); err == nil {
+			payload.SetType(*ruleType)
+		} else {
+			return &payload, err
+		}
+	}
+	return &payload, nil
+}
+
 func buildCreateSignalPayload(d utils.Resource) (*datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
+	buildCreateCommonPayload(d, &payload)
+	payload.SetCases(buildCreatePayloadCases(d))
+	if queries, err := buildCreateSignalPayloadQueries(d); err == nil {
+		payload.SetQueries(queries)
+	} else {
+		return &payload, err
+	}
+
+	if v, ok := d.GetOk("type"); ok {
+		if ruleType, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(v.(string)); err == nil {
+			payload.SetType(*ruleType)
+		} else {
+			return &payload, err
+		}
+	}
+
+	return &payload, nil
+}
+
+func buildSignalPayload(d utils.Resource) (*datadogV2.SecurityMonitoringSignalRulePayload, error) {
+	payload := datadogV2.SecurityMonitoringSignalRulePayload{}
 	buildCreateCommonPayload(d, &payload)
 	payload.SetCases(buildCreatePayloadCases(d))
 	if queries, err := buildCreateSignalPayloadQueries(d); err == nil {
@@ -1458,7 +1515,7 @@ func resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx context.Context, dif
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	if payload, err := buildCreatePayload(diff); err == nil {
+	if payload, err := buildValidatePayload(diff); err == nil {
 		if httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().ValidateSecurityMonitoringRule(auth, *payload); err != nil || httpResponse == nil {
 			return utils.TranslateClientError(err, httpResponse, "error validating security monitoring rule")
 		}
