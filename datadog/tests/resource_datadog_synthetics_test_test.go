@@ -32,7 +32,7 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 				Config: createSyntheticsAPITestConfig(testName, variableName),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
-						"datadog_synthetics_test.foo", "assertions.5.operator", "md5"),
+						"datadog_synthetics_test.foo", "assertion.4.operator", "md5"),
 				),
 			},
 			{
@@ -878,11 +878,6 @@ resource "datadog_synthetics_test" "foo" {
 		target = "200"
 	}
 	assertion {
-		type = "bodyHash"
-		operator = "md5"
-		target = "a"
-	}
-	assertion {
 		type = "responseTime"
 		operator = "lessThan"
 		target = "2000"
@@ -893,7 +888,11 @@ resource "datadog_synthetics_test" "foo" {
 		operator = "doesNotContain"
 		target = "terraform"
 	}
-
+	assertion {
+		type = "bodyHash"
+		operator = "md5"
+		target = "a"
+	}
 	locations = [ "aws:eu-central-1" ]
 
 	options_list {
