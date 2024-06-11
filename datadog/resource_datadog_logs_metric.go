@@ -97,10 +97,11 @@ func resourceDatadogLogsMetric() *schema.Resource {
 				},
 
 				"name": {
-					Type:        schema.TypeString,
-					Required:    true,
-					ForceNew:    true,
-					Description: "The name of the log-based metric. This field can't be updated after creation.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ForceNew:         true,
+					Description:      "The name of the log-based metric. This field can't be updated after creation.",
+					ValidateDiagFunc: validators.ValidateDatadogMetricName,
 				},
 			}
 		},
