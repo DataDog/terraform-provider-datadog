@@ -734,7 +734,7 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "variables_from_script", "dd.variable.set('FOO', 'hello');"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertion.#", "4"),
+				"datadog_synthetics_test.foo", "assertion.#", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
