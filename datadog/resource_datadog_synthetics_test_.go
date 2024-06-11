@@ -460,7 +460,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 				"type": {
 					Description:      "Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue),
 					Required:         true,
 				},
 				"operator": {
@@ -2595,6 +2595,17 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
 			}
+		} else if assertion.SyntheticsAssertionBodyHashTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionBodyHashTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if target := assertionTarget.GetTarget(); target != nil {
+				localAssertion["target"] = convertToString(target)
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
 		}
 		localAssertions[i] = localAssertion
 	}
@@ -3395,11 +3406,12 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 	if err != nil {
 		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
 		_, err3 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
+		_, err4 := datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue(val.(string))
 
-		if err2 == nil || err3 == nil {
+		if err2 == nil || err3 == nil || err4 == nil {
 			return
 		} else {
-			errs = append(errs, err, err2)
+			errs = append(errs, err, err2, err3, err4)
 		}
 	}
 	return

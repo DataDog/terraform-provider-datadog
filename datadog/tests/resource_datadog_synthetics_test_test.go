@@ -30,6 +30,10 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsAPITestConfig(testName, variableName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_test.foo", "assertion.4.operator", "md5"),
+				),
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.foo",
@@ -730,7 +734,7 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "variables_from_script", "dd.variable.set('FOO', 'hello');"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertion.#", "4"),
+				"datadog_synthetics_test.foo", "assertion.#", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -884,7 +888,11 @@ resource "datadog_synthetics_test" "foo" {
 		operator = "doesNotContain"
 		target = "terraform"
 	}
-
+	assertion {
+		type = "bodyHash"
+		operator = "md5"
+		target = "a"
+	}
 	locations = [ "aws:eu-central-1" ]
 
 	options_list {
