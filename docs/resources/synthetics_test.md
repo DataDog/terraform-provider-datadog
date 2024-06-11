@@ -432,6 +432,7 @@ EOT
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
 - `request_definition` (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
+- `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--request_file))
 - `request_headers` (Map of String) Header name and value map.
 - `request_metadata` (Map of String) Metadata to include when performing the gRPC test.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
@@ -462,6 +463,7 @@ Optional:
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
 - `request_definition` (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
+- `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--api_step--request_file))
 - `request_headers` (Map of String) Header name and value map.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
@@ -474,7 +476,7 @@ Optional:
 Required:
 
 - `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`.
 
 Optional:
 
@@ -625,6 +627,24 @@ Optional:
 - `url` (String) The URL to send the request to.
 
 
+<a id="nestedblock--api_step--request_file"></a>
+### Nested Schema for `api_step.request_file`
+
+Required:
+
+- `name` (String) Name of the file.
+- `size` (Number) Size of the file.
+- `type` (String) Type of the file.
+
+Optional:
+
+- `content` (String) Content of the file.
+
+Read-Only:
+
+- `bucket_key` (String) Bucket key of the file.
+
+
 <a id="nestedblock--api_step--request_proxy"></a>
 ### Nested Schema for `api_step.request_proxy`
 
@@ -653,7 +673,7 @@ Optional:
 Required:
 
 - `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`.
 
 Optional:
 
@@ -717,11 +737,11 @@ Optional:
 - `click_type` (String) Type of click to use for a "click" step.
 - `code` (String) Javascript code to use for the step.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
-- `element` (String) Element to use for the step, json encoded string.
+- `element` (String) Element to use for the step, JSON encoded string.
 - `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
-- `email` (String) Details of the email for an "assert email" step.
+- `email` (String) Details of the email for an "assert email" step, JSON encoded string.
 - `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
-- `files` (String) Details of the files for an "upload files" step, json encoded string.
+- `files` (String) Details of the files for an "upload files" step, JSON encoded string.
 - `modifiers` (List of String) Modifier to use for a "press key" step.
 - `playing_tab_id` (String) ID of the tab to play the subtest.
 - `request` (String) Request for an API step.
@@ -970,6 +990,24 @@ Optional:
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
 - `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
 - `url` (String) The URL to send the request to.
+
+
+<a id="nestedblock--request_file"></a>
+### Nested Schema for `request_file`
+
+Required:
+
+- `name` (String) Name of the file.
+- `size` (Number) Size of the file.
+- `type` (String) Type of the file.
+
+Optional:
+
+- `content` (String) Content of the file.
+
+Read-Only:
+
+- `bucket_key` (String) Bucket key of the file.
 
 
 <a id="nestedblock--request_proxy"></a>

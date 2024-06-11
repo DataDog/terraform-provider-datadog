@@ -70,6 +70,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
 				"request_metadata":           syntheticsTestRequestMetadata(),
+				"request_file":               syntheticsTestRequestFile(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"browser_variable":           syntheticsBrowserVariable(),
 				"config_variable":            syntheticsConfigVariable(),
@@ -459,7 +460,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 				"type": {
 					Description:      "Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue),
 					Required:         true,
 				},
 				"operator": {
@@ -853,6 +854,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"request_basicauth":          syntheticsTestRequestBasicAuth(),
 				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
+				"request_file":               syntheticsTestRequestFile(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"allow_failure": {
 					Description: "Determines whether or not to continue with test if this step fails.",
@@ -868,6 +870,49 @@ func syntheticsTestAPIStep() *schema.Schema {
 			},
 		},
 	}
+}
+
+func syntheticsTestRequestFile() *schema.Schema {
+	requestFilesSchema := schema.Schema{
+		Description: "Files to be used as part of the request in the test.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"content": {
+					Type:         schema.TypeString,
+					Description:  "Content of the file.",
+					Optional:     true,
+					ValidateFunc: validation.StringLenBetween(1, 3145728),
+				},
+				"bucket_key": {
+					Type:        schema.TypeString,
+					Description: "Bucket key of the file.",
+					Computed:    true,
+				},
+				"name": {
+					Type:         schema.TypeString,
+					Description:  "Name of the file.",
+					Required:     true,
+					ValidateFunc: validation.StringLenBetween(1, 1500),
+				},
+				"size": {
+					Type:         schema.TypeInt,
+					Description:  "Size of the file.",
+					Required:     true,
+					ValidateFunc: validation.IntBetween(1, 3145728),
+				},
+				"type": {
+					Type:         schema.TypeString,
+					Description:  "Type of the file.",
+					Required:     true,
+					ValidateFunc: validation.StringLenBetween(1, 1500),
+				},
+			},
+		},
+	}
+
+	return &requestFilesSchema
 }
 
 func syntheticsTestBrowserStep() *schema.Schema {
@@ -958,7 +1003,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 				},
 				"element": {
-					Description: "Element to use for the step, json encoded string.",
+					Description: "Element to use for the step, JSON encoded string.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -1015,7 +1060,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					},
 				},
 				"email": {
-					Description: `Details of the email for an "assert email" step.`,
+					Description: `Details of the email for an "assert email" step, JSON encoded string.`,
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1028,7 +1073,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					},
 				},
 				"files": {
-					Description: `Details of the files for an "upload files" step, json encoded string.`,
+					Description: `Details of the files for an "upload files" step, JSON encoded string.`,
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1453,6 +1498,35 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
+	}
+
+	if attr, ok := d.GetOk("request_file"); ok && attr != nil {
+		files := []datadogV1.SyntheticsTestRequestBodyFile{}
+		for _, f := range attr.([]interface{}) {
+			fileMap := f.(map[string]interface{})
+			file := datadogV1.SyntheticsTestRequestBodyFile{}
+
+			file.SetName(fileMap["name"].(string))
+			file.SetType(fileMap["type"].(string))
+			file.SetSize(int64(fileMap["size"].(int)))
+
+			if content, ok := fileMap["content"]; ok && content != "" {
+				file.SetContent(content.(string))
+			}
+
+			// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
+			// Hence, the provider is uploading the file every time the resource is modified.
+			// Always adding the bucket key to the request would prevent updating the file content.
+			// Always omitting the existing bucket key from the request update the file every time the resource is updated.
+			// We purposely choose the latter.
+			// if bucketKey, ok := fileMap["bucket_key"]; ok && bucketKey != "" {
+			// 	file.SetBucketKey(bucketKey.(string))
+			// }
+
+			files = append(files, file)
+		}
+
+		request.SetFiles(files)
 	}
 	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
@@ -2521,6 +2595,17 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
 			}
+		} else if assertion.SyntheticsAssertionBodyHashTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionBodyHashTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if target := assertionTarget.GetTarget(); target != nil {
+				localAssertion["target"] = convertToString(target)
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
 		}
 		localAssertions[i] = localAssertion
 	}
@@ -3105,6 +3190,27 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		d.Set("request_proxy", []map[string]interface{}{localProxy})
 	}
 
+	if files, ok := actualRequest.GetFilesOk(); ok && files != nil {
+		localFiles := make([]map[string]interface{}, len(*files))
+		for i, file := range *files {
+			// The file content is kept from the existing localFile from the state,
+			// as the response from the backend contains the bucket key rather than the content.
+			localFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
+			localFile["name"] = file.GetName()
+			localFile["type"] = file.GetType()
+			localFile["size"] = file.GetSize()
+
+			if bucket_key, ok := file.GetBucketKeyOk(); ok {
+				localFile["bucket_key"] = bucket_key
+			}
+			localFiles[i] = localFile
+		}
+
+		if err := d.Set("request_file", localFiles); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
 	actualAssertions := config.GetAssertions()
 	localAssertions, err := buildLocalAssertions(actualAssertions)
 
@@ -3300,11 +3406,12 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 	if err != nil {
 		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
 		_, err3 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
+		_, err4 := datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue(val.(string))
 
-		if err2 == nil || err3 == nil {
+		if err2 == nil || err3 == nil || err4 == nil {
 			return
 		} else {
-			errs = append(errs, err, err2)
+			errs = append(errs, err, err2, err3, err4)
 		}
 	}
 	return
