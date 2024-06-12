@@ -524,6 +524,36 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 	})
 }
 
+// When creating a browser test from the UI, the steps are not added yet, they are added afterward,
+// on the recorder page with the save_test_steps.
+// On test edit, because the UI client is not sending the steps, they are omitted from the edit.
+// On the recorder page, the client is sending the public id for all of the existing steps.
+
+// The terraform provider is sending the steps to the edit endpoint, and because none have any id,
+// the backend is creating new steps, and deleting the previous ones.
+// When conciliating the config and the state, the provider is not updating the ML (as expected)
+// but updates the other fields. So the request to edit the test contains steps with the ML being
+// all mixed up.
+
+// The following test is validating this hypothesis, and it's passing only because the steps contain
+// force_element_update.
+
+// [SYNTH-14958]
+// To fix this issue long-term, we could:
+// - provide a tracking id for each step to track steps between config and state
+// - keep track of the public id of the created steps in the state
+// - use the tracking id and the public id to conciliate the config, the state and the online steps.
+// It would imply doing a couple more requests in the provider to get the steps, and update them,
+// but nothing too complicated.
+
+// The state, containing both the tracking and the public id of the steps would allow to conciliate
+// between the config which doesn't have the public id, and the resource which needs it.
+// ┌─────────────────┐         ┌─────────────────┐         ┌──────────────────┐
+// │  config         ├────────►│  state          ├────────►│  resource        │
+// │  - tracking id  │         │  - tracking id  │         │  - public id     │
+// │                 │◄────────┤  - public id    │◄────────┤                  │
+// └─────────────────┘         └─────────────────┘         └──────────────────┘
+
 func TestAccDatadogSyntheticsBrowser_UpdateSteps(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -597,6 +627,7 @@ func createSyntheticsBrowserStepsConfig(uniq string) string {
 		name        = "step name %[1]s"
 		timeout     = 5
 		type        = "assertElementContent"
+		force_element_update = true
 		params {
 			check     = "contains"
 			element   = "{\"multiLocator\":{\"ab\":\"ab %[1]s\",\"at\":\"at %[1]s\",\"cl\":\"cl %[1]s\",\"clt\":\"clt %[1]s\",\"co\":\"co %[1]s\"},\"targetOuterHTML\":\"targetOuterHTML %[1]s\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"
