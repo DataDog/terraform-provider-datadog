@@ -528,6 +528,169 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 	})
 }
 
+// When creating a browser test from the UI, the steps are not added yet, they are added afterward,
+// on the recorder page with the save_test_steps.
+// On test edit, because the UI client is not sending the steps, they are omitted from the edit.
+// On the recorder page, the client is sending the public id for all of the existing steps.
+
+// The terraform provider is sending the steps to the edit endpoint, and because none have any id,
+// the backend is creating new steps, and deleting the previous ones.
+// When conciliating the config and the state, the provider is not updating the ML (as expected)
+// but updates the other fields. So the request to edit the test contains steps with the ML being
+// all mixed up.
+
+// The following test is validating this hypothesis, and it's passing only because the steps contain
+// force_element_update.
+
+// [SYNTH-14958]
+// To fix this issue long-term, we could:
+// - provide a tracking id for each step to track steps between config and state
+// - keep track of the public id of the created steps in the state
+// - use the tracking id and the public id to conciliate the config, the state and the online steps.
+// It would imply doing a couple more requests in the provider to get the steps, and update them,
+// but nothing too complicated.
+
+// The state, containing both the tracking and the public id of the steps would allow to conciliate
+// between the config which doesn't have the public id, and the resource which needs it.
+// ┌─────────────────┐         ┌─────────────────┐         ┌──────────────────┐
+// │  config         ├────────►│  state          ├────────►│  resource        │
+// │  - tracking id  │         │  - tracking id  │         │  - public id     │
+// │                 │◄────────┤  - public id    │◄────────┤                  │
+// └─────────────────┘         └─────────────────┘         └──────────────────┘
+
+func TestAccDatadogSyntheticsBrowser_UpdateSteps(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	testName := uniqueEntityName(ctx, t)
+
+	stepsCreatedStr := ""
+	for _, step := range [4]string{
+		createSyntheticsBrowserStepsConfig(string("first")),
+		createSyntheticsBrowserStepsConfig(string("second")),
+		createSyntheticsBrowserStepsConfig(string("third")),
+		createSyntheticsBrowserStepsConfig(string("fourth")),
+	} {
+		stepsCreatedStr += step + "\n\n"
+	}
+
+	stepsUpdatedStr := ""
+	for _, step := range [4]string{
+		createSyntheticsBrowserStepsConfig(string("first")),
+		createSyntheticsBrowserStepsConfig(string("third")),
+		createSyntheticsBrowserStepsConfig(string("second")),
+		createSyntheticsBrowserStepsConfig(string("fourth")),
+	} {
+		stepsUpdatedStr += step + "\n\n"
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestWithMultipleStepsStep(ctx, accProvider, t, testName, stepsCreatedStr),
+			updateSyntheticsBrowserTestWithMultipleStepsStep(ctx, accProvider, t, testName, stepsUpdatedStr),
+		},
+	})
+}
+
+func createSyntheticsBrowserTestWithMultipleStepsConfig(uniq string, steps string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "test" {
+	locations  = ["aws:eu-central-1"]
+	device_ids = ["chrome.laptop_large"]
+	name = "%[1]s"
+	status     = "paused"
+	type       = "browser"
+
+	%[2]s
+
+	options_list {
+		initial_navigation_timeout = 15
+		tick_every                 = 3600
+		monitor_options {
+			renotify_interval = 0
+		}
+		retry {
+			count    = 0
+		}
+	}
+	request_definition {
+		method  = "GET"
+		timeout = 60
+		url     = "https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"
+	}
+}`, uniq, steps)
+}
+
+func createSyntheticsBrowserStepsConfig(uniq string) string {
+	return fmt.Sprintf(`
+	browser_step {
+		is_critical = true
+		name        = "step name %[1]s"
+		timeout     = 5
+		type        = "assertElementContent"
+		force_element_update = true
+		params {
+			check     = "contains"
+			element   = "{\"multiLocator\":{\"ab\":\"ab %[1]s\",\"at\":\"at %[1]s\",\"cl\":\"cl %[1]s\",\"clt\":\"clt %[1]s\",\"co\":\"co %[1]s\"},\"targetOuterHTML\":\"targetOuterHTML %[1]s\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"
+			modifiers = []
+			value     = "step %[1]s value"
+		}
+	}`, uniq)
+}
+
+func createSyntheticsBrowserTestWithMultipleStepsStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", "{\"multiLocator\":{\"ab\":\"ab first\",\"at\":\"at first\",\"cl\":\"cl first\",\"clt\":\"clt first\",\"co\":\"co first\"},\"targetOuterHTML\":\"targetOuterHTML first\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.name", "step name second"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", "{\"multiLocator\":{\"ab\":\"ab second\",\"at\":\"at second\",\"cl\":\"cl second\",\"clt\":\"clt second\",\"co\":\"co second\"},\"targetOuterHTML\":\"targetOuterHTML second\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.name", "step name third"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", "{\"multiLocator\":{\"ab\":\"ab third\",\"at\":\"at third\",\"cl\":\"cl third\",\"clt\":\"clt third\",\"co\":\"co third\"},\"targetOuterHTML\":\"targetOuterHTML third\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", "{\"multiLocator\":{\"ab\":\"ab fourth\",\"at\":\"at fourth\",\"cl\":\"cl fourth\",\"clt\":\"clt fourth\",\"co\":\"co fourth\"},\"targetOuterHTML\":\"targetOuterHTML fourth\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+		),
+	}
+}
+
+func updateSyntheticsBrowserTestWithMultipleStepsStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", "{\"multiLocator\":{\"ab\":\"ab first\",\"at\":\"at first\",\"cl\":\"cl first\",\"clt\":\"clt first\",\"co\":\"co first\"},\"targetOuterHTML\":\"targetOuterHTML first\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.name", "step name third"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", "{\"multiLocator\":{\"ab\":\"ab third\",\"at\":\"at third\",\"cl\":\"cl third\",\"clt\":\"clt third\",\"co\":\"co third\"},\"targetOuterHTML\":\"targetOuterHTML third\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.name", "step name second"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", "{\"multiLocator\":{\"ab\":\"ab second\",\"at\":\"at second\",\"cl\":\"cl second\",\"clt\":\"clt second\",\"co\":\"co second\"},\"targetOuterHTML\":\"targetOuterHTML second\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", "{\"multiLocator\":{\"ab\":\"ab fourth\",\"at\":\"at fourth\",\"cl\":\"cl fourth\",\"clt\":\"clt fourth\",\"co\":\"co fourth\"},\"targetOuterHTML\":\"targetOuterHTML fourth\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+		),
+	}
+}
+
 func TestAccDatadogSyntheticsApiTestFileUpload_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
