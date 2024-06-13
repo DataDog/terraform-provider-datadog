@@ -487,12 +487,12 @@ func syntheticsAPIAssertion() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"jsonschema": {
-								Description: "The Json Schema to validate the body against.",
+								Description: "The JSON Schema to validate the body against.",
 								Type:        schema.TypeString,
 								Required:    true,
 							},
 							"metaschema": {
-								Description: "The meta Schema to use for the json Schema.",
+								Description: "The meta schema to use for the JSON Schema.",
 								Type:        schema.TypeString,
 								Optional:    true,
 								Default:     "draft-07",

@@ -505,11 +505,11 @@ Optional:
 
 Required:
 
-- `jsonschema` (String) The Json Schema to validate the body against.
+- `jsonschema` (String) The JSON Schema to validate the body against.
 
 Optional:
 
-- `metaschema` (String) The meta Schema to use for the json Schema. Defaults to `"draft-07"`.
+- `metaschema` (String) The meta schema to use for the JSON Schema. Defaults to `"draft-07"`.
 
 
 <a id="nestedblock--api_step--assertion--targetxpath"></a>
@@ -715,11 +715,11 @@ Optional:
 
 Required:
 
-- `jsonschema` (String) The Json Schema to validate the body against.
+- `jsonschema` (String) The JSON Schema to validate the body against.
 
 Optional:
 
-- `metaschema` (String) The meta Schema to use for the json Schema. Defaults to `"draft-07"`.
+- `metaschema` (String) The meta schema to use for the JSON Schema. Defaults to `"draft-07"`.
 
 
 <a id="nestedblock--assertion--targetxpath"></a>
