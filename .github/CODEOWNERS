@@ -20,7 +20,7 @@ datadog/*datadog_screenboard*             @DataDog/api-clients @DataDog/dashboar
 datadog/*security_monitoring*             @DataDog/api-clients @DataDog/k9-cloud-security-platform
 datadog/*datadog_service_definition*      @DataDog/api-clients @DataDog/service-catalog
 datadog/*datadog_service_level_objective* @DataDog/api-clients @DataDog/slo-app
-datadog/*datadog_synthetics*              @DataDog/api-clients @DataDog/synthetics-app @DataDog/synthetics-ct
+datadog/*datadog_synthetics*              @DataDog/api-clients @DataDog/synthetics-ct
 datadog/*datadog_timeboard*               @DataDog/api-clients @DataDog/dashboards
 datadog/*datadog_user*                    @DataDog/api-clients @DataDog/team-aaa
 datadog/*cloud_configuration*             @DataDog/api-clients @DataDog/k9-cloud-security-posture-management
