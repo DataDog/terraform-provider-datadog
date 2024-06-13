@@ -479,6 +479,27 @@ func syntheticsAPIAssertion() *schema.Schema {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
+				"targetjsonschema": {
+					Description: "Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"jsonschema": {
+								Description: "The Json Schema to validate the body against.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"metaschema": {
+								Description: "The meta Schema to use for the json Schema.",
+								Type:        schema.TypeString,
+								Optional:    true,
+								Default:     "draft-07",
+							},
+						},
+					},
+				},
 				"targetjsonpath": {
 					Description: "Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below.",
 					Type:        schema.TypeList,
@@ -1907,7 +1928,28 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 			assertionType := v.(string)
 			if v, ok := assertionMap["operator"]; ok {
 				assertionOperator := v.(string)
-				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
+				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
+					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
+						subTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTargetTarget()
+						targetMap := v[0].(map[string]interface{})
+						if v, ok := targetMap["jsonschema"]; ok {
+							subTarget.SetJsonSchema(v.(string))
+						}
+						if v, ok := targetMap["metaschema"]; ok {
+							if metaSchema, err := datadogV1.NewSyntheticsAssertionJSONSchemaMetaSchemaFromValue(v.(string)); err == nil {
+								subTarget.SetMetaSchema(*metaSchema)
+							} else {
+								log.Printf("[ERROR] Error converting json schema meta schema: %v", err)
+							}
+						}
+						assertionJSONSchemaTarget.SetTarget(*subTarget)
+					}
+					if _, ok := assertionMap["target"]; ok {
+						log.Printf("[WARN] target shouldn't be specified for validateJSONSchema operator, only targetJSONSchema")
+					}
+					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONSchemaTargetAsSyntheticsAssertion(assertionJSONSchemaTarget))
+				} else if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
 					assertionJSONPathTarget := datadogV1.NewSyntheticsAssertionJSONPathTarget(datadogV1.SyntheticsAssertionJSONPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionJSONPathTarget.SetProperty(v)
@@ -2004,6 +2046,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 					}
 					if v, ok := assertionMap["timings_scope"].(string); ok && len(v) > 0 {
 						assertionTarget.SetTimingsScope(datadogV1.SyntheticsAssertionTimingsScope(v))
+					}
+					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
+						log.Printf("[WARN] targetjsonschema shouldn't be specified for non-validatesJSONSchema operator, only target")
 					}
 					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
 						log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validatesJSONPath operator, only target")
@@ -2532,6 +2577,24 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 			}
 			if assertionTarget.HasTimingsScope() {
 				localAssertion["timings_scope"] = assertionTarget.GetTimingsScope()
+			}
+		} else if assertion.SyntheticsAssertionJSONSchemaTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionJSONSchemaTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if target, ok := assertionTarget.GetTargetOk(); ok {
+				localTarget := make(map[string]string)
+				if v, ok := target.GetJsonSchemaOk(); ok {
+					localTarget["jsonschema"] = string(*v)
+				}
+				if v, ok := target.GetMetaSchemaOk(); ok {
+					localTarget["metaschema"] = string(*v)
+				}
+				localAssertion["targetjsonschema"] = []map[string]string{localTarget}
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
 			}
 		} else if assertion.SyntheticsAssertionJSONPathTarget != nil {
 			assertionTarget := assertion.SyntheticsAssertionJSONPathTarget
@@ -3405,13 +3468,14 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
 	if err != nil {
 		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
-		_, err3 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
-		_, err4 := datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue(val.(string))
+		_, err3 := datadogV1.NewSyntheticsAssertionJSONSchemaOperatorFromValue(val.(string))
+		_, err4 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
+		_, err5 := datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue(val.(string))
 
-		if err2 == nil || err3 == nil || err4 == nil {
+		if err2 == nil || err3 == nil || err4 == nil || err5 == nil {
 			return
 		} else {
-			errs = append(errs, err, err2, err3, err4)
+			errs = append(errs, err, err2, err3, err4, err5)
 		}
 	}
 	return

@@ -483,6 +483,7 @@ Optional:
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
+- `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonschema))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetxpath))
 - `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
 
@@ -497,6 +498,18 @@ Required:
 Optional:
 
 - `targetvalue` (String) Expected matching value.
+
+
+<a id="nestedblock--api_step--assertion--targetjsonschema"></a>
+### Nested Schema for `api_step.assertion.targetjsonschema`
+
+Required:
+
+- `jsonschema` (String) The Json Schema to validate the body against.
+
+Optional:
+
+- `metaschema` (String) The meta Schema to use for the json Schema. Defaults to `"draft-07"`.
 
 
 <a id="nestedblock--api_step--assertion--targetxpath"></a>
@@ -680,6 +693,7 @@ Optional:
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
+- `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonschema))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetxpath))
 - `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
 
@@ -694,6 +708,18 @@ Required:
 Optional:
 
 - `targetvalue` (String) Expected matching value.
+
+
+<a id="nestedblock--assertion--targetjsonschema"></a>
+### Nested Schema for `assertion.targetjsonschema`
+
+Required:
+
+- `jsonschema` (String) The Json Schema to validate the body against.
+
+Optional:
+
+- `metaschema` (String) The meta Schema to use for the json Schema. Defaults to `"draft-07"`.
 
 
 <a id="nestedblock--assertion--targetxpath"></a>
