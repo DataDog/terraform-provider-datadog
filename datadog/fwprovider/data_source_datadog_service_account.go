@@ -33,7 +33,7 @@ type datadogServiceAccountDatasourceModel struct {
 	Status   types.String `tfsdk:"status"`
 	Title    types.String `tfsdk:"title"`
 	Verified types.Bool   `tfsdk:"verified"`
-	Roles    types.List   `tfsdk:"roles"`
+	Roles    types.Set    `tfsdk:"roles"`
 }
 
 type datadogServiceAccountDatasource struct {
@@ -202,5 +202,5 @@ func (r *datadogServiceAccountDatasource) updateState(ctx context.Context, state
 			}
 		}
 	}
-	state.Roles, _ = types.ListValueFrom(ctx, types.StringType, roles)
+	state.Roles, _ = types.SetValueFrom(ctx, types.StringType, roles)
 }
