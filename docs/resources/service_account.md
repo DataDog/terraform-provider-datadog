@@ -36,7 +36,7 @@ resource "datadog_service_account" "bar" {
 
 - `disabled` (Boolean) Whether the service account is disabled. Defaults to `false`.
 - `name` (String) Name for the service account.
-- `roles` (List of String) A list a role IDs to assign to the service account.
+- `roles` (Set of String) A list a role IDs to assign to the service account.
 
 ### Read-Only
 

@@ -28,7 +28,7 @@ Use this data source to retrieve information about an existing Datadog service a
 - `handle` (String) Handle of the user.
 - `icon` (String) URL of the user's icon.
 - `name` (String) Name of the user.
-- `roles` (List of String) Roles assigned to this service account.
+- `roles` (Set of String) Roles assigned to this service account.
 - `status` (String) Status of the user.
 - `title` (String) Title of the user.
 - `verified` (Boolean) Whether the user is verified.
