@@ -102,7 +102,7 @@ func (d *datadogServiceAccountDatasource) Schema(_ context.Context, _ datasource
 				Computed:    true,
 				Description: "Whether the user is verified.",
 			},
-			"roles": schema.ListAttribute{
+			"roles": schema.SetAttribute{
 				Computed:    true,
 				Description: "Roles assigned to this service account.",
 				ElementType: types.StringType,

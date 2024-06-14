@@ -69,7 +69,7 @@ func (r *serviceAccountResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Description: "Email of the associated user.",
 				Required:    true,
 			},
-			"roles": schema.ListAttribute{
+			"roles": schema.SetAttribute{
 				Description: "A list a role IDs to assign to the service account.",
 				Optional:    true,
 				Computed:    true,
