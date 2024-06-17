@@ -507,6 +507,12 @@ func syntheticsAPIAssertion() *schema.Schema {
 					MaxItems:    1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
+							"elementsoperator": {
+								Description: "The element from the list of results to assert on. To choose from the first element in the list `firstElementMatches`, every element in the list `everyElementMatches`, at least one element in the list `atLeastOneElementMatches` or the serialized value of the list `serializationMatches`.",
+								Type:        schema.TypeString,
+								Optional:    true,
+								Default:     "firstElementMatches",
+							},
 							"operator": {
 								Description: "The specific operator to use on the path.",
 								Type:        schema.TypeString,
@@ -1983,6 +1989,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 								subTarget.SetTargetValue(v)
 							}
 						}
+						if v, ok := targetMap["elementsoperator"]; ok {
+							subTarget.SetElementsOperator(v.(string))
+						}
 						assertionJSONPathTarget.SetTarget(*subTarget)
 					}
 					if _, ok := assertionMap["target"]; ok {
@@ -2621,6 +2630,9 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 					} else {
 						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
 					}
+				}
+				if v, ok := target.GetElementsOperatorOk(); ok {
+					localTarget["elementsoperator"] = string(*v)
 				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
 			}

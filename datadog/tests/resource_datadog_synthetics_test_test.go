@@ -1763,6 +1763,8 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.targetvalue", "0"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.elementsoperator", "everyElementMatches"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
@@ -1836,6 +1838,7 @@ resource "datadog_synthetics_test" "bar" {
 		type = "body"
 		operator = "validatesJSONPath"
 		targetjsonpath {
+			elementsoperator = "everyElementMatches"
 			operator = "isNot"
 			targetvalue = "0"
 			jsonpath = "topKey"
