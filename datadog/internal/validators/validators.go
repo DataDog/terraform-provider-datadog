@@ -159,31 +159,6 @@ func ValidateNonEmptyStrings(v any, p cty.Path) diag.Diagnostics {
 	return diags
 }
 
-// ValidateDatadogMetricName ensures a string is a valid metric metadata name
-func ValidateDatadogMetricName(v any, p cty.Path) diag.Diagnostics {
-	value, ok := v.(string)
-	var diags diag.Diagnostics
-	if !ok {
-		return append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Invalid value",
-			Detail:   "Metric name must be a string.",
-		})
-	}
-	// Validate metric name format
-	match, _ := regexp.MatchString("^[a-zA-Z][a-zA-Z0-9_.]*$", value)
-	if !match {
-		diags = append(diags, diag.Diagnostic{
-			Severity:      diag.Warning,
-			Summary:       "Invalid value",
-			Detail:        "Metric name must start with a letter and can only contain ASCII alphanumerics, underscores, and periods.",
-			AttributePath: p,
-		})
-	}
-
-	return diags
-}
-
 // ValidateDatadogDowntimeRecurrenceType ensures a string is a valid recurrence type
 func ValidateDatadogDowntimeRecurrenceType(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(string)

@@ -251,8 +251,6 @@ func DeleteKeyInMap(mapObject map[string]interface{}, keyList []string) {
 	} else if m, ok := mapObject[keyList[0]].(map[string]interface{}); ok {
 		DeleteKeyInMap(m, keyList[1:])
 	}
-
-	return
 }
 
 // GetStringSlice returns string slice for the given key if present, otherwise returns an empty slice
@@ -319,4 +317,80 @@ func StringSliceDifference(slice1, slice2 []string) []string {
 		}
 	}
 	return diff
+}
+
+// fast isAlpha for ascii
+func isAlpha(b byte) bool {
+	return (b >= 'a' && b <= 'z') || (b >= 'A' && b <= 'Z')
+}
+
+// fast isAlphaNumeric for ascii
+func isAlphaNum(b byte) bool {
+	return isAlpha(b) || (b >= '0' && b <= '9')
+}
+
+// ValidateMetricName ensures the given metric name length is in [0, MaxMetricLen] and
+// contains at least one alphabetic character whose index is returned
+func ValidateMetricName(name string) (int, error) {
+	var i int
+	if name == "" {
+		return 0, fmt.Errorf("metric name is empty")
+	}
+
+	// skip non-alphabetic characters
+	for ; i < len(name) && !isAlpha(name[i]); i++ {
+	}
+
+	// if there were no alphabetic characters it wasn't valid
+	if i == len(name) {
+		return 0, fmt.Errorf("metric name %s is invalid. it must contain at least one alphabetic character", name)
+	}
+
+	return i, nil
+}
+
+// NormMetricNameParse normalizes metric names with a parser instead of using
+// garbage-creating string replacement routines.
+func NormMetricNameParse(name string) string {
+	i, err := ValidateMetricName(name)
+	if err != nil {
+		return name
+	}
+
+	var ptr int
+	res := make([]byte, 0, len(name))
+
+	for ; i < len(name); i++ {
+		switch {
+		case isAlphaNum(name[i]):
+			res = append(res, name[i])
+			ptr++
+		case name[i] == '.':
+			// we skipped all non-alpha chars up front so we have seen at least one
+			switch res[ptr-1] {
+			// overwrite underscores that happen before periods
+			case '_':
+				res[ptr-1] = '.'
+			default:
+				res = append(res, '.')
+				ptr++
+			}
+		default:
+			// we skipped all non-alpha chars up front so we have seen at least one
+			switch res[ptr-1] {
+			// no double underscores, no underscores after periods
+			case '.', '_':
+			default:
+				res = append(res, '_')
+				ptr++
+			}
+		}
+	}
+
+	if res[ptr-1] == '_' {
+		res = res[:ptr-1]
+	}
+	// safe because res does not escape this function
+	return string(res)
+
 }

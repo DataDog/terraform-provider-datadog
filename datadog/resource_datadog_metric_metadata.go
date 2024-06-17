@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -26,10 +25,12 @@ func resourceDatadogMetricMetadata() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"metric": {
-					Description:      "The name of the metric.",
-					Type:             schema.TypeString,
-					Required:         true,
-					ValidateDiagFunc: validators.ValidateDatadogMetricName,
+					Description: "The name of the metric.",
+					Type:        schema.TypeString,
+					Required:    true,
+					StateFunc: func(val any) string {
+						return utils.NormMetricNameParse(val.(string))
+					},
 				},
 				"type": {
 					Description: "Metric type such as `count`, `gauge`, or `rate`. Updating a metric of type `distribution` is not supported. If you would like to see the `distribution` type returned, contact [Datadog support](https://docs.datadoghq.com/help/).",
