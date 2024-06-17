@@ -181,15 +181,6 @@ func ValidateDatadogMetricName(v any, p cty.Path) diag.Diagnostics {
 		})
 	}
 
-	// Validate metric name length
-	if len(value) > 200 {
-		diags = append(diags, diag.Diagnostic{
-			Severity:      diag.Warning,
-			Summary:       "Invalid value",
-			Detail:        "Metric name cannot exceed 200 characters.",
-			AttributePath: p,
-		})
-	}
 	return diags
 }
 
