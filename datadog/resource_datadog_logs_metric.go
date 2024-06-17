@@ -103,7 +103,8 @@ func resourceDatadogLogsMetric() *schema.Resource {
 					Description: "The name of the log-based metric. This field can't be updated after creation.",
 					StateFunc: func(val any) string {
 						return utils.NormMetricNameParse(val.(string))
-					}},
+					},
+				},
 			}
 		},
 	}
