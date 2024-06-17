@@ -299,7 +299,9 @@ func buildDatadogServiceAccountV2Request(ctx context.Context, state *serviceAcco
 	serviceAccountCreate.SetAttributes(*serviceAccountAttributes)
 
 	var roles []string
-	diags.Append(state.Roles.ElementsAs(ctx, &roles, false)...)
+	if !state.Roles.IsNull() {
+		diags.Append(state.Roles.ElementsAs(ctx, &roles, false)...)
+	}
 	rolesData := make([]datadogV2.RelationshipToRoleData, len(roles))
 	for i, role := range roles {
 		roleData := datadogV2.NewRelationshipToRoleData()
