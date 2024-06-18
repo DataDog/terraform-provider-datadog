@@ -17,6 +17,7 @@ Use this data source to retrieve information about an existing Datadog service a
 
 ### Optional
 
+- `exact_match` (Boolean) When true, `filter` string is exact matched against the user's `email`, followed by `name` attribute.
 - `filter` (String) Filter all users and service accounts by name, email, or role.
 - `filter_status` (String) Filter on status attribute. Comma separated list, with possible values `Active`, `Pending`, and `Disabled`.
 - `id` (String) The service account's ID.
