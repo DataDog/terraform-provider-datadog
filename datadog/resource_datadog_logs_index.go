@@ -18,9 +18,10 @@ var logsIndexMutex = sync.Mutex{}
 
 var indexSchema = map[string]*schema.Schema{
 	"name": {
-		Description: "The name of the index.",
+		Description: "The name of the index. Index names cannot be modified after creation. If this value is changed, a new index will be created.",
 		Type:        schema.TypeString,
 		Required:    true,
+		ForceNew:    true,
 	},
 	"disable_daily_limit": {
 		Description: "If true, sets the daily_limit value to null and the index is not limited on a daily basis (any specified daily_limit value in the request is ignored). If false or omitted, the index's current daily_limit is maintained.",
