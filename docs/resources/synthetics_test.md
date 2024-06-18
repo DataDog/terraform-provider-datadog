@@ -497,6 +497,7 @@ Required:
 
 Optional:
 
+- `elementsoperator` (String) The element from the list of results to assert on. Select from `firstElementMatches` (the first element in the list), `everyElementMatches` (every element in the list), `atLeastOneElementMatches` (at least one element in the list), or `serializationMatches` (the serialized value of the list). Defaults to `firstElementMatches`. Defaults to `"firstElementMatches"`.
 - `targetvalue` (String) Expected matching value.
 
 
@@ -707,6 +708,7 @@ Required:
 
 Optional:
 
+- `elementsoperator` (String) The element from the list of results to assert on. Select from `firstElementMatches` (the first element in the list), `everyElementMatches` (every element in the list), `atLeastOneElementMatches` (at least one element in the list), or `serializationMatches` (the serialized value of the list). Defaults to `firstElementMatches`. Defaults to `"firstElementMatches"`.
 - `targetvalue` (String) Expected matching value.
 
 
