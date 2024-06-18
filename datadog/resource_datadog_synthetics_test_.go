@@ -508,7 +508,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"elementsoperator": {
-								Description: "The element from the list of results to assert on. To choose from the first element in the list `firstElementMatches`, every element in the list `everyElementMatches`, at least one element in the list `atLeastOneElementMatches` or the serialized value of the list `serializationMatches`.",
+								Description: "The element from the list of results to assert on. Select from `firstElementMatches` (the first element in the list), `everyElementMatches` (every element in the list), `atLeastOneElementMatches` (at least one element in the list), or `serializationMatches` (the serialized value of the list). Defaults to `firstElementMatches`.",
 								Type:        schema.TypeString,
 								Optional:    true,
 								Default:     "firstElementMatches",
