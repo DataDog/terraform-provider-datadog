@@ -215,6 +215,66 @@ resource "datadog_synthetics_test" "test_multi_step" {
     }
   }
 
+  api_step {
+    name    = "A gRPC health check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "healthcheck"
+      service   = "greeter.Greeter"
+    }
+  }
+
+  api_step {
+    name    = "A gRPC behavior check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "unary"
+      service   = "greeter.Greeter"
+      method    = "SayHello"
+      message   = "{\"name\": \"Lorem Ipsum\"}"
+
+      plain_proto_file = <<EOT
+syntax = "proto3";
+
+package greeter;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+EOT      
+    }
+  }
+
   options_list {
     tick_every         = 900
     accept_self_signed = true

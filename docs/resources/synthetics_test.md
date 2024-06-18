@@ -256,6 +256,66 @@ resource "datadog_synthetics_test" "test_multi_step" {
     }
   }
 
+  api_step {
+    name    = "A gRPC health check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "healthcheck"
+      service   = "greeter.Greeter"
+    }
+  }
+
+  api_step {
+    name    = "A gRPC behavior check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "unary"
+      service   = "greeter.Greeter"
+      method    = "SayHello"
+      message   = "{\"name\": \"Lorem Ipsum\"}"
+
+      plain_proto_file = <<EOT
+syntax = "proto3";
+
+package greeter;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+EOT      
+    }
+  }
+
   options_list {
     tick_every         = 900
     accept_self_signed = true
@@ -434,7 +494,7 @@ EOT
 - `request_definition` (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
 - `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--request_file))
 - `request_headers` (Map of String) Header name and value map.
-- `request_metadata` (Map of String) Metadata to include when performing the gRPC test.
+- `request_metadata` (Map of String) Metadata to include when performing the gRPC request.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `set_cookie` (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
@@ -465,6 +525,7 @@ Optional:
 - `request_definition` (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
 - `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--api_step--request_file))
 - `request_headers` (Map of String) Header name and value map.
+- `request_metadata` (Map of String) Metadata to include when performing the gRPC request.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
@@ -615,7 +676,7 @@ Optional:
 
 Optional:
 
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
+- `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
@@ -855,7 +916,7 @@ Required:
 Optional:
 
 - `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
+- `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
 - `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
