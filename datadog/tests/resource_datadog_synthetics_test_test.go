@@ -4440,7 +4440,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "5"),
+				"datadog_synthetics_test.multi", "api_step.#", "6"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -4598,7 +4598,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.name", "gRPC step"),
+				"datadog_synthetics_test.multi", "api_step.4.name", "gRPC health check step"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.subtype", "grpc"),
 			resource.TestCheckResourceAttr(
@@ -4606,15 +4606,9 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.port", "443"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.call_type", "unary"),
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.call_type", "healthcheck"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.service", "greeter.Greeter"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.method", "SayHello"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.message", "{\"name\": \"Lorem Ipsum\"}"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.plain_proto_file", "some proto file"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.request_metadata.%", "1"),
 			resource.TestCheckResourceAttr(
@@ -4622,17 +4616,47 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.assertion.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.0.type", "grpcProto"),
+				"datadog_synthetics_test.multi", "api_step.4.assertion.0.type", "grpcHealthcheckStatus"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.0.operator", "validatesJSONPath"),
+				"datadog_synthetics_test.multi", "api_step.4.assertion.0.operator", "is"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.0.targetjsonpath.#", "1"),
+				"datadog_synthetics_test.multi", "api_step.4.assertion.0.target", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.0.targetjsonpath.0.jsonpath", "$.message"),
+				"datadog_synthetics_test.multi", "api_step.5.name", "gRPC behavior check step"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.0.targetjsonpath.0.operator", "is"),
+				"datadog_synthetics_test.multi", "api_step.5.subtype", "grpc"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.0.targetjsonpath.0.targetvalue", "Hello, Lorem Ipsum!"),
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.host", "https://docs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.call_type", "unary"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.service", "greeter.Greeter"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.method", "SayHello"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.message", "{\"name\": \"Lorem Ipsum\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.plain_proto_file", "some proto file"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_metadata.foo", "bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.type", "grpcProto"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.jsonpath", "$.message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, Lorem Ipsum!"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
@@ -4821,7 +4845,26 @@ resource "datadog_synthetics_test" "multi" {
   }
 
   api_step {
-    name    = "gRPC step"
+    name    = "gRPC health check step"
+    subtype = "grpc"
+    request_definition {
+      host             = "https://docs.datadoghq.com"
+      port             = 443
+      call_type        = "healthcheck"
+      service          = "greeter.Greeter"
+    }
+    request_metadata = {
+      foo = "bar"
+    }
+    assertion {
+      type     = "grpcHealthcheckStatus"
+      operator = "is"
+      target = 1
+    }
+  } 
+ 
+  api_step {
+    name    = "gRPC behavior check step"
     subtype = "grpc"
     request_definition {
       host             = "https://docs.datadoghq.com"
