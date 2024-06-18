@@ -4636,7 +4636,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.method", "SayHello"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.message", "{\"name\": \"Lorem Ipsum\"}"),
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.message", "{\"name\": \"John\"}"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.plain_proto_file", "some proto file"),
 			resource.TestCheckResourceAttr(
@@ -4656,7 +4656,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.operator", "is"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, Lorem Ipsum!"),
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, John!"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
@@ -4872,7 +4872,7 @@ resource "datadog_synthetics_test" "multi" {
       call_type        = "unary"
       service          = "greeter.Greeter"
       method           = "SayHello"
-      message          = "{\"name\": \"Lorem Ipsum\"}"
+      message          = "{\"name\": \"John\"}"
       plain_proto_file = "some proto file"
     }
     request_metadata = {
@@ -4884,7 +4884,7 @@ resource "datadog_synthetics_test" "multi" {
       targetjsonpath {
         jsonpath    = "$.message"
         operator    = "is"
-        targetvalue = "Hello, Lorem Ipsum!"
+        targetvalue = "Hello, John!"
       }
     }
   }
