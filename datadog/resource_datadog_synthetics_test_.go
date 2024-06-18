@@ -444,7 +444,7 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 
 func syntheticsTestRequestMetadata() *schema.Schema {
 	return &schema.Schema{
-		Description: "Metadata to include when performing the gRPC test.",
+		Description: "Metadata to include when performing the gRPC request.",
 		Type:        schema.TypeMap,
 		Optional:    true,
 	}
@@ -793,6 +793,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 
 func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema := syntheticsTestRequest()
+	// In test `options_list` generally, but in `api_step.request_definition` for API steps.
 	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
 	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
 
@@ -876,6 +877,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
 				"request_file":               syntheticsTestRequestFile(),
+				"request_metadata":           syntheticsTestRequestMetadata(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"allow_failure": {
 					Description: "Determines whether or not to continue with test if this step fails.",
@@ -1265,7 +1267,7 @@ func syntheticsConfigVariable() *schema.Schema {
 
 func syntheticsAllowInsecureOption() *schema.Schema {
 	return &schema.Schema{
-		Description: "Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.",
+		Description: "Allows loading insecure content for a request in an API test or in a multistep API test step.",
 		Type:        schema.TypeBool,
 		Optional:    true,
 	}
@@ -1593,24 +1595,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		request.SetPersistCookies(attr.(bool))
 	}
 	if attr, ok := d.GetOk("request_definition.0.proto_json_descriptor"); ok {
-		stringifiedValue, _ := json.Marshal(attr.(string))
-		var compressedValue bytes.Buffer
-		zl := zlib.NewWriter(&compressedValue)
-		zl.Write(stringifiedValue)
-		zl.Close()
-		encodedCompressedJsonDescriptor := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
-
-		request.SetCompressedJsonDescriptor(encodedCompressedJsonDescriptor)
+		request.SetCompressedJsonDescriptor(compressAndEncodeValue(attr.(string)))
 	}
 	if attr, ok := d.GetOk("request_definition.0.plain_proto_file"); ok {
-		stringifiedValue, _ := json.Marshal(attr.(string))
-		var compressedValue bytes.Buffer
-		zl := zlib.NewWriter(&compressedValue)
-		zl.Write(stringifiedValue)
-		zl.Close()
-		encodedCompressedProtoFile := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
-
-		request.SetCompressedProtoFile(encodedCompressedProtoFile)
+		request.SetCompressedProtoFile(compressAndEncodeValue(attr.(string)))
 	}
 
 	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
@@ -1678,22 +1666,35 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			if len(requests) > 0 && requests[0] != nil {
 				requestMap := requests[0].(map[string]interface{})
 				request.SetMethod(requestMap["method"].(string))
-				request.SetUrl(requestMap["url"].(string))
-				request.SetBody(requestMap["body"].(string))
-				if v, ok := requestMap["body_type"].(string); ok && v != "" {
-					request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
-				}
 				request.SetTimeout(float64(requestMap["timeout"].(int)))
 				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
-				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
-				request.SetPersistCookies(requestMap["persist_cookies"].(bool))
-				request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
-				if v, ok := requestMap["http_version"].(string); ok && v != "" {
-					request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(v))
+				if step.GetSubtype() == "grpc" {
+					request.SetHost(requestMap["host"].(string))
+					request.SetPort(int64(requestMap["port"].(int)))
+					request.SetService(requestMap["service"].(string))
+					request.SetMessage(requestMap["message"].(string))
+					if v, ok := requestMap["call_type"].(string); ok && v != "" {
+						request.SetCallType(datadogV1.SyntheticsTestCallType(v))
+					}
+					if v, ok := requestMap["plain_proto_file"].(string); ok && v != "" {
+						request.SetCompressedProtoFile(compressAndEncodeValue(v))
+					}
+				} else if step.GetSubtype() == "http" {
+					request.SetUrl(requestMap["url"].(string))
+					request.SetBody(requestMap["body"].(string))
+					request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
+					request.SetPersistCookies(requestMap["persist_cookies"].(bool))
+					request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
+					if v, ok := requestMap["body_type"].(string); ok && v != "" {
+						request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
+					}
+					if v, ok := requestMap["http_version"].(string); ok && v != "" {
+						request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(v))
+					}
 				}
 			}
 
-			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), map[string]interface{}{})
+			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
 
 			step.SetRequest(request)
 
@@ -3347,6 +3348,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			localStep["request_definition"] = []map[string]interface{}{localRequest}
 			localStep["request_headers"] = stepRequest.GetHeaders()
 			localStep["request_query"] = stepRequest.GetQuery()
+			localStep["request_metadata"] = stepRequest.GetMetadata()
 
 			if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
 				localAuth := buildLocalBasicAuth(basicAuth)
@@ -3650,4 +3652,14 @@ func convertStepParamsKey(key string) string {
 	}
 
 	return key
+}
+
+func compressAndEncodeValue(value string) string {
+	stringifiedValue, _ := json.Marshal(value)
+	var compressedValue bytes.Buffer
+	zl := zlib.NewWriter(&compressedValue)
+	zl.Write(stringifiedValue)
+	zl.Close()
+	encodedCompressedValue := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
+	return encodedCompressedValue
 }
