@@ -926,7 +926,7 @@ func syntheticsTestRequestFile() *schema.Schema {
 				"original_file_name": {
 					Type:         schema.TypeString,
 					Description:  "Original name of the file.",
-					Required:     true,
+					Optional:     true,
 					ValidateFunc: validation.StringLenBetween(1, 1500),
 				},
 				"size": {
