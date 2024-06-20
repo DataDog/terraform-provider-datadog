@@ -653,6 +653,7 @@ Required:
 Optional:
 
 - `content` (String) Content of the file.
+- `original_file_name` (string) The original file name
 
 Read-Only:
 
@@ -1032,6 +1033,7 @@ Required:
 Optional:
 
 - `content` (String) Content of the file.
+- `original_file_name` (string) The original file name
 
 Read-Only:
 
