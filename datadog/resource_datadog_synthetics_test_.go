@@ -2936,11 +2936,17 @@ func buildLocalOptions(actualOptions datadogV1.SyntheticsTestOptions) []map[stri
 	}
 	if actualOptions.HasMonitorOptions() {
 		actualMonitorOptions := actualOptions.GetMonitorOptions()
-		renotifyInterval := actualMonitorOptions.GetRenotifyInterval()
-
 		optionsListMonitorOptions := make(map[string]int64)
-		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
-		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
+		shouldUpdate := false
+
+		if actualMonitorOptions.HasRenotifyInterval() {
+			optionsListMonitorOptions["renotify_interval"] = actualMonitorOptions.GetRenotifyInterval()
+			shouldUpdate = true
+		}
+
+		if shouldUpdate {
+			localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
+		}
 	}
 	if actualOptions.HasNoScreenshot() {
 		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
