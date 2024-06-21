@@ -252,7 +252,6 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
-			"http_version": syntheticsHttpVersionOption(),
 		},
 	}
 }
@@ -796,6 +795,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 	// In test `options_list` generally, but in `api_step.request_definition` for API steps.
 	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
 	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
+	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
 		Description: "Steps for multistep api tests",
