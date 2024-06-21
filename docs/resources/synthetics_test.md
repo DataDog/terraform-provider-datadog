@@ -338,7 +338,7 @@ resource "datadog_synthetics_test" "test_browser" {
   }
 }
 
-# Example Usage (GRPC API test)
+# Example Usage (GRPC API behavior test)
 # Create a new Datadog GRPC API test calling host google.org on port 50050
 # targeting service Greeter in the package helloworld with the method SayHello
 # and the message {"name": "John"}
@@ -403,6 +403,39 @@ EOT
     tick_every = 60
   }
   name    = "GRPC API test with proto"
+  message = "Notify @datadog.user"
+  tags    = ["foo:bar", "baz"]
+  status  = "live"
+}
+
+# Example Usage (GRPC API health test)
+# Create a new Datadog GRPC API test calling host google.org on port 50050
+# testing the overall health of the service
+resource "datadog_synthetics_test" "grpc" {
+  type    = "api"
+  subtype = "grpc"
+  request_definition {
+    method           = "GET"
+    host             = "google.com"
+    port             = 50050
+    service          = "helloworld.Greeter"
+    message          = ""
+  }
+  assertion {
+    type     = "responseTime"
+    operator = "lessThan"
+    target   = "2000"
+  }
+  assertion {
+    operator = "is"
+    type     = "grpcHealthcheckStatus"
+    target   = 1
+  }
+  locations = ["aws:eu-central-1"]
+  options_list {
+    tick_every = 60
+  }
+  name    = "GRPC API health test"
   message = "Notify @datadog.user"
   tags    = ["foo:bar", "baz"]
   status  = "live"
