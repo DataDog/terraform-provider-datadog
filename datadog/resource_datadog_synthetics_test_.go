@@ -923,6 +923,12 @@ func syntheticsTestRequestFile() *schema.Schema {
 					Required:     true,
 					ValidateFunc: validation.StringLenBetween(1, 1500),
 				},
+				"original_file_name": {
+					Type:         schema.TypeString,
+					Description:  "Original name of the file.",
+					Optional:     true,
+					ValidateFunc: validation.StringLenBetween(1, 1500),
+				},
 				"size": {
 					Type:         schema.TypeInt,
 					Description:  "Size of the file.",
@@ -1534,6 +1540,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			file := datadogV1.SyntheticsTestRequestBodyFile{}
 
 			file.SetName(fileMap["name"].(string))
+			file.SetOriginalFileName(fileMap["original_file_name"].(string))
 			file.SetType(fileMap["type"].(string))
 			file.SetSize(int64(fileMap["size"].(int)))
 
@@ -3272,6 +3279,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			// as the response from the backend contains the bucket key rather than the content.
 			localFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
 			localFile["name"] = file.GetName()
+			localFile["original_file_name"] = file.GetOriginalFileName()
 			localFile["type"] = file.GetType()
 			localFile["size"] = file.GetSize()
 
