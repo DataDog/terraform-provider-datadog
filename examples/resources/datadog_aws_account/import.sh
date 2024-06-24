@@ -1,0 +1,1 @@
+terraform import datadog_aws_account.new_list ""
