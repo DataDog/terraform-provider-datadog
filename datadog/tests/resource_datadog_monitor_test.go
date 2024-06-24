@@ -454,7 +454,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckNoResourceAttr(
 						"datadog_monitor.foo", "tags.#"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "priority", "0"),
+						"datadog_monitor.foo", "priority", ""),
 				),
 			},
 			{
