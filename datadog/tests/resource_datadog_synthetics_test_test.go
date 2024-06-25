@@ -609,9 +609,6 @@ resource "datadog_synthetics_test" "test" {
 	options_list {
 		initial_navigation_timeout = 15
 		tick_every                 = 3600
-		monitor_options {
-			renotify_interval = 0
-		}
 		retry {
 			count    = 0
 		}
