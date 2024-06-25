@@ -7635,10 +7635,6 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["apm_dependency_stats_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["apm_resource_stats_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
