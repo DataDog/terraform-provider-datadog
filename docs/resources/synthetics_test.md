@@ -415,11 +415,11 @@ resource "datadog_synthetics_test" "grpc" {
   type    = "api"
   subtype = "grpc"
   request_definition {
-    method           = "GET"
-    host             = "google.com"
-    port             = 50050
-    service          = "helloworld.Greeter"
-    message          = ""
+    method  = "GET"
+    host    = "google.com"
+    port    = 50050
+    service = "helloworld.Greeter"
+    message = ""
   }
   assertion {
     type     = "responseTime"
