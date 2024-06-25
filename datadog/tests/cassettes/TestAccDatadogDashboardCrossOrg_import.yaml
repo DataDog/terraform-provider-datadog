@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 2536
+        content_length: 2216
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardCrossOrg_import-local-1719337870","widgets":[{"definition":{"requests":[{"formulas":[{"alias":"sum query","formula":"my_query_1 + my_query_2","limit":{"count":5,"order":"asc"}},{"alias":"multiplicative query","formula":"my_query_1 * my_query_2","limit":{"count":7,"order":"desc"}}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{app:general} by {env}"},{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_2","query":"avg:system.cpu.user{app:general} by {env}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"logs","group_by":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","metric":"@lambda.max_memory_used","order":"desc"}}],"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"process","is_normalized_cpu":true,"limit":10,"metric":"process.stat.cpu.total_pct","name":"my_process_query","sort":"asc","tag_filters":["some_filter"],"text_filter":"abc"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}},{"definition":{"requests":[{"formulas":[{"alias":"my cloud cost query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{*}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}},{"definition":{"requests":[{"formulas":[{"alias":"my slo query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"slo","group_mode":"overall","measure":"good_events","slo_id":"slo1","slo_query_type":"metric"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}}]}
+            {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardCrossOrg_import-local-1719345643","widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{app:general} by {env}"}],"response_format":"timeseries"}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"}},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"logs","group_by":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","metric":"@lambda.max_memory_used","order":"desc"}}],"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"process","is_normalized_cpu":true,"limit":10,"metric":"process.stat.cpu.total_pct","name":"my_process_query","sort":"asc","tag_filters":["some_filter"],"text_filter":"abc"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}},{"definition":{"requests":[{"formulas":[{"alias":"my cloud cost query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{*}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}},{"definition":{"requests":[{"formulas":[{"alias":"my slo query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"slo","group_mode":"overall","measure":"good_events","slo_id":"slo1","slo_query_type":"metric"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"}}]}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"km8-g7k-jzb","title":"tf-TestAccDatadogDashboardCrossOrg_import-local-1719337870","description":"Created using the Datadog provider in Terraform","author_handle":"ringo.cheung@datadoghq.com","author_name":"Ringo Cheung","layout_type":"ordered","url":"/dashboard/km8-g7k-jzb/tf-testaccdatadogdashboardcrossorgimport-local-1719337870","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"alias":"sum query","formula":"my_query_1 + my_query_2","limit":{"count":5,"order":"asc"}},{"alias":"multiplicative query","formula":"my_query_1 * my_query_2","limit":{"count":7,"order":"desc"}}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{app:general} by {env}"},{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_2","query":"avg:system.cpu.user{app:general} by {env}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":2182686739198702},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"logs","group_by":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","metric":"@lambda.max_memory_used","order":"desc"}}],"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":786527390489044},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"process","is_normalized_cpu":true,"limit":10,"metric":"process.stat.cpu.total_pct","name":"my_process_query","sort":"asc","tag_filters":["some_filter"],"text_filter":"abc"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":1098876639330042},{"definition":{"requests":[{"formulas":[{"alias":"my cloud cost query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{*}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":297800758665697},{"definition":{"requests":[{"formulas":[{"alias":"my slo query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"slo","group_mode":"overall","measure":"good_events","slo_id":"slo1","slo_query_type":"metric"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6252713888095777}],"notify_list":[],"created_at":"2024-06-25T17:51:13.454050+00:00","modified_at":"2024-06-25T17:51:13.454050+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"qiv-xm4-rxr","title":"tf-TestAccDatadogDashboardCrossOrg_import-local-1719345643","description":"Created using the Datadog provider in Terraform","author_handle":"ringo.cheung@datadoghq.com","author_name":"Ringo Cheung","layout_type":"ordered","url":"/dashboard/qiv-xm4-rxr/tf-testaccdatadogdashboardcrossorgimport-local-1719345643","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{app:general} by {env}"}],"response_format":"timeseries"}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"id":8938128463447354},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"logs","group_by":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","metric":"@lambda.max_memory_used","order":"desc"}}],"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6917733959627505},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"process","is_normalized_cpu":true,"limit":10,"metric":"process.stat.cpu.total_pct","name":"my_process_query","sort":"asc","tag_filters":["some_filter"],"text_filter":"abc"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":4329904402888496},{"definition":{"requests":[{"formulas":[{"alias":"my cloud cost query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{*}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":2699155809989919},{"definition":{"requests":[{"formulas":[{"alias":"my slo query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"slo","group_mode":"overall","measure":"good_events","slo_id":"slo1","slo_query_type":"metric"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":78864208901282}],"notify_list":[],"created_at":"2024-06-25T20:00:48.369510+00:00","modified_at":"2024-06-25T20:00:48.369510+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 456.113625ms
+        duration: 385.499542ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/km8-g7k-jzb
+        url: https://api.datadoghq.com/api/v1/dashboard/qiv-xm4-rxr
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"km8-g7k-jzb","title":"tf-TestAccDatadogDashboardCrossOrg_import-local-1719337870","description":"Created using the Datadog provider in Terraform","author_handle":"ringo.cheung@datadoghq.com","author_name":"Ringo Cheung","layout_type":"ordered","url":"/dashboard/km8-g7k-jzb/tf-testaccdatadogdashboardcrossorgimport-local-1719337870","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"formulas":[{"alias":"sum query","formula":"my_query_1 + my_query_2","limit":{"count":5,"order":"asc"}},{"alias":"multiplicative query","formula":"my_query_1 * my_query_2","limit":{"count":7,"order":"desc"}}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{app:general} by {env}"},{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_2","query":"avg:system.cpu.user{app:general} by {env}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":2182686739198702},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"logs","group_by":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","metric":"@lambda.max_memory_used","order":"desc"}}],"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":786527390489044},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"process","is_normalized_cpu":true,"limit":10,"metric":"process.stat.cpu.total_pct","name":"my_process_query","sort":"asc","tag_filters":["some_filter"],"text_filter":"abc"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":1098876639330042},{"definition":{"requests":[{"formulas":[{"alias":"my cloud cost query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{*}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":297800758665697},{"definition":{"requests":[{"formulas":[{"alias":"my slo query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"slo","group_mode":"overall","measure":"good_events","slo_id":"slo1","slo_query_type":"metric"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6252713888095777}],"notify_list":[],"created_at":"2024-06-25T17:51:13.454050+00:00","modified_at":"2024-06-25T17:51:13.454050+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"qiv-xm4-rxr","title":"tf-TestAccDatadogDashboardCrossOrg_import-local-1719345643","description":"Created using the Datadog provider in Terraform","author_handle":"ringo.cheung@datadoghq.com","author_name":"Ringo Cheung","layout_type":"ordered","url":"/dashboard/qiv-xm4-rxr/tf-testaccdatadogdashboardcrossorgimport-local-1719345643","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{app:general} by {env}"}],"response_format":"timeseries"}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"id":8938128463447354},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"logs","group_by":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","metric":"@lambda.max_memory_used","order":"desc"}}],"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6917733959627505},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"process","is_normalized_cpu":true,"limit":10,"metric":"process.stat.cpu.total_pct","name":"my_process_query","sort":"asc","tag_filters":["some_filter"],"text_filter":"abc"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":4329904402888496},{"definition":{"requests":[{"formulas":[{"alias":"my cloud cost query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{*}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":2699155809989919},{"definition":{"requests":[{"formulas":[{"alias":"my slo query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"slo","group_mode":"overall","measure":"good_events","slo_id":"slo1","slo_query_type":"metric"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":78864208901282}],"notify_list":[],"created_at":"2024-06-25T20:00:48.369510+00:00","modified_at":"2024-06-25T20:00:48.369510+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 100.47675ms
+        duration: 101.894083ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,8 +90,8 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/km8-g7k-jzb
-        method: DELETE
+        url: https://api.datadoghq.com/api/v1/dashboard/qiv-xm4-rxr
+        method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_dashboard_id":"km8-g7k-jzb"}
+            {"id":"qiv-xm4-rxr","title":"tf-TestAccDatadogDashboardCrossOrg_import-local-1719345643","description":"Created using the Datadog provider in Terraform","author_handle":"ringo.cheung@datadoghq.com","author_name":"Ringo Cheung","layout_type":"ordered","url":"/dashboard/qiv-xm4-rxr/tf-testaccdatadogdashboardcrossorgimport-local-1719345643","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{app:general} by {env}"}],"response_format":"timeseries"}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"id":8938128463447354},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"logs","group_by":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","metric":"@lambda.max_memory_used","order":"desc"}}],"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6917733959627505},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"process","is_normalized_cpu":true,"limit":10,"metric":"process.stat.cpu.total_pct","name":"my_process_query","sort":"asc","tag_filters":["some_filter"],"text_filter":"abc"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":4329904402888496},{"definition":{"requests":[{"formulas":[{"alias":"my cloud cost query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{*}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":2699155809989919},{"definition":{"requests":[{"formulas":[{"alias":"my slo query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"slo","group_mode":"overall","measure":"good_events","slo_id":"slo1","slo_query_type":"metric"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":78864208901282}],"notify_list":[],"created_at":"2024-06-25T20:00:48.369510+00:00","modified_at":"2024-06-25T20:00:48.369510+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 142.572583ms
+        duration: 108.574834ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/km8-g7k-jzb
+        url: https://api.datadoghq.com/api/v1/dashboard/qiv-xm4-rxr
         method: GET
       response:
         proto: HTTP/1.1
@@ -136,10 +136,80 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Dashboard with ID km8-g7k-jzb not found"]}'
+        body: |
+            {"id":"qiv-xm4-rxr","title":"tf-TestAccDatadogDashboardCrossOrg_import-local-1719345643","description":"Created using the Datadog provider in Terraform","author_handle":"ringo.cheung@datadoghq.com","author_name":"Ringo Cheung","layout_type":"ordered","url":"/dashboard/qiv-xm4-rxr/tf-testaccdatadogdashboardcrossorgimport-local-1719345643","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"metrics","name":"my_query_1","query":"avg:system.cpu.user{app:general} by {env}"}],"response_format":"timeseries"}],"show_legend":false,"title":"system.cpu.user","title_align":"left","title_size":"16","type":"timeseries"},"id":8938128463447354},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"compute":{"aggregation":"count"},"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"logs","group_by":[{"facet":"host","limit":10,"sort":{"aggregation":"avg","metric":"@lambda.max_memory_used","order":"desc"}}],"indexes":["days-3"],"name":"my_event_query","search":{"query":"abc"}}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":6917733959627505},{"definition":{"requests":[{"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"process","is_normalized_cpu":true,"limit":10,"metric":"process.stat.cpu.total_pct","name":"my_process_query","sort":"asc","tag_filters":["some_filter"],"text_filter":"abc"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":4329904402888496},{"definition":{"requests":[{"formulas":[{"alias":"my cloud cost query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"aggregator":"sum","cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"cloud_cost","name":"query1","query":"sum:aws.cost.amortized{*}"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":2699155809989919},{"definition":{"requests":[{"formulas":[{"alias":"my slo query","formula":"query1"}],"on_right_yaxis":false,"queries":[{"cross_org_uuids":["6434abde-xxxx-yyyy-zzzz-da7ad0900001"],"data_source":"slo","group_mode":"overall","measure":"good_events","slo_id":"slo1","slo_query_type":"metric"}],"response_format":"timeseries"}],"show_legend":false,"type":"timeseries"},"id":78864208901282}],"notify_list":[],"created_at":"2024-06-25T20:00:48.369510+00:00","modified_at":"2024-06-25T20:00:48.369510+00:00","template_variable_presets":[],"tags":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 105.931ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/qiv-xm4-rxr
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_dashboard_id":"qiv-xm4-rxr"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.062708ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/qiv-xm4-rxr
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Dashboard with ID qiv-xm4-rxr not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 70.762167ms
+        duration: 79.78325ms

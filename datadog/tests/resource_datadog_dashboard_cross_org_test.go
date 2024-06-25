@@ -61,9 +61,6 @@ resource "datadog_dashboard" "cross_org_dashboard" {
             compute {
               aggregation = "count"
             }
-            compute {
-              aggregation = "count"
-            }
             search {
               query = "abc"
             }
@@ -145,7 +142,11 @@ var datadogDashboardCrossOrgAsserts = []string{
 	"is_read_only = true",
 	"title = {{uniq}}",
 	"description = Created using the Datadog provider in Terraform",
-	// "widget.0.timeseries_definition.0.request.0.query.0.metric_query.0.cross_org_uuids.0 = 6434abde-xxxx-yyyy-zzzz-da7ad0900001",
+	"widget.0.timeseries_definition.0.request.0.query.0.metric_query.0.cross_org_uuids.0 = 6434abde-xxxx-yyyy-zzzz-da7ad0900001",
+	"widget.1.timeseries_definition.0.request.0.query.0.event_query.0.cross_org_uuids.0 = 6434abde-xxxx-yyyy-zzzz-da7ad0900001",
+	"widget.2.timeseries_definition.0.request.0.query.0.process_query.0.cross_org_uuids.0 = 6434abde-xxxx-yyyy-zzzz-da7ad0900001",
+	"widget.3.timeseries_definition.0.request.0.query.0.cloud_cost_query.0.cross_org_uuids.0 = 6434abde-xxxx-yyyy-zzzz-da7ad0900001",
+	"widget.4.timeseries_definition.0.request.0.query.0.slo_query.0.cross_org_uuids.0 = 6434abde-xxxx-yyyy-zzzz-da7ad0900001",
 	"layout_type = ordered",
 }
 

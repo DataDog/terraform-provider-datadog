@@ -9615,6 +9615,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformMetricQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformMetricQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if metricQuery, ok := terraformMetricQueryDefinition.GetQueryOk(); ok {
 				terraformQuery["query"] = metricQuery
 			}
@@ -9633,6 +9636,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 		if terraformApmDependencyStatsQueryDefinition != nil {
 			if dataSource, ok := terraformApmDependencyStatsQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
+			}
+			if crossOrgUuids, ok := terraformEventQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
 			}
 			if env, ok := terraformApmDependencyStatsQueryDefinition.GetEnvOk(); ok {
 				terraformQuery["env"] = env
@@ -9708,6 +9714,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformProcessqueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformProcessqueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if metric, ok := terraformProcessqueryDefinition.GetMetricOk(); ok {
 				terraformQuery["metric"] = metric
 			}
@@ -9742,6 +9751,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformSLOQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformSLOQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if measure, ok := terraformSLOQueryDefinition.GetMeasureOk(); ok {
 				terraformQuery["measure"] = measure
 			}
@@ -9769,6 +9781,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 		if terraformCloudCostQueryDefinition != nil {
 			if dataSource, ok := terraformCloudCostQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
+			}
+			if crossOrgUuids, ok := terraformCloudCostQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
 			}
 			if aggregator, ok := terraformCloudCostQueryDefinition.GetAggregatorOk(); ok {
 				terraformQuery["aggregator"] = aggregator
