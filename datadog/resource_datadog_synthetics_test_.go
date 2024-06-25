@@ -173,7 +173,13 @@ func syntheticsTestRequest() *schema.Resource {
 				Description: "Timeout in seconds for the test.",
 				Type:        schema.TypeInt,
 				Optional:    true,
-				Default:     60,
+				DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
+					if old == "60" && new == "0" {
+						// ignore transition from `60` (formerly default value) to `0` (`nil`) for retro-compatibility
+						return true
+					}
+					return old == new
+				},
 			},
 			"host": {
 				Description: "Host name to perform the test with.",
