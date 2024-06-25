@@ -3180,17 +3180,31 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		}
 
 		localParams := make(map[string]interface{})
+
+		forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex))
+		if ok {
+			localStep["force_element_update"] = forceElementUpdate
+		}
+
 		params := step.GetParams()
 		paramsMap := params.(map[string]interface{})
 
 		for key, value := range paramsMap {
-			localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+			if key == "element" && forceElementUpdate == true {
+				// prevent overriding `element` in the local state with the one received from the backend, and
+				// keep the element from the local state instead
+				element := d.Get(fmt.Sprintf("browser_step.%d.params.0.element", stepIndex))
+				localParams["element"] = element
+			} else {
+				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+			}
 		}
 
-		if elementParams, ok := localParams["element"]; ok {
+		// If received an element from the backend, extract the user locator part to update the local state
+		if elementParams, ok := paramsMap["element"]; ok {
+			serializedElementParams := convertStepParamsValueForState("element", elementParams)
 			var stepElement interface{}
-			utils.GetMetadataFromJSON([]byte(elementParams.(string)), &stepElement)
-
+			utils.GetMetadataFromJSON([]byte(serializedElementParams.(string)), &stepElement)
 			if elementUserLocator, ok := stepElement.(map[string]interface{})["userLocator"]; ok {
 				userLocator := elementUserLocator.(map[string]interface{})
 				values := userLocator["values"]
@@ -3208,10 +3222,6 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		}
 
 		localStep["params"] = []interface{}{localParams}
-
-		if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
-			localStep["force_element_update"] = forceElementUpdate
-		}
 
 		localSteps = append(localSteps, localStep)
 	}
