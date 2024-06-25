@@ -1,0 +1,425 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 599
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"}}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","tags":[],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"b99755fa-3d3a-11ef-8f98-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":4412523129294725}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 493.831292ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 599
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"}}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","tags":[],"template_variables":[{"defaults":["defaults"],"name":"datacenter"}]},"type":"powerpack"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"b9975668-3d3a-11ef-b57a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":8958271794272314}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 496.551458ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks/b9975668-3d3a-11ef-b57a-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"b9975668-3d3a-11ef-b57a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":8958271794272314}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.935167ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks/b99755fa-3d3a-11ef-8f98-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"b99755fa-3d3a-11ef-8f98-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":4412523129294725}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.885458ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks?page%5Blimit%5D=100&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"powerpack","id":"b9975668-3d3a-11ef-b57a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":8958271794272314}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},{"type":"powerpack","id":"b99755fa-3d3a-11ef-8f98-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":4412523129294725}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},{"type":"powerpack","id":"1cbac53e-3d15-11ef-b4d8-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackManageStatus-local-1720434631","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackManageStatus-local-1720434631","type":"group","widgets":[{"definition":{"color_preference":"background","display_format":"countsAndList","hide_zero_counts":true,"query":"env:prod group_status:alert","show_last_triggered":true,"show_priority":false,"sort":"triggered,desc","summary_type":"combined","title_align":"center","title_size":"20","type":"manage_status"},"layout":{"height":6,"width":4,"x":5,"y":5},"id":8031369008174211}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}}],"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}],"meta":{"pagination":{"offset":0,"first_offset":0,"prev_offset":0,"next_offset":100,"last_offset":null,"limit":100,"type":"offset_limit"}},"links":{"self":"https://api.datadoghq.com/api/v2/powerpacks?page[limit]=100&page[offset]=0","last":null,"next":"https://api.datadoghq.com/api/v2/powerpacks?page[offset]=100&page[limit]=100","prev":null,"first":"https://api.datadoghq.com/api/v2/powerpacks?page[offset]=0&page[limit]=100"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 150.995791ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks?page%5Blimit%5D=100&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"powerpack","id":"b9975668-3d3a-11ef-b57a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":8958271794272314}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},{"type":"powerpack","id":"b99755fa-3d3a-11ef-8f98-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":4412523129294725}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},{"type":"powerpack","id":"1cbac53e-3d15-11ef-b4d8-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackManageStatus-local-1720434631","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackManageStatus-local-1720434631","type":"group","widgets":[{"definition":{"color_preference":"background","display_format":"countsAndList","hide_zero_counts":true,"query":"env:prod group_status:alert","show_last_triggered":true,"show_priority":false,"sort":"triggered,desc","summary_type":"combined","title_align":"center","title_size":"20","type":"manage_status"},"layout":{"height":6,"width":4,"x":5,"y":5},"id":8031369008174211}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}}],"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}],"meta":{"pagination":{"offset":0,"first_offset":0,"prev_offset":0,"next_offset":100,"last_offset":null,"limit":100,"type":"offset_limit"}},"links":{"self":"https://api.datadoghq.com/api/v2/powerpacks?page[limit]=100&page[offset]=0","last":null,"next":"https://api.datadoghq.com/api/v2/powerpacks?page[offset]=100&page[limit]=100","prev":null,"first":"https://api.datadoghq.com/api/v2/powerpacks?page[offset]=0&page[limit]=100"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 138.089459ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks/b9975668-3d3a-11ef-b57a-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"b9975668-3d3a-11ef-b57a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":8958271794272314}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 146.143416ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks/b99755fa-3d3a-11ef-8f98-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"powerpack","id":"b99755fa-3d3a-11ef-8f98-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":4412523129294725}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 161.845666ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks?page%5Blimit%5D=100&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"powerpack","id":"b9975668-3d3a-11ef-b57a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":8958271794272314}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},{"type":"powerpack","id":"b99755fa-3d3a-11ef-8f98-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":4412523129294725}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},{"type":"powerpack","id":"1cbac53e-3d15-11ef-b4d8-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackManageStatus-local-1720434631","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackManageStatus-local-1720434631","type":"group","widgets":[{"definition":{"color_preference":"background","display_format":"countsAndList","hide_zero_counts":true,"query":"env:prod group_status:alert","show_last_triggered":true,"show_priority":false,"sort":"triggered,desc","summary_type":"combined","title_align":"center","title_size":"20","type":"manage_status"},"layout":{"height":6,"width":4,"x":5,"y":5},"id":8031369008174211}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}}],"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}],"meta":{"pagination":{"offset":0,"first_offset":0,"prev_offset":0,"next_offset":100,"last_offset":null,"limit":100,"type":"offset_limit"}},"links":{"self":"https://api.datadoghq.com/api/v2/powerpacks?page[limit]=100&page[offset]=0","last":null,"next":"https://api.datadoghq.com/api/v2/powerpacks?page[offset]=100&page[limit]=100","prev":null,"first":"https://api.datadoghq.com/api/v2/powerpacks?page[offset]=0&page[limit]=100"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 145.505125ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/powerpacks?page%5Blimit%5D=100&page%5Boffset%5D=0
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"type":"powerpack","id":"b9975668-3d3a-11ef-b57a-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 bar","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":8958271794272314}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},{"type":"powerpack","id":"b99755fa-3d3a-11ef-8f98-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","description":"Created using the Datadog provider in terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackDatasource-local-1720450787 foo","type":"group","widgets":[{"definition":{"event_size":"l","query":"*","title":"Widget Title","title_align":"right","title_size":"16","type":"event_stream"},"id":4412523129294725}]},"layout":{"height":10,"width":3,"x":1,"y":0},"live_span":"4h"},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":[]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}},{"type":"powerpack","id":"1cbac53e-3d15-11ef-b4d8-da7ad0900002","attributes":{"name":"tf-TestAccDatadogPowerpackManageStatus-local-1720434631","description":"Created using the Datadog provider in Terraform","group_widget":{"definition":{"layout_type":"ordered","title":"tf-TestAccDatadogPowerpackManageStatus-local-1720434631","type":"group","widgets":[{"definition":{"color_preference":"background","display_format":"countsAndList","hide_zero_counts":true,"query":"env:prod group_status:alert","show_last_triggered":true,"show_priority":false,"sort":"triggered,desc","summary_type":"combined","title_align":"center","title_size":"20","type":"manage_status"},"layout":{"height":6,"width":4,"x":5,"y":5},"id":8031369008174211}]},"layout":{"width":12,"height":1,"x":0,"y":0}},"template_variables":[{"defaults":["defaults"],"name":"datacenter"}],"tags":["tag:foo1"]},"relationships":{"author":{"data":{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f"}}}}],"included":[{"type":"users","id":"223d3023-32d4-11ef-a898-ae07f903f02f","attributes":{"name":"Ben Harling","email":"ben.harling@samsara.com"}}],"meta":{"pagination":{"offset":0,"first_offset":0,"prev_offset":0,"next_offset":100,"last_offset":null,"limit":100,"type":"offset_limit"}},"links":{"self":"https://api.datadoghq.com/api/v2/powerpacks?page[limit]=100&page[offset]=0","last":null,"next":"https://api.datadoghq.com/api/v2/powerpacks?page[offset]=100&page[limit]=100","prev":null,"first":"https://api.datadoghq.com/api/v2/powerpacks?page[offset]=0&page[limit]=100"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 151.637792ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/powerpacks/b99755fa-3d3a-11ef-8f98-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 166.869042ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/powerpacks/b9975668-3d3a-11ef-b57a-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
+        status: 204 No Content
+        code: 204
+        duration: 175.474041ms
