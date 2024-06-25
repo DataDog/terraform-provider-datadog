@@ -7427,8 +7427,10 @@ func buildDatadogFormulaAndFunctionAPMResourceStatsQuery(data map[string]interfa
 	apmResourceStatsQuery := datadogV1.NewFormulaAndFunctionApmResourceStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["service"].(string), stat)
 
 	// cross_org_uuids
-	if v, ok := data["cross_org_uuids"].([]string); ok && len(v) != 0 {
-		apmResourceStatsQuery.SetCrossOrgUuids(v)
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			apmResourceStatsQuery.CrossOrgUuids = []string{c}
+		}
 	}
 
 	// operation_name
@@ -7470,8 +7472,10 @@ func buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(data map[string]inter
 	apmDependencyStatsQuery := datadogV1.NewFormulaAndFunctionApmDependencyStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["operation_name"].(string), data["resource_name"].(string), data["service"].(string), stat)
 
 	// cross_org_uuids
-	if v, ok := data["cross_org_uuids"].([]string); ok && len(v) != 0 {
-		apmDependencyStatsQuery.SetCrossOrgUuids(v)
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			apmDependencyStatsQuery.CrossOrgUuids = []string{c}
+		}
 	}
 
 	// primary_tag_name
