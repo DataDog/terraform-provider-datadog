@@ -1,204 +1,392 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","options":{"min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":130183432,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/kaa-uep-guh
-    method: GET
-    id: 4
-  response:
-    body: |
-      {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
-    method: GET
-    id: 5
-  response:
-    body: |
-      {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
-    method: GET
-    id: 6
-  response:
-    body: |
-      {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kaa-uep-guh
-    method: GET
-    id: 7
-  response:
-    body: |
-      {"public_id":"kaa-uep-guh","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.755102+00:00","modified_at":"2023-08-23T17:59:26.755102+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183432,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"public_ids":["kaa-uep-guh"]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
-    method: POST
-    id: 8
-  response:
-    body: |
-      {"deleted_tests":[{"public_id":"kaa-uep-guh","deleted_at":"2023-08-23T17:59:28.894394+00:00"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/kaa-uep-guh
-    method: GET
-    id: 9
-  response:
-    body: '{"errors":["Synthetics test not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/kaa-uep-guh
-    method: GET
-    id: 10
-  response:
-    body: '{"errors":["Synthetics test not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 423
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1719305023","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"npf-bg8-pdp","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1719305023","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-25T08:43:44.938881+00:00","modified_at":"2024-06-25T08:43:44.938881+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":147860203,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 823.173833ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/npf-bg8-pdp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"npf-bg8-pdp","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1719305023","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-25T08:43:44.938881+00:00","modified_at":"2024-06-25T08:43:44.938881+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":147860203,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 148.037875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/npf-bg8-pdp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"npf-bg8-pdp","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1719305023","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-25T08:43:44.938881+00:00","modified_at":"2024-06-25T08:43:44.938881+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":147860203,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 139.455458ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/npf-bg8-pdp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"npf-bg8-pdp","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1719305023","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-25T08:43:44.938881+00:00","modified_at":"2024-06-25T08:43:44.938881+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":147860203,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 144.491542ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/npf-bg8-pdp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"npf-bg8-pdp","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1719305023","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-25T08:43:44.938881+00:00","modified_at":"2024-06-25T08:43:44.938881+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":147860203,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 152.483583ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/npf-bg8-pdp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"npf-bg8-pdp","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1719305023","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-25T08:43:44.938881+00:00","modified_at":"2024-06-25T08:43:44.938881+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":147860203,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.070958ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/npf-bg8-pdp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"npf-bg8-pdp","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1719305023","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-25T08:43:44.938881+00:00","modified_at":"2024-06-25T08:43:44.938881+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":147860203,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 164.760042ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/npf-bg8-pdp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"npf-bg8-pdp","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1719305023","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-25T08:43:44.938881+00:00","modified_at":"2024-06-25T08:43:44.938881+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":147860203,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 143.351041ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["npf-bg8-pdp"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"npf-bg8-pdp","deleted_at":"2024-06-25T08:43:47.854883+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 934.986208ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/npf-bg8-pdp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 136.604042ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/npf-bg8-pdp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 141.268292ms
