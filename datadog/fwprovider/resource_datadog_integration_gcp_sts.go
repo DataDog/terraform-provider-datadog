@@ -36,6 +36,7 @@ type integrationGcpStsModel struct {
 	ClientEmail                    types.String `tfsdk:"client_email"`
 	DelegateAccountEmail           types.String `tfsdk:"delegate_account_email"`
 	HostFilters                    types.Set    `tfsdk:"host_filters"`
+	CloudRunRevisionFilters        types.Set    `tfsdk:"cloud_run_revision_filters"`
 	IsCspmEnabled                  types.Bool   `tfsdk:"is_cspm_enabled"`
 	IsSecurityCommandCenterEnabled types.Bool   `tfsdk:"is_security_command_center_enabled"`
 	ResourceCollectionEnabled      types.Bool   `tfsdk:"resource_collection_enabled"`
@@ -86,6 +87,11 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 			"host_filters": schema.SetAttribute{
 				Optional:    true,
 				Description: "Your Host Filters.",
+				ElementType: types.StringType,
+			},
+			"cloud_run_revision_filters": schema.SetAttribute{
+				Optional:    true,
+				Description: "Filters to be applied for GCP Cloud Run resources",
 				ElementType: types.StringType,
 			},
 			"is_cspm_enabled": schema.BoolAttribute{
