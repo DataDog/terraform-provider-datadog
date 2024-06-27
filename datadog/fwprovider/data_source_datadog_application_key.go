@@ -37,7 +37,7 @@ func (d *applicationKeyDataSource) Metadata(_ context.Context, req datasource.Me
 // Schema implements datasource.DataSource.
 func (d *applicationKeyDataSource) Schema(_ context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing application key.",
+		Description: "Use this data source to retrieve information about an existing application key. Deprecated. Securely store your application keys using a secret management system or use the datadog_application_key resource to manage application keys in your Datadog account.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "Id for Application Key.",
@@ -57,6 +57,7 @@ func (d *applicationKeyDataSource) Schema(_ context.Context, req datasource.Sche
 				Sensitive:   true,
 			},
 		},
+		DeprecationMessage: "The datadog_application_key data source is deprecated and will be removed in a future release. Securely store your application key using a secret management system or use the datadog_application_key resource to manage application keys in your Datadog account",
 	}
 }
 
