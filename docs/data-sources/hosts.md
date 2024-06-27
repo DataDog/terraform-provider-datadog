@@ -54,6 +54,7 @@ Read-Only:
 - `mute_timeout` (Number)
 - `name` (String)
 - `sources` (List of String)
+- `tags_by_source` (Map of List of String)
 - `up` (Boolean)
 
 <a id="nestedobjatt--host_list--meta"></a>

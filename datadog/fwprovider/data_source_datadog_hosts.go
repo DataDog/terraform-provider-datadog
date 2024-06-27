@@ -54,6 +54,7 @@ type hostListModel struct {
 	MuteTimeout      types.Int64  `tfsdk:"mute_timeout"`
 	Name             types.String `tfsdk:"name"`
 	Sources          types.List   `tfsdk:"sources"`
+	TagsBySource     types.Map    `tfsdk:"tags_by_source"`
 	Up               types.Bool   `tfsdk:"up"`
 }
 
@@ -132,7 +133,10 @@ func (d *hostsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 						"mute_timeout":       types.Int64Type,
 						"name":               types.StringType,
 						"sources":            types.ListType{ElemType: types.StringType},
-						"up":                 types.BoolType,
+						"tags_by_source": types.MapType{
+							ElemType: types.ListType{ElemType: types.StringType},
+						},
+						"up": types.BoolType,
 						"metrics": types.ObjectType{
 							AttrTypes: map[string]attr.Type{
 								"cpu":    types.Float64Type,
@@ -215,6 +219,7 @@ func (d *hostsDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 		hostListEntry.MuteTimeout = basetypes.NewInt64Value(val.GetMuteTimeout())
 		hostListEntry.Name = basetypes.NewStringValue(val.GetName())
 		hostListEntry.Sources, _ = types.ListValueFrom(ctx, types.StringType, val.GetSources())
+		hostListEntry.TagsBySource, _ = types.MapValueFrom(ctx, types.ListType{ElemType: types.StringType}, val.GetTagsBySource())
 		hostListEntry.Up = basetypes.NewBoolValue(val.GetUp())
 		if metrics, ok := val.GetMetricsOk(); ok {
 			hostListEntry.Metrics, _ = types.ObjectValueFrom(ctx, map[string]attr.Type{
