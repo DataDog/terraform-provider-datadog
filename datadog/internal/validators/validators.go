@@ -232,6 +232,29 @@ func ValidateAWSAccountID(v any, p cty.Path) diag.Diagnostics {
 	return diags
 }
 
+var _ schema.SchemaValidateDiagFunc = ValidateBasicEmail
+var basicEmailRe = regexp.MustCompile("^[^@]+@[^@]+\\.[^@.]+$")
+
+// ValidateBasicEmail ensures a string looks like an email
+func ValidateBasicEmail(val any, path cty.Path) diag.Diagnostics {
+	str, ok := val.(string)
+	if !ok {
+		return diag.Diagnostics{{
+			Severity:      diag.Error,
+			Summary:       fmt.Sprintf("not a string: %s", val),
+			AttributePath: path,
+		}}
+	}
+	if !basicEmailRe.MatchString(str) {
+		return diag.Diagnostics{{
+			Severity:      diag.Error,
+			Summary:       fmt.Sprintf("not a email: %s", str),
+			AttributePath: path,
+		}}
+	}
+	return nil
+}
+
 type BetweenValidator struct {
 	min float64
 	max float64
