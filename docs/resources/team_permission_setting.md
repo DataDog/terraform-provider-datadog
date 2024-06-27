@@ -33,7 +33,7 @@ resource "datadog_team_permission_setting" "foo" {
 
 - `action` (String) The identifier for the action. Valid values are `manage_membership`, `edit`.
 - `team_id` (String) ID of the team the team permission setting is associated with.
-- `value` (String) The action value. Valid values are `admins`, `members`, `organization`, `user_access_manage`, `teams_manage`.
+- `value` (String) The action value. Valid values are dependent on the action. `manage_membership` action allows `admins`, `members`, `organization`, `user_access_manage` values. `edit` action allows `admins`, `members`, `teams_manage` values.
 
 ### Read-Only
 
