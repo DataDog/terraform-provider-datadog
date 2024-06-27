@@ -37,7 +37,7 @@ func (d *applicationKeyDataSource) Metadata(_ context.Context, req datasource.Me
 // Schema implements datasource.DataSource.
 func (d *applicationKeyDataSource) Schema(_ context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing application key.",
+		Description: "Use this data source to retrieve information about an existing application key. Deprecated. This will be removed in a future release with prior notice. Securely store your application keys using a secret management system or use the datadog_application_key resource to manage application keys in your Datadog account.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "Id for Application Key.",
@@ -57,6 +57,7 @@ func (d *applicationKeyDataSource) Schema(_ context.Context, req datasource.Sche
 				Sensitive:   true,
 			},
 		},
+		DeprecationMessage: "The datadog_application_key data source is deprecated and will be removed in a future release with prior notice. Securely store your application key using a secret management system or use the datadog_application_key resource to manage application keys in your Datadog account.",
 	}
 }
 
@@ -79,8 +80,10 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting application key"))
 			return
 		}
-		apiKeyData := ddResp.GetData()
-		d.updateState(&state, &apiKeyData)
+		appKeyData := ddResp.GetData()
+		if !d.checkAPIDeprecated(&appKeyData, resp) {
+			d.updateState(&state, &appKeyData)
+		}
 	} else if !state.Name.IsNull() {
 		optionalParams := datadogV2.NewListCurrentUserApplicationKeysOptionalParameters()
 		optionalParams.WithFilter(state.Name.ValueString())
@@ -122,7 +125,9 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 				resp.Diagnostics.AddError("your query returned no exact matches, please try a less specific search criteria", "")
 				return
 			}
-			d.updateState(&state, &applicationKeyData)
+			if !d.checkAPIDeprecated(&applicationKeyData, resp) {
+				d.updateState(&state, &applicationKeyData)
+			}
 		} else {
 			id := applicationKeysData[0].GetId()
 			applicationKeyResponse, _, err := d.Api.GetCurrentUserApplicationKey(d.Auth, id)
@@ -131,7 +136,9 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 				return
 			}
 			applicationKeyFullData := applicationKeyResponse.GetData()
-			d.updateState(&state, &applicationKeyFullData)
+			if !d.checkAPIDeprecated(&applicationKeyFullData, resp) {
+				d.updateState(&state, &applicationKeyFullData)
+			}
 		}
 	} else {
 		resp.Diagnostics.AddError("missing id or name parameter", "")
@@ -147,4 +154,13 @@ func (r *applicationKeyDataSource) updateState(state *applicationKeyDataSourceMo
 	state.Id = types.StringValue(applicationKeyData.GetId())
 	state.Name = types.StringValue(applicationKeyAttributes.GetName())
 	state.Key = types.StringValue(applicationKeyAttributes.GetKey())
+}
+
+func (r *applicationKeyDataSource) checkAPIDeprecated(applicationKeyData *datadogV2.FullApplicationKey, resp *datasource.ReadResponse) bool {
+	applicationKeyAttributes := applicationKeyData.GetAttributes()
+	if !applicationKeyAttributes.HasKey() {
+		resp.Diagnostics.AddError("Deprecated", "The datadog_application_key data source is deprecated and will be removed in a future release. Securely store your application key using a secret management system or use the datadog_application_key resource to manage application keys in your Datadog account.")
+		return true
+	}
+	return false
 }
