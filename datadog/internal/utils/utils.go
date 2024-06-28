@@ -394,3 +394,13 @@ func NormMetricNameParse(name string) string {
 	return string(res)
 
 }
+
+// AnyToSlice casts a raw interface{} to a well-typed slice (useful for reading Terraform ResourceData)
+func AnyToSlice[T any](raw any) []T {
+	rawSlice := raw.([]interface{})
+	result := make([]T, len(rawSlice))
+	for i, x := range rawSlice {
+		result[i] = x.(T)
+	}
+	return result
+}

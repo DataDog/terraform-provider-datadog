@@ -43,3 +43,4 @@ datadog/**/*datadog_service_account*            @DataDog/api-clients @DataDog/te
 datadog/**/*datadog_spans_metric*               @DataDog/api-clients @DataDog/apm-trace-intake
 datadog/**/*datadog_synthetics_concurrency_cap* @DataDog/api-clients @DataDog/synthetics-app @DataDog/synthetics-ct
 datadog/**/*datadog_team*                       @DataDog/api-clients @DataDog/core-app
+datadog/**/*datadog_organization_settings*      @DataDog/api-clients @DataDog/core-app @DataDog/trust-and-safety
