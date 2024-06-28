@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"content":"this is the original file content","name":"file1","size":33,"type":"text/plain"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"status":"paused","subtype":"http","tags":["foo:bar","baz"],"type":"api"}
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"content":"this is the original file content","name":"file1","size":33,"type":"text/plain"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"status":"paused","subtype":"http","tags":["foo:bar","baz"],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:26.384992+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:26.216369_80239293-b4c5-43ea-be9d-272e88eea990.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":147860172,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:30.599552+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:29.998338_b42fc40a-1942-455f-823d-b4e6f50e6cab.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":147867068,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 478.212958ms
+        duration: 1.174751084s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:26.384992+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:26.216369_80239293-b4c5-43ea-be9d-272e88eea990.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:30.599552+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:29.998338_b42fc40a-1942-455f-823d-b4e6f50e6cab.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.501916ms
+        duration: 148.601583ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:26.384992+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:26.216369_80239293-b4c5-43ea-be9d-272e88eea990.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:30.599552+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:29.998338_b42fc40a-1942-455f-823d-b4e6f50e6cab.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.141375ms
+        duration: 177.637ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:26.384992+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:26.216369_80239293-b4c5-43ea-be9d-272e88eea990.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:30.599552+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:29.998338_b42fc40a-1942-455f-823d-b4e6f50e6cab.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 146.89375ms
+        duration: 259.703708ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:26.384992+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:26.216369_80239293-b4c5-43ea-be9d-272e88eea990.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:30.599552+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:29.998338_b42fc40a-1942-455f-823d-b4e6f50e6cab.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.013917ms
+        duration: 153.949791ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +195,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -207,13 +207,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:26.384992+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:26.216369_80239293-b4c5-43ea-be9d-272e88eea990.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:30.599552+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:29.998338_b42fc40a-1942-455f-823d-b4e6f50e6cab.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 141.647292ms
+        duration: 155.063291ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -242,13 +242,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:26.384992+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:26.216369_80239293-b4c5-43ea-be9d-272e88eea990.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:30.599552+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":33,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:29.998338_b42fc40a-1942-455f-823d-b4e6f50e6cab.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 144.758042ms
+        duration: 164.940834ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -261,14 +261,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"content":"this is the new file content","name":"file1","size":28,"type":"text/plain"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"status":"paused","subtype":"http","tags":["foo:bar","baz"],"type":"api"}
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"content":"this is the new file content","name":"file1","size":28,"type":"text/plain"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"status":"paused","subtype":"http","tags":["foo:bar","baz"],"type":"api"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhj-imi-j99
         method: PUT
       response:
         proto: HTTP/1.1
@@ -280,13 +280,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:29.556972+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:29.455650_2b2d34f7-b2c8-4757-95ab-a44ff2acfaff.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":147860172,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"overall_state_modified":"2024-06-25T08:43:29.603255+00:00"}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:34.580961+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:34.473232_abb1c7b9-aefc-460a-bc1b-e56cda79a351.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":147867068,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"overall_state_modified":"2024-06-25T10:38:34.634905+00:00"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 638.722917ms
+        duration: 730.66825ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -303,7 +303,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -315,13 +315,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:29.556972+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:29.455650_2b2d34f7-b2c8-4757-95ab-a44ff2acfaff.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:34.580961+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:34.473232_abb1c7b9-aefc-460a-bc1b-e56cda79a351.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 196.657083ms
+        duration: 203.378542ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -338,7 +338,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -350,13 +350,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:29.556972+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:29.455650_2b2d34f7-b2c8-4757-95ab-a44ff2acfaff.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:34.580961+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:34.473232_abb1c7b9-aefc-460a-bc1b-e56cda79a351.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 292.8895ms
+        duration: 269.789709ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -373,7 +373,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -385,13 +385,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:29.556972+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:29.455650_2b2d34f7-b2c8-4757-95ab-a44ff2acfaff.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:34.580961+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:34.473232_abb1c7b9-aefc-460a-bc1b-e56cda79a351.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 150.585292ms
+        duration: 219.785084ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -408,7 +408,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -420,13 +420,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:29.556972+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:29.455650_2b2d34f7-b2c8-4757-95ab-a44ff2acfaff.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:34.580961+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:34.473232_abb1c7b9-aefc-460a-bc1b-e56cda79a351.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.995625ms
+        duration: 167.485542ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -443,7 +443,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -455,13 +455,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:29.556972+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:29.455650_2b2d34f7-b2c8-4757-95ab-a44ff2acfaff.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:34.580961+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:34.473232_abb1c7b9-aefc-460a-bc1b-e56cda79a351.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 140.069042ms
+        duration: 231.2715ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -478,7 +478,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -490,13 +490,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:29.556972+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:29.455650_2b2d34f7-b2c8-4757-95ab-a44ff2acfaff.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:34.580961+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:34.473232_abb1c7b9-aefc-460a-bc1b-e56cda79a351.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 235.470584ms
+        duration: 148.884292ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -513,7 +513,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -525,13 +525,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:29.556972+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:29.455650_2b2d34f7-b2c8-4757-95ab-a44ff2acfaff.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:34.580961+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:34.473232_abb1c7b9-aefc-460a-bc1b-e56cda79a351.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 257.012209ms
+        duration: 152.907541ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -548,7 +548,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -560,13 +560,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rvn-dyz-5xb","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T08:43:26.384992+00:00","modified_at":"2024-06-25T08:43:29.556972+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/rvn-dyz-5xb/2024-06-25T08:43:29.455650_2b2d34f7-b2c8-4757-95ab-a44ff2acfaff.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719305005-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147860172,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"bhj-imi-j99","name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-25T10:38:30.599552+00:00","modified_at":"2024-06-25T10:38:34.580961+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"bodyType":"multipart/form-data","files":[{"name":"file1","size":28,"type":"text/plain","bucketKey":"api-upload-file/bhj-imi-j99/2024-06-25T10:38:34.473232_abb1c7b9-aefc-460a-bc1b-e56cda79a351.json"}],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsApiTestFileUpload_Basic-local-1719311905-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":147867068,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.183959ms
+        duration: 213.121167ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -579,7 +579,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["rvn-dyz-5xb"]}
+            {"public_ids":["bhj-imi-j99"]}
         form: {}
         headers:
             Accept:
@@ -598,13 +598,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"rvn-dyz-5xb","deleted_at":"2024-06-25T08:43:34.737665+00:00"}]}
+            {"deleted_tests":[{"public_id":"bhj-imi-j99","deleted_at":"2024-06-25T10:38:39.801572+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 536.125458ms
+        duration: 986.995708ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -621,7 +621,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rvn-dyz-5xb
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhj-imi-j99
         method: GET
       response:
         proto: HTTP/1.1
@@ -638,4 +638,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 147.825583ms
+        duration: 137.963042ms
