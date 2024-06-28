@@ -21,6 +21,7 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 	applicationKeyName := uniqueEntityName(ctx, t)
 	applicationKeyNameUpdate := applicationKeyName + "-2"
 	resourceName := "datadog_application_key.foo"
+	var keyValue string
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -32,7 +33,16 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", applicationKeyName),
-					testAccCheckDatadogApplicationKeyValueMatches(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					func(s *terraform.State) error {
+						resource, ok := s.RootModule().Resources[resourceName]
+						if !ok {
+							return fmt.Errorf("Resource not found: %s", resourceName)
+						}
+						// Store the key value for later comparison after update
+						keyValue = resource.Primary.Attributes["key"]
+						return nil
+					},
 				),
 			},
 			{
@@ -40,7 +50,19 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", applicationKeyNameUpdate),
-					testAccCheckDatadogApplicationKeyValueMatches(providers.frameworkProvider, resourceName),
+					testAccCheckDatadogApplicationKeyNameMatches(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					func(s *terraform.State) error {
+						resource, ok := s.RootModule().Resources[resourceName]
+						if !ok {
+							return fmt.Errorf("Resource not found: %s", resourceName)
+						}
+						stateKeyValue := resource.Primary.Attributes["key"]
+						if stateKeyValue != keyValue {
+							return fmt.Errorf("application key value %s does not match expected value %s", stateKeyValue, keyValue)
+						}
+						return nil
+					},
 				),
 			},
 		},
@@ -100,29 +122,28 @@ func datadogApplicationKeyExistsHelper(ctx context.Context, s *terraform.State, 
 	return nil
 }
 
-func testAccCheckDatadogApplicationKeyValueMatches(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
+func testAccCheckDatadogApplicationKeyNameMatches(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
-
-		if err := datadogApplicationKeyValueMatches(auth, s, apiInstances, n); err != nil {
+		if err := datadogApplicationKeyNameMatches(auth, s, apiInstances, n); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogApplicationKeyValueMatches(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
+func datadogApplicationKeyNameMatches(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
 	primaryResource := s.RootModule().Resources[name].Primary
 	id := primaryResource.ID
-	expectedKey := primaryResource.Attributes["key"]
 	resp, _, err := apiInstances.GetKeyManagementApiV2().GetCurrentUserApplicationKey(ctx, id)
 	if err != nil {
 		return fmt.Errorf("received an error retrieving application key %s", err)
 	}
-	actualKey := resp.Data.Attributes.GetKey()
-	if expectedKey != actualKey {
-		return fmt.Errorf("application key value does not match")
+	keyName := resp.Data.Attributes.GetName()
+	stateKeyName := primaryResource.Attributes["name"]
+	if keyName != stateKeyName {
+		return fmt.Errorf("application key name %s in state does not match expected name %s from API", stateKeyName, keyName)
 	}
 	return nil
 }
