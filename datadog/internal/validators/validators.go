@@ -303,3 +303,27 @@ func Float64Between(min, max float64) validator.String {
 		max: max,
 	}
 }
+
+func ValidateHeaders(val any, p cty.Path) diag.Diagnostics {
+	var diags diag.Diagnostics
+	value := val.(map[string]interface{})
+	for _, v := range value {
+		valueString, ok := v.(string)
+		if !ok {
+			diags = append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "Invalid value",
+				Detail:        "Synthetics test header must be a string",
+				AttributePath: p,
+			})
+		} else if strings.Contains(valueString, "\n") || strings.Contains(valueString, "\r\n") {
+			diags = append(diags, diag.Diagnostic{
+				Severity:      diag.Error,
+				Summary:       "Invalid value",
+				Detail:        "Synthetics test header must not contain newline characters",
+				AttributePath: p,
+			})
+		}
+	}
+	return diags
+}
