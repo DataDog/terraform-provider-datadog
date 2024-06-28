@@ -25,6 +25,7 @@ resource "datadog_organization_settings" "organization" {
 ### Optional
 
 - `name` (String) Name for Organization.
+- `security_contacts` (List of String) List of emails used for security event notifications from the organization.
 - `settings` (Block List, Max: 1) Organization settings (see [below for nested schema](#nestedblock--settings))
 
 ### Read-Only

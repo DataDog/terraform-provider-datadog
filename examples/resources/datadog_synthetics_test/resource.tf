@@ -357,12 +357,12 @@ resource "datadog_synthetics_test" "test_browser" {
   }
 }
 
-# Example Usage (GRPC API test)
+# Example Usage (GRPC API behavior check test)
 # Create a new Datadog GRPC API test calling host example.org on port 443
 # targeting service `greeter.Greeter` with the method `SayHello`
 # and the message {"name": "John"}
-resource "datadog_synthetics_test" "grpc" {
-  name      = "GRPC API test with proto"
+resource "datadog_synthetics_test" "test_grpc_unary" {
+  name      = "GRPC API behavior check test"
   type      = "api"
   subtype   = "grpc"
   status    = "live"
@@ -427,6 +427,41 @@ EOT
     property = "property"
     type     = "grpcMetadata"
     target   = "123"
+  }
+
+  options_list {
+    tick_every = 900
+  }
+}
+
+# Example Usage (GRPC API health check test)
+# Create a new Datadog GRPC API test calling host example.org on port 443
+# testing the overall health of the service
+resource "datadog_synthetics_test" "test_grpc_health" {
+  name      = "GRPC API health check test"
+  type      = "api"
+  subtype   = "grpc"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host      = "example.org"
+    port      = 443
+    call_type = "healthcheck"
+    service   = "greeter.Greeter"
+  }
+
+  assertion {
+    type     = "responseTime"
+    operator = "lessThan"
+    target   = "2000"
+  }
+
+  assertion {
+    operator = "is"
+    type     = "grpcHealthcheckStatus"
+    target   = 1
   }
 
   options_list {

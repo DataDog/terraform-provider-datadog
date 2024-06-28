@@ -61,6 +61,10 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 	if validators.IsValid() && !validators.IsNil() && validators.Len() > 0 {
 		for i := 0; i < validators.Len(); i++ {
 			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "enumValidator") {
+				enrichSchema := validators.Index(i).Elem().FieldByName("enrichSchema").Bool()
+				if !enrichSchema {
+					continue
+				}
 				allowedValues := validators.Index(i).Elem().FieldByName("AllowedEnumValues")
 				v := reflect.ValueOf(allowedValues.Interface())
 				validValuesMsg := ""
