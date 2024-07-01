@@ -259,10 +259,10 @@ func syntheticsTestRequest() *schema.Resource {
 
 func syntheticsTestRequestHeaders() *schema.Schema {
 	return &schema.Schema{
-		Description:      "Header name and value map.",
-		Type:             schema.TypeMap,
-		ValidateDiagFunc: validators.ValidateHeaders,
-		Optional:         true,
+		Description:  "Header name and value map.",
+		Type:         schema.TypeMap,
+		Optional:     true,
+		ValidateFunc: validators.ValidateHttpRequestHeader,
 	}
 }
 

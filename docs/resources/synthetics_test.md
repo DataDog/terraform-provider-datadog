@@ -466,7 +466,7 @@ resource "datadog_synthetics_test" "grpc" {
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
 - `request_definition` (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
 - `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--request_file))
-- `request_headers` (Map of String)
+- `request_headers` (Map of String) Header name and value map.
 - `request_metadata` (Map of String) Metadata to include when performing the gRPC test.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
@@ -497,7 +497,7 @@ Optional:
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
 - `request_definition` (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
 - `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--api_step--request_file))
-- `request_headers` (Map of String)
+- `request_headers` (Map of String) Header name and value map.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
@@ -702,7 +702,7 @@ Required:
 
 Optional:
 
-- `headers` (Map of String)
+- `headers` (Map of String) Header name and value map.
 
 
 <a id="nestedblock--api_step--retry"></a>
@@ -1082,7 +1082,7 @@ Required:
 
 Optional:
 
-- `headers` (Map of String)
+- `headers` (Map of String) Header name and value map.
 
 ## Import
 
