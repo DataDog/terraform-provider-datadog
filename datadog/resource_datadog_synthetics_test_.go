@@ -799,7 +799,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 
 func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema := syntheticsTestRequest()
-	// In test `options_list` generally, but in `api_step.request_definition` for API steps.
+	// In test `options_list` for single API tests, but in `api_step.request_definition` for API steps.
 	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
 	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
 
