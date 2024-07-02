@@ -24,6 +24,7 @@ type datadogServiceAccountDatasourceModel struct {
 	ID           types.String `tfsdk:"id"`
 	Filter       types.String `tfsdk:"filter"`
 	FilterStatus types.String `tfsdk:"filter_status"`
+	ExactMatch   types.Bool   `tfsdk:"exact_match"`
 	// Results
 	Disabled types.Bool   `tfsdk:"disabled"`
 	Email    types.String `tfsdk:"email"`
@@ -33,7 +34,7 @@ type datadogServiceAccountDatasourceModel struct {
 	Status   types.String `tfsdk:"status"`
 	Title    types.String `tfsdk:"title"`
 	Verified types.Bool   `tfsdk:"verified"`
-	Roles    types.List   `tfsdk:"roles"`
+	Roles    types.Set    `tfsdk:"roles"`
 }
 
 type datadogServiceAccountDatasource struct {
@@ -69,6 +70,10 @@ func (d *datadogServiceAccountDatasource) Schema(_ context.Context, _ datasource
 				Description: "Filter on status attribute. Comma separated list, with possible values `Active`, `Pending`, and `Disabled`.",
 				Optional:    true,
 			},
+			"exact_match": schema.BoolAttribute{
+				Description: "When true, `filter` string is exact matched against the user's `email`, followed by `name` attribute.",
+				Optional:    true,
+			},
 			// Computed values
 			"disabled": schema.BoolAttribute{
 				Computed:    true,
@@ -102,7 +107,7 @@ func (d *datadogServiceAccountDatasource) Schema(_ context.Context, _ datasource
 				Computed:    true,
 				Description: "Whether the user is verified.",
 			},
-			"roles": schema.ListAttribute{
+			"roles": schema.SetAttribute{
 				Computed:    true,
 				Description: "Roles assigned to this service account.",
 				ElementType: types.StringType,
@@ -133,7 +138,8 @@ func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 		userData = ddResp.Data
 	} else {
 		optionalParams := datadogV2.ListUsersOptionalParameters{}
-		optionalParams.WithFilter(state.Filter.ValueString())
+		filter := state.Filter.ValueString()
+		optionalParams.WithFilter(filter)
 		if !state.FilterStatus.IsNull() {
 			optionalParams.WithFilterStatus(state.FilterStatus.ValueString())
 		}
@@ -151,7 +157,8 @@ func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 				serviceAccounts = append(serviceAccounts, user)
 			}
 		}
-		if len(serviceAccounts) > 1 {
+		isExactMatch := state.ExactMatch.ValueBool()
+		if len(serviceAccounts) > 1 && !isExactMatch {
 			resp.Diagnostics.AddError("filter keyword returned more than one result, use more specific search criteria", "")
 			return
 		}
@@ -160,6 +167,29 @@ func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 			return
 		}
 		userData = &serviceAccounts[0]
+		if isExactMatch {
+			matchCount := 0
+			for _, serviceAccount := range serviceAccounts {
+				if *serviceAccount.GetAttributes().Email == filter {
+					userData = &serviceAccount
+					matchCount++
+					continue
+				}
+				if *serviceAccount.GetAttributes().Name.Get() == filter {
+					userData = &serviceAccount
+					matchCount++
+					continue
+				}
+			}
+			if matchCount > 1 {
+				resp.Diagnostics.AddError("your query returned more than one result for filter with exact match, please try a more specific search criteria", "")
+				return
+			}
+			if matchCount == 0 {
+				resp.Diagnostics.AddError("didn't find any service account matching filter string with exact match", "")
+				return
+			}
+		}
 	}
 	d.updateState(ctx, &state, userData)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -202,5 +232,5 @@ func (r *datadogServiceAccountDatasource) updateState(ctx context.Context, state
 			}
 		}
 	}
-	state.Roles, _ = types.ListValueFrom(ctx, types.StringType, roles)
+	state.Roles, _ = types.SetValueFrom(ctx, types.StringType, roles)
 }
