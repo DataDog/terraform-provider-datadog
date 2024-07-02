@@ -84,7 +84,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				},
 				"priority": {
 					Description: "Integer from 1 (high) to 5 (low) indicating alert severity.",
-					Type:        schema.TypeInt,
+					Type:        schema.TypeString,
 					Optional:    true,
 				},
 
@@ -763,7 +763,6 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	m := datadogV1.NewMonitor(d.Get("query").(string), monitorType)
 	m.SetName(d.Get("name").(string))
 	m.SetMessage(d.Get("message").(string))
-	m.SetPriority(int64(d.Get("priority").(int)))
 	m.SetOptions(o)
 
 	u := datadogV1.NewMonitorUpdateRequest()
@@ -771,8 +770,16 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	u.SetQuery(d.Get("query").(string))
 	u.SetName(d.Get("name").(string))
 	u.SetMessage(d.Get("message").(string))
-	u.SetPriority(int64(d.Get("priority").(int)))
 	u.SetOptions(o)
+
+	if attr, ok := d.GetOk("priority"); ok {
+		x, _ := strconv.ParseInt(attr.(string), 10, 64)
+		m.SetPriority(x)
+		u.SetPriority(x)
+	} else {
+		m.SetPriorityNil()
+		u.SetPriorityNil()
+	}
 
 	var roles []string
 	if attr, ok := d.GetOk("restricted_roles"); ok {
@@ -972,7 +979,13 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 	if err := d.Set("type", m.GetType()); err != nil {
 		return diag.FromErr(err)
 	}
-	if err := d.Set("priority", m.GetPriority()); err != nil {
+
+	priorityStr := ""
+	priority, _ := m.GetPriorityOk()
+	if priority != nil {
+		priorityStr = strconv.FormatInt(*priority, 10)
+	}
+	if err := d.Set("priority", priorityStr); err != nil {
 		return diag.FromErr(err)
 	}
 
