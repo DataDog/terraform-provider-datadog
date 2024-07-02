@@ -454,7 +454,7 @@ resource "datadog_synthetics_test" "grpc" {
 
 ### Optional
 
-- `api_step` (Block List) Steps for multistep api tests (see [below for nested schema](#nestedblock--api_step))
+- `api_step` (Block List) Steps for multi-step api tests (see [below for nested schema](#nestedblock--api_step))
 - `assertion` (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
 - `browser_step` (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - `browser_variable` (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
@@ -501,7 +501,8 @@ Optional:
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
-- `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`, `grpc`. Defaults to `"http"`.
+- `subtype` (String) The subtype of the Synthetic multi-step API test step. Valid values are `http`, `grpc`, `wait`. Defaults to `"http"`.
+- `value` (Number) The time to wait in seconds. Minimum value: 0. Maximum value: 180.
 
 <a id="nestedblock--api_step--assertion"></a>
 ### Nested Schema for `api_step.assertion`
