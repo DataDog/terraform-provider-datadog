@@ -1682,7 +1682,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			step := datadogV1.SyntheticsAPIStep{}
 			stepMap := s.(map[string]interface{})
 
-			if step.SyntheticsAPITestStep != nil {
+			stepSubtype := stepMap["subtype"].(string)
+
+			if stepSubtype == "" || stepSubtype == "http" || stepSubtype == "grpc" {
+				step.SyntheticsAPITestStep = datadogV1.NewSyntheticsAPITestStepWithDefaults()
 				step.SyntheticsAPITestStep.SetName(stepMap["name"].(string))
 				step.SyntheticsAPITestStep.SetSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepMap["subtype"].(string)))
 
@@ -1732,7 +1735,8 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 					}
 					step.SyntheticsAPITestStep.SetRetry(optionsRetry)
 				}
-			} else if step.SyntheticsAPIWaitStep != nil {
+			} else if stepSubtype == "wait" {
+				step.SyntheticsAPIWaitStep = datadogV1.NewSyntheticsAPIWaitStepWithDefaults()
 				step.SyntheticsAPIWaitStep.SetName(stepMap["name"].(string))
 				step.SyntheticsAPIWaitStep.SetSubtype(datadogV1.SyntheticsAPIWaitStepSubtype(stepMap["subtype"].(string)))
 				step.SyntheticsAPIWaitStep.SetValue(int32(stepMap["value"].(int)))

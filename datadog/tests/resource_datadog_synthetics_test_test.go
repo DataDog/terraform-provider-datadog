@@ -4447,7 +4447,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "4"),
+				"datadog_synthetics_test.multi", "api_step.#", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -4607,7 +4607,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.name", "Wait step"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.type", "wait"),
+				"datadog_synthetics_test.multi", "api_step.4.subtype", "wait"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.4.value", "5"),
 			resource.TestCheckResourceAttr(
