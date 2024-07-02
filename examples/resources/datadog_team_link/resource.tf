@@ -5,10 +5,9 @@ resource "datadog_team" "foo" {
 }
 
 # Create new team_link resource
-
 resource "datadog_team_link" "foo" {
   team_id  = datadog_team.foo.id
   label    = "Link label"
-  position = "Example link"
+  position = 0
   url      = "https://example.com"
 }

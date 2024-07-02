@@ -698,9 +698,9 @@ func TestAccDatadogSyntheticsApiTestFileUpload_Basic(t *testing.T) {
 	testName := uniqueEntityName(ctx, t)
 
 	filesCreation := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
-		"file1", "this is the original file content", "text/plain")}
+		"file1", "file.txt", "this is the original file content", "text/plain")}
 	filesUpdate := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
-		"file1", "this is the new file content", "text/plain")}
+		"file1", "file.txt", "this is the new file content", "text/plain")}
 
 	// This variable is used to share the previous bucket key between the different test steps, and make sure it's updated.
 	var previousBucketKey string
@@ -777,14 +777,15 @@ resource "datadog_synthetics_test" "foo" {
 }`, uniq, bodyType, fileBlocks)
 }
 
-func createSyntheticsAPIRequestFileStruct(fileName string, fileContent string, fileType string) datadogV1.SyntheticsTestRequestBodyFile {
+func createSyntheticsAPIRequestFileStruct(fileName string, originalFileName string, fileContent string, fileType string) datadogV1.SyntheticsTestRequestBodyFile {
 	fileSize := int64(len(fileContent))
 
 	return datadogV1.SyntheticsTestRequestBodyFile{
-		Name:    &fileName,
-		Content: &fileContent,
-		Type:    &fileType,
-		Size:    &fileSize,
+		Name:             &fileName,
+		OriginalFileName: &originalFileName,
+		Content:          &fileContent,
+		Type:             &fileType,
+		Size:             &fileSize,
 	}
 }
 
@@ -793,10 +794,11 @@ func createSyntheticsAPIRequestFileBlock(file datadogV1.SyntheticsTestRequestBod
 	request_file {
 		content = "%s"
 		name = "%s"
+		original_file_name = "%s"
 		size = "%d"
 		type = "%s"
 	}
-`, *file.Content, *file.Name, *file.Size, *file.Type)
+`, *file.Content, *file.Name, *file.OriginalFileName, *file.Size, *file.Type)
 }
 
 var bucketKeyRegex, _ = regexp.Compile("^api-upload-file/[a-z0-9]{3}-[a-z0-9]{3}-[a-z0-9]{3}/[-:._0-9Ta-z]*\\.json$")
@@ -821,6 +823,8 @@ func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider func() (
 				"datadog_synthetics_test.foo", "request_definition.0.body_type", bodyType),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_file.0.name", *files[0].Name),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_file.0.original_file_name", *files[0].OriginalFileName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_file.0.size", fmt.Sprintf("%d", *files[0].Size)),
 			resource.TestCheckResourceAttr(
@@ -1763,6 +1767,8 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.targetvalue", "0"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.elementsoperator", "everyElementMatches"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
@@ -1836,6 +1842,7 @@ resource "datadog_synthetics_test" "bar" {
 		type = "body"
 		operator = "validatesJSONPath"
 		targetjsonpath {
+			elementsoperator = "everyElementMatches"
 			operator = "isNot"
 			targetvalue = "0"
 			jsonpath = "topKey"
@@ -4440,7 +4447,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "4"),
+				"datadog_synthetics_test.multi", "api_step.#", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -4597,6 +4604,12 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.username", "username"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.name", "Wait step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.subtype", "wait"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.value", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
@@ -4782,6 +4795,12 @@ resource "datadog_synthetics_test" "multi" {
       operator = "is"
       target   = "200"
     }
+  }
+
+  api_step {
+	name = "Wait step"
+	subtype = "wait"
+	value = 5
   }
 }
 `, testName, variableName)

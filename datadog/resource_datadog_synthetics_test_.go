@@ -259,9 +259,10 @@ func syntheticsTestRequest() *schema.Resource {
 
 func syntheticsTestRequestHeaders() *schema.Schema {
 	return &schema.Schema{
-		Description: "Header name and value map.",
-		Type:        schema.TypeMap,
-		Optional:    true,
+		Description:  "Header name and value map.",
+		Type:         schema.TypeMap,
+		Optional:     true,
+		ValidateFunc: validators.ValidateHttpRequestHeader,
 	}
 }
 
@@ -507,6 +508,12 @@ func syntheticsAPIAssertion() *schema.Schema {
 					MaxItems:    1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
+							"elementsoperator": {
+								Description: "The element from the list of results to assert on. Select from `firstElementMatches` (the first element in the list), `everyElementMatches` (every element in the list), `atLeastOneElementMatches` (at least one element in the list), or `serializationMatches` (the serialized value of the list). Defaults to `firstElementMatches`.",
+								Type:        schema.TypeString,
+								Optional:    true,
+								Default:     "firstElementMatches",
+							},
 							"operator": {
 								Description: "The specific operator to use on the path.",
 								Type:        schema.TypeString,
@@ -797,7 +804,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
 
 	return &schema.Schema{
-		Description: "Steps for multistep api tests",
+		Description: "Steps for multi-step api tests",
 		Type:        schema.TypeList,
 		Optional:    true,
 		Elem: &schema.Resource{
@@ -808,11 +815,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Required:    true,
 				},
 				"subtype": {
-					Description:      "The subtype of the Synthetic multistep API test step.",
+					Description:      "The subtype of the Synthetic multi-step API test step.",
 					Type:             schema.TypeString,
 					Optional:         true,
 					Default:          "http",
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPIStepSubtypeFromValue),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPITestStepSubtypeFromValue, datadogV1.NewSyntheticsAPIWaitStepSubtypeFromValue),
 				},
 				"extracted_value": {
 					Description: "Values to parse and save as variables from the response.",
@@ -888,6 +895,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Optional:    true,
 				},
 				"retry": syntheticsTestOptionsRetry(),
+				"value": {
+					Description: "The time to wait in seconds. Minimum value: 0. Maximum value: 180.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
 			},
 		},
 	}
@@ -915,6 +927,12 @@ func syntheticsTestRequestFile() *schema.Schema {
 					Type:         schema.TypeString,
 					Description:  "Name of the file.",
 					Required:     true,
+					ValidateFunc: validation.StringLenBetween(1, 1500),
+				},
+				"original_file_name": {
+					Type:         schema.TypeString,
+					Description:  "Original name of the file.",
+					Optional:     true,
 					ValidateFunc: validation.StringLenBetween(1, 1500),
 				},
 				"size": {
@@ -1528,6 +1546,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			file := datadogV1.SyntheticsTestRequestBodyFile{}
 
 			file.SetName(fileMap["name"].(string))
+			file.SetOriginalFileName(fileMap["original_file_name"].(string))
 			file.SetType(fileMap["type"].(string))
 			file.SetSize(int64(fileMap["size"].(int)))
 
@@ -1664,54 +1683,64 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			step := datadogV1.SyntheticsAPIStep{}
 			stepMap := s.(map[string]interface{})
 
-			step.SetName(stepMap["name"].(string))
-			step.SetSubtype(datadogV1.SyntheticsAPIStepSubtype(stepMap["subtype"].(string)))
+			stepSubtype := stepMap["subtype"].(string)
 
-			extractedValues := buildExtractedValues(stepMap["extracted_value"].([]interface{}))
-			step.SetExtractedValues(extractedValues)
+			if stepSubtype == "" || stepSubtype == "http" || stepSubtype == "grpc" {
+				step.SyntheticsAPITestStep = datadogV1.NewSyntheticsAPITestStepWithDefaults()
+				step.SyntheticsAPITestStep.SetName(stepMap["name"].(string))
+				step.SyntheticsAPITestStep.SetSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepMap["subtype"].(string)))
 
-			assertions := stepMap["assertion"].([]interface{})
-			step.SetAssertions(buildAssertions(assertions))
+				extractedValues := buildExtractedValues(stepMap["extracted_value"].([]interface{}))
+				step.SyntheticsAPITestStep.SetExtractedValues(extractedValues)
 
-			request := datadogV1.SyntheticsTestRequest{}
-			requests := stepMap["request_definition"].([]interface{})
-			if len(requests) > 0 && requests[0] != nil {
-				requestMap := requests[0].(map[string]interface{})
-				request.SetMethod(requestMap["method"].(string))
-				request.SetUrl(requestMap["url"].(string))
-				request.SetBody(requestMap["body"].(string))
-				if v, ok := requestMap["body_type"].(string); ok && v != "" {
-					request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
+				assertions := stepMap["assertion"].([]interface{})
+				step.SyntheticsAPITestStep.SetAssertions(buildAssertions(assertions))
+
+				request := datadogV1.SyntheticsTestRequest{}
+				requests := stepMap["request_definition"].([]interface{})
+				if len(requests) > 0 && requests[0] != nil {
+					requestMap := requests[0].(map[string]interface{})
+					request.SetMethod(requestMap["method"].(string))
+					request.SetUrl(requestMap["url"].(string))
+					request.SetBody(requestMap["body"].(string))
+					if v, ok := requestMap["body_type"].(string); ok && v != "" {
+						request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
+					}
+					request.SetTimeout(float64(requestMap["timeout"].(int)))
+					request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
+					request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
+					request.SetPersistCookies(requestMap["persist_cookies"].(bool))
+					request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
+					if v, ok := requestMap["http_version"].(string); ok && v != "" {
+						request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(v))
+					}
 				}
-				request.SetTimeout(float64(requestMap["timeout"].(int)))
-				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
-				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
-				request.SetPersistCookies(requestMap["persist_cookies"].(bool))
-				request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
-				if v, ok := requestMap["http_version"].(string); ok && v != "" {
-					request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(v))
+
+				request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), map[string]interface{}{})
+
+				step.SyntheticsAPITestStep.SetRequest(request)
+
+				step.SyntheticsAPITestStep.SetAllowFailure(stepMap["allow_failure"].(bool))
+				step.SyntheticsAPITestStep.SetIsCritical(stepMap["is_critical"].(bool))
+
+				optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+				retries := stepMap["retry"].([]interface{})
+				if len(retries) > 0 && retries[0] != nil {
+					retry := retries[0]
+
+					if count, ok := retry.(map[string]interface{})["count"]; ok {
+						optionsRetry.SetCount(int64(count.(int)))
+					}
+					if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+						optionsRetry.SetInterval(float64(interval.(int)))
+					}
+					step.SyntheticsAPITestStep.SetRetry(optionsRetry)
 				}
-			}
-
-			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), map[string]interface{}{})
-
-			step.SetRequest(request)
-
-			step.SetAllowFailure(stepMap["allow_failure"].(bool))
-			step.SetIsCritical(stepMap["is_critical"].(bool))
-
-			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
-			retries := stepMap["retry"].([]interface{})
-			if len(retries) > 0 && retries[0] != nil {
-				retry := retries[0]
-
-				if count, ok := retry.(map[string]interface{})["count"]; ok {
-					optionsRetry.SetCount(int64(count.(int)))
-				}
-				if interval, ok := retry.(map[string]interface{})["interval"]; ok {
-					optionsRetry.SetInterval(float64(interval.(int)))
-				}
-				step.SetRetry(optionsRetry)
+			} else if stepSubtype == "wait" {
+				step.SyntheticsAPIWaitStep = datadogV1.NewSyntheticsAPIWaitStepWithDefaults()
+				step.SyntheticsAPIWaitStep.SetName(stepMap["name"].(string))
+				step.SyntheticsAPIWaitStep.SetSubtype(datadogV1.SyntheticsAPIWaitStepSubtype(stepMap["subtype"].(string)))
+				step.SyntheticsAPIWaitStep.SetValue(int32(stepMap["value"].(int)))
 			}
 
 			steps = append(steps, step)
@@ -1982,6 +2011,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 							default:
 								subTarget.SetTargetValue(v)
 							}
+						}
+						if v, ok := targetMap["elementsoperator"]; ok {
+							subTarget.SetElementsOperator(v.(string))
 						}
 						assertionJSONPathTarget.SetTarget(*subTarget)
 					}
@@ -2622,6 +2654,9 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
 					}
 				}
+				if v, ok := target.GetElementsOperatorOk(); ok {
+					localTarget["elementsoperator"] = string(*v)
+				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
@@ -3260,6 +3295,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			// as the response from the backend contains the bucket key rather than the content.
 			localFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
 			localFile["name"] = file.GetName()
+			localFile["original_file_name"] = file.GetOriginalFileName()
 			localFile["type"] = file.GetType()
 			localFile["size"] = file.GetSize()
 
@@ -3330,78 +3366,85 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 		for i, step := range *steps {
 			localStep := make(map[string]interface{})
-			localStep["name"] = step.GetName()
-			localStep["subtype"] = step.GetSubtype()
 
-			localAssertions, err := buildLocalAssertions(step.GetAssertions())
-			if err != nil {
-				return diag.FromErr(err)
-			}
-			localStep["assertion"] = localAssertions
-			localStep["extracted_value"] = buildLocalExtractedValues(step.GetExtractedValues())
+			if step.SyntheticsAPITestStep != nil {
+				localStep["name"] = step.SyntheticsAPITestStep.GetName()
+				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
 
-			stepRequest := step.GetRequest()
-			localRequest := buildLocalRequest(stepRequest)
-			localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
-			localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
-			localStep["request_definition"] = []map[string]interface{}{localRequest}
-			localStep["request_headers"] = stepRequest.GetHeaders()
-			localStep["request_query"] = stepRequest.GetQuery()
-
-			if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
-				localAuth := buildLocalBasicAuth(basicAuth)
-				localStep["request_basicauth"] = []map[string]string{localAuth}
-			}
-
-			if clientCertificate, ok := stepRequest.GetCertificateOk(); ok {
-				localCertificate := make(map[string][]map[string]string)
-				localCertificate["cert"] = make([]map[string]string, 1)
-				localCertificate["cert"][0] = make(map[string]string)
-				localCertificate["key"] = make([]map[string]string, 1)
-				localCertificate["key"][0] = make(map[string]string)
-
-				cert := clientCertificate.GetCert()
-				localCertificate["cert"][0]["filename"] = cert.GetFilename()
-
-				key := clientCertificate.GetKey()
-				localCertificate["key"][0]["filename"] = key.GetFilename()
-
-				certContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.cert.0.content", i)
-				keyContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.key.0.content", i)
-
-				// the content of client certificate is write-only so it will not be returned by the API.
-				// To avoid useless diff but also prevent storing the value in clear in the state
-				// we store a hash of the value.
-				if configCertificateContent, ok := d.GetOk(certContentKey); ok {
-					localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
+				localAssertions, err := buildLocalAssertions(step.SyntheticsAPITestStep.GetAssertions())
+				if err != nil {
+					return diag.FromErr(err)
 				}
-				if configKeyContent, ok := d.GetOk(keyContentKey); ok {
-					localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
+				localStep["assertion"] = localAssertions
+				localStep["extracted_value"] = buildLocalExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
+
+				stepRequest := step.SyntheticsAPITestStep.GetRequest()
+				localRequest := buildLocalRequest(stepRequest)
+				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
+				localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
+				localStep["request_definition"] = []map[string]interface{}{localRequest}
+				localStep["request_headers"] = stepRequest.GetHeaders()
+				localStep["request_query"] = stepRequest.GetQuery()
+
+				if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
+					localAuth := buildLocalBasicAuth(basicAuth)
+					localStep["request_basicauth"] = []map[string]string{localAuth}
 				}
 
-				localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
-			}
+				if clientCertificate, ok := stepRequest.GetCertificateOk(); ok {
+					localCertificate := make(map[string][]map[string]string)
+					localCertificate["cert"] = make([]map[string]string, 1)
+					localCertificate["cert"][0] = make(map[string]string)
+					localCertificate["key"] = make([]map[string]string, 1)
+					localCertificate["key"][0] = make(map[string]string)
 
-			if proxy, ok := stepRequest.GetProxyOk(); ok {
-				localProxy := make(map[string]interface{})
-				localProxy["url"] = proxy.GetUrl()
-				localProxy["headers"] = proxy.GetHeaders()
+					cert := clientCertificate.GetCert()
+					localCertificate["cert"][0]["filename"] = cert.GetFilename()
 
-				localStep["request_proxy"] = []map[string]interface{}{localProxy}
-			}
+					key := clientCertificate.GetKey()
+					localCertificate["key"][0]["filename"] = key.GetFilename()
 
-			localStep["allow_failure"] = step.GetAllowFailure()
-			localStep["is_critical"] = step.GetIsCritical()
+					certContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.cert.0.content", i)
+					keyContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.key.0.content", i)
 
-			if retry, ok := step.GetRetryOk(); ok {
-				localRetry := make(map[string]interface{})
-				if count, ok := retry.GetCountOk(); ok {
-					localRetry["count"] = *count
+					// the content of client certificate is write-only so it will not be returned by the API.
+					// To avoid useless diff but also prevent storing the value in clear in the state
+					// we store a hash of the value.
+					if configCertificateContent, ok := d.GetOk(certContentKey); ok {
+						localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
+					}
+					if configKeyContent, ok := d.GetOk(keyContentKey); ok {
+						localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
+					}
+
+					localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
 				}
-				if interval, ok := retry.GetIntervalOk(); ok {
-					localRetry["interval"] = *interval
+
+				if proxy, ok := stepRequest.GetProxyOk(); ok {
+					localProxy := make(map[string]interface{})
+					localProxy["url"] = proxy.GetUrl()
+					localProxy["headers"] = proxy.GetHeaders()
+
+					localStep["request_proxy"] = []map[string]interface{}{localProxy}
 				}
-				localStep["retry"] = []map[string]interface{}{localRetry}
+
+				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
+				localStep["is_critical"] = step.SyntheticsAPITestStep.GetIsCritical()
+
+				if retry, ok := step.SyntheticsAPITestStep.GetRetryOk(); ok {
+					localRetry := make(map[string]interface{})
+					if count, ok := retry.GetCountOk(); ok {
+						localRetry["count"] = *count
+					}
+					if interval, ok := retry.GetIntervalOk(); ok {
+						localRetry["interval"] = *interval
+					}
+					localStep["retry"] = []map[string]interface{}{localRetry}
+				}
+			} else if step.SyntheticsAPIWaitStep != nil {
+				localStep["name"] = step.SyntheticsAPIWaitStep.GetName()
+				localStep["subtype"] = step.SyntheticsAPIWaitStep.GetSubtype()
+				localStep["value"] = step.SyntheticsAPIWaitStep.GetValue()
 			}
 
 			localSteps[i] = localStep
