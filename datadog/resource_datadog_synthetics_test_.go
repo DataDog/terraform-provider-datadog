@@ -135,6 +135,11 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
+				"force_delete_dependencies": {
+					Description: "A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (for example, SLOs and composite monitors).",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 			}
 		},
 	}
@@ -1481,6 +1486,10 @@ func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.Resource
 	auth := providerConf.Auth
 
 	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: []string{d.Id()}}
+	if d.Get("force_delete_dependencies").(bool) {
+		syntheticsDeleteTestsPayload.SetForceDeleteDependencies(true)
+	}
+
 	if _, httpResponse, err := apiInstances.GetSyntheticsApiV1().DeleteTests(auth, syntheticsDeleteTestsPayload); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting synthetics test")
