@@ -136,7 +136,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Optional:    true,
 				},
 				"force_delete_dependencies": {
-					Description: "A boolean indicating whether this monitor can be deleted even if it's referenced by other resources (for example, SLOs and composite monitors).",
+					Description: "A boolean indicating whether this synthetics test can be deleted even if it's referenced by other resources (for example, SLOs and composite monitors).",
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
