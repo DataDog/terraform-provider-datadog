@@ -1,133 +1,253 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"status":"paused","subtype":"http","tags":["foo:bar","baz"],"type":"api"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"public_id":"aeu-byv-63u","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-08-17T08:17:10.647168+00:00","modified_at":"2023-08-17T08:17:10.647168+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","created_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":129523317,"org_id":569509,"modified_by":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/aeu-byv-63u
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"public_id":"aeu-byv-63u","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-08-17T08:17:10.647168+00:00","modified_at":"2023-08-17T08:17:10.647168+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":129523317,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/aeu-byv-63u
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"public_id":"aeu-byv-63u","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-08-17T08:17:10.647168+00:00","modified_at":"2023-08-17T08:17:10.647168+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":129523317,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/aeu-byv-63u
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"public_id":"aeu-byv-63u","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-08-17T08:17:10.647168+00:00","modified_at":"2023-08-17T08:17:10.647168+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":129523317,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/aeu-byv-63u
-    method: GET
-    id: 4
-  response:
-    body: |
-      {"public_id":"aeu-byv-63u","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2023-08-17T08:17:10.647168+00:00","modified_at":"2023-08-17T08:17:10.647168+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1692260228-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":129523317,"creator":{"name":"Frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"public_ids":["aeu-byv-63u"]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
-    method: POST
-    id: 5
-  response:
-    body: |
-      {"deleted_tests":[{"public_id":"aeu-byv-63u","deleted_at":"2023-08-17T08:17:12.202696+00:00"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/aeu-byv-63u
-    method: GET
-    id: 6
-  response:
-    body: '{"errors":["Synthetics test not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1158
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"status":"paused","subtype":"http","tags":["foo:bar","baz"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"qd5-hbg-deg","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:54:55.059642+00:00","modified_at":"2024-06-28T15:54:55.059642+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":148146209,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 600.588875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/qd5-hbg-deg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"qd5-hbg-deg","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:54:55.059642+00:00","modified_at":"2024-06-28T15:54:55.059642+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":148146209,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 160.884125ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/qd5-hbg-deg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"qd5-hbg-deg","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:54:55.059642+00:00","modified_at":"2024-06-28T15:54:55.059642+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":148146209,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 145.283667ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/qd5-hbg-deg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"qd5-hbg-deg","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:54:55.059642+00:00","modified_at":"2024-06-28T15:54:55.059642+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":148146209,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 198.989458ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/qd5-hbg-deg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"qd5-hbg-deg","name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:54:55.059642+00:00","modified_at":"2024-06-28T15:54:55.059642+00:00","config":{"assertions":[{"operator":"contains","property":"content-type","target":"application/json","type":"header"},{"operator":"is","target":200,"type":"statusCode"},{"operator":"lessThan","target":2000,"type":"responseTime"}],"configVariables":[],"request":{"body":"this is a body","bodyType":"text/plain","headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","noSavingResponseBody":true,"persistCookies":true,"timeout":30,"url":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"allow_insecure":true,"ci":{"executionRule":"blocking"},"follow_redirects":true,"httpVersion":"http2","ignoreServerCertificateError":true,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsAPITest_AdvancedScheduling-local-1719590090-monitor","monitor_priority":5,"retry":{"count":1,"interval":300},"scheduling":{"timeframes":[{"day":1,"from":"07:00","to":"18:00"}],"timezone":"America/New_York"},"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"http","monitor_id":148146209,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 161.176ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["qd5-hbg-deg"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"qd5-hbg-deg","deleted_at":"2024-06-28T15:54:57.817269+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 780.225042ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/qd5-hbg-deg
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 131.458458ms
