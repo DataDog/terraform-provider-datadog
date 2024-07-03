@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"example":"secret","name":"MY_SECRET","pattern":"secret","secure":true,"type":"text"}]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140-monitor","monitor_options":{"renotify_interval":120},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"status":"paused","steps":[{"allowFailure":true,"isCritical":true,"name":"first step","noScreenshot":true,"params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl"}],"tags":["foo:bar","baz"],"type":"browser"}
+            {"config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"example":"secret","name":"MY_SECRET","pattern":"secret","secure":true,"type":"text"}]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109-monitor","monitor_options":{"renotify_interval":120},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"status":"paused","steps":[{"allowFailure":true,"isCritical":true,"name":"first step","noScreenshot":true,"params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl"}],"tags":["foo:bar","baz"],"type":"browser"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6vn-chb-ced","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-05-03T19:39:01.520886+00:00","modified_at":"2024-05-03T19:39:01.520886+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":144273255,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","allowFailure":true,"isCritical":true,"noScreenshot":true}],"stepCount":{"assertions":1,"subtests":0,"total":1}}
+            {"public_id":"pqq-vm5-xgw","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:10.578521+00:00","modified_at":"2024-06-28T15:55:10.578521+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":148146236,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","allowFailure":true,"isCritical":true,"noScreenshot":true}],"stepCount":{"assertions":1,"subtests":0,"total":1}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 515.891667ms
+        duration: 483.557084ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/6vn-chb-ced
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/pqq-vm5-xgw
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6vn-chb-ced","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-05-03T19:39:01.520886+00:00","modified_at":"2024-05-03T19:39:01.520886+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":144273255,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","allowFailure":true,"isCritical":true,"noScreenshot":true}]}
+            {"public_id":"pqq-vm5-xgw","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:10.578521+00:00","modified_at":"2024-06-28T15:55:10.578521+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":148146236,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","allowFailure":true,"isCritical":true,"noScreenshot":true}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 92.249083ms
+        duration: 173.842708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/6vn-chb-ced
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/pqq-vm5-xgw
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6vn-chb-ced","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-05-03T19:39:01.520886+00:00","modified_at":"2024-05-03T19:39:01.520886+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":144273255,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"pqq-vm5-xgw","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:10.578521+00:00","modified_at":"2024-06-28T15:55:10.578521+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":148146236,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 115.163667ms
+        duration: 157.521792ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/6vn-chb-ced
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/pqq-vm5-xgw
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6vn-chb-ced","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-05-03T19:39:01.520886+00:00","modified_at":"2024-05-03T19:39:01.520886+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":144273255,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"pqq-vm5-xgw","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:10.578521+00:00","modified_at":"2024-06-28T15:55:10.578521+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":148146236,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 93.534084ms
+        duration: 148.576833ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/6vn-chb-ced
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/pqq-vm5-xgw
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"6vn-chb-ced","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-05-03T19:39:01.520886+00:00","modified_at":"2024-05-03T19:39:01.520886+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1714765140-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":144273255,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","allowFailure":true,"isCritical":true,"noScreenshot":true}]}
+            {"public_id":"pqq-vm5-xgw","name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:10.578521+00:00","modified_at":"2024-06-28T15:55:10.578521+00:00","config":{"assertions":[],"configVariables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}],"request":{"basicAuth":{"password":"password","type":"web","username":"username"},"body":"this is a body","certificateDomains":["https://datadoghq.com"],"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","proxy":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"url":"https://proxy.url"},"timeout":30,"url":"https://www.datadoghq.com"},"setCookie":"name=value","variables":[{"example":"597","name":"MY_PATTERN_VAR","pattern":"{{numeric(3)}}","secure":false,"type":"text"},{"example":"","name":"EMAIL_VAR","pattern":"","type":"email"},{"name":"MY_SECRET","secure":true,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"device_ids":["laptop_large","mobile_small"],"disableCors":true,"disableCsp":true,"ignoreServerCertificateError":true,"initialNavigationTimeout":150,"min_location_failed":1,"monitor_name":"tf-TestAccDatadogSyntheticsBrowserTest_Basic-local-1719590109-monitor","monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"retry":{"count":2,"interval":300},"rumSettings":{"applicationId":"rum-app-id","clientTokenId":12345,"isEnabled":true},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":148146236,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","allowFailure":true,"isCritical":true,"noScreenshot":true}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 85.190375ms
+        duration: 163.916667ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -191,7 +191,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["6vn-chb-ced"]}
+            {"public_ids":["pqq-vm5-xgw"]}
         form: {}
         headers:
             Accept:
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"6vn-chb-ced","deleted_at":"2024-05-03T19:39:03.604582+00:00"}]}
+            {"deleted_tests":[{"public_id":"pqq-vm5-xgw","deleted_at":"2024-06-28T15:55:13.579503+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 546.903208ms
+        duration: 625.100792ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/6vn-chb-ced
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/pqq-vm5-xgw
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,4 +250,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 76.502375ms
+        duration: 125.096791ms
