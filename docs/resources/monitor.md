@@ -27,7 +27,6 @@ resource "datadog_monitor" "foo" {
   }
 
   include_tags = true
-  priority = 3
 
   tags = ["foo:bar", "team:fooBar"]
 }
