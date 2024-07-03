@@ -1,3 +1,49 @@
+## 3.40.0 (July 3, 2024)
+
+### BUGFIXES
+* [datadog_security_monitoring_suppression] Fix error handling when updating suppression payload by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/2383
+* [datadog_security_monitoring_suppression] Fix error handling when creating suppression payload by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2386
+* [datadog_synthetics_test] Ensure tags are non-empty and castable by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2393
+* [datadog_integration_gcp_sts] Add a mutex around the mutating calls in the GCP STS module by @smuhit in https://github.com/DataDog/terraform-provider-datadog/pull/2419
+* [provider] Bump SDK and fix style nits by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2400
+* [datadog_azure_integration] Fix error when updating client_id and tenant_name by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/2420
+* [datadog_security_monitoring_rule] Upgrade go client. by @jack-edmonds-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2430
+* [datadog_security_monitoring_suppression] Fix API calls returning 409 by @pietrodll in https://github.com/DataDog/terraform-provider-datadog/pull/2442
+* [datadog_logs_metric][datadog_metric_metadata] Normalize invalid metric name by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2433
+* [datadog_logs_index] Set index name to replace on modify by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2449
+### IMPROVEMENTS
+* [datadog_sensitive_data_scanner_rule] Add priority level in rules by @trosenblatt in https://github.com/DataDog/terraform-provider-datadog/pull/2376
+* [resource_datadog_security_monitoring_rule] Add a validation step in security_monitoring_rule_resource provider. by @cpatel24 in https://github.com/DataDog/terraform-provider-datadog/pull/2357
+* [datadog_synthetics_documentation] Update synthetics GRPC example by @RomainGuarinoni in https://github.com/DataDog/terraform-provider-datadog/pull/2389
+* [datadog_synthetics_test] Support the bodyHash assertion. by @jack-edmonds-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2431
+* [datadog_synthetics_test] Add original file name to API files by @RomainGuarinoni in https://github.com/DataDog/terraform-provider-datadog/pull/2427
+* [datadog_synthetics_test] Add validation on synthetics test header by @HantingZhang2 in https://github.com/DataDog/terraform-provider-datadog/pull/2469
+* [datadog_synthetics_test] Add support for `force_delete_dependencies` field by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2474
+### FEATURES
+* [datadog_synthetics_test] Add support for variablesFromScript for API tests by @ruizb in https://github.com/DataDog/terraform-provider-datadog/pull/2369
+* [datadog_security_monitoring_default_rule] Add support for custom tags in security monitoring default rules by @paul-hf in https://github.com/DataDog/terraform-provider-datadog/pull/2399
+* [datadog_synthetics_test] support file upload for api test by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2422
+* [datadog_synthetics_test] support json schema assertion in api and multi test by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2437
+* [datadog_synthetics_test] support elementsOperator in JSONPath assertions by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2444
+* [datadog_organization_settings] Add Security Contacts support by @alexandre-pocquet in https://github.com/DataDog/terraform-provider-datadog/pull/2396
+* [datadog_synthetics_test] Add handling of a wait step for multistep api tests by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/2472
+### NOTES
+* [CWS-2164] - Put the cloud workload security resources as deprecated by @Malo10LeGoff in https://github.com/DataDog/terraform-provider-datadog/pull/2407
+* Add deprecation message on cloud_workload_security_agent_rules resource and data source by @Malo10LeGoff in https://github.com/DataDog/terraform-provider-datadog/pull/2412
+* [datadog_authn_mapping] Only allow one of role and team to be set by @JonasBak in https://github.com/DataDog/terraform-provider-datadog/pull/2391
+
+## New Contributors
+* @trosenblatt made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2376
+* @cpatel24 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2357
+* @ruizb made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2369
+* @paul-hf made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2399
+* @fabrideci made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2425
+* @xafardero made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2463
+* @alexandre-pocquet made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2396
+* @teodor2312 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2472
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.39.0...v3.40.0
+
 ## 3.39.0 (April 23, 2024)
 
 ### BUGFIXES
