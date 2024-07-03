@@ -4447,7 +4447,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "6"),
+				"datadog_synthetics_test.multi", "api_step.#", "7"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
@@ -4664,6 +4664,12 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.operator", "is"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, John!"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.6.subtype", "wait"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.6.value", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
@@ -4894,6 +4900,11 @@ resource "datadog_synthetics_test" "multi" {
         targetvalue = "Hello, John!"
       }
     }
+  }
+  api_step {
+    name = "Wait step"
+    subtype = "wait"
+    value = 5
   }
 }
 `, testName, variableName)

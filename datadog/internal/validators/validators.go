@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
@@ -302,4 +303,43 @@ func Float64Between(min, max float64) validator.String {
 		min: min,
 		max: max,
 	}
+}
+
+func ValidateHttpRequestHeader(v interface{}, k string) (ws []string, errors []error) {
+	value := v.(map[string]interface{})
+	for headerField, headerValue := range value {
+		if !isValidToken(headerField) {
+			errors = append(errors, fmt.Errorf("invalid value for %s (header field must be a valid token)", k))
+			return
+		}
+		headerStringValue, ok := headerValue.(string)
+		if !ok {
+			errors = append(errors, fmt.Errorf("expected type of %s to be string", k))
+			return
+		} else {
+			for _, r := range headerStringValue {
+				if (unicode.IsControl(r) && r != '\t') || (r == '\r' || r == '\n') {
+					errors = append(errors, fmt.Errorf("invalid value for %s (header value must not contain invisible characters)", k))
+					return
+				}
+			}
+		}
+	}
+	return
+}
+
+func isValidToken(token string) bool {
+	for _, r := range token {
+		if !isTokenChar(r) {
+			return false
+		}
+	}
+	return true
+}
+
+func isTokenChar(r rune) bool {
+	if r >= '!' && r <= '~' && !strings.ContainsRune("()<>@,;:\\\"/[]?={} \t", r) {
+		return true
+	}
+	return false
 }
