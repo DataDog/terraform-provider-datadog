@@ -257,6 +257,12 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"http_version": {
+				Description: "HTTP version to use for an HTTP request in an API test or step.",
+				Deprecated:  "Use `http_version` in the `options_list` field instead.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 		},
 	}
 }
