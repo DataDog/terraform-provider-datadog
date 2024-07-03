@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 410
+        content_length: 430
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1719590116","options":{"min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720039801","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"v68-yhs-nrs","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1719590116","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-28T15:55:17.571823+00:00","modified_at":"2024-06-28T15:55:17.571823+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":148146245,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xit-6vr-9u8","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720039801","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-03T20:50:03.324892+00:00","modified_at":"2024-07-03T20:50:03.324892+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":148530459,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 373.695542ms
+        duration: 356.694041ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/v68-yhs-nrs
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/xit-6vr-9u8
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"v68-yhs-nrs","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1719590116","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-28T15:55:17.571823+00:00","modified_at":"2024-06-28T15:55:17.571823+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148146245,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xit-6vr-9u8","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720039801","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-03T20:50:03.324892+00:00","modified_at":"2024-07-03T20:50:03.324892+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148530459,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 153.076667ms
+        duration: 172.17925ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/v68-yhs-nrs
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/xit-6vr-9u8
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"v68-yhs-nrs","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1719590116","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-28T15:55:17.571823+00:00","modified_at":"2024-06-28T15:55:17.571823+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148146245,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xit-6vr-9u8","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720039801","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-03T20:50:03.324892+00:00","modified_at":"2024-07-03T20:50:03.324892+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148530459,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 155.842917ms
+        duration: 104.892ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/v68-yhs-nrs
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/xit-6vr-9u8
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"v68-yhs-nrs","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1719590116","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-28T15:55:17.571823+00:00","modified_at":"2024-06-28T15:55:17.571823+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148146245,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xit-6vr-9u8","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720039801","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-03T20:50:03.324892+00:00","modified_at":"2024-07-03T20:50:03.324892+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148530459,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 367.43875ms
+        duration: 71.895042ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/v68-yhs-nrs
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xit-6vr-9u8
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"v68-yhs-nrs","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1719590116","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-28T15:55:17.571823+00:00","modified_at":"2024-06-28T15:55:17.571823+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148146245,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xit-6vr-9u8","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720039801","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-03T20:50:03.324892+00:00","modified_at":"2024-07-03T20:50:03.324892+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148530459,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 146.078416ms
+        duration: 119.7315ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +195,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/v68-yhs-nrs
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/xit-6vr-9u8
         method: GET
       response:
         proto: HTTP/1.1
@@ -207,13 +207,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"v68-yhs-nrs","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1719590116","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-28T15:55:17.571823+00:00","modified_at":"2024-06-28T15:55:17.571823+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148146245,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xit-6vr-9u8","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720039801","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-03T20:50:03.324892+00:00","modified_at":"2024-07-03T20:50:03.324892+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148530459,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 365.430333ms
+        duration: 73.367084ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/v68-yhs-nrs
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/xit-6vr-9u8
         method: GET
       response:
         proto: HTTP/1.1
@@ -242,13 +242,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"v68-yhs-nrs","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1719590116","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-28T15:55:17.571823+00:00","modified_at":"2024-06-28T15:55:17.571823+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148146245,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xit-6vr-9u8","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720039801","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-03T20:50:03.324892+00:00","modified_at":"2024-07-03T20:50:03.324892+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148530459,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 177.267208ms
+        duration: 81.934959ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -265,7 +265,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/v68-yhs-nrs
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/xit-6vr-9u8
         method: GET
       response:
         proto: HTTP/1.1
@@ -277,13 +277,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"v68-yhs-nrs","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1719590116","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-06-28T15:55:17.571823+00:00","modified_at":"2024-06-28T15:55:17.571823+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148146245,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xit-6vr-9u8","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720039801","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-03T20:50:03.324892+00:00","modified_at":"2024-07-03T20:50:03.324892+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148530459,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 156.025875ms
+        duration: 83.717333ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -296,7 +296,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["v68-yhs-nrs"]}
+            {"public_ids":["xit-6vr-9u8"]}
         form: {}
         headers:
             Accept:
@@ -315,13 +315,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"v68-yhs-nrs","deleted_at":"2024-06-28T15:55:21.385873+00:00"}]}
+            {"deleted_tests":[{"public_id":"xit-6vr-9u8","deleted_at":"2024-07-03T20:50:06.138283+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.259748s
+        duration: 520.031625ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -338,7 +338,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/v68-yhs-nrs
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xit-6vr-9u8
         method: GET
       response:
         proto: HTTP/1.1
@@ -355,7 +355,7 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 156.667542ms
+        duration: 50.021459ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -372,7 +372,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/v68-yhs-nrs
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xit-6vr-9u8
         method: GET
       response:
         proto: HTTP/1.1
@@ -389,4 +389,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 123.353916ms
+        duration: 58.539292ms
