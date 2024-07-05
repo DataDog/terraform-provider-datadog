@@ -17,6 +17,7 @@ Use this data source to retrieve information about an existing Datadog service a
 
 ### Optional
 
+- `exact_match` (Boolean) When true, `filter` string is exact matched against the user's `email`, followed by `name` attribute.
 - `filter` (String) Filter all users and service accounts by name, email, or role.
 - `filter_status` (String) Filter on status attribute. Comma separated list, with possible values `Active`, `Pending`, and `Disabled`.
 - `id` (String) The service account's ID.
@@ -28,7 +29,7 @@ Use this data source to retrieve information about an existing Datadog service a
 - `handle` (String) Handle of the user.
 - `icon` (String) URL of the user's icon.
 - `name` (String) Name of the user.
-- `roles` (List of String) Roles assigned to this service account.
+- `roles` (Set of String) Roles assigned to this service account.
 - `status` (String) Status of the user.
 - `title` (String) Title of the user.
 - `verified` (Boolean) Whether the user is verified.

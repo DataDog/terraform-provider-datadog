@@ -72,6 +72,7 @@ func (r *serviceAccountResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"roles": schema.SetAttribute{
 				Description: "A list a role IDs to assign to the service account.",
 				Optional:    true,
+				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"id": utils.ResourceIDAttribute(),
@@ -298,7 +299,9 @@ func buildDatadogServiceAccountV2Request(ctx context.Context, state *serviceAcco
 	serviceAccountCreate.SetAttributes(*serviceAccountAttributes)
 
 	var roles []string
-	diags.Append(state.Roles.ElementsAs(ctx, &roles, false)...)
+	if !state.Roles.IsUnknown() {
+		diags.Append(state.Roles.ElementsAs(ctx, &roles, false)...)
+	}
 	rolesData := make([]datadogV2.RelationshipToRoleData, len(roles))
 	for i, role := range roles {
 		roleData := datadogV2.NewRelationshipToRoleData()
@@ -347,6 +350,16 @@ func (r *serviceAccountResource) updateRolesFw(ctx context.Context, userID strin
 	rolesToRemove := utils.StringSliceDifference(oldRolesSlice, newRolesSlice)
 	rolesToAdd := utils.StringSliceDifference(newRolesSlice, oldRolesSlice)
 
+	for _, role := range rolesToAdd {
+		roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
+		roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
+		roleRelationData.SetId(userID)
+		roleRelation.SetData(*roleRelationData)
+		_, _, err := r.RolesApiV2.AddUserToRole(r.Auth, role, *roleRelation)
+		if err != nil {
+			return diag.NewErrorDiagnostic("error adding user to role: ", err.Error())
+		}
+	}
 	for _, role := range rolesToRemove {
 		userRelation := datadogV2.NewRelationshipToUserWithDefaults()
 		userRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
@@ -358,15 +371,6 @@ func (r *serviceAccountResource) updateRolesFw(ctx context.Context, userID strin
 			return diag.NewErrorDiagnostic("error removing user from role: ", err.Error())
 		}
 	}
-	for _, role := range rolesToAdd {
-		roleRelation := datadogV2.NewRelationshipToUserWithDefaults()
-		roleRelationData := datadogV2.NewRelationshipToUserDataWithDefaults()
-		roleRelationData.SetId(userID)
-		roleRelation.SetData(*roleRelationData)
-		_, _, err := r.RolesApiV2.AddUserToRole(r.Auth, role, *roleRelation)
-		if err != nil {
-			return diag.NewErrorDiagnostic("error adding user to role: ", err.Error())
-		}
-	}
+
 	return nil
 }
