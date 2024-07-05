@@ -257,7 +257,12 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
-			"http_version": syntheticsHttpVersionOption(),
+			"http_version": {
+				Description: "HTTP version to use for an HTTP request in an API test or step.",
+				Deprecated:  "Use `http_version` in the `options_list` field instead.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 		},
 	}
 }
@@ -808,6 +813,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 	// In test `options_list` for single API tests, but in `api_step.request_definition` for API steps.
 	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
 	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
+	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
 		Description: "Steps for multi-step api tests",
@@ -1307,6 +1313,7 @@ func syntheticsFollowRedirectsOption() *schema.Schema {
 func syntheticsHttpVersionOption() *schema.Schema {
 	return &schema.Schema{
 		Description:      "HTTP version to use for an HTTP request in an API test or step.",
+		Default:          datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY,
 		Type:             schema.TypeString,
 		Optional:         true,
 		ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsHTTPVersionFromValue),
@@ -3392,6 +3399,11 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localRequest := buildLocalRequest(stepRequest)
 				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
 				localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
+				if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
+					// the schema defines a default value of `http_version` for any kind of step,
+					// but it's not supported for `grpc` - so we save `any` in the local state to avoid diffs
+					localRequest["http_version"] = datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY
+				}
 				localStep["request_definition"] = []map[string]interface{}{localRequest}
 				localStep["request_headers"] = stepRequest.GetHeaders()
 				localStep["request_query"] = stepRequest.GetQuery()

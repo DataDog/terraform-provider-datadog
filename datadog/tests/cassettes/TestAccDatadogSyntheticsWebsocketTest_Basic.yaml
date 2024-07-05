@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 517
+        content_length: 537
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1719590104","options":{"min_location_failed":1,"tick_every":60},"status":"paused","subtype":"websocket","tags":["foo:bar","baz"],"type":"api"}
+            {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1720039802","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"websocket","tags":["foo:bar","baz"],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"m2g-mpe-d5u","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1719590104","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:07.533712+00:00","modified_at":"2024-06-28T15:55:07.533712+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":148146232,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xzs-9xy-ej3","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1720039802","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-03T20:50:03.984578+00:00","modified_at":"2024-07-03T20:50:03.984578+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":148530466,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 629.435708ms
+        duration: 644.411792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/m2g-mpe-d5u
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/xzs-9xy-ej3
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"m2g-mpe-d5u","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1719590104","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:07.533712+00:00","modified_at":"2024-06-28T15:55:07.533712+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","monitor_id":148146232,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xzs-9xy-ej3","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1720039802","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-03T20:50:03.984578+00:00","modified_at":"2024-07-03T20:50:03.984578+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","monitor_id":148530466,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 149.816625ms
+        duration: 82.760917ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/m2g-mpe-d5u
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xzs-9xy-ej3
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"m2g-mpe-d5u","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1719590104","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:07.533712+00:00","modified_at":"2024-06-28T15:55:07.533712+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","monitor_id":148146232,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xzs-9xy-ej3","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1720039802","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-03T20:50:03.984578+00:00","modified_at":"2024-07-03T20:50:03.984578+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","monitor_id":148530466,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 149.374167ms
+        duration: 81.025ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/m2g-mpe-d5u
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xzs-9xy-ej3
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"m2g-mpe-d5u","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1719590104","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:07.533712+00:00","modified_at":"2024-06-28T15:55:07.533712+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","monitor_id":148146232,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xzs-9xy-ej3","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1720039802","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-03T20:50:03.984578+00:00","modified_at":"2024-07-03T20:50:03.984578+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","monitor_id":148530466,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 146.143417ms
+        duration: 82.992917ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/m2g-mpe-d5u
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/xzs-9xy-ej3
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"m2g-mpe-d5u","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1719590104","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:07.533712+00:00","modified_at":"2024-06-28T15:55:07.533712+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","monitor_id":148146232,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xzs-9xy-ej3","name":"tf-TestAccDatadogSyntheticsWebsocketTest_Basic-local-1720039802","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-03T20:50:03.984578+00:00","modified_at":"2024-07-03T20:50:03.984578+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"message","type":"receivedMessage"}],"configVariables":[],"request":{"message":"message","timeout":60,"url":"wss://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"websocket","monitor_id":148530466,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 298.607542ms
+        duration: 72.090167ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -191,7 +191,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["m2g-mpe-d5u"]}
+            {"public_ids":["xzs-9xy-ej3"]}
         form: {}
         headers:
             Accept:
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"m2g-mpe-d5u","deleted_at":"2024-06-28T15:55:10.475548+00:00"}]}
+            {"deleted_tests":[{"public_id":"xzs-9xy-ej3","deleted_at":"2024-07-03T20:50:07.095352+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 764.581208ms
+        duration: 1.05748575s
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/m2g-mpe-d5u
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xzs-9xy-ej3
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,4 +250,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 132.292625ms
+        duration: 49.88075ms
