@@ -9,7 +9,7 @@ resource "datadog_integration_azure" "sandbox" {
   automute                 = true
   cspm_enabled             = true
   custom_metrics_enabled   = false
-  metrics_config           = jsonencode({
+  metrics_config = jsonencode({
     excluded_resource_providers = ["Microsoft.<ResourceProvider>"]
   })
 }
