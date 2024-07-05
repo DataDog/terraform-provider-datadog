@@ -42,7 +42,7 @@ resource "datadog_integration_azure" "an_azure_integration" {
   container_app_filters = "bazinga:bazingo,woody:pride"
   automute      = true
   cspm_enabled  = true
-  custom_metrics_enabled = true
+  metrics_config = {"excluded_resource_providers":[]},
 }`, uniq)
 }
 
@@ -87,6 +87,9 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
 						"custom_metrics_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_azure.an_azure_integration",
+						"metrics_config", "{\"excluded_resource_providers\":[]}"),
 					resource.TestCheckResourceAttr("datadog_integration_azure.an_azure_integration_two",
 						"tenant_name", tenantName),
 					resource.TestCheckResourceAttr(
@@ -125,6 +128,9 @@ func TestAccDatadogIntegrationAzure(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_azure.an_azure_integration",
 						"custom_metrics_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_azure.an_azure_integration",
+						"metrics_config", "{\"excluded_resource_providers\":[]}"),
 				),
 			},
 		},

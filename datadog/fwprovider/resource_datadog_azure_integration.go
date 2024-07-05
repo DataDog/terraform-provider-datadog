@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"sync"
 
@@ -29,6 +30,10 @@ type integrationAzureResource struct {
 	Auth context.Context
 }
 
+type MetricsConfig struct {
+	ExcludedResourceProviders []string `json:"excluded_resource_providers"`
+}
+
 type integrationAzureModel struct {
 	ID                        types.String `tfsdk:"id"`
 	AppServicePlanFilters     types.String `tfsdk:"app_service_plan_filters"`
@@ -41,6 +46,7 @@ type integrationAzureModel struct {
 	CustomMetricsEnabled      types.Bool   `tfsdk:"custom_metrics_enabled"`
 	HostFilters               types.String `tfsdk:"host_filters"`
 	TenantName                types.String `tfsdk:"tenant_name"`
+	MetricsConfig             types.String `tfsdk:"metrics_config"`
 }
 
 func NewIntegrationAzureResource() resource.Resource {
@@ -114,6 +120,12 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Optional:    true,
 				Description: "This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags are imported into Datadog. The rest, including the apps and functions running on them, are ignored. This also filters the metrics for any App or Function running on the App Service Plan(s).",
 				Default:     stringdefault.StaticString(""),
+			},
+			"metrics_config": schema.StringAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: "A JSON object representing the metrics configuration. It must include the excluded_resource_providers attribute which is a list of Microsoft Resource Provider name strings for which metrics collection is to be disabled. If excluded_resource_providers is an empty list, it means that all Microsoft Resource Providers are enabled for metrics filtering.",
+				Default:     stringdefault.StaticString(`{"excluded_resource_providers":[]}`),
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -257,7 +269,11 @@ func (r *integrationAzureResource) updateState(ctx context.Context, state *integ
 	state.ResourceCollectionEnabled = types.BoolValue(account.GetResourceCollectionEnabled())
 	state.CspmEnabled = types.BoolValue(account.GetCspmEnabled())
 	state.CustomMetricsEnabled = types.BoolValue(account.GetCustomMetricsEnabled())
-
+	metricsConfig := MetricsConfig{
+		ExcludedResourceProviders: account.GetMetricsConfig().ExcludedResourceProviders,
+	}
+	metricsConfigJSON, _ := json.Marshal(metricsConfig)
+	state.MetricsConfig = types.StringValue(string(metricsConfigJSON))
 	hostFilters, exists := account.GetHostFiltersOk()
 	if exists {
 		state.HostFilters = types.StringValue(*hostFilters)
@@ -316,7 +332,12 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	}
 	datadogDefinition.SetCspmEnabled(state.CspmEnabled.ValueBool())
 	datadogDefinition.SetCustomMetricsEnabled(state.CustomMetricsEnabled.ValueBool())
-
+	var metricsConfig MetricsConfig
+	if err := json.Unmarshal([]byte(state.MetricsConfig.ValueString()), &metricsConfig); err == nil {
+		datadogDefinition.SetMetricsConfig(datadogV1.AzureAccountMetricsConfig{
+			ExcludedResourceProviders: metricsConfig.ExcludedResourceProviders,
+		})
+	}
 	if !state.ClientSecret.IsNull() {
 		datadogDefinition.SetClientSecret(state.ClientSecret.ValueString())
 	}

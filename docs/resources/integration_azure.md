@@ -24,6 +24,9 @@ resource "datadog_integration_azure" "sandbox" {
   automute                 = true
   cspm_enabled             = true
   custom_metrics_enabled   = false
+  metrics_config           = jsonencode({
+    excluded_resource_providers = ["Microsoft.<ResourceProvider>"]
+  })
 }
 ```
 
@@ -46,6 +49,7 @@ Note: This requires `resource_collection_enabled` to be set to true. Defaults to
 - `custom_metrics_enabled` (Boolean) Enable custom metrics for your organization. Defaults to `false`.
 - `host_filters` (String) String of host tag(s) (in the form `key:value,key:value`) defines a filter that Datadog will use when collecting metrics from Azure. Limit the Azure instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. e.x. `env:production,deploymentgroup:red` Defaults to `""`.
 - `resource_collection_enabled` (Boolean) When enabled, Datadog collects metadata and configuration info from cloud resources (such as compute instances, databases, and load balancers) monitored by this app registration.
+- `metrics_config` (Json) Dictionary containing the key excluded_resource_providers which has to be a list of Microsoft Azure Resource Provider names. This feature is currently being beta tested. In order to enable all resource providers for metric collection, pass: metrics_config: {"excluded_resource_providers": []} (i.e., an empty list for excluded_resource_providers).
 
 ### Read-Only
 
