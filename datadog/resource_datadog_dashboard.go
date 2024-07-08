@@ -6752,6 +6752,13 @@ func getFormulaQuerySchema() *schema.Schema {
 								Required:    true,
 								Description: "The name of the query for use in formulas.",
 							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 						},
 					},
 				},
@@ -6794,6 +6801,13 @@ func getFormulaQuerySchema() *schema.Schema {
 								Optional:    true,
 								Elem:        &schema.Schema{Type: schema.TypeString},
 								Description: "An array of index names to query in the stream.",
+							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
 							"compute": {
 								Type:        schema.TypeList,
@@ -6881,6 +6895,13 @@ func getFormulaQuerySchema() *schema.Schema {
 					Description: "The process query using formulas and functions.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 							"data_source": {
 								Type:             schema.TypeString,
 								Required:         true,
@@ -6947,6 +6968,13 @@ func getFormulaQuerySchema() *schema.Schema {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmDependencyStatsDataSourceFromValue),
 								Description:      "The data source for APM Dependency Stats queries.",
 							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 							"env": {
 								Type:        schema.TypeString,
 								Required:    true,
@@ -7008,6 +7036,13 @@ func getFormulaQuerySchema() *schema.Schema {
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmResourceStatsDataSourceFromValue),
 								Description:      "The data source for APM Resource Stats queries.",
+							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
 							"env": {
 								Type:        schema.TypeString,
@@ -7072,6 +7107,13 @@ func getFormulaQuerySchema() *schema.Schema {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLODataSourceFromValue),
 								Description:      "The data source for SLO queries.",
 							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 							"slo_id": {
 								Type:        schema.TypeString,
 								Required:    true,
@@ -7122,6 +7164,13 @@ func getFormulaQuerySchema() *schema.Schema {
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionCloudCostDataSourceFromValue),
 								Description:      "The data source for cloud cost queries.",
+							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
 							"query": {
 								Type:        schema.TypeString,
@@ -7306,6 +7355,12 @@ func buildDatadogEventQuery(data map[string]interface{}) *datadogV1.FormulaAndFu
 		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
 	}
 
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			eventQuery.CrossOrgUuids = []string{c}
+		}
+	}
+
 	// GroupBy
 	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
 		datadogGroupBys := make([]datadogV1.FormulaAndFunctionEventQueryGroupBy, len(terraformGroupBys))
@@ -7356,6 +7411,12 @@ func buildDatadogMetricQuery(data map[string]interface{}) *datadogV1.FormulaAndF
 		metricQuery.SetAggregator(aggregator)
 	}
 
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			metricQuery.CrossOrgUuids = []string{c}
+		}
+	}
+
 	definition := datadogV1.FormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
 	return &definition
 }
@@ -7364,6 +7425,13 @@ func buildDatadogFormulaAndFunctionAPMResourceStatsQuery(data map[string]interfa
 	dataSource := datadogV1.FormulaAndFunctionApmResourceStatsDataSource(data["data_source"].(string))
 	stat := datadogV1.FormulaAndFunctionApmResourceStatName(data["stat"].(string))
 	apmResourceStatsQuery := datadogV1.NewFormulaAndFunctionApmResourceStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["service"].(string), stat)
+
+	// cross_org_uuids
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			apmResourceStatsQuery.CrossOrgUuids = []string{c}
+		}
+	}
 
 	// operation_name
 	if v, ok := data["operation_name"].(string); ok && len(v) != 0 {
@@ -7403,6 +7471,13 @@ func buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(data map[string]inter
 	stat := datadogV1.FormulaAndFunctionApmDependencyStatName(data["stat"].(string))
 	apmDependencyStatsQuery := datadogV1.NewFormulaAndFunctionApmDependencyStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["operation_name"].(string), data["resource_name"].(string), data["service"].(string), stat)
 
+	// cross_org_uuids
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			apmDependencyStatsQuery.CrossOrgUuids = []string{c}
+		}
+	}
+
 	// primary_tag_name
 	if v, ok := data["primary_tag_name"].(string); ok && len(v) != 0 {
 		apmDependencyStatsQuery.SetPrimaryTagName(v)
@@ -7425,6 +7500,12 @@ func buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(data map[string]inter
 func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) *datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionProcessQueryDataSource(data["data_source"].(string))
 	processQuery := datadogV1.NewFormulaAndFunctionProcessQueryDefinition(dataSource, data["metric"].(string), data["name"].(string))
+
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			processQuery.CrossOrgUuids = []string{c}
+		}
+	}
 
 	// Text Filter
 	if v, ok := data["text_filter"].(string); ok && len(v) != 0 {
@@ -7470,6 +7551,12 @@ func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) *datado
 
 	SloQuery := datadogV1.NewFormulaAndFunctionSLOQueryDefinition(dataSource, measure, data["slo_id"].(string))
 
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			SloQuery.CrossOrgUuids = []string{c}
+		}
+	}
+
 	if v, ok := data["group_mode"].(string); ok && len(v) != 0 {
 		SloQuery.SetGroupMode(datadogV1.FormulaAndFunctionSLOGroupMode(v))
 	}
@@ -7491,6 +7578,12 @@ func buildDatadogFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *
 	dataSource := datadogV1.FormulaAndFunctionCloudCostDataSource(data["data_source"].(string))
 
 	CloudCostQuery := datadogV1.NewFormulaAndFunctionCloudCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
+
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			CloudCostQuery.CrossOrgUuids = []string{c}
+		}
+	}
 
 	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
 		CloudCostQuery.SetAggregator(datadogV1.WidgetAggregator(v))
@@ -9449,6 +9542,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformEventQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformEventQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if name, ok := terraformEventQueryDefinition.GetNameOk(); ok {
 				terraformQuery["name"] = name
 			}
@@ -9519,6 +9615,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformMetricQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformMetricQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if metricQuery, ok := terraformMetricQueryDefinition.GetQueryOk(); ok {
 				terraformQuery["query"] = metricQuery
 			}
@@ -9537,6 +9636,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 		if terraformApmDependencyStatsQueryDefinition != nil {
 			if dataSource, ok := terraformApmDependencyStatsQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
+			}
+			if crossOrgUuids, ok := terraformEventQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
 			}
 			if env, ok := terraformApmDependencyStatsQueryDefinition.GetEnvOk(); ok {
 				terraformQuery["env"] = env
@@ -9612,6 +9714,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformProcessqueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformProcessqueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if metric, ok := terraformProcessqueryDefinition.GetMetricOk(); ok {
 				terraformQuery["metric"] = metric
 			}
@@ -9646,6 +9751,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformSLOQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformSLOQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if measure, ok := terraformSLOQueryDefinition.GetMeasureOk(); ok {
 				terraformQuery["measure"] = measure
 			}
@@ -9673,6 +9781,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 		if terraformCloudCostQueryDefinition != nil {
 			if dataSource, ok := terraformCloudCostQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
+			}
+			if crossOrgUuids, ok := terraformCloudCostQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
 			}
 			if aggregator, ok := terraformCloudCostQueryDefinition.GetAggregatorOk(); ok {
 				terraformQuery["aggregator"] = aggregator

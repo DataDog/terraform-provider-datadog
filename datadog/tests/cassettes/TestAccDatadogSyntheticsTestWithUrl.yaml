@@ -1,204 +1,392 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","options":{"min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api
-    method: POST
-    id: 0
-  response:
-    body: |
-      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":130183436,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
-    method: GET
-    id: 1
-  response:
-    body: |
-      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
-    method: GET
-    id: 2
-  response:
-    body: |
-      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
-    method: GET
-    id: 3
-  response:
-    body: |
-      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/fzv-7iu-dem
-    method: GET
-    id: 4
-  response:
-    body: |
-      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
-    method: GET
-    id: 5
-  response:
-    body: |
-      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
-    method: GET
-    id: 6
-  response:
-    body: |
-      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/api/fzv-7iu-dem
-    method: GET
-    id: 7
-  response:
-    body: |
-      {"public_id":"fzv-7iu-dem","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1692813564","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2023-08-23T17:59:26.949770+00:00","modified_at":"2023-08-23T17:59:26.949770+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://www.example.com"}},"message":"","options":{"min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":130183436,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"public_ids":["fzv-7iu-dem"]}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
-    method: POST
-    id: 8
-  response:
-    body: |
-      {"deleted_tests":[{"public_id":"fzv-7iu-dem","deleted_at":"2023-08-23T17:59:28.716267+00:00"}]}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/fzv-7iu-dem
-    method: GET
-    id: 9
-  response:
-    body: '{"errors":["Synthetics test not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/synthetics/tests/fzv-7iu-dem
-    method: GET
-    id: 10
-  response:
-    body: '{"errors":["Synthetics test not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 417
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720190917","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8tk-g4j-bxx","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720190917","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:39.012485+00:00","modified_at":"2024-07-05T14:48:39.012485+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":148642007,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 292.7435ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8tk-g4j-bxx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8tk-g4j-bxx","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720190917","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:39.012485+00:00","modified_at":"2024-07-05T14:48:39.012485+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148642007,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 71.423542ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8tk-g4j-bxx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8tk-g4j-bxx","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720190917","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:39.012485+00:00","modified_at":"2024-07-05T14:48:39.012485+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148642007,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 102.031167ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8tk-g4j-bxx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8tk-g4j-bxx","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720190917","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:39.012485+00:00","modified_at":"2024-07-05T14:48:39.012485+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148642007,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 77.7075ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8tk-g4j-bxx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8tk-g4j-bxx","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720190917","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:39.012485+00:00","modified_at":"2024-07-05T14:48:39.012485+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148642007,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 74.6325ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8tk-g4j-bxx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8tk-g4j-bxx","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720190917","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:39.012485+00:00","modified_at":"2024-07-05T14:48:39.012485+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148642007,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 71.886583ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8tk-g4j-bxx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8tk-g4j-bxx","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720190917","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:39.012485+00:00","modified_at":"2024-07-05T14:48:39.012485+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148642007,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 66.86925ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/8tk-g4j-bxx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"8tk-g4j-bxx","name":"TF_TESTACCDATADOGSYNTHETICSTESTWITHURL_LOCAL_1720190917","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:39.012485+00:00","modified_at":"2024-07-05T14:48:39.012485+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148642007,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 68.275084ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["8tk-g4j-bxx"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"8tk-g4j-bxx","deleted_at":"2024-07-05T14:48:41.793505+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 537.674ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8tk-g4j-bxx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 74.095916ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8tk-g4j-bxx
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 49.831292ms

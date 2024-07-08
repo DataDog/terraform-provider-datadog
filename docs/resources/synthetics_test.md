@@ -231,7 +231,7 @@ resource "datadog_synthetics_test" "test_multi_step" {
 
     request_definition {
       method = "GET"
-      url    = "https://example.org"
+      url    = "https://www.example.org"
     }
 
     request_headers = {
@@ -256,6 +256,66 @@ resource "datadog_synthetics_test" "test_multi_step" {
     }
   }
 
+  api_step {
+    name    = "A gRPC health check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "healthcheck"
+      service   = "greeter.Greeter"
+    }
+  }
+
+  api_step {
+    name    = "A gRPC behavior check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "unary"
+      service   = "greeter.Greeter"
+      method    = "SayHello"
+      message   = "{\"name\": \"John\"}"
+
+      plain_proto_file = <<EOT
+syntax = "proto3";
+
+package greeter;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+EOT      
+    }
+  }
+
   options_list {
     tick_every         = 900
     accept_self_signed = true
@@ -276,7 +336,7 @@ resource "datadog_synthetics_test" "test_browser" {
 
   request_definition {
     method = "GET"
-    url    = "https://app.datadoghq.com"
+    url    = "https://www.example.org"
   }
 
   browser_step {
@@ -338,107 +398,116 @@ resource "datadog_synthetics_test" "test_browser" {
   }
 }
 
-# Example Usage (GRPC API behavior test)
-# Create a new Datadog GRPC API test calling host google.org on port 50050
-# targeting service Greeter in the package helloworld with the method SayHello
+# Example Usage (GRPC API behavior check test)
+# Create a new Datadog GRPC API test calling host example.org on port 443
+# targeting service `greeter.Greeter` with the method `SayHello`
 # and the message {"name": "John"}
-resource "datadog_synthetics_test" "grpc" {
-  type    = "api"
-  subtype = "grpc"
+resource "datadog_synthetics_test" "test_grpc_unary" {
+  name      = "GRPC API behavior check test"
+  type      = "api"
+  subtype   = "grpc"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
   request_definition {
-    method           = "SayHello"
-    host             = "google.com"
-    port             = 50050
-    service          = "helloworld.Greeter"
-    call_type        = "unary"
-    message          = "{\"name\": \"John\"}"
+    host      = "example.org"
+    port      = 443
+    call_type = "unary"
+    service   = "greeter.Greeter"
+    method    = "SayHello"
+    message   = "{\"name\": \"John\"}"
+
     plain_proto_file = <<EOT
 syntax = "proto3";
-option java_multiple_files = true;
-option java_package = "io.grpc.examples.helloworld";
-option java_outer_classname = "HelloWorldProto";
-option objc_class_prefix = "HLW";
-package helloworld;
+
+package greeter;
+
 // The greeting service definition.
 service Greeter {
-    // Sends a greeting
-    rpc SayHello (HelloRequest) returns (HelloReply) {}
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
 }
+
 // The request message containing the user's name.
 message HelloRequest {
-    string name = 1;
+  string name = 1;
 }
+
 // The response message containing the greetings
 message HelloReply {
-    string message = 1;
+  string message = 1;
 }
 EOT
   }
+
   request_metadata = {
     header = "value"
   }
+
   assertion {
     type     = "responseTime"
     operator = "lessThan"
     target   = "2000"
   }
+
   assertion {
     operator = "is"
     type     = "grpcHealthcheckStatus"
     target   = 1
   }
+
   assertion {
     operator = "is"
-    target   = "proto target"
     type     = "grpcProto"
+    target   = "proto target"
   }
+
   assertion {
     operator = "is"
-    target   = "123"
     property = "property"
     type     = "grpcMetadata"
+    target   = "123"
   }
-  locations = ["aws:eu-central-1"]
+
   options_list {
-    tick_every = 60
+    tick_every = 900
   }
-  name    = "GRPC API test with proto"
-  message = "Notify @datadog.user"
-  tags    = ["foo:bar", "baz"]
-  status  = "live"
 }
 
-# Example Usage (GRPC API health test)
-# Create a new Datadog GRPC API test calling host google.org on port 50050
+# Example Usage (GRPC API health check test)
+# Create a new Datadog GRPC API test calling host example.org on port 443
 # testing the overall health of the service
-resource "datadog_synthetics_test" "grpc" {
-  type    = "api"
-  subtype = "grpc"
+resource "datadog_synthetics_test" "test_grpc_health" {
+  name      = "GRPC API health check test"
+  type      = "api"
+  subtype   = "grpc"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
   request_definition {
-    method  = "GET"
-    host    = "google.com"
-    port    = 50050
-    service = "helloworld.Greeter"
-    message = ""
+    host      = "example.org"
+    port      = 443
+    call_type = "healthcheck"
+    service   = "greeter.Greeter"
   }
+
   assertion {
     type     = "responseTime"
     operator = "lessThan"
     target   = "2000"
   }
+
   assertion {
     operator = "is"
     type     = "grpcHealthcheckStatus"
     target   = 1
   }
-  locations = ["aws:eu-central-1"]
+
   options_list {
-    tick_every = 60
+    tick_every = 900
   }
-  name    = "GRPC API health test"
-  message = "Notify @datadog.user"
-  tags    = ["foo:bar", "baz"]
-  status  = "live"
 }
 ```
 
@@ -468,7 +537,7 @@ resource "datadog_synthetics_test" "grpc" {
 - `request_definition` (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
 - `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--request_file))
 - `request_headers` (Map of String) Header name and value map.
-- `request_metadata` (Map of String) Metadata to include when performing the gRPC test.
+- `request_metadata` (Map of String) Metadata to include when performing the gRPC request.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `set_cookie` (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
@@ -499,6 +568,7 @@ Optional:
 - `request_definition` (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
 - `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--api_step--request_file))
 - `request_headers` (Map of String) Header name and value map.
+- `request_metadata` (Map of String) Metadata to include when performing the gRPC request.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
@@ -651,7 +721,7 @@ Optional:
 
 Optional:
 
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
+- `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
@@ -660,7 +730,7 @@ Optional:
 - `dns_server_port` (Number) DNS server port to use for DNS tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `host` (String) Host name to perform the test with.
-- `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`.
+- `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
 - `message` (String) For UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
@@ -672,7 +742,7 @@ Optional:
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
-- `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
+- `timeout` (Number) Timeout in seconds for the test.
 - `url` (String) The URL to send the request to.
 
 
@@ -893,13 +963,13 @@ Required:
 Optional:
 
 - `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
+- `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
 - `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
 - `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
-- `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`.
+- `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
 - `ignore_server_certificate_error` (Boolean) Ignore server certificate error for browser tests.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
@@ -1040,7 +1110,7 @@ Optional:
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (Number) DNS server port to use for DNS tests.
 - `host` (String) Host name to perform the test with.
-- `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`.
+- `http_version` (String, Deprecated) HTTP version to use for an HTTP request in an API test or step. **Deprecated.** Use `http_version` in the `options_list` field instead.
 - `message` (String) For UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
@@ -1052,7 +1122,7 @@ Optional:
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
-- `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
+- `timeout` (Number) Timeout in seconds for the test.
 - `url` (String) The URL to send the request to.
 
 
