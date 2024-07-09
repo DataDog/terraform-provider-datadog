@@ -218,7 +218,7 @@ func testAccCheckDatadogSpansMetricTestingCountGroupBys(uniq string) string {
 				aggregation_type    = "count"
 			}
 			filter {
-				query = "@http.status_code:200 service:my-service"
+				query = "@http.status_code:200 service:my-service @duration:>600ms"
 			}
 			group_by {
 				path     = "resource_name2"
