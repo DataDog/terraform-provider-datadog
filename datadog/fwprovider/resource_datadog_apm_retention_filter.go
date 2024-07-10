@@ -127,7 +127,6 @@ func (r *ApmRetentionFilterResource) Read(ctx context.Context, request resource.
 	}
 
 	attributes := resp.Data.Attributes
-	fmt.Println("attributes", attributes.Filter.GetQuery())
 	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), state.Filter.Query.ValueString(), attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
