@@ -16,7 +16,7 @@ func TestAccApmRetentionFilter(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
-	query := "error_code:123 service:my-service"
+	query := "error_code:123 service:my-service @duration:>600ms"
 	rate := "0.1"
 	updatedQuery := "error_code:123"
 	updatedRate := "1"

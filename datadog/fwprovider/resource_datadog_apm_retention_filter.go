@@ -127,7 +127,8 @@ func (r *ApmRetentionFilterResource) Read(ctx context.Context, request resource.
 	}
 
 	attributes := resp.Data.Attributes
-	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), *attributes.Filter.Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
+	fmt.Println("attributes", attributes.Filter.GetQuery())
+	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), state.Filter.Query.ValueString(), attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -160,7 +161,7 @@ func (r *ApmRetentionFilterResource) Create(ctx context.Context, request resourc
 	}
 
 	attributes := resp.Data.Attributes
-	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), *attributes.Filter.Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
+	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), state.Filter.Query.ValueString(), attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -195,7 +196,7 @@ func (r *ApmRetentionFilterResource) Update(ctx context.Context, request resourc
 	}
 
 	attributes := resp.Data.Attributes
-	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), *attributes.GetFilter().Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
+	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), state.Filter.Query.ValueString(), attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
