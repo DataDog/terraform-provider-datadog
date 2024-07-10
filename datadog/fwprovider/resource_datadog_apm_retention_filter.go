@@ -127,6 +127,9 @@ func (r *ApmRetentionFilterResource) Read(ctx context.Context, request resource.
 	}
 
 	attributes := resp.Data.Attributes
+
+	// state.Filter.Query.ValueString() is used instead of attributes.Filter.Query.ValueString() because
+	// the API might re-write the query (i.e. to convert units), but it stays symantically the same
 	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), state.Filter.Query.ValueString(), attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
@@ -160,6 +163,8 @@ func (r *ApmRetentionFilterResource) Create(ctx context.Context, request resourc
 	}
 
 	attributes := resp.Data.Attributes
+	// state.Filter.Query.ValueString() is used instead of attributes.Filter.Query.ValueString() because
+	// the API might re-write the query (i.e. to convert units), but it stays symantically the same
 	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), state.Filter.Query.ValueString(), attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
@@ -195,6 +200,8 @@ func (r *ApmRetentionFilterResource) Update(ctx context.Context, request resourc
 	}
 
 	attributes := resp.Data.Attributes
+	// state.Filter.Query.ValueString() is used instead of attributes.Filter.Query.ValueString() because
+	// the API might re-write the query (i.e. to convert units), but it stays symantically the same
 	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), state.Filter.Query.ValueString(), attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
@@ -223,7 +230,7 @@ func (r *ApmRetentionFilterResource) Delete(ctx context.Context, request resourc
 	}
 }
 
-func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *ApmRetentionFilterModel, dataId string, name string, rate float64, query string, enabled bool, filterType string) {
+func (r *ApmRetentionFilterResource) updateState(_ context.Context, state *ApmRetentionFilterModel, dataId string, name string, rate float64, query string, enabled bool, filterType string) {
 	state.ID = types.StringValue(dataId)
 	state.Name = types.StringValue(name)
 
