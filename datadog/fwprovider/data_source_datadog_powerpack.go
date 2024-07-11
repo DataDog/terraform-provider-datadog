@@ -76,9 +76,7 @@ func (d *datadogPowerpackDataSource) Read(ctx context.Context, req datasource.Re
 			}
 			if paginationResult.Item.Attributes.GetName() == state.Name.ValueString() {
 				powerpacks = append(powerpacks, &paginationResult.Item)
-				// continue to search for duplicates
-				// if we find more than one, we will return an error
-				continue
+				break
 			}
 		}
 
