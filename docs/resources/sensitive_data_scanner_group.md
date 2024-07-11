@@ -56,5 +56,5 @@ Required:
 Import is supported using the following syntax:
 
 ```shell
-terraform import datadog_sensitive_data_scanner_group.new_list ""
+terraform import datadog_sensitive_data_scanner_group.new_list "<group_id>"
 ```
