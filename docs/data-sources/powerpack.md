@@ -17,7 +17,7 @@ Use this data source to retrieve information about an existing Datadog Powerpack
 
 ### Required
 
-- `powerpack_name` (String) The name of the powerpack to find
+- `name` (String) The name of the powerpack to search for.
 
 ### Read-Only
 

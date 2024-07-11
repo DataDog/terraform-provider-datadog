@@ -93,6 +93,6 @@ data "datadog_powerpack" "pack_foo" {
     datadog_powerpack.foo,
     datadog_powerpack.bar,
   ]
-  powerpack_name = "%s foo"
+  name = "%s foo"
 }`, testAccPowerpackConfig(uniq), uniq)
 }
