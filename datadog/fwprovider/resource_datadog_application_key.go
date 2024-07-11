@@ -164,5 +164,7 @@ func (r *applicationKeyResource) buildDatadogApplicationKeyUpdateV2Struct(state 
 func (r *applicationKeyResource) updateState(state *applicationKeyResourceModel, applicationKeyData *datadogV2.FullApplicationKey) {
 	applicationKeyAttributes := applicationKeyData.GetAttributes()
 	state.Name = types.StringValue(applicationKeyAttributes.GetName())
-	state.Key = types.StringValue(applicationKeyAttributes.GetKey())
+	if applicationKeyAttributes.HasKey() {
+		state.Key = types.StringValue(applicationKeyAttributes.GetKey())
+	}
 }
