@@ -33,12 +33,16 @@ type applicationKeyResource struct {
 }
 
 func (r *applicationKeyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	response.Diagnostics.AddWarning(
+		"Deprecated",
+		"The import functionality for datadog_application_key resources is deprecated and will be removed in a future release with prior notice. Securely store your application keys using a secret management system or use the datadog_application_key resource to create and manage new application keys.",
+	)
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
 func (r *applicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog Application Key resource. This can be used to create and manage Datadog Application Keys.",
+		Description: "Provides a Datadog Application Key resource. This can be used to create and manage Datadog Application Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your application keys using a secret management system or use this resource to create and manage new application keys.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Name for Application Key.",
