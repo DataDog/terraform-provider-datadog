@@ -59,5 +59,5 @@ Required:
 Import is supported using the following syntax:
 
 ```shell
-terraform import datadog_restriction_policy.new_list ""
+terraform import datadog_restriction_policy.new_list "<policy_id>"
 ```
