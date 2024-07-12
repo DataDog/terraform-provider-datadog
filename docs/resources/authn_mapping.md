@@ -36,8 +36,8 @@ resource "datadog_authn_mapping" "dev_ro_role_mapping" {
 
 ### Optional
 
-- `role` (String) The ID of a role to attach to all users with the corresponding key and value.
-- `team` (String) The ID of a team to add all users with the corresponding key and value to.
+- `role` (String) The ID of a role to attach to all users with the corresponding key and value. Cannot be used in conjunction with `team`.
+- `team` (String) The ID of a team to add all users with the corresponding key and value to. Cannot be used in conjunction with `role`.
 
 ### Read-Only
 

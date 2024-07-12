@@ -53,7 +53,7 @@ resource "datadog_logs_index" "sample_index" {
 ### Required
 
 - `filter` (Block List, Min: 1, Max: 1) Logs filter (see [below for nested schema](#nestedblock--filter))
-- `name` (String) The name of the index.
+- `name` (String) The name of the index. Index names cannot be modified after creation. If this value is changed, a new index will be created.
 
 ### Optional
 

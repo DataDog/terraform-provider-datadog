@@ -48,7 +48,7 @@ func (r *userRoleResource) Metadata(_ context.Context, request resource.Metadata
 
 func (r *userRoleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog UserRole resource. This can be used to create and manage Datadog User Roles. Conflicts may occur if used together with the `datadog_user` resource's `roles` attribute. This resource is in beta and is subject to change.",
+		Description: "Provides a Datadog UserRole resource. This can be used to create and manage Datadog User Roles. Conflicts may occur if used together with the `datadog_user` resource's `roles` attribute or the `datadog_service_account` resource's `roles` attribute. This resource is in beta and is subject to change.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"role_id": schema.StringAttribute{

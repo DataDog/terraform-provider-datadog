@@ -187,3 +187,38 @@ func (r *mockResourceData) GetOk(key string) (interface{}, bool) {
 	v, ok := r.values[key]
 	return v, ok
 }
+
+var testMetricNames = map[string]string{
+	// bad metric names, need remapping
+	"test*&(*._-_Metrictastic*(*)(  wtf_who_doesthis??": "test.Metrictastic_wtf_who_doesthis",
+	"?does.this.work?":                        "does.this.work",
+	"5-2 arsenal over spurs":                  "arsenal_over_spurs",
+	"dd.crawler.amazon web services.run_time": "dd.crawler.amazon_web_services.run_time",
+
+	//  multiple metric names that normalize to the same thing
+	"multiple-norm-1": "multiple_norm_1",
+	"multiple_norm-1": "multiple_norm_1",
+
+	// for whatever reason, invalid characters x
+	"a$.b":            "a.b",
+	"a_.b":            "a.b",
+	"__init__.metric": "init.metric",
+	"a___..b":         "a..b",
+	"a_.":             "a.",
+}
+
+func TestNormMetricNameParse(t *testing.T) {
+	for src, target := range testMetricNames {
+		normed := NormMetricNameParse(src)
+		if normed != target {
+			t.Errorf("Expected tag '%s' normalized to '%s', got '%s' instead.", src, target, normed)
+			return
+		}
+		// double check that we're idempotent
+		again := NormMetricNameParse(normed)
+		if again != normed {
+			t.Errorf("Expected tag '%s' to be idempotent', got '%s' instead.", normed, again)
+			return
+		}
+	}
+}

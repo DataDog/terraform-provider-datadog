@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -33,6 +34,8 @@ type securityMonitoringSuppressionResource struct {
 	api  *datadogV2.SecurityMonitoringApi
 	auth context.Context
 }
+
+var suppressionWriteMutex = sync.Mutex{}
 
 func NewSecurityMonitoringSuppressionResource() resource.Resource {
 	return &securityMonitoringSuppressionResource{}
@@ -100,7 +103,11 @@ func (r *securityMonitoringSuppressionResource) Create(ctx context.Context, requ
 
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
+		return
 	}
+
+	suppressionWriteMutex.Lock()
+	defer suppressionWriteMutex.Unlock()
 
 	res, _, err := r.api.CreateSecurityMonitoringSuppression(r.auth, *suppressionPayload)
 	if err != nil {
@@ -154,7 +161,11 @@ func (r *securityMonitoringSuppressionResource) Update(ctx context.Context, requ
 
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
+		return
 	}
+
+	suppressionWriteMutex.Lock()
+	defer suppressionWriteMutex.Unlock()
 
 	res, _, err := r.api.UpdateSecurityMonitoringSuppression(r.auth, state.Id.ValueString(), *suppressionPayload)
 	if err != nil {
@@ -178,6 +189,9 @@ func (r *securityMonitoringSuppressionResource) Delete(ctx context.Context, requ
 	}
 
 	id := state.Id.ValueString()
+
+	suppressionWriteMutex.Lock()
+	defer suppressionWriteMutex.Unlock()
 
 	httpResp, err := r.api.DeleteSecurityMonitoringSuppression(r.auth, id)
 	if err != nil {

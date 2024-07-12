@@ -70,9 +70,15 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
 				"request_metadata":           syntheticsTestRequestMetadata(),
+				"request_file":               syntheticsTestRequestFile(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"browser_variable":           syntheticsBrowserVariable(),
 				"config_variable":            syntheticsConfigVariable(),
+				"variables_from_script": {
+					Description: "Variables defined from JavaScript code for API HTTP tests.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"device_ids": {
 					Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
 					Type:        schema.TypeList,
@@ -106,7 +112,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Description: "A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).",
 					Type:        schema.TypeList,
 					Optional:    true,
-					Elem:        &schema.Schema{Type: schema.TypeString},
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+					},
 				},
 				"status": {
 					Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.",
@@ -124,6 +133,11 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"set_cookie": {
 					Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
 					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"force_delete_dependencies": {
+					Description: "A boolean indicating whether this synthetics test can be deleted even if it's referenced by other resources (for example, SLOs and composite monitors).",
+					Type:        schema.TypeBool,
 					Optional:    true,
 				},
 			}
@@ -159,7 +173,6 @@ func syntheticsTestRequest() *schema.Resource {
 				Description: "Timeout in seconds for the test.",
 				Type:        schema.TypeInt,
 				Optional:    true,
-				Default:     60,
 			},
 			"host": {
 				Description: "Host name to perform the test with.",
@@ -243,16 +256,22 @@ func syntheticsTestRequest() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
-			"http_version": syntheticsHttpVersionOption(),
+			"http_version": {
+				Description: "HTTP version to use for an HTTP request in an API test or step.",
+				Deprecated:  "Use `http_version` in the `options_list` field instead.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 		},
 	}
 }
 
 func syntheticsTestRequestHeaders() *schema.Schema {
 	return &schema.Schema{
-		Description: "Header name and value map.",
-		Type:        schema.TypeMap,
-		Optional:    true,
+		Description:  "Header name and value map.",
+		Type:         schema.TypeMap,
+		Optional:     true,
+		ValidateFunc: validators.ValidateHttpRequestHeader,
 	}
 }
 
@@ -435,7 +454,7 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 
 func syntheticsTestRequestMetadata() *schema.Schema {
 	return &schema.Schema{
-		Description: "Metadata to include when performing the gRPC test.",
+		Description: "Metadata to include when performing the gRPC request.",
 		Type:        schema.TypeMap,
 		Optional:    true,
 	}
@@ -451,7 +470,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 				"type": {
 					Description:      "Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue),
 					Required:         true,
 				},
 				"operator": {
@@ -470,6 +489,27 @@ func syntheticsAPIAssertion() *schema.Schema {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
+				"targetjsonschema": {
+					Description: "Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below.",
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"jsonschema": {
+								Description: "The JSON Schema to validate the body against.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"metaschema": {
+								Description: "The meta schema to use for the JSON Schema.",
+								Type:        schema.TypeString,
+								Optional:    true,
+								Default:     "draft-07",
+							},
+						},
+					},
+				},
 				"targetjsonpath": {
 					Description: "Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below.",
 					Type:        schema.TypeList,
@@ -477,6 +517,12 @@ func syntheticsAPIAssertion() *schema.Schema {
 					MaxItems:    1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
+							"elementsoperator": {
+								Description: "The element from the list of results to assert on. Select from `firstElementMatches` (the first element in the list), `everyElementMatches` (every element in the list), `atLeastOneElementMatches` (at least one element in the list), or `serializationMatches` (the serialized value of the list). Defaults to `firstElementMatches`.",
+								Type:        schema.TypeString,
+								Optional:    true,
+								Default:     "firstElementMatches",
+							},
 							"operator": {
 								Description: "The specific operator to use on the path.",
 								Type:        schema.TypeString,
@@ -763,11 +809,13 @@ func syntheticsTestOptionsList() *schema.Schema {
 
 func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema := syntheticsTestRequest()
+	// In test `options_list` for single API tests, but in `api_step.request_definition` for API steps.
 	requestElemSchema.Schema["allow_insecure"] = syntheticsAllowInsecureOption()
 	requestElemSchema.Schema["follow_redirects"] = syntheticsFollowRedirectsOption()
+	requestElemSchema.Schema["http_version"] = syntheticsHttpVersionOption()
 
 	return &schema.Schema{
-		Description: "Steps for multistep api tests",
+		Description: "Steps for multi-step api tests",
 		Type:        schema.TypeList,
 		Optional:    true,
 		Elem: &schema.Resource{
@@ -778,11 +826,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Required:    true,
 				},
 				"subtype": {
-					Description:      "The subtype of the Synthetic multistep API test step.",
+					Description:      "The subtype of the Synthetic multi-step API test step.",
 					Type:             schema.TypeString,
 					Optional:         true,
 					Default:          "http",
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPIStepSubtypeFromValue),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPITestStepSubtypeFromValue, datadogV1.NewSyntheticsAPIWaitStepSubtypeFromValue),
 				},
 				"extracted_value": {
 					Description: "Values to parse and save as variables from the response.",
@@ -845,6 +893,8 @@ func syntheticsTestAPIStep() *schema.Schema {
 				"request_basicauth":          syntheticsTestRequestBasicAuth(),
 				"request_proxy":              syntheticsTestRequestProxy(),
 				"request_client_certificate": syntheticsTestRequestClientCertificate(),
+				"request_file":               syntheticsTestRequestFile(),
+				"request_metadata":           syntheticsTestRequestMetadata(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"allow_failure": {
 					Description: "Determines whether or not to continue with test if this step fails.",
@@ -857,9 +907,63 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Optional:    true,
 				},
 				"retry": syntheticsTestOptionsRetry(),
+				"value": {
+					Description: "The time to wait in seconds. Minimum value: 0. Maximum value: 180.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
 			},
 		},
 	}
+}
+
+func syntheticsTestRequestFile() *schema.Schema {
+	requestFilesSchema := schema.Schema{
+		Description: "Files to be used as part of the request in the test.",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"content": {
+					Type:         schema.TypeString,
+					Description:  "Content of the file.",
+					Optional:     true,
+					ValidateFunc: validation.StringLenBetween(1, 3145728),
+				},
+				"bucket_key": {
+					Type:        schema.TypeString,
+					Description: "Bucket key of the file.",
+					Computed:    true,
+				},
+				"name": {
+					Type:         schema.TypeString,
+					Description:  "Name of the file.",
+					Required:     true,
+					ValidateFunc: validation.StringLenBetween(1, 1500),
+				},
+				"original_file_name": {
+					Type:         schema.TypeString,
+					Description:  "Original name of the file.",
+					Optional:     true,
+					ValidateFunc: validation.StringLenBetween(1, 1500),
+				},
+				"size": {
+					Type:         schema.TypeInt,
+					Description:  "Size of the file.",
+					Required:     true,
+					ValidateFunc: validation.IntBetween(1, 3145728),
+				},
+				"type": {
+					Type:         schema.TypeString,
+					Description:  "Type of the file.",
+					Required:     true,
+					ValidateFunc: validation.StringLenBetween(1, 1500),
+				},
+			},
+		},
+	}
+
+	return &requestFilesSchema
 }
 
 func syntheticsTestBrowserStep() *schema.Schema {
@@ -950,7 +1054,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Optional:    true,
 				},
 				"element": {
-					Description: "Element to use for the step, json encoded string.",
+					Description: "Element to use for the step, JSON encoded string.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					DiffSuppressFunc: func(key, old, new string, d *schema.ResourceData) bool {
@@ -1007,7 +1111,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					},
 				},
 				"email": {
-					Description: `Details of the email for an "assert email" step.`,
+					Description: `Details of the email for an "assert email" step, JSON encoded string.`,
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1020,7 +1124,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					},
 				},
 				"files": {
-					Description: `Details of the files for an "upload files" step, json encoded string.`,
+					Description: `Details of the files for an "upload files" step, JSON encoded string.`,
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -1191,7 +1295,7 @@ func syntheticsConfigVariable() *schema.Schema {
 
 func syntheticsAllowInsecureOption() *schema.Schema {
 	return &schema.Schema{
-		Description: "Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.",
+		Description: "Allows loading insecure content for a request in an API test or in a multistep API test step.",
 		Type:        schema.TypeBool,
 		Optional:    true,
 	}
@@ -1208,6 +1312,7 @@ func syntheticsFollowRedirectsOption() *schema.Schema {
 func syntheticsHttpVersionOption() *schema.Schema {
 	return &schema.Schema{
 		Description:      "HTTP version to use for an HTTP request in an API test or step.",
+		Default:          datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY,
 		Type:             schema.TypeString,
 		Optional:         true,
 		ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsHTTPVersionFromValue),
@@ -1389,6 +1494,10 @@ func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.Resource
 	auth := providerConf.Auth
 
 	syntheticsDeleteTestsPayload := datadogV1.SyntheticsDeleteTestsPayload{PublicIds: []string{d.Id()}}
+	if d.Get("force_delete_dependencies").(bool) {
+		syntheticsDeleteTestsPayload.SetForceDeleteDependencies(true)
+	}
+
 	if _, httpResponse, err := apiInstances.GetSyntheticsApiV1().DeleteTests(auth, syntheticsDeleteTestsPayload); err != nil {
 		// The resource is assumed to still exist, and all prior state is preserved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting synthetics test")
@@ -1446,6 +1555,36 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
+
+	if attr, ok := d.GetOk("request_file"); ok && attr != nil {
+		files := []datadogV1.SyntheticsTestRequestBodyFile{}
+		for _, f := range attr.([]interface{}) {
+			fileMap := f.(map[string]interface{})
+			file := datadogV1.SyntheticsTestRequestBodyFile{}
+
+			file.SetName(fileMap["name"].(string))
+			file.SetOriginalFileName(fileMap["original_file_name"].(string))
+			file.SetType(fileMap["type"].(string))
+			file.SetSize(int64(fileMap["size"].(int)))
+
+			if content, ok := fileMap["content"]; ok && content != "" {
+				file.SetContent(content.(string))
+			}
+
+			// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
+			// Hence, the provider is uploading the file every time the resource is modified.
+			// Always adding the bucket key to the request would prevent updating the file content.
+			// Always omitting the existing bucket key from the request update the file every time the resource is updated.
+			// We purposely choose the latter.
+			// if bucketKey, ok := fileMap["bucket_key"]; ok && bucketKey != "" {
+			// 	file.SetBucketKey(bucketKey.(string))
+			// }
+
+			files = append(files, file)
+		}
+
+		request.SetFiles(files)
+	}
 	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
 	}
@@ -1490,24 +1629,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		request.SetPersistCookies(attr.(bool))
 	}
 	if attr, ok := d.GetOk("request_definition.0.proto_json_descriptor"); ok {
-		stringifiedValue, _ := json.Marshal(attr.(string))
-		var compressedValue bytes.Buffer
-		zl := zlib.NewWriter(&compressedValue)
-		zl.Write(stringifiedValue)
-		zl.Close()
-		encodedCompressedJsonDescriptor := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
-
-		request.SetCompressedJsonDescriptor(encodedCompressedJsonDescriptor)
+		request.SetCompressedJsonDescriptor(compressAndEncodeValue(attr.(string)))
 	}
 	if attr, ok := d.GetOk("request_definition.0.plain_proto_file"); ok {
-		stringifiedValue, _ := json.Marshal(attr.(string))
-		var compressedValue bytes.Buffer
-		zl := zlib.NewWriter(&compressedValue)
-		zl.Write(stringifiedValue)
-		zl.Close()
-		encodedCompressedProtoFile := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
-
-		request.SetCompressedProtoFile(encodedCompressedProtoFile)
+		request.SetCompressedProtoFile(compressAndEncodeValue(attr.(string)))
 	}
 
 	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
@@ -1550,6 +1675,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	config.SetConfigVariables(configVariables)
 
+	if attr, ok := d.GetOk("variables_from_script"); ok && attr != nil {
+		config.SetVariablesFromScript(attr.(string))
+	}
+
 	if attr, ok := d.GetOk("api_step"); ok && syntheticsTest.GetSubtype() == "multi" {
 		steps := []datadogV1.SyntheticsAPIStep{}
 
@@ -1557,54 +1686,77 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 			step := datadogV1.SyntheticsAPIStep{}
 			stepMap := s.(map[string]interface{})
 
-			step.SetName(stepMap["name"].(string))
-			step.SetSubtype(datadogV1.SyntheticsAPIStepSubtype(stepMap["subtype"].(string)))
+			stepSubtype := stepMap["subtype"].(string)
 
-			extractedValues := buildExtractedValues(stepMap["extracted_value"].([]interface{}))
-			step.SetExtractedValues(extractedValues)
+			if stepSubtype == "" || stepSubtype == "http" || stepSubtype == "grpc" {
+				step.SyntheticsAPITestStep = datadogV1.NewSyntheticsAPITestStepWithDefaults()
+				step.SyntheticsAPITestStep.SetName(stepMap["name"].(string))
+				step.SyntheticsAPITestStep.SetSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepMap["subtype"].(string)))
 
-			assertions := stepMap["assertion"].([]interface{})
-			step.SetAssertions(buildAssertions(assertions))
+				extractedValues := buildExtractedValues(stepMap["extracted_value"].([]interface{}))
+				step.SyntheticsAPITestStep.SetExtractedValues(extractedValues)
 
-			request := datadogV1.SyntheticsTestRequest{}
-			requests := stepMap["request_definition"].([]interface{})
-			if len(requests) > 0 && requests[0] != nil {
-				requestMap := requests[0].(map[string]interface{})
-				request.SetMethod(requestMap["method"].(string))
-				request.SetUrl(requestMap["url"].(string))
-				request.SetBody(requestMap["body"].(string))
-				if v, ok := requestMap["body_type"].(string); ok && v != "" {
-					request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
+				assertions := stepMap["assertion"].([]interface{})
+				step.SyntheticsAPITestStep.SetAssertions(buildAssertions(assertions))
+
+				request := datadogV1.SyntheticsTestRequest{}
+				requests := stepMap["request_definition"].([]interface{})
+				if len(requests) > 0 && requests[0] != nil {
+					requestMap := requests[0].(map[string]interface{})
+					request.SetMethod(requestMap["method"].(string))
+					request.SetTimeout(float64(requestMap["timeout"].(int)))
+					request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
+					if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
+						request.SetHost(requestMap["host"].(string))
+						request.SetPort(int64(requestMap["port"].(int)))
+						request.SetService(requestMap["service"].(string))
+						request.SetMessage(requestMap["message"].(string))
+						if v, ok := requestMap["call_type"].(string); ok && v != "" {
+							request.SetCallType(datadogV1.SyntheticsTestCallType(v))
+						}
+						if v, ok := requestMap["plain_proto_file"].(string); ok && v != "" {
+							request.SetCompressedProtoFile(compressAndEncodeValue(v))
+						}
+					} else if step.SyntheticsAPITestStep.GetSubtype() == "http" {
+						request.SetUrl(requestMap["url"].(string))
+						request.SetBody(requestMap["body"].(string))
+						request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
+						request.SetPersistCookies(requestMap["persist_cookies"].(bool))
+						request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
+						if v, ok := requestMap["body_type"].(string); ok && v != "" {
+							request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
+						}
+						if v, ok := requestMap["http_version"].(string); ok && v != "" {
+							request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(v))
+						}
+					}
 				}
-				request.SetTimeout(float64(requestMap["timeout"].(int)))
-				request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
-				request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
-				request.SetPersistCookies(requestMap["persist_cookies"].(bool))
-				request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
-				if v, ok := requestMap["http_version"].(string); ok && v != "" {
-					request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(v))
+
+				request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
+
+				step.SyntheticsAPITestStep.SetRequest(request)
+
+				step.SyntheticsAPITestStep.SetAllowFailure(stepMap["allow_failure"].(bool))
+				step.SyntheticsAPITestStep.SetIsCritical(stepMap["is_critical"].(bool))
+
+				optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+				retries := stepMap["retry"].([]interface{})
+				if len(retries) > 0 && retries[0] != nil {
+					retry := retries[0]
+
+					if count, ok := retry.(map[string]interface{})["count"]; ok {
+						optionsRetry.SetCount(int64(count.(int)))
+					}
+					if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+						optionsRetry.SetInterval(float64(interval.(int)))
+					}
+					step.SyntheticsAPITestStep.SetRetry(optionsRetry)
 				}
-			}
-
-			request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), map[string]interface{}{})
-
-			step.SetRequest(request)
-
-			step.SetAllowFailure(stepMap["allow_failure"].(bool))
-			step.SetIsCritical(stepMap["is_critical"].(bool))
-
-			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
-			retries := stepMap["retry"].([]interface{})
-			if len(retries) > 0 && retries[0] != nil {
-				retry := retries[0]
-
-				if count, ok := retry.(map[string]interface{})["count"]; ok {
-					optionsRetry.SetCount(int64(count.(int)))
-				}
-				if interval, ok := retry.(map[string]interface{})["interval"]; ok {
-					optionsRetry.SetInterval(float64(interval.(int)))
-				}
-				step.SetRetry(optionsRetry)
+			} else if stepSubtype == "wait" {
+				step.SyntheticsAPIWaitStep = datadogV1.NewSyntheticsAPIWaitStepWithDefaults()
+				step.SyntheticsAPIWaitStep.SetName(stepMap["name"].(string))
+				step.SyntheticsAPIWaitStep.SetSubtype(datadogV1.SyntheticsAPIWaitStepSubtype(stepMap["subtype"].(string)))
+				step.SyntheticsAPIWaitStep.SetValue(int32(stepMap["value"].(int)))
 			}
 
 			steps = append(steps, step)
@@ -1821,7 +1973,28 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 			assertionType := v.(string)
 			if v, ok := assertionMap["operator"]; ok {
 				assertionOperator := v.(string)
-				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
+				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
+					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
+						subTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTargetTarget()
+						targetMap := v[0].(map[string]interface{})
+						if v, ok := targetMap["jsonschema"]; ok {
+							subTarget.SetJsonSchema(v.(string))
+						}
+						if v, ok := targetMap["metaschema"]; ok {
+							if metaSchema, err := datadogV1.NewSyntheticsAssertionJSONSchemaMetaSchemaFromValue(v.(string)); err == nil {
+								subTarget.SetMetaSchema(*metaSchema)
+							} else {
+								log.Printf("[ERROR] Error converting json schema meta schema: %v", err)
+							}
+						}
+						assertionJSONSchemaTarget.SetTarget(*subTarget)
+					}
+					if _, ok := assertionMap["target"]; ok {
+						log.Printf("[WARN] target shouldn't be specified for validateJSONSchema operator, only targetJSONSchema")
+					}
+					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONSchemaTargetAsSyntheticsAssertion(assertionJSONSchemaTarget))
+				} else if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
 					assertionJSONPathTarget := datadogV1.NewSyntheticsAssertionJSONPathTarget(datadogV1.SyntheticsAssertionJSONPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
 					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
 						assertionJSONPathTarget.SetProperty(v)
@@ -1854,6 +2027,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 							default:
 								subTarget.SetTargetValue(v)
 							}
+						}
+						if v, ok := targetMap["elementsoperator"]; ok {
+							subTarget.SetElementsOperator(v.(string))
 						}
 						assertionJSONPathTarget.SetTarget(*subTarget)
 					}
@@ -1918,6 +2094,9 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 					}
 					if v, ok := assertionMap["timings_scope"].(string); ok && len(v) > 0 {
 						assertionTarget.SetTimingsScope(datadogV1.SyntheticsAssertionTimingsScope(v))
+					}
+					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
+						log.Printf("[WARN] targetjsonschema shouldn't be specified for non-validatesJSONSchema operator, only target")
 					}
 					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
 						log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validatesJSONPath operator, only target")
@@ -2277,7 +2456,9 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
 		for _, s := range attr.([]interface{}) {
-			tags = append(tags, s.(string))
+			if tag, ok := s.(string); ok {
+				tags = append(tags, tag)
+			}
 		}
 	}
 	syntheticsTest.SetTags(tags)
@@ -2445,6 +2626,24 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 			if assertionTarget.HasTimingsScope() {
 				localAssertion["timings_scope"] = assertionTarget.GetTimingsScope()
 			}
+		} else if assertion.SyntheticsAssertionJSONSchemaTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionJSONSchemaTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if target, ok := assertionTarget.GetTargetOk(); ok {
+				localTarget := make(map[string]string)
+				if v, ok := target.GetJsonSchemaOk(); ok {
+					localTarget["jsonschema"] = string(*v)
+				}
+				if v, ok := target.GetMetaSchemaOk(); ok {
+					localTarget["metaschema"] = string(*v)
+				}
+				localAssertion["targetjsonschema"] = []map[string]string{localTarget}
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
 		} else if assertion.SyntheticsAssertionJSONPathTarget != nil {
 			assertionTarget := assertion.SyntheticsAssertionJSONPathTarget
 			if v, ok := assertionTarget.GetOperatorOk(); ok {
@@ -2470,6 +2669,9 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 					} else {
 						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
 					}
+				}
+				if v, ok := target.GetElementsOperatorOk(); ok {
+					localTarget["elementsoperator"] = string(*v)
 				}
 				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
 			}
@@ -2503,6 +2705,17 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 					}
 				}
 				localAssertion["targetxpath"] = []map[string]string{localTarget}
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+		} else if assertion.SyntheticsAssertionBodyHashTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionBodyHashTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if target := assertionTarget.GetTarget(); target != nil {
+				localAssertion["target"] = convertToString(target)
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
@@ -2722,11 +2935,17 @@ func buildLocalOptions(actualOptions datadogV1.SyntheticsTestOptions) []map[stri
 	}
 	if actualOptions.HasMonitorOptions() {
 		actualMonitorOptions := actualOptions.GetMonitorOptions()
-		renotifyInterval := actualMonitorOptions.GetRenotifyInterval()
-
 		optionsListMonitorOptions := make(map[string]int64)
-		optionsListMonitorOptions["renotify_interval"] = renotifyInterval
-		localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
+		shouldUpdate := false
+
+		if actualMonitorOptions.HasRenotifyInterval() {
+			optionsListMonitorOptions["renotify_interval"] = actualMonitorOptions.GetRenotifyInterval()
+			shouldUpdate = true
+		}
+
+		if shouldUpdate {
+			localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
+		}
 	}
 	if actualOptions.HasNoScreenshot() {
 		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
@@ -2960,17 +3179,31 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		}
 
 		localParams := make(map[string]interface{})
+
+		forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex))
+		if ok {
+			localStep["force_element_update"] = forceElementUpdate
+		}
+
 		params := step.GetParams()
 		paramsMap := params.(map[string]interface{})
 
 		for key, value := range paramsMap {
-			localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+			if key == "element" && forceElementUpdate == true {
+				// prevent overriding `element` in the local state with the one received from the backend, and
+				// keep the element from the local state instead
+				element := d.Get(fmt.Sprintf("browser_step.%d.params.0.element", stepIndex))
+				localParams["element"] = element
+			} else {
+				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+			}
 		}
 
-		if elementParams, ok := localParams["element"]; ok {
+		// If received an element from the backend, extract the user locator part to update the local state
+		if elementParams, ok := paramsMap["element"]; ok {
+			serializedElementParams := convertStepParamsValueForState("element", elementParams)
 			var stepElement interface{}
-			utils.GetMetadataFromJSON([]byte(elementParams.(string)), &stepElement)
-
+			utils.GetMetadataFromJSON([]byte(serializedElementParams.(string)), &stepElement)
 			if elementUserLocator, ok := stepElement.(map[string]interface{})["userLocator"]; ok {
 				userLocator := elementUserLocator.(map[string]interface{})
 				values := userLocator["values"]
@@ -2988,10 +3221,6 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		}
 
 		localStep["params"] = []interface{}{localParams}
-
-		if forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex)); ok {
-			localStep["force_element_update"] = forceElementUpdate
-		}
 
 		localSteps = append(localSteps, localStep)
 	}
@@ -3091,6 +3320,28 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		d.Set("request_proxy", []map[string]interface{}{localProxy})
 	}
 
+	if files, ok := actualRequest.GetFilesOk(); ok && files != nil {
+		localFiles := make([]map[string]interface{}, len(*files))
+		for i, file := range *files {
+			// The file content is kept from the existing localFile from the state,
+			// as the response from the backend contains the bucket key rather than the content.
+			localFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
+			localFile["name"] = file.GetName()
+			localFile["original_file_name"] = file.GetOriginalFileName()
+			localFile["type"] = file.GetType()
+			localFile["size"] = file.GetSize()
+
+			if bucket_key, ok := file.GetBucketKeyOk(); ok {
+				localFile["bucket_key"] = bucket_key
+			}
+			localFiles[i] = localFile
+		}
+
+		if err := d.Set("request_file", localFiles); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
 	actualAssertions := config.GetAssertions()
 	localAssertions, err := buildLocalAssertions(actualAssertions)
 
@@ -3138,83 +3389,100 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		return diag.FromErr(err)
 	}
 
+	if err := d.Set("variables_from_script", config.GetVariablesFromScript()); err != nil {
+		return diag.FromErr(err)
+	}
+
 	if steps, ok := config.GetStepsOk(); ok {
 		localSteps := make([]interface{}, len(*steps))
 
 		for i, step := range *steps {
 			localStep := make(map[string]interface{})
-			localStep["name"] = step.GetName()
-			localStep["subtype"] = step.GetSubtype()
 
-			localAssertions, err := buildLocalAssertions(step.GetAssertions())
-			if err != nil {
-				return diag.FromErr(err)
-			}
-			localStep["assertion"] = localAssertions
-			localStep["extracted_value"] = buildLocalExtractedValues(step.GetExtractedValues())
+			if step.SyntheticsAPITestStep != nil {
+				localStep["name"] = step.SyntheticsAPITestStep.GetName()
+				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
 
-			stepRequest := step.GetRequest()
-			localRequest := buildLocalRequest(stepRequest)
-			localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
-			localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
-			localStep["request_definition"] = []map[string]interface{}{localRequest}
-			localStep["request_headers"] = stepRequest.GetHeaders()
-			localStep["request_query"] = stepRequest.GetQuery()
-
-			if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
-				localAuth := buildLocalBasicAuth(basicAuth)
-				localStep["request_basicauth"] = []map[string]string{localAuth}
-			}
-
-			if clientCertificate, ok := stepRequest.GetCertificateOk(); ok {
-				localCertificate := make(map[string][]map[string]string)
-				localCertificate["cert"] = make([]map[string]string, 1)
-				localCertificate["cert"][0] = make(map[string]string)
-				localCertificate["key"] = make([]map[string]string, 1)
-				localCertificate["key"][0] = make(map[string]string)
-
-				cert := clientCertificate.GetCert()
-				localCertificate["cert"][0]["filename"] = cert.GetFilename()
-
-				key := clientCertificate.GetKey()
-				localCertificate["key"][0]["filename"] = key.GetFilename()
-
-				certContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.cert.0.content", i)
-				keyContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.key.0.content", i)
-
-				// the content of client certificate is write-only so it will not be returned by the API.
-				// To avoid useless diff but also prevent storing the value in clear in the state
-				// we store a hash of the value.
-				if configCertificateContent, ok := d.GetOk(certContentKey); ok {
-					localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
+				localAssertions, err := buildLocalAssertions(step.SyntheticsAPITestStep.GetAssertions())
+				if err != nil {
+					return diag.FromErr(err)
 				}
-				if configKeyContent, ok := d.GetOk(keyContentKey); ok {
-					localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
+				localStep["assertion"] = localAssertions
+				localStep["extracted_value"] = buildLocalExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
+
+				stepRequest := step.SyntheticsAPITestStep.GetRequest()
+				localRequest := buildLocalRequest(stepRequest)
+				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
+				localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
+				if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
+					// the schema defines a default value of `http_version` for any kind of step,
+					// but it's not supported for `grpc` - so we save `any` in the local state to avoid diffs
+					localRequest["http_version"] = datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY
+				}
+				localStep["request_definition"] = []map[string]interface{}{localRequest}
+				localStep["request_headers"] = stepRequest.GetHeaders()
+				localStep["request_query"] = stepRequest.GetQuery()
+				localStep["request_metadata"] = stepRequest.GetMetadata()
+
+				if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
+					localAuth := buildLocalBasicAuth(basicAuth)
+					localStep["request_basicauth"] = []map[string]string{localAuth}
 				}
 
-				localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
-			}
+				if clientCertificate, ok := stepRequest.GetCertificateOk(); ok {
+					localCertificate := make(map[string][]map[string]string)
+					localCertificate["cert"] = make([]map[string]string, 1)
+					localCertificate["cert"][0] = make(map[string]string)
+					localCertificate["key"] = make([]map[string]string, 1)
+					localCertificate["key"][0] = make(map[string]string)
 
-			if proxy, ok := stepRequest.GetProxyOk(); ok {
-				localProxy := make(map[string]interface{})
-				localProxy["url"] = proxy.GetUrl()
-				localProxy["headers"] = proxy.GetHeaders()
+					cert := clientCertificate.GetCert()
+					localCertificate["cert"][0]["filename"] = cert.GetFilename()
 
-				localStep["request_proxy"] = []map[string]interface{}{localProxy}
-			}
+					key := clientCertificate.GetKey()
+					localCertificate["key"][0]["filename"] = key.GetFilename()
 
-			localStep["allow_failure"] = step.GetAllowFailure()
-			localStep["is_critical"] = step.GetIsCritical()
+					certContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.cert.0.content", i)
+					keyContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.key.0.content", i)
 
-			if retry, ok := step.GetRetryOk(); ok {
-				localRetry := make(map[string]interface{})
-				if count, ok := retry.GetCountOk(); ok {
-					localRetry["count"] = *count
+					// the content of client certificate is write-only so it will not be returned by the API.
+					// To avoid useless diff but also prevent storing the value in clear in the state
+					// we store a hash of the value.
+					if configCertificateContent, ok := d.GetOk(certContentKey); ok {
+						localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
+					}
+					if configKeyContent, ok := d.GetOk(keyContentKey); ok {
+						localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
+					}
+
+					localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
 				}
-				if interval, ok := retry.GetIntervalOk(); ok {
-					localRetry["interval"] = *interval
+
+				if proxy, ok := stepRequest.GetProxyOk(); ok {
+					localProxy := make(map[string]interface{})
+					localProxy["url"] = proxy.GetUrl()
+					localProxy["headers"] = proxy.GetHeaders()
+
+					localStep["request_proxy"] = []map[string]interface{}{localProxy}
 				}
-				localStep["retry"] = []map[string]interface{}{localRetry}
+
+				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
+				localStep["is_critical"] = step.SyntheticsAPITestStep.GetIsCritical()
+
+				if retry, ok := step.SyntheticsAPITestStep.GetRetryOk(); ok {
+					localRetry := make(map[string]interface{})
+					if count, ok := retry.GetCountOk(); ok {
+						localRetry["count"] = *count
+					}
+					if interval, ok := retry.GetIntervalOk(); ok {
+						localRetry["interval"] = *interval
+					}
+					localStep["retry"] = []map[string]interface{}{localRetry}
+				}
+			} else if step.SyntheticsAPIWaitStep != nil {
+				localStep["name"] = step.SyntheticsAPIWaitStep.GetName()
+				localStep["subtype"] = step.SyntheticsAPIWaitStep.GetSubtype()
+				localStep["value"] = step.SyntheticsAPIWaitStep.GetValue()
 			}
 
 			localSteps[i] = localStep
@@ -3281,12 +3549,14 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
 	if err != nil {
 		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
-		_, err3 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
+		_, err3 := datadogV1.NewSyntheticsAssertionJSONSchemaOperatorFromValue(val.(string))
+		_, err4 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
+		_, err5 := datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue(val.(string))
 
-		if err2 == nil || err3 == nil {
+		if err2 == nil || err3 == nil || err4 == nil || err5 == nil {
 			return
 		} else {
-			errs = append(errs, err, err2)
+			errs = append(errs, err, err2, err3, err4, err5)
 		}
 	}
 	return
@@ -3461,4 +3731,14 @@ func convertStepParamsKey(key string) string {
 	}
 
 	return key
+}
+
+func compressAndEncodeValue(value string) string {
+	stringifiedValue, _ := json.Marshal(value)
+	var compressedValue bytes.Buffer
+	zl := zlib.NewWriter(&compressedValue)
+	zl.Write(stringifiedValue)
+	zl.Close()
+	encodedCompressedValue := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
+	return encodedCompressedValue
 }

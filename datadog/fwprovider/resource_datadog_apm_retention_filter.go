@@ -126,7 +126,8 @@ func (r *ApmRetentionFilterResource) Read(ctx context.Context, request resource.
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
+	attributes := resp.Data.Attributes
+	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), *attributes.Filter.Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -157,7 +158,9 @@ func (r *ApmRetentionFilterResource) Create(ctx context.Context, request resourc
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+
+	attributes := resp.Data.Attributes
+	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), *attributes.Filter.Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -190,7 +193,9 @@ func (r *ApmRetentionFilterResource) Update(ctx context.Context, request resourc
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+
+	attributes := resp.Data.Attributes
+	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), *attributes.GetFilter().Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -218,9 +223,9 @@ func (r *ApmRetentionFilterResource) Delete(ctx context.Context, request resourc
 	}
 }
 
-func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *ApmRetentionFilterModel, resp *datadogV2.RetentionFilterResponse) {
-	state.ID = types.StringValue(resp.Data.GetId())
-	state.Name = types.StringValue(resp.Data.Attributes.GetName())
+func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *ApmRetentionFilterModel, dataId string, name string, rate float64, query string, enabled bool, filterType string) {
+	state.ID = types.StringValue(dataId)
+	state.Name = types.StringValue(name)
 
 	// Make sure we maintain the same precision as config
 	// Otherwise we will run into inconsistent state errors
@@ -229,18 +234,18 @@ func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *Apm
 	if i := strings.IndexByte(configVal, '.'); i > -1 {
 		precision = len(configVal) - i - 1
 	}
-	state.Rate = types.StringValue(strconv.FormatFloat(resp.Data.Attributes.GetRate(), 'f', precision, 64))
+	state.Rate = types.StringValue(strconv.FormatFloat(rate, 'f', precision, 64))
 
 	if state.Filter == nil {
 		filter := retentionFilterModel{}
 		state.Filter = &filter
 	}
-	state.Filter.Query = types.StringValue(*resp.Data.Attributes.GetFilter().Query)
-	state.Enabled = types.BoolValue(*resp.Data.Attributes.Enabled)
-	state.FilterType = types.StringValue(string(resp.Data.Attributes.GetFilterType()))
+	state.Filter.Query = types.StringValue(query)
+	state.Enabled = types.BoolValue(enabled)
+	state.FilterType = types.StringValue(filterType)
 }
 
-func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(ctx context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterCreateRequest, diag.Diagnostics) {
+func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(_ context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
 	attributes := datadogV2.NewRetentionFilterCreateAttributesWithDefaults()
@@ -261,7 +266,7 @@ func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(ctx c
 	return req, diags
 }
 
-func (r *ApmRetentionFilterResource) buildApmRetentionFilterUpdateRequestBody(ctx context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterUpdateRequest, diag.Diagnostics) {
+func (r *ApmRetentionFilterResource) buildApmRetentionFilterUpdateRequestBody(_ context.Context, state *ApmRetentionFilterModel) (*datadogV2.RetentionFilterUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewRetentionFilterUpdateAttributesWithDefaults()
 

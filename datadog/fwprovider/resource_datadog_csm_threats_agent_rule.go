@@ -31,7 +31,7 @@ type csmThreatsAgentRuleModel struct {
 }
 
 type csmThreatsAgentRuleResource struct {
-	api  *datadogV2.CloudWorkloadSecurityApi
+	api  *datadogV2.CSMThreatsApi
 	auth context.Context
 }
 
@@ -45,7 +45,7 @@ func (r *csmThreatsAgentRuleResource) Metadata(_ context.Context, request resour
 
 func (r *csmThreatsAgentRuleResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
-	r.api = providerData.DatadogApiInstances.GetCloudWorkloadSecurityApiV2()
+	r.api = providerData.DatadogApiInstances.GetCSMThreatsApiV2()
 	r.auth = providerData.Auth
 }
 

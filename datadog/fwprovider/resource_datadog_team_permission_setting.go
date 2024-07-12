@@ -70,9 +70,9 @@ func (r *teamPermissionSettingResource) Schema(_ context.Context, _ resource.Sch
 			},
 			"value": schema.StringAttribute{
 				Required:    true,
-				Description: "The action value.",
+				Description: "The action value. Valid values are dependent on the action. `manage_membership` action allows `admins`, `members`, `organization`, `user_access_manage` values. `edit` action allows `admins`, `members`, `teams_manage` values.",
 				Validators: []validator.String{
-					validators.NewEnumValidator[validator.String](datadogV2.NewTeamPermissionSettingValueFromValue),
+					validators.NewEnumValidatorSkipEnrichSchema[validator.String](datadogV2.NewTeamPermissionSettingValueFromValue),
 				},
 			},
 			"id": utils.ResourceIDAttribute(),

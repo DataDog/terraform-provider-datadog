@@ -32,6 +32,7 @@ resource "datadog_sensitive_data_scanner_rule" "myrule" {
     keywords        = ["cc", "credit card"]
     character_count = 30
   }
+  priority = 1
 }
 
 data "datadog_sensitive_data_scanner_standard_pattern" "aws_sp" {

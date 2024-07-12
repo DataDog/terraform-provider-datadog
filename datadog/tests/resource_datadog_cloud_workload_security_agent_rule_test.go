@@ -96,7 +96,7 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleExists(accProvider func() 
 		apiInstances := providerConf.DatadogApiInstances
 
 		for _, agentRule := range s.RootModule().Resources {
-			_, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().GetCloudWorkloadSecurityAgentRule(auth, agentRule.Primary.ID)
+			_, _, err := apiInstances.GetCSMThreatsApiV2().GetCloudWorkloadSecurityAgentRule(auth, agentRule.Primary.ID)
 			if err != nil {
 				return fmt.Errorf("received an error retrieving cloud workload security agent rule: %s", err)
 			}
@@ -114,7 +114,7 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleDestroy(accProvider func()
 
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_cloud_workload_security_agent_rule" {
-				_, httpResponse, err := apiInstances.GetCloudWorkloadSecurityApiV2().GetCloudWorkloadSecurityAgentRule(auth, resource.Primary.ID)
+				_, httpResponse, err := apiInstances.GetCSMThreatsApiV2().GetCloudWorkloadSecurityAgentRule(auth, resource.Primary.ID)
 				if err != nil {
 					if httpResponse != nil && httpResponse.StatusCode == 404 {
 						continue

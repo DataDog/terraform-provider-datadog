@@ -1,8 +1,4 @@
 # Manage Datadog Powerpacks
-resource "datadog_organization_settings" "organization" {
-  name = "foo-organization"
-}
-
 resource "datadog_powerpack" "foo" {
   description = "Created using the Datadog provider in terraform"
   live_span   = "4h"

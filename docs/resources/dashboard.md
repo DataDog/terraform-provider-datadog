@@ -1130,6 +1130,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -1148,6 +1149,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -1167,6 +1169,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--change_definition--request--query--event_query"></a>
@@ -1180,6 +1183,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--change_definition--request--query--event_query--search))
@@ -1244,6 +1248,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -1259,6 +1264,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -1278,6 +1284,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -2010,6 +2017,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -2028,6 +2036,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -2047,6 +2056,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--geomap_definition--request--query--event_query"></a>
@@ -2060,6 +2070,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--query--event_query--search))
@@ -2124,6 +2135,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -2139,6 +2151,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -2158,6 +2171,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -2596,6 +2610,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -2614,6 +2629,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -2633,6 +2649,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--query--event_query"></a>
@@ -2646,6 +2663,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--query--event_query--search))
@@ -2710,6 +2728,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -2725,6 +2744,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -2744,6 +2764,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -3476,6 +3497,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -3494,6 +3516,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -3513,6 +3536,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query"></a>
@@ -3526,6 +3550,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--query--event_query--search))
@@ -3590,6 +3615,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -3605,6 +3631,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -3624,6 +3651,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -3982,6 +4010,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -4000,6 +4029,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -4019,6 +4049,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query"></a>
@@ -4032,6 +4063,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--query--event_query--search))
@@ -4096,6 +4128,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -4111,6 +4144,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -4130,6 +4164,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -5421,6 +5456,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -5439,6 +5475,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -5458,6 +5495,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query"></a>
@@ -5471,6 +5509,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query--event_query--search))
@@ -5535,6 +5574,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -5550,6 +5590,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -5569,6 +5610,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -6056,6 +6098,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -6074,6 +6117,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -6093,6 +6137,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query"></a>
@@ -6106,6 +6151,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--query--event_query--search))
@@ -6170,6 +6216,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -6185,6 +6232,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -6204,6 +6252,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -6485,6 +6534,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -6503,6 +6553,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -6522,6 +6573,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -6535,6 +6587,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search))
@@ -6599,6 +6652,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -6614,6 +6668,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -6633,6 +6688,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -7622,6 +7678,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -7640,6 +7697,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -7659,6 +7717,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query"></a>
@@ -7672,6 +7731,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--search))
@@ -7736,6 +7796,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -7751,6 +7812,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -7770,6 +7832,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -8098,6 +8161,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -8116,6 +8180,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -8135,6 +8200,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query"></a>
@@ -8148,6 +8214,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--search))
@@ -8212,6 +8279,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -8227,6 +8295,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -8246,6 +8315,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -8645,6 +8715,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -8663,6 +8734,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -8682,6 +8754,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query"></a>
@@ -8695,6 +8768,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--search))
@@ -8759,6 +8833,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -8774,6 +8849,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -8793,6 +8869,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -9280,6 +9357,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -9298,6 +9376,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -9317,6 +9396,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query"></a>
@@ -9330,6 +9410,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--search))
@@ -9394,6 +9475,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -9409,6 +9491,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -9428,6 +9511,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -9672,6 +9756,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -9690,6 +9775,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -9709,6 +9795,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -9722,6 +9809,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--search))
@@ -9786,6 +9874,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -9801,6 +9890,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -9820,6 +9910,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -10836,6 +10927,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -10854,6 +10946,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -10873,6 +10966,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query"></a>
@@ -10886,6 +10980,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--search))
@@ -10950,6 +11045,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -10965,6 +11061,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -10984,6 +11081,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -11567,6 +11665,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -11585,6 +11684,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -11604,6 +11704,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query"></a>
@@ -11617,6 +11718,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--search))
@@ -11681,6 +11783,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -11696,6 +11799,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -11715,6 +11819,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -12231,6 +12336,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -12249,6 +12355,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -12268,6 +12375,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query"></a>
@@ -12281,6 +12389,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--search))
@@ -12345,6 +12454,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -12360,6 +12470,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -12379,6 +12490,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -12620,6 +12732,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -12638,6 +12751,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -12657,6 +12771,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query"></a>
@@ -12670,6 +12785,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--search))
@@ -12734,6 +12850,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -12749,6 +12866,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -12768,6 +12886,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -13256,6 +13375,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -13274,6 +13394,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -13293,6 +13414,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query"></a>
@@ -13306,6 +13428,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--query--event_query--search))
@@ -13370,6 +13493,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -13385,6 +13509,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -13404,6 +13529,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -13987,6 +14113,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -14005,6 +14132,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -14024,6 +14152,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query"></a>
@@ -14037,6 +14166,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--query--event_query--search))
@@ -14101,6 +14231,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -14116,6 +14247,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -14135,6 +14267,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -14651,6 +14784,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -14669,6 +14803,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -14688,6 +14823,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query"></a>
@@ -14701,6 +14837,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--query--event_query--search))
@@ -14765,6 +14902,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -14780,6 +14918,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -14799,6 +14938,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -15107,6 +15247,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -15125,6 +15266,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -15144,6 +15286,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query"></a>
@@ -15157,6 +15300,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--query--event_query--search))
@@ -15221,6 +15365,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -15236,6 +15381,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -15255,6 +15401,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -15557,6 +15704,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -15575,6 +15723,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -15594,6 +15743,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--heatmap_definition--request--query--event_query"></a>
@@ -15607,6 +15757,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--query--event_query--search))
@@ -15671,6 +15822,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -15686,6 +15838,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -15705,6 +15858,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -16996,6 +17150,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -17014,6 +17169,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -17033,6 +17189,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--query_table_definition--request--query--event_query"></a>
@@ -17046,6 +17203,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query--event_query--search))
@@ -17110,6 +17268,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -17125,6 +17284,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -17144,6 +17304,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -17631,6 +17792,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -17649,6 +17811,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -17668,6 +17831,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--query_value_definition--request--query--event_query"></a>
@@ -17681,6 +17845,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--query--event_query--search))
@@ -17745,6 +17910,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -17760,6 +17926,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -17779,6 +17946,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -18060,6 +18228,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -18078,6 +18247,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -18097,6 +18267,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -18110,6 +18281,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--scatterplot_definition--request--scatterplot_table--query--event_query--search))
@@ -18174,6 +18346,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -18189,6 +18362,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -18208,6 +18382,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -19197,6 +19372,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -19215,6 +19391,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -19234,6 +19411,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query"></a>
@@ -19247,6 +19425,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--query--event_query--search))
@@ -19311,6 +19490,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -19326,6 +19506,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -19345,6 +19526,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -19673,6 +19855,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -19691,6 +19874,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -19710,6 +19894,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query"></a>
@@ -19723,6 +19908,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--query--event_query--search))
@@ -19787,6 +19973,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -19802,6 +19989,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -19821,6 +20009,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -20220,6 +20409,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -20238,6 +20428,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -20257,6 +20448,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query"></a>
@@ -20270,6 +20462,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query--event_query--search))
@@ -20334,6 +20527,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -20349,6 +20543,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -20368,6 +20563,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -20855,6 +21051,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -20873,6 +21070,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -20892,6 +21090,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query"></a>
@@ -20905,6 +21104,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--query--event_query--search))
@@ -20969,6 +21169,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -20984,6 +21185,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -21003,6 +21205,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -21247,6 +21450,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -21265,6 +21469,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -21284,6 +21489,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query"></a>
@@ -21297,6 +21503,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--scatterplot_definition--request--scatterplot_table--query--event_query--search))
@@ -21361,6 +21568,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -21376,6 +21584,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -21395,6 +21604,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -22411,6 +22621,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -22429,6 +22640,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -22448,6 +22660,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query"></a>
@@ -22461,6 +22674,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--query--event_query--search))
@@ -22525,6 +22739,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -22540,6 +22755,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -22559,6 +22775,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -23142,6 +23359,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -23160,6 +23378,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -23179,6 +23398,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query"></a>
@@ -23192,6 +23412,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--query--event_query--search))
@@ -23256,6 +23477,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -23271,6 +23493,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -23290,6 +23513,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -23806,6 +24030,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -23824,6 +24049,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -23843,6 +24069,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query"></a>
@@ -23856,6 +24083,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--query--event_query--search))
@@ -23920,6 +24148,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -23935,6 +24164,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -23954,6 +24184,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -24195,6 +24426,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -24213,6 +24445,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -24232,6 +24465,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query"></a>
@@ -24245,6 +24479,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--query--event_query--search))
@@ -24309,6 +24544,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -24324,6 +24560,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -24343,6 +24580,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -24831,6 +25069,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -24849,6 +25088,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -24868,6 +25108,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--sunburst_definition--request--query--event_query"></a>
@@ -24881,6 +25122,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--query--event_query--search))
@@ -24945,6 +25187,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -24960,6 +25203,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -24979,6 +25223,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -25562,6 +25807,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -25580,6 +25826,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -25599,6 +25846,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--timeseries_definition--request--query--event_query"></a>
@@ -25612,6 +25860,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--query--event_query--search))
@@ -25676,6 +25925,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -25691,6 +25941,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -25710,6 +25961,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -26226,6 +26478,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -26244,6 +26497,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -26263,6 +26517,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--toplist_definition--request--query--event_query"></a>
@@ -26276,6 +26531,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--query--event_query--search))
@@ -26340,6 +26596,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -26355,6 +26612,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -26374,6 +26632,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
@@ -26682,6 +26941,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_upstream` (Boolean) Determines whether stats for upstream or downstream dependencies should be queried.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
 - `primary_tag_value` (String) Filter APM data by the second primary tag. `primary_tag_name` must also be specified.
@@ -26700,6 +26960,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (List of String) Array of fields to group results by.
 - `operation_name` (String) Name of operation on service.
 - `primary_tag_name` (String) The name of the second primary tag used within APM; required when `primary_tag_value` is specified. See https://docs.datadoghq.com/tracing/guide/setting_primary_tags_to_scope/#add-a-second-primary-tag-in-datadog.
@@ -26719,6 +26980,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 
 
 <a id="nestedblock--widget--treemap_definition--request--query--event_query"></a>
@@ -26732,6 +26994,7 @@ Required:
 
 Optional:
 
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_by` (Block List) Group by options. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--group_by))
 - `indexes` (List of String) An array of index names to query in the stream.
 - `search` (Block List, Max: 1) The search options. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--query--event_query--search))
@@ -26796,6 +27059,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `data_source` (String) The data source for metrics queries. Defaults to `"metrics"`.
 
 
@@ -26811,6 +27075,7 @@ Required:
 Optional:
 
 - `aggregator` (String) The aggregation methods available for metrics queries. Valid values are `avg`, `min`, `max`, `sum`, `last`, `area`, `l2norm`, `percentile`.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `is_normalized_cpu` (Boolean) Whether to normalize the CPU percentages.
 - `limit` (Number) The number of hits to return.
 - `sort` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
@@ -26830,6 +27095,7 @@ Required:
 Optional:
 
 - `additional_query_filters` (String) Additional filters applied to the SLO query.
+- `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
 - `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
