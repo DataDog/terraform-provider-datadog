@@ -70,6 +70,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_monitor_test":                                 "monitors",
 	"tests/data_source_datadog_monitors_test":                                "monitors",
 	"tests/data_source_datadog_permissions_test":                             "permissions",
+	"tests/data_source_datadog_powerpack_test":                               "powerpacks",
 	"tests/data_source_datadog_restriction_policy_test":                      "restriction-policy",
 	"tests/data_source_datadog_role_test":                                    "roles",
 	"tests/data_source_datadog_role_users_test":                              "roles",
