@@ -50,7 +50,7 @@ func (d *datadogPowerpackDataSource) Schema(_ context.Context, _ datasource.Sche
 			"id": utils.ResourceIDAttribute(),
 			// Datasource Query Parameters
 			"name": schema.StringAttribute{
-				Description: "The name of the powerpack to search for.",
+				Description: "The name of the Powerpack to search for.",
 				Computed:    false,
 				Required:    true,
 			},
