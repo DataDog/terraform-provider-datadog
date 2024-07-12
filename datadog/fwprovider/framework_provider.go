@@ -12,6 +12,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -27,9 +28,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-var (
-	_ provider.Provider = &FrameworkProvider{}
-)
+var _ provider.Provider = &FrameworkProvider{}
 
 var Resources = []func() resource.Resource{
 	NewOpenapiApiResource,
@@ -106,6 +105,7 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
+	DefaultTags                      types.List   `tfsdk:"default_tags"`
 }
 
 func New() provider.Provider {
@@ -181,6 +181,23 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"http_client_retry_max_retries": schema.Int64Attribute{
 				Optional:    true,
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
+			},
+		},
+		Blocks: map[string]schema.Block{
+			"default_tags": schema.ListNestedBlock{
+				Validators: []validator.List{
+					listvalidator.SizeAtMost(1),
+				},
+				Description: "[Experimental - Monitors only] Configuration block with settings to default resource tags across all resources.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"tags": schema.MapAttribute{
+							ElementType: types.StringType,
+							Optional:    true,
+							Description: "[Experimental - Monitors only] Resource tags to default across all resources",
+						},
+					},
+				},
 			},
 		},
 	}
