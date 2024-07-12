@@ -39,11 +39,13 @@ import (
 
 type clockContextKey string
 
-const ddTestOrg = "fasjyydbcgwwc2uc"
-const testAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
-const testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
-const testAPIUrlEnvName = "DD_TEST_SITE_URL"
-const testOrgEnvName = "DD_TEST_ORG"
+const (
+	ddTestOrg         = "fasjyydbcgwwc2uc"
+	testAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
+	testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
+	testAPIUrlEnvName = "DD_TEST_SITE_URL"
+	testOrgEnvName    = "DD_TEST_ORG"
+)
 
 var isTestOrgC *bool
 
@@ -426,7 +428,7 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 // rule name that changes in CI, but is stable locally.
 func uniqueAgentRuleName(ctx context.Context) string {
 	var seededRand *rand.Rand = rand.New(rand.NewSource(clockFromContext(ctx).Now().Unix()))
-	var charset = "abcdefghijklmnopqrstuvwxyz"
+	charset := "abcdefghijklmnopqrstuvwxyz"
 	nameLength := 10
 	var buf bytes.Buffer
 	buf.Grow(nameLength)
@@ -501,12 +503,12 @@ func filterHeaders(i *cassette.Interaction) {
 	requestHeadersCopy := i.Request.Headers.Clone()
 	responseHeadersCopy := i.Response.Headers.Clone()
 
-	for k, _ := range requestHeadersCopy {
+	for k := range requestHeadersCopy {
 		if _, ok := allowedHeaders[k]; !ok {
 			i.Request.Headers.Del(k)
 		}
 	}
-	for k, _ := range responseHeadersCopy {
+	for k := range responseHeadersCopy {
 		if _, ok := allowedHeaders[k]; !ok {
 			i.Response.Headers.Del(k)
 		}
@@ -592,10 +594,10 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 		ctx,
 		common.ContextAPIKeys,
 		map[string]common.APIKey{
-			"apiKeyAuth": common.APIKey{
+			"apiKeyAuth": {
 				Key: apiKey,
 			},
-			"appKeyAuth": common.APIKey{
+			"appKeyAuth": {
 				Key: appKey,
 			},
 		},
@@ -622,7 +624,7 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 }
 
 func buildDatadogClient(ctx context.Context, httpClient *http.Client) *common.APIClient {
-	//Datadog API config.HTTPClient
+	// Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
@@ -712,6 +714,22 @@ func testAccProvider(t *testing.T, accProviders map[string]func() (*schema.Provi
 	return accProvider
 }
 
+func withDefaultTags(providerFactory func() (*schema.Provider, error), defaultTags map[string]interface{}) func() (*schema.Provider, error) {
+	provider, err := providerFactory()
+	newProvider := *provider
+	return func() (*schema.Provider, error) {
+		configureFunc := func(lctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+			config, diags := provider.ConfigureContextFunc(lctx, d)
+			if config != nil {
+				config.(*datadog.ProviderConfiguration).DefaultTags = defaultTags
+			}
+			return config, diags
+		}
+		newProvider.ConfigureContextFunc = configureFunc
+		return &newProvider, err
+	}
+}
+
 func TestProvider(t *testing.T) {
 	rec := initRecorder(t)
 	defer rec.Stop()
@@ -726,7 +744,7 @@ func TestProvider(t *testing.T) {
 }
 
 func TestProvider_impl(t *testing.T) {
-	var _ = datadog.Provider()
+	_ = datadog.Provider()
 }
 
 func testAccPreCheck(t *testing.T) {
@@ -795,7 +813,7 @@ func testCheckResourceAttrs(name string, checkExists resource.TestCheckFunc, ass
 		} else {
 			funcs = append(funcs, resource.TestCheckResourceAttr(name, key, value))
 			// Use utility method below, instead of the above one, to print out all state keys/values during test debugging
-			//funcs = append(funcs, CheckResourceAttr(name, key, value))
+			// funcs = append(funcs, CheckResourceAttr(name, key, value))
 		}
 	}
 	return funcs

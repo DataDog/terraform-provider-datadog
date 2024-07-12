@@ -27,7 +27,7 @@ import (
 func init() {
 	// Set descriptions to support markdown syntax, this will be used in document generation
 	// and the language server.
-	//schema.DescriptionKind = configschema.StringMarkdown
+	// schema.DescriptionKind = configschema.StringMarkdown
 
 	// Customize the content of descriptions when output. For example you can add defaults on
 	// to the exported descriptions if present.
@@ -155,6 +155,22 @@ func Provider() *schema.Provider {
 					return diags
 				},
 			},
+			"default_tags": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    1,
+				Description: "[Experimental - Monitors only] Configuration block with settings to default resource tags across all resources.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"tags": {
+							Type:        schema.TypeMap,
+							Optional:    true,
+							Elem:        &schema.Schema{Type: schema.TypeString},
+							Description: "[Experimental - Monitors only] Resource tags to default across all resources",
+						},
+					},
+				},
+			},
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -235,10 +251,12 @@ func Provider() *schema.Provider {
 }
 
 // ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
+// as well as global configuration like default tags to apply to all resources.
 type ProviderConfiguration struct {
 	CommunityClient     *datadogCommunity.Client
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
+	DefaultTags         map[string]interface{}
 
 	Now func() time.Time
 }
@@ -414,11 +432,65 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	return &ProviderConfiguration{
+	providerConfig := ProviderConfiguration{
 		CommunityClient:     communityClient,
 		DatadogApiInstances: apiInstances,
 		Auth:                auth,
 
 		Now: time.Now,
-	}, nil
+	}
+	if v, ok := d.GetOk("default_tags"); ok && len(v.([]interface{})) > 0 && v.([]interface{})[0] != nil {
+		tagConfig := v.([]interface{})[0].(map[string]interface{})
+		tags, ok := tagConfig["tags"]
+		if ok {
+			providerConfig.DefaultTags = tags.(map[string]interface{})
+		}
+	}
+
+	return &providerConfig, nil
+}
+
+// custom diff function that changes plan to take default tags into account
+func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	if len(providerConf.DefaultTags) == 0 {
+		return nil
+	}
+	resourceTags := d.Get("tags")
+	if resourceTags == nil { // if the "tags" attribute does not exist in the resource schema
+		return nil
+	}
+	tags := make(map[string]interface{})
+	tagSet := resourceTags.(*schema.Set)
+	for _, tag := range tagSet.List() {
+		kv := strings.Split(tag.(string), ":")
+		var key, value string
+		switch len(kv) {
+		case 2:
+			key, value = kv[0], kv[1]
+		case 1:
+			key, value = kv[0], ""
+		default:
+			return fmt.Errorf("invalid tag: '%s'", tag)
+		}
+		tags[key] = value
+	}
+	for k, v := range providerConf.DefaultTags {
+		if _, alreadyDefined := tags[k]; !alreadyDefined {
+			tags[k] = v
+		}
+	}
+	tagSlice := make([]interface{}, 0, len(tags))
+	for k, v := range tags {
+		tag := fmt.Sprintf("%s:%v", k, v)
+		if v == "" {
+			tag = k
+		}
+		tagSlice = append(tagSlice, tag)
+	}
+	tagsToSet := schema.NewSet(tagSet.F, tagSlice)
+	if err := d.SetNew("tags", tagsToSet); err != nil {
+		return fmt.Errorf("error setting tags diff to %v: %w", tags, err)
+	}
+	return nil
 }
