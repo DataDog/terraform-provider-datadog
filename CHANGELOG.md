@@ -1,3 +1,31 @@
+## 3.41.0 (July 16, 2024)
+
+### BUGFIXES
+* [datadog_synthetics_test] Add default value to `http_version` by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2406
+* [datadog_synthetics_test] Fix `renotify_interval` drift when saving from UI by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2457
+* [datadog_synthetics_test] Remove `request_definition.timeout` default value by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2459
+* [datadog_synthetics_test] prevent overriding the local state element from the backend response by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2460
+* [datadog_service_account] Role-assignment improvements for service accounts by @retsguj in https://github.com/DataDog/terraform-provider-datadog/pull/2434
+* [datadog_application_key] Stop overwriting key values in state when the API omits the key by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/2451
+### IMPROVEMENTS
+* [datadog_hosts] Add tags_by_source for datadog_hosts data source by @Nothing4You in https://github.com/DataDog/terraform-provider-datadog/pull/2375
+### FEATURES
+* [datadog_synthetics_test] Support `unary` gRPC steps in multistep API tests by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2445
+* [datadog_dashboard] Add `cross_org_uuid support` by @cheungringo in https://github.com/DataDog/terraform-provider-datadog/pull/2450
+* [datadog_monitor] Handle zero-based priority values by @carlmartensen in https://github.com/DataDog/terraform-provider-datadog/pull/2455
+* [datadog_powerpack] add support for datadog_powerpack data source by @bharling in https://github.com/DataDog/terraform-provider-datadog/pull/2458
+### NOTES
+* [datadog_application_key] Add deprecation warning for importing datadog_application_key resources by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/2468
+* [datadog_application_key] Add deprecation warning to datadog_application_key data source by @jackakeller in https://github.com/DataDog/terraform-provider-datadog/pull/2465
+
+## New Contributors
+* @cheungringo made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2450
+* @jackakeller made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2468
+* @Nothing4You made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2375
+* @bharling made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2458
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.40.0...v3.41.0
+
 ## 3.40.0 (July 3, 2024)
 
 ### BUGFIXES
