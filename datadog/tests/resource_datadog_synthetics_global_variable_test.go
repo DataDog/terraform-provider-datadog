@@ -428,7 +428,6 @@ resource "datadog_synthetics_test" "multi" {
     request_definition {
       method           = "GET"
       url              = "https://www.datadoghq.com"
-      body             = "this is a body"
       timeout          = 30
       allow_insecure   = true
       follow_redirects = true

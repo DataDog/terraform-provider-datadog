@@ -868,8 +868,6 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.timeout", "0"), // not saved in the backend
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "request_definition.0.body", "this is a body"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.body_type", "text/plain"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.no_saving_response_body", "true"),
@@ -1003,7 +1001,6 @@ resource "datadog_synthetics_test" "foo" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		body_type = "text/plain"
 		no_saving_response_body = true
 	}
@@ -1108,7 +1105,6 @@ resource "datadog_synthetics_test" "advanced_scheduling" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		body_type = "text/plain"
 		timeout = 30
 		no_saving_response_body = true
@@ -1188,8 +1184,6 @@ func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvi
 				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.timeout", "30"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.body", "this is a body"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.body_type", "text/plain"),
 			resource.TestCheckResourceAttr(
@@ -1459,7 +1453,6 @@ resource "datadog_synthetics_test" "bar" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		timeout = 30
 	}
 	request_query = {
@@ -2977,8 +2970,6 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_definition.0.body", "this is a body"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.certificate_domains.#", "1"),
@@ -3122,7 +3113,6 @@ resource "datadog_synthetics_test" "bar" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		timeout = 30
 		certificate_domains = ["https://datadoghq.com"]
 	}
@@ -3710,8 +3700,6 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_definition.0.body", "this is a body"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.%", "2"),
@@ -3863,7 +3851,6 @@ resource "datadog_synthetics_test" "bar" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		timeout = 30
 	}
 	request_headers = {
@@ -3997,8 +3984,6 @@ func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider func() 
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_definition.0.body", "this is a body"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.%", "2"),
@@ -4062,7 +4047,6 @@ resource "datadog_synthetics_test" "bar" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		timeout = 30
 	}
 	request_headers = {
@@ -4449,7 +4433,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "GET"),
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "POST"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
@@ -4706,7 +4690,7 @@ resource "datadog_synthetics_test" "multi" {
   api_step {
     name = "First api step"
     request_definition {
-      method           = "GET"
+      method           = "POST"
       url              = "https://www.datadoghq.com"
       body             = "this is a body"
       timeout          = 30
