@@ -1842,7 +1842,13 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 				if err == nil {
 					tokenApiAuthenticationValue = *tokenApiAuthentication
 				}
-				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(requestBasicAuth["access_token_url"].(string), requestBasicAuth["client_id"].(string), requestBasicAuth["client_secret"].(string), tokenApiAuthenticationValue, datadogV1.SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT)
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(
+					requestBasicAuth["access_token_url"].(string),
+					requestBasicAuth["client_id"].(string),
+					requestBasicAuth["client_secret"].(string),
+					tokenApiAuthenticationValue,
+					datadogV1.SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT,
+				)
 
 				// optional fields for oauth must not be included if they have no value, or the authentication will fail
 				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
@@ -1888,7 +1894,11 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 			}
 
 			if requestBasicAuth["type"] == "digest" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(requestBasicAuth["password"].(string), datadogV1.SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST, requestBasicAuth["username"].(string))
+				basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(
+					requestBasicAuth["password"].(string),
+					datadogV1.SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST,
+					requestBasicAuth["username"].(string),
+				)
 				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth))
 			}
 		}
