@@ -1543,14 +1543,22 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	}
 
 	request := datadogV1.SyntheticsTestRequest{}
-	if attr, ok := d.GetOk("request_definition.0.method"); ok {
-		request.SetMethod(attr.(string))
+	method, methodOk := d.GetOk("request_definition.0.method")
+	if methodOk {
+		request.SetMethod(method.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.url"); ok {
 		request.SetUrl(attr.(string))
 	}
-	if attr, ok := d.GetOk("request_definition.0.body"); ok {
-		request.SetBody(attr.(string))
+	// Only set the body if the request method allows it
+	body, bodyOk := d.GetOk("request_definition.0.body")
+	httpVersion, httpVersionOk := d.GetOk("options_list.0.http_version")
+	if bodyOk && body != "" {
+		if methodOk && (method == "GET" || method == "HEAD" || method == "DELETE") && (!httpVersionOk || httpVersion != "http1") {
+			log.Printf("[WARN] body is not valid for %s requests. It'll be ignored.", method)
+		} else {
+			request.SetBody(body.(string))
+		}
 	}
 	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
@@ -1703,7 +1711,8 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				requests := stepMap["request_definition"].([]interface{})
 				if len(requests) > 0 && requests[0] != nil {
 					requestMap := requests[0].(map[string]interface{})
-					request.SetMethod(requestMap["method"].(string))
+					method := requestMap["method"].(string)
+					request.SetMethod(method)
 					request.SetTimeout(float64(requestMap["timeout"].(int)))
 					request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
 					if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
@@ -1719,15 +1728,24 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 						}
 					} else if step.SyntheticsAPITestStep.GetSubtype() == "http" {
 						request.SetUrl(requestMap["url"].(string))
-						request.SetBody(requestMap["body"].(string))
+						httpVersion, httpVersionOk := requestMap["http_version"].(string)
+						if httpVersionOk && httpVersion != "" {
+							request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(httpVersion))
+						}
+						// Only set the body if the request method allows it
+						body := requestMap["body"].(string)
+						if body != "" {
+							if (method == "GET" || method == "HEAD" || method == "DELETE") && httpVersion != "http1" {
+								log.Printf("[WARN] body is not valid for %s requests. It'll be ignored.", method)
+							} else {
+								request.SetBody(body)
+							}
+						}
 						request.SetFollowRedirects(requestMap["follow_redirects"].(bool))
 						request.SetPersistCookies(requestMap["persist_cookies"].(bool))
 						request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
 						if v, ok := requestMap["body_type"].(string); ok && v != "" {
 							request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
-						}
-						if v, ok := requestMap["http_version"].(string); ok && v != "" {
-							request.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(v))
 						}
 					}
 				}
