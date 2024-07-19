@@ -580,7 +580,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -1467,7 +1467,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -1980,7 +1980,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -3375,7 +3375,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -4017,7 +4017,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -4453,7 +4453,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -5716,7 +5716,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -6454,7 +6454,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -7125,7 +7125,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
@@ -7588,7 +7588,7 @@ Optional:
 - `cross_org_uuids` (List of String) The source organization UUID for cross organization queries. Feature in Private Beta.
 - `group_mode` (String) Group mode to query measures. Valid values are `overall`, `components`. Defaults to `"overall"`.
 - `name` (String) The name of query for use in formulas.
-- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`. Defaults to `"metric"`.
+- `slo_query_type` (String) type of the SLO to query. Valid values are `metric`, `time_slice`. Defaults to `"metric"`.
 
 
 
