@@ -1,3 +1,17 @@
+## 3.42.0 (July 22, 2024)
+
+### BUGFIXES
+* [datadog_synthetics_test] remove body from non-POST requests by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2492
+### IMPROVEMENTS
+* [provider] Bump datadog-api-client to latest master by @AmitaiBl in https://github.com/DataDog/terraform-provider-datadog/pull/2494
+* [datadog_provider] Reduce idle connection timeout by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2496
+
+## New Contributors
+* @AmitaiBl made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2494
+* @amaskara-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2498
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.41.0...v3.42.0
+
 ## 3.41.0 (July 16, 2024)
 
 ### BUGFIXES
