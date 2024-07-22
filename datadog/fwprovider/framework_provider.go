@@ -445,6 +445,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		}
 	}
 
+	ddClientConfig.HTTPClient = utils.NewHTTPClient()
 	datadogClient := datadog.NewAPIClient(ddClientConfig)
 
 	p.DatadogApiInstances = &utils.ApiInstances{HttpClient: datadogClient}
