@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
@@ -79,6 +80,30 @@ var IntegrationAwsMutex = sync.Mutex{}
 type Resource interface {
 	Get(string) interface{}
 	GetOk(string) (interface{}, bool)
+}
+
+// NewTransport returns new transport with default values borrowed from http.DefaultTransport
+func NewTransport() *http.Transport {
+	return &http.Transport{
+		// Default values copied from http.DefaultTransport
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout:   30 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		ForceAttemptHTTP2:     true,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       45 * time.Second, // Reduced idle connection timeout from default of 90s
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
+}
+
+// NewHTTPClient returns new http.Client
+func NewHTTPClient() *http.Client {
+	return &http.Client{
+		Transport: NewTransport(),
+	}
 }
 
 // FrameworkErrorDiag return error diag
