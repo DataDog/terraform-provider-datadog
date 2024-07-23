@@ -442,7 +442,7 @@ func uniqueAgentRuleName(ctx context.Context) string {
 func uniqueAWSAccessKeyID(ctx context.Context, t *testing.T) string {
 	uniq := uniqueEntityName(ctx, t)
 	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniq)))
-	result := ""
+	result := "AKIA"
 	for _, r := range hash {
 		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
 	}

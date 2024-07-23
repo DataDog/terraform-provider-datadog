@@ -133,7 +133,7 @@ func testAccCheckDatadogIntegrationAwsTagFilterDestroy(accProvider func() (*sche
 		filters, err := listFiltersHelper(accProvider, resourceID)
 		if err != nil {
 			errObj := err.(dd.GenericOpenAPIError)
-			if matched, _ := regexp.MatchString("AWS account [0-9]+ does not exist in integration", string(errObj.Body())); matched {
+			if matched, _ := regexp.MatchString("AWS account (AKIA)?[0-9]+ does not exist in integration", string(errObj.Body())); matched {
 				return nil
 			}
 			return err
