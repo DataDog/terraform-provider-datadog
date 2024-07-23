@@ -19,6 +19,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 		CreateContext: resourceDatadogSensitiveDataScannerRuleCreate,
 		UpdateContext: resourceDatadogSensitiveDataScannerRuleUpdate,
 		DeleteContext: resourceDatadogSensitiveDataScannerRuleDelete,
+		CustomizeDiff: tagDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -72,6 +73,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 				"tags": {
 					Type:        schema.TypeList,
 					Optional:    true,
+					Computed:    true,
 					Description: "List of tags.",
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},

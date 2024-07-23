@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/url"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -461,8 +462,16 @@ func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) erro
 		return nil
 	}
 	tags := make(map[string]interface{})
-	tagSet := resourceTags.(*schema.Set)
-	for _, tag := range tagSet.List() {
+	var tagList []interface{}
+	switch rTags := resourceTags.(type) {
+	case *schema.Set:
+		tagList = rTags.List()
+	case []interface{}:
+		tagList = rTags
+	default:
+		return errors.New("unsupported resource tags type")
+	}
+	for _, tag := range tagList {
 		kv := strings.Split(tag.(string), ":")
 		var key, value string
 		switch len(kv) {
@@ -475,22 +484,34 @@ func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) erro
 		}
 		tags[key] = value
 	}
+	newTags := []string{}
 	for k, v := range providerConf.DefaultTags {
 		if _, alreadyDefined := tags[k]; !alreadyDefined {
-			tags[k] = v
+			tag := fmt.Sprintf("%s:%v", k, v)
+			if v == "" {
+				tag = k
+			}
+			newTags = append(newTags, tag)
 		}
 	}
-	tagSlice := make([]interface{}, 0, len(tags))
-	for k, v := range tags {
-		tag := fmt.Sprintf("%s:%v", k, v)
-		if v == "" {
-			tag = k
-		}
-		tagSlice = append(tagSlice, tag)
+	// default tags are added in alphabetic order to make the process deterministic
+	// when the tags attribute is a slice instead of a *schema.Set
+	sort.Strings(newTags)
+	for _, t := range newTags {
+		tagList = append(tagList, t)
 	}
-	tagsToSet := schema.NewSet(tagSet.F, tagSlice)
-	if err := d.SetNew("tags", tagsToSet); err != nil {
-		return fmt.Errorf("error setting tags diff to %v: %w", tags, err)
+	switch rTags := resourceTags.(type) {
+	case *schema.Set:
+		tagsToSet := schema.NewSet(rTags.F, tagList)
+		if err := d.SetNew("tags", tagsToSet); err != nil {
+			return fmt.Errorf("error setting tags diff to %v: %w", tags, err)
+		}
+	case []interface{}:
+		if err := d.SetNew("tags", tagList); err != nil {
+			return fmt.Errorf("error setting tags diff to %v: %w", tags, err)
+		}
+	default:
+		return errors.New("unsupported resource tags type")
 	}
 	return nil
 }
