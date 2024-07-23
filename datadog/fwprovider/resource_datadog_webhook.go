@@ -228,7 +228,6 @@ func (r *webhookResource) updateState(ctx context.Context, state *webhookModel, 
 
 }
 
-// creating payload instead
 func (r *webhookResource) buildWebhookRequestBody(ctx context.Context, state *webhookModel) (*datadogV1.WebhooksIntegration, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV1.WebhooksIntegration{}
