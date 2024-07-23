@@ -126,3 +126,65 @@ var datadogDashboardListStreamEventsAsserts = []string{
 func TestAccDatadogDashboardListStreamEvents(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardListStreamEventsConfig, "datadog_dashboard.list_stream_event_dashboard", datadogDashboardListStreamEventsAsserts)
 }
+
+const datadogDashboardListStreamRumConfig = `
+resource "datadog_dashboard" "list_stream_event_dashboard_rum" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+
+	widget {
+		list_stream_definition {
+			title = "List Stream 2"
+			title_align = "right"
+			title_size = "16"
+			request {
+				response_format = "event_list"
+				query {
+					data_source  = "rum_stream"
+					query_string = "@type:view @session.type:user"
+					sort {
+						column = "@view.action.count"
+						order  = "desc"
+					}
+				}
+				columns {
+					field = "has_replay"
+					width = "auto"
+				}
+				columns {
+					field = "timestamp"
+					width = "auto"
+				}
+				columns {
+					field = "@view.action.count"
+					width = "auto"
+				}
+			}
+		}
+	}
+}
+`
+
+var datadogDashboardListStreamRumAsserts = []string{
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"is_read_only = true",
+	"title = {{uniq}}",
+	"widget.0.list_stream_definition.0.request.0.response_format = event_list",
+	"widget.0.list_stream_definition.0.request.0.query.0.data_source = rum_stream",
+	"widget.0.list_stream_definition.0.request.0.query.0.query_string = @type:view @session.type:user",
+	"widget.0.list_stream_definition.0.request.0.query.0.sort.0.column = @view.action.count",
+	"widget.0.list_stream_definition.0.request.0.query.0.sort.0.order = desc",
+	"widget.0.list_stream_definition.0.request.0.columns.0.field = has_replay",
+	"widget.0.list_stream_definition.0.request.0.columns.0.width = auto",
+	"widget.0.list_stream_definition.0.request.0.columns.1.field = timestamp",
+	"widget.0.list_stream_definition.0.request.0.columns.1.width = auto",
+	"widget.0.list_stream_definition.0.request.0.columns.2.field = @view.action.count",
+	"widget.0.list_stream_definition.0.request.0.columns.2.width = auto",
+}
+
+func TestAccDatadogDashboardListRumEvents(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardListStreamRumConfig, "datadog_dashboard.list_stream_event_dashboard_rum", datadogDashboardListStreamRumAsserts)
+}
