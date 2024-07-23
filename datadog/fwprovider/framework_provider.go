@@ -63,6 +63,8 @@ var Resources = []func() resource.Resource{
 	NewSecurityMonitoringSuppressionResource,
 	NewCSMThreatsAgentRuleResource,
 	NewServiceAccountResource,
+	NewWebhookResource,
+	NewWebhookCustomVariableResource,
 }
 
 var Datasources = []func() datasource.DataSource{
