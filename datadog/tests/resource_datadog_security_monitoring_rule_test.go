@@ -445,6 +445,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 }
 `, name)
 }
+
 func testAccCheckDatadogSecurityMonitoringCreatedConfigInvalidRule(name string) string {
 	return fmt.Sprintf(`
 resource "datadog_security_monitoring_rule" "acceptance_test" {
@@ -1560,5 +1561,99 @@ func testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider func() (*schem
 		}
 		return nil
 	}
+}
 
+func TestAccDatadogSecurityMonitoringRule_DefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // New tags are correctly added
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "i:tomato"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "u:tomato"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"i": "not_tomato",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "i:tomato"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "u:tomato"),
+				),
+			},
+			{ // Resource tags take precedence over default tags, but new tags are added
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"i":       "not_tomato",
+						"new_tag": "new_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "i:tomato"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "u:tomato"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "new_tag:new_value"),
+				),
+			},
+			{ // Tags without any value work correctly
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfig(ruleName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"no_value": "",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "i:tomato"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "u:tomato"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "no_value"),
+				),
+			},
+			{ // Works with monitors without a tag attribute
+				Config: testAccCheckDatadogSecurityMonitoringCreatedRequiredConfig(ruleName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_security_monitoring_rule.acceptance_test", "tags.*", "default_key:default_value"),
+				),
+			},
+		},
+	})
 }

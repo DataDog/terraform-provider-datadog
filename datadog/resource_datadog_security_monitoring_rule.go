@@ -6,6 +6,7 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
@@ -21,7 +22,7 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 		ReadContext:   resourceDatadogSecurityMonitoringRuleRead,
 		UpdateContext: resourceDatadogSecurityMonitoringRuleUpdate,
 		DeleteContext: resourceDatadogSecurityMonitoringRuleDelete,
-		CustomizeDiff: resourceDatadogSecurityMonitoringRuleCustomizeDiff,
+		CustomizeDiff: customdiff.All(resourceDatadogSecurityMonitoringRuleCustomizeDiff, tagDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -407,6 +408,7 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 		"tags": {
 			Type:        schema.TypeSet,
 			Optional:    true,
+			Computed:    true,
 			Description: "Tags for generated signals.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
@@ -549,7 +551,6 @@ func checkQueryConsistency(d utils.Resource) error {
 }
 
 func buildCreatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleCreatePayload, error) {
-
 	if err := checkQueryConsistency(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, err
 	}
@@ -564,7 +565,6 @@ func buildCreatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleCrea
 }
 
 func buildValidatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleValidatePayload, error) {
-
 	if err := checkQueryConsistency(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleValidatePayload{}, err
 	}
@@ -1187,7 +1187,6 @@ func updateSignalResourceDataFromResponse(d *schema.ResourceData, ruleResponse *
 }
 
 func extractFiltersFromRuleResponse(ruleResponseFilter []datadogV2.SecurityMonitoringFilter) []interface{} {
-
 	filters := make([]interface{}, len(ruleResponseFilter))
 	for idx, responseFilter := range ruleResponseFilter {
 		filter := make(map[string]interface{})
