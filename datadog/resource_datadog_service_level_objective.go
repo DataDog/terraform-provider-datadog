@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
@@ -91,7 +92,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 		ReadContext:   resourceDatadogServiceLevelObjectiveRead,
 		UpdateContext: resourceDatadogServiceLevelObjectiveUpdate,
 		DeleteContext: resourceDatadogServiceLevelObjectiveDelete,
-		CustomizeDiff: resourceDatadogServiceLevelObjectiveCustomizeDiff,
+		CustomizeDiff: customdiff.All(resourceDatadogServiceLevelObjectiveCustomizeDiff, tagDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -118,6 +119,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					Type:        schema.TypeSet,
 					Description: "A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API",
 					Optional:    true,
+					Computed:    true,
 					Elem: &schema.Schema{
 						Type: schema.TypeString,
 						StateFunc: func(val any) string {
@@ -368,7 +370,6 @@ func buildSLOTimeSliceQueryStruct(d []interface{}) *datadogV1.SLOTimeSliceQuery 
 }
 
 func buildServiceLevelObjectiveStructs(d *schema.ResourceData) (*datadogV1.ServiceLevelObjective, *datadogV1.ServiceLevelObjectiveRequest, error) {
-
 	slo := datadogV1.NewServiceLevelObjectiveWithDefaults()
 	slo.SetName(d.Get("name").(string))
 	slo.SetType(datadogV1.SLOType(d.Get("type").(string)))
@@ -814,7 +815,6 @@ func resourceDatadogServiceLevelObjectiveUpdate(ctx context.Context, d *schema.R
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 	slo, _, err := buildServiceLevelObjectiveStructs(d)
-
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -847,7 +847,6 @@ func resourceDatadogServiceLevelObjectiveDelete(ctx context.Context, d *schema.R
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting service level objective")
 	}
 	return nil
-
 }
 
 func trimStateValue(val interface{}) string {
