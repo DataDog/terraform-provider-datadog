@@ -4964,7 +4964,6 @@ func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resourc
 			auth := providerConf.Auth
 
 			syntheticsTest, _, err := apiInstances.GetSyntheticsApiV1().GetBrowserTest(auth, r.Primary.ID)
-
 			if err != nil {
 				return fmt.Errorf("failed to read synthetics test %s", err)
 			}
@@ -4996,4 +4995,98 @@ func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resourc
 
 		return nil
 	}
+}
+
+func TestAccDatadogSyntheticsTest_DefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // New tags are correctly added
+				Config: createSyntheticsTCPTestConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_test.tcp", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags
+				Config: createSyntheticsTCPTestConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo": "not_bar",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_test.tcp", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "foo:bar"),
+				),
+			},
+			{ // Resource tags take precedence over default tags, but new tags are added
+				Config: createSyntheticsTCPTestConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo":     "not_bar",
+						"new_tag": "new_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_test.tcp", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "new_tag:new_value"),
+				),
+			},
+			{ // Tags without any value work correctly
+				Config: createSyntheticsTCPTestConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"no_value": "",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_test.tcp", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.tcp", "tags.*", "no_value"),
+				),
+			},
+			{ // Works with monitors without a tag attribute
+				Config: createSyntheticsSSLMissingTagsAttributeTestConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_test.ssl", "tags.*", "default_key:default_value"),
+				),
+			},
+		},
+	})
 }

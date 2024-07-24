@@ -33,6 +33,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		ReadContext:   resourceDatadogSyntheticsTestRead,
 		UpdateContext: resourceDatadogSyntheticsTestUpdate,
 		DeleteContext: resourceDatadogSyntheticsTestDelete,
+		CustomizeDiff: tagDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -112,6 +113,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Description: "A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).",
 					Type:        schema.TypeList,
 					Optional:    true,
+					Computed:    true,
 					Elem: &schema.Schema{
 						Type:             schema.TypeString,
 						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
@@ -3357,7 +3359,6 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 	actualAssertions := config.GetAssertions()
 	localAssertions, err := buildLocalAssertions(actualAssertions)
-
 	if err != nil {
 		return diag.FromErr(err)
 	}
