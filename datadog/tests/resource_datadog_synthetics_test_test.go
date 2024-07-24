@@ -112,6 +112,28 @@ func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 		},
 	})
 }
+func TestAccDatadogSyntheticsGRPCTest_importBasic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: createSyntheticsGRPCTestConfig(testName),
+			},
+			{
+				ResourceName:      "datadog_synthetics_test.grpc",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
 
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 	t.Parallel()

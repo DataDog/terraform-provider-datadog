@@ -2608,27 +2608,11 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 		localRequest["http_version"] = request.GetHttpVersion()
 	}
 	if request.HasCompressedJsonDescriptor() {
-		decodedValue, _ := b64.StdEncoding.DecodeString(request.GetCompressedJsonDescriptor())
-		decodedBytes := bytes.NewReader(decodedValue)
-		zl, _ := zlib.NewReader(decodedBytes)
-		defer zl.Close()
-		compressedJsonDescriptor, _ := io.ReadAll(zl)
-		var result string
-		_ = json.Unmarshal(compressedJsonDescriptor, &result)
-
-		localRequest["proto_json_descriptor"] = result
+		localRequest["proto_json_descriptor"] = decompressAndDecodeValue(request.GetCompressedJsonDescriptor())
 	}
+
 	if request.HasCompressedProtoFile() {
-		decodedValue, _ := b64.StdEncoding.DecodeString(request.GetCompressedProtoFile())
-		decodedBytes := bytes.NewReader(decodedValue)
-		zl, _ := zlib.NewReader(decodedBytes)
-		defer zl.Close()
-		compressedProtoFile, _ := io.ReadAll(zl)
-		var result string
-		json.Unmarshal(compressedProtoFile, &result)
-
-		localRequest["plain_proto_file"] = result
-
+		localRequest["plain_proto_file"] = decompressAndDecodeValue(request.GetCompressedProtoFile())
 	}
 
 	return localRequest
@@ -3763,11 +3747,19 @@ func convertStepParamsKey(key string) string {
 }
 
 func compressAndEncodeValue(value string) string {
-	stringifiedValue, _ := json.Marshal(value)
 	var compressedValue bytes.Buffer
 	zl := zlib.NewWriter(&compressedValue)
-	zl.Write(stringifiedValue)
+	zl.Write([]byte(value))
 	zl.Close()
 	encodedCompressedValue := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
 	return encodedCompressedValue
+}
+
+func decompressAndDecodeValue(value string) string {
+	decodedValue, _ := b64.StdEncoding.DecodeString(value)
+	decodedBytes := bytes.NewReader(decodedValue)
+	zl, _ := zlib.NewReader(decodedBytes)
+	defer zl.Close()
+	compressedProtoFile, _ := io.ReadAll(zl)
+	return string(compressedProtoFile)
 }
