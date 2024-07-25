@@ -48,7 +48,7 @@ resource "datadog_apm_retention_filter" "foo" {
 
 Optional:
 
-- `query` (String) The search query - following the span search syntax. Defaults to `"*"`.
+- `query` (String) The search query - follow the span search syntax, use `AND` between tags and `\` to escape special characters, use nanosecond for duration. Defaults to `"*"`.
 
 ## Import
 
