@@ -20,7 +20,7 @@ func archiveAzureConfigForCreation(uniq string) string {
 resource "datadog_integration_azure" "an_azure_integration" {
   tenant_name   = "%s"
   client_id     = "a75fbdd2-ade6-43d0-a810-4d886c53871e"
-  client_secret = "testingx./Sw*g/Y33t..R1cH+hScMDt"
+  client_secret = "TestingRh2nx664kUy5dIApvM54T4AtO"
 }
 
 resource "datadog_logs_archive" "my_azure_archive" {
