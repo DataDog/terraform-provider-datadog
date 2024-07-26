@@ -160,14 +160,14 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    1,
-				Description: "[Experimental - Monitors only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "Configuration block containing settings to apply default resource tags across all compatible resources (monitor, security_monitoring_rule, sensitive_data_scanner_rule, service_level_objective, synthetics_test, synthetics_global_variable).",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"tags": {
 							Type:        schema.TypeMap,
 							Optional:    true,
 							Elem:        &schema.Schema{Type: schema.TypeString},
-							Description: "[Experimental - Monitors only] Resource tags to be applied by default across all resources.",
+							Description: "Resource tags across all compatible resources (monitor, security_monitoring_rule, sensitive_data_scanner_rule, service_level_objective, synthetics_test, synthetics_global_variable).",
 						},
 					},
 				},

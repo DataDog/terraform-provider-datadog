@@ -190,13 +190,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Monitors only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "Configuration block containing settings to apply default resource tags across all compatible resources (monitor, security_monitoring_rule, sensitive_data_scanner_rule, service_level_objective, synthetics_test, synthetics_global_variable).",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Monitors only] Resource tags to be applied by default across all resources.",
+							Description: "Resource tags across all compatible resources (monitor, security_monitoring_rule, sensitive_data_scanner_rule, service_level_objective, synthetics_test, synthetics_global_variable).",
 						},
 					},
 				},
