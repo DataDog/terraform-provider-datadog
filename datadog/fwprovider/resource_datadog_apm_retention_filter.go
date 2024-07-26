@@ -90,7 +90,7 @@ func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 					"query": schema.StringAttribute{
 						Optional:    true,
 						Computed:    true,
-						Description: "The search query - following the span search syntax.",
+						Description: "The search query - follow the span search syntax, use `AND` between tags and `\\` to escape special characters, use nanosecond for duration.",
 						Default:     stringdefault.StaticString("*"),
 					},
 				},
