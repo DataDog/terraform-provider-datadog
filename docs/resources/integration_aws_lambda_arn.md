@@ -22,7 +22,7 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
   lambda_arn = "arn:aws:lambda:us-east-1:1234567890:function:datadog-forwarder-Forwarder"
 }
 ```
-**Note**: If you are using AWS GovCloud or the China* region, update the `lambda_arn` parameter for your environment.
+**Note**: If you are using AWS GovCloud or the AWS China* region, update the `lambda_arn` parameter for your environment.
 
 *\* All use of Datadog Services in (or in connection with environments within) mainland China is subject to the disclaimer published in the <a href="https://www.datadoghq.com/legal/restricted-service-locations/">Restricted Service Locations</a> section on our website.*
 
