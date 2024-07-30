@@ -70,7 +70,7 @@ func (r *serviceAccountResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Required:    true,
 			},
 			"roles": schema.SetAttribute{
-				Description: "A list a role IDs to assign to the service account.",
+				Description: "A list of role IDs to assign to the service account.",
 				Optional:    true,
 				Computed:    true,
 				ElementType: types.StringType,
