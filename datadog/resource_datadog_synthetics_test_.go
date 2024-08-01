@@ -1563,35 +1563,8 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
-
-	if attr, ok := d.GetOk("request_file"); ok && attr != nil {
-		files := []datadogV1.SyntheticsTestRequestBodyFile{}
-		for _, f := range attr.([]interface{}) {
-			fileMap := f.(map[string]interface{})
-			file := datadogV1.SyntheticsTestRequestBodyFile{}
-
-			file.SetName(fileMap["name"].(string))
-			file.SetOriginalFileName(fileMap["original_file_name"].(string))
-			file.SetType(fileMap["type"].(string))
-			file.SetSize(int64(fileMap["size"].(int)))
-
-			if content, ok := fileMap["content"]; ok && content != "" {
-				file.SetContent(content.(string))
-			}
-
-			// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
-			// Hence, the provider is uploading the file every time the resource is modified.
-			// Always adding the bucket key to the request would prevent updating the file content.
-			// Always omitting the existing bucket key from the request update the file every time the resource is updated.
-			// We purposely choose the latter.
-			// if bucketKey, ok := fileMap["bucket_key"]; ok && bucketKey != "" {
-			// 	file.SetBucketKey(bucketKey.(string))
-			// }
-
-			files = append(files, file)
-		}
-
-		request.SetFiles(files)
+	if attr, ok := d.GetOk("request_file"); ok && attr != nil && len(attr.([]interface{})) > 0 {
+		request.SetFiles(buildBodyFilesStruct(attr.([]interface{})))
 	}
 	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
@@ -1746,6 +1719,10 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 						request.SetNoSavingResponseBody(requestMap["no_saving_response_body"].(bool))
 						if v, ok := requestMap["body_type"].(string); ok && v != "" {
 							request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(v))
+						}
+
+						if attr, ok := stepMap["request_file"]; ok && attr != nil && len(attr.([]interface{})) > 0 {
+							request.SetFiles(buildBodyFilesStruct(attr.([]interface{})))
 						}
 					}
 				}
@@ -2300,6 +2277,55 @@ func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 	}
 
 	return options
+}
+
+func buildBodyFilesStruct(attr []interface{}) []datadogV1.SyntheticsTestRequestBodyFile {
+	files := []datadogV1.SyntheticsTestRequestBodyFile{}
+	for _, f := range attr {
+		fileMap := f.(map[string]interface{})
+		file := datadogV1.SyntheticsTestRequestBodyFile{}
+
+		file.SetName(fileMap["name"].(string))
+		file.SetOriginalFileName(fileMap["original_file_name"].(string))
+		file.SetType(fileMap["type"].(string))
+		file.SetSize(int64(fileMap["size"].(int)))
+
+		if content, ok := fileMap["content"]; ok && content != "" {
+			file.SetContent(content.(string))
+		}
+
+		// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
+		// Hence, the provider is uploading the file every time the resource is modified.
+		// Always adding the bucket key to the request would prevent updating the file content.
+		// Always omitting the existing bucket key from the request update the file every time the resource is updated.
+		// We purposely choose the latter.
+		// if bucketKey, ok := fileMap["bucket_key"]; ok && bucketKey != "" {
+		// 	file.SetBucketKey(bucketKey.(string))
+		// }
+
+		files = append(files, file)
+	}
+
+	return files
+}
+
+func buildLocalBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, previousLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
+	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
+	for i, file := range *actualBodyFiles {
+		// The file content is kept from the existing localFile from the state,
+		// as the response from the backend contains the bucket key rather than the content.
+		localFile := previousLocalBodyFiles[i]
+		localFile["name"] = file.GetName()
+		localFile["original_file_name"] = file.GetOriginalFileName()
+		localFile["type"] = file.GetType()
+		localFile["size"] = file.GetSize()
+
+		if bucket_key, ok := file.GetBucketKeyOk(); ok {
+			localFile["bucket_key"] = bucket_key
+		}
+		localBodyFiles[i] = localFile
+	}
+	return localBodyFiles
 }
 
 func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
@@ -3333,23 +3359,15 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		d.Set("request_proxy", []map[string]interface{}{localProxy})
 	}
 
-	if files, ok := actualRequest.GetFilesOk(); ok && files != nil {
-		localFiles := make([]map[string]interface{}, len(*files))
-		for i, file := range *files {
-			// The file content is kept from the existing localFile from the state,
-			// as the response from the backend contains the bucket key rather than the content.
-			localFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
-			localFile["name"] = file.GetName()
-			localFile["original_file_name"] = file.GetOriginalFileName()
-			localFile["type"] = file.GetType()
-			localFile["size"] = file.GetSize()
-
-			if bucket_key, ok := file.GetBucketKeyOk(); ok {
-				localFile["bucket_key"] = bucket_key
-			}
-			localFiles[i] = localFile
+	if files, ok := actualRequest.GetFilesOk(); ok && files != nil && len(*files) > 0 {
+		previousLocalFilesCount := d.Get("request_file.#").(int)
+		previousLocalFiles := make([]map[string]interface{}, previousLocalFilesCount)
+		for i := 0; i < previousLocalFilesCount; i++ {
+			previousLocalFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
+			previousLocalFiles[i] = previousLocalFile
 		}
 
+		localFiles := buildLocalBodyFiles(files, previousLocalFiles)
 		if err := d.Set("request_file", localFiles); err != nil {
 			return diag.FromErr(err)
 		}
@@ -3477,6 +3495,18 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 					localProxy["headers"] = proxy.GetHeaders()
 
 					localStep["request_proxy"] = []map[string]interface{}{localProxy}
+				}
+
+				if files, ok := stepRequest.GetFilesOk(); ok && files != nil && len(*files) > 0 {
+					previousLocalFilesCount := d.Get(fmt.Sprintf("api_step.%d.request_file.#", i)).(int)
+					previousLocalFiles := make([]map[string]interface{}, previousLocalFilesCount)
+					for j := 0; j < previousLocalFilesCount; j++ {
+						previousLocalFile := d.Get(fmt.Sprintf("api_step.%d.request_file.%d", i, j)).(map[string]interface{})
+						previousLocalFiles[j] = previousLocalFile
+					}
+
+					localFiles := buildLocalBodyFiles(files, previousLocalFiles)
+					localStep["request_file"] = localFiles
 				}
 
 				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
