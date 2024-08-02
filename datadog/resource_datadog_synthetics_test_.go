@@ -189,7 +189,7 @@ func syntheticsTestRequest() *schema.Resource {
 			},
 			"port": {
 				Description: "Port to use when performing the test.",
-				Type:        schema.TypeInt,
+				Type:        schema.TypeString,
 				Optional:    true,
 			},
 			"dns_server": {
@@ -198,10 +198,9 @@ func syntheticsTestRequest() *schema.Resource {
 				Optional:    true,
 			},
 			"dns_server_port": {
-				Description:  "DNS server port to use for DNS tests.",
-				Type:         schema.TypeInt,
-				Optional:     true,
-				ValidateFunc: validation.IntAtMost(65535),
+				Description: "DNS server port to use for DNS tests.",
+				Type:        schema.TypeString,
+				Optional:    true,
 			},
 			"no_saving_response_body": {
 				Description: "Determines whether or not to save the response body.",
@@ -1968,13 +1967,13 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		request.SetHost(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.port"); ok {
-		request.SetPort(int64(attr.(int)))
+		request.SetPort(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.dns_server"); ok {
 		request.SetDnsServer(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.dns_server_port"); ok {
-		request.SetDnsServerPort(int32(attr.(int)))
+		request.SetDnsServerPort(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.no_saving_response_body"); ok {
 		request.SetNoSavingResponseBody(attr.(bool))
@@ -2062,7 +2061,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 					request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
 					if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
 						request.SetHost(requestMap["host"].(string))
-						request.SetPort(int64(requestMap["port"].(int)))
+						request.SetPort(requestMap["port"].(string))
 						request.SetService(requestMap["service"].(string))
 						request.SetMessage(requestMap["message"].(string))
 						if v, ok := requestMap["call_type"].(string); ok && v != "" {
