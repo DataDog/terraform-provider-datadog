@@ -236,6 +236,32 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsApiTest_FileUpload(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	testName := uniqueEntityName(ctx, t)
+
+	filesCreation := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
+		"file1", "file.txt", "this is the original file content", "text/plain")}
+	filesUpdate := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
+		"file1", "file.txt", "this is the new file content", "text/plain")}
+
+	// This variable is used to share the previous bucket key between the different test steps, and make sure it's updated.
+	var previousBucketKey string
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesCreation, &previousBucketKey, true),
+			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, true),
+			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, false),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -550,6 +576,32 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	testName := uniqueEntityName(ctx, t)
+
+	filesCreation := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
+		"file1", "file.txt", "this is the original file content", "text/plain")}
+	filesUpdate := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
+		"file1", "file.txt", "this is the new file content", "text/plain")}
+
+	// This variable is used to share the previous bucket key between the different test steps, and make sure it's updated.
+	var previousBucketKey string
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMultistepAPITestFileUpload(ctx, accProvider, t, testName, filesCreation, &previousBucketKey, true),
+			createSyntheticsMultistepAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, true),
+			createSyntheticsMultistepAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, false),
+		},
+	})
+}
+
 // When creating a browser test from the UI, the steps are not added yet, they are added afterward,
 // on the recorder page with the save_test_steps.
 // On test edit, because the UI client is not sending the steps, they are omitted from the edit.
@@ -708,32 +760,6 @@ func updateSyntheticsBrowserTestWithMultipleStepsStep(ctx context.Context, accPr
 				"datadog_synthetics_test.test", "browser_step.3.params.0.element", "{\"multiLocator\":{\"ab\":\"ab fourth\",\"at\":\"at fourth\",\"cl\":\"cl fourth\",\"clt\":\"clt fourth\",\"co\":\"co fourth\"},\"targetOuterHTML\":\"targetOuterHTML fourth\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
 		),
 	}
-}
-
-func TestAccDatadogSyntheticsApiTestFileUpload_Basic(t *testing.T) {
-	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
-	testName := uniqueEntityName(ctx, t)
-
-	filesCreation := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
-		"file1", "file.txt", "this is the original file content", "text/plain")}
-	filesUpdate := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
-		"file1", "file.txt", "this is the new file content", "text/plain")}
-
-	// This variable is used to share the previous bucket key between the different test steps, and make sure it's updated.
-	var previousBucketKey string
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
-		Steps: []resource.TestStep{
-			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesCreation, &previousBucketKey, true),
-			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, true),
-			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, false),
-		},
-	})
 }
 
 func createSyntheticsAPITestConfigFileUpload(uniq string, bodyType string, requestFiles []datadogV1.SyntheticsTestRequestBodyFile) string {
@@ -4910,6 +4936,97 @@ resource "datadog_synthetics_test" "multi" {
   }
 }
 `, testName, variableName)
+}
+
+func createSyntheticsMultistepAPITestFileUpload(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
+	bodyType := "multipart/form-data"
+	return resource.TestStep{
+		Config: createSyntheticsMultistepAPITestConfigFileUpload(testName, bodyType, files),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "subtype", "multi"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.timeout", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.body_type", bodyType),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.name", *files[0].Name),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.original_file_name", *files[0].OriginalFileName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.size", fmt.Sprintf("%d", *files[0].Size)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.type", *files[0].Type),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.content", *files[0].Content),
+			resource.TestMatchResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.bucket_key", bucketKeyRegex),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.file_upload", "monitor_id"),
+			func(s *terraform.State) error {
+				for _, r := range s.RootModule().Resources {
+					if r.Type == "datadog_synthetics_test" {
+						// We aren't sure yet how to let the provider check if the content was updated to upload it again.
+						// Hence, the provider is uploading the file every time the resource is modified.
+						// Checking if the bucket key is different from the previous one allows to make sure the file is uploaded every time.
+						if previousBucketKey != nil && r.Primary.Attributes["api_step.0.request_file.0.bucket_key"] == *previousBucketKey && bucketKeyShouldUpdate {
+							return fmt.Errorf("Terraform plan is not uploading and updating the bucket key: %s", *previousBucketKey)
+						}
+						*previousBucketKey = r.Primary.Attributes["api_step.0.request_file.0.bucket_key"]
+					}
+				}
+				return nil
+			},
+		),
+	}
+}
+
+func createSyntheticsMultistepAPITestConfigFileUpload(testName string, bodyType string, requestFiles []datadogV1.SyntheticsTestRequestBodyFile) string {
+	fileBlocks := ""
+	for _, file := range requestFiles {
+		fileBlocks += createSyntheticsAPIRequestFileBlock(file) + "\n\n"
+	}
+
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "file_upload" {
+	type       = "api"
+	subtype    = "multi"
+	locations  = ["aws:eu-central-1"]
+	name       = "%[1]s"
+	message    = "Notify @datadog.user"
+	status     = "paused"
+
+	options_list {
+		tick_every = 60
+	}
+
+	api_step {
+		name = "Upload file"
+		request_definition {
+			method = "GET"
+			url = "https://www.datadoghq.com"
+			body_type = "%[2]s"
+			timeout = 30
+			no_saving_response_body = true
+		}
+
+		%[3]s
+
+		assertion {
+			type     = "statusCode"
+			operator = "is"
+			target   = "200"
+		}
+	}
+}
+`, testName, bodyType, fileBlocks)
 }
 
 func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
