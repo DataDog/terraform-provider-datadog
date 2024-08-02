@@ -2309,12 +2309,12 @@ func buildBodyFilesStruct(attr []interface{}) []datadogV1.SyntheticsTestRequestB
 	return files
 }
 
-func buildLocalBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, previousLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
+func buildLocalBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
 	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
 	for i, file := range *actualBodyFiles {
 		// The file content is kept from the existing localFile from the state,
 		// as the response from the backend contains the bucket key rather than the content.
-		localFile := previousLocalBodyFiles[i]
+		localFile := oldLocalBodyFiles[i]
 		localFile["name"] = file.GetName()
 		localFile["original_file_name"] = file.GetOriginalFileName()
 		localFile["type"] = file.GetType()
@@ -3360,14 +3360,14 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	if files, ok := actualRequest.GetFilesOk(); ok && files != nil && len(*files) > 0 {
-		previousLocalFilesCount := d.Get("request_file.#").(int)
-		previousLocalFiles := make([]map[string]interface{}, previousLocalFilesCount)
-		for i := 0; i < previousLocalFilesCount; i++ {
-			previousLocalFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
-			previousLocalFiles[i] = previousLocalFile
+		oldLocalFilesCount := d.Get("request_file.#").(int)
+		oldLocalFiles := make([]map[string]interface{}, oldLocalFilesCount)
+		for i := 0; i < oldLocalFilesCount; i++ {
+			oldLocalFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
+			oldLocalFiles[i] = oldLocalFile
 		}
 
-		localFiles := buildLocalBodyFiles(files, previousLocalFiles)
+		localFiles := buildLocalBodyFiles(files, oldLocalFiles)
 		if err := d.Set("request_file", localFiles); err != nil {
 			return diag.FromErr(err)
 		}
@@ -3498,14 +3498,14 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 
 				if files, ok := stepRequest.GetFilesOk(); ok && files != nil && len(*files) > 0 {
-					previousLocalFilesCount := d.Get(fmt.Sprintf("api_step.%d.request_file.#", i)).(int)
-					previousLocalFiles := make([]map[string]interface{}, previousLocalFilesCount)
-					for j := 0; j < previousLocalFilesCount; j++ {
-						previousLocalFile := d.Get(fmt.Sprintf("api_step.%d.request_file.%d", i, j)).(map[string]interface{})
-						previousLocalFiles[j] = previousLocalFile
+					oldLocalFilesCount := d.Get(fmt.Sprintf("api_step.%d.request_file.#", i)).(int)
+					oldLocalFiles := make([]map[string]interface{}, oldLocalFilesCount)
+					for j := 0; j < oldLocalFilesCount; j++ {
+						oldLocalFile := d.Get(fmt.Sprintf("api_step.%d.request_file.%d", i, j)).(map[string]interface{})
+						oldLocalFiles[j] = oldLocalFile
 					}
 
-					localFiles := buildLocalBodyFiles(files, previousLocalFiles)
+					localFiles := buildLocalBodyFiles(files, oldLocalFiles)
 					localStep["request_file"] = localFiles
 				}
 
