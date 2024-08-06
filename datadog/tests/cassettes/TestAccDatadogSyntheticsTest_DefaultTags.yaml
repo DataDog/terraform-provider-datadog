@@ -1,0 +1,969 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 542
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"tcp","tags":["foo:bar","baz","default_key:default_value"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","default_key:default_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:11.121794+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","created_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"},"deleted_at":null,"monitor_id":149819675,"org_id":321813,"modified_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 656.871708ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","default_key:default_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:11.121794+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 159.067292ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","default_key:default_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:11.121794+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 159.770541ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","default_key:default_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:11.121794+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 170.93575ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","default_key:default_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:11.121794+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 147.602083ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","default_key:default_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:11.121794+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 179.063875ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 514
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"tcp","tags":["foo:bar","baz"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:13.974884+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","created_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"},"deleted_at":null,"monitor_id":149819675,"org_id":321813,"modified_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"},"overall_state":2,"overall_state_modified":"2024-07-24T13:11:14.030022+00:00"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 683.107ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:13.974884+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.413166ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:13.974884+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.659417ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:13.974884+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 162.077792ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:13.974884+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 160.225417ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 534
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"tcp","tags":["foo:bar","baz","new_tag:new_value"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","new_tag:new_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:16.955479+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","created_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"},"deleted_at":null,"monitor_id":149819675,"org_id":321813,"modified_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"},"overall_state":2,"overall_state_modified":"2024-07-24T13:11:17.010879+00:00"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 406.882417ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","new_tag:new_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:16.955479+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.773875ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","new_tag:new_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:16.955479+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 192.67775ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","new_tag:new_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:16.955479+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 151.5325ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","new_tag:new_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:16.955479+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.226084ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 525
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"tcp","tags":["foo:bar","baz","no_value"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","no_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:19.626480+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","created_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"},"deleted_at":null,"monitor_id":149819675,"org_id":321813,"modified_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"},"overall_state":2,"overall_state_modified":"2024-07-24T13:11:19.674667+00:00"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.3164385s
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","no_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:19.626480+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 148.133375ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","no_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:19.626480+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.744166ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","no_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:19.626480+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 146.60225ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/9d8-p4a-sr7
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"9d8-p4a-sr7","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["foo:bar","baz","no_value"],"created_at":"2024-07-24T13:11:11.121794+00:00","modified_at":"2024-07-24T13:11:19.626480+00:00","config":{"assertions":[{"operator":"lessThan","target":2000,"type":"responseTime"},{"operator":"is","target":"established","type":"connection"}],"configVariables":[],"request":{"host":"agent-intake.logs.datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"tcp","monitor_id":149819675,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.72125ms
+    - id: 21
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["9d8-p4a-sr7"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"9d8-p4a-sr7","deleted_at":"2024-07-24T13:11:23.377636+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 636.07025ms
+    - id: 22
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 474
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":443}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"ssl","tags":["default_key:default_value"],"type":"api"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"trm-wnv-7e3","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["default_key:default_value"],"created_at":"2024-07-24T13:11:23.487068+00:00","modified_at":"2024-07-24T13:11:23.487068+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"ssl","created_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"},"deleted_at":null,"monitor_id":149819686,"org_id":321813,"modified_by":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 958.422084ms
+    - id: 23
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/trm-wnv-7e3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"trm-wnv-7e3","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["default_key:default_value"],"created_at":"2024-07-24T13:11:23.487068+00:00","modified_at":"2024-07-24T13:11:23.487068+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"ssl","monitor_id":149819686,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 147.40725ms
+    - id: 24
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/trm-wnv-7e3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"trm-wnv-7e3","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["default_key:default_value"],"created_at":"2024-07-24T13:11:23.487068+00:00","modified_at":"2024-07-24T13:11:23.487068+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"ssl","monitor_id":149819686,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 151.920792ms
+    - id: 25
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/trm-wnv-7e3
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"trm-wnv-7e3","name":"tf-TestAccDatadogSyntheticsTest_DefaultTags-local-1721826667","status":"paused","type":"api","tags":["default_key:default_value"],"created_at":"2024-07-24T13:11:23.487068+00:00","modified_at":"2024-07-24T13:11:23.487068+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":443}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"ssl","monitor_id":149819686,"creator":{"name":"Amaury Behague","handle":"amaury.behague@datadoghq.com","email":"amaury.behague@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 153.587542ms
+    - id: 26
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["trm-wnv-7e3"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"trm-wnv-7e3","deleted_at":"2024-07-24T13:11:26.078045+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.150973625s

@@ -453,8 +453,6 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 						"datadog_monitor.foo", "include_tags", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "false"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_monitor.foo", "tags.#"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "priority", ""),
 				),
@@ -1188,6 +1186,38 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogMonitorConfigNoTag(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "query alert"
+  message = "some message Notify: @hipchat-channel"
+  escalation_message = "the situation has escalated @pagerduty"
+  priority = 3
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  monitor_thresholds {
+	warning = "1.0"
+	critical = "2.0"
+	warning_recovery = "0.5"
+	critical_recovery = "1.5"
+  }
+
+  renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
+
+  notify_audit = false
+  timeout_h = 1
+  new_group_delay = 500
+  evaluation_delay = 700
+  include_tags = true
+  require_full_window = true
+  notification_preset_name = "hide_query"
+}`, uniq)
+}
+
 func testAccCheckDatadogMonitorConfigNoThresholdsOrPriority(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
@@ -1712,7 +1742,6 @@ func destroyMonitorHelper(ctx context.Context, s *terraform.State, apiInstances 
 			}
 			return &utils.RetryableError{Prob: "Monitor still exists"}
 		})
-
 		if err != nil {
 			return err
 		}
@@ -1733,4 +1762,98 @@ func existsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.A
 		}
 	}
 	return nil
+}
+
+func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // New tags are correctly added
+				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags
+				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo": "not_bar",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
+				),
+			},
+			{ // Resource tags take precedence over default tags, but new tags are added
+				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo":     "not_bar",
+						"new_tag": "new_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "new_tag:new_value"),
+				),
+			},
+			{ // Tags without any value work correctly
+				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"no_value": "",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "no_value"),
+				),
+			},
+			{ // Works with monitors without a tag attribute
+				Config: testAccCheckDatadogMonitorConfigNoTag(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "default_key:default_value"),
+				),
+			},
+		},
+	})
 }

@@ -23,6 +23,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 		ReadContext:   resourceDatadogSyntheticsGlobalVariableRead,
 		UpdateContext: resourceDatadogSyntheticsGlobalVariableUpdate,
 		DeleteContext: resourceDatadogSyntheticsGlobalVariableDelete,
+		CustomizeDiff: tagDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -43,6 +44,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					Description: "A list of tags to associate with your synthetics global variable.",
 					Type:        schema.TypeList,
 					Optional:    true,
+					Computed:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"value": {
@@ -199,7 +201,6 @@ func resourceDatadogSyntheticsGlobalVariableRead(ctx context.Context, d *schema.
 	auth := providerConf.Auth
 
 	syntheticsGlobalVariable, httpresp, err := apiInstances.GetSyntheticsApiV1().GetGlobalVariable(auth, d.Id())
-
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state

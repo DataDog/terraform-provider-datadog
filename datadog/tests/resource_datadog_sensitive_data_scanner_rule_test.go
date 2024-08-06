@@ -162,7 +162,8 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 						resource_name, "text_replacement.0.replacement_string", ""),
 				),
 			},
-		}})
+		},
+	})
 }
 
 func testAccCheckDatadogSensitiveDataScannerRule(name string) string {
@@ -184,6 +185,28 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 	group_id = datadog_sensitive_data_scanner_group.sample_group.id
 	pattern = "regex"
 	tags = ["sensitive_data:true"]
+}
+`, name)
+}
+
+func testAccCheckDatadogSensitiveDataScannerRuleNoTags(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_sensitive_data_scanner_group" "sample_group" {
+	name = "my group"
+	is_enabled = true
+	product_list = ["logs"]
+	filter {
+		query = "*"
+	}
+}
+
+resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
+	name = "%s"
+	description = "a description"
+	excluded_namespaces = ["username"]
+	is_enabled = true
+	group_id = datadog_sensitive_data_scanner_group.sample_group.id
+	pattern = "regex"
 }
 `, name)
 }
@@ -378,4 +401,74 @@ func testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider func() (*sche
 
 		return nil
 	}
+}
+
+func TestAccDatadogSensitiveDataScannerRule_DefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // New tags are correctly added
+				Config: testAccCheckDatadogSensitiveDataScannerRule(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_sensitive_data_scanner_rule.sample_rule", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_sensitive_data_scanner_rule.sample_rule", "tags.*", "sensitive_data:true"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_sensitive_data_scanner_rule.sample_rule", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags
+				Config: testAccCheckDatadogSensitiveDataScannerRule(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"sensitive_data": "false",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_sensitive_data_scanner_rule.sample_rule", "tags.#", "1"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_sensitive_data_scanner_rule.sample_rule", "tags.*", "sensitive_data:true"),
+				),
+			},
+			{ // Resource tags take precedence over default tags, but new tags are added
+				Config: testAccCheckDatadogSensitiveDataScannerRule(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"sensitive_data": "false",
+						"new_tag":        "new_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_sensitive_data_scanner_rule.sample_rule", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_sensitive_data_scanner_rule.sample_rule", "tags.*", "sensitive_data:true"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_sensitive_data_scanner_rule.sample_rule", "tags.*", "new_tag:new_value"),
+				),
+			},
+			{ // Works with monitors without a tag attribute
+				Config: testAccCheckDatadogSensitiveDataScannerRuleNoTags(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_sensitive_data_scanner_rule.sample_rule", "tags.*", "default_key:default_value"),
+				),
+			},
+		},
+	})
 }

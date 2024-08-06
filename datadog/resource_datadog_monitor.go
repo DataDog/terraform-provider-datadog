@@ -16,6 +16,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -31,7 +32,7 @@ func resourceDatadogMonitor() *schema.Resource {
 		ReadContext:   resourceDatadogMonitorRead,
 		UpdateContext: resourceDatadogMonitorUpdate,
 		DeleteContext: resourceDatadogMonitorDelete,
-		CustomizeDiff: resourceDatadogMonitorCustomizeDiff,
+		CustomizeDiff: customdiff.All(resourceDatadogMonitorCustomizeDiff, tagDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -306,6 +307,7 @@ func resourceDatadogMonitor() *schema.Resource {
 					// TypeSet makes Terraform ignore differences in order when creating a plan
 					Type:     schema.TypeSet,
 					Optional: true,
+					Computed: true,
 					Elem:     &schema.Schema{Type: schema.TypeString},
 				},
 				"groupby_simple_monitor": {
@@ -556,7 +558,6 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 }
 
 func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
-
 	var thresholds datadogV1.MonitorThresholds
 
 	if r, ok := d.GetOk("monitor_thresholds.0.ok"); ok {

@@ -164,6 +164,15 @@ resource "datadog_synthetics_global_variable" "foo" {
 }`, uniqVariableName)
 }
 
+func createSyntheticsGlobalVariableConfigNoTag(uniqVariableName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "foo" {
+	name = "%s"
+	description = "a global variable"
+	value = "variable-value"
+}`, uniqVariableName)
+}
+
 func updateSyntheticsGlobalVariableStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	variableName := getUniqueVariableName(ctx, t) + "_UPDATED"
 	return resource.TestStep{
@@ -516,4 +525,98 @@ func testSyntheticsGlobalVariableResourceIsDestroyed(accProvider func() (*schema
 		}
 		return nil
 	}
+}
+
+func TestAccDatadogSyntheticsGlobalVariable_DefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // New tags are correctly added
+				Config: createSyntheticsGlobalVariableConfig(getUniqueVariableName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_global_variable.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags
+				Config: createSyntheticsGlobalVariableConfig(getUniqueVariableName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo": "not_bar",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_global_variable.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "foo:bar"),
+				),
+			},
+			{ // Resource tags take precedence over default tags, but new tags are added
+				Config: createSyntheticsGlobalVariableConfig(getUniqueVariableName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo":     "not_bar",
+						"new_tag": "new_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_global_variable.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "new_tag:new_value"),
+				),
+			},
+			{ // Tags without any value work correctly
+				Config: createSyntheticsGlobalVariableConfig(getUniqueVariableName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"no_value": "",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_global_variable.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "no_value"),
+				),
+			},
+			{ // Works with monitors without a tag attribute
+				Config: createSyntheticsGlobalVariableConfigNoTag(getUniqueVariableName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_synthetics_global_variable.foo", "tags.*", "default_key:default_value"),
+				),
+			},
+		},
+	})
 }

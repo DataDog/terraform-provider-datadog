@@ -1,0 +1,754 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 174
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"","filter":{"query":"*"},"is_enabled":true,"name":"my group","product_list":["logs"]},"type":"sensitive_data_scanner_group"},"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},"meta":{"version":211523}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 2.033988208s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 469
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"a description","excluded_namespaces":["username"],"is_enabled":true,"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"pattern":"regex","tags":["sensitive_data:true","default_key:default_value"],"text_replacement":{"type":"none"}},"relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}},"type":"sensitive_data_scanner_rule"},"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}},"meta":{"version":211524}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 160.570458ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211524,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 131.944333ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211524,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 300.989041ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211524,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 144.275708ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211524,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 127.059833ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 366
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"a description","excluded_namespaces":["username"],"is_enabled":true,"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"pattern":"regex","tags":["sensitive_data:true"],"text_replacement":{"type":"none"}},"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"},"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/UpSs7EHiSOyXC-ja4K3s9w
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 28
+        uncompressed: false
+        body: |
+            {"meta":{"version":211525}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 169.503ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211525,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 126.933458ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211525,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 135.883917ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211525,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 149.916833ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211525,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 183.847208ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 386
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"a description","excluded_namespaces":["username"],"is_enabled":true,"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"pattern":"regex","tags":["sensitive_data:true","new_tag:new_value"],"text_replacement":{"type":"none"}},"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"},"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/UpSs7EHiSOyXC-ja4K3s9w
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 28
+        uncompressed: false
+        body: |
+            {"meta":{"version":211526}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 169.391208ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211526,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","new_tag:new_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 131.362875ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211526,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","new_tag:new_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 136.087875ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211526,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","new_tag:new_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 130.672458ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211526,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","new_tag:new_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 130.9415ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 414
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"a description","excluded_namespaces":["username"],"is_enabled":true,"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"pattern":"regex","tags":["sensitive_data:true","new_tag:new_value","default_key:default_value"],"text_replacement":{"type":"none"}},"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"},"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/UpSs7EHiSOyXC-ja4K3s9w
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 28
+        uncompressed: false
+        body: |
+            {"meta":{"version":211527}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 176.019375ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211527,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","new_tag:new_value","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 155.634541ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","attributes":{},"type":"sensitive_data_scanner_configuration","relationships":{"groups":{"data":[{"id":"gfeX7XRFSYavzVMujL6mSw","type":"sensitive_data_scanner_group"},{"id":"xdfyyx1FSzqEaNwOpqhsFw","type":"sensitive_data_scanner_group"},{"id":"TaGOHR22Smiz8EWCJmfUvA","type":"sensitive_data_scanner_group"},{"id":"GQFJxeDWRG6yRsZqbyhNbw","type":"sensitive_data_scanner_group"},{"id":"EXHsPd7aRE2XfaFi26AMXg","type":"sensitive_data_scanner_group"},{"id":"9ZSFF7uGREyPZwjPRR7yOw","type":"sensitive_data_scanner_group"},{"id":"sDKyWbfXQA6NGGwXEgNgMA","type":"sensitive_data_scanner_group"},{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}]}}},"meta":{"version":211527,"count_limit":100,"group_count_limit":20,"is_pci_compliant":false,"has_highlight_enabled":true,"has_multi_pass_enabled":true,"has_cascading_enabled":false,"is_configuration_superseded":false},"included":[{"id":"gfeX7XRFSYavzVMujL6mSw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1712326301","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"xdfyyx1FSzqEaNwOpqhsFw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"TaGOHR22Smiz8EWCJmfUvA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"GQFJxeDWRG6yRsZqbyhNbw","attributes":{"name":"Example-Create_Scanning_Group_returns_OK_response_1715883731","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"EXHsPd7aRE2XfaFi26AMXg","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"9ZSFF7uGREyPZwjPRR7yOw","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"sDKyWbfXQA6NGGwXEgNgMA","attributes":{"name":"my-test-group","is_enabled":false,"filter":{"query":"*"},"product_list":["logs"],"samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[]}}},{"id":"0QvFjxASTxK2VgAIXOgGnQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"M4PLjvGWR7CMz6XlCjAadA","type":"sensitive_data_scanner_rule"}]}}},{"id":"M4PLjvGWR7CMz6XlCjAadA","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721743568","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"0QvFjxASTxK2VgAIXOgGnQ","type":"sensitive_data_scanner_group"}}}},{"id":"hcI-DqxsQ5aeABxXWrvvNQ","attributes":{"name":"my group","is_enabled":true,"filter":{"query":"*"},"product_list":["logs"],"description":"","samplings":[]},"type":"sensitive_data_scanner_group","relationships":{"configuration":{"data":{"id":"7957915c634d4dcb581fa154157f5ad9c2947f50be632fb5599862069f4d2d87","type":"sensitive_data_scanner_configuration"}},"rules":{"data":[{"id":"UpSs7EHiSOyXC-ja4K3s9w","type":"sensitive_data_scanner_rule"}]}}},{"id":"UpSs7EHiSOyXC-ja4K3s9w","attributes":{"name":"tf-TestAccDatadogSensitiveDataScannerRule_DefaultTags-local-1721744693","namespaces":[],"excluded_namespaces":["username"],"pattern":"regex","text_replacement":{"type":"none"},"tags":["sensitive_data:true","new_tag:new_value","default_key:default_value"],"labels":[],"is_enabled":true,"description":"a description"},"type":"sensitive_data_scanner_rule","relationships":{"group":{"data":{"id":"hcI-DqxsQ5aeABxXWrvvNQ","type":"sensitive_data_scanner_group"}}}}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 129.23325ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 12
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/rules/UpSs7EHiSOyXC-ja4K3s9w
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 28
+        uncompressed: false
+        body: |
+            {"meta":{"version":211528}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 171.676959ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 12
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"meta":{}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/sensitive-data-scanner/config/groups/hcI-DqxsQ5aeABxXWrvvNQ
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 28
+        uncompressed: false
+        body: |
+            {"meta":{"version":211529}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 159.916667ms
