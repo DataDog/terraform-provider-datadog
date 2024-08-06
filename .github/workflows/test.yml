@@ -6,6 +6,9 @@ on:
       - master
   schedule:
     - cron: "0 1 * * *"
+  push:
+    branches:
+      - mq-working-branch-master-**
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}-test
