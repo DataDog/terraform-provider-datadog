@@ -1339,7 +1339,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 	testType := getSyntheticsTestType(d)
 
 	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
-		syntheticsTest := buildSyntheticsAPITestStruct(d)
+		syntheticsTest := buildDatadogSyntheticsAPITest(d)
 		createdSyntheticsTest, httpResponseCreate, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsAPITest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
@@ -1374,7 +1374,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 		return updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
+		syntheticsTest := buildDatadogSyntheticsBrowserTest(d)
 		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsBrowserTest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
@@ -1474,7 +1474,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 	testType := getSyntheticsTestType(d)
 
 	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
-		syntheticsTest := buildSyntheticsAPITestStruct(d)
+		syntheticsTest := buildDatadogSyntheticsAPITest(d)
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateAPITest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
@@ -1485,7 +1485,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		}
 		return updateSyntheticsAPITestLocalState(d, &updatedTest)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
+		syntheticsTest := buildDatadogSyntheticsBrowserTest(d)
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateBrowserTest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
@@ -1526,7 +1526,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
-	localRequest := buildLocalRequest(actualRequest)
+	localRequest := buildTerraformTestRequest(actualRequest)
 
 	if config.HasSetCookie() {
 		if err := d.Set("set_cookie", config.GetSetCookie()); err != nil {
@@ -1544,7 +1544,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	}
 
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
-		localAuth := buildLocalBasicAuth(basicAuth)
+		localAuth := buildTerraformBasicAuth(basicAuth)
 
 		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
 			return diag.FromErr(err)
@@ -1671,7 +1671,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		return diag.FromErr(err)
 	}
 
-	localOptionsLists := buildLocalOptions(syntheticsTest.GetOptions())
+	localOptionsLists := buildTerraformTestOptions(syntheticsTest.GetOptions())
 
 	if err := d.Set("options_list", localOptionsLists); err != nil {
 		return diag.FromErr(err)
@@ -1778,7 +1778,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
-	localRequest := buildLocalRequest(actualRequest)
+	localRequest := buildTerraformTestRequest(actualRequest)
 
 	if syntheticsTest.GetSubtype() != "multi" {
 		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
@@ -1796,7 +1796,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
-		localAuth := buildLocalBasicAuth(basicAuth)
+		localAuth := buildTerraformBasicAuth(basicAuth)
 
 		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
 			return diag.FromErr(err)
@@ -1847,14 +1847,14 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 			oldLocalFiles[i] = oldLocalFile
 		}
 
-		localFiles := buildLocalBodyFiles(files, oldLocalFiles)
+		localFiles := buildTerraformBodyFiles(files, oldLocalFiles)
 		if err := d.Set("request_file", localFiles); err != nil {
 			return diag.FromErr(err)
 		}
 	}
 
 	actualAssertions := config.GetAssertions()
-	localAssertions, err := buildLocalAssertions(actualAssertions)
+	localAssertions, err := buildTerraformAssertions(actualAssertions)
 
 	if err != nil {
 		return diag.FromErr(err)
@@ -1914,15 +1914,15 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["name"] = step.SyntheticsAPITestStep.GetName()
 				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
 
-				localAssertions, err := buildLocalAssertions(step.SyntheticsAPITestStep.GetAssertions())
+				localAssertions, err := buildTerraformAssertions(step.SyntheticsAPITestStep.GetAssertions())
 				if err != nil {
 					return diag.FromErr(err)
 				}
 				localStep["assertion"] = localAssertions
-				localStep["extracted_value"] = buildLocalExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
+				localStep["extracted_value"] = buildTerraformExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
 
 				stepRequest := step.SyntheticsAPITestStep.GetRequest()
-				localRequest := buildLocalRequest(stepRequest)
+				localRequest := buildTerraformTestRequest(stepRequest)
 				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
 				localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
 				if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
@@ -1936,7 +1936,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["request_metadata"] = stepRequest.GetMetadata()
 
 				if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
-					localAuth := buildLocalBasicAuth(basicAuth)
+					localAuth := buildTerraformBasicAuth(basicAuth)
 					localStep["request_basicauth"] = []map[string]string{localAuth}
 				}
 
@@ -1985,7 +1985,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 						oldLocalFiles[j] = oldLocalFile
 					}
 
-					localFiles := buildLocalBodyFiles(files, oldLocalFiles)
+					localFiles := buildTerraformBodyFiles(files, oldLocalFiles)
 					localStep["request_file"] = localFiles
 				}
 
@@ -2024,7 +2024,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 		return diag.FromErr(err)
 	}
 
-	localOptionsLists := buildLocalOptions(syntheticsTest.GetOptions())
+	localOptionsLists := buildTerraformTestOptions(syntheticsTest.GetOptions())
 
 	if err := d.Set("options_list", localOptionsLists); err != nil {
 		return diag.FromErr(err)
@@ -2052,7 +2052,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
  * transformer functions between datadog and terraform
  */
 
-func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsAPITest {
+func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.SyntheticsAPITest {
 	syntheticsTest := datadogV1.NewSyntheticsAPITestWithDefaults()
 	syntheticsTest.SetName(d.Get("name").(string))
 
@@ -2084,7 +2084,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
 	if attr, ok := d.GetOk("request_file"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		request.SetFiles(buildBodyFilesStruct(attr.([]interface{})))
+		request.SetFiles(buildDatadogBodyFiles(attr.([]interface{})))
 	}
 	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
@@ -2146,7 +2146,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	config.Assertions = []datadogV1.SyntheticsAssertion{}
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
-		assertions := buildAssertions(attr.([]interface{}))
+		assertions := buildDatadogAssertions(attr.([]interface{}))
 		config.Assertions = assertions
 	}
 
@@ -2194,11 +2194,11 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				step.SyntheticsAPITestStep.SetName(stepMap["name"].(string))
 				step.SyntheticsAPITestStep.SetSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepMap["subtype"].(string)))
 
-				extractedValues := buildExtractedValues(stepMap["extracted_value"].([]interface{}))
+				extractedValues := buildDatadogExtractedValues(stepMap["extracted_value"].([]interface{}))
 				step.SyntheticsAPITestStep.SetExtractedValues(extractedValues)
 
 				assertions := stepMap["assertion"].([]interface{})
-				step.SyntheticsAPITestStep.SetAssertions(buildAssertions(assertions))
+				step.SyntheticsAPITestStep.SetAssertions(buildDatadogAssertions(assertions))
 
 				request := datadogV1.SyntheticsTestRequest{}
 				requests := stepMap["request_definition"].([]interface{})
@@ -2242,7 +2242,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 						}
 
 						if attr, ok := stepMap["request_file"]; ok && attr != nil && len(attr.([]interface{})) > 0 {
-							request.SetFiles(buildBodyFilesStruct(attr.([]interface{})))
+							request.SetFiles(buildDatadogBodyFiles(attr.([]interface{})))
 						}
 					}
 				}
@@ -2280,7 +2280,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		config.SetSteps(steps)
 	}
 
-	options := buildTestOptions(d)
+	options := buildDatadogTestOptions(d)
 
 	syntheticsTest.SetConfig(*config)
 	syntheticsTest.SetOptions(*options)
@@ -2490,7 +2490,7 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 	return &request
 }
 
-func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
+func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 	assertions := make([]datadogV1.SyntheticsAssertion, 0)
 
 	for _, assertion := range attr {
@@ -2639,7 +2639,7 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 	return assertions
 }
 
-func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
+func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 	options := datadogV1.NewSyntheticsTestOptions()
 
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
@@ -2799,7 +2799,7 @@ func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 	return options
 }
 
-func buildBodyFilesStruct(attr []interface{}) []datadogV1.SyntheticsTestRequestBodyFile {
+func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequestBodyFile {
 	files := []datadogV1.SyntheticsTestRequestBodyFile{}
 	for _, f := range attr {
 		fileMap := f.(map[string]interface{})
@@ -2829,7 +2829,7 @@ func buildBodyFilesStruct(attr []interface{}) []datadogV1.SyntheticsTestRequestB
 	return files
 }
 
-func buildLocalBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
+func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
 	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
 	for i, file := range *actualBodyFiles {
 		// The file content is kept from the existing localFile from the state,
@@ -2848,7 +2848,7 @@ func buildLocalBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyF
 	return localBodyFiles
 }
 
-func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
+func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
 	request := datadogV1.SyntheticsTestRequest{}
 	if attr, ok := d.GetOk("request_definition.0.method"); ok {
 		request.SetMethod(attr.(string))
@@ -3011,7 +3011,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 		config.SetSetCookie(attr.(string))
 	}
 
-	options := buildTestOptions(d)
+	options := buildDatadogTestOptions(d)
 
 	syntheticsTest := datadogV1.NewSyntheticsBrowserTestWithDefaults()
 	syntheticsTest.SetMessage(d.Get("message").(string))
@@ -3094,7 +3094,7 @@ func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.Synthet
 	return syntheticsTest
 }
 
-func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]interface{} {
+func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) map[string]interface{} {
 	localRequest := make(map[string]interface{})
 	if request.HasBody() {
 		localRequest["body"] = request.GetBody()
@@ -3164,7 +3164,7 @@ func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]inter
 	return localRequest
 }
 
-func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (localAssertions []map[string]interface{}, err error) {
+func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (localAssertions []map[string]interface{}, err error) {
 	localAssertions = make([]map[string]interface{}, len(actualAssertions))
 	for i, assertion := range actualAssertions {
 		localAssertion := make(map[string]interface{})
@@ -3286,7 +3286,7 @@ func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (loc
 	return localAssertions, nil
 }
 
-func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]string {
+func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]string {
 	localAuth := make(map[string]string)
 
 	if basicAuth.SyntheticsBasicAuthWeb != nil {
@@ -3383,7 +3383,7 @@ func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]st
 	return localAuth
 }
 
-func buildExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
+func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
 	values := make([]datadogV1.SyntheticsParsingOptions, len(stepExtractedValues))
 
 	for i, extractedValue := range stepExtractedValues {
@@ -3413,7 +3413,7 @@ func buildExtractedValues(stepExtractedValues []interface{}) []datadogV1.Synthet
 	return values
 }
 
-func buildLocalExtractedValues(extractedValues []datadogV1.SyntheticsParsingOptions) []map[string]interface{} {
+func buildTerraformExtractedValues(extractedValues []datadogV1.SyntheticsParsingOptions) []map[string]interface{} {
 	localExtractedValues := make([]map[string]interface{}, len(extractedValues))
 
 	for i, extractedValue := range extractedValues {
@@ -3435,7 +3435,7 @@ func buildLocalExtractedValues(extractedValues []datadogV1.SyntheticsParsingOpti
 	return localExtractedValues
 }
 
-func buildLocalOptions(actualOptions datadogV1.SyntheticsTestOptions) []map[string]interface{} {
+func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []map[string]interface{} {
 	localOptionsList := make(map[string]interface{})
 
 	if actualOptions.HasFollowRedirects() {
