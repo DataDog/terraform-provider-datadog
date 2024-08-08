@@ -2306,548 +2306,6 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 	return syntheticsTest
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
-	if len(requestHeaders) > 0 {
-		headers := make(map[string]string, len(requestHeaders))
-
-		for k, v := range requestHeaders {
-			headers[k] = v.(string)
-		}
-
-		request.SetHeaders(headers)
-	}
-
-	if len(requestQuery) > 0 {
-		request.SetQuery(requestQuery)
-	}
-
-	if len(basicAuth) > 0 {
-		if requestBasicAuth, ok := basicAuth[0].(map[string]interface{}); ok {
-			if requestBasicAuth["type"] == "web" && requestBasicAuth["username"] != "" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
-				basicAuth.SetPassword(requestBasicAuth["password"].(string))
-				basicAuth.SetUsername(requestBasicAuth["username"].(string))
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "sigv4" && requestBasicAuth["access_key"] != "" && requestBasicAuth["secret_key"] != "" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthSigv4(requestBasicAuth["access_key"].(string), requestBasicAuth["secret_key"].(string), datadogV1.SYNTHETICSBASICAUTHSIGV4TYPE_SIGV4)
-
-				basicAuth.SetRegion(requestBasicAuth["region"].(string))
-				basicAuth.SetServiceName(requestBasicAuth["service_name"].(string))
-				basicAuth.SetSessionToken(requestBasicAuth["session_token"].(string))
-
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "ntlm" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthNTLM(datadogV1.SYNTHETICSBASICAUTHNTLMTYPE_NTLM)
-
-				basicAuth.SetUsername(requestBasicAuth["username"].(string))
-				basicAuth.SetPassword(requestBasicAuth["password"].(string))
-				basicAuth.SetDomain(requestBasicAuth["domain"].(string))
-				basicAuth.SetWorkstation(requestBasicAuth["workstation"].(string))
-
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "oauth-client" {
-				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
-				if err == nil {
-					tokenApiAuthenticationValue = *tokenApiAuthentication
-				}
-				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(
-					requestBasicAuth["access_token_url"].(string),
-					requestBasicAuth["client_id"].(string),
-					requestBasicAuth["client_secret"].(string),
-					tokenApiAuthenticationValue,
-					datadogV1.SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT,
-				)
-
-				// optional fields for oauth must not be included if they have no value, or the authentication will fail
-				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
-					basicAuth.SetAudience(v)
-				}
-				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
-					basicAuth.SetResource(v)
-				}
-				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
-					basicAuth.SetScope(v)
-				}
-
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "oauth-rop" {
-				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
-				if err == nil {
-					tokenApiAuthenticationValue = *tokenApiAuthentication
-				}
-				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
-					requestBasicAuth["access_token_url"].(string),
-					requestBasicAuth["password"].(string),
-					tokenApiAuthenticationValue,
-					datadogV1.SYNTHETICSBASICAUTHOAUTHROPTYPE_OAUTH_ROP,
-					requestBasicAuth["username"].(string))
-
-				// optional fields for oauth must not be included if they have no value, or the authentication will fail
-				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
-					basicAuth.SetAudience(v)
-				}
-				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
-					basicAuth.SetResource(v)
-				}
-				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
-					basicAuth.SetScope(v)
-				}
-				basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
-				basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
-
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "digest" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(
-					requestBasicAuth["password"].(string),
-					datadogV1.SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST,
-					requestBasicAuth["username"].(string),
-				)
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth))
-			}
-		}
-	}
-
-	if len(requestClientCertificates) > 0 {
-		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
-		key := datadogV1.SyntheticsTestRequestCertificateItem{}
-		clientCertificate := requestClientCertificates[0].(map[string]interface{})
-		clientCerts := clientCertificate["cert"].([]interface{})
-		clientKeys := clientCertificate["key"].([]interface{})
-
-		clientCert := clientCerts[0].(map[string]interface{})
-		clientKey := clientKeys[0].(map[string]interface{})
-
-		if clientCert["content"] != "" {
-			// only set the certificate content if it is not an already hashed string
-			// this is needed for the update function that receives the data from the state
-			// and not from the config. So we get a hash of the certificate and not it's real
-			// value.
-			if isHash := isCertHash(clientCert["content"].(string)); !isHash {
-				cert.SetContent(clientCert["content"].(string))
-			}
-		}
-		if clientCert["filename"] != "" {
-			cert.SetFilename(clientCert["filename"].(string))
-		}
-
-		if clientKey["content"] != "" {
-			// only set the key content if it is not an already hashed string
-			if isHash := isCertHash(clientKey["content"].(string)); !isHash {
-				key.SetContent(clientKey["content"].(string))
-			}
-		}
-		if clientKey["filename"] != "" {
-			key.SetFilename(clientKey["filename"].(string))
-		}
-
-		requestClientCertificate := datadogV1.SyntheticsTestRequestCertificate{
-			Cert: &cert,
-			Key:  &key,
-		}
-
-		request.SetCertificate(requestClientCertificate)
-	}
-
-	if len(requestProxy) > 0 {
-		if proxy, ok := requestProxy[0].(map[string]interface{}); ok {
-			testRequestProxy := datadogV1.SyntheticsTestRequestProxy{}
-			testRequestProxy.SetUrl(proxy["url"].(string))
-
-			proxyHeaders := make(map[string]string, len(proxy["headers"].(map[string]interface{})))
-
-			for k, v := range proxy["headers"].(map[string]interface{}) {
-				proxyHeaders[k] = v.(string)
-			}
-
-			testRequestProxy.SetHeaders(proxyHeaders)
-
-			request.SetProxy(testRequestProxy)
-		}
-	}
-
-	if len(requestMetadata) > 0 {
-		metadata := make(map[string]string, len(requestMetadata))
-
-		for k, v := range requestMetadata {
-			metadata[k] = v.(string)
-		}
-
-		request.SetMetadata(metadata)
-	}
-
-	return &request
-}
-
-func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
-	assertions := make([]datadogV1.SyntheticsAssertion, 0)
-
-	for _, assertion := range attr {
-		assertionMap := assertion.(map[string]interface{})
-		if v, ok := assertionMap["type"]; ok {
-			assertionType := v.(string)
-			if v, ok := assertionMap["operator"]; ok {
-				assertionOperator := v.(string)
-				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
-					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
-						subTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTargetTarget()
-						targetMap := v[0].(map[string]interface{})
-						if v, ok := targetMap["jsonschema"]; ok {
-							subTarget.SetJsonSchema(v.(string))
-						}
-						if v, ok := targetMap["metaschema"]; ok {
-							if metaSchema, err := datadogV1.NewSyntheticsAssertionJSONSchemaMetaSchemaFromValue(v.(string)); err == nil {
-								subTarget.SetMetaSchema(*metaSchema)
-							} else {
-								log.Printf("[ERROR] Error converting json schema meta schema: %v", err)
-							}
-						}
-						assertionJSONSchemaTarget.SetTarget(*subTarget)
-					}
-					if _, ok := assertionMap["target"]; ok {
-						log.Printf("[WARN] target shouldn't be specified for validateJSONSchema operator, only targetJSONSchema")
-					}
-					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONSchemaTargetAsSyntheticsAssertion(assertionJSONSchemaTarget))
-				} else if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
-					assertionJSONPathTarget := datadogV1.NewSyntheticsAssertionJSONPathTarget(datadogV1.SyntheticsAssertionJSONPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
-						assertionJSONPathTarget.SetProperty(v)
-					}
-					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
-						subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
-						targetMap := v[0].(map[string]interface{})
-						if v, ok := targetMap["jsonpath"]; ok {
-							subTarget.SetJsonPath(v.(string))
-						}
-
-						operator, ok := targetMap["operator"]
-						if ok {
-							subTarget.SetOperator(operator.(string))
-						}
-						if v, ok := targetMap["targetvalue"]; ok {
-							switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
-							case datadogV1.SYNTHETICSASSERTIONOPERATOR_IS_UNDEFINED:
-								// no target value must be set for isUndefined operator
-							case
-								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
-								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
-								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
-									subTarget.SetTargetValue(v)
-								} else {
-									if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
-										subTarget.SetTargetValue(floatValue)
-									}
-								}
-							default:
-								subTarget.SetTargetValue(v)
-							}
-						}
-						if v, ok := targetMap["elementsoperator"]; ok {
-							subTarget.SetElementsOperator(v.(string))
-						}
-						assertionJSONPathTarget.SetTarget(*subTarget)
-					}
-					if _, ok := assertionMap["target"]; ok {
-						log.Printf("[WARN] target shouldn't be specified for validatesJSONPath operator, only targetjsonpath")
-					}
-					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
-				} else if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONXPATHOPERATOR_VALIDATES_X_PATH) {
-					assertionXPathTarget := datadogV1.NewSyntheticsAssertionXPathTarget(datadogV1.SyntheticsAssertionXPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
-					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
-						assertionXPathTarget.SetProperty(v)
-					}
-					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
-						subTarget := datadogV1.NewSyntheticsAssertionXPathTargetTarget()
-						targetMap := v[0].(map[string]interface{})
-						if v, ok := targetMap["xpath"]; ok {
-							subTarget.SetXPath(v.(string))
-						}
-						operator, ok := targetMap["operator"]
-						if ok {
-							subTarget.SetOperator(operator.(string))
-						}
-						if v, ok := targetMap["targetvalue"]; ok {
-							switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
-							case
-								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
-								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
-								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
-									subTarget.SetTargetValue(v)
-								} else {
-									if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
-										subTarget.SetTargetValue(floatValue)
-									}
-								}
-							default:
-								subTarget.SetTargetValue(v)
-							}
-						}
-						assertionXPathTarget.SetTarget(*subTarget)
-					}
-					if _, ok := assertionMap["target"]; ok {
-						log.Printf("[WARN] target shouldn't be specified for validateXPath operator, only targetxpath")
-					}
-					assertions = append(assertions, datadogV1.SyntheticsAssertionXPathTargetAsSyntheticsAssertion(assertionXPathTarget))
-				} else {
-					assertionTarget := datadogV1.NewSyntheticsAssertionTargetWithDefaults()
-					assertionTarget.SetOperator(datadogV1.SyntheticsAssertionOperator(assertionOperator))
-					assertionTarget.SetType(datadogV1.SyntheticsAssertionType(assertionType))
-					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
-						assertionTarget.SetProperty(v)
-					}
-					if v, ok := assertionMap["target"]; ok {
-						if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
-							assertionTargetInt, _ := strconv.Atoi(v.(string))
-							assertionTarget.SetTarget(assertionTargetInt)
-						} else if assertionTarget.GetType() == datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE {
-							assertionTargetFloat, _ := strconv.ParseFloat(v.(string), 64)
-							assertionTarget.SetTarget(assertionTargetFloat)
-						} else {
-							assertionTarget.SetTarget(v.(string))
-						}
-					}
-					if v, ok := assertionMap["timings_scope"].(string); ok && len(v) > 0 {
-						assertionTarget.SetTimingsScope(datadogV1.SyntheticsAssertionTimingsScope(v))
-					}
-					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
-						log.Printf("[WARN] targetjsonschema shouldn't be specified for non-validatesJSONSchema operator, only target")
-					}
-					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
-						log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validatesJSONPath operator, only target")
-					}
-					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
-						log.Printf("[WARN] targetxpath shouldn't be specified for non-validatesXPath operator, only target")
-					}
-					assertions = append(assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
-				}
-			}
-		}
-	}
-
-	return assertions
-}
-
-func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
-	options := datadogV1.NewSyntheticsTestOptions()
-
-	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
-		// common browser and API tests options
-		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
-			options.SetTickEvery(int64(attr.(int)))
-		}
-		if attr, ok := d.GetOk("options_list.0.http_version"); ok {
-			options.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(attr.(string)))
-		}
-		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
-			options.SetAcceptSelfSigned(attr.(bool))
-		}
-		if attr, ok := d.GetOk("options_list.0.check_certificate_revocation"); ok {
-			options.SetCheckCertificateRevocation(attr.(bool))
-		}
-		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
-			options.SetMinLocationFailed(int64(attr.(int)))
-		}
-		if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
-			options.SetMinFailureDuration(int64(attr.(int)))
-		}
-		if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
-			options.SetFollowRedirects(attr.(bool))
-		}
-		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
-			options.SetAllowInsecure(attr.(bool))
-		}
-
-		if rawScheduling, ok := d.GetOk("options_list.0.scheduling"); ok {
-			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
-			scheduling := rawScheduling.([]interface{})[0]
-			if rawTimeframes, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
-				var timeFrames []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
-				for _, tf := range rawTimeframes.(*schema.Set).List() {
-					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe()
-					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
-					timeframe.SetFrom(tf.(map[string]interface{})["from"].(string))
-					timeframe.SetTo(tf.(map[string]interface{})["to"].(string))
-					timeFrames = append(timeFrames, *timeframe)
-				}
-				optionsScheduling.SetTimeframes(timeFrames)
-			}
-			if timezone, ok := scheduling.(map[string]interface{})["timezone"]; ok {
-				optionsScheduling.SetTimezone(timezone.(string))
-			}
-			options.SetScheduling(optionsScheduling)
-		}
-
-		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
-			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
-			retry := retryRaw.([]interface{})[0]
-
-			if count, ok := retry.(map[string]interface{})["count"]; ok {
-				optionsRetry.SetCount(int64(count.(int)))
-			}
-			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
-				optionsRetry.SetInterval(float64(interval.(int)))
-			}
-
-			options.SetRetry(optionsRetry)
-		}
-
-		if monitorOptionsRaw, ok := d.GetOk("options_list.0.monitor_options"); ok {
-			monitorOptions := monitorOptionsRaw.([]interface{})[0]
-			optionsMonitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
-
-			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
-				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
-			}
-
-			options.SetMonitorOptions(optionsMonitorOptions)
-		}
-
-		if monitorName, ok := d.GetOk("options_list.0.monitor_name"); ok {
-			options.SetMonitorName(monitorName.(string))
-		}
-
-		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
-			options.SetMonitorPriority(int32(monitorPriority.(int)))
-		}
-
-		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
-			roles := []string{}
-			for _, role := range restricted_roles.(*schema.Set).List() {
-				roles = append(roles, role.(string))
-			}
-			options.SetRestrictedRoles(roles)
-		}
-
-		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
-			ci := ciRaw.([]interface{})[0]
-			if testCiOptions, ok := ci.(map[string]interface{}); ok {
-				ciOptions := datadogV1.SyntheticsTestCiOptions{}
-				ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
-				options.SetCi(ciOptions)
-			}
-		}
-
-		if ignoreServerCertificateError, ok := d.GetOk("options_list.0.ignore_server_certificate_error"); ok {
-			options.SetIgnoreServerCertificateError(ignoreServerCertificateError.(bool))
-		}
-
-		// browser tests specific options
-		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
-			options.SetNoScreenshot(attr.(bool))
-		}
-
-		if rum_settings, ok := d.GetOk("options_list.0.rum_settings.0"); ok {
-			settings := rum_settings.(map[string]interface{})
-			isEnabled := settings["is_enabled"]
-
-			rumSettings := datadogV1.SyntheticsBrowserTestRumSettings{}
-
-			if isEnabled == true {
-				rumSettings.SetIsEnabled(true)
-
-				if applicationId, ok := settings["application_id"]; ok {
-					if len(applicationId.(string)) > 0 {
-						rumSettings.SetApplicationId(applicationId.(string))
-					}
-				}
-
-				if clientTokenId, ok := settings["client_token_id"]; ok {
-					if clientTokenId.(int) != 0 {
-						rumSettings.SetClientTokenId(int64(clientTokenId.(int)))
-					}
-				}
-			} else {
-				rumSettings.SetIsEnabled(false)
-			}
-
-			options.SetRumSettings(rumSettings)
-		}
-
-		if disableCsp, ok := d.GetOk("options_list.0.disable_csp"); ok {
-			options.SetDisableCsp(disableCsp.(bool))
-		}
-
-		if disableCors, ok := d.GetOk("options_list.0.disable_cors"); ok {
-			options.SetDisableCors(disableCors.(bool))
-		}
-
-		if initialNavigationTimeout, ok := d.GetOk("options_list.0.initial_navigation_timeout"); ok {
-			options.SetInitialNavigationTimeout(int64(initialNavigationTimeout.(int)))
-		}
-
-		if attr, ok := d.GetOk("device_ids"); ok {
-			var deviceIds []datadogV1.SyntheticsDeviceID
-			for _, s := range attr.([]interface{}) {
-				deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
-			}
-			options.DeviceIds = deviceIds
-		}
-	}
-
-	return options
-}
-
-func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequestBodyFile {
-	files := []datadogV1.SyntheticsTestRequestBodyFile{}
-	for _, f := range attr {
-		fileMap := f.(map[string]interface{})
-		file := datadogV1.SyntheticsTestRequestBodyFile{}
-
-		file.SetName(fileMap["name"].(string))
-		file.SetOriginalFileName(fileMap["original_file_name"].(string))
-		file.SetType(fileMap["type"].(string))
-		file.SetSize(int64(fileMap["size"].(int)))
-
-		if content, ok := fileMap["content"]; ok && content != "" {
-			file.SetContent(content.(string))
-		}
-
-		// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
-		// Hence, the provider is uploading the file every time the resource is modified.
-		// Always adding the bucket key to the request would prevent updating the file content.
-		// Always omitting the existing bucket key from the request update the file every time the resource is updated.
-		// We purposely choose the latter.
-		// if bucketKey, ok := fileMap["bucket_key"]; ok && bucketKey != "" {
-		// 	file.SetBucketKey(bucketKey.(string))
-		// }
-
-		files = append(files, file)
-	}
-
-	return files
-}
-
-func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
-	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
-	for i, file := range *actualBodyFiles {
-		// The file content is kept from the existing localFile from the state,
-		// as the response from the backend contains the bucket key rather than the content.
-		localFile := oldLocalBodyFiles[i]
-		localFile["name"] = file.GetName()
-		localFile["original_file_name"] = file.GetOriginalFileName()
-		localFile["type"] = file.GetType()
-		localFile["size"] = file.GetSize()
-
-		if bucket_key, ok := file.GetBucketKeyOk(); ok {
-			localFile["bucket_key"] = bucket_key
-		}
-		localBodyFiles[i] = localFile
-	}
-	return localBodyFiles
-}
-
 func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
 	request := datadogV1.SyntheticsTestRequest{}
 	if attr, ok := d.GetOk("request_definition.0.method"); ok {
@@ -3094,74 +2552,153 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 	return syntheticsTest
 }
 
-func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) map[string]interface{} {
-	localRequest := make(map[string]interface{})
-	if request.HasBody() {
-		localRequest["body"] = request.GetBody()
-	}
-	if request.HasBodyType() {
-		localRequest["body_type"] = request.GetBodyType()
-	}
-	if request.HasMethod() {
-		localRequest["method"] = convertToString(request.GetMethod())
-	}
-	if request.HasTimeout() {
-		localRequest["timeout"] = request.GetTimeout()
-	}
-	if request.HasUrl() {
-		localRequest["url"] = request.GetUrl()
-	}
-	if request.HasHost() {
-		localRequest["host"] = request.GetHost()
-	}
-	if request.HasPort() {
-		localRequest["port"] = request.GetPort()
-	}
-	if request.HasDnsServer() {
-		localRequest["dns_server"] = convertToString(request.GetDnsServer())
-	}
-	if request.HasDnsServerPort() {
-		localRequest["dns_server_port"] = request.GetDnsServerPort()
-	}
-	if request.HasNoSavingResponseBody() {
-		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
-	}
-	if request.HasNumberOfPackets() {
-		localRequest["number_of_packets"] = request.GetNumberOfPackets()
-	}
-	if request.HasShouldTrackHops() {
-		localRequest["should_track_hops"] = request.GetShouldTrackHops()
-	}
-	if request.HasServername() {
-		localRequest["servername"] = request.GetServername()
-	}
-	if request.HasMessage() {
-		localRequest["message"] = request.GetMessage()
-	}
-	if request.HasCallType() {
-		localRequest["call_type"] = request.GetCallType()
-	}
-	if request.HasService() {
-		localRequest["service"] = request.GetService()
-	}
-	if request.HasCertificateDomains() {
-		localRequest["certificate_domains"] = request.GetCertificateDomains()
-	}
-	if request.HasPersistCookies() {
-		localRequest["persist_cookies"] = request.GetPersistCookies()
-	}
-	if request.HasHttpVersion() {
-		localRequest["http_version"] = request.GetHttpVersion()
-	}
-	if request.HasCompressedJsonDescriptor() {
-		localRequest["proto_json_descriptor"] = decompressAndDecodeValue(request.GetCompressedJsonDescriptor())
+func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
+	assertions := make([]datadogV1.SyntheticsAssertion, 0)
+
+	for _, assertion := range attr {
+		assertionMap := assertion.(map[string]interface{})
+		if v, ok := assertionMap["type"]; ok {
+			assertionType := v.(string)
+			if v, ok := assertionMap["operator"]; ok {
+				assertionOperator := v.(string)
+				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
+					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
+						subTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTargetTarget()
+						targetMap := v[0].(map[string]interface{})
+						if v, ok := targetMap["jsonschema"]; ok {
+							subTarget.SetJsonSchema(v.(string))
+						}
+						if v, ok := targetMap["metaschema"]; ok {
+							if metaSchema, err := datadogV1.NewSyntheticsAssertionJSONSchemaMetaSchemaFromValue(v.(string)); err == nil {
+								subTarget.SetMetaSchema(*metaSchema)
+							} else {
+								log.Printf("[ERROR] Error converting json schema meta schema: %v", err)
+							}
+						}
+						assertionJSONSchemaTarget.SetTarget(*subTarget)
+					}
+					if _, ok := assertionMap["target"]; ok {
+						log.Printf("[WARN] target shouldn't be specified for validateJSONSchema operator, only targetJSONSchema")
+					}
+					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONSchemaTargetAsSyntheticsAssertion(assertionJSONSchemaTarget))
+				} else if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONPATHOPERATOR_VALIDATES_JSON_PATH) {
+					assertionJSONPathTarget := datadogV1.NewSyntheticsAssertionJSONPathTarget(datadogV1.SyntheticsAssertionJSONPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
+						assertionJSONPathTarget.SetProperty(v)
+					}
+					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
+						subTarget := datadogV1.NewSyntheticsAssertionJSONPathTargetTarget()
+						targetMap := v[0].(map[string]interface{})
+						if v, ok := targetMap["jsonpath"]; ok {
+							subTarget.SetJsonPath(v.(string))
+						}
+
+						operator, ok := targetMap["operator"]
+						if ok {
+							subTarget.SetOperator(operator.(string))
+						}
+						if v, ok := targetMap["targetvalue"]; ok {
+							switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
+							case datadogV1.SYNTHETICSASSERTIONOPERATOR_IS_UNDEFINED:
+								// no target value must be set for isUndefined operator
+							case
+								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
+								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
+								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
+									subTarget.SetTargetValue(v)
+								} else {
+									if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
+										subTarget.SetTargetValue(floatValue)
+									}
+								}
+							default:
+								subTarget.SetTargetValue(v)
+							}
+						}
+						if v, ok := targetMap["elementsoperator"]; ok {
+							subTarget.SetElementsOperator(v.(string))
+						}
+						assertionJSONPathTarget.SetTarget(*subTarget)
+					}
+					if _, ok := assertionMap["target"]; ok {
+						log.Printf("[WARN] target shouldn't be specified for validatesJSONPath operator, only targetjsonpath")
+					}
+					assertions = append(assertions, datadogV1.SyntheticsAssertionJSONPathTargetAsSyntheticsAssertion(assertionJSONPathTarget))
+				} else if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONXPATHOPERATOR_VALIDATES_X_PATH) {
+					assertionXPathTarget := datadogV1.NewSyntheticsAssertionXPathTarget(datadogV1.SyntheticsAssertionXPathOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
+						assertionXPathTarget.SetProperty(v)
+					}
+					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
+						subTarget := datadogV1.NewSyntheticsAssertionXPathTargetTarget()
+						targetMap := v[0].(map[string]interface{})
+						if v, ok := targetMap["xpath"]; ok {
+							subTarget.SetXPath(v.(string))
+						}
+						operator, ok := targetMap["operator"]
+						if ok {
+							subTarget.SetOperator(operator.(string))
+						}
+						if v, ok := targetMap["targetvalue"]; ok {
+							switch datadogV1.SyntheticsAssertionOperator(operator.(string)) {
+							case
+								datadogV1.SYNTHETICSASSERTIONOPERATOR_LESS_THAN,
+								datadogV1.SYNTHETICSASSERTIONOPERATOR_MORE_THAN:
+								if match, _ := regexp.MatchString("{{\\s*([^{}]*?)\\s*}}", v.(string)); match {
+									subTarget.SetTargetValue(v)
+								} else {
+									if floatValue, err := strconv.ParseFloat(v.(string), 64); err == nil {
+										subTarget.SetTargetValue(floatValue)
+									}
+								}
+							default:
+								subTarget.SetTargetValue(v)
+							}
+						}
+						assertionXPathTarget.SetTarget(*subTarget)
+					}
+					if _, ok := assertionMap["target"]; ok {
+						log.Printf("[WARN] target shouldn't be specified for validateXPath operator, only targetxpath")
+					}
+					assertions = append(assertions, datadogV1.SyntheticsAssertionXPathTargetAsSyntheticsAssertion(assertionXPathTarget))
+				} else {
+					assertionTarget := datadogV1.NewSyntheticsAssertionTargetWithDefaults()
+					assertionTarget.SetOperator(datadogV1.SyntheticsAssertionOperator(assertionOperator))
+					assertionTarget.SetType(datadogV1.SyntheticsAssertionType(assertionType))
+					if v, ok := assertionMap["property"].(string); ok && len(v) > 0 {
+						assertionTarget.SetProperty(v)
+					}
+					if v, ok := assertionMap["target"]; ok {
+						if isTargetOfTypeInt(assertionTarget.GetType(), assertionTarget.GetOperator()) {
+							assertionTargetInt, _ := strconv.Atoi(v.(string))
+							assertionTarget.SetTarget(assertionTargetInt)
+						} else if assertionTarget.GetType() == datadogV1.SYNTHETICSASSERTIONTYPE_PACKET_LOSS_PERCENTAGE {
+							assertionTargetFloat, _ := strconv.ParseFloat(v.(string), 64)
+							assertionTarget.SetTarget(assertionTargetFloat)
+						} else {
+							assertionTarget.SetTarget(v.(string))
+						}
+					}
+					if v, ok := assertionMap["timings_scope"].(string); ok && len(v) > 0 {
+						assertionTarget.SetTimingsScope(datadogV1.SyntheticsAssertionTimingsScope(v))
+					}
+					if v, ok := assertionMap["targetjsonschema"].([]interface{}); ok && len(v) > 0 {
+						log.Printf("[WARN] targetjsonschema shouldn't be specified for non-validatesJSONSchema operator, only target")
+					}
+					if v, ok := assertionMap["targetjsonpath"].([]interface{}); ok && len(v) > 0 {
+						log.Printf("[WARN] targetjsonpath shouldn't be specified for non-validatesJSONPath operator, only target")
+					}
+					if v, ok := assertionMap["targetxpath"].([]interface{}); ok && len(v) > 0 {
+						log.Printf("[WARN] targetxpath shouldn't be specified for non-validatesXPath operator, only target")
+					}
+					assertions = append(assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
+				}
+			}
+		}
 	}
 
-	if request.HasCompressedProtoFile() {
-		localRequest["plain_proto_file"] = decompressAndDecodeValue(request.GetCompressedProtoFile())
-	}
-
-	return localRequest
+	return assertions
 }
 
 func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (localAssertions []map[string]interface{}, err error) {
@@ -3383,6 +2920,55 @@ func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[strin
 	return localAuth
 }
 
+func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequestBodyFile {
+	files := []datadogV1.SyntheticsTestRequestBodyFile{}
+	for _, f := range attr {
+		fileMap := f.(map[string]interface{})
+		file := datadogV1.SyntheticsTestRequestBodyFile{}
+
+		file.SetName(fileMap["name"].(string))
+		file.SetOriginalFileName(fileMap["original_file_name"].(string))
+		file.SetType(fileMap["type"].(string))
+		file.SetSize(int64(fileMap["size"].(int)))
+
+		if content, ok := fileMap["content"]; ok && content != "" {
+			file.SetContent(content.(string))
+		}
+
+		// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
+		// Hence, the provider is uploading the file every time the resource is modified.
+		// Always adding the bucket key to the request would prevent updating the file content.
+		// Always omitting the existing bucket key from the request update the file every time the resource is updated.
+		// We purposely choose the latter.
+		// if bucketKey, ok := fileMap["bucket_key"]; ok && bucketKey != "" {
+		// 	file.SetBucketKey(bucketKey.(string))
+		// }
+
+		files = append(files, file)
+	}
+
+	return files
+}
+
+func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
+	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
+	for i, file := range *actualBodyFiles {
+		// The file content is kept from the existing localFile from the state,
+		// as the response from the backend contains the bucket key rather than the content.
+		localFile := oldLocalBodyFiles[i]
+		localFile["name"] = file.GetName()
+		localFile["original_file_name"] = file.GetOriginalFileName()
+		localFile["type"] = file.GetType()
+		localFile["size"] = file.GetSize()
+
+		if bucket_key, ok := file.GetBucketKeyOk(); ok {
+			localFile["bucket_key"] = bucket_key
+		}
+		localBodyFiles[i] = localFile
+	}
+	return localBodyFiles
+}
+
 func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
 	values := make([]datadogV1.SyntheticsParsingOptions, len(stepExtractedValues))
 
@@ -3433,6 +3019,166 @@ func buildTerraformExtractedValues(extractedValues []datadogV1.SyntheticsParsing
 	}
 
 	return localExtractedValues
+}
+
+func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
+	options := datadogV1.NewSyntheticsTestOptions()
+
+	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
+		// common browser and API tests options
+		if attr, ok := d.GetOk("options_list.0.tick_every"); ok {
+			options.SetTickEvery(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.http_version"); ok {
+			options.SetHttpVersion(datadogV1.SyntheticsTestOptionsHTTPVersion(attr.(string)))
+		}
+		if attr, ok := d.GetOk("options_list.0.accept_self_signed"); ok {
+			options.SetAcceptSelfSigned(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.check_certificate_revocation"); ok {
+			options.SetCheckCertificateRevocation(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.min_location_failed"); ok {
+			options.SetMinLocationFailed(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.min_failure_duration"); ok {
+			options.SetMinFailureDuration(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("options_list.0.follow_redirects"); ok {
+			options.SetFollowRedirects(attr.(bool))
+		}
+		if attr, ok := d.GetOk("options_list.0.allow_insecure"); ok {
+			options.SetAllowInsecure(attr.(bool))
+		}
+
+		if rawScheduling, ok := d.GetOk("options_list.0.scheduling"); ok {
+			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
+			scheduling := rawScheduling.([]interface{})[0]
+			if rawTimeframes, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
+				var timeFrames []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
+				for _, tf := range rawTimeframes.(*schema.Set).List() {
+					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe()
+					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
+					timeframe.SetFrom(tf.(map[string]interface{})["from"].(string))
+					timeframe.SetTo(tf.(map[string]interface{})["to"].(string))
+					timeFrames = append(timeFrames, *timeframe)
+				}
+				optionsScheduling.SetTimeframes(timeFrames)
+			}
+			if timezone, ok := scheduling.(map[string]interface{})["timezone"]; ok {
+				optionsScheduling.SetTimezone(timezone.(string))
+			}
+			options.SetScheduling(optionsScheduling)
+		}
+
+		if retryRaw, ok := d.GetOk("options_list.0.retry"); ok {
+			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry := retryRaw.([]interface{})[0]
+
+			if count, ok := retry.(map[string]interface{})["count"]; ok {
+				optionsRetry.SetCount(int64(count.(int)))
+			}
+			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+				optionsRetry.SetInterval(float64(interval.(int)))
+			}
+
+			options.SetRetry(optionsRetry)
+		}
+
+		if monitorOptionsRaw, ok := d.GetOk("options_list.0.monitor_options"); ok {
+			monitorOptions := monitorOptionsRaw.([]interface{})[0]
+			optionsMonitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
+
+			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
+				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
+			}
+
+			options.SetMonitorOptions(optionsMonitorOptions)
+		}
+
+		if monitorName, ok := d.GetOk("options_list.0.monitor_name"); ok {
+			options.SetMonitorName(monitorName.(string))
+		}
+
+		if monitorPriority, ok := d.GetOk("options_list.0.monitor_priority"); ok {
+			options.SetMonitorPriority(int32(monitorPriority.(int)))
+		}
+
+		if restricted_roles, ok := d.GetOk("options_list.0.restricted_roles"); ok {
+			roles := []string{}
+			for _, role := range restricted_roles.(*schema.Set).List() {
+				roles = append(roles, role.(string))
+			}
+			options.SetRestrictedRoles(roles)
+		}
+
+		if ciRaw, ok := d.GetOk("options_list.0.ci"); ok {
+			ci := ciRaw.([]interface{})[0]
+			if testCiOptions, ok := ci.(map[string]interface{}); ok {
+				ciOptions := datadogV1.SyntheticsTestCiOptions{}
+				ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
+				options.SetCi(ciOptions)
+			}
+		}
+
+		if ignoreServerCertificateError, ok := d.GetOk("options_list.0.ignore_server_certificate_error"); ok {
+			options.SetIgnoreServerCertificateError(ignoreServerCertificateError.(bool))
+		}
+
+		// browser tests specific options
+		if attr, ok := d.GetOk("options_list.0.no_screenshot"); ok {
+			options.SetNoScreenshot(attr.(bool))
+		}
+
+		if rum_settings, ok := d.GetOk("options_list.0.rum_settings.0"); ok {
+			settings := rum_settings.(map[string]interface{})
+			isEnabled := settings["is_enabled"]
+
+			rumSettings := datadogV1.SyntheticsBrowserTestRumSettings{}
+
+			if isEnabled == true {
+				rumSettings.SetIsEnabled(true)
+
+				if applicationId, ok := settings["application_id"]; ok {
+					if len(applicationId.(string)) > 0 {
+						rumSettings.SetApplicationId(applicationId.(string))
+					}
+				}
+
+				if clientTokenId, ok := settings["client_token_id"]; ok {
+					if clientTokenId.(int) != 0 {
+						rumSettings.SetClientTokenId(int64(clientTokenId.(int)))
+					}
+				}
+			} else {
+				rumSettings.SetIsEnabled(false)
+			}
+
+			options.SetRumSettings(rumSettings)
+		}
+
+		if disableCsp, ok := d.GetOk("options_list.0.disable_csp"); ok {
+			options.SetDisableCsp(disableCsp.(bool))
+		}
+
+		if disableCors, ok := d.GetOk("options_list.0.disable_cors"); ok {
+			options.SetDisableCors(disableCors.(bool))
+		}
+
+		if initialNavigationTimeout, ok := d.GetOk("options_list.0.initial_navigation_timeout"); ok {
+			options.SetInitialNavigationTimeout(int64(initialNavigationTimeout.(int)))
+		}
+
+		if attr, ok := d.GetOk("device_ids"); ok {
+			var deviceIds []datadogV1.SyntheticsDeviceID
+			for _, s := range attr.([]interface{}) {
+				deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
+			}
+			options.DeviceIds = deviceIds
+		}
+	}
+
+	return options
 }
 
 func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []map[string]interface{} {
@@ -3557,6 +3303,260 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	localOptionsLists[0] = localOptionsList
 
 	return localOptionsLists
+}
+
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
+	if len(requestHeaders) > 0 {
+		headers := make(map[string]string, len(requestHeaders))
+
+		for k, v := range requestHeaders {
+			headers[k] = v.(string)
+		}
+
+		request.SetHeaders(headers)
+	}
+
+	if len(requestQuery) > 0 {
+		request.SetQuery(requestQuery)
+	}
+
+	if len(basicAuth) > 0 {
+		if requestBasicAuth, ok := basicAuth[0].(map[string]interface{}); ok {
+			if requestBasicAuth["type"] == "web" && requestBasicAuth["username"] != "" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
+				basicAuth.SetPassword(requestBasicAuth["password"].(string))
+				basicAuth.SetUsername(requestBasicAuth["username"].(string))
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "sigv4" && requestBasicAuth["access_key"] != "" && requestBasicAuth["secret_key"] != "" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthSigv4(requestBasicAuth["access_key"].(string), requestBasicAuth["secret_key"].(string), datadogV1.SYNTHETICSBASICAUTHSIGV4TYPE_SIGV4)
+
+				basicAuth.SetRegion(requestBasicAuth["region"].(string))
+				basicAuth.SetServiceName(requestBasicAuth["service_name"].(string))
+				basicAuth.SetSessionToken(requestBasicAuth["session_token"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "ntlm" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthNTLM(datadogV1.SYNTHETICSBASICAUTHNTLMTYPE_NTLM)
+
+				basicAuth.SetUsername(requestBasicAuth["username"].(string))
+				basicAuth.SetPassword(requestBasicAuth["password"].(string))
+				basicAuth.SetDomain(requestBasicAuth["domain"].(string))
+				basicAuth.SetWorkstation(requestBasicAuth["workstation"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "oauth-client" {
+				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+				if err == nil {
+					tokenApiAuthenticationValue = *tokenApiAuthentication
+				}
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(
+					requestBasicAuth["access_token_url"].(string),
+					requestBasicAuth["client_id"].(string),
+					requestBasicAuth["client_secret"].(string),
+					tokenApiAuthenticationValue,
+					datadogV1.SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT,
+				)
+
+				// optional fields for oauth must not be included if they have no value, or the authentication will fail
+				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
+					basicAuth.SetAudience(v)
+				}
+				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
+					basicAuth.SetResource(v)
+				}
+				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
+					basicAuth.SetScope(v)
+				}
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "oauth-rop" {
+				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+				if err == nil {
+					tokenApiAuthenticationValue = *tokenApiAuthentication
+				}
+				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
+					requestBasicAuth["access_token_url"].(string),
+					requestBasicAuth["password"].(string),
+					tokenApiAuthenticationValue,
+					datadogV1.SYNTHETICSBASICAUTHOAUTHROPTYPE_OAUTH_ROP,
+					requestBasicAuth["username"].(string))
+
+				// optional fields for oauth must not be included if they have no value, or the authentication will fail
+				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
+					basicAuth.SetAudience(v)
+				}
+				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
+					basicAuth.SetResource(v)
+				}
+				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
+					basicAuth.SetScope(v)
+				}
+				basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
+				basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
+
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth))
+			}
+
+			if requestBasicAuth["type"] == "digest" {
+				basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(
+					requestBasicAuth["password"].(string),
+					datadogV1.SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST,
+					requestBasicAuth["username"].(string),
+				)
+				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth))
+			}
+		}
+	}
+
+	if len(requestClientCertificates) > 0 {
+		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
+		key := datadogV1.SyntheticsTestRequestCertificateItem{}
+		clientCertificate := requestClientCertificates[0].(map[string]interface{})
+		clientCerts := clientCertificate["cert"].([]interface{})
+		clientKeys := clientCertificate["key"].([]interface{})
+
+		clientCert := clientCerts[0].(map[string]interface{})
+		clientKey := clientKeys[0].(map[string]interface{})
+
+		if clientCert["content"] != "" {
+			// only set the certificate content if it is not an already hashed string
+			// this is needed for the update function that receives the data from the state
+			// and not from the config. So we get a hash of the certificate and not it's real
+			// value.
+			if isHash := isCertHash(clientCert["content"].(string)); !isHash {
+				cert.SetContent(clientCert["content"].(string))
+			}
+		}
+		if clientCert["filename"] != "" {
+			cert.SetFilename(clientCert["filename"].(string))
+		}
+
+		if clientKey["content"] != "" {
+			// only set the key content if it is not an already hashed string
+			if isHash := isCertHash(clientKey["content"].(string)); !isHash {
+				key.SetContent(clientKey["content"].(string))
+			}
+		}
+		if clientKey["filename"] != "" {
+			key.SetFilename(clientKey["filename"].(string))
+		}
+
+		requestClientCertificate := datadogV1.SyntheticsTestRequestCertificate{
+			Cert: &cert,
+			Key:  &key,
+		}
+
+		request.SetCertificate(requestClientCertificate)
+	}
+
+	if len(requestProxy) > 0 {
+		if proxy, ok := requestProxy[0].(map[string]interface{}); ok {
+			testRequestProxy := datadogV1.SyntheticsTestRequestProxy{}
+			testRequestProxy.SetUrl(proxy["url"].(string))
+
+			proxyHeaders := make(map[string]string, len(proxy["headers"].(map[string]interface{})))
+
+			for k, v := range proxy["headers"].(map[string]interface{}) {
+				proxyHeaders[k] = v.(string)
+			}
+
+			testRequestProxy.SetHeaders(proxyHeaders)
+
+			request.SetProxy(testRequestProxy)
+		}
+	}
+
+	if len(requestMetadata) > 0 {
+		metadata := make(map[string]string, len(requestMetadata))
+
+		for k, v := range requestMetadata {
+			metadata[k] = v.(string)
+		}
+
+		request.SetMetadata(metadata)
+	}
+
+	return &request
+}
+
+func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) map[string]interface{} {
+	localRequest := make(map[string]interface{})
+	if request.HasBody() {
+		localRequest["body"] = request.GetBody()
+	}
+	if request.HasBodyType() {
+		localRequest["body_type"] = request.GetBodyType()
+	}
+	if request.HasMethod() {
+		localRequest["method"] = convertToString(request.GetMethod())
+	}
+	if request.HasTimeout() {
+		localRequest["timeout"] = request.GetTimeout()
+	}
+	if request.HasUrl() {
+		localRequest["url"] = request.GetUrl()
+	}
+	if request.HasHost() {
+		localRequest["host"] = request.GetHost()
+	}
+	if request.HasPort() {
+		localRequest["port"] = request.GetPort()
+	}
+	if request.HasDnsServer() {
+		localRequest["dns_server"] = convertToString(request.GetDnsServer())
+	}
+	if request.HasDnsServerPort() {
+		localRequest["dns_server_port"] = request.GetDnsServerPort()
+	}
+	if request.HasNoSavingResponseBody() {
+		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
+	}
+	if request.HasNumberOfPackets() {
+		localRequest["number_of_packets"] = request.GetNumberOfPackets()
+	}
+	if request.HasShouldTrackHops() {
+		localRequest["should_track_hops"] = request.GetShouldTrackHops()
+	}
+	if request.HasServername() {
+		localRequest["servername"] = request.GetServername()
+	}
+	if request.HasMessage() {
+		localRequest["message"] = request.GetMessage()
+	}
+	if request.HasCallType() {
+		localRequest["call_type"] = request.GetCallType()
+	}
+	if request.HasService() {
+		localRequest["service"] = request.GetService()
+	}
+	if request.HasCertificateDomains() {
+		localRequest["certificate_domains"] = request.GetCertificateDomains()
+	}
+	if request.HasPersistCookies() {
+		localRequest["persist_cookies"] = request.GetPersistCookies()
+	}
+	if request.HasHttpVersion() {
+		localRequest["http_version"] = request.GetHttpVersion()
+	}
+	if request.HasCompressedJsonDescriptor() {
+		localRequest["proto_json_descriptor"] = decompressAndDecodeValue(request.GetCompressedJsonDescriptor())
+	}
+
+	if request.HasCompressedProtoFile() {
+		localRequest["plain_proto_file"] = decompressAndDecodeValue(request.GetCompressedProtoFile())
+	}
+
+	return localRequest
 }
 
 /*
