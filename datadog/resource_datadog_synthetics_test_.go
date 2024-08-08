@@ -1552,27 +1552,8 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	}
 
 	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
-		localCertificate := make(map[string][]map[string]string)
-		localCertificate["cert"] = make([]map[string]string, 1)
-		localCertificate["cert"][0] = make(map[string]string)
-		localCertificate["key"] = make([]map[string]string, 1)
-		localCertificate["key"][0] = make(map[string]string)
-
-		cert := clientCertificate.GetCert()
-		localCertificate["cert"][0]["filename"] = cert.GetFilename()
-
-		key := clientCertificate.GetKey()
-		localCertificate["key"][0]["filename"] = key.GetFilename()
-
-		// the content of client certificate is write-only so it will not be returned by the API.
-		// To avoid useless diff but also prevent storing the value in clear in the state
-		// we store a hash of the value.
-		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
-		}
-		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
-		}
+		oldCertificates := d.Get("request_client_certificate").([]interface{})
+		localCertificate := buildTerraformRequestCertificates(*clientCertificate, oldCertificates)
 
 		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
 			return diag.FromErr(err)
@@ -1804,27 +1785,8 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
-		localCertificate := make(map[string][]map[string]string)
-		localCertificate["cert"] = make([]map[string]string, 1)
-		localCertificate["cert"][0] = make(map[string]string)
-		localCertificate["key"] = make([]map[string]string, 1)
-		localCertificate["key"][0] = make(map[string]string)
-
-		cert := clientCertificate.GetCert()
-		localCertificate["cert"][0]["filename"] = cert.GetFilename()
-
-		key := clientCertificate.GetKey()
-		localCertificate["key"][0]["filename"] = key.GetFilename()
-
-		// the content of client certificate is write-only so it will not be returned by the API.
-		// To avoid useless diff but also prevent storing the value in clear in the state
-		// we store a hash of the value.
-		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
-		}
-		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
-		}
+		oldCertificates := d.Get("request_client_certificate").([]interface{})
+		localCertificate := buildTerraformRequestCertificates(*clientCertificate, oldCertificates)
 
 		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
 			return diag.FromErr(err)
@@ -1941,30 +1903,8 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 
 				if clientCertificate, ok := stepRequest.GetCertificateOk(); ok {
-					localCertificate := make(map[string][]map[string]string)
-					localCertificate["cert"] = make([]map[string]string, 1)
-					localCertificate["cert"][0] = make(map[string]string)
-					localCertificate["key"] = make([]map[string]string, 1)
-					localCertificate["key"][0] = make(map[string]string)
-
-					cert := clientCertificate.GetCert()
-					localCertificate["cert"][0]["filename"] = cert.GetFilename()
-
-					key := clientCertificate.GetKey()
-					localCertificate["key"][0]["filename"] = key.GetFilename()
-
-					certContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.cert.0.content", i)
-					keyContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.key.0.content", i)
-
-					// the content of client certificate is write-only so it will not be returned by the API.
-					// To avoid useless diff but also prevent storing the value in clear in the state
-					// we store a hash of the value.
-					if configCertificateContent, ok := d.GetOk(certContentKey); ok {
-						localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
-					}
-					if configKeyContent, ok := d.GetOk(keyContentKey); ok {
-						localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
-					}
+					oldCertificates := d.Get(fmt.Sprintf("api_step.%d.request_client_certificate", i)).([]interface{})
+					localCertificate := buildTerraformRequestCertificates(*clientCertificate, oldCertificates)
 
 					localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
 				}
@@ -2358,30 +2298,9 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 		}
 	}
 
-	if _, ok := d.GetOk("request_client_certificate"); ok {
-		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
-		key := datadogV1.SyntheticsTestRequestCertificateItem{}
-
-		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.filename"); ok {
-			cert.SetFilename(attr.(string))
-		}
-		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			cert.SetContent(attr.(string))
-		}
-
-		if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
-			key.SetFilename(attr.(string))
-		}
-		if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			key.SetContent(attr.(string))
-		}
-
-		clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
-			Cert: &cert,
-			Key:  &key,
-		}
-
-		request.SetCertificate(clientCertificate)
+	if attr, ok := d.GetOk("request_client_certificate"); ok {
+		requestClientCertificate := attr.(map[string]interface{})
+		request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
 	}
 
 	if _, ok := d.GetOk("request_proxy"); ok {
@@ -3120,6 +3039,73 @@ func buildTerraformExtractedValues(extractedValues []datadogV1.SyntheticsParsing
 	return localExtractedValues
 }
 
+func buildDatadogRequestCertificates(requestClientCertificate map[string]interface{}) datadogV1.SyntheticsTestRequestCertificate {
+	cert := datadogV1.SyntheticsTestRequestCertificateItem{}
+	key := datadogV1.SyntheticsTestRequestCertificateItem{}
+
+	clientCerts := requestClientCertificate["cert"].([]interface{})
+	clientKeys := requestClientCertificate["key"].([]interface{})
+
+	clientCert := clientCerts[0].(map[string]interface{})
+	clientKey := clientKeys[0].(map[string]interface{})
+
+	if clientCert["content"] != "" {
+		// only set the certificate content if it is not an already hashed string
+		// this is needed for the update function that receives the data from the state
+		// and not from the config. So we get a hash of the certificate and not it's real
+		// value.
+		if isHash := isCertHash(clientCert["content"].(string)); !isHash {
+			cert.SetContent(clientCert["content"].(string))
+		}
+	}
+	if clientCert["filename"] != "" {
+		cert.SetFilename(clientCert["filename"].(string))
+	}
+
+	if clientKey["content"] != "" {
+		// only set the key content if it is not an already hashed string
+		if isHash := isCertHash(clientKey["content"].(string)); !isHash {
+			key.SetContent(clientKey["content"].(string))
+		}
+	}
+	if clientKey["filename"] != "" {
+		key.SetFilename(clientKey["filename"].(string))
+	}
+
+	return datadogV1.SyntheticsTestRequestCertificate{
+		Cert: &cert,
+		Key:  &key,
+	}
+}
+
+func buildTerraformRequestCertificates(clientCertificate datadogV1.SyntheticsTestRequestCertificate, oldClientCertificates []interface{}) map[string][]map[string]string {
+	localCertificate := make(map[string][]map[string]string)
+	localCertificate["cert"] = make([]map[string]string, 1)
+	localCertificate["cert"][0] = make(map[string]string)
+	localCertificate["key"] = make([]map[string]string, 1)
+	localCertificate["key"][0] = make(map[string]string)
+
+	cert := clientCertificate.GetCert()
+	localCertificate["cert"][0]["filename"] = cert.GetFilename()
+
+	key := clientCertificate.GetKey()
+	localCertificate["key"][0]["filename"] = key.GetFilename()
+
+	// the content of client certificate is write-only so it will not be returned by the API.
+	// To avoid useless diff but also prevent storing the value in clear in the state
+	// we store a hash of the value.
+	if len(oldClientCertificates) > 0 {
+		if configCertificateContent, ok := oldClientCertificates[0].(map[string]interface{})["cert"].([]interface{})[0].(map[string]interface{})["content"].(string); ok {
+			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent)
+		}
+		if configKeyContent, ok := oldClientCertificates[0].(map[string]interface{})["key"].([]interface{})[0].(map[string]interface{})["content"].(string); ok {
+			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent)
+		}
+	}
+
+	return localCertificate
+}
+
 func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 	options := datadogV1.NewSyntheticsTestOptions()
 
@@ -3426,44 +3412,9 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 	}
 
 	if len(requestClientCertificates) > 0 {
-		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
-		key := datadogV1.SyntheticsTestRequestCertificateItem{}
-		clientCertificate := requestClientCertificates[0].(map[string]interface{})
-		clientCerts := clientCertificate["cert"].([]interface{})
-		clientKeys := clientCertificate["key"].([]interface{})
-
-		clientCert := clientCerts[0].(map[string]interface{})
-		clientKey := clientKeys[0].(map[string]interface{})
-
-		if clientCert["content"] != "" {
-			// only set the certificate content if it is not an already hashed string
-			// this is needed for the update function that receives the data from the state
-			// and not from the config. So we get a hash of the certificate and not it's real
-			// value.
-			if isHash := isCertHash(clientCert["content"].(string)); !isHash {
-				cert.SetContent(clientCert["content"].(string))
-			}
+		if requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{}); ok {
+			request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
 		}
-		if clientCert["filename"] != "" {
-			cert.SetFilename(clientCert["filename"].(string))
-		}
-
-		if clientKey["content"] != "" {
-			// only set the key content if it is not an already hashed string
-			if isHash := isCertHash(clientKey["content"].(string)); !isHash {
-				key.SetContent(clientKey["content"].(string))
-			}
-		}
-		if clientKey["filename"] != "" {
-			key.SetFilename(clientKey["filename"].(string))
-		}
-
-		requestClientCertificate := datadogV1.SyntheticsTestRequestCertificate{
-			Cert: &cert,
-			Key:  &key,
-		}
-
-		request.SetCertificate(requestClientCertificate)
 	}
 
 	if len(requestProxy) > 0 {
