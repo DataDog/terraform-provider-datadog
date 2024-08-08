@@ -1575,38 +1575,8 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	}
 
 	configVariables := config.GetConfigVariables()
-	localConfigVariables := make([]map[string]interface{}, len(configVariables))
-	for i, configVariable := range configVariables {
-		localVariable := make(map[string]interface{})
-		if v, ok := configVariable.GetTypeOk(); ok {
-			localVariable["type"] = *v
-		}
-		if v, ok := configVariable.GetNameOk(); ok {
-			localVariable["name"] = *v
-		}
-		if v, ok := configVariable.GetSecureOk(); ok {
-			localVariable["secure"] = *v
-		}
-
-		if configVariable.GetType() != "global" {
-			if v, ok := configVariable.GetExampleOk(); ok {
-				localVariable["example"] = *v
-			} else if localVariable["secure"].(bool) {
-				localVariable["example"] = d.Get(fmt.Sprintf("config_variable.%d.example", i))
-			}
-			if v, ok := configVariable.GetPatternOk(); ok {
-				localVariable["pattern"] = *v
-			} else if localVariable["secure"].(bool) {
-				localVariable["pattern"] = d.Get(fmt.Sprintf("config_variable.%d.pattern", i))
-			}
-		}
-		if v, ok := configVariable.GetIdOk(); ok {
-			localVariable["id"] = *v
-		}
-		localConfigVariables[i] = localVariable
-	}
-
-	if err := d.Set("config_variable", localConfigVariables); err != nil {
+	oldConfigVariables := d.Get("config_variable").([]interface{})
+	if err := d.Set("config_variable", buildTerraformConfigVariables(configVariables, oldConfigVariables)); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -1825,38 +1795,8 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	configVariables := config.GetConfigVariables()
-	localConfigVariables := make([]map[string]interface{}, len(configVariables))
-	for i, configVariable := range configVariables {
-		localVariable := make(map[string]interface{})
-		if v, ok := configVariable.GetTypeOk(); ok {
-			localVariable["type"] = *v
-		}
-		if v, ok := configVariable.GetNameOk(); ok {
-			localVariable["name"] = *v
-		}
-		if v, ok := configVariable.GetSecureOk(); ok {
-			localVariable["secure"] = *v
-		}
-
-		if configVariable.GetType() != "global" {
-			if v, ok := configVariable.GetExampleOk(); ok {
-				localVariable["example"] = *v
-			} else if v, ok := localVariable["secure"].(bool); ok && v {
-				localVariable["example"] = d.Get(fmt.Sprintf("config_variable.%d.example", i))
-			}
-			if v, ok := configVariable.GetPatternOk(); ok {
-				localVariable["pattern"] = *v
-			} else if v, ok := localVariable["secure"].(bool); ok && v {
-				localVariable["pattern"] = d.Get(fmt.Sprintf("config_variable.%d.pattern", i))
-			}
-		}
-		if v, ok := configVariable.GetIdOk(); ok {
-			localVariable["id"] = *v
-		}
-		localConfigVariables[i] = localVariable
-	}
-
-	if err := d.Set("config_variable", localConfigVariables); err != nil {
+	oldConfigVariables := d.Get("config_variable").([]interface{})
+	if err := d.Set("config_variable", buildTerraformConfigVariables(configVariables, oldConfigVariables)); err != nil {
 		return diag.FromErr(err)
 	}
 
@@ -2085,31 +2025,8 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		config.Assertions = assertions
 	}
 
-	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
-
-	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
-		for _, v := range attr.([]interface{}) {
-			variableMap := v.(map[string]interface{})
-			variable := datadogV1.SyntheticsConfigVariable{}
-
-			variable.SetName(variableMap["name"].(string))
-			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
-
-			if variable.GetType() != "global" {
-				variable.SetPattern(variableMap["pattern"].(string))
-				variable.SetExample(variableMap["example"].(string))
-				variable.SetSecure(variableMap["secure"].(bool))
-			}
-
-			if variableMap["id"] != "" {
-				variable.SetId(variableMap["id"].(string))
-			}
-
-			configVariables = append(configVariables, variable)
-		}
-	}
-
-	config.SetConfigVariables(configVariables)
+	requestConfigVariables := d.Get("config_variable").([]interface{})
+	config.SetConfigVariables(buildDatadogConfigVariables(requestConfigVariables))
 
 	if attr, ok := d.GetOk("variables_from_script"); ok && attr != nil {
 		config.SetVariablesFromScript(attr.(string))
@@ -2341,30 +2258,8 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 		}
 	}
 
-	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
-
-	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
-		for _, v := range attr.([]interface{}) {
-			variableMap := v.(map[string]interface{})
-			variable := datadogV1.SyntheticsConfigVariable{}
-
-			variable.SetName(variableMap["name"].(string))
-			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
-
-			if variable.GetType() != "global" {
-				variable.SetPattern(variableMap["pattern"].(string))
-				variable.SetExample(variableMap["example"].(string))
-				variable.SetSecure(variableMap["secure"].(bool))
-			}
-
-			if variableMap["id"] != "" {
-				variable.SetId(variableMap["id"].(string))
-			}
-			configVariables = append(configVariables, variable)
-		}
-	}
-
-	config.SetConfigVariables(configVariables)
+	requestConfigVariables := d.Get("config_variable").([]interface{})
+	config.SetConfigVariables(buildDatadogConfigVariables(requestConfigVariables))
 
 	if attr, ok := d.GetOk("set_cookie"); ok {
 		config.SetSetCookie(attr.(string))
@@ -2967,6 +2862,68 @@ func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestB
 		localBodyFiles[i] = localFile
 	}
 	return localBodyFiles
+}
+
+func buildDatadogConfigVariables(requestConfigVariables []interface{}) []datadogV1.SyntheticsConfigVariable {
+	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
+
+	for _, v := range requestConfigVariables {
+		variableMap := v.(map[string]interface{})
+		variable := datadogV1.SyntheticsConfigVariable{}
+
+		variable.SetName(variableMap["name"].(string))
+		variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+
+		if variable.GetType() != "global" {
+			variable.SetPattern(variableMap["pattern"].(string))
+			variable.SetExample(variableMap["example"].(string))
+			variable.SetSecure(variableMap["secure"].(bool))
+		}
+
+		if variableMap["id"] != "" {
+			variable.SetId(variableMap["id"].(string))
+		}
+		configVariables = append(configVariables, variable)
+	}
+
+	return configVariables
+}
+
+func buildTerraformConfigVariables(configVariables []datadogV1.SyntheticsConfigVariable, oldConfigVariables []interface{}) []map[string]interface{} {
+	localConfigVariables := make([]map[string]interface{}, len(configVariables))
+	for i, configVariable := range configVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := configVariable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := configVariable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+		if v, ok := configVariable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
+
+		if configVariable.GetType() != "global" {
+			// If the variable is secure, the example and pattern are not returned by the API,
+			// so we need to keep the values from the terraform config.
+			if v, ok := localVariable["secure"].(bool); ok && v {
+				localVariable["example"] = oldConfigVariables[i].(map[string]interface{})["example"].(string)
+				localVariable["pattern"] = oldConfigVariables[i].(map[string]interface{})["pattern"].(string)
+			} else {
+				if v, ok := configVariable.GetExampleOk(); ok {
+					localVariable["example"] = *v
+				}
+				if v, ok := configVariable.GetPatternOk(); ok {
+					localVariable["pattern"] = *v
+				}
+			}
+		}
+		if v, ok := configVariable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
+		localConfigVariables[i] = localVariable
+	}
+	return localConfigVariables
 }
 
 func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
