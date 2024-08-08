@@ -1561,11 +1561,10 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	}
 
 	if proxy, ok := actualRequest.GetProxyOk(); ok {
-		localProxy := make(map[string]interface{})
-		localProxy["url"] = proxy.GetUrl()
-		localProxy["headers"] = proxy.GetHeaders()
-
-		d.Set("request_proxy", []map[string]interface{}{localProxy})
+		localProxy := buildTerraformTestRequestProxy(*proxy)
+		if err := d.Set("request_proxy", []map[string]interface{}{localProxy}); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	// assertions are required but not used for browser tests
@@ -1794,11 +1793,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	}
 
 	if proxy, ok := actualRequest.GetProxyOk(); ok {
-		localProxy := make(map[string]interface{})
-		localProxy["url"] = proxy.GetUrl()
-		localProxy["headers"] = proxy.GetHeaders()
-
-		d.Set("request_proxy", []map[string]interface{}{localProxy})
+		localProxy := buildTerraformTestRequestProxy(*proxy)
+		if err := d.Set("request_proxy", []map[string]interface{}{localProxy}); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 
 	if files, ok := actualRequest.GetFilesOk(); ok && files != nil && len(*files) > 0 {
@@ -1910,10 +1908,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 
 				if proxy, ok := stepRequest.GetProxyOk(); ok {
-					localProxy := make(map[string]interface{})
-					localProxy["url"] = proxy.GetUrl()
-					localProxy["headers"] = proxy.GetHeaders()
-
+					localProxy := buildTerraformTestRequestProxy(*proxy)
 					localStep["request_proxy"] = []map[string]interface{}{localProxy}
 				}
 
@@ -2303,23 +2298,10 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 		request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
 	}
 
-	if _, ok := d.GetOk("request_proxy"); ok {
-		requestProxy := datadogV1.SyntheticsTestRequestProxy{}
-
-		if url, ok := d.GetOk("request_proxy.0.url"); ok {
-			requestProxy.SetUrl(url.(string))
-
-			if headers, ok := d.GetOk("request_proxy.0.headers"); ok {
-				proxyHeaders := make(map[string]string, len(headers.(map[string]interface{})))
-
-				for k, v := range headers.(map[string]interface{}) {
-					proxyHeaders[k] = v.(string)
-				}
-
-				requestProxy.SetHeaders(proxyHeaders)
-			}
-
-			request.SetProxy(requestProxy)
+	if attr, ok := d.GetOk("request_proxy"); ok {
+		requestProxies := attr.([]interface{})
+		if requestProxy, ok := requestProxies[0].(map[string]interface{}); ok {
+			request.SetProxy(buildDatadogTestRequestProxy(requestProxy))
 		}
 	}
 
@@ -3390,7 +3372,7 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	return localOptionsLists
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestClientCertificates []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
 	if len(requestHeaders) > 0 {
 		headers := make(map[string]string, len(requestHeaders))
 
@@ -3416,21 +3398,9 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 			request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
 		}
 	}
-
-	if len(requestProxy) > 0 {
-		if proxy, ok := requestProxy[0].(map[string]interface{}); ok {
-			testRequestProxy := datadogV1.SyntheticsTestRequestProxy{}
-			testRequestProxy.SetUrl(proxy["url"].(string))
-
-			proxyHeaders := make(map[string]string, len(proxy["headers"].(map[string]interface{})))
-
-			for k, v := range proxy["headers"].(map[string]interface{}) {
-				proxyHeaders[k] = v.(string)
-			}
-
-			testRequestProxy.SetHeaders(proxyHeaders)
-
-			request.SetProxy(testRequestProxy)
+	if len(requestProxies) > 0 {
+		if requestProxy, ok := requestProxies[0].(map[string]interface{}); ok {
+			request.SetProxy(buildDatadogTestRequestProxy(requestProxy))
 		}
 	}
 
@@ -3515,6 +3485,29 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) map[stri
 	}
 
 	return localRequest
+}
+
+func buildDatadogTestRequestProxy(requestProxy map[string]interface{}) datadogV1.SyntheticsTestRequestProxy {
+	testRequestProxy := datadogV1.SyntheticsTestRequestProxy{}
+	testRequestProxy.SetUrl(requestProxy["url"].(string))
+
+	proxyHeaders := make(map[string]string, len(requestProxy["headers"].(map[string]interface{})))
+
+	for k, v := range requestProxy["headers"].(map[string]interface{}) {
+		proxyHeaders[k] = v.(string)
+	}
+
+	testRequestProxy.SetHeaders(proxyHeaders)
+
+	return testRequestProxy
+}
+
+func buildTerraformTestRequestProxy(proxy datadogV1.SyntheticsTestRequestProxy) map[string]interface{} {
+	localProxy := make(map[string]interface{})
+	localProxy["url"] = proxy.GetUrl()
+	localProxy["headers"] = proxy.GetHeaders()
+
+	return localProxy
 }
 
 /*
