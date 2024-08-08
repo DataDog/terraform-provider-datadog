@@ -2823,6 +2823,105 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 	return localAssertions, nil
 }
 
+func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) datadogV1.SyntheticsBasicAuth {
+	if requestBasicAuth["type"] == "web" && requestBasicAuth["username"] != "" {
+		basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
+		basicAuth.SetPassword(requestBasicAuth["password"].(string))
+		basicAuth.SetUsername(requestBasicAuth["username"].(string))
+		return datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "sigv4" && requestBasicAuth["access_key"] != "" && requestBasicAuth["secret_key"] != "" {
+		basicAuth := datadogV1.NewSyntheticsBasicAuthSigv4(requestBasicAuth["access_key"].(string), requestBasicAuth["secret_key"].(string), datadogV1.SYNTHETICSBASICAUTHSIGV4TYPE_SIGV4)
+
+		basicAuth.SetRegion(requestBasicAuth["region"].(string))
+		basicAuth.SetServiceName(requestBasicAuth["service_name"].(string))
+		basicAuth.SetSessionToken(requestBasicAuth["session_token"].(string))
+
+		return datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "ntlm" {
+		basicAuth := datadogV1.NewSyntheticsBasicAuthNTLM(datadogV1.SYNTHETICSBASICAUTHNTLMTYPE_NTLM)
+
+		basicAuth.SetUsername(requestBasicAuth["username"].(string))
+		basicAuth.SetPassword(requestBasicAuth["password"].(string))
+		basicAuth.SetDomain(requestBasicAuth["domain"].(string))
+		basicAuth.SetWorkstation(requestBasicAuth["workstation"].(string))
+
+		return datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "oauth-client" {
+		tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+		var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+		if err == nil {
+			tokenApiAuthenticationValue = *tokenApiAuthentication
+		}
+		basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(
+			requestBasicAuth["access_token_url"].(string),
+			requestBasicAuth["client_id"].(string),
+			requestBasicAuth["client_secret"].(string),
+			tokenApiAuthenticationValue,
+			datadogV1.SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT,
+		)
+
+		// optional fields for oauth must not be included if they have no value, or the authentication will fail
+		if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
+			basicAuth.SetAudience(v)
+		}
+		if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
+			basicAuth.SetResource(v)
+		}
+		if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
+			basicAuth.SetScope(v)
+		}
+
+		return datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "oauth-rop" {
+		tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+		var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+		if err == nil {
+			tokenApiAuthenticationValue = *tokenApiAuthentication
+		}
+		basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
+			requestBasicAuth["access_token_url"].(string),
+			requestBasicAuth["password"].(string),
+			tokenApiAuthenticationValue,
+			datadogV1.SYNTHETICSBASICAUTHOAUTHROPTYPE_OAUTH_ROP,
+			requestBasicAuth["username"].(string))
+
+		// optional fields for oauth must not be included if they have no value, or the authentication will fail
+		if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
+			basicAuth.SetAudience(v)
+		}
+		if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
+			basicAuth.SetResource(v)
+		}
+		if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
+			basicAuth.SetScope(v)
+		}
+		basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
+		basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
+
+		return datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "digest" {
+		basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(
+			requestBasicAuth["password"].(string),
+			datadogV1.SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST,
+			requestBasicAuth["username"].(string),
+		)
+		return datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	log.Printf("[WARN] unrecognized basic auth type %s", requestBasicAuth["type"].(string))
+	return datadogV1.SyntheticsBasicAuth{}
+}
+
 func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]string {
 	localAuth := make(map[string]string)
 
@@ -3305,7 +3404,7 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	return localOptionsLists
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
 	if len(requestHeaders) > 0 {
 		headers := make(map[string]string, len(requestHeaders))
 
@@ -3320,101 +3419,9 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 		request.SetQuery(requestQuery)
 	}
 
-	if len(basicAuth) > 0 {
-		if requestBasicAuth, ok := basicAuth[0].(map[string]interface{}); ok {
-			if requestBasicAuth["type"] == "web" && requestBasicAuth["username"] != "" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
-				basicAuth.SetPassword(requestBasicAuth["password"].(string))
-				basicAuth.SetUsername(requestBasicAuth["username"].(string))
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "sigv4" && requestBasicAuth["access_key"] != "" && requestBasicAuth["secret_key"] != "" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthSigv4(requestBasicAuth["access_key"].(string), requestBasicAuth["secret_key"].(string), datadogV1.SYNTHETICSBASICAUTHSIGV4TYPE_SIGV4)
-
-				basicAuth.SetRegion(requestBasicAuth["region"].(string))
-				basicAuth.SetServiceName(requestBasicAuth["service_name"].(string))
-				basicAuth.SetSessionToken(requestBasicAuth["session_token"].(string))
-
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "ntlm" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthNTLM(datadogV1.SYNTHETICSBASICAUTHNTLMTYPE_NTLM)
-
-				basicAuth.SetUsername(requestBasicAuth["username"].(string))
-				basicAuth.SetPassword(requestBasicAuth["password"].(string))
-				basicAuth.SetDomain(requestBasicAuth["domain"].(string))
-				basicAuth.SetWorkstation(requestBasicAuth["workstation"].(string))
-
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "oauth-client" {
-				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
-				if err == nil {
-					tokenApiAuthenticationValue = *tokenApiAuthentication
-				}
-				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(
-					requestBasicAuth["access_token_url"].(string),
-					requestBasicAuth["client_id"].(string),
-					requestBasicAuth["client_secret"].(string),
-					tokenApiAuthenticationValue,
-					datadogV1.SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT,
-				)
-
-				// optional fields for oauth must not be included if they have no value, or the authentication will fail
-				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
-					basicAuth.SetAudience(v)
-				}
-				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
-					basicAuth.SetResource(v)
-				}
-				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
-					basicAuth.SetScope(v)
-				}
-
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "oauth-rop" {
-				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
-				if err == nil {
-					tokenApiAuthenticationValue = *tokenApiAuthentication
-				}
-				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
-					requestBasicAuth["access_token_url"].(string),
-					requestBasicAuth["password"].(string),
-					tokenApiAuthenticationValue,
-					datadogV1.SYNTHETICSBASICAUTHOAUTHROPTYPE_OAUTH_ROP,
-					requestBasicAuth["username"].(string))
-
-				// optional fields for oauth must not be included if they have no value, or the authentication will fail
-				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
-					basicAuth.SetAudience(v)
-				}
-				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
-					basicAuth.SetResource(v)
-				}
-				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
-					basicAuth.SetScope(v)
-				}
-				basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
-				basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
-
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "digest" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(
-					requestBasicAuth["password"].(string),
-					datadogV1.SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST,
-					requestBasicAuth["username"].(string),
-				)
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth))
-			}
+	if len(requestBasicAuths) > 0 {
+		if requestBasicAuth, ok := requestBasicAuths[0].(map[string]interface{}); ok {
+			request.SetBasicAuth(buildDatadogBasicAuth(requestBasicAuth))
 		}
 	}
 
