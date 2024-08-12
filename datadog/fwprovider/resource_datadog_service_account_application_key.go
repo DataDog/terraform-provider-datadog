@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -240,7 +241,9 @@ func (r *serviceAccountApplicationKeyResource) updateStateFullKey(ctx context.Co
 	}
 
 	if createdAt, ok := attributes.GetCreatedAtOk(); ok {
-		state.CreatedAt = types.StringValue(*createdAt)
+		timeStr := createdAt.Format(time.RFC3339)
+		state.CreatedAt = types.StringValue(timeStr)
+
 	}
 
 	if last4, ok := attributes.GetLast4Ok(); ok {
