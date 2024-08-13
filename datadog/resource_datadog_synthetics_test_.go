@@ -26,6 +26,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+/*
+ * Resource
+ */
+
 func resourceDatadogSyntheticsTest() *schema.Resource {
 	return &schema.Resource{
 		Description:   "Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.",
@@ -144,6 +148,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		},
 	}
 }
+
+/*
+ * Schemas
+ */
 
 func syntheticsTestRequest() *schema.Resource {
 	return &schema.Resource{
@@ -1319,6 +1327,10 @@ func syntheticsHttpVersionOption() *schema.Schema {
 	}
 }
 
+/*
+ * CRUD functions
+ */
+
 func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -1327,7 +1339,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 	testType := getSyntheticsTestType(d)
 
 	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
-		syntheticsTest := buildSyntheticsAPITestStruct(d)
+		syntheticsTest := buildDatadogSyntheticsAPITest(d)
 		createdSyntheticsTest, httpResponseCreate, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsAPITest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
@@ -1362,7 +1374,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 
 		return updateSyntheticsAPITestLocalState(d, &getSyntheticsApiTestResponse)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
+		syntheticsTest := buildDatadogSyntheticsBrowserTest(d)
 		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsBrowserTest(auth, *syntheticsTest)
 		if err != nil {
 			// Note that Id won't be set, so no state will be saved.
@@ -1462,7 +1474,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 	testType := getSyntheticsTestType(d)
 
 	if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_API {
-		syntheticsTest := buildSyntheticsAPITestStruct(d)
+		syntheticsTest := buildDatadogSyntheticsAPITest(d)
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateAPITest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
@@ -1473,7 +1485,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		}
 		return updateSyntheticsAPITestLocalState(d, &updatedTest)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
-		syntheticsTest := buildSyntheticsBrowserTestStruct(d)
+		syntheticsTest := buildDatadogSyntheticsBrowserTest(d)
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateBrowserTest(auth, d.Id(), *syntheticsTest)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
@@ -1507,32 +1519,415 @@ func resourceDatadogSyntheticsTestDelete(ctx context.Context, d *schema.Resource
 	return nil
 }
 
-func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertionOperator datadogV1.SyntheticsAssertionOperator) bool {
-	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{
-		datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME,
-		datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE,
-		datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY,
-		datadogV1.SYNTHETICSASSERTIONTYPE_PACKETS_RECEIVED,
-		datadogV1.SYNTHETICSASSERTIONTYPE_NETWORK_HOP,
-		datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_HEALTHCHECK_STATUS,
-	} {
-		if assertionType == intTargetAssertionType {
-			return true
+func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsBrowserTest) diag.Diagnostics {
+	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
+		return diag.FromErr(err)
+	}
+
+	config := syntheticsTest.GetConfig()
+	actualRequest := config.GetRequest()
+	localRequest := buildTerraformTestRequest(actualRequest)
+
+	if config.HasSetCookie() {
+		if err := d.Set("set_cookie", config.GetSetCookie()); err != nil {
+			return diag.FromErr(err)
 		}
 	}
-	if assertionType == datadogV1.SYNTHETICSASSERTIONTYPE_STATUS_CODE &&
-		(assertionOperator == datadogV1.SYNTHETICSASSERTIONOPERATOR_IS || assertionOperator == datadogV1.SYNTHETICSASSERTIONOPERATOR_IS_NOT) {
-		return true
+	if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
+		return diag.FromErr(err)
 	}
-	return false
+	if err := d.Set("request_headers", actualRequest.Headers); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
+		localAuth := buildTerraformBasicAuth(basicAuth)
+
+		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
+		oldCertificates := d.Get("request_client_certificate").([]interface{})
+		localCertificate := buildTerraformRequestCertificates(*clientCertificate, oldCertificates)
+
+		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	if proxy, ok := actualRequest.GetProxyOk(); ok {
+		localProxy := buildTerraformTestRequestProxy(*proxy)
+		if err := d.Set("request_proxy", []map[string]interface{}{localProxy}); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	// assertions are required but not used for browser tests
+	localAssertions := make([]map[string]interface{}, 0)
+
+	if err := d.Set("assertion", localAssertions); err != nil {
+		return diag.FromErr(err)
+	}
+
+	configVariables := config.GetConfigVariables()
+	oldConfigVariables := d.Get("config_variable").([]interface{})
+	if err := d.Set("config_variable", buildTerraformConfigVariables(configVariables, oldConfigVariables)); err != nil {
+		return diag.FromErr(err)
+	}
+
+	actualVariables := config.GetVariables()
+	localBrowserVariables := make([]map[string]interface{}, len(actualVariables))
+	for i, variable := range actualVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := variable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := variable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+		if v, ok := variable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
+		if v, ok := variable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
+		if v, ok := variable.GetExampleOk(); ok {
+			localVariable["example"] = *v
+		} else if v, ok := localVariable["secure"].(bool); ok && v {
+			localVariable["example"] = d.Get(fmt.Sprintf("browser_variable.%d.example", i))
+		}
+		if v, ok := variable.GetPatternOk(); ok {
+			localVariable["pattern"] = *v
+		} else if v, ok := localVariable["secure"].(bool); ok && v {
+			localVariable["pattern"] = d.Get(fmt.Sprintf("browser_variable.%d.pattern", i))
+		}
+		localBrowserVariables[i] = localVariable
+	}
+
+	if err := d.Set("browser_variable", localBrowserVariables); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("locations", syntheticsTest.Locations); err != nil {
+		return diag.FromErr(err)
+	}
+
+	localOptionsLists := buildTerraformTestOptions(syntheticsTest.GetOptions())
+
+	if err := d.Set("options_list", localOptionsLists); err != nil {
+		return diag.FromErr(err)
+	}
+
+	steps := syntheticsTest.GetSteps()
+	var localSteps []map[string]interface{}
+
+	for stepIndex, step := range steps {
+		localStep := make(map[string]interface{})
+		localStep["name"] = step.GetName()
+		localStep["type"] = string(step.GetType())
+		localStep["timeout"] = step.GetTimeout()
+
+		if allowFailure, ok := step.GetAllowFailureOk(); ok {
+			localStep["allow_failure"] = allowFailure
+		}
+
+		if isCritical, ok := step.GetIsCriticalOk(); ok {
+			localStep["is_critical"] = isCritical
+		}
+		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
+			localStep["no_screenshot"] = hasNoScreenshot
+		}
+
+		localParams := make(map[string]interface{})
+
+		forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex))
+		if ok {
+			localStep["force_element_update"] = forceElementUpdate
+		}
+
+		params := step.GetParams()
+		paramsMap := params.(map[string]interface{})
+
+		for key, value := range paramsMap {
+			if key == "element" && forceElementUpdate == true {
+				// prevent overriding `element` in the local state with the one received from the backend, and
+				// keep the element from the local state instead
+				element := d.Get(fmt.Sprintf("browser_step.%d.params.0.element", stepIndex))
+				localParams["element"] = element
+			} else {
+				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
+			}
+		}
+
+		// If received an element from the backend, extract the user locator part to update the local state
+		if elementParams, ok := paramsMap["element"]; ok {
+			serializedElementParams := convertStepParamsValueForState("element", elementParams)
+			var stepElement interface{}
+			utils.GetMetadataFromJSON([]byte(serializedElementParams.(string)), &stepElement)
+			if elementUserLocator, ok := stepElement.(map[string]interface{})["userLocator"]; ok {
+				userLocator := elementUserLocator.(map[string]interface{})
+				values := userLocator["values"]
+				value := values.([]interface{})[0]
+
+				localElementUserLocator := map[string]interface{}{
+					"fail_test_on_cannot_locate": userLocator["failTestOnCannotLocate"],
+					"value": []map[string]interface{}{
+						value.(map[string]interface{}),
+					},
+				}
+
+				localParams["element_user_locator"] = []map[string]interface{}{localElementUserLocator}
+			}
+		}
+
+		localStep["params"] = []interface{}{localParams}
+
+		localSteps = append(localSteps, localStep)
+	}
+
+	if err := d.Set("browser_step", localSteps); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("name", syntheticsTest.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("message", syntheticsTest.GetMessage()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("status", syntheticsTest.GetStatus()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("tags", syntheticsTest.Tags); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("monitor_id", syntheticsTest.MonitorId); err != nil {
+		return diag.FromErr(err)
+	}
+	return nil
 }
 
-func getSyntheticsTestType(d *schema.ResourceData) *datadogV1.SyntheticsTestDetailsType {
-	v := datadogV1.SyntheticsTestDetailsType(d.Get("type").(string))
-	return &v
+func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest) diag.Diagnostics {
+	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
+		return diag.FromErr(err)
+	}
+	if syntheticsTest.HasSubtype() {
+		if err := d.Set("subtype", syntheticsTest.GetSubtype()); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	config := syntheticsTest.GetConfig()
+	actualRequest := config.GetRequest()
+	localRequest := buildTerraformTestRequest(actualRequest)
+
+	if syntheticsTest.GetSubtype() != "multi" {
+		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	if err := d.Set("request_headers", actualRequest.Headers); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("request_metadata", actualRequest.GetMetadata()); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
+		localAuth := buildTerraformBasicAuth(basicAuth)
+
+		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
+		oldCertificates := d.Get("request_client_certificate").([]interface{})
+		localCertificate := buildTerraformRequestCertificates(*clientCertificate, oldCertificates)
+
+		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	if proxy, ok := actualRequest.GetProxyOk(); ok {
+		localProxy := buildTerraformTestRequestProxy(*proxy)
+		if err := d.Set("request_proxy", []map[string]interface{}{localProxy}); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	if files, ok := actualRequest.GetFilesOk(); ok && files != nil && len(*files) > 0 {
+		oldLocalFilesCount := d.Get("request_file.#").(int)
+		oldLocalFiles := make([]map[string]interface{}, oldLocalFilesCount)
+		for i := 0; i < oldLocalFilesCount; i++ {
+			oldLocalFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
+			oldLocalFiles[i] = oldLocalFile
+		}
+
+		localFiles := buildTerraformBodyFiles(files, oldLocalFiles)
+		if err := d.Set("request_file", localFiles); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	actualAssertions := config.GetAssertions()
+	localAssertions, err := buildTerraformAssertions(actualAssertions)
+
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("assertion", localAssertions); err != nil {
+		return diag.FromErr(err)
+	}
+
+	configVariables := config.GetConfigVariables()
+	oldConfigVariables := d.Get("config_variable").([]interface{})
+	if err := d.Set("config_variable", buildTerraformConfigVariables(configVariables, oldConfigVariables)); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("variables_from_script", config.GetVariablesFromScript()); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if steps, ok := config.GetStepsOk(); ok {
+		localSteps := make([]interface{}, len(*steps))
+
+		for i, step := range *steps {
+			localStep := make(map[string]interface{})
+
+			if step.SyntheticsAPITestStep != nil {
+				localStep["name"] = step.SyntheticsAPITestStep.GetName()
+				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
+
+				localAssertions, err := buildTerraformAssertions(step.SyntheticsAPITestStep.GetAssertions())
+				if err != nil {
+					return diag.FromErr(err)
+				}
+				localStep["assertion"] = localAssertions
+				localStep["extracted_value"] = buildTerraformExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
+
+				stepRequest := step.SyntheticsAPITestStep.GetRequest()
+				localRequest := buildTerraformTestRequest(stepRequest)
+				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
+				localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
+				if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
+					// the schema defines a default value of `http_version` for any kind of step,
+					// but it's not supported for `grpc` - so we save `any` in the local state to avoid diffs
+					localRequest["http_version"] = datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY
+				}
+				localStep["request_definition"] = []map[string]interface{}{localRequest}
+				localStep["request_headers"] = stepRequest.GetHeaders()
+				localStep["request_query"] = stepRequest.GetQuery()
+				localStep["request_metadata"] = stepRequest.GetMetadata()
+
+				if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
+					localAuth := buildTerraformBasicAuth(basicAuth)
+					localStep["request_basicauth"] = []map[string]string{localAuth}
+				}
+
+				if clientCertificate, ok := stepRequest.GetCertificateOk(); ok {
+					oldCertificates := d.Get(fmt.Sprintf("api_step.%d.request_client_certificate", i)).([]interface{})
+					localCertificate := buildTerraformRequestCertificates(*clientCertificate, oldCertificates)
+
+					localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
+				}
+
+				if proxy, ok := stepRequest.GetProxyOk(); ok {
+					localProxy := buildTerraformTestRequestProxy(*proxy)
+					localStep["request_proxy"] = []map[string]interface{}{localProxy}
+				}
+
+				if files, ok := stepRequest.GetFilesOk(); ok && files != nil && len(*files) > 0 {
+					oldLocalFilesCount := d.Get(fmt.Sprintf("api_step.%d.request_file.#", i)).(int)
+					oldLocalFiles := make([]map[string]interface{}, oldLocalFilesCount)
+					for j := 0; j < oldLocalFilesCount; j++ {
+						oldLocalFile := d.Get(fmt.Sprintf("api_step.%d.request_file.%d", i, j)).(map[string]interface{})
+						oldLocalFiles[j] = oldLocalFile
+					}
+
+					localFiles := buildTerraformBodyFiles(files, oldLocalFiles)
+					localStep["request_file"] = localFiles
+				}
+
+				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
+				localStep["is_critical"] = step.SyntheticsAPITestStep.GetIsCritical()
+
+				if retry, ok := step.SyntheticsAPITestStep.GetRetryOk(); ok {
+					localRetry := make(map[string]interface{})
+					if count, ok := retry.GetCountOk(); ok {
+						localRetry["count"] = *count
+					}
+					if interval, ok := retry.GetIntervalOk(); ok {
+						localRetry["interval"] = *interval
+					}
+					localStep["retry"] = []map[string]interface{}{localRetry}
+				}
+			} else if step.SyntheticsAPIWaitStep != nil {
+				localStep["name"] = step.SyntheticsAPIWaitStep.GetName()
+				localStep["subtype"] = step.SyntheticsAPIWaitStep.GetSubtype()
+				localStep["value"] = step.SyntheticsAPIWaitStep.GetValue()
+			}
+
+			localSteps[i] = localStep
+		}
+
+		if err := d.Set("api_step", localSteps); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	if err := d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("locations", syntheticsTest.Locations); err != nil {
+		return diag.FromErr(err)
+	}
+
+	localOptionsLists := buildTerraformTestOptions(syntheticsTest.GetOptions())
+
+	if err := d.Set("options_list", localOptionsLists); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if err := d.Set("name", syntheticsTest.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("message", syntheticsTest.GetMessage()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("status", syntheticsTest.GetStatus()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("tags", syntheticsTest.Tags); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("monitor_id", syntheticsTest.MonitorId); err != nil {
+		return diag.FromErr(err)
+	}
+	return nil
 }
 
-func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsAPITest {
+/*
+ * transformer functions between datadog and terraform
+ */
+
+func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.SyntheticsAPITest {
 	syntheticsTest := datadogV1.NewSyntheticsAPITestWithDefaults()
 	syntheticsTest.SetName(d.Get("name").(string))
 
@@ -1564,7 +1959,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
 	}
 	if attr, ok := d.GetOk("request_file"); ok && attr != nil && len(attr.([]interface{})) > 0 {
-		request.SetFiles(buildBodyFilesStruct(attr.([]interface{})))
+		request.SetFiles(buildDatadogBodyFiles(attr.([]interface{})))
 	}
 	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
 		request.SetTimeout(float64(attr.(int)))
@@ -1626,35 +2021,12 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 
 	config.Assertions = []datadogV1.SyntheticsAssertion{}
 	if attr, ok := d.GetOk("assertion"); ok && attr != nil {
-		assertions := buildAssertions(attr.([]interface{}))
+		assertions := buildDatadogAssertions(attr.([]interface{}))
 		config.Assertions = assertions
 	}
 
-	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
-
-	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
-		for _, v := range attr.([]interface{}) {
-			variableMap := v.(map[string]interface{})
-			variable := datadogV1.SyntheticsConfigVariable{}
-
-			variable.SetName(variableMap["name"].(string))
-			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
-
-			if variable.GetType() != "global" {
-				variable.SetPattern(variableMap["pattern"].(string))
-				variable.SetExample(variableMap["example"].(string))
-				variable.SetSecure(variableMap["secure"].(bool))
-			}
-
-			if variableMap["id"] != "" {
-				variable.SetId(variableMap["id"].(string))
-			}
-
-			configVariables = append(configVariables, variable)
-		}
-	}
-
-	config.SetConfigVariables(configVariables)
+	requestConfigVariables := d.Get("config_variable").([]interface{})
+	config.SetConfigVariables(buildDatadogConfigVariables(requestConfigVariables))
 
 	if attr, ok := d.GetOk("variables_from_script"); ok && attr != nil {
 		config.SetVariablesFromScript(attr.(string))
@@ -1674,11 +2046,11 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 				step.SyntheticsAPITestStep.SetName(stepMap["name"].(string))
 				step.SyntheticsAPITestStep.SetSubtype(datadogV1.SyntheticsAPITestStepSubtype(stepMap["subtype"].(string)))
 
-				extractedValues := buildExtractedValues(stepMap["extracted_value"].([]interface{}))
+				extractedValues := buildDatadogExtractedValues(stepMap["extracted_value"].([]interface{}))
 				step.SyntheticsAPITestStep.SetExtractedValues(extractedValues)
 
 				assertions := stepMap["assertion"].([]interface{})
-				step.SyntheticsAPITestStep.SetAssertions(buildAssertions(assertions))
+				step.SyntheticsAPITestStep.SetAssertions(buildDatadogAssertions(assertions))
 
 				request := datadogV1.SyntheticsTestRequest{}
 				requests := stepMap["request_definition"].([]interface{})
@@ -1722,7 +2094,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 						}
 
 						if attr, ok := stepMap["request_file"]; ok && attr != nil && len(attr.([]interface{})) > 0 {
-							request.SetFiles(buildBodyFilesStruct(attr.([]interface{})))
+							request.SetFiles(buildDatadogBodyFiles(attr.([]interface{})))
 						}
 					}
 				}
@@ -1760,7 +2132,7 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 		config.SetSteps(steps)
 	}
 
-	options := buildTestOptions(d)
+	options := buildDatadogTestOptions(d)
 
 	syntheticsTest.SetConfig(*config)
 	syntheticsTest.SetOptions(*options)
@@ -1786,191 +2158,197 @@ func buildSyntheticsAPITestStruct(d *schema.ResourceData) *datadogV1.SyntheticsA
 	return syntheticsTest
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, basicAuth []interface{}, requestClientCertificates []interface{}, requestProxy []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
-	if len(requestHeaders) > 0 {
-		headers := make(map[string]string, len(requestHeaders))
+func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
+	request := datadogV1.SyntheticsTestRequest{}
+	if attr, ok := d.GetOk("request_definition.0.method"); ok {
+		request.SetMethod(attr.(string))
+	}
+	if attr, ok := d.GetOk("request_definition.0.url"); ok {
+		request.SetUrl(attr.(string))
+	}
+	if attr, ok := d.GetOk("request_definition.0.body"); ok {
+		request.SetBody(attr.(string))
+	}
+	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
+		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
+	}
+	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
+		request.SetTimeout(float64(attr.(int)))
+	}
+	if attr, ok := d.GetOk("request_definition.0.certificate_domains"); ok {
+		var certificateDomains []string
 
-		for k, v := range requestHeaders {
-			headers[k] = v.(string)
+		for _, s := range attr.([]interface{}) {
+			certificateDomains = append(certificateDomains, s.(string))
 		}
-
-		request.SetHeaders(headers)
+		request.SetCertificateDomains(certificateDomains)
 	}
 
-	if len(requestQuery) > 0 {
-		request.SetQuery(requestQuery)
+	if attr, ok := d.GetOk("request_query"); ok {
+		query := attr.(map[string]interface{})
+		if len(query) > 0 {
+			request.SetQuery(query)
+		}
 	}
 
-	if len(basicAuth) > 0 {
-		if requestBasicAuth, ok := basicAuth[0].(map[string]interface{}); ok {
-			if requestBasicAuth["type"] == "web" && requestBasicAuth["username"] != "" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
-				basicAuth.SetPassword(requestBasicAuth["password"].(string))
-				basicAuth.SetUsername(requestBasicAuth["username"].(string))
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
-			}
+	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
+		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
+			basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
+			basicAuth.SetPassword(password.(string))
+			basicAuth.SetUsername(username.(string))
+			request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
+		}
+	}
 
-			if requestBasicAuth["type"] == "sigv4" && requestBasicAuth["access_key"] != "" && requestBasicAuth["secret_key"] != "" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthSigv4(requestBasicAuth["access_key"].(string), requestBasicAuth["secret_key"].(string), datadogV1.SYNTHETICSBASICAUTHSIGV4TYPE_SIGV4)
+	if attr, ok := d.GetOk("request_headers"); ok {
+		headers := attr.(map[string]interface{})
+		if len(headers) > 0 {
+			request.SetHeaders(make(map[string]string))
+		}
+		for k, v := range headers {
+			request.GetHeaders()[k] = v.(string)
+		}
+	}
 
-				basicAuth.SetRegion(requestBasicAuth["region"].(string))
-				basicAuth.SetServiceName(requestBasicAuth["service_name"].(string))
-				basicAuth.SetSessionToken(requestBasicAuth["session_token"].(string))
+	if attr, ok := d.GetOk("request_client_certificate"); ok {
+		requestClientCertificate := attr.(map[string]interface{})
+		request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
+	}
 
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth))
-			}
+	if attr, ok := d.GetOk("request_proxy"); ok {
+		requestProxies := attr.([]interface{})
+		if requestProxy, ok := requestProxies[0].(map[string]interface{}); ok {
+			request.SetProxy(buildDatadogTestRequestProxy(requestProxy))
+		}
+	}
 
-			if requestBasicAuth["type"] == "ntlm" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthNTLM(datadogV1.SYNTHETICSBASICAUTHNTLMTYPE_NTLM)
+	config := datadogV1.SyntheticsBrowserTestConfig{}
+	config.SetAssertions([]datadogV1.SyntheticsAssertion{})
+	config.SetRequest(request)
+	config.SetVariables([]datadogV1.SyntheticsBrowserVariable{})
 
-				basicAuth.SetUsername(requestBasicAuth["username"].(string))
-				basicAuth.SetPassword(requestBasicAuth["password"].(string))
-				basicAuth.SetDomain(requestBasicAuth["domain"].(string))
-				basicAuth.SetWorkstation(requestBasicAuth["workstation"].(string))
+	var browserVariables []interface{}
 
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth))
-			}
+	if attr, ok := d.GetOk("browser_variable"); ok && attr != nil {
+		browserVariables = attr.([]interface{})
+	}
 
-			if requestBasicAuth["type"] == "oauth-client" {
-				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
-				if err == nil {
-					tokenApiAuthenticationValue = *tokenApiAuthentication
+	for _, variable := range browserVariables {
+		variableMap := variable.(map[string]interface{})
+		if v, ok := variableMap["type"]; ok {
+			variableType := datadogV1.SyntheticsBrowserVariableType(v.(string))
+			if v, ok := variableMap["name"]; ok {
+				variableName := v.(string)
+				newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
+				if v, ok := variableMap["example"]; ok {
+					newVariable.SetExample(v.(string))
 				}
-				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(
-					requestBasicAuth["access_token_url"].(string),
-					requestBasicAuth["client_id"].(string),
-					requestBasicAuth["client_secret"].(string),
-					tokenApiAuthenticationValue,
-					datadogV1.SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT,
-				)
-
-				// optional fields for oauth must not be included if they have no value, or the authentication will fail
-				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
-					basicAuth.SetAudience(v)
+				if v, ok := variableMap["id"]; ok && v.(string) != "" {
+					newVariable.SetId(v.(string))
 				}
-				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
-					basicAuth.SetResource(v)
+				if v, ok := variableMap["pattern"]; ok {
+					newVariable.SetPattern(v.(string))
 				}
-				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
-					basicAuth.SetScope(v)
+				if v, ok := variableMap["secure"]; ok && variableType == datadogV1.SYNTHETICSBROWSERVARIABLETYPE_TEXT {
+					newVariable.SetSecure(v.(bool))
 				}
 
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "oauth-rop" {
-				tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
-				var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
-				if err == nil {
-					tokenApiAuthenticationValue = *tokenApiAuthentication
-				}
-				basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
-					requestBasicAuth["access_token_url"].(string),
-					requestBasicAuth["password"].(string),
-					tokenApiAuthenticationValue,
-					datadogV1.SYNTHETICSBASICAUTHOAUTHROPTYPE_OAUTH_ROP,
-					requestBasicAuth["username"].(string))
-
-				// optional fields for oauth must not be included if they have no value, or the authentication will fail
-				if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
-					basicAuth.SetAudience(v)
-				}
-				if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
-					basicAuth.SetResource(v)
-				}
-				if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
-					basicAuth.SetScope(v)
-				}
-				basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
-				basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
-
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth))
-			}
-
-			if requestBasicAuth["type"] == "digest" {
-				basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(
-					requestBasicAuth["password"].(string),
-					datadogV1.SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST,
-					requestBasicAuth["username"].(string),
-				)
-				request.SetBasicAuth(datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth))
+				config.SetVariables(append(config.GetVariables(), *newVariable))
 			}
 		}
 	}
 
-	if len(requestClientCertificates) > 0 {
-		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
-		key := datadogV1.SyntheticsTestRequestCertificateItem{}
-		clientCertificate := requestClientCertificates[0].(map[string]interface{})
-		clientCerts := clientCertificate["cert"].([]interface{})
-		clientKeys := clientCertificate["key"].([]interface{})
+	requestConfigVariables := d.Get("config_variable").([]interface{})
+	config.SetConfigVariables(buildDatadogConfigVariables(requestConfigVariables))
 
-		clientCert := clientCerts[0].(map[string]interface{})
-		clientKey := clientKeys[0].(map[string]interface{})
-
-		if clientCert["content"] != "" {
-			// only set the certificate content if it is not an already hashed string
-			// this is needed for the update function that receives the data from the state
-			// and not from the config. So we get a hash of the certificate and not it's real
-			// value.
-			if isHash := isCertHash(clientCert["content"].(string)); !isHash {
-				cert.SetContent(clientCert["content"].(string))
-			}
-		}
-		if clientCert["filename"] != "" {
-			cert.SetFilename(clientCert["filename"].(string))
-		}
-
-		if clientKey["content"] != "" {
-			// only set the key content if it is not an already hashed string
-			if isHash := isCertHash(clientKey["content"].(string)); !isHash {
-				key.SetContent(clientKey["content"].(string))
-			}
-		}
-		if clientKey["filename"] != "" {
-			key.SetFilename(clientKey["filename"].(string))
-		}
-
-		requestClientCertificate := datadogV1.SyntheticsTestRequestCertificate{
-			Cert: &cert,
-			Key:  &key,
-		}
-
-		request.SetCertificate(requestClientCertificate)
+	if attr, ok := d.GetOk("set_cookie"); ok {
+		config.SetSetCookie(attr.(string))
 	}
 
-	if len(requestProxy) > 0 {
-		if proxy, ok := requestProxy[0].(map[string]interface{}); ok {
-			testRequestProxy := datadogV1.SyntheticsTestRequestProxy{}
-			testRequestProxy.SetUrl(proxy["url"].(string))
+	options := buildDatadogTestOptions(d)
 
-			proxyHeaders := make(map[string]string, len(proxy["headers"].(map[string]interface{})))
+	syntheticsTest := datadogV1.NewSyntheticsBrowserTestWithDefaults()
+	syntheticsTest.SetMessage(d.Get("message").(string))
+	syntheticsTest.SetName(d.Get("name").(string))
+	syntheticsTest.SetConfig(config)
+	syntheticsTest.SetOptions(*options)
+	syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(d.Get("status").(string)))
 
-			for k, v := range proxy["headers"].(map[string]interface{}) {
-				proxyHeaders[k] = v.(string)
+	if attr, ok := d.GetOk("locations"); ok {
+		var locations []string
+		for _, s := range attr.(*schema.Set).List() {
+			locations = append(locations, s.(string))
+		}
+		syntheticsTest.SetLocations(locations)
+	}
+
+	tags := make([]string, 0)
+	if attr, ok := d.GetOk("tags"); ok {
+		for _, s := range attr.([]interface{}) {
+			if tag, ok := s.(string); ok {
+				tags = append(tags, tag)
+			}
+		}
+	}
+	syntheticsTest.SetTags(tags)
+
+	if attr, ok := d.GetOk("browser_step"); ok {
+		steps := []datadogV1.SyntheticsStep{}
+
+		for _, s := range attr.([]interface{}) {
+			step := datadogV1.SyntheticsStep{}
+			stepMap := s.(map[string]interface{})
+
+			step.SetName(stepMap["name"].(string))
+			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
+			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetIsCritical(stepMap["is_critical"].(bool))
+			step.SetTimeout(int64(stepMap["timeout"].(int)))
+			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
+
+			params := make(map[string]interface{})
+			stepParams := stepMap["params"].([]interface{})[0]
+			stepTypeParams := getParamsKeysForStepType(step.GetType())
+
+			for _, key := range stepTypeParams {
+				if stepMap, ok := stepParams.(map[string]interface{}); ok && stepMap[key] != "" {
+					convertedValue := convertStepParamsValueForConfig(step.GetType(), key, stepMap[key])
+					params[convertStepParamsKey(key)] = convertedValue
+				}
 			}
 
-			testRequestProxy.SetHeaders(proxyHeaders)
+			if stepParamsMap, ok := stepParams.(map[string]interface{}); ok && stepParamsMap["element_user_locator"] != "" {
+				userLocatorsParams := stepParamsMap["element_user_locator"].([]interface{})
 
-			request.SetProxy(testRequestProxy)
+				if len(userLocatorsParams) != 0 {
+					userLocatorParams := userLocatorsParams[0].(map[string]interface{})
+					values := userLocatorParams["value"].([]interface{})
+					userLocator := map[string]interface{}{
+						"failTestOnCannotLocate": userLocatorParams["fail_test_on_cannot_locate"],
+						"values":                 []map[string]interface{}{values[0].(map[string]interface{})},
+					}
+
+					stepElement := make(map[string]interface{})
+					if stepParamsElement, ok := stepParamsMap["element"]; ok {
+						utils.GetMetadataFromJSON([]byte(stepParamsElement.(string)), &stepElement)
+					}
+					stepElement["userLocator"] = userLocator
+					params["element"] = stepElement
+				}
+			}
+
+			step.SetParams(params)
+
+			steps = append(steps, step)
 		}
+
+		syntheticsTest.SetSteps(steps)
 	}
 
-	if len(requestMetadata) > 0 {
-		metadata := make(map[string]string, len(requestMetadata))
-
-		for k, v := range requestMetadata {
-			metadata[k] = v.(string)
-		}
-
-		request.SetMetadata(metadata)
-	}
-
-	return &request
+	return syntheticsTest
 }
 
-func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
+func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 	assertions := make([]datadogV1.SyntheticsAssertion, 0)
 
 	for _, assertion := range attr {
@@ -2119,7 +2497,555 @@ func buildAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion {
 	return assertions
 }
 
-func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
+func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (localAssertions []map[string]interface{}, err error) {
+	localAssertions = make([]map[string]interface{}, len(actualAssertions))
+	for i, assertion := range actualAssertions {
+		localAssertion := make(map[string]interface{})
+		if assertion.SyntheticsAssertionTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if assertionTarget.HasProperty() {
+				localAssertion["property"] = assertionTarget.GetProperty()
+			}
+			if target := assertionTarget.GetTarget(); target != nil {
+				localAssertion["target"] = convertToString(target)
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+			if assertionTarget.HasTimingsScope() {
+				localAssertion["timings_scope"] = assertionTarget.GetTimingsScope()
+			}
+		} else if assertion.SyntheticsAssertionJSONSchemaTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionJSONSchemaTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if target, ok := assertionTarget.GetTargetOk(); ok {
+				localTarget := make(map[string]string)
+				if v, ok := target.GetJsonSchemaOk(); ok {
+					localTarget["jsonschema"] = string(*v)
+				}
+				if v, ok := target.GetMetaSchemaOk(); ok {
+					localTarget["metaschema"] = string(*v)
+				}
+				localAssertion["targetjsonschema"] = []map[string]string{localTarget}
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+		} else if assertion.SyntheticsAssertionJSONPathTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionJSONPathTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if assertionTarget.HasProperty() {
+				localAssertion["property"] = assertionTarget.GetProperty()
+			}
+			if target, ok := assertionTarget.GetTargetOk(); ok {
+				localTarget := make(map[string]string)
+				if v, ok := target.GetJsonPathOk(); ok {
+					localTarget["jsonpath"] = string(*v)
+				}
+				if v, ok := target.GetOperatorOk(); ok {
+					localTarget["operator"] = string(*v)
+				}
+				if v, ok := target.GetTargetValueOk(); ok {
+					val := (*v).(interface{})
+					if vAsString, ok := val.(string); ok {
+						localTarget["targetvalue"] = vAsString
+					} else if vAsFloat, ok := val.(float64); ok {
+						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
+					} else {
+						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
+					}
+				}
+				if v, ok := target.GetElementsOperatorOk(); ok {
+					localTarget["elementsoperator"] = string(*v)
+				}
+				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+		} else if assertion.SyntheticsAssertionXPathTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionXPathTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if assertionTarget.HasProperty() {
+				localAssertion["property"] = assertionTarget.GetProperty()
+			}
+			if target, ok := assertionTarget.GetTargetOk(); ok {
+				localTarget := make(map[string]string)
+				if v, ok := target.GetXPathOk(); ok {
+					localTarget["xpath"] = string(*v)
+				}
+				if v, ok := target.GetOperatorOk(); ok {
+					localTarget["operator"] = string(*v)
+				}
+				if v, ok := target.GetTargetValueOk(); ok {
+					val := (*v).(interface{})
+					if vAsString, ok := val.(string); ok {
+						localTarget["targetvalue"] = vAsString
+					} else if vAsFloat, ok := val.(float64); ok {
+						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
+					} else {
+						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
+					}
+				}
+				localAssertion["targetxpath"] = []map[string]string{localTarget}
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+		} else if assertion.SyntheticsAssertionBodyHashTarget != nil {
+			assertionTarget := assertion.SyntheticsAssertionBodyHashTarget
+			if v, ok := assertionTarget.GetOperatorOk(); ok {
+				localAssertion["operator"] = string(*v)
+			}
+			if target := assertionTarget.GetTarget(); target != nil {
+				localAssertion["target"] = convertToString(target)
+			}
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+		}
+		localAssertions[i] = localAssertion
+	}
+
+	return localAssertions, nil
+}
+
+func buildDatadogBasicAuth(requestBasicAuth map[string]interface{}) datadogV1.SyntheticsBasicAuth {
+	if requestBasicAuth["type"] == "web" && requestBasicAuth["username"] != "" {
+		basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
+		basicAuth.SetPassword(requestBasicAuth["password"].(string))
+		basicAuth.SetUsername(requestBasicAuth["username"].(string))
+		return datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "sigv4" && requestBasicAuth["access_key"] != "" && requestBasicAuth["secret_key"] != "" {
+		basicAuth := datadogV1.NewSyntheticsBasicAuthSigv4(requestBasicAuth["access_key"].(string), requestBasicAuth["secret_key"].(string), datadogV1.SYNTHETICSBASICAUTHSIGV4TYPE_SIGV4)
+
+		basicAuth.SetRegion(requestBasicAuth["region"].(string))
+		basicAuth.SetServiceName(requestBasicAuth["service_name"].(string))
+		basicAuth.SetSessionToken(requestBasicAuth["session_token"].(string))
+
+		return datadogV1.SyntheticsBasicAuthSigv4AsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "ntlm" {
+		basicAuth := datadogV1.NewSyntheticsBasicAuthNTLM(datadogV1.SYNTHETICSBASICAUTHNTLMTYPE_NTLM)
+
+		basicAuth.SetUsername(requestBasicAuth["username"].(string))
+		basicAuth.SetPassword(requestBasicAuth["password"].(string))
+		basicAuth.SetDomain(requestBasicAuth["domain"].(string))
+		basicAuth.SetWorkstation(requestBasicAuth["workstation"].(string))
+
+		return datadogV1.SyntheticsBasicAuthNTLMAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "oauth-client" {
+		tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+		var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+		if err == nil {
+			tokenApiAuthenticationValue = *tokenApiAuthentication
+		}
+		basicAuth := datadogV1.NewSyntheticsBasicAuthOauthClient(
+			requestBasicAuth["access_token_url"].(string),
+			requestBasicAuth["client_id"].(string),
+			requestBasicAuth["client_secret"].(string),
+			tokenApiAuthenticationValue,
+			datadogV1.SYNTHETICSBASICAUTHOAUTHCLIENTTYPE_OAUTH_CLIENT,
+		)
+
+		// optional fields for oauth must not be included if they have no value, or the authentication will fail
+		if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
+			basicAuth.SetAudience(v)
+		}
+		if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
+			basicAuth.SetResource(v)
+		}
+		if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
+			basicAuth.SetScope(v)
+		}
+
+		return datadogV1.SyntheticsBasicAuthOauthClientAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "oauth-rop" {
+		tokenApiAuthentication, err := datadogV1.NewSyntheticsBasicAuthOauthTokenApiAuthenticationFromValue(requestBasicAuth["token_api_authentication"].(string))
+		var tokenApiAuthenticationValue datadogV1.SyntheticsBasicAuthOauthTokenApiAuthentication
+		if err == nil {
+			tokenApiAuthenticationValue = *tokenApiAuthentication
+		}
+		basicAuth := datadogV1.NewSyntheticsBasicAuthOauthROP(
+			requestBasicAuth["access_token_url"].(string),
+			requestBasicAuth["password"].(string),
+			tokenApiAuthenticationValue,
+			datadogV1.SYNTHETICSBASICAUTHOAUTHROPTYPE_OAUTH_ROP,
+			requestBasicAuth["username"].(string))
+
+		// optional fields for oauth must not be included if they have no value, or the authentication will fail
+		if v, ok := requestBasicAuth["audience"].(string); ok && v != "" {
+			basicAuth.SetAudience(v)
+		}
+		if v, ok := requestBasicAuth["resource"].(string); ok && v != "" {
+			basicAuth.SetResource(v)
+		}
+		if v, ok := requestBasicAuth["scope"].(string); ok && v != "" {
+			basicAuth.SetScope(v)
+		}
+		basicAuth.SetClientId(requestBasicAuth["client_id"].(string))
+		basicAuth.SetClientSecret(requestBasicAuth["client_secret"].(string))
+
+		return datadogV1.SyntheticsBasicAuthOauthROPAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	if requestBasicAuth["type"] == "digest" {
+		basicAuth := datadogV1.NewSyntheticsBasicAuthDigest(
+			requestBasicAuth["password"].(string),
+			datadogV1.SYNTHETICSBASICAUTHDIGESTTYPE_DIGEST,
+			requestBasicAuth["username"].(string),
+		)
+		return datadogV1.SyntheticsBasicAuthDigestAsSyntheticsBasicAuth(basicAuth)
+	}
+
+	log.Printf("[WARN] unrecognized basic auth type %s", requestBasicAuth["type"].(string))
+	return datadogV1.SyntheticsBasicAuth{}
+}
+
+func buildTerraformBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]string {
+	localAuth := make(map[string]string)
+
+	if basicAuth.SyntheticsBasicAuthWeb != nil {
+		basicAuthWeb := basicAuth.SyntheticsBasicAuthWeb
+
+		localAuth["username"] = basicAuthWeb.Username
+		localAuth["password"] = basicAuthWeb.Password
+		localAuth["type"] = "web"
+	}
+
+	if basicAuth.SyntheticsBasicAuthSigv4 != nil {
+		basicAuthSigv4 := basicAuth.SyntheticsBasicAuthSigv4
+		localAuth["access_key"] = basicAuthSigv4.AccessKey
+		localAuth["secret_key"] = basicAuthSigv4.SecretKey
+		if v, ok := basicAuthSigv4.GetRegionOk(); ok {
+			localAuth["region"] = *v
+		}
+		if v, ok := basicAuthSigv4.GetSessionTokenOk(); ok {
+			localAuth["session_token"] = *v
+		}
+		if v, ok := basicAuthSigv4.GetServiceNameOk(); ok {
+			localAuth["service_name"] = *v
+		}
+		localAuth["type"] = "sigv4"
+	}
+
+	if basicAuth.SyntheticsBasicAuthNTLM != nil {
+		basicAuthNtlm := basicAuth.SyntheticsBasicAuthNTLM
+		if v, ok := basicAuthNtlm.GetUsernameOk(); ok {
+			localAuth["username"] = *v
+		}
+		if v, ok := basicAuthNtlm.GetPasswordOk(); ok {
+			localAuth["password"] = *v
+		}
+		if v, ok := basicAuthNtlm.GetDomainOk(); ok {
+			localAuth["domain"] = *v
+		}
+		if v, ok := basicAuthNtlm.GetWorkstationOk(); ok {
+			localAuth["workstation"] = *v
+		}
+		localAuth["type"] = "ntlm"
+	}
+
+	if basicAuth.SyntheticsBasicAuthOauthClient != nil {
+		basicAuthOauthClient := basicAuth.SyntheticsBasicAuthOauthClient
+		localAuth["access_token_url"] = basicAuthOauthClient.AccessTokenUrl
+		localAuth["client_id"] = basicAuthOauthClient.ClientId
+		localAuth["client_secret"] = basicAuthOauthClient.ClientSecret
+		localAuth["token_api_authentication"] = string(basicAuthOauthClient.TokenApiAuthentication)
+		if v, ok := basicAuthOauthClient.GetAudienceOk(); ok {
+			localAuth["audience"] = *v
+		}
+		if v, ok := basicAuthOauthClient.GetScopeOk(); ok {
+			localAuth["scope"] = *v
+		}
+		if v, ok := basicAuthOauthClient.GetResourceOk(); ok {
+			localAuth["resource"] = *v
+		}
+		localAuth["type"] = "oauth-client"
+	}
+	if basicAuth.SyntheticsBasicAuthOauthROP != nil {
+		basicAuthOauthROP := basicAuth.SyntheticsBasicAuthOauthROP
+		localAuth["access_token_url"] = basicAuthOauthROP.AccessTokenUrl
+		if v, ok := basicAuthOauthROP.GetClientIdOk(); ok {
+			localAuth["client_id"] = *v
+		}
+		if v, ok := basicAuthOauthROP.GetClientSecretOk(); ok {
+			localAuth["client_secret"] = *v
+		}
+		localAuth["token_api_authentication"] = string(basicAuthOauthROP.TokenApiAuthentication)
+		if v, ok := basicAuthOauthROP.GetAudienceOk(); ok {
+			localAuth["audience"] = *v
+		}
+		if v, ok := basicAuthOauthROP.GetScopeOk(); ok {
+			localAuth["scope"] = *v
+		}
+		if v, ok := basicAuthOauthROP.GetResourceOk(); ok {
+			localAuth["resource"] = *v
+		}
+		localAuth["username"] = basicAuthOauthROP.Username
+		localAuth["password"] = basicAuthOauthROP.Password
+
+		localAuth["type"] = "oauth-rop"
+	}
+
+	if basicAuth.SyntheticsBasicAuthDigest != nil {
+		basicAuthDigest := basicAuth.SyntheticsBasicAuthDigest
+		localAuth["username"] = basicAuthDigest.Username
+		localAuth["password"] = basicAuthDigest.Password
+
+		localAuth["type"] = "digest"
+	}
+
+	return localAuth
+}
+
+func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequestBodyFile {
+	files := []datadogV1.SyntheticsTestRequestBodyFile{}
+	for _, f := range attr {
+		fileMap := f.(map[string]interface{})
+		file := datadogV1.SyntheticsTestRequestBodyFile{}
+
+		file.SetName(fileMap["name"].(string))
+		file.SetOriginalFileName(fileMap["original_file_name"].(string))
+		file.SetType(fileMap["type"].(string))
+		file.SetSize(int64(fileMap["size"].(int)))
+
+		if content, ok := fileMap["content"]; ok && content != "" {
+			file.SetContent(content.(string))
+		}
+
+		// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
+		// Hence, the provider is uploading the file every time the resource is modified.
+		// Always adding the bucket key to the request would prevent updating the file content.
+		// Always omitting the existing bucket key from the request update the file every time the resource is updated.
+		// We purposely choose the latter.
+		// if bucketKey, ok := fileMap["bucket_key"]; ok && bucketKey != "" {
+		// 	file.SetBucketKey(bucketKey.(string))
+		// }
+
+		files = append(files, file)
+	}
+
+	return files
+}
+
+func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
+	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
+	for i, file := range *actualBodyFiles {
+		// The file content is kept from the existing localFile from the state,
+		// as the response from the backend contains the bucket key rather than the content.
+		localFile := oldLocalBodyFiles[i]
+		localFile["name"] = file.GetName()
+		localFile["original_file_name"] = file.GetOriginalFileName()
+		localFile["type"] = file.GetType()
+		localFile["size"] = file.GetSize()
+
+		if bucket_key, ok := file.GetBucketKeyOk(); ok {
+			localFile["bucket_key"] = bucket_key
+		}
+		localBodyFiles[i] = localFile
+	}
+	return localBodyFiles
+}
+
+func buildDatadogConfigVariables(requestConfigVariables []interface{}) []datadogV1.SyntheticsConfigVariable {
+	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
+
+	for _, v := range requestConfigVariables {
+		variableMap := v.(map[string]interface{})
+		variable := datadogV1.SyntheticsConfigVariable{}
+
+		variable.SetName(variableMap["name"].(string))
+		variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
+
+		if variable.GetType() != "global" {
+			variable.SetPattern(variableMap["pattern"].(string))
+			variable.SetExample(variableMap["example"].(string))
+			variable.SetSecure(variableMap["secure"].(bool))
+		}
+
+		if variableMap["id"] != "" {
+			variable.SetId(variableMap["id"].(string))
+		}
+		configVariables = append(configVariables, variable)
+	}
+
+	return configVariables
+}
+
+func buildTerraformConfigVariables(configVariables []datadogV1.SyntheticsConfigVariable, oldConfigVariables []interface{}) []map[string]interface{} {
+	localConfigVariables := make([]map[string]interface{}, len(configVariables))
+	for i, configVariable := range configVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := configVariable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := configVariable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+		if v, ok := configVariable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
+
+		if configVariable.GetType() != "global" {
+			// If the variable is secure, the example and pattern are not returned by the API,
+			// so we need to keep the values from the terraform config.
+			if v, ok := localVariable["secure"].(bool); ok && v {
+				localVariable["example"] = oldConfigVariables[i].(map[string]interface{})["example"].(string)
+				localVariable["pattern"] = oldConfigVariables[i].(map[string]interface{})["pattern"].(string)
+			} else {
+				if v, ok := configVariable.GetExampleOk(); ok {
+					localVariable["example"] = *v
+				}
+				if v, ok := configVariable.GetPatternOk(); ok {
+					localVariable["pattern"] = *v
+				}
+			}
+		}
+		if v, ok := configVariable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
+		localConfigVariables[i] = localVariable
+	}
+	return localConfigVariables
+}
+
+func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
+	values := make([]datadogV1.SyntheticsParsingOptions, len(stepExtractedValues))
+
+	for i, extractedValue := range stepExtractedValues {
+		extractedValueMap := extractedValue.(map[string]interface{})
+		value := datadogV1.SyntheticsParsingOptions{}
+
+		value.SetName(extractedValueMap["name"].(string))
+		value.SetField(extractedValueMap["field"].(string))
+		value.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(extractedValueMap["type"].(string)))
+
+		valueParsers := extractedValueMap["parser"].([]interface{})
+		valueParser := valueParsers[0].(map[string]interface{})
+
+		parser := datadogV1.SyntheticsVariableParser{}
+		parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(valueParser["type"].(string)))
+		parser.SetValue(valueParser["value"].(string))
+
+		value.SetParser(parser)
+
+		if secure, ok := extractedValueMap["secure"].(bool); ok {
+			value.SetSecure(secure)
+		}
+
+		values[i] = value
+	}
+
+	return values
+}
+
+func buildTerraformExtractedValues(extractedValues []datadogV1.SyntheticsParsingOptions) []map[string]interface{} {
+	localExtractedValues := make([]map[string]interface{}, len(extractedValues))
+
+	for i, extractedValue := range extractedValues {
+		localExtractedValue := make(map[string]interface{})
+		localExtractedValue["name"] = extractedValue.GetName()
+		localExtractedValue["type"] = string(extractedValue.GetType())
+		localExtractedValue["field"] = extractedValue.GetField()
+		localExtractedValue["secure"] = extractedValue.GetSecure()
+
+		parser := extractedValue.GetParser()
+		localParser := make(map[string]interface{})
+		localParser["type"] = string(parser.GetType())
+		localParser["value"] = parser.GetValue()
+		localExtractedValue["parser"] = []map[string]interface{}{localParser}
+
+		localExtractedValues[i] = localExtractedValue
+	}
+
+	return localExtractedValues
+}
+
+func buildDatadogRequestCertificates(requestClientCertificate map[string]interface{}) datadogV1.SyntheticsTestRequestCertificate {
+	cert := datadogV1.SyntheticsTestRequestCertificateItem{}
+	key := datadogV1.SyntheticsTestRequestCertificateItem{}
+
+	clientCerts := requestClientCertificate["cert"].([]interface{})
+	clientKeys := requestClientCertificate["key"].([]interface{})
+
+	clientCert := clientCerts[0].(map[string]interface{})
+	clientKey := clientKeys[0].(map[string]interface{})
+
+	if clientCert["content"] != "" {
+		// only set the certificate content if it is not an already hashed string
+		// this is needed for the update function that receives the data from the state
+		// and not from the config. So we get a hash of the certificate and not it's real
+		// value.
+		if isHash := isCertHash(clientCert["content"].(string)); !isHash {
+			cert.SetContent(clientCert["content"].(string))
+		}
+	}
+	if clientCert["filename"] != "" {
+		cert.SetFilename(clientCert["filename"].(string))
+	}
+
+	if clientKey["content"] != "" {
+		// only set the key content if it is not an already hashed string
+		if isHash := isCertHash(clientKey["content"].(string)); !isHash {
+			key.SetContent(clientKey["content"].(string))
+		}
+	}
+	if clientKey["filename"] != "" {
+		key.SetFilename(clientKey["filename"].(string))
+	}
+
+	return datadogV1.SyntheticsTestRequestCertificate{
+		Cert: &cert,
+		Key:  &key,
+	}
+}
+
+func buildTerraformRequestCertificates(clientCertificate datadogV1.SyntheticsTestRequestCertificate, oldClientCertificates []interface{}) map[string][]map[string]string {
+	localCertificate := make(map[string][]map[string]string)
+	localCertificate["cert"] = make([]map[string]string, 1)
+	localCertificate["cert"][0] = make(map[string]string)
+	localCertificate["key"] = make([]map[string]string, 1)
+	localCertificate["key"][0] = make(map[string]string)
+
+	cert := clientCertificate.GetCert()
+	localCertificate["cert"][0]["filename"] = cert.GetFilename()
+
+	key := clientCertificate.GetKey()
+	localCertificate["key"][0]["filename"] = key.GetFilename()
+
+	// the content of client certificate is write-only so it will not be returned by the API.
+	// To avoid useless diff but also prevent storing the value in clear in the state
+	// we store a hash of the value.
+	if len(oldClientCertificates) > 0 {
+		if configCertificateContent, ok := oldClientCertificates[0].(map[string]interface{})["cert"].([]interface{})[0].(map[string]interface{})["content"].(string); ok {
+			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent)
+		}
+		if configKeyContent, ok := oldClientCertificates[0].(map[string]interface{})["key"].([]interface{})[0].(map[string]interface{})["content"].(string); ok {
+			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent)
+		}
+	}
+
+	return localCertificate
+}
+
+func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 	options := datadogV1.NewSyntheticsTestOptions()
 
 	if attr, ok := d.GetOk("options_list"); ok && attr != nil {
@@ -2279,643 +3205,7 @@ func buildTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOptions {
 	return options
 }
 
-func buildBodyFilesStruct(attr []interface{}) []datadogV1.SyntheticsTestRequestBodyFile {
-	files := []datadogV1.SyntheticsTestRequestBodyFile{}
-	for _, f := range attr {
-		fileMap := f.(map[string]interface{})
-		file := datadogV1.SyntheticsTestRequestBodyFile{}
-
-		file.SetName(fileMap["name"].(string))
-		file.SetOriginalFileName(fileMap["original_file_name"].(string))
-		file.SetType(fileMap["type"].(string))
-		file.SetSize(int64(fileMap["size"].(int)))
-
-		if content, ok := fileMap["content"]; ok && content != "" {
-			file.SetContent(content.(string))
-		}
-
-		// We aren't sure yet how to let the provider check if the file content was updated to upload it again.
-		// Hence, the provider is uploading the file every time the resource is modified.
-		// Always adding the bucket key to the request would prevent updating the file content.
-		// Always omitting the existing bucket key from the request update the file every time the resource is updated.
-		// We purposely choose the latter.
-		// if bucketKey, ok := fileMap["bucket_key"]; ok && bucketKey != "" {
-		// 	file.SetBucketKey(bucketKey.(string))
-		// }
-
-		files = append(files, file)
-	}
-
-	return files
-}
-
-func buildLocalBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
-	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
-	for i, file := range *actualBodyFiles {
-		// The file content is kept from the existing localFile from the state,
-		// as the response from the backend contains the bucket key rather than the content.
-		localFile := oldLocalBodyFiles[i]
-		localFile["name"] = file.GetName()
-		localFile["original_file_name"] = file.GetOriginalFileName()
-		localFile["type"] = file.GetType()
-		localFile["size"] = file.GetSize()
-
-		if bucket_key, ok := file.GetBucketKeyOk(); ok {
-			localFile["bucket_key"] = bucket_key
-		}
-		localBodyFiles[i] = localFile
-	}
-	return localBodyFiles
-}
-
-func buildSyntheticsBrowserTestStruct(d *schema.ResourceData) *datadogV1.SyntheticsBrowserTest {
-	request := datadogV1.SyntheticsTestRequest{}
-	if attr, ok := d.GetOk("request_definition.0.method"); ok {
-		request.SetMethod(attr.(string))
-	}
-	if attr, ok := d.GetOk("request_definition.0.url"); ok {
-		request.SetUrl(attr.(string))
-	}
-	if attr, ok := d.GetOk("request_definition.0.body"); ok {
-		request.SetBody(attr.(string))
-	}
-	if attr, ok := d.GetOk("request_definition.0.body_type"); ok {
-		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(attr.(string)))
-	}
-	if attr, ok := d.GetOk("request_definition.0.timeout"); ok {
-		request.SetTimeout(float64(attr.(int)))
-	}
-	if attr, ok := d.GetOk("request_definition.0.certificate_domains"); ok {
-		var certificateDomains []string
-
-		for _, s := range attr.([]interface{}) {
-			certificateDomains = append(certificateDomains, s.(string))
-		}
-		request.SetCertificateDomains(certificateDomains)
-	}
-
-	if attr, ok := d.GetOk("request_query"); ok {
-		query := attr.(map[string]interface{})
-		if len(query) > 0 {
-			request.SetQuery(query)
-		}
-	}
-
-	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
-		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
-			basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
-			basicAuth.SetPassword(password.(string))
-			basicAuth.SetUsername(username.(string))
-			request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
-		}
-	}
-
-	if attr, ok := d.GetOk("request_headers"); ok {
-		headers := attr.(map[string]interface{})
-		if len(headers) > 0 {
-			request.SetHeaders(make(map[string]string))
-		}
-		for k, v := range headers {
-			request.GetHeaders()[k] = v.(string)
-		}
-	}
-
-	if _, ok := d.GetOk("request_client_certificate"); ok {
-		cert := datadogV1.SyntheticsTestRequestCertificateItem{}
-		key := datadogV1.SyntheticsTestRequestCertificateItem{}
-
-		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.filename"); ok {
-			cert.SetFilename(attr.(string))
-		}
-		if attr, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			cert.SetContent(attr.(string))
-		}
-
-		if attr, ok := d.GetOk("request_client_certificate.0.key.0.filename"); ok {
-			key.SetFilename(attr.(string))
-		}
-		if attr, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			key.SetContent(attr.(string))
-		}
-
-		clientCertificate := datadogV1.SyntheticsTestRequestCertificate{
-			Cert: &cert,
-			Key:  &key,
-		}
-
-		request.SetCertificate(clientCertificate)
-	}
-
-	if _, ok := d.GetOk("request_proxy"); ok {
-		requestProxy := datadogV1.SyntheticsTestRequestProxy{}
-
-		if url, ok := d.GetOk("request_proxy.0.url"); ok {
-			requestProxy.SetUrl(url.(string))
-
-			if headers, ok := d.GetOk("request_proxy.0.headers"); ok {
-				proxyHeaders := make(map[string]string, len(headers.(map[string]interface{})))
-
-				for k, v := range headers.(map[string]interface{}) {
-					proxyHeaders[k] = v.(string)
-				}
-
-				requestProxy.SetHeaders(proxyHeaders)
-			}
-
-			request.SetProxy(requestProxy)
-		}
-	}
-
-	config := datadogV1.SyntheticsBrowserTestConfig{}
-	config.SetAssertions([]datadogV1.SyntheticsAssertion{})
-	config.SetRequest(request)
-	config.SetVariables([]datadogV1.SyntheticsBrowserVariable{})
-
-	var browserVariables []interface{}
-
-	if attr, ok := d.GetOk("browser_variable"); ok && attr != nil {
-		browserVariables = attr.([]interface{})
-	}
-
-	for _, variable := range browserVariables {
-		variableMap := variable.(map[string]interface{})
-		if v, ok := variableMap["type"]; ok {
-			variableType := datadogV1.SyntheticsBrowserVariableType(v.(string))
-			if v, ok := variableMap["name"]; ok {
-				variableName := v.(string)
-				newVariable := datadogV1.NewSyntheticsBrowserVariable(variableName, variableType)
-				if v, ok := variableMap["example"]; ok {
-					newVariable.SetExample(v.(string))
-				}
-				if v, ok := variableMap["id"]; ok && v.(string) != "" {
-					newVariable.SetId(v.(string))
-				}
-				if v, ok := variableMap["pattern"]; ok {
-					newVariable.SetPattern(v.(string))
-				}
-				if v, ok := variableMap["secure"]; ok && variableType == datadogV1.SYNTHETICSBROWSERVARIABLETYPE_TEXT {
-					newVariable.SetSecure(v.(bool))
-				}
-
-				config.SetVariables(append(config.GetVariables(), *newVariable))
-			}
-		}
-	}
-
-	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
-
-	if attr, ok := d.GetOk("config_variable"); ok && attr != nil {
-		for _, v := range attr.([]interface{}) {
-			variableMap := v.(map[string]interface{})
-			variable := datadogV1.SyntheticsConfigVariable{}
-
-			variable.SetName(variableMap["name"].(string))
-			variable.SetType(datadogV1.SyntheticsConfigVariableType(variableMap["type"].(string)))
-
-			if variable.GetType() != "global" {
-				variable.SetPattern(variableMap["pattern"].(string))
-				variable.SetExample(variableMap["example"].(string))
-				variable.SetSecure(variableMap["secure"].(bool))
-			}
-
-			if variableMap["id"] != "" {
-				variable.SetId(variableMap["id"].(string))
-			}
-			configVariables = append(configVariables, variable)
-		}
-	}
-
-	config.SetConfigVariables(configVariables)
-
-	if attr, ok := d.GetOk("set_cookie"); ok {
-		config.SetSetCookie(attr.(string))
-	}
-
-	options := buildTestOptions(d)
-
-	syntheticsTest := datadogV1.NewSyntheticsBrowserTestWithDefaults()
-	syntheticsTest.SetMessage(d.Get("message").(string))
-	syntheticsTest.SetName(d.Get("name").(string))
-	syntheticsTest.SetConfig(config)
-	syntheticsTest.SetOptions(*options)
-	syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(d.Get("status").(string)))
-
-	if attr, ok := d.GetOk("locations"); ok {
-		var locations []string
-		for _, s := range attr.(*schema.Set).List() {
-			locations = append(locations, s.(string))
-		}
-		syntheticsTest.SetLocations(locations)
-	}
-
-	tags := make([]string, 0)
-	if attr, ok := d.GetOk("tags"); ok {
-		for _, s := range attr.([]interface{}) {
-			if tag, ok := s.(string); ok {
-				tags = append(tags, tag)
-			}
-		}
-	}
-	syntheticsTest.SetTags(tags)
-
-	if attr, ok := d.GetOk("browser_step"); ok {
-		steps := []datadogV1.SyntheticsStep{}
-
-		for _, s := range attr.([]interface{}) {
-			step := datadogV1.SyntheticsStep{}
-			stepMap := s.(map[string]interface{})
-
-			step.SetName(stepMap["name"].(string))
-			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
-			step.SetAllowFailure(stepMap["allow_failure"].(bool))
-			step.SetIsCritical(stepMap["is_critical"].(bool))
-			step.SetTimeout(int64(stepMap["timeout"].(int)))
-			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
-
-			params := make(map[string]interface{})
-			stepParams := stepMap["params"].([]interface{})[0]
-			stepTypeParams := getParamsKeysForStepType(step.GetType())
-
-			for _, key := range stepTypeParams {
-				if stepMap, ok := stepParams.(map[string]interface{}); ok && stepMap[key] != "" {
-					convertedValue := convertStepParamsValueForConfig(step.GetType(), key, stepMap[key])
-					params[convertStepParamsKey(key)] = convertedValue
-				}
-			}
-
-			if stepParamsMap, ok := stepParams.(map[string]interface{}); ok && stepParamsMap["element_user_locator"] != "" {
-				userLocatorsParams := stepParamsMap["element_user_locator"].([]interface{})
-
-				if len(userLocatorsParams) != 0 {
-					userLocatorParams := userLocatorsParams[0].(map[string]interface{})
-					values := userLocatorParams["value"].([]interface{})
-					userLocator := map[string]interface{}{
-						"failTestOnCannotLocate": userLocatorParams["fail_test_on_cannot_locate"],
-						"values":                 []map[string]interface{}{values[0].(map[string]interface{})},
-					}
-
-					stepElement := make(map[string]interface{})
-					if stepParamsElement, ok := stepParamsMap["element"]; ok {
-						utils.GetMetadataFromJSON([]byte(stepParamsElement.(string)), &stepElement)
-					}
-					stepElement["userLocator"] = userLocator
-					params["element"] = stepElement
-				}
-			}
-
-			step.SetParams(params)
-
-			steps = append(steps, step)
-		}
-
-		syntheticsTest.SetSteps(steps)
-	}
-
-	return syntheticsTest
-}
-
-func buildLocalRequest(request datadogV1.SyntheticsTestRequest) map[string]interface{} {
-	localRequest := make(map[string]interface{})
-	if request.HasBody() {
-		localRequest["body"] = request.GetBody()
-	}
-	if request.HasBodyType() {
-		localRequest["body_type"] = request.GetBodyType()
-	}
-	if request.HasMethod() {
-		localRequest["method"] = convertToString(request.GetMethod())
-	}
-	if request.HasTimeout() {
-		localRequest["timeout"] = request.GetTimeout()
-	}
-	if request.HasUrl() {
-		localRequest["url"] = request.GetUrl()
-	}
-	if request.HasHost() {
-		localRequest["host"] = request.GetHost()
-	}
-	if request.HasPort() {
-		localRequest["port"] = request.GetPort()
-	}
-	if request.HasDnsServer() {
-		localRequest["dns_server"] = convertToString(request.GetDnsServer())
-	}
-	if request.HasDnsServerPort() {
-		localRequest["dns_server_port"] = request.GetDnsServerPort()
-	}
-	if request.HasNoSavingResponseBody() {
-		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
-	}
-	if request.HasNumberOfPackets() {
-		localRequest["number_of_packets"] = request.GetNumberOfPackets()
-	}
-	if request.HasShouldTrackHops() {
-		localRequest["should_track_hops"] = request.GetShouldTrackHops()
-	}
-	if request.HasServername() {
-		localRequest["servername"] = request.GetServername()
-	}
-	if request.HasMessage() {
-		localRequest["message"] = request.GetMessage()
-	}
-	if request.HasCallType() {
-		localRequest["call_type"] = request.GetCallType()
-	}
-	if request.HasService() {
-		localRequest["service"] = request.GetService()
-	}
-	if request.HasCertificateDomains() {
-		localRequest["certificate_domains"] = request.GetCertificateDomains()
-	}
-	if request.HasPersistCookies() {
-		localRequest["persist_cookies"] = request.GetPersistCookies()
-	}
-	if request.HasHttpVersion() {
-		localRequest["http_version"] = request.GetHttpVersion()
-	}
-	if request.HasCompressedJsonDescriptor() {
-		localRequest["proto_json_descriptor"] = decompressAndDecodeValue(request.GetCompressedJsonDescriptor())
-	}
-
-	if request.HasCompressedProtoFile() {
-		localRequest["plain_proto_file"] = decompressAndDecodeValue(request.GetCompressedProtoFile())
-	}
-
-	return localRequest
-}
-
-func buildLocalAssertions(actualAssertions []datadogV1.SyntheticsAssertion) (localAssertions []map[string]interface{}, err error) {
-	localAssertions = make([]map[string]interface{}, len(actualAssertions))
-	for i, assertion := range actualAssertions {
-		localAssertion := make(map[string]interface{})
-		if assertion.SyntheticsAssertionTarget != nil {
-			assertionTarget := assertion.SyntheticsAssertionTarget
-			if v, ok := assertionTarget.GetOperatorOk(); ok {
-				localAssertion["operator"] = string(*v)
-			}
-			if assertionTarget.HasProperty() {
-				localAssertion["property"] = assertionTarget.GetProperty()
-			}
-			if target := assertionTarget.GetTarget(); target != nil {
-				localAssertion["target"] = convertToString(target)
-			}
-			if v, ok := assertionTarget.GetTypeOk(); ok {
-				localAssertion["type"] = string(*v)
-			}
-			if assertionTarget.HasTimingsScope() {
-				localAssertion["timings_scope"] = assertionTarget.GetTimingsScope()
-			}
-		} else if assertion.SyntheticsAssertionJSONSchemaTarget != nil {
-			assertionTarget := assertion.SyntheticsAssertionJSONSchemaTarget
-			if v, ok := assertionTarget.GetOperatorOk(); ok {
-				localAssertion["operator"] = string(*v)
-			}
-			if target, ok := assertionTarget.GetTargetOk(); ok {
-				localTarget := make(map[string]string)
-				if v, ok := target.GetJsonSchemaOk(); ok {
-					localTarget["jsonschema"] = string(*v)
-				}
-				if v, ok := target.GetMetaSchemaOk(); ok {
-					localTarget["metaschema"] = string(*v)
-				}
-				localAssertion["targetjsonschema"] = []map[string]string{localTarget}
-			}
-			if v, ok := assertionTarget.GetTypeOk(); ok {
-				localAssertion["type"] = string(*v)
-			}
-		} else if assertion.SyntheticsAssertionJSONPathTarget != nil {
-			assertionTarget := assertion.SyntheticsAssertionJSONPathTarget
-			if v, ok := assertionTarget.GetOperatorOk(); ok {
-				localAssertion["operator"] = string(*v)
-			}
-			if assertionTarget.HasProperty() {
-				localAssertion["property"] = assertionTarget.GetProperty()
-			}
-			if target, ok := assertionTarget.GetTargetOk(); ok {
-				localTarget := make(map[string]string)
-				if v, ok := target.GetJsonPathOk(); ok {
-					localTarget["jsonpath"] = string(*v)
-				}
-				if v, ok := target.GetOperatorOk(); ok {
-					localTarget["operator"] = string(*v)
-				}
-				if v, ok := target.GetTargetValueOk(); ok {
-					val := (*v).(interface{})
-					if vAsString, ok := val.(string); ok {
-						localTarget["targetvalue"] = vAsString
-					} else if vAsFloat, ok := val.(float64); ok {
-						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
-					} else {
-						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
-					}
-				}
-				if v, ok := target.GetElementsOperatorOk(); ok {
-					localTarget["elementsoperator"] = string(*v)
-				}
-				localAssertion["targetjsonpath"] = []map[string]string{localTarget}
-			}
-			if v, ok := assertionTarget.GetTypeOk(); ok {
-				localAssertion["type"] = string(*v)
-			}
-		} else if assertion.SyntheticsAssertionXPathTarget != nil {
-			assertionTarget := assertion.SyntheticsAssertionXPathTarget
-			if v, ok := assertionTarget.GetOperatorOk(); ok {
-				localAssertion["operator"] = string(*v)
-			}
-			if assertionTarget.HasProperty() {
-				localAssertion["property"] = assertionTarget.GetProperty()
-			}
-			if target, ok := assertionTarget.GetTargetOk(); ok {
-				localTarget := make(map[string]string)
-				if v, ok := target.GetXPathOk(); ok {
-					localTarget["xpath"] = string(*v)
-				}
-				if v, ok := target.GetOperatorOk(); ok {
-					localTarget["operator"] = string(*v)
-				}
-				if v, ok := target.GetTargetValueOk(); ok {
-					val := (*v).(interface{})
-					if vAsString, ok := val.(string); ok {
-						localTarget["targetvalue"] = vAsString
-					} else if vAsFloat, ok := val.(float64); ok {
-						localTarget["targetvalue"] = strconv.FormatFloat(vAsFloat, 'f', -1, 64)
-					} else {
-						return localAssertions, fmt.Errorf("unrecognized targetvalue type %v", v)
-					}
-				}
-				localAssertion["targetxpath"] = []map[string]string{localTarget}
-			}
-			if v, ok := assertionTarget.GetTypeOk(); ok {
-				localAssertion["type"] = string(*v)
-			}
-		} else if assertion.SyntheticsAssertionBodyHashTarget != nil {
-			assertionTarget := assertion.SyntheticsAssertionBodyHashTarget
-			if v, ok := assertionTarget.GetOperatorOk(); ok {
-				localAssertion["operator"] = string(*v)
-			}
-			if target := assertionTarget.GetTarget(); target != nil {
-				localAssertion["target"] = convertToString(target)
-			}
-			if v, ok := assertionTarget.GetTypeOk(); ok {
-				localAssertion["type"] = string(*v)
-			}
-		}
-		localAssertions[i] = localAssertion
-	}
-
-	return localAssertions, nil
-}
-
-func buildLocalBasicAuth(basicAuth *datadogV1.SyntheticsBasicAuth) map[string]string {
-	localAuth := make(map[string]string)
-
-	if basicAuth.SyntheticsBasicAuthWeb != nil {
-		basicAuthWeb := basicAuth.SyntheticsBasicAuthWeb
-
-		localAuth["username"] = basicAuthWeb.Username
-		localAuth["password"] = basicAuthWeb.Password
-		localAuth["type"] = "web"
-	}
-
-	if basicAuth.SyntheticsBasicAuthSigv4 != nil {
-		basicAuthSigv4 := basicAuth.SyntheticsBasicAuthSigv4
-		localAuth["access_key"] = basicAuthSigv4.AccessKey
-		localAuth["secret_key"] = basicAuthSigv4.SecretKey
-		if v, ok := basicAuthSigv4.GetRegionOk(); ok {
-			localAuth["region"] = *v
-		}
-		if v, ok := basicAuthSigv4.GetSessionTokenOk(); ok {
-			localAuth["session_token"] = *v
-		}
-		if v, ok := basicAuthSigv4.GetServiceNameOk(); ok {
-			localAuth["service_name"] = *v
-		}
-		localAuth["type"] = "sigv4"
-	}
-
-	if basicAuth.SyntheticsBasicAuthNTLM != nil {
-		basicAuthNtlm := basicAuth.SyntheticsBasicAuthNTLM
-		if v, ok := basicAuthNtlm.GetUsernameOk(); ok {
-			localAuth["username"] = *v
-		}
-		if v, ok := basicAuthNtlm.GetPasswordOk(); ok {
-			localAuth["password"] = *v
-		}
-		if v, ok := basicAuthNtlm.GetDomainOk(); ok {
-			localAuth["domain"] = *v
-		}
-		if v, ok := basicAuthNtlm.GetWorkstationOk(); ok {
-			localAuth["workstation"] = *v
-		}
-		localAuth["type"] = "ntlm"
-	}
-
-	if basicAuth.SyntheticsBasicAuthOauthClient != nil {
-		basicAuthOauthClient := basicAuth.SyntheticsBasicAuthOauthClient
-		localAuth["access_token_url"] = basicAuthOauthClient.AccessTokenUrl
-		localAuth["client_id"] = basicAuthOauthClient.ClientId
-		localAuth["client_secret"] = basicAuthOauthClient.ClientSecret
-		localAuth["token_api_authentication"] = string(basicAuthOauthClient.TokenApiAuthentication)
-		if v, ok := basicAuthOauthClient.GetAudienceOk(); ok {
-			localAuth["audience"] = *v
-		}
-		if v, ok := basicAuthOauthClient.GetScopeOk(); ok {
-			localAuth["scope"] = *v
-		}
-		if v, ok := basicAuthOauthClient.GetResourceOk(); ok {
-			localAuth["resource"] = *v
-		}
-		localAuth["type"] = "oauth-client"
-	}
-	if basicAuth.SyntheticsBasicAuthOauthROP != nil {
-		basicAuthOauthROP := basicAuth.SyntheticsBasicAuthOauthROP
-		localAuth["access_token_url"] = basicAuthOauthROP.AccessTokenUrl
-		if v, ok := basicAuthOauthROP.GetClientIdOk(); ok {
-			localAuth["client_id"] = *v
-		}
-		if v, ok := basicAuthOauthROP.GetClientSecretOk(); ok {
-			localAuth["client_secret"] = *v
-		}
-		localAuth["token_api_authentication"] = string(basicAuthOauthROP.TokenApiAuthentication)
-		if v, ok := basicAuthOauthROP.GetAudienceOk(); ok {
-			localAuth["audience"] = *v
-		}
-		if v, ok := basicAuthOauthROP.GetScopeOk(); ok {
-			localAuth["scope"] = *v
-		}
-		if v, ok := basicAuthOauthROP.GetResourceOk(); ok {
-			localAuth["resource"] = *v
-		}
-		localAuth["username"] = basicAuthOauthROP.Username
-		localAuth["password"] = basicAuthOauthROP.Password
-
-		localAuth["type"] = "oauth-rop"
-	}
-
-	if basicAuth.SyntheticsBasicAuthDigest != nil {
-		basicAuthDigest := basicAuth.SyntheticsBasicAuthDigest
-		localAuth["username"] = basicAuthDigest.Username
-		localAuth["password"] = basicAuthDigest.Password
-
-		localAuth["type"] = "digest"
-	}
-
-	return localAuth
-}
-
-func buildExtractedValues(stepExtractedValues []interface{}) []datadogV1.SyntheticsParsingOptions {
-	values := make([]datadogV1.SyntheticsParsingOptions, len(stepExtractedValues))
-
-	for i, extractedValue := range stepExtractedValues {
-		extractedValueMap := extractedValue.(map[string]interface{})
-		value := datadogV1.SyntheticsParsingOptions{}
-
-		value.SetName(extractedValueMap["name"].(string))
-		value.SetField(extractedValueMap["field"].(string))
-		value.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(extractedValueMap["type"].(string)))
-
-		valueParsers := extractedValueMap["parser"].([]interface{})
-		valueParser := valueParsers[0].(map[string]interface{})
-
-		parser := datadogV1.SyntheticsVariableParser{}
-		parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(valueParser["type"].(string)))
-		parser.SetValue(valueParser["value"].(string))
-
-		value.SetParser(parser)
-
-		if secure, ok := extractedValueMap["secure"].(bool); ok {
-			value.SetSecure(secure)
-		}
-
-		values[i] = value
-	}
-
-	return values
-}
-
-func buildLocalExtractedValues(extractedValues []datadogV1.SyntheticsParsingOptions) []map[string]interface{} {
-	localExtractedValues := make([]map[string]interface{}, len(extractedValues))
-
-	for i, extractedValue := range extractedValues {
-		localExtractedValue := make(map[string]interface{})
-		localExtractedValue["name"] = extractedValue.GetName()
-		localExtractedValue["type"] = string(extractedValue.GetType())
-		localExtractedValue["field"] = extractedValue.GetField()
-		localExtractedValue["secure"] = extractedValue.GetSecure()
-
-		parser := extractedValue.GetParser()
-		localParser := make(map[string]interface{})
-		localParser["type"] = string(parser.GetType())
-		localParser["value"] = parser.GetValue()
-		localExtractedValue["parser"] = []map[string]interface{}{localParser}
-
-		localExtractedValues[i] = localExtractedValue
-	}
-
-	return localExtractedValues
-}
-
-func buildLocalOptions(actualOptions datadogV1.SyntheticsTestOptions) []map[string]interface{} {
+func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []map[string]interface{} {
 	localOptionsList := make(map[string]interface{})
 
 	if actualOptions.HasFollowRedirects() {
@@ -3039,533 +3329,238 @@ func buildLocalOptions(actualOptions datadogV1.SyntheticsTestOptions) []map[stri
 	return localOptionsLists
 }
 
-func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsBrowserTest) diag.Diagnostics {
-	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
-		return diag.FromErr(err)
-	}
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestClientCertificates []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
+	if len(requestHeaders) > 0 {
+		headers := make(map[string]string, len(requestHeaders))
 
-	config := syntheticsTest.GetConfig()
-	actualRequest := config.GetRequest()
-	localRequest := buildLocalRequest(actualRequest)
-
-	if config.HasSetCookie() {
-		if err := d.Set("set_cookie", config.GetSetCookie()); err != nil {
-			return diag.FromErr(err)
+		for k, v := range requestHeaders {
+			headers[k] = v.(string)
 		}
-	}
-	if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("request_headers", actualRequest.Headers); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
-		return diag.FromErr(err)
+
+		request.SetHeaders(headers)
 	}
 
-	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok && basicAuth.SyntheticsBasicAuthWeb != nil {
-		localAuth := buildLocalBasicAuth(basicAuth)
+	if len(requestQuery) > 0 {
+		request.SetQuery(requestQuery)
+	}
 
-		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
-			return diag.FromErr(err)
+	if len(requestBasicAuths) > 0 {
+		if requestBasicAuth, ok := requestBasicAuths[0].(map[string]interface{}); ok {
+			request.SetBasicAuth(buildDatadogBasicAuth(requestBasicAuth))
 		}
 	}
 
-	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
-		localCertificate := make(map[string][]map[string]string)
-		localCertificate["cert"] = make([]map[string]string, 1)
-		localCertificate["cert"][0] = make(map[string]string)
-		localCertificate["key"] = make([]map[string]string, 1)
-		localCertificate["key"][0] = make(map[string]string)
-
-		cert := clientCertificate.GetCert()
-		localCertificate["cert"][0]["filename"] = cert.GetFilename()
-
-		key := clientCertificate.GetKey()
-		localCertificate["key"][0]["filename"] = key.GetFilename()
-
-		// the content of client certificate is write-only so it will not be returned by the API.
-		// To avoid useless diff but also prevent storing the value in clear in the state
-		// we store a hash of the value.
-		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
+	if len(requestClientCertificates) > 0 {
+		if requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{}); ok {
+			request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
 		}
-		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
-		}
-
-		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
-			return diag.FromErr(err)
+	}
+	if len(requestProxies) > 0 {
+		if requestProxy, ok := requestProxies[0].(map[string]interface{}); ok {
+			request.SetProxy(buildDatadogTestRequestProxy(requestProxy))
 		}
 	}
 
-	if proxy, ok := actualRequest.GetProxyOk(); ok {
-		localProxy := make(map[string]interface{})
-		localProxy["url"] = proxy.GetUrl()
-		localProxy["headers"] = proxy.GetHeaders()
+	if len(requestMetadata) > 0 {
+		metadata := make(map[string]string, len(requestMetadata))
 
-		d.Set("request_proxy", []map[string]interface{}{localProxy})
+		for k, v := range requestMetadata {
+			metadata[k] = v.(string)
+		}
+
+		request.SetMetadata(metadata)
 	}
 
-	// assertions are required but not used for browser tests
-	localAssertions := make([]map[string]interface{}, 0)
-
-	if err := d.Set("assertion", localAssertions); err != nil {
-		return diag.FromErr(err)
-	}
-
-	configVariables := config.GetConfigVariables()
-	localConfigVariables := make([]map[string]interface{}, len(configVariables))
-	for i, configVariable := range configVariables {
-		localVariable := make(map[string]interface{})
-		if v, ok := configVariable.GetTypeOk(); ok {
-			localVariable["type"] = *v
-		}
-		if v, ok := configVariable.GetNameOk(); ok {
-			localVariable["name"] = *v
-		}
-		if v, ok := configVariable.GetSecureOk(); ok {
-			localVariable["secure"] = *v
-		}
-
-		if configVariable.GetType() != "global" {
-			if v, ok := configVariable.GetExampleOk(); ok {
-				localVariable["example"] = *v
-			} else if localVariable["secure"].(bool) {
-				localVariable["example"] = d.Get(fmt.Sprintf("config_variable.%d.example", i))
-			}
-			if v, ok := configVariable.GetPatternOk(); ok {
-				localVariable["pattern"] = *v
-			} else if localVariable["secure"].(bool) {
-				localVariable["pattern"] = d.Get(fmt.Sprintf("config_variable.%d.pattern", i))
-			}
-		}
-		if v, ok := configVariable.GetIdOk(); ok {
-			localVariable["id"] = *v
-		}
-		localConfigVariables[i] = localVariable
-	}
-
-	if err := d.Set("config_variable", localConfigVariables); err != nil {
-		return diag.FromErr(err)
-	}
-
-	actualVariables := config.GetVariables()
-	localBrowserVariables := make([]map[string]interface{}, len(actualVariables))
-	for i, variable := range actualVariables {
-		localVariable := make(map[string]interface{})
-		if v, ok := variable.GetTypeOk(); ok {
-			localVariable["type"] = *v
-		}
-		if v, ok := variable.GetNameOk(); ok {
-			localVariable["name"] = *v
-		}
-		if v, ok := variable.GetIdOk(); ok {
-			localVariable["id"] = *v
-		}
-		if v, ok := variable.GetSecureOk(); ok {
-			localVariable["secure"] = *v
-		}
-		if v, ok := variable.GetExampleOk(); ok {
-			localVariable["example"] = *v
-		} else if v, ok := localVariable["secure"].(bool); ok && v {
-			localVariable["example"] = d.Get(fmt.Sprintf("browser_variable.%d.example", i))
-		}
-		if v, ok := variable.GetPatternOk(); ok {
-			localVariable["pattern"] = *v
-		} else if v, ok := localVariable["secure"].(bool); ok && v {
-			localVariable["pattern"] = d.Get(fmt.Sprintf("browser_variable.%d.pattern", i))
-		}
-		localBrowserVariables[i] = localVariable
-	}
-
-	if err := d.Set("browser_variable", localBrowserVariables); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err := d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err := d.Set("locations", syntheticsTest.Locations); err != nil {
-		return diag.FromErr(err)
-	}
-
-	localOptionsLists := buildLocalOptions(syntheticsTest.GetOptions())
-
-	if err := d.Set("options_list", localOptionsLists); err != nil {
-		return diag.FromErr(err)
-	}
-
-	steps := syntheticsTest.GetSteps()
-	var localSteps []map[string]interface{}
-
-	for stepIndex, step := range steps {
-		localStep := make(map[string]interface{})
-		localStep["name"] = step.GetName()
-		localStep["type"] = string(step.GetType())
-		localStep["timeout"] = step.GetTimeout()
-
-		if allowFailure, ok := step.GetAllowFailureOk(); ok {
-			localStep["allow_failure"] = allowFailure
-		}
-
-		if isCritical, ok := step.GetIsCriticalOk(); ok {
-			localStep["is_critical"] = isCritical
-		}
-		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
-			localStep["no_screenshot"] = hasNoScreenshot
-		}
-
-		localParams := make(map[string]interface{})
-
-		forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex))
-		if ok {
-			localStep["force_element_update"] = forceElementUpdate
-		}
-
-		params := step.GetParams()
-		paramsMap := params.(map[string]interface{})
-
-		for key, value := range paramsMap {
-			if key == "element" && forceElementUpdate == true {
-				// prevent overriding `element` in the local state with the one received from the backend, and
-				// keep the element from the local state instead
-				element := d.Get(fmt.Sprintf("browser_step.%d.params.0.element", stepIndex))
-				localParams["element"] = element
-			} else {
-				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
-			}
-		}
-
-		// If received an element from the backend, extract the user locator part to update the local state
-		if elementParams, ok := paramsMap["element"]; ok {
-			serializedElementParams := convertStepParamsValueForState("element", elementParams)
-			var stepElement interface{}
-			utils.GetMetadataFromJSON([]byte(serializedElementParams.(string)), &stepElement)
-			if elementUserLocator, ok := stepElement.(map[string]interface{})["userLocator"]; ok {
-				userLocator := elementUserLocator.(map[string]interface{})
-				values := userLocator["values"]
-				value := values.([]interface{})[0]
-
-				localElementUserLocator := map[string]interface{}{
-					"fail_test_on_cannot_locate": userLocator["failTestOnCannotLocate"],
-					"value": []map[string]interface{}{
-						value.(map[string]interface{}),
-					},
-				}
-
-				localParams["element_user_locator"] = []map[string]interface{}{localElementUserLocator}
-			}
-		}
-
-		localStep["params"] = []interface{}{localParams}
-
-		localSteps = append(localSteps, localStep)
-	}
-
-	if err := d.Set("browser_step", localSteps); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err := d.Set("name", syntheticsTest.GetName()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("message", syntheticsTest.GetMessage()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("status", syntheticsTest.GetStatus()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("tags", syntheticsTest.Tags); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("monitor_id", syntheticsTest.MonitorId); err != nil {
-		return diag.FromErr(err)
-	}
-	return nil
+	return &request
 }
 
-func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsAPITest) diag.Diagnostics {
-	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
-		return diag.FromErr(err)
+func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) map[string]interface{} {
+	localRequest := make(map[string]interface{})
+	if request.HasBody() {
+		localRequest["body"] = request.GetBody()
 	}
-	if syntheticsTest.HasSubtype() {
-		if err := d.Set("subtype", syntheticsTest.GetSubtype()); err != nil {
-			return diag.FromErr(err)
+	if request.HasBodyType() {
+		localRequest["body_type"] = request.GetBodyType()
+	}
+	if request.HasMethod() {
+		localRequest["method"] = convertToString(request.GetMethod())
+	}
+	if request.HasTimeout() {
+		localRequest["timeout"] = request.GetTimeout()
+	}
+	if request.HasUrl() {
+		localRequest["url"] = request.GetUrl()
+	}
+	if request.HasHost() {
+		localRequest["host"] = request.GetHost()
+	}
+	if request.HasPort() {
+		localRequest["port"] = request.GetPort()
+	}
+	if request.HasDnsServer() {
+		localRequest["dns_server"] = convertToString(request.GetDnsServer())
+	}
+	if request.HasDnsServerPort() {
+		localRequest["dns_server_port"] = request.GetDnsServerPort()
+	}
+	if request.HasNoSavingResponseBody() {
+		localRequest["no_saving_response_body"] = request.GetNoSavingResponseBody()
+	}
+	if request.HasNumberOfPackets() {
+		localRequest["number_of_packets"] = request.GetNumberOfPackets()
+	}
+	if request.HasShouldTrackHops() {
+		localRequest["should_track_hops"] = request.GetShouldTrackHops()
+	}
+	if request.HasServername() {
+		localRequest["servername"] = request.GetServername()
+	}
+	if request.HasMessage() {
+		localRequest["message"] = request.GetMessage()
+	}
+	if request.HasCallType() {
+		localRequest["call_type"] = request.GetCallType()
+	}
+	if request.HasService() {
+		localRequest["service"] = request.GetService()
+	}
+	if request.HasCertificateDomains() {
+		localRequest["certificate_domains"] = request.GetCertificateDomains()
+	}
+	if request.HasPersistCookies() {
+		localRequest["persist_cookies"] = request.GetPersistCookies()
+	}
+	if request.HasHttpVersion() {
+		localRequest["http_version"] = request.GetHttpVersion()
+	}
+	if request.HasCompressedJsonDescriptor() {
+		localRequest["proto_json_descriptor"] = decompressAndDecodeValue(request.GetCompressedJsonDescriptor())
+	}
+
+	if request.HasCompressedProtoFile() {
+		localRequest["plain_proto_file"] = decompressAndDecodeValue(request.GetCompressedProtoFile())
+	}
+
+	return localRequest
+}
+
+func buildDatadogTestRequestProxy(requestProxy map[string]interface{}) datadogV1.SyntheticsTestRequestProxy {
+	testRequestProxy := datadogV1.SyntheticsTestRequestProxy{}
+	testRequestProxy.SetUrl(requestProxy["url"].(string))
+
+	proxyHeaders := make(map[string]string, len(requestProxy["headers"].(map[string]interface{})))
+
+	for k, v := range requestProxy["headers"].(map[string]interface{}) {
+		proxyHeaders[k] = v.(string)
+	}
+
+	testRequestProxy.SetHeaders(proxyHeaders)
+
+	return testRequestProxy
+}
+
+func buildTerraformTestRequestProxy(proxy datadogV1.SyntheticsTestRequestProxy) map[string]interface{} {
+	localProxy := make(map[string]interface{})
+	localProxy["url"] = proxy.GetUrl()
+	localProxy["headers"] = proxy.GetHeaders()
+
+	return localProxy
+}
+
+/*
+ * Utils
+ */
+
+func compressAndEncodeValue(value string) string {
+	var compressedValue bytes.Buffer
+	zl := zlib.NewWriter(&compressedValue)
+	zl.Write([]byte(value))
+	zl.Close()
+	encodedCompressedValue := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
+	return encodedCompressedValue
+}
+
+func decompressAndDecodeValue(value string) string {
+	decodedValue, _ := b64.StdEncoding.DecodeString(value)
+	decodedBytes := bytes.NewReader(decodedValue)
+	zl, _ := zlib.NewReader(decodedBytes)
+	defer zl.Close()
+	compressedProtoFile, _ := io.ReadAll(zl)
+	return string(compressedProtoFile)
+}
+
+func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key string, value interface{}) interface{} {
+	switch key {
+	case "element", "email", "file", "files", "request":
+		var result interface{}
+		if err := utils.GetMetadataFromJSON([]byte(value.(string)), &result); err != nil {
+			log.Printf("[ERROR] Error converting step param %s: %v", key, err)
 		}
-	}
+		return result
 
-	config := syntheticsTest.GetConfig()
-	actualRequest := config.GetRequest()
-	localRequest := buildLocalRequest(actualRequest)
+	case "playing_tab_id":
+		result, _ := strconv.Atoi(value.(string))
+		return result
 
-	if syntheticsTest.GetSubtype() != "multi" {
-		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-	if err := d.Set("request_headers", actualRequest.Headers); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("request_query", actualRequest.GetQuery()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("request_metadata", actualRequest.GetMetadata()); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if basicAuth, ok := actualRequest.GetBasicAuthOk(); ok {
-		localAuth := buildLocalBasicAuth(basicAuth)
-
-		if err := d.Set("request_basicauth", []map[string]string{localAuth}); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if clientCertificate, ok := actualRequest.GetCertificateOk(); ok {
-		localCertificate := make(map[string][]map[string]string)
-		localCertificate["cert"] = make([]map[string]string, 1)
-		localCertificate["cert"][0] = make(map[string]string)
-		localCertificate["key"] = make([]map[string]string, 1)
-		localCertificate["key"][0] = make(map[string]string)
-
-		cert := clientCertificate.GetCert()
-		localCertificate["cert"][0]["filename"] = cert.GetFilename()
-
-		key := clientCertificate.GetKey()
-		localCertificate["key"][0]["filename"] = key.GetFilename()
-
-		// the content of client certificate is write-only so it will not be returned by the API.
-		// To avoid useless diff but also prevent storing the value in clear in the state
-		// we store a hash of the value.
-		if configCertificateContent, ok := d.GetOk("request_client_certificate.0.cert.0.content"); ok {
-			localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
-		}
-		if configKeyContent, ok := d.GetOk("request_client_certificate.0.key.0.content"); ok {
-			localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
-		}
-
-		if err := d.Set("request_client_certificate", []map[string][]map[string]string{localCertificate}); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	if proxy, ok := actualRequest.GetProxyOk(); ok {
-		localProxy := make(map[string]interface{})
-		localProxy["url"] = proxy.GetUrl()
-		localProxy["headers"] = proxy.GetHeaders()
-
-		d.Set("request_proxy", []map[string]interface{}{localProxy})
-	}
-
-	if files, ok := actualRequest.GetFilesOk(); ok && files != nil && len(*files) > 0 {
-		oldLocalFilesCount := d.Get("request_file.#").(int)
-		oldLocalFiles := make([]map[string]interface{}, oldLocalFilesCount)
-		for i := 0; i < oldLocalFilesCount; i++ {
-			oldLocalFile := d.Get(fmt.Sprintf("request_file.%d", i)).(map[string]interface{})
-			oldLocalFiles[i] = oldLocalFile
-		}
-
-		localFiles := buildLocalBodyFiles(files, oldLocalFiles)
-		if err := d.Set("request_file", localFiles); err != nil {
-			return diag.FromErr(err)
-		}
-	}
-
-	actualAssertions := config.GetAssertions()
-	localAssertions, err := buildLocalAssertions(actualAssertions)
-
-	if err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err := d.Set("assertion", localAssertions); err != nil {
-		return diag.FromErr(err)
-	}
-
-	configVariables := config.GetConfigVariables()
-	localConfigVariables := make([]map[string]interface{}, len(configVariables))
-	for i, configVariable := range configVariables {
-		localVariable := make(map[string]interface{})
-		if v, ok := configVariable.GetTypeOk(); ok {
-			localVariable["type"] = *v
-		}
-		if v, ok := configVariable.GetNameOk(); ok {
-			localVariable["name"] = *v
-		}
-		if v, ok := configVariable.GetSecureOk(); ok {
-			localVariable["secure"] = *v
-		}
-
-		if configVariable.GetType() != "global" {
-			if v, ok := configVariable.GetExampleOk(); ok {
-				localVariable["example"] = *v
-			} else if v, ok := localVariable["secure"].(bool); ok && v {
-				localVariable["example"] = d.Get(fmt.Sprintf("config_variable.%d.example", i))
-			}
-			if v, ok := configVariable.GetPatternOk(); ok {
-				localVariable["pattern"] = *v
-			} else if v, ok := localVariable["secure"].(bool); ok && v {
-				localVariable["pattern"] = d.Get(fmt.Sprintf("config_variable.%d.pattern", i))
-			}
-		}
-		if v, ok := configVariable.GetIdOk(); ok {
-			localVariable["id"] = *v
-		}
-		localConfigVariables[i] = localVariable
-	}
-
-	if err := d.Set("config_variable", localConfigVariables); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err := d.Set("variables_from_script", config.GetVariablesFromScript()); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if steps, ok := config.GetStepsOk(); ok {
-		localSteps := make([]interface{}, len(*steps))
-
-		for i, step := range *steps {
-			localStep := make(map[string]interface{})
-
-			if step.SyntheticsAPITestStep != nil {
-				localStep["name"] = step.SyntheticsAPITestStep.GetName()
-				localStep["subtype"] = step.SyntheticsAPITestStep.GetSubtype()
-
-				localAssertions, err := buildLocalAssertions(step.SyntheticsAPITestStep.GetAssertions())
-				if err != nil {
-					return diag.FromErr(err)
-				}
-				localStep["assertion"] = localAssertions
-				localStep["extracted_value"] = buildLocalExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
-
-				stepRequest := step.SyntheticsAPITestStep.GetRequest()
-				localRequest := buildLocalRequest(stepRequest)
-				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
-				localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
-				if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
-					// the schema defines a default value of `http_version` for any kind of step,
-					// but it's not supported for `grpc` - so we save `any` in the local state to avoid diffs
-					localRequest["http_version"] = datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY
-				}
-				localStep["request_definition"] = []map[string]interface{}{localRequest}
-				localStep["request_headers"] = stepRequest.GetHeaders()
-				localStep["request_query"] = stepRequest.GetQuery()
-				localStep["request_metadata"] = stepRequest.GetMetadata()
-
-				if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
-					localAuth := buildLocalBasicAuth(basicAuth)
-					localStep["request_basicauth"] = []map[string]string{localAuth}
-				}
-
-				if clientCertificate, ok := stepRequest.GetCertificateOk(); ok {
-					localCertificate := make(map[string][]map[string]string)
-					localCertificate["cert"] = make([]map[string]string, 1)
-					localCertificate["cert"][0] = make(map[string]string)
-					localCertificate["key"] = make([]map[string]string, 1)
-					localCertificate["key"][0] = make(map[string]string)
-
-					cert := clientCertificate.GetCert()
-					localCertificate["cert"][0]["filename"] = cert.GetFilename()
-
-					key := clientCertificate.GetKey()
-					localCertificate["key"][0]["filename"] = key.GetFilename()
-
-					certContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.cert.0.content", i)
-					keyContentKey := fmt.Sprintf("api_step.%d.request_client_certificate.0.key.0.content", i)
-
-					// the content of client certificate is write-only so it will not be returned by the API.
-					// To avoid useless diff but also prevent storing the value in clear in the state
-					// we store a hash of the value.
-					if configCertificateContent, ok := d.GetOk(certContentKey); ok {
-						localCertificate["cert"][0]["content"] = getCertificateStateValue(configCertificateContent.(string))
-					}
-					if configKeyContent, ok := d.GetOk(keyContentKey); ok {
-						localCertificate["key"][0]["content"] = getCertificateStateValue(configKeyContent.(string))
-					}
-
-					localStep["request_client_certificate"] = []map[string][]map[string]string{localCertificate}
-				}
-
-				if proxy, ok := stepRequest.GetProxyOk(); ok {
-					localProxy := make(map[string]interface{})
-					localProxy["url"] = proxy.GetUrl()
-					localProxy["headers"] = proxy.GetHeaders()
-
-					localStep["request_proxy"] = []map[string]interface{}{localProxy}
-				}
-
-				if files, ok := stepRequest.GetFilesOk(); ok && files != nil && len(*files) > 0 {
-					oldLocalFilesCount := d.Get(fmt.Sprintf("api_step.%d.request_file.#", i)).(int)
-					oldLocalFiles := make([]map[string]interface{}, oldLocalFilesCount)
-					for j := 0; j < oldLocalFilesCount; j++ {
-						oldLocalFile := d.Get(fmt.Sprintf("api_step.%d.request_file.%d", i, j)).(map[string]interface{})
-						oldLocalFiles[j] = oldLocalFile
-					}
-
-					localFiles := buildLocalBodyFiles(files, oldLocalFiles)
-					localStep["request_file"] = localFiles
-				}
-
-				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
-				localStep["is_critical"] = step.SyntheticsAPITestStep.GetIsCritical()
-
-				if retry, ok := step.SyntheticsAPITestStep.GetRetryOk(); ok {
-					localRetry := make(map[string]interface{})
-					if count, ok := retry.GetCountOk(); ok {
-						localRetry["count"] = *count
-					}
-					if interval, ok := retry.GetIntervalOk(); ok {
-						localRetry["interval"] = *interval
-					}
-					localStep["retry"] = []map[string]interface{}{localRetry}
-				}
-			} else if step.SyntheticsAPIWaitStep != nil {
-				localStep["name"] = step.SyntheticsAPIWaitStep.GetName()
-				localStep["subtype"] = step.SyntheticsAPIWaitStep.GetSubtype()
-				localStep["value"] = step.SyntheticsAPIWaitStep.GetValue()
-			}
-
-			localSteps[i] = localStep
+	case "value":
+		if stepType == datadogV1.SYNTHETICSSTEPTYPE_WAIT {
+			result, _ := strconv.Atoi(value.(string))
+			return result
 		}
 
-		if err := d.Set("api_step", localSteps); err != nil {
-			return diag.FromErr(err)
-		}
+		return value
+
+	case "variable":
+		return value.([]interface{})[0]
 	}
 
-	if err := d.Set("device_ids", syntheticsTest.GetOptions().DeviceIds); err != nil {
-		return diag.FromErr(err)
+	return value
+}
+
+func convertStepParamsValueForState(key string, value interface{}) interface{} {
+	switch key {
+	case "element", "email", "file", "files", "request":
+		result, _ := json.Marshal(value)
+		return string(result)
+
+	case "playing_tab_id", "value":
+		return convertToString(value)
+
+	case "variable":
+		return []interface{}{value}
 	}
 
-	if err := d.Set("locations", syntheticsTest.Locations); err != nil {
-		return diag.FromErr(err)
+	return value
+}
+
+func convertStepParamsKey(key string) string {
+	switch key {
+	case "click_type":
+		return "clickType"
+
+	case "clickType":
+		return "click_type"
+
+	case "playing_tab_id":
+		return "playingTabId"
+
+	case "playingTabId":
+		return "playing_tab_id"
+
+	case "subtest_public_id":
+		return "subtestPublicId"
+
+	case "subtestPublicId":
+		return "subtest_public_id"
+
+	case "with_click":
+		return "withClick"
+
+	case "withClick":
+		return "with_click"
 	}
 
-	localOptionsLists := buildLocalOptions(syntheticsTest.GetOptions())
-
-	if err := d.Set("options_list", localOptionsLists); err != nil {
-		return diag.FromErr(err)
-	}
-
-	if err := d.Set("name", syntheticsTest.GetName()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("message", syntheticsTest.GetMessage()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("status", syntheticsTest.GetStatus()); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("tags", syntheticsTest.Tags); err != nil {
-		return diag.FromErr(err)
-	}
-	if err := d.Set("monitor_id", syntheticsTest.MonitorId); err != nil {
-		return diag.FromErr(err)
-	}
-	return nil
+	return key
 }
 
 func convertToString(i interface{}) string {
@@ -3586,30 +3581,6 @@ func convertToString(i interface{}) string {
 		}
 		return ""
 	}
-}
-
-func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []string, errs []error) {
-	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
-	if err != nil {
-		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
-		_, err3 := datadogV1.NewSyntheticsAssertionJSONSchemaOperatorFromValue(val.(string))
-		_, err4 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
-		_, err5 := datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue(val.(string))
-
-		if err2 == nil || err3 == nil || err4 == nil || err5 == nil {
-			return
-		} else {
-			errs = append(errs, err, err2, err3, err4, err5)
-		}
-	}
-	return
-}
-
-func isCertHash(content string) bool {
-	// a sha256 hash consists of 64 hexadecimal characters
-	isHash, _ := regexp.MatchString("^[A-Fa-f0-9]{64}$", content)
-
-	return isHash
 }
 
 // get the sha256 of a client certificate content
@@ -3702,94 +3673,51 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 	return []string{}
 }
 
-func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key string, value interface{}) interface{} {
-	switch key {
-	case "element", "email", "file", "files", "request":
-		var result interface{}
-		if err := utils.GetMetadataFromJSON([]byte(value.(string)), &result); err != nil {
-			log.Printf("[ERROR] Error converting step param %s: %v", key, err)
+func getSyntheticsTestType(d *schema.ResourceData) *datadogV1.SyntheticsTestDetailsType {
+	v := datadogV1.SyntheticsTestDetailsType(d.Get("type").(string))
+	return &v
+}
+
+func isCertHash(content string) bool {
+	// a sha256 hash consists of 64 hexadecimal characters
+	isHash, _ := regexp.MatchString("^[A-Fa-f0-9]{64}$", content)
+
+	return isHash
+}
+
+func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertionOperator datadogV1.SyntheticsAssertionOperator) bool {
+	for _, intTargetAssertionType := range []datadogV1.SyntheticsAssertionType{
+		datadogV1.SYNTHETICSASSERTIONTYPE_RESPONSE_TIME,
+		datadogV1.SYNTHETICSASSERTIONTYPE_CERTIFICATE,
+		datadogV1.SYNTHETICSASSERTIONTYPE_LATENCY,
+		datadogV1.SYNTHETICSASSERTIONTYPE_PACKETS_RECEIVED,
+		datadogV1.SYNTHETICSASSERTIONTYPE_NETWORK_HOP,
+		datadogV1.SYNTHETICSASSERTIONTYPE_GRPC_HEALTHCHECK_STATUS,
+	} {
+		if assertionType == intTargetAssertionType {
+			return true
 		}
-		return result
+	}
+	if assertionType == datadogV1.SYNTHETICSASSERTIONTYPE_STATUS_CODE &&
+		(assertionOperator == datadogV1.SYNTHETICSASSERTIONOPERATOR_IS || assertionOperator == datadogV1.SYNTHETICSASSERTIONOPERATOR_IS_NOT) {
+		return true
+	}
+	return false
+}
 
-	case "playing_tab_id":
-		result, _ := strconv.Atoi(value.(string))
-		return result
+func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []string, errs []error) {
+	_, err := datadogV1.NewSyntheticsAssertionOperatorFromValue(val.(string))
+	if err != nil {
+		_, err2 := datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue(val.(string))
+		_, err3 := datadogV1.NewSyntheticsAssertionJSONSchemaOperatorFromValue(val.(string))
+		_, err4 := datadogV1.NewSyntheticsAssertionXPathOperatorFromValue(val.(string))
+		_, err5 := datadogV1.NewSyntheticsAssertionBodyHashOperatorFromValue(val.(string))
 
-	case "value":
-		if stepType == datadogV1.SYNTHETICSSTEPTYPE_WAIT {
-			result, _ := strconv.Atoi(value.(string))
-			return result
+		if err2 == nil || err3 == nil || err4 == nil || err5 == nil {
+			return
+		} else {
+			errs = append(errs, err, err2, err3, err4, err5)
 		}
-
-		return value
-
-	case "variable":
-		return value.([]interface{})[0]
 	}
-
-	return value
-}
-
-func convertStepParamsValueForState(key string, value interface{}) interface{} {
-	switch key {
-	case "element", "email", "file", "files", "request":
-		result, _ := json.Marshal(value)
-		return string(result)
-
-	case "playing_tab_id", "value":
-		return convertToString(value)
-
-	case "variable":
-		return []interface{}{value}
-	}
-
-	return value
-}
-
-func convertStepParamsKey(key string) string {
-	switch key {
-	case "click_type":
-		return "clickType"
-
-	case "clickType":
-		return "click_type"
-
-	case "playing_tab_id":
-		return "playingTabId"
-
-	case "playingTabId":
-		return "playing_tab_id"
-
-	case "subtest_public_id":
-		return "subtestPublicId"
-
-	case "subtestPublicId":
-		return "subtest_public_id"
-
-	case "with_click":
-		return "withClick"
-
-	case "withClick":
-		return "with_click"
-	}
-
-	return key
-}
-
-func compressAndEncodeValue(value string) string {
-	var compressedValue bytes.Buffer
-	zl := zlib.NewWriter(&compressedValue)
-	zl.Write([]byte(value))
-	zl.Close()
-	encodedCompressedValue := b64.StdEncoding.EncodeToString(compressedValue.Bytes())
-	return encodedCompressedValue
-}
-
-func decompressAndDecodeValue(value string) string {
-	decodedValue, _ := b64.StdEncoding.DecodeString(value)
-	decodedBytes := bytes.NewReader(decodedValue)
-	zl, _ := zlib.NewReader(decodedBytes)
-	defer zl.Close()
-	compressedProtoFile, _ := io.ReadAll(zl)
-	return string(compressedProtoFile)
+	return
 }
