@@ -3,12 +3,12 @@
 page_title: "datadog_cloud_workload_security_agent_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules.
+  Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules. Deprecated, use datadogcsmthreatsagentrules resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csmthreatsagent_rule
 ---
 
 # datadog_cloud_workload_security_agent_rule (Resource)
 
-Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules.
+Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules. Deprecated, use datadog_csm_threats_agent_rules resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule
 
 ## Example Usage
 
@@ -31,8 +31,8 @@ resource "datadog_cloud_workload_security_agent_rule" "my_agent_rule" {
 
 ### Optional
 
-- `description` (String) The description of the Agent rule.
-- `enabled` (Boolean) Whether the Agent rule is enabled.
+- `description` (String) The description of the Agent rule. Defaults to `""`.
+- `enabled` (Boolean) Whether the Agent rule is enabled. Defaults to `true`.
 
 ### Read-Only
 

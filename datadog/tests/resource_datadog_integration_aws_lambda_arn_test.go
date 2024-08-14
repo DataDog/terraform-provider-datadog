@@ -28,23 +28,25 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 }`, uniq, uniq)
 }
 
-func testAccDatadogIntegrationAWSLambdaArnConfigAccessKey(uniq string) string {
+func testAccDatadogIntegrationAWSLambdaArnConfigAccessKey(accountID string, accessKeyID string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
+  account_id        = "%s"
   access_key_id     = "%s"
   secret_access_key = "testacc-datadog-integration-secret"
 }
 
 resource "datadog_integration_aws_lambda_arn" "main_collector" {
-  account_id = datadog_integration_aws.account.access_key_id
+  account_id = datadog_integration_aws.account.account_id
   lambda_arn = "arn:aws:lambda:us-east-1:1234567890:function:datadog-forwarder-Forwarder"
   depends_on = [datadog_integration_aws.account]
-}`, uniq)
+}`, accountID, accessKeyID)
 }
 
 func TestAccDatadogIntegrationAWSLambdaArnAccessKey(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -54,12 +56,12 @@ func TestAccDatadogIntegrationAWSLambdaArnAccessKey(t *testing.T) {
 		CheckDestroy:      checkIntegrationAWSLambdaArnDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatadogIntegrationAWSLambdaArnConfigAccessKey(accessKeyID),
+				Config: testAccDatadogIntegrationAWSLambdaArnConfigAccessKey(accountID, accessKeyID),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationAWSLambdaArnExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_lambda_arn.main_collector",
-						"account_id", accessKeyID),
+						"account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_lambda_arn.main_collector",
 						"lambda_arn", "arn:aws:lambda:us-east-1:1234567890:function:datadog-forwarder-Forwarder"),

@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -202,7 +203,7 @@ func testAccCheckDatadogDashListDestroyWithFw(accProvider *fwprovider.FrameworkP
 
 func datadogDashListDestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if !strings.Contains(r.Primary.Attributes["name"], "List") {
+		if r.Type != "datadog_dashboard_list" {
 			continue
 		}
 		id, _ := strconv.Atoi(r.Primary.ID)

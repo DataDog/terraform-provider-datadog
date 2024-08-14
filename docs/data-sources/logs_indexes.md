@@ -30,10 +30,21 @@ data "datadog_logs_indexes" "test" {}
 Read-Only:
 
 - `daily_limit` (Number)
+- `daily_limit_reset` (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--daily_limit_reset))
+- `daily_limit_warning_threshold_percentage` (Number)
 - `exclusion_filter` (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--exclusion_filter))
 - `filter` (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--filter))
 - `name` (String)
 - `retention_days` (Number)
+
+<a id="nestedobjatt--logs_indexes--daily_limit_reset"></a>
+### Nested Schema for `logs_indexes.daily_limit_reset`
+
+Read-Only:
+
+- `reset_time` (String)
+- `reset_utc_offset` (String)
+
 
 <a id="nestedobjatt--logs_indexes--exclusion_filter"></a>
 ### Nested Schema for `logs_indexes.exclusion_filter`

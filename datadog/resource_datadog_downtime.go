@@ -108,11 +108,12 @@ func (d *downtimeChild) GetMuteFirstRecoveryNotification() bool {
 
 func resourceDatadogDowntime() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
-		CreateContext: resourceDatadogDowntimeCreate,
-		ReadContext:   resourceDatadogDowntimeRead,
-		UpdateContext: resourceDatadogDowntimeUpdate,
-		DeleteContext: resourceDatadogDowntimeDelete,
+		Description:        "This resource is deprecated — use the `datadog_downtime_schedule resource` instead. Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.",
+		DeprecationMessage: "This resource is deprecated — use the datadog_downtime_schedule resource instead.",
+		CreateContext:      resourceDatadogDowntimeCreate,
+		ReadContext:        resourceDatadogDowntimeRead,
+		UpdateContext:      resourceDatadogDowntimeUpdate,
+		DeleteContext:      resourceDatadogDowntimeDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -177,7 +178,7 @@ func resourceDatadogDowntime() *schema.Resource {
 					Type:         schema.TypeString,
 					Default:      "UTC",
 					Optional:     true,
-					Description:  "The timezone for the downtime, default UTC. Follows IANA timezone database identifiers.",
+					Description:  "The timezone for the downtime. Follows IANA timezone database identifiers.",
 					ValidateFunc: validators.ValidateDatadogDowntimeTimezone,
 				},
 				"message": {

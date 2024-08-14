@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -29,6 +30,10 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsAPITestConfig(testName, variableName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_synthetics_test.foo", "assertion.4.operator", "md5"),
+				),
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.foo",
@@ -101,6 +106,28 @@ func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 			},
 			{
 				ResourceName:      "datadog_synthetics_test.dns",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+func TestAccDatadogSyntheticsGRPCTest_importBasic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: createSyntheticsGRPCTestConfig(testName),
+			},
+			{
+				ResourceName:      "datadog_synthetics_test.grpc",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
@@ -205,6 +232,32 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
 			updateSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsApiTest_FileUpload(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	testName := uniqueEntityName(ctx, t)
+
+	filesCreation := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
+		"file1", "file.txt", "this is the original file content", "text/plain")}
+	filesUpdate := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
+		"file1", "file.txt", "this is the new file content", "text/plain")}
+
+	// This variable is used to share the previous bucket key between the different test steps, and make sure it's updated.
+	var previousBucketKey string
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesCreation, &previousBucketKey, true),
+			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, true),
+			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, false),
 		},
 	})
 }
@@ -421,6 +474,7 @@ func TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings(t *testing.T) {
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
 			updateSyntheticsBrowserTestStepRumSettings(ctx, accProvider, t),
+			updateSyntheticsBrowserTestStepRumSettingsEnabled(ctx, accProvider, t),
 		},
 	})
 }
@@ -515,11 +569,333 @@ func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsResourceIsDestroyed(accProvider),
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITest(ctx, accProvider, t),
 		},
 	})
+}
+
+func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	testName := uniqueEntityName(ctx, t)
+
+	filesCreation := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
+		"file1", "file.txt", "this is the original file content", "text/plain")}
+	filesUpdate := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
+		"file1", "file.txt", "this is the new file content", "text/plain")}
+
+	// This variable is used to share the previous bucket key between the different test steps, and make sure it's updated.
+	var previousBucketKey string
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMultistepAPITestFileUpload(ctx, accProvider, t, testName, filesCreation, &previousBucketKey, true),
+			createSyntheticsMultistepAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, true),
+			createSyntheticsMultistepAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, false),
+		},
+	})
+}
+
+// When creating a browser test from the UI, the steps are not added yet, they are added afterward,
+// on the recorder page with the save_test_steps.
+// On test edit, because the UI client is not sending the steps, they are omitted from the edit.
+// On the recorder page, the client is sending the public id for all of the existing steps.
+
+// The terraform provider is sending the steps to the edit endpoint, and because none have any id,
+// the backend is creating new steps, and deleting the previous ones.
+// When conciliating the config and the state, the provider is not updating the ML (as expected)
+// but updates the other fields. So the request to edit the test contains steps with the ML being
+// all mixed up.
+
+// The following test is validating this hypothesis, and it's passing only because the steps contain
+// force_element_update.
+
+// [SYNTH-14958]
+// To fix this issue long-term, we could:
+// - provide a tracking id for each step to track steps between config and state
+// - keep track of the public id of the created steps in the state
+// - use the tracking id and the public id to conciliate the config, the state and the online steps.
+// It would imply doing a couple more requests in the provider to get the steps, and update them,
+// but nothing too complicated.
+
+// The state, containing both the tracking and the public id of the steps would allow to conciliate
+// between the config which doesn't have the public id, and the resource which needs it.
+// ┌─────────────────┐         ┌─────────────────┐         ┌──────────────────┐
+// │  config         ├────────►│  state          ├────────►│  resource        │
+// │  - tracking id  │         │  - tracking id  │         │  - public id     │
+// │                 │◄────────┤  - public id    │◄────────┤                  │
+// └─────────────────┘         └─────────────────┘         └──────────────────┘
+
+func TestAccDatadogSyntheticsBrowser_UpdateSteps(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	testName := uniqueEntityName(ctx, t)
+
+	stepsCreatedStr := ""
+	for _, step := range [4]string{
+		createSyntheticsBrowserStepsConfig(string("first")),
+		createSyntheticsBrowserStepsConfig(string("second")),
+		createSyntheticsBrowserStepsConfig(string("third")),
+		createSyntheticsBrowserStepsConfig(string("fourth")),
+	} {
+		stepsCreatedStr += step + "\n\n"
+	}
+
+	stepsUpdatedStr := ""
+	for _, step := range [4]string{
+		createSyntheticsBrowserStepsConfig(string("first")),
+		createSyntheticsBrowserStepsConfig(string("third")),
+		createSyntheticsBrowserStepsConfig(string("second")),
+		createSyntheticsBrowserStepsConfig(string("fourth")),
+	} {
+		stepsUpdatedStr += step + "\n\n"
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestWithMultipleStepsStep(ctx, accProvider, t, testName, stepsCreatedStr),
+			updateSyntheticsBrowserTestWithMultipleStepsStep(ctx, accProvider, t, testName, stepsUpdatedStr),
+		},
+	})
+}
+
+func createSyntheticsBrowserTestWithMultipleStepsConfig(uniq string, steps string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "test" {
+	locations  = ["aws:eu-central-1"]
+	device_ids = ["chrome.laptop_large"]
+	name = "%[1]s"
+	status     = "paused"
+	type       = "browser"
+
+	%[2]s
+
+	options_list {
+		initial_navigation_timeout = 15
+		tick_every                 = 3600
+		retry {
+			count    = 0
+		}
+	}
+	request_definition {
+		method  = "GET"
+		timeout = 60
+		url     = "https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"
+	}
+}`, uniq, steps)
+}
+
+func createSyntheticsBrowserStepsConfig(uniq string) string {
+	return fmt.Sprintf(`
+	browser_step {
+		is_critical = true
+		name        = "step name %[1]s"
+		timeout     = 5
+		type        = "assertElementContent"
+		force_element_update = true
+		params {
+			check     = "contains"
+			element   = "{\"multiLocator\":{\"ab\":\"ab %[1]s\",\"at\":\"at %[1]s\",\"cl\":\"cl %[1]s\",\"clt\":\"clt %[1]s\",\"co\":\"co %[1]s\"},\"targetOuterHTML\":\"targetOuterHTML %[1]s\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"
+			modifiers = []
+			value     = "step %[1]s value"
+		}
+	}`, uniq)
+}
+
+func createSyntheticsBrowserTestWithMultipleStepsStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", "{\"multiLocator\":{\"ab\":\"ab first\",\"at\":\"at first\",\"cl\":\"cl first\",\"clt\":\"clt first\",\"co\":\"co first\"},\"targetOuterHTML\":\"targetOuterHTML first\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.name", "step name second"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", "{\"multiLocator\":{\"ab\":\"ab second\",\"at\":\"at second\",\"cl\":\"cl second\",\"clt\":\"clt second\",\"co\":\"co second\"},\"targetOuterHTML\":\"targetOuterHTML second\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.name", "step name third"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", "{\"multiLocator\":{\"ab\":\"ab third\",\"at\":\"at third\",\"cl\":\"cl third\",\"clt\":\"clt third\",\"co\":\"co third\"},\"targetOuterHTML\":\"targetOuterHTML third\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", "{\"multiLocator\":{\"ab\":\"ab fourth\",\"at\":\"at fourth\",\"cl\":\"cl fourth\",\"clt\":\"clt fourth\",\"co\":\"co fourth\"},\"targetOuterHTML\":\"targetOuterHTML fourth\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+		),
+	}
+}
+
+func updateSyntheticsBrowserTestWithMultipleStepsStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", "{\"multiLocator\":{\"ab\":\"ab first\",\"at\":\"at first\",\"cl\":\"cl first\",\"clt\":\"clt first\",\"co\":\"co first\"},\"targetOuterHTML\":\"targetOuterHTML first\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.name", "step name third"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", "{\"multiLocator\":{\"ab\":\"ab third\",\"at\":\"at third\",\"cl\":\"cl third\",\"clt\":\"clt third\",\"co\":\"co third\"},\"targetOuterHTML\":\"targetOuterHTML third\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.name", "step name second"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", "{\"multiLocator\":{\"ab\":\"ab second\",\"at\":\"at second\",\"cl\":\"cl second\",\"clt\":\"clt second\",\"co\":\"co second\"},\"targetOuterHTML\":\"targetOuterHTML second\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", "{\"multiLocator\":{\"ab\":\"ab fourth\",\"at\":\"at fourth\",\"cl\":\"cl fourth\",\"clt\":\"clt fourth\",\"co\":\"co fourth\"},\"targetOuterHTML\":\"targetOuterHTML fourth\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+		),
+	}
+}
+
+func createSyntheticsAPITestConfigFileUpload(uniq string, bodyType string, requestFiles []datadogV1.SyntheticsTestRequestBodyFile) string {
+	fileBlocks := ""
+	for _, file := range requestFiles {
+		fileBlocks += createSyntheticsAPIRequestFileBlock(file) + "\n\n"
+	}
+
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "foo" {
+	type = "api"
+	subtype = "http"
+
+	request_definition {
+		method = "GET"
+		url = "https://www.datadoghq.com"
+		body_type = "%[2]s"
+		timeout = 30
+		no_saving_response_body = true
+	}
+
+	request_headers = {
+		Accept = "application/json"
+		X-Datadog-Trace-ID = "123456789"
+	}
+
+	%[3]s
+
+	assertion {
+		type = "statusCode"
+		operator = "is"
+		target = "200"
+	}
+
+	locations = [ "aws:eu-central-1" ]
+
+	options_list {
+		allow_insecure = true
+		tick_every = 60
+		follow_redirects = true
+		min_failure_duration = 0
+		min_location_failed = 1
+		http_version = "http2"
+		retry {
+			count = 1
+		}
+		monitor_name = "%[1]s-monitor"
+		monitor_priority = 5
+		ci {
+			execution_rule = "blocking"
+		}
+		ignore_server_certificate_error = true
+	}
+
+	name = "%[1]s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+
+	status = "paused"
+}`, uniq, bodyType, fileBlocks)
+}
+
+func createSyntheticsAPIRequestFileStruct(fileName string, originalFileName string, fileContent string, fileType string) datadogV1.SyntheticsTestRequestBodyFile {
+	fileSize := int64(len(fileContent))
+
+	return datadogV1.SyntheticsTestRequestBodyFile{
+		Name:             &fileName,
+		OriginalFileName: &originalFileName,
+		Content:          &fileContent,
+		Type:             &fileType,
+		Size:             &fileSize,
+	}
+}
+
+func createSyntheticsAPIRequestFileBlock(file datadogV1.SyntheticsTestRequestBodyFile) string {
+	return fmt.Sprintf(`
+	request_file {
+		content = "%s"
+		name = "%s"
+		original_file_name = "%s"
+		size = "%d"
+		type = "%s"
+	}
+`, *file.Content, *file.Name, *file.OriginalFileName, *file.Size, *file.Type)
+}
+
+var bucketKeyRegex, _ = regexp.Compile("^api-upload-file/[a-z0-9]{3}-[a-z0-9]{3}-[a-z0-9]{3}/[-:._0-9Ta-z]*\\.json$")
+
+func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
+	bodyType := "multipart/form-data"
+	return resource.TestStep{
+		Config: createSyntheticsAPITestConfigFileUpload(testName, bodyType, files),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "subtype", "http"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.timeout", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_definition.0.body_type", bodyType),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_file.0.name", *files[0].Name),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_file.0.original_file_name", *files[0].OriginalFileName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_file.0.size", fmt.Sprintf("%d", *files[0].Size)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_file.0.type", *files[0].Type),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "request_file.0.content", *files[0].Content),
+			resource.TestMatchResourceAttr(
+				"datadog_synthetics_test.foo", "request_file.0.bucket_key", bucketKeyRegex),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.foo", "monitor_id"),
+			func(s *terraform.State) error {
+				for _, r := range s.RootModule().Resources {
+					if r.Type == "datadog_synthetics_test" {
+						// We aren't sure yet how to let the provider check if the content was updated to upload it again.
+						// Hence, the provider is uploading the file every time the resource is modified.
+						// Checking if the bucket key is different from the previous one allows to make sure the file is uploaded every time.
+						if previousBucketKey != nil && r.Primary.Attributes["request_file.0.bucket_key"] == *previousBucketKey && bucketKeyShouldUpdate {
+							return fmt.Errorf("Terraform plan is not uploading and updating the bucket key: %s", *previousBucketKey)
+						}
+						*previousBucketKey = r.Primary.Attributes["request_file.0.bucket_key"]
+					}
+				}
+				return nil
+			},
+		),
+	}
 }
 
 func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
@@ -538,9 +914,7 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "request_definition.0.timeout", "30"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "request_definition.0.body", "this is a body"),
+				"datadog_synthetics_test.foo", "request_definition.0.timeout", "0"), // not saved in the backend
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_definition.0.body_type", "text/plain"),
 			resource.TestCheckResourceAttr(
@@ -568,7 +942,9 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertion.#", "4"),
+				"datadog_synthetics_test.foo", "variables_from_script", "dd.variable.set('FOO', 'hello');"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertion.#", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -589,6 +965,8 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 				"datadog_synthetics_test.foo", "assertion.2.operator", "lessThan"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.2.target", "2000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertion.2.timings_scope", "withoutDNS"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.3.type", "body"),
 			resource.TestCheckResourceAttr(
@@ -618,11 +996,11 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0_list.#", "0"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "options_list.0.restricted_roles.#", "1"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.ci.0.execution_rule", "blocking"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "options_list.0.ignore_server_certificate_error", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "options_list.0.http_version", "http2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "name", testName),
 			resource.TestCheckResourceAttr(
@@ -657,10 +1035,6 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 
 func createSyntheticsAPITestConfig(uniq string, variableName string) string {
 	return fmt.Sprintf(`
-resource "datadog_role" "bar" {
-	name      = "%[1]s"
-}
-
 resource "datadog_synthetics_global_variable" "global_variable" {
   name        = "%[2]s"
   description = "a global variable"
@@ -675,15 +1049,14 @@ resource "datadog_synthetics_test" "foo" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		body_type = "text/plain"
-		timeout = 30
 		no_saving_response_body = true
 	}
 	request_headers = {
 		Accept = "application/json"
 		X-Datadog-Trace-ID = "123456789"
 	}
+	variables_from_script = "dd.variable.set('FOO', 'hello');"
 
 	request_basicauth {
 		type = "ntlm"
@@ -716,13 +1089,18 @@ resource "datadog_synthetics_test" "foo" {
 		type = "responseTime"
 		operator = "lessThan"
 		target = "2000"
+		timings_scope = "withoutDNS"
 	}
 	assertion {
 		type = "body"
 		operator = "doesNotContain"
 		target = "terraform"
 	}
-
+	assertion {
+		type = "bodyHash"
+		operator = "md5"
+		target = "a"
+	}
 	locations = [ "aws:eu-central-1" ]
 
 	options_list {
@@ -737,7 +1115,6 @@ resource "datadog_synthetics_test" "foo" {
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
-		restricted_roles = ["${datadog_role.bar.id}"]
 		ci {
 			execution_rule = "blocking"
 		}
@@ -776,10 +1153,10 @@ resource "datadog_synthetics_test" "advanced_scheduling" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		body_type = "text/plain"
 		timeout = 30
 		no_saving_response_body = true
+		persist_cookies = true
 	}
 	request_headers = {
 		Accept = "application/json"
@@ -856,11 +1233,11 @@ func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.body", "this is a body"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.body_type", "text/plain"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.no_saving_response_body", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.advanced_scheduling", "request_definition.0.persist_cookies", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.advanced_scheduling", "assertion.#", "3"),
 			resource.TestCheckResourceAttr(
@@ -975,7 +1352,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.#", "10"),
+				"datadog_synthetics_test.bar", "assertion.#", "11"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -993,15 +1370,13 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.2.type", "body"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.2.operator", "validatesJSONPath"),
+				"datadog_synthetics_test.bar", "assertion.2.operator", "validatesJSONSchema"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.#", "1"),
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonschema.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.jsonpath", "topKey"),
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonschema.0.jsonschema", "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.operator", "isNot"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.2.targetjsonpath.0.targetvalue", "0"),
+				"datadog_synthetics_test.bar", "assertion.2.targetjsonschema.0.metaschema", "draft-07"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.3.type", "body"),
 			resource.TestCheckResourceAttr(
@@ -1009,63 +1384,75 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.jsonpath", "something"),
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.jsonpath", "topKey"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.operator", "moreThan"),
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.operator", "isNot"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.targetvalue", "5"),
+				"datadog_synthetics_test.bar", "assertion.3.targetjsonpath.0.targetvalue", "0"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.4.type", "statusCode"),
+				"datadog_synthetics_test.bar", "assertion.4.type", "body"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.4.operator", "isNot"),
+				"datadog_synthetics_test.bar", "assertion.4.operator", "validatesJSONPath"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.4.target", "200"),
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.jsonpath", "something"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.operator", "moreThan"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.4.targetjsonpath.0.targetvalue", "5"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.5.type", "statusCode"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.5.operator", "matches"),
+				"datadog_synthetics_test.bar", "assertion.5.operator", "isNot"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.5.target", "20[04]"),
+				"datadog_synthetics_test.bar", "assertion.5.target", "200"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.6.type", "statusCode"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.6.operator", "doesNotMatch"),
+				"datadog_synthetics_test.bar", "assertion.6.operator", "matches"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.6.target", "20[04]"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.type", "body"),
+				"datadog_synthetics_test.bar", "assertion.7.type", "statusCode"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.operator", "validatesJSONPath"),
+				"datadog_synthetics_test.bar", "assertion.7.operator", "doesNotMatch"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.jsonpath", "$.mykey"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.operator", "moreThan"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.7.targetjsonpath.0.targetvalue", fmt.Sprintf("{{ %s }}", globalVariableName)),
+				"datadog_synthetics_test.bar", "assertion.7.target", "20[04]"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.8.type", "body"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.operator", "validatesXPath"),
+				"datadog_synthetics_test.bar", "assertion.8.operator", "validatesJSONPath"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.targetxpath.#", "1"),
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.xpath", "something"),
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.jsonpath", "$.mykey"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.operator", "contains"),
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.operator", "moreThan"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.8.targetxpath.0.targetvalue", "12"),
+				"datadog_synthetics_test.bar", "assertion.8.targetjsonpath.0.targetvalue", fmt.Sprintf("{{ %s }}", globalVariableName)),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.9.type", "body"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.9.operator", "validatesJSONPath"),
+				"datadog_synthetics_test.bar", "assertion.9.operator", "validatesXPath"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.9.targetjsonpath.#", "1"),
+				"datadog_synthetics_test.bar", "assertion.9.targetxpath.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.9.targetjsonpath.0.jsonpath", "$.myKey"),
+				"datadog_synthetics_test.bar", "assertion.9.targetxpath.0.xpath", "something"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.9.targetjsonpath.0.operator", "isUndefined"),
+				"datadog_synthetics_test.bar", "assertion.9.targetxpath.0.operator", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.9.targetxpath.0.targetvalue", "12"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.targetjsonpath.0.jsonpath", "$.myKey"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.10.targetjsonpath.0.operator", "isUndefined"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -1114,7 +1501,6 @@ resource "datadog_synthetics_test" "bar" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		timeout = 30
 	}
 	request_query = {
@@ -1162,6 +1548,13 @@ resource "datadog_synthetics_test" "bar" {
 		type = "statusCode"
 		operator = "is"
 		target = "200"
+	}
+	assertion {
+		type = "body"
+		operator = "validatesJSONSchema"
+		targetjsonschema {
+			jsonschema = "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"
+		}
 	}
 	assertion {
 		type = "body"
@@ -1411,6 +1804,8 @@ func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.targetvalue", "0"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.0.targetjsonpath.0.elementsoperator", "everyElementMatches"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
@@ -1484,6 +1879,7 @@ resource "datadog_synthetics_test" "bar" {
 		type = "body"
 		operator = "validatesJSONPath"
 		targetjsonpath {
+			elementsoperator = "everyElementMatches"
 			operator = "isNot"
 			targetvalue = "0"
 			jsonpath = "topKey"
@@ -2351,6 +2747,32 @@ resource "datadog_synthetics_test" "websocket" {
 }`, uniq)
 }
 
+var compressedProtoFile = `syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.helloworld";
+option java_outer_classname = "HelloWorldProto";
+option objc_class_prefix = "HLW";
+
+package helloworld;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+`
+
 func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
@@ -2367,6 +2789,12 @@ func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 				"datadog_synthetics_test.grpc", "request_definition.0.port", "50050"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", "Hello"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_definition.0.plain_proto_file", compressedProtoFile),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.header", "value"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.#", "4"),
 			resource.TestCheckResourceAttr(
@@ -2430,6 +2858,12 @@ resource "datadog_synthetics_test" "grpc" {
 		host   = "google.com"
 		port   = 50050
 		service = "Hello"
+		plain_proto_file = <<EOT
+%[2]sEOT
+	}
+
+	request_metadata = {
+		header = "value"
 	}
 
 	assertion {
@@ -2462,12 +2896,12 @@ resource "datadog_synthetics_test" "grpc" {
 		tick_every = 60
 	}
 
-	name = "%s"
+	name = "%[1]s"
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 
 	status = "paused"
-}`, uniq)
+}`, uniq, compressedProtoFile)
 }
 
 func updateSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
@@ -2486,6 +2920,10 @@ func updateSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*sche
 				"datadog_synthetics_test.grpc", "request_definition.0.port", "50050"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "request_definition.0.service", ""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.grpc", "request_metadata.header", "value-updated"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.grpc", "assertion.#", "2"),
 			resource.TestCheckResourceAttr(
@@ -2537,6 +2975,10 @@ resource "datadog_synthetics_test" "grpc" {
 		service = ""
 	}
 
+	request_metadata = {
+		header = "value-updated"
+	}
+
 	assertion {
 		type = "responseTime"
 		operator = "lessThan"
@@ -2575,8 +3017,6 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 				"datadog_synthetics_test.bar", "request_definition.0.method", "GET"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_definition.0.body", "this is a body"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
@@ -2639,8 +3079,6 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 				"datadog_synthetics_test.bar", "options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_priority", "5"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "options_list.0.restricted_roles.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "true"),
 			resource.TestCheckResourceAttr(
@@ -2717,16 +3155,12 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 
 func createSyntheticsBrowserTestConfig(uniq string) string {
 	return fmt.Sprintf(`
-resource "datadog_role" "bar" {
-	name      = "%[1]s"
-}
 resource "datadog_synthetics_test" "bar" {
 	type = "browser"
 
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		timeout = 30
 		certificate_domains = ["https://datadoghq.com"]
 	}
@@ -2767,7 +3201,6 @@ resource "datadog_synthetics_test" "bar" {
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
-		restricted_roles = ["${datadog_role.bar.id}"]
 
 		no_screenshot = true
 
@@ -2816,7 +3249,7 @@ resource "datadog_synthetics_test" "bar" {
 		name = "EMAIL_VAR"
 		type = "email"
 	}
-	
+
 	browser_variable {
 		type = "text"
 		name = "MY_SECRET"
@@ -3089,6 +3522,96 @@ resource "datadog_synthetics_test" "bar" {
 	}
 }`, uniq)
 }
+
+func updateSyntheticsBrowserTestStepRumSettingsEnabled(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated-rumsettings"
+	return resource.TestStep{
+		Config: updateSyntheticsBrowserTestRumSettingEnabled(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.is_enabled", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.application_id", ""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.rum_settings.0.client_token_id", "0"),
+		),
+	}
+}
+
+func updateSyntheticsBrowserTestRumSettingEnabled(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+	type = "browser"
+	request_definition {
+		method = "PUT"
+		url = "https://docs.datadoghq.com"
+		body = "this is an updated body"
+		timeout = 60
+	}
+	request_headers = {
+		Accept = "application/xml"
+		X-Datadog-Trace-ID = "987654321"
+	}
+	device_ids = [ "laptop_large", "tablet" ]
+	locations = [ "aws:eu-central-1" ]
+	options_list {
+		tick_every = 1800
+		min_failure_duration = 10
+		min_location_failed = 1
+
+		retry {
+			count = 3
+			interval = 500
+		}
+
+		monitor_options {
+			renotify_interval = 120
+		}
+
+		no_screenshot = false
+
+		rum_settings {
+			is_enabled = true
+		}
+
+		ci {
+			execution_rule = "skipped"
+		}
+	}
+	name = "%s"
+	message = "Notify @pagerduty"
+	tags = ["foo:bar", "buz"]
+	status = "live"
+
+	browser_step {
+	    name = "first step updated"
+	    type = "assertCurrentUrl"
+
+	    params {
+	        check = "contains"
+	        value = "content"
+	    }
+	}
+
+	browser_step {
+	    name = "press key step"
+	    type = "pressKey"
+
+	    params {
+	        value = "1"
+	    }
+	}
+
+	browser_variable {
+		type = "text"
+		name = "MY_PATTERN_VAR"
+		pattern = "{{numeric(4)}}"
+		example = "5970"
+	}
+}`, uniq)
+}
+
 func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
@@ -3224,8 +3747,6 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 				"datadog_synthetics_test.bar", "request_definition.0.method", "GET"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_definition.0.body", "this is a body"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
@@ -3378,7 +3899,6 @@ resource "datadog_synthetics_test" "bar" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		timeout = 30
 	}
 	request_headers = {
@@ -3512,8 +4032,6 @@ func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider func() 
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_definition.0.body", "this is a body"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.timeout", "30"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.%", "2"),
@@ -3577,7 +4095,6 @@ resource "datadog_synthetics_test" "bar" {
 	request_definition {
 		method = "GET"
 		url = "https://www.datadoghq.com"
-		body = "this is a body"
 		timeout = 30
 	}
 	request_headers = {
@@ -3948,8 +4465,6 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "options_list.0.restricted_roles.#", "1"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "message", "Notify @datadog.user"),
@@ -3960,13 +4475,13 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "4"),
+				"datadog_synthetics_test.multi", "api_step.#", "7"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "GET"),
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "POST"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
 			resource.TestCheckResourceAttr(
@@ -3977,6 +4492,10 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.allow_insecure", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.follow_redirects", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.http_version", "http2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
 			resource.TestCheckResourceAttr(
@@ -4020,13 +4539,23 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.#", "1"),
+				"datadog_synthetics_test.multi", "api_step.0.assertion.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.type", "statusCode"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.operator", "is"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.operator", "validatesJSONSchema"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.jsonschema", "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.metaschema", "draft-07"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -4104,6 +4633,72 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.name", "gRPC health check step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.subtype", "grpc"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.host", "https://docs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.call_type", "healthcheck"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.service", "greeter.Greeter"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_metadata.foo", "bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.assertion.0.type", "grpcHealthcheckStatus"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.assertion.0.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.assertion.0.target", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.name", "gRPC behavior check step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.subtype", "grpc"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.host", "https://docs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.call_type", "unary"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.service", "greeter.Greeter"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.method", "SayHello"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.message", "{\"name\": \"John\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.plain_proto_file", "some proto file"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_metadata.foo", "bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.type", "grpcProto"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.jsonpath", "$.message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, John!"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.6.subtype", "wait"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.6.value", "5"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "config_variable.0.name", "VARIABLE_NAME"),
@@ -4113,10 +4708,6 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 
 func createSyntheticsMultistepAPITestConfig(testName string, variableName string) string {
 	return fmt.Sprintf(`
-resource "datadog_role" "bar" {
-	name      = "%[1]s"
-}
-
 resource "datadog_synthetics_global_variable" "global_variable" {
   name        = "%[2]s"
   description = "a global variable"
@@ -4132,7 +4723,6 @@ resource "datadog_synthetics_test" "multi" {
     tick_every           = 900
     min_failure_duration = 0
     min_location_failed  = 1
-	restricted_roles = ["${datadog_role.bar.id}"]
 }
   name    = "%[1]s"
   message = "Notify @datadog.user"
@@ -4148,12 +4738,14 @@ resource "datadog_synthetics_test" "multi" {
   api_step {
     name = "First api step"
     request_definition {
-      method           = "GET"
+      method           = "POST"
       url              = "https://www.datadoghq.com"
       body             = "this is a body"
       timeout          = 30
       allow_insecure   = true
       follow_redirects = true
+      no_saving_response_body = true
+      http_version = "http2"
     }
     request_headers = {
       Accept             = "application/json"
@@ -4191,6 +4783,15 @@ resource "datadog_synthetics_test" "multi" {
       operator = "is"
       target   = "200"
     }
+
+	assertion {
+		type = "body"
+		operator = "validatesJSONSchema"
+		targetjsonschema {
+			jsonschema = "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"
+			metaschema = "draft-07"
+		}
+	}
 
     extracted_value {
       name  = "VAR_EXTRACT"
@@ -4283,8 +4884,149 @@ resource "datadog_synthetics_test" "multi" {
       target   = "200"
     }
   }
+
+  api_step {
+    name    = "gRPC health check step"
+    subtype = "grpc"
+    request_definition {
+      host             = "https://docs.datadoghq.com"
+      port             = 443
+      call_type        = "healthcheck"
+      service          = "greeter.Greeter"
+    }
+    request_metadata = {
+      foo = "bar"
+    }
+    assertion {
+      type     = "grpcHealthcheckStatus"
+      operator = "is"
+      target = 1
+    }
+  } 
+ 
+  api_step {
+    name    = "gRPC behavior check step"
+    subtype = "grpc"
+    request_definition {
+      host             = "https://docs.datadoghq.com"
+      port             = 443
+      call_type        = "unary"
+      service          = "greeter.Greeter"
+      method           = "SayHello"
+      message          = "{\"name\": \"John\"}"
+      plain_proto_file = "some proto file"
+    }
+    request_metadata = {
+      foo = "bar"
+    }
+    assertion {
+      type     = "grpcProto"
+      operator = "validatesJSONPath"
+      targetjsonpath {
+        jsonpath    = "$.message"
+        operator    = "is"
+        targetvalue = "Hello, John!"
+      }
+    }
+  }
+  api_step {
+    name = "Wait step"
+    subtype = "wait"
+    value = 5
+  }
 }
 `, testName, variableName)
+}
+
+func createSyntheticsMultistepAPITestFileUpload(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
+	bodyType := "multipart/form-data"
+	return resource.TestStep{
+		Config: createSyntheticsMultistepAPITestConfigFileUpload(testName, bodyType, files),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "subtype", "multi"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.method", "GET"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.timeout", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_definition.0.body_type", bodyType),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.name", *files[0].Name),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.original_file_name", *files[0].OriginalFileName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.size", fmt.Sprintf("%d", *files[0].Size)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.type", *files[0].Type),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.content", *files[0].Content),
+			resource.TestMatchResourceAttr(
+				"datadog_synthetics_test.file_upload", "api_step.0.request_file.0.bucket_key", bucketKeyRegex),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.file_upload", "monitor_id"),
+			func(s *terraform.State) error {
+				for _, r := range s.RootModule().Resources {
+					if r.Type == "datadog_synthetics_test" {
+						// We aren't sure yet how to let the provider check if the content was updated to upload it again.
+						// Hence, the provider is uploading the file every time the resource is modified.
+						// Checking if the bucket key is different from the previous one allows to make sure the file is uploaded every time.
+						if previousBucketKey != nil && r.Primary.Attributes["api_step.0.request_file.0.bucket_key"] == *previousBucketKey && bucketKeyShouldUpdate {
+							return fmt.Errorf("Terraform plan is not uploading and updating the bucket key: %s", *previousBucketKey)
+						}
+						*previousBucketKey = r.Primary.Attributes["api_step.0.request_file.0.bucket_key"]
+					}
+				}
+				return nil
+			},
+		),
+	}
+}
+
+func createSyntheticsMultistepAPITestConfigFileUpload(testName string, bodyType string, requestFiles []datadogV1.SyntheticsTestRequestBodyFile) string {
+	fileBlocks := ""
+	for _, file := range requestFiles {
+		fileBlocks += createSyntheticsAPIRequestFileBlock(file) + "\n\n"
+	}
+
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "file_upload" {
+	type       = "api"
+	subtype    = "multi"
+	locations  = ["aws:eu-central-1"]
+	name       = "%[1]s"
+	message    = "Notify @datadog.user"
+	status     = "paused"
+
+	options_list {
+		tick_every = 60
+	}
+
+	api_step {
+		name = "Upload file"
+		request_definition {
+			method = "GET"
+			url = "https://www.datadoghq.com"
+			body_type = "%[2]s"
+			timeout = 30
+			no_saving_response_body = true
+		}
+
+		%[3]s
+
+		assertion {
+			type     = "statusCode"
+			operator = "is"
+			target   = "200"
+		}
+	}
+}
+`, testName, bodyType, fileBlocks)
 }
 
 func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
@@ -4314,6 +5056,10 @@ func testSyntheticsTestIsDestroyed(accProvider func() (*schema.Provider, error))
 		auth := providerConf.Auth
 
 		for _, r := range s.RootModule().Resources {
+			if r.Type != "datadog_synthetics_test" {
+				continue
+			}
+
 			if _, _, err := apiInstances.GetSyntheticsApiV1().GetTest(auth, r.Primary.ID); err != nil {
 				if strings.Contains(err.Error(), "404 Not Found") {
 					continue

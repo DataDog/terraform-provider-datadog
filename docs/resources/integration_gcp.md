@@ -3,12 +3,12 @@
 page_title: "datadog_integration_gcp Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  This resource is deprecated — use the datadog_integration_gcp_sts resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
+  This resource is deprecated—use the datadog_integration_gcp_sts resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
 ---
 
 # datadog_integration_gcp (Resource)
 
-This resource is deprecated — use the `datadog_integration_gcp_sts resource` instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
+This resource is deprecated—use the `datadog_integration_gcp_sts` resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.
 
 ## Example Usage
 
@@ -56,9 +56,11 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
 
 ### Optional
 
-- `automute` (Boolean) Silence monitors for expected GCE instance shutdowns.
-- `cspm_resource_collection_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project.
-- `host_filters` (String) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.
+- `automute` (Boolean) Silence monitors for expected GCE instance shutdowns. Defaults to `false`.
+- `cspm_resource_collection_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled. Defaults to `false`.
+- `host_filters` (String) Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog. Defaults to `""`.
+- `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account. Defaults to `false`.
+- `resource_collection_enabled` (Boolean) When enabled, Datadog scans for all resources in your GCP environment.
 
 ### Read-Only
 

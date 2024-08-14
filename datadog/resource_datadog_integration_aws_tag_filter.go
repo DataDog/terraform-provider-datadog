@@ -26,9 +26,11 @@ func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
+					Description: "Your AWS Account ID without dashes.",
 					Type:        schema.TypeString,
 					Required:    true,
+					// TODO: When backend is ready, add validation back.
+					// ValidateDiagFunc: validators.ValidateAWSAccountID,
 				},
 				"namespace": {
 					Description:      "The namespace associated with the tag filter entry.",
@@ -67,6 +69,8 @@ func resourceDatadogIntegrationAwsTagFilterCreate(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
 	if _, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSTagFilter(auth, *req); err != nil {
@@ -74,20 +78,30 @@ func resourceDatadogIntegrationAwsTagFilterCreate(ctx context.Context, d *schema
 	}
 
 	d.SetId(fmt.Sprintf("%s:%s", req.GetAccountId(), req.GetNamespace()))
-	return resourceDatadogIntegrationAwsTagFilterRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsTagFilterRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration tag filter resource for account id `%s` with namespace `%s` not found after creation", req.GetAccountId(), req.GetNamespace()))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsTagFilterUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	req := buildDatadogIntegrationAwsTagFilter(d)
 	if _, httpresp, err := apiInstances.GetAWSIntegrationApiV1().CreateAWSTagFilter(auth, *req); err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating aws tag filter")
 	}
 
-	return resourceDatadogIntegrationAwsTagFilterRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsTagFilterRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration tag filter resource for account id `%s` with namespace `%s` not found after creation", req.GetAccountId(), req.GetNamespace()))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsTagFilterRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -128,6 +142,8 @@ func resourceDatadogIntegrationAwsTagFilterDelete(ctx context.Context, d *schema
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	accountID, tfNamespace, err := utils.AccountAndNamespaceFromID(d.Id())
 	if err != nil {

@@ -2,6 +2,9 @@ package fwprovider
 
 import (
 	"context"
+	"sync"
+
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -16,8 +19,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &integrationGcpStsResource{}
-	_ resource.ResourceWithImportState = &integrationGcpStsResource{}
+	integrationGcpStsMutex sync.Mutex
+	_                      resource.ResourceWithConfigure   = &integrationGcpStsResource{}
+	_                      resource.ResourceWithImportState = &integrationGcpStsResource{}
 )
 
 type integrationGcpStsResource struct {
@@ -26,12 +30,15 @@ type integrationGcpStsResource struct {
 }
 
 type integrationGcpStsModel struct {
-	ID                   types.String `tfsdk:"id"`
-	Automute             types.Bool   `tfsdk:"automute"`
-	ClientEmail          types.String `tfsdk:"client_email"`
-	DelegateAccountEmail types.String `tfsdk:"delegate_account_email"`
-	IsCspmEnabled        types.Bool   `tfsdk:"is_cspm_enabled"`
-	HostFilters          types.Set    `tfsdk:"host_filters"`
+	ID                             types.String `tfsdk:"id"`
+	AccountTags                    types.Set    `tfsdk:"account_tags"`
+	Automute                       types.Bool   `tfsdk:"automute"`
+	ClientEmail                    types.String `tfsdk:"client_email"`
+	DelegateAccountEmail           types.String `tfsdk:"delegate_account_email"`
+	HostFilters                    types.Set    `tfsdk:"host_filters"`
+	IsCspmEnabled                  types.Bool   `tfsdk:"is_cspm_enabled"`
+	IsSecurityCommandCenterEnabled types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	ResourceCollectionEnabled      types.Bool   `tfsdk:"resource_collection_enabled"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -52,6 +59,11 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
+			"account_tags": schema.SetAttribute{
+				Optional:    true,
+				Description: "Tags to be associated with GCP metrics and service checks from your account.",
+				ElementType: types.StringType,
+			},
 			"automute": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
@@ -71,17 +83,27 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"is_cspm_enabled": schema.BoolAttribute{
-				Optional:    true,
-				Computed:    true,
-				Description: "When enabled, Datadog performs configuration checks across your Google Cloud environment by continuously scanning every resource.",
-			},
 			"host_filters": schema.SetAttribute{
 				Optional:    true,
 				Description: "Your Host Filters.",
 				ElementType: types.StringType,
 			},
-			"id": utils.ResourceIDAttribute(),
+			"is_cspm_enabled": schema.BoolAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.",
+			},
+			"is_security_command_center_enabled": schema.BoolAttribute{
+				Description: "When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.",
+				Optional:    true,
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+			},
+			"resource_collection_enabled": schema.BoolAttribute{
+				Description: "When enabled, Datadog scans for all resources in your GCP environment.",
+				Optional:    true,
+				Computed:    true,
+			}, "id": utils.ResourceIDAttribute(),
 		},
 	}
 }
@@ -135,6 +157,9 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 		return
 	}
 
+	integrationGcpStsMutex.Lock()
+	defer integrationGcpStsMutex.Unlock()
+
 	// This resource is special and uses datadog delagate account.
 	// The datadog delegate account cannot mutated after creation hence it is safe
 	// to call MakeGCPSTSDelegate multiple times. And to ensure it is created, we call it once before creating
@@ -148,7 +173,10 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 	delegateEmail := delegateResponse.Data.Attributes.GetDelegateAccountEmail()
 	state.DelegateAccountEmail = types.StringValue(delegateEmail)
 
-	body, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
+	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
+	body := datadogV2.NewGCPSTSServiceAccountCreateRequestWithDefaults()
+	body.Data = datadogV2.NewGCPSTSServiceAccountDataWithDefaults()
+	body.Data.SetAttributes(attributes)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -176,9 +204,16 @@ func (r *integrationGcpStsResource) Update(ctx context.Context, request resource
 		return
 	}
 
+	integrationGcpStsMutex.Lock()
+	defer integrationGcpStsMutex.Unlock()
+
 	id := state.ID.ValueString()
 
-	body, diags := r.buildIntegrationGcpStsUpdateRequestBody(ctx, &state)
+	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
+	body := datadogV2.NewGCPSTSServiceAccountUpdateRequestWithDefaults()
+	body.Data = datadogV2.NewGCPSTSServiceAccountUpdateRequestDataWithDefaults()
+	body.Data.SetAttributes(attributes)
+
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -206,6 +241,9 @@ func (r *integrationGcpStsResource) Delete(ctx context.Context, request resource
 		return
 	}
 
+	integrationGcpStsMutex.Lock()
+	defer integrationGcpStsMutex.Unlock()
+
 	id := state.ID.ValueString()
 
 	httpResp, err := r.Api.DeleteGCPSTSAccount(r.Auth, id)
@@ -222,6 +260,9 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	state.ID = types.StringValue(resp.GetId())
 
 	attributes := resp.GetAttributes()
+	if accountTags, ok := attributes.GetAccountTagsOk(); ok && len(*accountTags) > 0 {
+		state.AccountTags, _ = types.SetValueFrom(ctx, types.StringType, *accountTags)
+	}
 	if automute, ok := attributes.GetAutomuteOk(); ok {
 		state.Automute = types.BoolValue(*automute)
 	}
@@ -234,11 +275,23 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	if isCspmEnabled, ok := attributes.GetIsCspmEnabledOk(); ok {
 		state.IsCspmEnabled = types.BoolValue(*isCspmEnabled)
 	}
+	if isSecurityCommandCenterEnabled, ok := attributes.GetIsSecurityCommandCenterEnabledOk(); ok {
+		state.IsSecurityCommandCenterEnabled = types.BoolValue(*isSecurityCommandCenterEnabled)
+	}
+	if resourceCollectionEnabled, ok := attributes.GetResourceCollectionEnabledOk(); ok {
+		state.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
+	}
 }
 
-func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountCreateRequest, diag.Diagnostics) {
+func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx context.Context, state *integrationGcpStsModel) (datadogV2.GCPSTSServiceAccountAttributes, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
+	attributes := datadogV2.GCPSTSServiceAccountAttributes{}
+
+	accountTags := make([]string, 0)
+	if !state.AccountTags.IsNull() {
+		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
+	}
+	attributes.SetAccountTags(accountTags)
 
 	if !state.Automute.IsNull() {
 		attributes.SetAutomute(state.Automute.ValueBool())
@@ -256,36 +309,12 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	}
 	attributes.SetHostFilters(hostFilters)
 
-	req := datadogV2.NewGCPSTSServiceAccountCreateRequestWithDefaults()
-	req.Data = datadogV2.NewGCPSTSServiceAccountDataWithDefaults()
-	req.Data.SetAttributes(*attributes)
-
-	return req, diags
-}
-
-func (r *integrationGcpStsResource) buildIntegrationGcpStsUpdateRequestBody(ctx context.Context, state *integrationGcpStsModel) (*datadogV2.GCPSTSServiceAccountUpdateRequest, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewGCPSTSServiceAccountAttributesWithDefaults()
-
-	if !state.Automute.IsNull() {
-		attributes.SetAutomute(state.Automute.ValueBool())
+	if !state.IsSecurityCommandCenterEnabled.IsUnknown() {
+		attributes.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
 	}
-	if !state.ClientEmail.IsNull() {
-		attributes.SetClientEmail(state.ClientEmail.ValueString())
-	}
-	if !state.IsCspmEnabled.IsNull() {
-		attributes.SetIsCspmEnabled(state.IsCspmEnabled.ValueBool())
+	if !state.ResourceCollectionEnabled.IsUnknown() {
+		attributes.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
 	}
 
-	hostFilters := make([]string, 0)
-	if !state.HostFilters.IsNull() {
-		diags.Append(state.HostFilters.ElementsAs(ctx, &hostFilters, false)...)
-	}
-	attributes.SetHostFilters(hostFilters)
-
-	req := datadogV2.NewGCPSTSServiceAccountUpdateRequestWithDefaults()
-	req.Data = datadogV2.NewGCPSTSServiceAccountUpdateRequestDataWithDefaults()
-	req.Data.SetAttributes(*attributes)
-
-	return req, diags
+	return attributes, diags
 }

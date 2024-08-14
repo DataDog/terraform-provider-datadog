@@ -52,7 +52,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					Sensitive:   true,
 				},
 				"secure": {
-					Description: "If set to true, the value of the global variable is hidden. Defaults to `false`.",
+					Description: "If set to true, the value of the global variable is hidden.",
 					Default:     false,
 					Type:        schema.TypeBool,
 					Optional:    true,

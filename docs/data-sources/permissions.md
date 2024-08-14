@@ -21,7 +21,7 @@ data "datadog_permissions" "permissions" {}
 
 ### Optional
 
-- `include_restricted` (Boolean) Whether to include restricted permissions. Restricted permissions are granted by default to all users of a Datadog org, and cannot be manually granted or revoked.
+- `include_restricted` (Boolean) Whether to include restricted permissions. Restricted permissions are granted by default to all users of a Datadog org, and cannot be manually granted or revoked. Defaults to `false`.
 
 ### Read-Only
 

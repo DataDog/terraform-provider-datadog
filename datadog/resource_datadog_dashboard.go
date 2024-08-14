@@ -400,6 +400,51 @@ func buildDatadogDashboard(d *schema.ResourceData) (*datadogV1.Dashboard, error)
 // Template Variable helpers
 //
 
+func getPpkTemplateVariableSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"controlled_externally": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Template variables controlled by the external resource, such as the dashboard this powerpack is on.",
+			Elem: &schema.Resource{
+				Schema: getPpkTemplateVariableContentSchema(),
+			},
+		},
+		"controlled_by_powerpack": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Template variables controlled at the powerpack level.",
+			Elem: &schema.Resource{
+				Schema: getPpkTemplateVariableContentSchema(),
+			},
+		},
+	}
+}
+
+func getPpkTemplateVariableContentSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"name": {
+			Type:        schema.TypeString,
+			Required:    true,
+			Description: "The name of the variable.",
+		},
+		"prefix": {
+			Type:        schema.TypeString,
+			Optional:    true,
+			Description: "The tag prefix associated with the variable. Only tags with this prefix appear in the variable dropdown.",
+		},
+		"values": {
+			Type:     schema.TypeList,
+			Required: true,
+			Elem: &schema.Schema{
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringIsNotEmpty,
+			},
+			Description: "One or many template variable values within the saved view, which will be unioned together using `OR` if more than one is specified.",
+		},
+	}
+}
+
 func getTemplateVariableSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name": {
@@ -434,6 +479,49 @@ func getTemplateVariableSchema() map[string]*schema.Schema {
 			Description: "The list of values that the template variable drop-down is be limited to",
 		},
 	}
+}
+
+func buildDatadogPowerpackTVarContents(contents []interface{}) []datadogV1.PowerpackTemplateVariableContents {
+	tVarContents := make([]datadogV1.PowerpackTemplateVariableContents, len(contents))
+	for ind, tvp := range contents {
+		typecastTvp := tvp.(map[string]interface{})
+		tvar := datadogV1.NewPowerpackTemplateVariableContentsWithDefaults()
+		if name, ok := typecastTvp["name"].(string); ok {
+			tvar.SetName(name)
+		}
+		if v, ok := typecastTvp["values"].([]interface{}); ok && len(v) != 0 {
+			var values []string
+			for _, s := range v {
+				values = append(values, s.(string))
+			}
+			tvar.SetValues(values)
+		}
+		if prefix, ok := typecastTvp["prefix"].(string); ok {
+			tvar.SetPrefix(prefix)
+		}
+		tVarContents[ind] = *tvar
+	}
+	return tVarContents
+}
+
+func buildTerraformPowerpackTVarContents(tVarContents []datadogV1.PowerpackTemplateVariableContents) []map[string]interface{} {
+	ppkTvarContents := make([]map[string]interface{}, len(tVarContents))
+	for i, templateVariable := range tVarContents {
+		terraformTemplateVariable := map[string]interface{}{}
+		if v, ok := templateVariable.GetNameOk(); ok {
+			terraformTemplateVariable["name"] = *v
+		}
+		if v := templateVariable.GetPrefix(); len(v) > 0 {
+			terraformTemplateVariable["prefix"] = v
+		}
+		if v, ok := templateVariable.GetValuesOk(); ok && len(*v) > 0 {
+			var tags []string
+			tags = append(tags, *v...)
+			terraformTemplateVariable["values"] = tags
+		}
+		ppkTvarContents[i] = terraformTemplateVariable
+	}
+	return ppkTvarContents
 }
 
 func buildDatadogTemplateVariables(terraformTemplateVariables *[]interface{}) *[]datadogV1.DashboardTemplateVariable {
@@ -695,7 +783,7 @@ func buildTerraformNotifyList(datadogNotifyList *[]string) *[]string {
 // The generic widget schema is a combination of the schema for a non-group widget
 // and the schema for a Group Widget (which can contains only non-group widgets)
 func getWidgetSchema() map[string]*schema.Schema {
-	widgetSchema := getNonGroupWidgetSchema()
+	widgetSchema := getNonGroupWidgetSchema(false)
 	widgetSchema["group_definition"] = &schema.Schema{
 		Type:        schema.TypeList,
 		Optional:    true,
@@ -708,8 +796,8 @@ func getWidgetSchema() map[string]*schema.Schema {
 	return widgetSchema
 }
 
-func getNonGroupWidgetSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+func getNonGroupWidgetSchema(isPowerpackSchema bool) map[string]*schema.Schema {
+	s := map[string]*schema.Schema{
 		"widget_layout": {
 			Type:        schema.TypeList,
 			MaxItems:    1,
@@ -996,8 +1084,119 @@ func getNonGroupWidgetSchema() map[string]*schema.Schema {
 			},
 		},
 	}
+
+	// Non powerpack specific widgets
+	if !isPowerpackSchema {
+		s["powerpack_definition"] = &schema.Schema{
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Powerpack widget.",
+			Elem: &schema.Resource{
+				Schema: getPowerpackDefinitionSchema(),
+			},
+		}
+		s["split_graph_definition"] = &schema.Schema{
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Split Graph widget.",
+			Elem: &schema.Resource{
+				Schema: getSplitGraphDefinitionSchema(),
+			},
+		}
+	}
+
+	return s
 }
 
+func getSplitGraphSourceWidgetSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		// A widget should implement exactly one of the following definitions
+		"change_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Change widget.",
+			Elem: &schema.Resource{
+				Schema: getChangeDefinitionSchema(),
+			},
+		},
+		"geomap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Geomap widget.",
+			Elem: &schema.Resource{
+				Schema: getGeomapDefinitionSchema(),
+			},
+		},
+
+		"query_value_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Value widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryValueDefinitionSchema(),
+			},
+		},
+		"query_table_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Query Table widget.",
+			Elem: &schema.Resource{
+				Schema: getQueryTableDefinitionSchema(),
+			},
+		},
+		"scatterplot_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Scatterplot widget.",
+			Elem: &schema.Resource{
+				Schema: getScatterplotDefinitionSchema(),
+			},
+		},
+		"sunburst_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Sunburst widget.",
+			Elem: &schema.Resource{
+				Schema: getSunburstDefinitionschema(),
+			},
+		},
+		"timeseries_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Timeseries widget.",
+			Elem: &schema.Resource{
+				Schema: getTimeseriesDefinitionSchema(),
+			},
+		},
+		"toplist_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Toplist widget.",
+			Elem: &schema.Resource{
+				Schema: getToplistDefinitionSchema(),
+			},
+		},
+		"treemap_definition": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The definition for a Treemap widget.",
+			Elem: &schema.Resource{
+				Schema: getTreemapDefinitionSchema(),
+			},
+		},
+	}
+}
 func buildDatadogWidgets(terraformWidgets *[]interface{}) (*[]datadogV1.Widget, error) {
 	datadogWidgets := make([]datadogV1.Widget, len(*terraformWidgets))
 	for i, terraformWidget := range *terraformWidgets {
@@ -1145,6 +1344,22 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 		if runWorkflowDefinition, ok := def[0].(map[string]interface{}); ok {
 			definition = datadogV1.RunWorkflowWidgetDefinitionAsWidgetDefinition(buildDatadogRunWorkflowDefinition(runWorkflowDefinition))
 		}
+	} else if def, ok := terraformWidget["split_graph_definition"].([]interface{}); ok && len(def) > 0 {
+		if splitGraphDefinition, ok := def[0].(map[string]interface{}); ok {
+			datadogDefinition, err := buildDatadogSplitGraphDefinition(splitGraphDefinition)
+			if err != nil {
+				return nil, err
+			}
+			definition = datadogV1.SplitGraphWidgetDefinitionAsWidgetDefinition(datadogDefinition)
+		}
+	} else if def, ok := terraformWidget["powerpack_definition"].([]interface{}); ok && len(def) > 0 {
+		if powerpackDefinition, ok := def[0].(map[string]interface{}); ok {
+			datadogDefinition, err := buildDatadogPowerpackDefinition(powerpackDefinition)
+			if err != nil {
+				return nil, err
+			}
+			definition = datadogV1.PowerpackWidgetDefinitionAsWidgetDefinition(datadogDefinition)
+		}
 	} else {
 		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
 	}
@@ -1159,6 +1374,105 @@ func buildDatadogWidget(terraformWidget map[string]interface{}) (*datadogV1.Widg
 	}
 
 	return datadogWidget, nil
+}
+
+// Helper to build a Datadog Source Widget defiition for split graph
+func buildDatadogSourceWidgetDefinition(terraformWidget map[string]interface{}) (*datadogV1.SplitGraphSourceWidgetDefinition, error) {
+	// Build widget Definition
+	var definition datadogV1.SplitGraphSourceWidgetDefinition
+	sourceWidgetCount := 0
+	if def, ok := terraformWidget["change_definition"].([]interface{}); ok && len(def) > 0 {
+		if changeDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ChangeWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogChangeDefinition(changeDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+
+	if def, ok := terraformWidget["query_value_definition"].([]interface{}); ok && len(def) > 0 {
+		if queryValueDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.QueryValueWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogQueryValueDefinition(queryValueDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["query_table_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if queryTableDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TableWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogQueryTableDefinition(queryTableDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["scatterplot_definition"].([]interface{}); ok && len(def) > 0 {
+		if scatterplotDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ScatterPlotWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogScatterplotDefinition(scatterplotDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["sunburst_definition"].([]interface{}); ok && len(def) > 0 {
+		if sunburstDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.SunburstWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogSunburstDefinition(sunburstDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["timeseries_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if timeseriesDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TimeseriesWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogTimeseriesDefinition(timeseriesDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["toplist_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if toplistDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.ToplistWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogToplistDefinition(toplistDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["treemap_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if treemapDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.TreeMapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogTreemapDefinition(treemapDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if def, ok := terraformWidget["geomap_definition"].([]interface{}); ok && len(def) > 0 {
+
+		if geomapDefinition, ok := def[0].(map[string]interface{}); ok {
+			definition = datadogV1.GeomapWidgetDefinitionAsSplitGraphSourceWidgetDefinition(buildDatadogGeomapDefinition(geomapDefinition))
+			sourceWidgetCount += 1
+		}
+		if sourceWidgetCount > 1 {
+			return nil, fmt.Errorf("source widget definition must contain exactly one value")
+		}
+	}
+	if sourceWidgetCount == 0 {
+		return nil, fmt.Errorf("failed to find valid definition in widget configuration")
+	}
+
+	return &definition, nil
 }
 
 // Helper to build a list of Terraform widgets from a list of Datadog widgets
@@ -1291,10 +1605,57 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 	} else if widgetDefinition.RunWorkflowWidgetDefinition != nil {
 		terraformDefinition := buildTerraformRunWorkflowDefinition(widgetDefinition.RunWorkflowWidgetDefinition)
 		terraformWidget["run_workflow_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.SplitGraphWidgetDefinition != nil {
+		terraformDefinition, err := buildTerraformSplitGraphDefinition(widgetDefinition.SplitGraphWidgetDefinition)
+		if err != nil {
+			return nil, err
+		}
+		terraformWidget["split_graph_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if widgetDefinition.PowerpackWidgetDefinition != nil {
+		terraformDefinition, err := buildTerraformPowerpackDefinition(widgetDefinition.PowerpackWidgetDefinition)
+		if err != nil {
+			return nil, err
+		}
+		terraformWidget["powerpack_definition"] = []map[string]interface{}{terraformDefinition}
 	} else {
 		return nil, fmt.Errorf("unsupported widget type: %s", widgetDefinition.GetActualInstance())
 	}
 	return terraformWidget, nil
+}
+
+// Helper to build a source widget definition for terraform
+func buildTerraformSourceWidgetDefinition(datadogSourceWidgetDefinition *datadogV1.SplitGraphSourceWidgetDefinition) (map[string]interface{}, error) {
+	terraformWidgetDefinition := map[string]interface{}{}
+
+	// Build definition
+	if datadogSourceWidgetDefinition.ChangeWidgetDefinition != nil {
+		terraformDefinition := buildTerraformChangeDefinition(datadogSourceWidgetDefinition.ChangeWidgetDefinition)
+		terraformWidgetDefinition["change_definition"] = terraformDefinition
+	} else if datadogSourceWidgetDefinition.QueryValueWidgetDefinition != nil {
+		terraformDefinition := buildTerraformQueryValueDefinition(datadogSourceWidgetDefinition.QueryValueWidgetDefinition)
+		terraformWidgetDefinition["query_value_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.TableWidgetDefinition != nil {
+		terraformDefinition := buildTerraformQueryTableDefinition(datadogSourceWidgetDefinition.TableWidgetDefinition)
+		terraformWidgetDefinition["query_table_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.SunburstWidgetDefinition != nil {
+		terraformDefinition := buildTerraformSunburstDefinition(datadogSourceWidgetDefinition.SunburstWidgetDefinition)
+		terraformWidgetDefinition["sunburst_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.TimeseriesWidgetDefinition != nil {
+		terraformDefinition := buildTerraformTimeseriesDefinition(datadogSourceWidgetDefinition.TimeseriesWidgetDefinition)
+		terraformWidgetDefinition["timeseries_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.ToplistWidgetDefinition != nil {
+		terraformDefinition := buildTerraformToplistDefinition(datadogSourceWidgetDefinition.ToplistWidgetDefinition)
+		terraformWidgetDefinition["toplist_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.TreeMapWidgetDefinition != nil {
+		terraformDefinition := buildTerraformTreemapDefinition(datadogSourceWidgetDefinition.TreeMapWidgetDefinition)
+		terraformWidgetDefinition["treemap_definition"] = []map[string]interface{}{terraformDefinition}
+	} else if datadogSourceWidgetDefinition.GeomapWidgetDefinition != nil {
+		terraformDefinition := buildTerraformGeomapDefinition(datadogSourceWidgetDefinition.GeomapWidgetDefinition)
+		terraformWidgetDefinition["geomap_definition"] = []map[string]interface{}{terraformDefinition}
+	} else {
+		return nil, fmt.Errorf("unsupported widget type used as split graph source widget: %s", datadogSourceWidgetDefinition.GetActualInstance())
+	}
+	return terraformWidgetDefinition, nil
 }
 
 //
@@ -1304,12 +1665,12 @@ func buildTerraformWidget(datadogWidget *datadogV1.Widget) (map[string]interface
 func getWidgetLayoutSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"x": {
-			Description: "The position of the widget on the x (horizontal) axis. Should be greater than or equal to 0.",
+			Description: "The position of the widget on the x (horizontal) axis. Must be greater than or equal to 0.",
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
 		"y": {
-			Description: "The position of the widget on the y (vertical) axis. Should be greater than or equal to 0.",
+			Description: "The position of the widget on the y (vertical) axis. Must be greater than or equal to 0.",
 			Type:        schema.TypeInt,
 			Required:    true,
 		},
@@ -1324,7 +1685,7 @@ func getWidgetLayoutSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"is_column_break": {
-			Description: "Whether the widget should be the first one on the second column in high density or not. Only for the new dashboard layout and only one widget in the dashboard should have this property set to `true`.",
+			Description: "Whether the widget should be the first one on the second column in high density or not. Only one widget in the dashboard should have this property set to `true`.",
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
@@ -1354,7 +1715,7 @@ func getGroupDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 			Description: "The list of widgets in this group.",
 			Elem: &schema.Resource{
-				Schema: getNonGroupWidgetSchema(),
+				Schema: getNonGroupWidgetSchema(false),
 			},
 		},
 		"layout_type": {
@@ -1804,6 +2165,8 @@ func buildDatadogChangeRequests(terraformRequests *[]interface{}) *[]datadogV1.C
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogChangeRequest.SetQueries(queries)
@@ -2624,6 +2987,9 @@ func getHeatmapRequestSchema() map[string]*schema.Schema {
 		"rum_query":      getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"security_query": getApmLogNetworkRumSecurityAuditQuerySchema(),
 		"process_query":  getProcessQuerySchema(),
+		// "query" and "formula" go together
+		"query":   getFormulaQuerySchema(),
+		"formula": getFormulaSchema(),
 		// Settings specific to Heatmap requests
 		"style": {
 			Description: "The style of the widget graph. One nested block is allowed using the structure below.",
@@ -2662,6 +3028,32 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 		} else if v, ok := terraformRequest["security_query"].([]interface{}); ok && len(v) > 0 {
 			securityQuery := v[0].(map[string]interface{})
 			datadogHeatmapRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
+		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
+			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
+			for i, q := range v {
+				query := q.(map[string]interface{})
+				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				}
+			}
+			datadogHeatmapRequest.SetQueries(queries)
+			datadogHeatmapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("timeseries"))
+		}
+		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
+			formulas := make([]datadogV1.WidgetFormula, len(v))
+			for i, formula := range v {
+				if formula == nil {
+					continue
+				}
+				formulas[i] = *buildDatadogFormula(formula.(map[string]interface{}))
+			}
+			datadogHeatmapRequest.SetFormulas(formulas)
 		}
 		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
 			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
@@ -2693,6 +3085,11 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWi
 		} else if v, ok := datadogRequest.GetSecurityQueryOk(); ok {
 			terraformQuery := buildTerraformApmOrLogQuery(*v)
 			terraformRequest["security_query"] = []map[string]interface{}{terraformQuery}
+		} else if v, ok := datadogRequest.GetQueriesOk(); ok {
+			terraformRequest["query"] = buildTerraformQuery(v)
+		}
+		if v, ok := datadogRequest.GetFormulasOk(); ok {
+			terraformRequest["formula"] = buildTerraformFormula(v)
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetStyle(*v)
@@ -3867,6 +4264,8 @@ func buildDatadogQueryValueRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryValueRequest.SetQueries(queries)
@@ -4139,6 +4538,8 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogFormulaAndFunctionAPMResourceStatsQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogQueryTableRequest.SetQueries(queries)
@@ -4494,6 +4895,8 @@ func buildDatadogScatterplotTableRequest(terraformRequest map[string]interface{}
 				queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 			} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 				queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+			} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+				queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 			}
 		}
 		datadogScatterplotTableRequest.SetQueries(queries)
@@ -5926,6 +6329,16 @@ func getSunburstRequestSchema() map[string]*schema.Schema {
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
 		"formula": getFormulaSchema(),
+		// Settings specific to Sunburst requests
+		"style": {
+			Description: "Define style for the widget's request.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetRequestStyle(),
+			},
+		},
 	}
 }
 
@@ -6055,6 +6468,8 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogSunburstRequest.SetQueries(queries)
@@ -6069,6 +6484,11 @@ func buildDatadogSunburstRequests(terraformRequests *[]interface{}) *[]datadogV1
 				formulas[i] = *buildDatadogFormula(formula.(map[string]interface{}))
 			}
 			datadogSunburstRequest.SetFormulas(formulas)
+		}
+		if style, ok := terraformRequest["style"].([]interface{}); ok && len(style) > 0 {
+			if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
+				datadogSunburstRequest.Style = buildDatadogWidgetStyle(v)
+			}
 		}
 		datadogRequests[i] = *datadogSunburstRequest
 	}
@@ -6108,6 +6528,10 @@ func buildTerraformSunburstRequests(datadogSunburstRequests *[]datadogV1.Sunburs
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
 			terraformRequest["formula"] = buildTerraformFormula(v)
+		}
+		if v, ok := datadogRequest.GetStyleOk(); ok {
+			style := buildTerraformWidgetStyle(*v)
+			terraformRequest["style"] = []map[string]interface{}{style}
 		}
 		terraformRequests[i] = terraformRequest
 	}
@@ -6237,7 +6661,7 @@ func getFormulaSchema() *schema.Schema {
 							"count": {
 								Type:        schema.TypeInt,
 								Optional:    true,
-								Description: "The number of results to return",
+								Description: "The number of results to return.",
 							},
 							"order": {
 								Type:             schema.TypeString,
@@ -6278,7 +6702,7 @@ func getFormulaSchema() *schema.Schema {
 							"palette": {
 								Type:        schema.TypeString,
 								Optional:    true,
-								Description: "The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors",
+								Description: "The color palette used to display the formula. A guide to the available color palettes can be found at https://docs.datadoghq.com/dashboards/guide/widget_colors.",
 							},
 							"palette_index": {
 								Type:        schema.TypeInt,
@@ -6328,6 +6752,13 @@ func getFormulaQuerySchema() *schema.Schema {
 								Required:    true,
 								Description: "The name of the query for use in formulas.",
 							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 						},
 					},
 				},
@@ -6370,6 +6801,13 @@ func getFormulaQuerySchema() *schema.Schema {
 								Optional:    true,
 								Elem:        &schema.Schema{Type: schema.TypeString},
 								Description: "An array of index names to query in the stream.",
+							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
 							"compute": {
 								Type:        schema.TypeList,
@@ -6457,6 +6895,13 @@ func getFormulaQuerySchema() *schema.Schema {
 					Description: "The process query using formulas and functions.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 							"data_source": {
 								Type:             schema.TypeString,
 								Required:         true,
@@ -6523,10 +6968,17 @@ func getFormulaQuerySchema() *schema.Schema {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmDependencyStatsDataSourceFromValue),
 								Description:      "The data source for APM Dependency Stats queries.",
 							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 							"env": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "APM Environment.",
+								Description: "APM environment.",
 							},
 							"stat": {
 								Type:             schema.TypeString,
@@ -6585,10 +7037,17 @@ func getFormulaQuerySchema() *schema.Schema {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionApmResourceStatsDataSourceFromValue),
 								Description:      "The data source for APM Resource Stats queries.",
 							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
 							"env": {
 								Type:        schema.TypeString,
 								Required:    true,
-								Description: "APM Environment.",
+								Description: "APM environment.",
 							},
 							"name": {
 								Type:        schema.TypeString,
@@ -6639,14 +7098,21 @@ func getFormulaQuerySchema() *schema.Schema {
 					Type:        schema.TypeList,
 					Optional:    true,
 					MaxItems:    1,
-					Description: "The slo query using formulas and functions.",
+					Description: "The SLO query using formulas and functions.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
 								Type:             schema.TypeString,
 								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionSLODataSourceFromValue),
-								Description:      "The data source for slo queries.",
+								Description:      "The data source for SLO queries.",
+							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
 							"slo_id": {
 								Type:        schema.TypeString,
@@ -6682,6 +7148,45 @@ func getFormulaQuerySchema() *schema.Schema {
 								Type:        schema.TypeString,
 								Optional:    true,
 								Description: "Additional filters applied to the SLO query.",
+							},
+						},
+					},
+				},
+				"cloud_cost_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					Description: "The Cloud Cost query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionCloudCostDataSourceFromValue),
+								Description:      "The data source for cloud cost queries.",
+							},
+							"cross_org_uuids": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								MaxItems:    1,
+								Description: "The source organization UUID for cross organization queries. Feature in Private Beta.",
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The cloud cost query definition.",
+							},
+							"aggregator": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+								Description:      "The aggregation methods available for cloud cost queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the query for use in formulas.",
 							},
 						},
 					},
@@ -6850,6 +7355,12 @@ func buildDatadogEventQuery(data map[string]interface{}) *datadogV1.FormulaAndFu
 		eventQuery.Search = datadogV1.NewFormulaAndFunctionEventQueryDefinitionSearch(terraformSearch["query"].(string))
 	}
 
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			eventQuery.CrossOrgUuids = []string{c}
+		}
+	}
+
 	// GroupBy
 	if terraformGroupBys, ok := data["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
 		datadogGroupBys := make([]datadogV1.FormulaAndFunctionEventQueryGroupBy, len(terraformGroupBys))
@@ -6900,6 +7411,12 @@ func buildDatadogMetricQuery(data map[string]interface{}) *datadogV1.FormulaAndF
 		metricQuery.SetAggregator(aggregator)
 	}
 
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			metricQuery.CrossOrgUuids = []string{c}
+		}
+	}
+
 	definition := datadogV1.FormulaAndFunctionMetricQueryDefinitionAsFormulaAndFunctionQueryDefinition(metricQuery)
 	return &definition
 }
@@ -6908,6 +7425,13 @@ func buildDatadogFormulaAndFunctionAPMResourceStatsQuery(data map[string]interfa
 	dataSource := datadogV1.FormulaAndFunctionApmResourceStatsDataSource(data["data_source"].(string))
 	stat := datadogV1.FormulaAndFunctionApmResourceStatName(data["stat"].(string))
 	apmResourceStatsQuery := datadogV1.NewFormulaAndFunctionApmResourceStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["service"].(string), stat)
+
+	// cross_org_uuids
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			apmResourceStatsQuery.CrossOrgUuids = []string{c}
+		}
+	}
 
 	// operation_name
 	if v, ok := data["operation_name"].(string); ok && len(v) != 0 {
@@ -6947,6 +7471,13 @@ func buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(data map[string]inter
 	stat := datadogV1.FormulaAndFunctionApmDependencyStatName(data["stat"].(string))
 	apmDependencyStatsQuery := datadogV1.NewFormulaAndFunctionApmDependencyStatsQueryDefinition(dataSource, data["env"].(string), data["name"].(string), data["operation_name"].(string), data["resource_name"].(string), data["service"].(string), stat)
 
+	// cross_org_uuids
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			apmDependencyStatsQuery.CrossOrgUuids = []string{c}
+		}
+	}
+
 	// primary_tag_name
 	if v, ok := data["primary_tag_name"].(string); ok && len(v) != 0 {
 		apmDependencyStatsQuery.SetPrimaryTagName(v)
@@ -6969,6 +7500,12 @@ func buildDatadogFormulaAndFunctionAPMDependencyStatsQuery(data map[string]inter
 func buildDatadogFormulaAndFunctionProcessQuery(data map[string]interface{}) *datadogV1.FormulaAndFunctionQueryDefinition {
 	dataSource := datadogV1.FormulaAndFunctionProcessQueryDataSource(data["data_source"].(string))
 	processQuery := datadogV1.NewFormulaAndFunctionProcessQueryDefinition(dataSource, data["metric"].(string), data["name"].(string))
+
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			processQuery.CrossOrgUuids = []string{c}
+		}
+	}
 
 	// Text Filter
 	if v, ok := data["text_filter"].(string); ok && len(v) != 0 {
@@ -7014,6 +7551,12 @@ func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) *datado
 
 	SloQuery := datadogV1.NewFormulaAndFunctionSLOQueryDefinition(dataSource, measure, data["slo_id"].(string))
 
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			SloQuery.CrossOrgUuids = []string{c}
+		}
+	}
+
 	if v, ok := data["group_mode"].(string); ok && len(v) != 0 {
 		SloQuery.SetGroupMode(datadogV1.FormulaAndFunctionSLOGroupMode(v))
 	}
@@ -7028,6 +7571,25 @@ func buildDatadogFormulaAndFunctionSLOQuery(data map[string]interface{}) *datado
 	}
 
 	definition := datadogV1.FormulaAndFunctionSLOQueryDefinitionAsFormulaAndFunctionQueryDefinition(SloQuery)
+	return &definition
+}
+
+func buildDatadogFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *datadogV1.FormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.FormulaAndFunctionCloudCostDataSource(data["data_source"].(string))
+
+	CloudCostQuery := datadogV1.NewFormulaAndFunctionCloudCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
+
+	if cross_org_uuids, ok := data["cross_org_uuids"].([]interface{}); ok && len(cross_org_uuids) == 1 {
+		if c, ok := cross_org_uuids[0].(string); ok && len(c) != 0 {
+			CloudCostQuery.CrossOrgUuids = []string{c}
+		}
+	}
+
+	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
+		CloudCostQuery.SetAggregator(datadogV1.WidgetAggregator(v))
+	}
+
+	definition := datadogV1.FormulaAndFunctionCloudCostQueryDefinitionAsFormulaAndFunctionQueryDefinition(CloudCostQuery)
 	return &definition
 }
 
@@ -7075,6 +7637,8 @@ func buildDatadogTimeseriesRequests(terraformRequests *[]interface{}) *[]datadog
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTimeseriesRequest.SetQueries(queries)
@@ -7354,8 +7918,9 @@ func buildDatadogToplistRequests(terraformRequests *[]interface{}) *[]datadogV1.
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
-
 			}
 			datadogToplistRequest.SetQueries(queries)
 			// Toplist requests for formulas and functions always has a response format of "scalar"
@@ -7561,6 +8126,490 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 }
 
 //
+// Powerpack Definition helpers
+//
+
+func getPowerpackDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"background_color": {
+			Description: "The background color of the powerpack title.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"banner_img": {
+			Description: "URL of image to display as a banner for the powerpack.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"powerpack_id": {
+			Description:  "UUID of the associated powerpack.",
+			Type:         schema.TypeString,
+			Required:     true,
+			ValidateFunc: validation.StringIsNotEmpty,
+		},
+		"show_title": {
+			Description: "Whether to show the title of the powerpack.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+		"template_variables": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			Description: "The list of template variables for this powerpack.",
+			Elem: &schema.Resource{
+				Schema: getPpkTemplateVariableSchema(),
+			},
+		},
+		"title": {
+			Description:  "Title of the powerpack.",
+			Type:         schema.TypeString,
+			Optional:     true,
+			ValidateFunc: validation.StringIsNotEmpty,
+		},
+	}
+}
+
+//
+// Split Graph Definition helpers
+//
+
+func getSplitGraphDefinitionSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"source_widget_definition": {
+			Description: "The original widget we are splitting on.",
+			Type:        schema.TypeList,
+			Required:    true,
+			MinItems:    1,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: getSplitGraphSourceWidgetSchema(),
+			},
+		},
+		"split_config": {
+			Description: "Encapsulates all user choices about how to split a graph.",
+			Type:        schema.TypeList,
+			Required:    true,
+			MinItems:    1,
+			MaxItems:    1,
+			Elem: &schema.Resource{
+				Schema: getSplitConfigSchema(),
+			},
+		},
+		"size": {
+			Description: "Size of the individual graphs in the split.",
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+		"has_uniform_y_axes": {
+			Description: "Normalize y axes across graphs.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+		"title": {
+			Description: "The title of the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"live_span": getWidgetLiveSpanSchema(),
+	}
+}
+
+func getSplitConfigSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"split_dimensions": getSplitDimensionSchema(),
+		"limit": {
+			Description:  "Maximum number of graphs to display in the widget.",
+			Type:         schema.TypeInt,
+			Optional:     true,
+			ValidateFunc: validation.IntBetween(1, 500),
+		},
+		"sort":          getSplitSortSchema(),
+		"static_splits": getStaticSplitsSchema(),
+	}
+}
+
+func getSplitDimensionSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The property by which the graph splits",
+		Type:        schema.TypeList,
+		Required:    true,
+		MinItems:    1,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"one_graph_per": {
+					Description: "The system interprets this attribute differently depending on the data source of the query being split. For metrics, it's a tag. For the events platform, it's an attribute or tag.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			},
+		},
+	}
+}
+func getSplitSortSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "Controls the order in which graphs appear in the split.",
+		Type:        schema.TypeList,
+		Required:    true,
+		MinItems:    1,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"compute": getSplitSortComputeSchema(),
+				"order": {
+					Description:      "Widget sorting methods.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetSortFromValue),
+				},
+			},
+		},
+	}
+}
+
+func getSplitSortComputeSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "Defines the metric and aggregation used as the sort value",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    1,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"aggregation": {
+					Description: "How to aggregate the sort metric for the purposes of ordering.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"metric": {
+					Description: "The metric to use for sorting graphs.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+			},
+		},
+	}
+}
+func getStaticSplitsSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The property by which the graph splits",
+		Type:        schema.TypeList,
+		Optional:    true,
+		MaxItems:    500,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"split_vector": getSplitVectorSchema(),
+			},
+		},
+	}
+}
+
+func getSplitVectorSchema() *schema.Schema {
+	return &schema.Schema{
+		Description: "The split graph list contains a graph for each value of the split dimension.",
+		Type:        schema.TypeList,
+		Required:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"tag_key": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"tag_values": {
+					Type:     schema.TypeList,
+					Required: true,
+					Elem:     &schema.Schema{Type: schema.TypeString},
+				},
+			},
+		},
+	}
+}
+
+func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}) (*datadogV1.SplitGraphWidgetDefinition, error) {
+	datadogDefinition := datadogV1.NewSplitGraphWidgetDefinitionWithDefaults()
+	// Required params
+	//size,source_widget,split_config, type
+	if size, ok := terraformDefinition["size"].(string); ok && size != "" {
+		datadogDefinition.SetSize(datadogV1.SplitGraphVizSize(size))
+	}
+
+	if terraformSourceWidget, ok := terraformDefinition["source_widget_definition"].([]interface{}); ok && len(terraformSourceWidget) > 0 {
+		if v, ok := terraformSourceWidget[0].(map[string]interface{}); ok {
+			datadogWidget, err := buildDatadogSourceWidgetDefinition(v)
+			if err != nil {
+				return nil, err
+			}
+			datadogDefinition.SetSourceWidgetDefinition(*datadogWidget)
+		} else {
+			return nil, fmt.Errorf("failed to find valid definition in widget configuration")
+		}
+	}
+
+	if terraformSplitConfig, ok := terraformDefinition["split_config"].([]interface{}); ok && len(terraformSplitConfig) > 0 {
+		datadogDefinition.SetSplitConfig(*buildDatadogSplitConfig(terraformSplitConfig[0].(map[string]interface{})))
+	}
+
+	//optional params
+	if yAxes, ok := terraformDefinition["has_uniform_y_axes"].(bool); ok {
+		datadogDefinition.SetHasUniformYAxes(yAxes)
+	}
+
+	if v, ok := terraformDefinition["title"].(string); ok && len(v) != 0 {
+		datadogDefinition.Title = datadog.PtrString(v)
+	}
+	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
+		datadogDefinition.Time = &datadogV1.WidgetTime{
+			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+		}
+	}
+
+	return datadogDefinition, nil
+}
+
+func buildDatadogPowerpackDefinition(terraformDefinition map[string]interface{}) (*datadogV1.PowerpackWidgetDefinition, error) {
+	datadogDefinition := datadogV1.NewPowerpackWidgetDefinitionWithDefaults()
+	// Required params
+	//type, powerpack_id
+
+	powerpack_type, _ := datadogV1.NewPowerpackWidgetDefinitionTypeFromValue("powerpack")
+	datadogDefinition.SetType(*powerpack_type)
+
+	if powerpack_id, ok := terraformDefinition["powerpack_id"].(string); ok && powerpack_id != "" {
+		datadogDefinition.SetPowerpackId(powerpack_id)
+	}
+
+	if background_color, ok := terraformDefinition["background_color"].(string); ok && background_color != "" {
+		datadogDefinition.SetBackgroundColor(background_color)
+	}
+
+	if banner_img, ok := terraformDefinition["banner_img"].(string); ok && banner_img != "" {
+		datadogDefinition.SetBannerImg(banner_img)
+	}
+
+	if show_title, ok := terraformDefinition["show_title"].(bool); ok {
+		datadogDefinition.SetShowTitle(show_title)
+	}
+
+	if template_variables, ok := terraformDefinition["template_variables"].([]interface{}); ok {
+		ppkTVars := datadogV1.NewPowerpackTemplateVariablesWithDefaults()
+		tvars := template_variables[0].(map[string]interface{})
+		if tfControlledByPowerpack, ok := tvars["controlled_by_powerpack"].([]interface{}); ok {
+			ppkTVars.SetControlledByPowerpack(buildDatadogPowerpackTVarContents(tfControlledByPowerpack))
+		}
+		if tfControlledExternally, ok := tvars["controlled_externally"].([]interface{}); ok {
+			ppkTVars.SetControlledExternally(buildDatadogPowerpackTVarContents(tfControlledExternally))
+		}
+		datadogDefinition.SetTemplateVariables(*ppkTVars)
+	}
+
+	if title, ok := terraformDefinition["title"].(string); ok && title != "" {
+		datadogDefinition.SetTitle(title)
+	}
+
+	return datadogDefinition, nil
+}
+
+func buildDatadogSplitConfig(terraformSplitConfig map[string]interface{}) *datadogV1.SplitConfig {
+	datadogSplitConfig := datadogV1.NewSplitConfigWithDefaults()
+
+	if limit, ok := terraformSplitConfig["limit"].(int); ok {
+		datadogSplitConfig.SetLimit(int64(limit))
+	}
+
+	if sort, ok := terraformSplitConfig["sort"].([]interface{}); ok && len(sort) > 0 {
+		datadogSplitConfig.SetSort(*buildDatadogSplitSort(sort[0].(map[string]interface{})))
+	}
+
+	if splitDimensions, ok := terraformSplitConfig["split_dimensions"].([]interface{}); ok && len(splitDimensions) > 0 {
+		terraformSplitDimension := splitDimensions[0].(map[string]interface{})
+		if v, ok := terraformSplitDimension["one_graph_per"].(string); ok && len(v) > 0 {
+			datadogSplitDimensions := make([]datadogV1.SplitDimension, 1)
+			datadogSplitDimensions[0] = *datadogV1.NewSplitDimension(v)
+			datadogSplitConfig.SetSplitDimensions(datadogSplitDimensions)
+		}
+	}
+
+	if v, ok := terraformSplitConfig["static_splits"].([]interface{}); ok && len(v) > 0 {
+		datadogStaticSplits := buildDatadogStaticSplits(v)
+		datadogSplitConfig.SetStaticSplits(*datadogStaticSplits)
+	}
+	return datadogSplitConfig
+}
+
+func buildDatadogSplitSort(terraformSplitSort map[string]interface{}) *datadogV1.SplitSort {
+	datadogSplitSort := datadogV1.SplitSort{}
+
+	if order, ok := terraformSplitSort["order"].(string); ok && len(order) > 0 {
+		datadogSplitSort.SetOrder(datadogV1.WidgetSort(order))
+	}
+
+	if compute, ok := terraformSplitSort["compute"].([]interface{}); ok && len(compute) > 0 {
+		sortCompute := compute[0].(map[string]interface{})
+		var datadogSortAggregation string
+		var datadogSortMetric string
+		if aggregation, ok := sortCompute["aggregation"].(string); ok && len(aggregation) > 0 {
+			datadogSortAggregation = aggregation
+		}
+		if metric, ok := sortCompute["metric"].(string); ok && len(metric) > 0 {
+			datadogSortMetric = metric
+		}
+		datadogSplitSort.SetCompute(*datadogV1.NewSplitConfigSortCompute(datadogSortAggregation, datadogSortMetric))
+	}
+	return &datadogSplitSort
+}
+
+// Build static splits for backend  format from static splits
+func buildDatadogStaticSplits(terraformStaticSplits []interface{}) *[][]datadogV1.SplitVectorEntryItem {
+	datadogStaticSplits := make([][]datadogV1.SplitVectorEntryItem, len(terraformStaticSplits))
+	//going over each static split
+	for i, terraformStaticSplit := range terraformStaticSplits {
+		terraformStaticSplitMap := terraformStaticSplit.(map[string]interface{})
+		//building inner array for static split from terraform split vector list.
+		for _, splitVector := range terraformStaticSplitMap["split_vector"].([]interface{}) {
+			datadogSplitVectorMap := splitVector.(map[string]interface{})
+
+			datadogSplitVector := datadogV1.SplitVectorEntryItem{}
+			if v, ok := datadogSplitVectorMap["tag_key"].(string); ok {
+				datadogSplitVector.SetTagKey(v)
+			}
+			if tagValuesList, ok := datadogSplitVectorMap["tag_values"].([]interface{}); ok {
+				datadogTagValues := make([]string, len(tagValuesList))
+				for k, tagValues := range tagValuesList {
+					datadogTagValues[k] = tagValues.(string)
+				}
+				datadogSplitVector.SetTagValues(datadogTagValues)
+			}
+			datadogStaticSplits[i] = append(datadogStaticSplits[i], datadogSplitVector)
+		}
+	}
+	return &datadogStaticSplits
+}
+
+func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphWidgetDefinition) (map[string]interface{}, error) {
+	terraformDefinition := map[string]interface{}{}
+	// Required params
+	if v, ok := datadogDefinition.GetSourceWidgetDefinitionOk(); ok {
+		terraformSourceWidgetDefinition, err := buildTerraformSourceWidgetDefinition(v)
+		if err != nil {
+			return nil, err
+		}
+		terraformDefinition["source_widget_definition"] = []map[string]interface{}{terraformSourceWidgetDefinition}
+	}
+	if v, ok := datadogDefinition.GetSizeOk(); ok {
+		terraformDefinition["size"] = v
+	}
+	if v, ok := datadogDefinition.GetSplitConfigOk(); ok {
+		terraformDefinition["split_config"] = []map[string]interface{}{*buildTerraformSplitConfig(v)}
+	}
+	// Optional params
+	if v, ok := datadogDefinition.GetHasUniformYAxesOk(); ok {
+		terraformDefinition["has_uniform_y_axes"] = *v
+	}
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = *v
+	}
+	if v, ok := datadogDefinition.GetTimeOk(); ok {
+		terraformDefinition["live_span"] = v.GetLiveSpan()
+	}
+
+	return terraformDefinition, nil
+}
+
+func buildTerraformPowerpackDefinition(datadogDefinition *datadogV1.PowerpackWidgetDefinition) (map[string]interface{}, error) {
+	terraformDefinition := map[string]interface{}{}
+	// Required params: powerpack_id
+	if v, ok := datadogDefinition.GetPowerpackIdOk(); ok {
+		terraformDefinition["powerpack_id"] = v
+	}
+	if v, ok := datadogDefinition.GetBackgroundColorOk(); ok {
+		terraformDefinition["background_color"] = v
+	}
+	if v, ok := datadogDefinition.GetBannerImgOk(); ok {
+		terraformDefinition["banner_img"] = v
+	}
+	if v, ok := datadogDefinition.GetShowTitleOk(); ok {
+		terraformDefinition["show_title"] = v
+	}
+	if v, ok := datadogDefinition.GetTitleOk(); ok {
+		terraformDefinition["title"] = v
+	}
+	if templateVariables, ok := datadogDefinition.GetTemplateVariablesOk(); ok {
+		terraformTemplateVariables := make([]map[string]interface{}, 1)
+		terraformTemplateVariable := map[string]interface{}{}
+
+		if ddControlledByPowerpack, ok := templateVariables.GetControlledByPowerpackOk(); ok {
+			controlledByPowerpackTVars := buildTerraformPowerpackTVarContents(*ddControlledByPowerpack)
+			terraformTemplateVariable["controlled_by_powerpack"] = controlledByPowerpackTVars
+		}
+		if ddControlledExternally, ok := templateVariables.GetControlledExternallyOk(); ok {
+			controlledExternallyTVars := buildTerraformPowerpackTVarContents(*ddControlledExternally)
+			terraformTemplateVariable["controlled_externally"] = controlledExternallyTVars
+		}
+		terraformTemplateVariables[0] = terraformTemplateVariable
+
+		terraformDefinition["template_variables"] = terraformTemplateVariables
+	}
+
+	return terraformDefinition, nil
+}
+
+func buildTerraformSplitConfig(datadogSplitConfig *datadogV1.SplitConfig) *map[string]interface{} {
+	terraformSplitConfig := map[string]interface{}{}
+
+	if v, ok := datadogSplitConfig.GetSplitDimensionsOk(); ok {
+		datadogSplitDimensions := *v
+		terraformOneGraphPer := map[string]interface{}{}
+
+		terraformOneGraphPer["one_graph_per"] = datadogSplitDimensions[0].OneGraphPer
+		terraformSplitConfig["split_dimensions"] = []map[string]interface{}{terraformOneGraphPer}
+	}
+
+	if v, ok := datadogSplitConfig.GetLimitOk(); ok {
+		terraformSplitConfig["limit"] = *v
+	}
+
+	if datadogSort, ok := datadogSplitConfig.GetSortOk(); ok {
+		terraformSortList := []map[string]interface{}{
+			{
+				"order": datadogSort.Order,
+			},
+		}
+
+		if datadogSortCompute, datadogSortComputeOk := datadogSort.GetComputeOk(); datadogSortComputeOk {
+			terraformSortList[0]["compute"] = []map[string]interface{}{
+				{
+					"aggregation": datadogSortCompute.Aggregation,
+					"metric":      datadogSortCompute.Metric,
+				},
+			}
+		}
+		terraformSplitConfig["sort"] = terraformSortList
+	}
+	if v, ok := datadogSplitConfig.GetStaticSplitsOk(); ok {
+		terraformSplitConfig["static_splits"] = buildTerraformStaticSplits(v)
+	}
+	return &terraformSplitConfig
+}
+
+// Build static splits for terraform from backend format
+func buildTerraformStaticSplits(datadogStaticSplits *[][]datadogV1.SplitVectorEntryItem) *[]interface{} {
+	terraformStaticSplits := make([]interface{}, len(*datadogStaticSplits))
+	for i, staticSplit := range *datadogStaticSplits {
+		terraformSplitVectors := make([]map[string]interface{}, len(staticSplit))
+		for j, splitVector := range staticSplit {
+			terraformSplitVectors[j] = map[string]interface{}{
+				"tag_key":    splitVector.GetTagKey(),
+				"tag_values": splitVector.GetTagValues(),
+			}
+		}
+		terraformStaticSplits[i] = map[string]interface{}{
+			"split_vector": terraformSplitVectors,
+		}
+	}
+	return &terraformStaticSplits
+}
+
+//
 // Run workflow Widget Definition helpers
 //
 
@@ -7759,7 +8808,8 @@ func buildDatadogTreemapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
 				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
 					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-
+				} else if w, ok := query["cloud_cost_query"].([]interface{}); ok && len(w) > 0 {
+					queries[i] = *buildDatadogFormulaAndFunctionCloudCostQuery(w[0].(map[string]interface{}))
 				}
 			}
 			datadogTreemapRequest.SetQueries(queries)
@@ -8448,20 +9498,21 @@ func buildDatadogApmOrLogQuery(terraformQuery map[string]interface{}) *datadogV1
 	if terraformGroupBys, ok := terraformQuery["group_by"].([]interface{}); ok && len(terraformGroupBys) > 0 {
 		datadogGroupBys := make([]datadogV1.LogQueryDefinitionGroupBy, len(terraformGroupBys))
 		for i, g := range terraformGroupBys {
-			groupBy := g.(map[string]interface{})
-			// Facet
-			datadogGroupBy := datadogV1.NewLogQueryDefinitionGroupBy(groupBy["facet"].(string))
-			// Limit
-			if v, ok := groupBy["limit"].(int); ok && v != 0 {
-				datadogGroupBy.SetLimit(int64(v))
-			}
-			// Sort
-			if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
-				if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
-					datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
+			if groupBy, ok := g.(map[string]interface{}); ok {
+				// Facet
+				datadogGroupBy := datadogV1.NewLogQueryDefinitionGroupBy(groupBy["facet"].(string))
+				// Limit
+				if v, ok := groupBy["limit"].(int); ok && v != 0 {
+					datadogGroupBy.SetLimit(int64(v))
 				}
+				// Sort
+				if sortList, ok := groupBy["sort_query"].([]interface{}); ok && len(sortList) > 0 {
+					if sort, ok := sortList[0].(map[string]interface{}); ok && len(sort) > 0 {
+						datadogGroupBy.Sort = buildDatadogGroupBySort(sort)
+					}
+				}
+				datadogGroupBys[i] = *datadogGroupBy
 			}
-			datadogGroupBys[i] = *datadogGroupBy
 		}
 		datadogQuery.SetGroupBy(datadogGroupBys)
 	}
@@ -8490,6 +9541,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 		if terraformEventQueryDefinition != nil {
 			if dataSource, ok := terraformEventQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
+			}
+			if crossOrgUuids, ok := terraformEventQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
 			}
 			if name, ok := terraformEventQueryDefinition.GetNameOk(); ok {
 				terraformQuery["name"] = name
@@ -8561,6 +9615,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformMetricQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformMetricQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if metricQuery, ok := terraformMetricQueryDefinition.GetQueryOk(); ok {
 				terraformQuery["query"] = metricQuery
 			}
@@ -8579,6 +9636,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 		if terraformApmDependencyStatsQueryDefinition != nil {
 			if dataSource, ok := terraformApmDependencyStatsQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
+			}
+			if crossOrgUuids, ok := terraformEventQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
 			}
 			if env, ok := terraformApmDependencyStatsQueryDefinition.GetEnvOk(); ok {
 				terraformQuery["env"] = env
@@ -8654,6 +9714,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformProcessqueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformProcessqueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if metric, ok := terraformProcessqueryDefinition.GetMetricOk(); ok {
 				terraformQuery["metric"] = metric
 			}
@@ -8688,6 +9751,9 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			if dataSource, ok := terraformSLOQueryDefinition.GetDataSourceOk(); ok {
 				terraformQuery["data_source"] = dataSource
 			}
+			if crossOrgUuids, ok := terraformSLOQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
 			if measure, ok := terraformSLOQueryDefinition.GetMeasureOk(); ok {
 				terraformQuery["measure"] = measure
 			}
@@ -8710,6 +9776,28 @@ func buildTerraformQuery(datadogQueries *[]datadogV1.FormulaAndFunctionQueryDefi
 			terraformSLOQuery := map[string]interface{}{}
 			terraformSLOQuery["slo_query"] = terraformQueries
 			queries[i] = terraformSLOQuery
+		}
+		terraformCloudCostQueryDefinition := query.FormulaAndFunctionCloudCostQueryDefinition
+		if terraformCloudCostQueryDefinition != nil {
+			if dataSource, ok := terraformCloudCostQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if crossOrgUuids, ok := terraformCloudCostQueryDefinition.GetCrossOrgUuidsOk(); ok {
+				terraformQuery["cross_org_uuids"] = crossOrgUuids
+			}
+			if aggregator, ok := terraformCloudCostQueryDefinition.GetAggregatorOk(); ok {
+				terraformQuery["aggregator"] = aggregator
+			}
+			if name, ok := terraformCloudCostQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if query, ok := terraformCloudCostQueryDefinition.GetQueryOk(); ok {
+				terraformQuery["query"] = query
+			}
+			terraformQueries := []map[string]interface{}{terraformQuery}
+			terraformCloudCostQuery := map[string]interface{}{}
+			terraformCloudCostQuery["cloud_cost_query"] = terraformQueries
+			queries[i] = terraformCloudCostQuery
 		}
 	}
 	return queries

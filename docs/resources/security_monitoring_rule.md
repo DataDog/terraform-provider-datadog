@@ -54,20 +54,22 @@ resource "datadog_security_monitoring_rule" "myrule" {
 
 ### Required
 
-- `case` (Block List, Min: 1, Max: 10) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
 - `message` (String) Message for generated signals.
 - `name` (String) The name of the rule.
 
 ### Optional
 
-- `enabled` (Boolean) Whether the rule is enabled.
-- `filter` (Block List) Additional queries to filter matched events before they are processed. (see [below for nested schema](#nestedblock--filter))
-- `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title.
+- `case` (Block List, Max: 10) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
+- `enabled` (Boolean) Whether the rule is enabled. Defaults to `true`.
+- `filter` (Block List) Additional queries to filter matched events before they are processed. **Note**: This field is deprecated for log detection, signal correlation, and workload security rules. (see [below for nested schema](#nestedblock--filter))
+- `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title. Defaults to `false`.
 - `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
 - `tags` (Set of String) Tags for generated signals.
-- `type` (String) The rule type. Valid values are `log_detection`, `workload_security`, `signal_correlation`.
+- `third_party_case` (Block List, Max: 10) Cases for generating signals for third-party rules. Only required and accepted for third-party rules (see [below for nested schema](#nestedblock--third_party_case))
+- `type` (String) The rule type. Valid values are `application_security`, `log_detection`, `workload_security`, `signal_correlation`. Defaults to `"log_detection"`.
+- `validate` (Boolean) Whether or not to validate the Rule.
 
 ### Read-Only
 
@@ -99,25 +101,23 @@ Required:
 <a id="nestedblock--options"></a>
 ### Nested Schema for `options`
 
-Required:
-
-- `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`.
-- `max_signal_duration` (Number) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
-
 Optional:
 
-- `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`.
-- `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`, `third_party`.
+- `decrease_criticality_based_on_env` (Boolean) If true, signals in non-production environments have a lower severity than what is defined by the rule case, which can reduce noise. The decrement is applied when the environment tag of the signal starts with `staging`, `test`, or `dev`. Only available when the rule type is `log_detection`. Defaults to `false`.
+- `detection_method` (String) The detection method. Valid values are `threshold`, `new_value`, `anomaly_detection`, `impossible_travel`, `hardcoded`, `third_party`, `anomaly_threshold`. Defaults to `"threshold"`.
 - `evaluation_window` (Number) A time window is specified to match when at least one of the cases matches true. This is a sliding window and evaluates in real time. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`.
 - `impossible_travel_options` (Block List, Max: 1) Options for rules using the impossible travel detection method. (see [below for nested schema](#nestedblock--options--impossible_travel_options))
+- `keep_alive` (Number) Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds). Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`.
+- `max_signal_duration` (Number) A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp. Valid values are `0`, `60`, `300`, `600`, `900`, `1800`, `3600`, `7200`, `10800`, `21600`, `43200`, `86400`.
 - `new_value_options` (Block List, Max: 1) New value rules specific options. (see [below for nested schema](#nestedblock--options--new_value_options))
+- `third_party_rule_options` (Block List, Max: 1) Options for rules using the third-party detection method. (see [below for nested schema](#nestedblock--options--third_party_rule_options))
 
 <a id="nestedblock--options--impossible_travel_options"></a>
 ### Nested Schema for `options.impossible_travel_options`
 
 Optional:
 
-- `baseline_user_locations` (Boolean) If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.
+- `baseline_user_locations` (Boolean) If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access. Defaults to `false`.
 
 
 <a id="nestedblock--options--new_value_options"></a>
@@ -129,9 +129,35 @@ Required:
 
 Optional:
 
-- `learning_duration` (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`.
-- `learning_method` (String) The learning method used to determine when signals should be generated for values that weren't learned. Valid values are `duration`, `threshold`.
-- `learning_threshold` (Number) A number of occurrences after which signals are generated for values that weren't learned. Valid values are `0`, `1`.
+- `learning_duration` (Number) The duration in days during which values are learned, and after which signals will be generated for values that weren't learned. If set to 0, a signal will be generated for all new values after the first value is learned. Valid values are `0`, `1`, `7`. Defaults to `1`.
+- `learning_method` (String) The learning method used to determine when signals should be generated for values that weren't learned. Valid values are `duration`, `threshold`. Defaults to `"duration"`.
+- `learning_threshold` (Number) A number of occurrences after which signals are generated for values that weren't learned. Valid values are `0`, `1`. Defaults to `0`.
+
+
+<a id="nestedblock--options--third_party_rule_options"></a>
+### Nested Schema for `options.third_party_rule_options`
+
+Required:
+
+- `default_status` (String) Severity of the default rule case, when none of the third-party cases match. Valid values are `info`, `low`, `medium`, `high`, `critical`.
+- `root_query` (Block List, Min: 1, Max: 10) Queries to be combined with third-party case queries. Each of them can have different group by fields, to aggregate differently based on the type of alert. (see [below for nested schema](#nestedblock--options--third_party_rule_options--root_query))
+
+Optional:
+
+- `default_notifications` (List of String) Notification targets for the default rule case, when none of the third-party cases match.
+- `signal_title_template` (String) A template for the signal title; if omitted, the title is generated based on the case name.
+
+<a id="nestedblock--options--third_party_rule_options--root_query"></a>
+### Nested Schema for `options.third_party_rule_options.root_query`
+
+Required:
+
+- `query` (String) Query to filter logs.
+
+Optional:
+
+- `group_by_fields` (List of String) Fields to group by. If empty, each log triggers a signal.
+
 
 
 
@@ -145,7 +171,7 @@ Required:
 Optional:
 
 - `agent_rule` (Block List, Deprecated) **Deprecated**. It won't be applied anymore. **Deprecated.** `agent_rule` has been deprecated in favor of new Agent Rule resource. (see [below for nested schema](#nestedblock--query--agent_rule))
-- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`.
+- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`. Defaults to `"count"`.
 - `distinct_fields` (List of String) Field for which the cardinality is measured. Sent as an array.
 - `group_by_fields` (List of String) Fields to group by.
 - `metric` (String, Deprecated) The target field to aggregate over when using the `sum`, `max`, or `geo_data` aggregations. **Deprecated.** Configure `metrics` instead. This attribute will be removed in the next major version of the provider.
@@ -171,11 +197,25 @@ Required:
 
 Optional:
 
-- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`.
+- `aggregation` (String) The aggregation type. For Signal Correlation rules, it must be event_count. Valid values are `count`, `cardinality`, `sum`, `max`, `new_value`, `geo_data`, `event_count`, `none`. Defaults to `"event_count"`.
 - `correlated_by_fields` (List of String) Fields to correlate by.
-- `correlated_query_index` (String) Index of the rule query used to retrieve the correlated field. An empty string applies correlation on the non-projected per query attributes of the rule.
+- `correlated_query_index` (String) Index of the rule query used to retrieve the correlated field. An empty string applies correlation on the non-projected per query attributes of the rule. Defaults to `""`.
 - `default_rule_id` (String) Default Rule ID of the signal to correlate. This value is READ-ONLY.
 - `name` (String) Name of the query. Not compatible with `new_value` aggregations.
+
+
+<a id="nestedblock--third_party_case"></a>
+### Nested Schema for `third_party_case`
+
+Required:
+
+- `status` (String) Severity of the Security Signal. Valid values are `info`, `low`, `medium`, `high`, `critical`.
+
+Optional:
+
+- `name` (String) Name of the case.
+- `notifications` (List of String) Notification targets for each rule case.
+- `query` (String) A query to associate a third-party event to this case.
 
 ## Import
 

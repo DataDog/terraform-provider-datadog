@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/logs/config/metrics
     method: POST
+    id: 0
   response:
     body: |
       {"data":{"attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"path":"@duration","include_percentiles":false,"aggregation_type":"distribution"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetric_Basic_local_1669398854"}}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1669398854
     method: GET
+    id: 1
   response:
     body: |
       {"data":{"attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"path":"@duration","include_percentiles":false,"aggregation_type":"distribution"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetric_Basic_local_1669398854"}}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1669398854
     method: GET
+    id: 2
   response:
     body: |
       {"data":{"attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"path":"@duration","include_percentiles":false,"aggregation_type":"distribution"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetric_Basic_local_1669398854"}}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1669398854
     method: GET
+    id: 3
   response:
     body: |
       {"data":{"attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"path":"@duration","include_percentiles":false,"aggregation_type":"distribution"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetric_Basic_local_1669398854"}}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: |
       {"data":{"attributes":{"compute":{"include_percentiles":true},"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}]},"type":"logs_metrics"}}
@@ -83,6 +86,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1669398854
     method: PATCH
+    id: 4
   response:
     body: |
       {"data":{"attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"path":"@duration","include_percentiles":true,"aggregation_type":"distribution"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetric_Basic_local_1669398854"}}
@@ -91,7 +95,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -100,6 +104,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1669398854
     method: GET
+    id: 5
   response:
     body: |
       {"data":{"attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"path":"@duration","include_percentiles":true,"aggregation_type":"distribution"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetric_Basic_local_1669398854"}}
@@ -108,7 +113,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -117,6 +122,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1669398854
     method: GET
+    id: 6
   response:
     body: |
       {"data":{"attributes":{"filter":{"query":"service:test"},"group_by":[{"path":"@my.status","tag_name":"status"},{"path":"service","tag_name":"service"}],"compute":{"path":"@duration","include_percentiles":true,"aggregation_type":"distribution"}},"type":"logs_metrics","id":"tf_TestAccDatadogLogsMetric_Basic_local_1669398854"}}
@@ -125,7 +131,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -134,6 +140,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1669398854
     method: DELETE
+    id: 7
   response:
     body: |
       {}
@@ -142,7 +149,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -151,6 +158,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/logs/config/metrics/tf_TestAccDatadogLogsMetric_Basic_local_1669398854
     method: GET
+    id: 8
   response:
     body: |
       {"errors":["not_found(Metric with name 'tf_TestAccDatadogLogsMetric_Basic_local_1669398854' not found)"]}
@@ -159,4 +167,4 @@ interactions:
       - application/json
     status: 404 Not Found
     code: 404
-    duration: ""
+    duration: "0ms"

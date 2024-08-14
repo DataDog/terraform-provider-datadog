@@ -1,13 +1,18 @@
 package validators
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/hashicorp/go-cty/cty"
+	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -200,4 +205,141 @@ func ValidateDatadogDowntimeTimezone(v interface{}, k string) (ws []string, erro
 		}
 	}
 	return
+}
+
+// ValidateAWSAccountID AWS Account ID must be a string exactly 12 digits long
+// See https://docs.aws.amazon.com/organizations/latest/APIReference/API_Account.html
+func ValidateAWSAccountID(v any, p cty.Path) diag.Diagnostics {
+	value, ok := v.(string)
+	var diags diag.Diagnostics
+	AWSAccountIDRegex := regexp.MustCompile(`^\d{12}$`)
+	AWSIAMAAccessKeyRegex := regexp.MustCompile(`^(AKIA|ASIA)[A-Z0-9]{16,20}`)
+	if ok && AWSIAMAAccessKeyRegex.MatchString(value) {
+		// Help the user with a deprecation warning
+		// Fedramp DD previously required using an IAM access key in place of the AWS account id
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Warning,
+			Summary:  "Deprecated",
+			Detail:   "the provided account ID might be an IAM access key. This behavior is deprecated. Use the AWS account ID instead.",
+		})
+	}
+	if ok && !AWSAccountIDRegex.MatchString(value) {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "Invalid value",
+			Detail:   "account id must be a string containing exactly 12 digits",
+		})
+	}
+	return diags
+}
+
+var _ schema.SchemaValidateDiagFunc = ValidateBasicEmail
+var basicEmailRe = regexp.MustCompile("^[^@]+@[^@]+\\.[^@.]+$")
+
+// ValidateBasicEmail ensures a string looks like an email
+func ValidateBasicEmail(val any, path cty.Path) diag.Diagnostics {
+	str, ok := val.(string)
+	if !ok {
+		return diag.Diagnostics{{
+			Severity:      diag.Error,
+			Summary:       fmt.Sprintf("not a string: %s", val),
+			AttributePath: path,
+		}}
+	}
+	if !basicEmailRe.MatchString(str) {
+		return diag.Diagnostics{{
+			Severity:      diag.Error,
+			Summary:       fmt.Sprintf("not a email: %s", str),
+			AttributePath: path,
+		}}
+	}
+	return nil
+}
+
+type BetweenValidator struct {
+	min float64
+	max float64
+}
+
+func (v BetweenValidator) Description(ctx context.Context) string {
+	return v.MarkdownDescription(ctx)
+}
+
+func (v BetweenValidator) MarkdownDescription(_ context.Context) string {
+	return fmt.Sprintf("value must be between %f and %f", v.min, v.max)
+}
+
+func (v BetweenValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
+	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
+		return
+	}
+
+	value := request.ConfigValue.ValueString()
+
+	fValue, err := strconv.ParseFloat(value, 64)
+
+	if err != nil {
+		response.Diagnostics.AddError(
+			"value must be float",
+			fmt.Sprintf("was %s", value),
+		)
+	}
+
+	if fValue < v.min || fValue > v.max {
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(
+			request.Path,
+			v.Description(ctx),
+			fmt.Sprintf("%f", fValue),
+		))
+	}
+}
+
+func Float64Between(min, max float64) validator.String {
+	if min > max {
+		return nil
+	}
+
+	return BetweenValidator{
+		min: min,
+		max: max,
+	}
+}
+
+func ValidateHttpRequestHeader(v interface{}, k string) (ws []string, errors []error) {
+	value := v.(map[string]interface{})
+	for headerField, headerValue := range value {
+		if !isValidToken(headerField) {
+			errors = append(errors, fmt.Errorf("invalid value for %s (header field must be a valid token)", k))
+			return
+		}
+		headerStringValue, ok := headerValue.(string)
+		if !ok {
+			errors = append(errors, fmt.Errorf("expected type of %s to be string", k))
+			return
+		} else {
+			for _, r := range headerStringValue {
+				if (unicode.IsControl(r) && r != '\t') || (r == '\r' || r == '\n') {
+					errors = append(errors, fmt.Errorf("invalid value for %s (header value must not contain invisible characters)", k))
+					return
+				}
+			}
+		}
+	}
+	return
+}
+
+func isValidToken(token string) bool {
+	for _, r := range token {
+		if !isTokenChar(r) {
+			return false
+		}
+	}
+	return true
+}
+
+func isTokenChar(r rune) bool {
+	if r >= '!' && r <= '~' && !strings.ContainsRune("()<>@,;:\\\"/[]?={} \t", r) {
+		return true
+	}
+	return false
 }

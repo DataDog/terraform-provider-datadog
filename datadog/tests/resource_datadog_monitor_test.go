@@ -64,8 +64,6 @@ func TestAccDatadogMonitor_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "baz"),
@@ -129,8 +127,6 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "baz"),
@@ -144,7 +140,7 @@ func TestAccDatadogMonitorServiceCheck_Basic(t *testing.T) {
 	})
 }
 
-func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
+func TestAccDatadogMonitor_BasicNoTresholdOrPriority(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	monitorName := uniqueEntityName(ctx, t)
@@ -156,7 +152,7 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogMonitorConfigNoThresholds(monitorName),
+				Config: testAccCheckDatadogMonitorConfigNoThresholdsOrPriority(monitorName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMonitorExists(accProvider),
 					resource.TestCheckResourceAttr(
@@ -182,13 +178,13 @@ func TestAccDatadogMonitor_BasicNoTreshold(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "bar:baz"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "foo:bar"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "priority", ""),
 				),
 			},
 		},
@@ -256,8 +252,6 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "baz"),
@@ -313,8 +307,6 @@ func TestAccDatadogMonitor_Updated(t *testing.T) {
 						"datadog_monitor.foo", "include_tags", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "false"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
@@ -408,8 +400,6 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "false"),
-					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "tags.#", "2"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_monitor.foo", "tags.*", "baz"),
@@ -464,11 +454,7 @@ func TestAccDatadogMonitor_UpdatedToRemoveTags(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "require_full_window", "false"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "locked", "true"),
-					resource.TestCheckNoResourceAttr(
-						"datadog_monitor.foo", "tags.#"),
-					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "priority", "0"),
+						"datadog_monitor.foo", "priority", ""),
 				),
 			},
 			{
@@ -837,7 +823,7 @@ func testAccCheckDatadogMonitorDestroy(accProvider func() (*schema.Provider, err
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
 
-		if err := destroyHelper(auth, s, apiInstances); err != nil {
+		if err := destroyMonitorHelper(auth, s, apiInstances); err != nil {
 			return err
 		}
 		return nil
@@ -972,6 +958,47 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogMonitorWithEmptySchedulingOptions(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%[1]s"
+  type = "metric alert"
+  message = "%[1]s"
+  priority = 3
+
+  query = "avg(last_1h):avg:system.load.5{*} > 4"
+
+  monitor_thresholds {
+	critical = "4"
+  }
+
+  scheduling_options {}
+}`, uniq)
+}
+
+func TestAccDatadogMonitor_EmptySchedulingOptions(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithEmptySchedulingOptions(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogMonitor_SchedulingOptionsHourStart(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -1019,6 +1046,113 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
+func TestAccDatadogMonitor_SchedulingOptionsCustomSchedule(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.timezone", "America/New_York"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.start", "2023-11-10T12:31:00"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "metric alert"
+  message = "a message"
+  priority = 3
+
+  query = "avg(last_1h):avg:system.load.5{*} > 0.5"
+
+  monitor_thresholds {
+	critical = "0.5"
+  }
+
+  scheduling_options {
+	custom_schedule {
+		recurrence {
+			rrule = "FREQ=DAILY;INTERVAL=1"
+			timezone = "America/New_York"
+			start = "2023-11-10T12:31:00"
+		}
+	}
+  }
+}`, uniq)
+}
+
+func TestAccDatadogMonitor_SchedulingOptionsCustomScheduleNoStart(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogMonitorWithSchedulingOptionsCustomSchedule(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogMonitorExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.rrule", "FREQ=DAILY;INTERVAL=1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "scheduling_options.0.custom_schedule.0.recurrence.0.timezone", "America/New_York"),
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadogMonitorWithSchedulingOptionsCustomScheduleNoStart(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "metric alert"
+  message = "a message"
+  priority = 3
+  
+  query = "avg(last_1h):avg:system.load.5{*} > 0.5"
+
+  monitor_thresholds {
+	critical = "0.5"
+  }
+
+  scheduling_options {
+	custom_schedule {
+		recurrence {
+			rrule = "FREQ=DAILY;INTERVAL=1"
+			timezone = "America/New_York"
+		}
+	}
+  }
+}`, uniq)
+}
+
 func testAccCheckDatadogMonitorConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
@@ -1047,13 +1181,44 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "baz"]
   notification_preset_name = "hide_query"
 }`, uniq)
 }
 
-func testAccCheckDatadogMonitorConfigNoThresholds(uniq string) string {
+func testAccCheckDatadogMonitorConfigNoTag(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "query alert"
+  message = "some message Notify: @hipchat-channel"
+  escalation_message = "the situation has escalated @pagerduty"
+  priority = 3
+
+  query = "avg(last_1h):avg:aws.ec2.cpu{environment:foo,host:foo} by {host} > 2"
+
+  monitor_thresholds {
+	warning = "1.0"
+	critical = "2.0"
+	warning_recovery = "0.5"
+	critical_recovery = "1.5"
+  }
+
+  renotify_interval = 60
+  renotify_occurrences = 5
+  renotify_statuses = ["alert", "warn"]
+
+  notify_audit = false
+  timeout_h = 1
+  new_group_delay = 500
+  evaluation_delay = 700
+  include_tags = true
+  require_full_window = true
+  notification_preset_name = "hide_query"
+}`, uniq)
+}
+
+func testAccCheckDatadogMonitorConfigNoThresholdsOrPriority(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_monitor" "foo" {
   name = "%s"
@@ -1072,7 +1237,6 @@ resource "datadog_monitor" "foo" {
   timeout_h = 1
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "bar:baz"]
 }`, uniq)
 }
@@ -1105,7 +1269,6 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "baz"]
 }`, uniq)
 }
@@ -1136,7 +1299,6 @@ resource "datadog_monitor" "foo" {
   timeout_h           = 1
   include_tags        = true
   require_full_window = true
-  locked              = false
 
   tags = ["foo:bar", "baz"]
 }`, uniq)
@@ -1168,7 +1330,6 @@ resource "datadog_monitor" "foo" {
   timeout_h           = 1
   include_tags        = true
   require_full_window = true
-  locked              = false
 
   tags = ["foo:bar", "baz"]
 }`, uniq)
@@ -1202,7 +1363,6 @@ resource "datadog_monitor" "foo" {
   timeout_h = 10
   include_tags = false
   require_full_window = false
-  locked = true
   tags = ["baz:qux", "quux"]
   notification_preset_name = "show_all"
 }`, uniq)
@@ -1235,7 +1395,6 @@ resource "datadog_monitor" "foo" {
   timeout_h = 10
   include_tags = false
   require_full_window = false
-  locked = true
   notification_preset_name = "show_all"
 }`, uniq)
 }
@@ -1322,7 +1481,6 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "baz"]
   enable_logs_sample = true
   groupby_simple_monitor = true
@@ -1356,7 +1514,6 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["foo:bar", "baz"]
   enable_logs_sample = true
   notify_by = ["status"]
@@ -1568,9 +1725,13 @@ resource "datadog_monitor" "foo" {
 }`, uniq)
 }
 
-func destroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
-	err := utils.Retry(2, 10, func() error {
-		for _, r := range s.RootModule().Resources {
+func destroyMonitorHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_monitor" {
+			continue
+		}
+
+		err := utils.Retry(2, 10, func() error {
 			i, _ := strconv.ParseInt(r.Primary.ID, 10, 64)
 			_, httpresp, err := apiInstances.GetMonitorsApiV1().GetMonitor(ctx, i)
 			if err != nil {
@@ -1580,10 +1741,13 @@ func destroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.
 				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Monitor %s", err)}
 			}
 			return &utils.RetryableError{Prob: "Monitor still exists"}
+		})
+		if err != nil {
+			return err
 		}
-		return nil
-	})
-	return err
+	}
+
+	return nil
 }
 
 func existsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
@@ -1598,4 +1762,98 @@ func existsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.A
 		}
 	}
 	return nil
+}
+
+func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // New tags are correctly added
+				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags
+				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo": "not_bar",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
+				),
+			},
+			{ // Resource tags take precedence over default tags, but new tags are added
+				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"foo":     "not_bar",
+						"new_tag": "new_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "new_tag:new_value"),
+				),
+			},
+			{ // Tags without any value work correctly
+				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"no_value": "",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "no_value"),
+				),
+			},
+			{ // Works with monitors without a tag attribute
+				Config: testAccCheckDatadogMonitorConfigNoTag(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "default_key:default_value"),
+				),
+			},
+		},
+	})
 }

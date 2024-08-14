@@ -2,6 +2,8 @@ package datadog
 
 import (
 	"context"
+	"fmt"
+	"os"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
@@ -19,8 +21,9 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 		ReadContext:   resourceDatadogIntegrationPagerdutySORead,
 		UpdateContext: resourceDatadogIntegrationPagerdutySOUpdate,
 		DeleteContext: resourceDatadogIntegrationPagerdutySODelete,
-		// since the API never returns service_key, it's impossible to meaningfully import resources
-		Importer: nil,
+		Importer: &schema.ResourceImporter{
+			StateContext: resourceDatadogIntegrationPagerdutySOImport,
+		},
 
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
@@ -31,7 +34,7 @@ func resourceDatadogIntegrationPagerdutySO() *schema.Resource {
 					ForceNew:    true,
 				},
 				"service_key": {
-					Description: "Your Service name associated service key in PagerDuty. Note: Since the Datadog API never returns service keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html) to have it destroyed and recreated.",
+					Description: "Your Service name associated service key in PagerDuty. This key may also be referred to as an Integration Key or Routing Key in the Pagerduty Integration [documentation](https://www.pagerduty.com/docs/guides/datadog-integration-guide/), UI, and within the [Pagerduty Provider for Terraform](https://registry.terraform.io/providers/PagerDuty/pagerduty/latest/docs/resources/service_integration#integration_key) Note: Since the Datadog API never returns service keys, it is impossible to detect [drifts](https://www.hashicorp.com/blog/detecting-and-managing-drift-with-terraform). The best way to solve a drift is to manually mark the Service Object resource with [terraform taint](https://www.terraform.io/docs/commands/taint.html) to have it destroyed and recreated.",
 					Type:        schema.TypeString,
 					Required:    true,
 					Sensitive:   true,
@@ -136,4 +139,19 @@ func resourceDatadogIntegrationPagerdutySODelete(ctx context.Context, d *schema.
 	}
 
 	return nil
+}
+
+func resourceDatadogIntegrationPagerdutySOImport(ctx context.Context, d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	originalId := d.Id()
+	if diagErr := resourceDatadogIntegrationPagerdutySORead(ctx, d, meta); diagErr != nil {
+		return nil, fmt.Errorf(diagErr[0].Summary)
+	}
+
+	// We can assume resource was not found for import when `id` is set to nil in the read step
+	if d.Id() == "" {
+		return nil, fmt.Errorf("error importing pagerduty service object. Resource with id `%s` does not exist", originalId)
+	}
+
+	d.Set("service_key", os.Getenv("SERVICE_KEY"))
+	return []*schema.ResourceData{d}, nil
 }

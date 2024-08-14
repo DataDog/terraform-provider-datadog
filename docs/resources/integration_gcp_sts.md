@@ -15,7 +15,7 @@ Provides a Datadog Integration GCP Sts resource. This can be used to create and 
 ```terraform
 # Create new integration_gcp_sts resource
 
-// Service account should have compute.viewer, monitoring.viewer, and cloudasset.viewer roles.
+// Service account should have compute.viewer, monitoring.viewer, cloudasset.viewer, and browser roles (the browser role is only required in the default project of the service account).
 resource "google_service_account" "datadog_integration" {
   account_id   = "datadogintegration"
   display_name = "Datadog Integration"
@@ -33,7 +33,7 @@ resource "datadog_integration_gcp_sts" "foo" {
   client_email    = google_service_account.datadog_integration.email
   host_filters    = ["filter_one", "filter_two"]
   automute        = true
-  is_cspm_enabled = true
+  is_cspm_enabled = false
 }
 ```
 
@@ -46,9 +46,12 @@ resource "datadog_integration_gcp_sts" "foo" {
 
 ### Optional
 
+- `account_tags` (Set of String) Tags to be associated with GCP metrics and service checks from your account.
 - `automute` (Boolean) Silence monitors for expected GCE instance shutdowns.
 - `host_filters` (Set of String) Your Host Filters.
-- `is_cspm_enabled` (Boolean) When enabled, Datadog performs configuration checks across your Google Cloud environment by continuously scanning every resource.
+- `is_cspm_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.
+- `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account. Defaults to `false`.
+- `resource_collection_enabled` (Boolean) When enabled, Datadog scans for all resources in your GCP environment.
 
 ### Read-Only
 

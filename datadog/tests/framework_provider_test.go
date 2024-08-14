@@ -15,7 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
 	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
@@ -34,11 +33,10 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	//Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 
-	// Temp - enable Downtime v2 which is currently in private beta
-	config.SetUnstableOperationEnabled("v2.CancelDowntime", true)
-	config.SetUnstableOperationEnabled("v2.CreateDowntime", true)
-	config.SetUnstableOperationEnabled("v2.GetDowntime", true)
-	config.SetUnstableOperationEnabled("v2.UpdateDowntime", true)
+	config.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
+	config.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
+	config.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
+	config.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
 
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
@@ -135,7 +133,7 @@ func initHttpClient(ctx context.Context, t *testing.T) (context.Context, *http.C
 	ctx = testSpan(ctx, t)
 	rec := initRecorder(t)
 	httpClient := cleanhttp.DefaultClient()
-	httpClient.Transport = logging.NewTransport("Datadog", rec)
+	httpClient.Transport = rec
 	t.Cleanup(func() {
 		rec.Stop()
 	})

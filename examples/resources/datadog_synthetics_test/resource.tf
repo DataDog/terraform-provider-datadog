@@ -190,7 +190,7 @@ resource "datadog_synthetics_test" "test_multi_step" {
 
     request_definition {
       method = "GET"
-      url    = "https://example.org"
+      url    = "https://www.example.org"
     }
 
     request_headers = {
@@ -215,6 +215,66 @@ resource "datadog_synthetics_test" "test_multi_step" {
     }
   }
 
+  api_step {
+    name    = "A gRPC health check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "healthcheck"
+      service   = "greeter.Greeter"
+    }
+  }
+
+  api_step {
+    name    = "A gRPC behavior check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "unary"
+      service   = "greeter.Greeter"
+      method    = "SayHello"
+      message   = "{\"name\": \"John\"}"
+
+      plain_proto_file = <<EOT
+syntax = "proto3";
+
+package greeter;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+EOT      
+    }
+  }
+
   options_list {
     tick_every         = 900
     accept_self_signed = true
@@ -235,7 +295,7 @@ resource "datadog_synthetics_test" "test_browser" {
 
   request_definition {
     method = "GET"
-    url    = "https://app.datadoghq.com"
+    url    = "https://www.example.org"
   }
 
   browser_step {
@@ -244,6 +304,31 @@ resource "datadog_synthetics_test" "test_browser" {
     params {
       check = "contains"
       value = "datadoghq"
+    }
+  }
+
+  browser_step {
+    name = "Test a downloaded file"
+    type = "assertFileDownload"
+    params {
+      file = jsonencode(
+        {
+          md5 = "abcdef1234567890" // MD5 hash of the file
+          sizeCheck = {
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
+          }
+          nameCheck = {
+            type = "contains" // "contains", "equals", "isEmpty", "matchRegex", 
+            // "notContains", "notIsEmpty", "notEquals", 
+            // "notStartsWith", "startsWith"
+            value = ".xls"
+          }
+        }
+      )
     }
   }
 
@@ -269,5 +354,117 @@ resource "datadog_synthetics_test" "test_browser" {
 
   options_list {
     tick_every = 3600
+  }
+}
+
+# Example Usage (GRPC API behavior check test)
+# Create a new Datadog GRPC API test calling host example.org on port 443
+# targeting service `greeter.Greeter` with the method `SayHello`
+# and the message {"name": "John"}
+resource "datadog_synthetics_test" "test_grpc_unary" {
+  name      = "GRPC API behavior check test"
+  type      = "api"
+  subtype   = "grpc"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host      = "example.org"
+    port      = 443
+    call_type = "unary"
+    service   = "greeter.Greeter"
+    method    = "SayHello"
+    message   = "{\"name\": \"John\"}"
+
+    plain_proto_file = <<EOT
+syntax = "proto3";
+
+package greeter;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+EOT
+  }
+
+  request_metadata = {
+    header = "value"
+  }
+
+  assertion {
+    type     = "responseTime"
+    operator = "lessThan"
+    target   = "2000"
+  }
+
+  assertion {
+    operator = "is"
+    type     = "grpcHealthcheckStatus"
+    target   = 1
+  }
+
+  assertion {
+    operator = "is"
+    type     = "grpcProto"
+    target   = "proto target"
+  }
+
+  assertion {
+    operator = "is"
+    property = "property"
+    type     = "grpcMetadata"
+    target   = "123"
+  }
+
+  options_list {
+    tick_every = 900
+  }
+}
+
+# Example Usage (GRPC API health check test)
+# Create a new Datadog GRPC API test calling host example.org on port 443
+# testing the overall health of the service
+resource "datadog_synthetics_test" "test_grpc_health" {
+  name      = "GRPC API health check test"
+  type      = "api"
+  subtype   = "grpc"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host      = "example.org"
+    port      = 443
+    call_type = "healthcheck"
+    service   = "greeter.Greeter"
+  }
+
+  assertion {
+    type     = "responseTime"
+    operator = "lessThan"
+    target   = "2000"
+  }
+
+  assertion {
+    operator = "is"
+    type     = "grpcHealthcheckStatus"
+    target   = 1
+  }
+
+  options_list {
+    tick_every = 900
   }
 }

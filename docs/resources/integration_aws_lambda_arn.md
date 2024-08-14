@@ -5,6 +5,8 @@ subcategory: ""
 description: |-
   Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the log collection Lambdas for an account.
   Update operations are currently not supported with datadog API so any change forces a new resource.
+  Note: If you are using AWS GovCloud or the AWS China* region, update the lambda_arn parameter for your environment.
+  *All use of Datadog Services in (or in connection with environments within) mainland China is subject to the disclaimer published in the Restricted Service Locations section on our website.
 ---
 
 # datadog_integration_aws_lambda_arn (Resource)
@@ -12,6 +14,10 @@ description: |-
 Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the log collection Lambdas for an account.
 
 Update operations are currently not supported with datadog API so any change forces a new resource.
+
+**Note**: If you are using AWS GovCloud or the AWS China* region, update the `lambda_arn` parameter for your environment.
+
+ *\*All use of Datadog Services in (or in connection with environments within) mainland China is subject to the disclaimer published in the <a href="https://www.datadoghq.com/legal/restricted-service-locations/">Restricted Service Locations</a> section on our website.*
 
 ## Example Usage
 
@@ -28,7 +34,7 @@ resource "datadog_integration_aws_lambda_arn" "main_collector" {
 
 ### Required
 
-- `account_id` (String) Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.
+- `account_id` (String) Your AWS Account ID without dashes.
 - `lambda_arn` (String) The ARN of the Datadog forwarder Lambda.
 
 ### Read-Only

@@ -6,6 +6,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -13,7 +14,7 @@ import (
 
 func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog SensitiveDataScannerRule resource. This can be used to create and manage Datadog sensitive_data_scanner_rule.",
+		Description:   "Provides a Datadog SensitiveDataScannerRule resource. This can be used to create and manage Datadog sensitive_data_scanner_rule. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying the `included_keyword_configuration` field to avoid unexpectedly disabling Sensitive Data Scanner groups.",
 		ReadContext:   resourceDatadogSensitiveDataScannerRuleRead,
 		CreateContext: resourceDatadogSensitiveDataScannerRuleCreate,
 		UpdateContext: resourceDatadogSensitiveDataScannerRuleUpdate,
@@ -74,6 +75,29 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 					Description: "List of tags.",
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
+				"included_keyword_configuration": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    1,
+					ForceNew:    true, // If the attribute is removed, we need to recreate the rule.
+					Description: "Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying this field to avoid unexpectedly disabling Sensitive Data Scanner groups.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"keywords": {
+								Type:        schema.TypeList,
+								Required:    true,
+								Description: "Keyword list that is checked during scanning in order to validate a match. The number of keywords in the list must be lower than or equal to 30.",
+								MaxItems:    30,
+								Elem:        &schema.Schema{Type: schema.TypeString},
+							},
+							"character_count": {
+								Type:        schema.TypeInt,
+								Required:    true,
+								Description: "Number of characters before the match to find a keyword validating the match. It must be between 1 and 50 (inclusive).",
+							},
+						},
+					},
+				},
 				"text_replacement": {
 					Type:        schema.TypeList,
 					Optional:    true,
@@ -108,6 +132,13 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 							},
 						},
 					},
+				},
+				"priority": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					Computed:     true,
+					Description:  "Priority level of the rule (optional). Used to order sensitive data discovered in the sds summary page. It must be between 1 and 5 (1 being the most important).",
+					ValidateFunc: validation.IntBetween(1, 5),
 				},
 			}
 		},
@@ -272,6 +303,26 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 
 	attributes.SetTextReplacement(textReplacement)
 
+	if _, ok := d.GetOk("included_keyword_configuration"); ok {
+		var includedKeywordConfiguration datadogV2.SensitiveDataScannerIncludedKeywordConfiguration
+
+		keywords := []string{}
+		for _, kw := range d.Get("included_keyword_configuration.0.keywords").([]interface{}) {
+			keywords = append(keywords, kw.(string))
+		}
+		includedKeywordConfiguration.SetKeywords(keywords)
+
+		if characterCount, ok := d.GetOk("included_keyword_configuration.0.character_count"); ok {
+			includedKeywordConfiguration.SetCharacterCount(int64(characterCount.(int)))
+		}
+
+		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
+	}
+
+	if priority, ok := d.GetOk("priority"); ok {
+		attributes.SetPriority(int64(priority.(int)))
+	}
+
 	return attributes
 }
 
@@ -365,6 +416,27 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 			return diag.FromErr(err)
 		}
 	}
+
+	if incKw, ok := ruleAttributes.GetIncludedKeywordConfigurationOk(); ok && incKw != nil {
+		includedKeywordConfig := make(map[string]interface{})
+		includedKeywordConfigList := make([]map[string]interface{}, 0, 1)
+
+		if keywords, ok := incKw.GetKeywordsOk(); ok {
+			includedKeywordConfig["keywords"] = keywords
+		}
+		if characterCount, ok := incKw.GetCharacterCountOk(); ok {
+			includedKeywordConfig["character_count"] = characterCount
+		}
+		includedKeywordConfigList = append(includedKeywordConfigList, includedKeywordConfig)
+		if err := d.Set("included_keyword_configuration", includedKeywordConfigList); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	if err := d.Set("priority", ruleAttributes.GetPriority()); err != nil {
+		return diag.FromErr(err)
+	}
+
 	return nil
 }
 

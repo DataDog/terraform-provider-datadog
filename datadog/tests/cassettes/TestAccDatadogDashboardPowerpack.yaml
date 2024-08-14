@@ -1,0 +1,112 @@
+version: 2
+interactions:
+- request:
+    body: |
+      {"description":"Created using the Datadog provider in Terraform","id":"","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardPowerpack-local-1702081275","widgets":[{"definition":{"background_color":"blue","banner_img":"https://imgix.datadoghq.com/img/about/presskit/logo-v/dd_vertical_white.png","powerpack_id":"3c3096da-7cec-11ee-9b6f-da7ad0900002","show_title":true,"template_variables":{"controlled_by_powerpack":[{"name":"var","prefix":"pre","values":["default","values","here"]}],"controlled_externally":[{"name":"test","prefix":"dc","values":["test"]}]},"title":"Powerpack Widget Test","type":"powerpack"}}]}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard
+    method: POST
+    id: 0
+  response:
+    body: |
+      {"id":"bhn-4re-qu4","title":"tf-TestAccDatadogDashboardPowerpack-local-1702081275","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/bhn-4re-qu4/tf-testaccdatadogdashboardpowerpack-local-1702081275","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"background_color":"blue","banner_img":"https://imgix.datadoghq.com/img/about/presskit/logo-v/dd_vertical_white.png","powerpack_id":"3c3096da-7cec-11ee-9b6f-da7ad0900002","show_title":true,"template_variables":{"controlled_by_powerpack":[{"name":"var","prefix":"pre","values":["default","values","here"]}],"controlled_externally":[{"name":"test","prefix":"dc","values":["test"]}]},"title":"Powerpack Widget Test","type":"powerpack"},"id":2753832207327725}],"notify_list":[],"created_at":"2023-12-09T00:21:17.671877+00:00","modified_at":"2023-12-09T00:21:17.671877+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/bhn-4re-qu4
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"id":"bhn-4re-qu4","title":"tf-TestAccDatadogDashboardPowerpack-local-1702081275","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/bhn-4re-qu4/tf-testaccdatadogdashboardpowerpack-local-1702081275","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"background_color":"blue","banner_img":"https://imgix.datadoghq.com/img/about/presskit/logo-v/dd_vertical_white.png","powerpack_id":"3c3096da-7cec-11ee-9b6f-da7ad0900002","show_title":true,"template_variables":{"controlled_by_powerpack":[{"name":"var","prefix":"pre","values":["default","values","here"]}],"controlled_externally":[{"name":"test","prefix":"dc","values":["test"]}]},"title":"Powerpack Widget Test","type":"powerpack"},"id":2753832207327725}],"notify_list":[],"created_at":"2023-12-09T00:21:17.671877+00:00","modified_at":"2023-12-09T00:21:17.671877+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/bhn-4re-qu4
+    method: GET
+    id: 2
+  response:
+    body: |
+      {"id":"bhn-4re-qu4","title":"tf-TestAccDatadogDashboardPowerpack-local-1702081275","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/bhn-4re-qu4/tf-testaccdatadogdashboardpowerpack-local-1702081275","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"background_color":"blue","banner_img":"https://imgix.datadoghq.com/img/about/presskit/logo-v/dd_vertical_white.png","powerpack_id":"3c3096da-7cec-11ee-9b6f-da7ad0900002","show_title":true,"template_variables":{"controlled_by_powerpack":[{"name":"var","prefix":"pre","values":["default","values","here"]}],"controlled_externally":[{"name":"test","prefix":"dc","values":["test"]}]},"title":"Powerpack Widget Test","type":"powerpack"},"id":2753832207327725}],"notify_list":[],"created_at":"2023-12-09T00:21:17.671877+00:00","modified_at":"2023-12-09T00:21:17.671877+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/bhn-4re-qu4
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"id":"bhn-4re-qu4","title":"tf-TestAccDatadogDashboardPowerpack-local-1702081275","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/bhn-4re-qu4/tf-testaccdatadogdashboardpowerpack-local-1702081275","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"background_color":"blue","banner_img":"https://imgix.datadoghq.com/img/about/presskit/logo-v/dd_vertical_white.png","powerpack_id":"3c3096da-7cec-11ee-9b6f-da7ad0900002","show_title":true,"template_variables":{"controlled_by_powerpack":[{"name":"var","prefix":"pre","values":["default","values","here"]}],"controlled_externally":[{"name":"test","prefix":"dc","values":["test"]}]},"title":"Powerpack Widget Test","type":"powerpack"},"id":2753832207327725}],"notify_list":[],"created_at":"2023-12-09T00:21:17.671877+00:00","modified_at":"2023-12-09T00:21:17.671877+00:00","template_variable_presets":[],"tags":[]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/bhn-4re-qu4
+    method: DELETE
+    id: 4
+  response:
+    body: |
+      {"deleted_dashboard_id":"bhn-4re-qu4"}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/dashboard/bhn-4re-qu4
+    method: GET
+    id: 5
+  response:
+    body: '{"errors":["Dashboard with ID bhn-4re-qu4 not found"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 404 Not Found
+    code: 404
+    duration: "0ms"

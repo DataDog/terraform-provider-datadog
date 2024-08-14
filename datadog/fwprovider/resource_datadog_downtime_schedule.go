@@ -80,7 +80,7 @@ func (r *DowntimeScheduleResource) Metadata(_ context.Context, request resource.
 
 func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog DowntimeSchedule resource. This can be used to create and manage Datadog downtimes. **NOTE:** Currently in private beta. To request access, contact Support at support@datadoghq.com.",
+		Description: "Provides a Datadog DowntimeSchedule resource. This can be used to create and manage Datadog downtimes.",
 		Attributes: map[string]schema.Attribute{
 			"display_timezone": schema.StringAttribute{
 				Optional:    true,
@@ -128,8 +128,8 @@ func (r *DowntimeScheduleResource) Schema(_ context.Context, _ resource.SchemaRe
 						ElementType: types.StringType,
 					},
 				},
-				PlanModifiers: []planmodifier.Object{
-					planmodifiers.ObjectRequired(),
+				Validators: []validator.Object{
+					objectvalidator.IsRequired(),
 				},
 			},
 			"one_time_schedule": schema.SingleNestedBlock{
@@ -313,6 +313,7 @@ func (r *DowntimeScheduleResource) updateState(ctx context.Context, state *Downt
 	state.MonitorIdentifier = &MonitorIdentifierModel{}
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierId != nil {
 		state.MonitorIdentifier.DowntimeMonitorIdentifierId = types.Int64Value(attributes.MonitorIdentifier.DowntimeMonitorIdentifierId.MonitorId)
+		state.MonitorIdentifier.DowntimeMonitorIdentifierTags = types.SetNull(types.StringType)
 	}
 	if attributes.MonitorIdentifier.DowntimeMonitorIdentifierTags != nil {
 		monitorTags := attributes.MonitorIdentifier.DowntimeMonitorIdentifierTags.MonitorTags

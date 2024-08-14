@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
@@ -22,11 +23,8 @@ import (
 
 	common "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	ddtesting "github.com/DataDog/dd-sdk-go-testing"
-	"github.com/dnaeon/go-vcr/cassette"
-	"github.com/dnaeon/go-vcr/recorder"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -35,15 +33,19 @@ import (
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/ext"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
+	"gopkg.in/dnaeon/go-vcr.v3/cassette"
+	"gopkg.in/dnaeon/go-vcr.v3/recorder"
 )
 
 type clockContextKey string
 
-const ddTestOrg = "fasjyydbcgwwc2uc"
-const testAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
-const testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
-const testAPIUrlEnvName = "DD_TEST_SITE_URL"
-const testOrgEnvName = "DD_TEST_ORG"
+const (
+	ddTestOrg         = "fasjyydbcgwwc2uc"
+	testAPIKeyEnvName = "DD_TEST_CLIENT_API_KEY"
+	testAPPKeyEnvName = "DD_TEST_CLIENT_APP_KEY"
+	testAPIUrlEnvName = "DD_TEST_SITE_URL"
+	testOrgEnvName    = "DD_TEST_ORG"
+)
 
 var isTestOrgC *bool
 
@@ -51,8 +53,10 @@ var allowedHeaders = map[string]string{"Accept": "", "Content-Type": ""}
 
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_api_key_test":                                 "api_keys",
+	"tests/data_source_datadog_apm_retention_filters_order_test":             "apm_retention_filters_order",
 	"tests/data_source_datadog_application_key_test":                         "application_keys",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test":     "cloud-workload-security",
+	"tests/data_source_datadog_csm_threats_agent_rules_test":                 "cloud-workload-security",
 	"tests/data_source_datadog_dashboard_list_test":                          "dashboard-lists",
 	"tests/data_source_datadog_dashboard_test":                               "dashboard",
 	"tests/data_source_datadog_hosts_test":                                   "hosts",
@@ -68,12 +72,15 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_monitor_test":                                 "monitors",
 	"tests/data_source_datadog_monitors_test":                                "monitors",
 	"tests/data_source_datadog_permissions_test":                             "permissions",
+	"tests/data_source_datadog_powerpack_test":                               "powerpacks",
 	"tests/data_source_datadog_restriction_policy_test":                      "restriction-policy",
 	"tests/data_source_datadog_role_test":                                    "roles",
+	"tests/data_source_datadog_role_users_test":                              "roles",
 	"tests/data_source_datadog_roles_test":                                   "roles",
 	"tests/data_source_datadog_rum_application_test":                         "rum-application",
 	"tests/data_source_datadog_security_monitoring_filters_test":             "security-monitoring",
 	"tests/data_source_datadog_security_monitoring_rules_test":               "security-monitoring",
+	"tests/data_source_datadog_security_monitoring_suppressions_test":        "security-monitoring",
 	"tests/data_source_datadog_sensitive_data_scanner_group_order_test":      "sensitive-data-scanner",
 	"tests/data_source_datadog_sensitive_data_scanner_standard_pattern_test": "sensitive-data-scanner",
 	"tests/data_source_datadog_service_account_test":                         "users",
@@ -85,6 +92,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_team_memberships_test":                        "team",
 	"tests/data_source_datadog_team_test":                                    "team",
 	"tests/data_source_datadog_user_test":                                    "users",
+	"tests/data_source_datadog_users_test":                                   "users",
 	"tests/import_datadog_downtime_test":                                     "downtimes",
 	"tests/import_datadog_integration_pagerduty_test":                        "integration-pagerduty",
 	"tests/import_datadog_logs_pipeline_test":                                "logs-pipelines",
@@ -92,15 +100,19 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/import_datadog_user_test":                                         "users",
 	"tests/provider_test":                                                    "terraform",
 	"tests/resource_datadog_api_key_test":                                    "api_keys",
+	"tests/resource_datadog_apm_retention_filter_test":                       "apm_retention_filter",
+	"tests/resource_datadog_apm_retention_filter_order_test":                 "apm_retention_filter_order",
 	"tests/resource_datadog_application_key_test":                            "application_keys",
 	"tests/resource_datadog_authn_mapping_test":                              "authn_mapping",
 	"tests/resource_datadog_child_organization_test":                         "organization",
 	"tests/resource_datadog_cloud_configuration_rule_test":                   "security-monitoring",
 	"tests/resource_datadog_cloud_workload_security_agent_rule_test":         "cloud_workload_security",
+	"tests/resource_datadog_csm_threats_agent_rule_test":                     "cloud-workload-security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_alert_value_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_change_test":                           "dashboards",
 	"tests/resource_datadog_dashboard_check_status_test":                     "dashboards",
+	"tests/resource_datadog_dashboard_cross_org_test":                        "dashboards",
 	"tests/resource_datadog_dashboard_distribution_test":                     "dashboards",
 	"tests/resource_datadog_dashboard_event_stream_test":                     "dashboards",
 	"tests/resource_datadog_dashboard_event_timeline_test":                   "dashboards",
@@ -117,6 +129,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_log_stream_test":                       "dashboards",
 	"tests/resource_datadog_dashboard_manage_status_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_note_test":                             "dashboards",
+	"tests/resource_datadog_dashboard_powerpack_test":                        "dashboards",
 	"tests/resource_datadog_dashboard_query_table_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_query_value_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_run_workflow_test":                     "dashboards",
@@ -125,6 +138,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_slo_list_test":                         "dashboards",
 	"tests/resource_datadog_dashboard_slo_test":                              "dashboards",
 	"tests/resource_datadog_dashboard_style_test":                            "dashboards",
+	"tests/resource_datadog_dashboard_split_graph_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_sunburst_test":                         "dashboards",
 	"tests/resource_datadog_dashboard_test":                                  "dashboards",
 	"tests/resource_datadog_dashboard_timeseries_test":                       "dashboards",
@@ -132,12 +146,45 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_topology_map_test":                     "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                          "dashboards",
+	"tests/resource_datadog_openapi_api_test":                                "apimanagement",
+	"tests/resource_datadog_powerpack_test":                                  "powerpacks",
+	"tests/resource_datadog_powerpack_alert_graph_test":                      "powerpacks",
+	"tests/resource_datadog_powerpack_alert_value_test":                      "powerpacks",
+	"tests/resource_datadog_powerpack_change_test":                           "powerpacks",
+	"tests/resource_datadog_powerpack_check_status_test":                     "powerpacks",
+	"tests/resource_datadog_powerpack_distribution_test":                     "powerpacks",
+	"tests/resource_datadog_powerpack_event_stream_test":                     "powerpacks",
+	"tests/resource_datadog_powerpack_event_timeline_test":                   "powerpacks",
+	"tests/resource_datadog_powerpack_geomap_test":                           "powerpacks",
+	"tests/resource_datadog_powerpack_iframe_test":                           "powerpacks",
+	"tests/resource_datadog_powerpack_image_test":                            "powerpacks",
+	"tests/resource_datadog_powerpack_free_text_test":                        "powerpacks",
+	"tests/resource_datadog_powerpack_heatmap_test":                          "powerpacks",
+	"tests/resource_datadog_powerpack_hostmap_test":                          "powerpacks",
+	"tests/resource_datadog_powerpack_list_stream_test":                      "powerpacks",
+	"tests/resource_datadog_powerpack_log_stream_test":                       "powerpacks",
+	"tests/resource_datadog_powerpack_manage_status_test":                    "powerpacks",
+	"tests/resource_datadog_powerpack_note_test":                             "powerpacks",
+	"tests/resource_datadog_powerpack_query_table_test":                      "powerpacks",
+	"tests/resource_datadog_powerpack_query_value_test":                      "powerpacks",
+	"tests/resource_datadog_powerpack_run_workflow_test":                     "powerpacks",
+	"tests/resource_datadog_powerpack_scatterplot_test":                      "powerpacks",
+	"tests/resource_datadog_powerpack_servicemap_test":                       "powerpacks",
+	"tests/resource_datadog_powerpack_slo_test":                              "powerpacks",
+	"tests/resource_datadog_powerpack_slo_list_test":                         "powerpacks",
+	"tests/resource_datadog_powerpack_sunburst_test":                         "powerpacks",
+	"tests/resource_datadog_powerpack_timeseries_test":                       "powerpacks",
+	"tests/resource_datadog_powerpack_toplist_test":                          "powerpacks",
+	"tests/resource_datadog_powerpack_topology_map_test":                     "powerpacks",
+	"tests/resource_datadog_powerpack_trace_service_test":                    "powerpacks",
+	"tests/resource_datadog_powerpack_treemap_test":                          "powerpacks",
 	"tests/resource_datadog_downtime_test":                                   "downtimes",
 	"tests/resource_datadog_downtime_schedule_test":                          "downtimes",
 	"tests/resource_datadog_integration_aws_lambda_arn_test":                 "integration-aws",
 	"tests/resource_datadog_integration_aws_log_collection_test":             "integration-aws",
 	"tests/resource_datadog_integration_aws_tag_filter_test":                 "integration-aws",
 	"tests/resource_datadog_integration_aws_test":                            "integration-aws",
+	"tests/resource_datadog_integration_aws_event_bridge_test":               "integration-aws",
 	"tests/resource_datadog_integration_azure_test":                          "integration-azure",
 	"tests/resource_datadog_integration_cloudflare_account_test":             "integration-cloudflare",
 	"tests/resource_datadog_integration_confluent_account_test":              "integration-confluend-account",
@@ -168,6 +215,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_security_monitoring_default_rule_test":           "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_test":                 "security-monitoring",
 	"tests/resource_datadog_security_monitoring_rule_test":                   "security-monitoring",
+	"tests/resource_datadog_security_monitoring_suppression_test":            "security-monitoring",
 	"tests/resource_datadog_sensitive_data_scanner_group_order_test":         "sensitive-data-scanner",
 	"tests/resource_datadog_sensitive_data_scanner_group_test":               "sensitive-data-scanner",
 	"tests/resource_datadog_sensitive_data_scanner_rule_test":                "sensitive-data-scanner",
@@ -183,9 +231,11 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_synthetics_test_test":                            "synthetics",
 	"tests/resource_datadog_team_link_test":                                  "team",
 	"tests/resource_datadog_team_membership_test":                            "team",
+	"tests/resource_datadog_team_permission_setting_test":                    "team",
 	"tests/resource_datadog_team_test":                                       "team",
 	"tests/resource_datadog_timeboard_test":                                  "dashboards",
 	"tests/resource_datadog_user_test":                                       "users",
+	"tests/resource_datadog_user_role_test":                                  "roles",
 	"tests/resource_datadog_webhook_custom_variable_test":                    "webhook_custom_variable",
 	"tests/resource_datadog_webhook_test":                                    "webhook",
 }
@@ -374,13 +424,27 @@ func uniqueAWSAccountID(ctx context.Context, t *testing.T) string {
 	return result[:12]
 }
 
+// uniqueAgentRuleName takes the current/frozen time and uses it to generate a unique agent
+// rule name that changes in CI, but is stable locally.
+func uniqueAgentRuleName(ctx context.Context) string {
+	var seededRand *rand.Rand = rand.New(rand.NewSource(clockFromContext(ctx).Now().Unix()))
+	charset := "abcdefghijklmnopqrstuvwxyz"
+	nameLength := 10
+	var buf bytes.Buffer
+	buf.Grow(nameLength)
+	for i := 0; i < nameLength; i++ {
+		buf.WriteString(string(charset[seededRand.Intn(len(charset))]))
+	}
+	return buf.String()
+}
+
 // uniqueAWSAccessKeyID takes uniqueEntityName result, hashes it to get a unique string
 // and then returns first 16 characters (numerical only), so that the value can be used
 // as AWS account ID and is still as unique as possible, it changes in CI, but is stable locally
 func uniqueAWSAccessKeyID(ctx context.Context, t *testing.T) string {
 	uniq := uniqueEntityName(ctx, t)
 	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniq)))
-	result := ""
+	result := "AKIA"
 	for _, r := range hash {
 		result = fmt.Sprintf("%s%s", result, strconv.Itoa(int(r)))
 	}
@@ -398,30 +462,39 @@ func removeURLSecrets(u *url.URL) *url.URL {
 func initRecorder(t *testing.T) *recorder.Recorder {
 	var mode recorder.Mode
 	if isRecording() {
-		mode = recorder.ModeRecording
+		mode = recorder.ModeRecordOnly
 	} else if isReplaying() {
-		mode = recorder.ModeReplaying
+		mode = recorder.ModeReplayOnly
 	} else {
-		mode = recorder.ModeDisabled
+		mode = recorder.ModePassthrough
 	}
 
-	rec, err := recorder.NewAsMode(fmt.Sprintf("cassettes/%s", t.Name()), mode, nil)
+	opts := &recorder.Options{
+		CassetteName:       fmt.Sprintf("cassettes/%s", t.Name()),
+		Mode:               mode,
+		SkipRequestLatency: true,
+		RealTransport:      http.DefaultTransport,
+	}
+
+	rec, err := recorder.NewWithOptions(opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	rec.SetMatcher(matchInteraction)
 
-	rec.AddFilter(func(i *cassette.Interaction) error {
-		u, err := url.Parse(i.URL)
+	redactHook := func(i *cassette.Interaction) error {
+		u, err := url.Parse(i.Request.URL)
 		if err != nil {
 			return err
 		}
-		i.URL = removeURLSecrets(u).String()
+		i.Request.URL = removeURLSecrets(u).String()
 
 		filterHeaders(i)
 		return nil
-	})
+	}
+	rec.AddHook(redactHook, recorder.AfterCaptureHook)
+
 	return rec
 }
 
@@ -430,12 +503,12 @@ func filterHeaders(i *cassette.Interaction) {
 	requestHeadersCopy := i.Request.Headers.Clone()
 	responseHeadersCopy := i.Response.Headers.Clone()
 
-	for k, _ := range requestHeadersCopy {
+	for k := range requestHeadersCopy {
 		if _, ok := allowedHeaders[k]; !ok {
 			i.Request.Headers.Del(k)
 		}
 	}
-	for k, _ := range responseHeadersCopy {
+	for k := range responseHeadersCopy {
 		if _, ok := allowedHeaders[k]; !ok {
 			i.Response.Headers.Del(k)
 		}
@@ -521,10 +594,10 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 		ctx,
 		common.ContextAPIKeys,
 		map[string]common.APIKey{
-			"apiKeyAuth": common.APIKey{
+			"apiKeyAuth": {
 				Key: apiKey,
 			},
-			"appKeyAuth": common.APIKey{
+			"appKeyAuth": {
 				Key: appKey,
 			},
 		},
@@ -551,7 +624,7 @@ func buildContext(ctx context.Context, apiKey string, appKey string, apiURL stri
 }
 
 func buildDatadogClient(ctx context.Context, httpClient *http.Client) *common.APIClient {
-	//Datadog API config.HTTPClient
+	// Datadog API config.HTTPClient
 	config := common.NewConfiguration()
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
@@ -624,8 +697,7 @@ func testAccProviders(ctx context.Context, t *testing.T) (context.Context, map[s
 	rec := initRecorder(t)
 	ctx = context.WithValue(ctx, clockContextKey("clock"), testClock(t))
 	c := cleanhttp.DefaultClient()
-	loggingTransport := logging.NewTransport("Datadog", rec)
-	c.Transport = loggingTransport
+	c.Transport = rec
 	p := testAccProvidersWithHTTPClient(ctx, t, c)
 	t.Cleanup(func() {
 		rec.Stop()
@@ -642,12 +714,28 @@ func testAccProvider(t *testing.T, accProviders map[string]func() (*schema.Provi
 	return accProvider
 }
 
+func withDefaultTags(providerFactory func() (*schema.Provider, error), defaultTags map[string]interface{}) func() (*schema.Provider, error) {
+	provider, err := providerFactory()
+	newProvider := *provider
+	return func() (*schema.Provider, error) {
+		configureFunc := func(lctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+			config, diags := provider.ConfigureContextFunc(lctx, d)
+			if config != nil {
+				config.(*datadog.ProviderConfiguration).DefaultTags = defaultTags
+			}
+			return config, diags
+		}
+		newProvider.ConfigureContextFunc = configureFunc
+		return &newProvider, err
+	}
+}
+
 func TestProvider(t *testing.T) {
 	rec := initRecorder(t)
 	defer rec.Stop()
 
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewTransport("Datadog", rec)
+	c.Transport = rec
 	accProvider := initAccProvider(context.Background(), t, c)
 
 	if err := accProvider.InternalValidate(); err != nil {
@@ -656,7 +744,7 @@ func TestProvider(t *testing.T) {
 }
 
 func TestProvider_impl(t *testing.T) {
-	var _ = datadog.Provider()
+	_ = datadog.Provider()
 }
 
 func testAccPreCheck(t *testing.T) {
@@ -725,7 +813,7 @@ func testCheckResourceAttrs(name string, checkExists resource.TestCheckFunc, ass
 		} else {
 			funcs = append(funcs, resource.TestCheckResourceAttr(name, key, value))
 			// Use utility method below, instead of the above one, to print out all state keys/values during test debugging
-			//funcs = append(funcs, CheckResourceAttr(name, key, value))
+			// funcs = append(funcs, CheckResourceAttr(name, key, value))
 		}
 	}
 	return funcs

@@ -1,6 +1,6 @@
 # Create new integration_gcp_sts resource
 
-// Service account should have compute.viewer, monitoring.viewer, and cloudasset.viewer roles.
+// Service account should have compute.viewer, monitoring.viewer, cloudasset.viewer, and browser roles (the browser role is only required in the default project of the service account).
 resource "google_service_account" "datadog_integration" {
   account_id   = "datadogintegration"
   display_name = "Datadog Integration"
@@ -18,5 +18,5 @@ resource "datadog_integration_gcp_sts" "foo" {
   client_email    = google_service_account.datadog_integration.email
   host_filters    = ["filter_one", "filter_two"]
   automute        = true
-  is_cspm_enabled = true
+  is_cspm_enabled = false
 }

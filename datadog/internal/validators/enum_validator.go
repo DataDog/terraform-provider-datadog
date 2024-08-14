@@ -16,12 +16,20 @@ func NewEnumValidator[T any](i interface{}) enumValidator[T] {
 	return enumValidator[T]{
 		enumFunc:          i,
 		AllowedEnumValues: allowedValues,
+		enrichSchema:      true,
 	}
+}
+
+func NewEnumValidatorSkipEnrichSchema[T any](i interface{}) enumValidator[T] {
+	validator := NewEnumValidator[T](i)
+	validator.enrichSchema = false
+	return validator
 }
 
 type enumValidator[T any] struct {
 	enumFunc          interface{}
 	AllowedEnumValues interface{}
+	enrichSchema      bool
 }
 
 func (v enumValidator[T]) Description(ctx context.Context) string {

@@ -1,274 +1,573 @@
 ---
-version: 1
+version: 2
 interactions:
-- request:
-    body: |
-      {"automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: POST
-  response:
-    body: '{}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: |
-      {"automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: POST
-  response:
-    body: '{}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: |
-      {"automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"foo:bar,buzz:lightyear","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: DELETE
-  response:
-    body: '{}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: |
-      {"automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"","new_client_id":"testc7f6-1234-5678-9101-3fcbf464test","new_tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: PUT
-  response:
-    body: '{}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054","automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: |
-      {"automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"testingx./Sw*g/Y33t..R1cH+hScMDt","host_filters":"","tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636476054"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: DELETE
-  response:
-    body: '{}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/azure
-    method: GET
-  response:
-    body: '[{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogIntegrationAzure-local-1636473129","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear"},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80208-1636035966","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""},{"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[],"tenant_name":"tf-TestAccDatadogLogsArchiveAzure_basic-80608-1636466533","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":""}]'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 323
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"app_service_plan_filters":"","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"TestingRh2nx664kUy5dIApvM54T4AtO","container_app_filters":"","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"foo:bar,buzz:lightyear","tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 131.657875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 91.765333ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 323
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"app_service_plan_filters":"","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","client_secret":"TestingRh2nx664kUy5dIApvM54T4AtO","container_app_filters":"","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"foo:bar,buzz:lightyear","tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 120.828584ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"3dd09408-5eb7-1ebd-73f9-19e2cef85037","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","container_app_filters":"","app_service_plan_filters":"","host_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","container_app_filters":"","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","container_app_filters":"","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","container_app_filters":"","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","container_app_filters":"","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","container_app_filters":"","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 100.44125ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"3dd09408-5eb7-1ebd-73f9-19e2cef85037","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","host_filters":"","app_service_plan_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 103.376875ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"3dd09408-5eb7-1ebd-73f9-19e2cef85037","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","app_service_plan_filters":"","host_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 100.214709ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"3dd09408-5eb7-1ebd-73f9-19e2cef85037","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","container_app_filters":"","host_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 92.867667ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"3dd09408-5eb7-1ebd-73f9-19e2cef85037","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","app_service_plan_filters":"","host_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 112.441ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"3dd09408-5eb7-1ebd-73f9-19e2cef85037","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","app_service_plan_filters":"","container_app_filters":"","host_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 131.279625ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 358
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"app_service_plan_filters":"","automute":false,"client_id":"testc7f6-1234-5678-9101-3fcbf123test","client_secret":"TestingRh2nx664kUy5dIApvM54T4AtO","container_app_filters":"","cspm_enabled":false,"custom_metrics_enabled":false,"host_filters":"foo:bar,buzz:lightyear","resource_collection_enabled":true,"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 99.509125ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 456
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"app_service_plan_filters":"bar:baz,stinky:pete","automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"TestingRh2nx664kUy5dIApvM54T4AtO","container_app_filters":"bazinga:bazingo,woody:pride","cspm_enabled":true,"custom_metrics_enabled":true,"host_filters":"","new_client_id":"testc7f6-1234-5678-9101-3fcbf464test","new_tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 115.528916ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"3dd09408-5eb7-1ebd-73f9-19e2cef85037","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","app_service_plan_filters":"","container_app_filters":"","host_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"bar:baz,stinky:pete","container_app_filters":"bazinga:bazingo,woody:pride","host_filters":"","automute":true,"cspm_enabled":true,"custom_metrics_enabled":true,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 96.385209ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"3dd09408-5eb7-1ebd-73f9-19e2cef85037","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","app_service_plan_filters":"","host_filters":"","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"bar:baz,stinky:pete","host_filters":"","container_app_filters":"bazinga:bazingo,woody:pride","automute":true,"cspm_enabled":true,"custom_metrics_enabled":true,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 92.3605ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"3dd09408-5eb7-1ebd-73f9-19e2cef85037","client_id":"a75fbdd2-ade6-43d0-a810-4d886c53871e","host_filters":"","container_app_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":[],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"foo:bar,buzz:lightyear","container_app_filters":"","app_service_plan_filters":"","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","host_filters":"","container_app_filters":"bazinga:bazingo,woody:pride","app_service_plan_filters":"bar:baz,stinky:pete","automute":true,"cspm_enabled":true,"custom_metrics_enabled":true,"resource_collection_enabled":true,"errors":[],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 90.48425ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 379
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"app_service_plan_filters":"bar:baz,stinky:pete","automute":true,"client_id":"testc7f6-1234-5678-9101-3fcbf464test","client_secret":"TestingRh2nx664kUy5dIApvM54T4AtO","container_app_filters":"bazinga:bazingo,woody:pride","cspm_enabled":true,"custom_metrics_enabled":true,"host_filters":"","resource_collection_enabled":true,"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721932602ee"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 103.990375ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/azure
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1721390913ee","client_id":"testc7f6-1234-5678-9101-3fcbf123test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]},{"tenant_name":"aaaaaaaa-bbbb-cccc-dddd-1720634274ee","client_id":"testc7f6-1234-5678-9101-3fcbf464test","app_service_plan_filters":"","container_app_filters":"","host_filters":"foo:bar,buzz:lightyear","automute":false,"cspm_enabled":false,"custom_metrics_enabled":false,"resource_collection_enabled":true,"errors":["Invalid credentials. Datadog could not authenticate with Azure."],"warnings":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 72.019209ms

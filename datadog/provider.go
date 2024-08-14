@@ -27,15 +27,12 @@ import (
 func init() {
 	// Set descriptions to support markdown syntax, this will be used in document generation
 	// and the language server.
-	//schema.DescriptionKind = configschema.StringMarkdown
+	// schema.DescriptionKind = configschema.StringMarkdown
 
 	// Customize the content of descriptions when output. For example you can add defaults on
 	// to the exported descriptions if present.
 	schema.SchemaDescriptionBuilder = func(s *schema.Schema) string {
 		desc := s.Description
-		//if s.Default != nil {
-		//	desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
-		//}
 		if s.ValidateDiagFunc != nil {
 			defer func() {
 				recover()
@@ -58,6 +55,15 @@ func init() {
 		}
 		if s.Deprecated != "" {
 			desc = fmt.Sprintf("%s **Deprecated.** %s", desc, s.Deprecated)
+		}
+
+		if s.Default != nil {
+			switch s.Type {
+			case schema.TypeString:
+				desc += fmt.Sprintf(" Defaults to `\"%v\"`.", s.Default)
+			default:
+				desc += fmt.Sprintf(" Defaults to `%v`.", s.Default)
+			}
 		}
 		return strings.TrimSpace(desc)
 	}
@@ -82,7 +88,7 @@ func Provider() *schema.Provider {
 			"api_url": {
 				Type:        schema.TypeString,
 				Optional:    true,
-				Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with \"EU\" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.",
+				Description: "The API URL. This can also be set via the DD_HOST environment variable, and defaults to `https://api.datadoghq.com`. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with \"EU\" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.",
 			},
 			"validate": {
 				Type:         schema.TypeString,
@@ -149,10 +155,25 @@ func Provider() *schema.Provider {
 					return diags
 				},
 			},
+			"default_tags": {
+				Type:        schema.TypeList,
+				Optional:    true,
+				MaxItems:    1,
+				Description: "[Experimental - Monitors only] Configuration block containing settings to apply default resource tags across all resources.",
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"tags": {
+							Type:        schema.TypeMap,
+							Optional:    true,
+							Elem:        &schema.Schema{Type: schema.TypeString},
+							Description: "[Experimental - Monitors only] Resource tags to be applied by default across all resources.",
+						},
+					},
+				},
+			},
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-			"datadog_application_key":                      resourceDatadogApplicationKey(),
 			"datadog_authn_mapping":                        resourceDatadogAuthnMapping(),
 			"datadog_child_organization":                   resourceDatadogChildOrganization(),
 			"datadog_cloud_configuration_rule":             resourceDatadogCloudConfigurationRule(),
@@ -164,13 +185,10 @@ func Provider() *schema.Provider {
 			"datadog_integration_aws_tag_filter":           resourceDatadogIntegrationAwsTagFilter(),
 			"datadog_integration_aws_lambda_arn":           resourceDatadogIntegrationAwsLambdaArn(),
 			"datadog_integration_aws_log_collection":       resourceDatadogIntegrationAwsLogCollection(),
-			"datadog_integration_azure":                    resourceDatadogIntegrationAzure(),
-			"datadog_integration_gcp":                      resourceDatadogIntegrationGcp(),
 			"datadog_integration_opsgenie_service_object":  resourceDatadogIntegrationOpsgenieService(),
 			"datadog_integration_pagerduty":                resourceDatadogIntegrationPagerduty(),
 			"datadog_integration_pagerduty_service_object": resourceDatadogIntegrationPagerdutySO(),
 			"datadog_integration_slack_channel":            resourceDatadogIntegrationSlackChannel(),
-			"datadog_ip_allowlist":                         resourceDatadogIPAllowlist(),
 			"datadog_logs_archive":                         resourceDatadogLogsArchive(),
 			"datadog_logs_archive_order":                   resourceDatadogLogsArchiveOrder(),
 			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
@@ -185,9 +203,8 @@ func Provider() *schema.Provider {
 			"datadog_monitor_config_policy":                resourceDatadogMonitorConfigPolicy(),
 			"datadog_monitor_json":                         resourceDatadogMonitorJSON(),
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
+			"datadog_powerpack":                            resourceDatadogPowerpack(),
 			"datadog_role":                                 resourceDatadogRole(),
-			"datadog_rum_application":                      resourceDatadogRUMApplication(),
-			"datadog_service_account":                      resourceDatadogServiceAccount(),
 			"datadog_security_monitoring_default_rule":     resourceDatadogSecurityMonitoringDefaultRule(),
 			"datadog_security_monitoring_rule":             resourceDatadogSecurityMonitoringRule(),
 			"datadog_security_monitoring_filter":           resourceDatadogSecurityMonitoringFilter(),
@@ -200,12 +217,9 @@ func Provider() *schema.Provider {
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
 			"datadog_user":                                 resourceDatadogUser(),
-			"datadog_webhook":                              resourceDatadogWebhook(),
-			"datadog_webhook_custom_variable":              resourceDatadogWebhookCustomVariable(),
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"datadog_application_key":                         dataSourceDatadogApplicationKey(),
 			"datadog_cloud_workload_security_agent_rules":     dataSourceDatadogCloudWorkloadSecurityAgentRules(),
 			"datadog_dashboard":                               dataSourceDatadogDashboard(),
 			"datadog_integration_aws_logs_services":           dataSourceDatadogIntegrationAWSLogsServices(),
@@ -219,7 +233,6 @@ func Provider() *schema.Provider {
 			"datadog_permissions":                             dataSourceDatadogPermissions(),
 			"datadog_role":                                    dataSourceDatadogRole(),
 			"datadog_roles":                                   dataSourceDatadogRoles(),
-			"datadog_rum_application":                         dataSourceDatadogRUMApplication(),
 			"datadog_security_monitoring_rules":               dataSourceDatadogSecurityMonitoringRules(),
 			"datadog_security_monitoring_filters":             dataSourceDatadogSecurityMonitoringFilters(),
 			"datadog_sensitive_data_scanner_standard_pattern": dataSourceDatadogSensitiveDataScannerStandardPattern(),
@@ -238,10 +251,12 @@ func Provider() *schema.Provider {
 }
 
 // ProviderConfiguration contains the initialized API clients to communicate with the Datadog API
+// as well as global configuration like default tags to apply to all resources.
 type ProviderConfiguration struct {
 	CommunityClient     *datadogCommunity.Client
 	DatadogApiInstances *utils.ApiInstances
 	Auth                context.Context
+	DefaultTags         map[string]interface{}
 
 	Now func() time.Time
 }
@@ -290,7 +305,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 
 	c := cleanhttp.DefaultClient()
-	c.Transport = logging.NewLoggingHTTPTransport(c.Transport)
 	communityClient.ExtraHeader["User-Agent"] = utils.GetUserAgent(fmt.Sprintf(
 		"datadog-api-client-go/%s (go %s; os %s; arch %s)",
 		"go-datadog-api",
@@ -397,6 +411,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		})
 	}
 
+	config.HTTPClient = utils.NewHTTPClient()
 	datadogClient := datadog.NewAPIClient(config)
 	apiInstances := &utils.ApiInstances{HttpClient: datadogClient}
 	if validate {
@@ -417,11 +432,65 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	}
 	log.Printf("[INFO] Datadog Client successfully validated.")
 
-	return &ProviderConfiguration{
+	providerConfig := ProviderConfiguration{
 		CommunityClient:     communityClient,
 		DatadogApiInstances: apiInstances,
 		Auth:                auth,
 
 		Now: time.Now,
-	}, nil
+	}
+	if v, ok := d.GetOk("default_tags"); ok && len(v.([]interface{})) > 0 && v.([]interface{})[0] != nil {
+		tagConfig := v.([]interface{})[0].(map[string]interface{})
+		tags, ok := tagConfig["tags"]
+		if ok {
+			providerConfig.DefaultTags = tags.(map[string]interface{})
+		}
+	}
+
+	return &providerConfig, nil
+}
+
+// custom diff function that changes plan to take default tags into account
+func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	if len(providerConf.DefaultTags) == 0 {
+		return nil
+	}
+	resourceTags := d.Get("tags")
+	if resourceTags == nil { // if the "tags" attribute does not exist in the resource schema
+		return nil
+	}
+	tags := make(map[string]interface{})
+	tagSet := resourceTags.(*schema.Set)
+	for _, tag := range tagSet.List() {
+		kv := strings.Split(tag.(string), ":")
+		var key, value string
+		switch len(kv) {
+		case 2:
+			key, value = kv[0], kv[1]
+		case 1:
+			key, value = kv[0], ""
+		default:
+			return fmt.Errorf("invalid tag: '%s'", tag)
+		}
+		tags[key] = value
+	}
+	for k, v := range providerConf.DefaultTags {
+		if _, alreadyDefined := tags[k]; !alreadyDefined {
+			tags[k] = v
+		}
+	}
+	tagSlice := make([]interface{}, 0, len(tags))
+	for k, v := range tags {
+		tag := fmt.Sprintf("%s:%v", k, v)
+		if v == "" {
+			tag = k
+		}
+		tagSlice = append(tagSlice, tag)
+	}
+	tagsToSet := schema.NewSet(tagSet.F, tagSlice)
+	if err := d.SetNew("tags", tagsToSet); err != nil {
+		return fmt.Errorf("error setting tags diff to %v: %w", tags, err)
+	}
+	return nil
 }

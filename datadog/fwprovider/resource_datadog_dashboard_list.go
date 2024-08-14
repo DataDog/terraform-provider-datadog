@@ -11,6 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
@@ -220,7 +221,7 @@ func (r *dashboardListResource) Read(ctx context.Context, req resource.ReadReque
 	dashList, httpresp, err := r.ApiV1.GetDashboardList(r.Auth, id)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
-			state.ID = types.StringNull()
+			resp.State.RemoveResource(ctx)
 			return
 		}
 		resp.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpresp, ""), "error getting dashboard list"))

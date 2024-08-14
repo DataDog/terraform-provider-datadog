@@ -231,7 +231,7 @@ resource "datadog_synthetics_test" "test_multi_step" {
 
     request_definition {
       method = "GET"
-      url    = "https://example.org"
+      url    = "https://www.example.org"
     }
 
     request_headers = {
@@ -256,6 +256,66 @@ resource "datadog_synthetics_test" "test_multi_step" {
     }
   }
 
+  api_step {
+    name    = "A gRPC health check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "healthcheck"
+      service   = "greeter.Greeter"
+    }
+  }
+
+  api_step {
+    name    = "A gRPC behavior check on example.org"
+    subtype = "grpc"
+
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+
+    request_definition {
+      host      = "example.org"
+      port      = 443
+      call_type = "unary"
+      service   = "greeter.Greeter"
+      method    = "SayHello"
+      message   = "{\"name\": \"John\"}"
+
+      plain_proto_file = <<EOT
+syntax = "proto3";
+
+package greeter;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+EOT      
+    }
+  }
+
   options_list {
     tick_every         = 900
     accept_self_signed = true
@@ -276,7 +336,7 @@ resource "datadog_synthetics_test" "test_browser" {
 
   request_definition {
     method = "GET"
-    url    = "https://app.datadoghq.com"
+    url    = "https://www.example.org"
   }
 
   browser_step {
@@ -285,6 +345,31 @@ resource "datadog_synthetics_test" "test_browser" {
     params {
       check = "contains"
       value = "datadoghq"
+    }
+  }
+
+  browser_step {
+    name = "Test a downloaded file"
+    type = "assertFileDownload"
+    params {
+      file = jsonencode(
+        {
+          md5 = "abcdef1234567890" // MD5 hash of the file
+          sizeCheck = {
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
+          }
+          nameCheck = {
+            type = "contains" // "contains", "equals", "isEmpty", "matchRegex", 
+            // "notContains", "notIsEmpty", "notEquals", 
+            // "notStartsWith", "startsWith"
+            value = ".xls"
+          }
+        }
+      )
     }
   }
 
@@ -312,6 +397,118 @@ resource "datadog_synthetics_test" "test_browser" {
     tick_every = 3600
   }
 }
+
+# Example Usage (GRPC API behavior check test)
+# Create a new Datadog GRPC API test calling host example.org on port 443
+# targeting service `greeter.Greeter` with the method `SayHello`
+# and the message {"name": "John"}
+resource "datadog_synthetics_test" "test_grpc_unary" {
+  name      = "GRPC API behavior check test"
+  type      = "api"
+  subtype   = "grpc"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host      = "example.org"
+    port      = 443
+    call_type = "unary"
+    service   = "greeter.Greeter"
+    method    = "SayHello"
+    message   = "{\"name\": \"John\"}"
+
+    plain_proto_file = <<EOT
+syntax = "proto3";
+
+package greeter;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
+}
+EOT
+  }
+
+  request_metadata = {
+    header = "value"
+  }
+
+  assertion {
+    type     = "responseTime"
+    operator = "lessThan"
+    target   = "2000"
+  }
+
+  assertion {
+    operator = "is"
+    type     = "grpcHealthcheckStatus"
+    target   = 1
+  }
+
+  assertion {
+    operator = "is"
+    type     = "grpcProto"
+    target   = "proto target"
+  }
+
+  assertion {
+    operator = "is"
+    property = "property"
+    type     = "grpcMetadata"
+    target   = "123"
+  }
+
+  options_list {
+    tick_every = 900
+  }
+}
+
+# Example Usage (GRPC API health check test)
+# Create a new Datadog GRPC API test calling host example.org on port 443
+# testing the overall health of the service
+resource "datadog_synthetics_test" "test_grpc_health" {
+  name      = "GRPC API health check test"
+  type      = "api"
+  subtype   = "grpc"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host      = "example.org"
+    port      = 443
+    call_type = "healthcheck"
+    service   = "greeter.Greeter"
+  }
+
+  assertion {
+    type     = "responseTime"
+    operator = "lessThan"
+    target   = "2000"
+  }
+
+  assertion {
+    operator = "is"
+    type     = "grpcHealthcheckStatus"
+    target   = 1
+  }
+
+  options_list {
+    tick_every = 900
+  }
+}
 ```
 
 <!-- schema generated by tfplugindocs -->
@@ -326,23 +523,27 @@ resource "datadog_synthetics_test" "test_browser" {
 
 ### Optional
 
-- `api_step` (Block List) Steps for multistep api tests (see [below for nested schema](#nestedblock--api_step))
+- `api_step` (Block List) Steps for multi-step api tests (see [below for nested schema](#nestedblock--api_step))
 - `assertion` (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
 - `browser_step` (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - `browser_variable` (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - `config_variable` (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
 - `device_ids` (List of String) Required if `type = "browser"`. Array with the different device IDs used to run the test. Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`, `edge.laptop_large`, `edge.tablet`, `edge.mobile_small`.
-- `message` (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.
+- `force_delete_dependencies` (Boolean) A boolean indicating whether this synthetics test can be deleted even if it's referenced by other resources (for example, SLOs and composite monitors).
+- `message` (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events. Defaults to `""`.
 - `options_list` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
 - `request_definition` (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
+- `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--request_file))
 - `request_headers` (Map of String) Header name and value map.
+- `request_metadata` (Map of String) Metadata to include when performing the gRPC request.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `set_cookie` (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
 - `subtype` (String) The subtype of the Synthetic API test. Defaults to `http`. Valid values are `http`, `ssl`, `tcp`, `dns`, `multi`, `icmp`, `udp`, `websocket`, `grpc`.
 - `tags` (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
+- `variables_from_script` (String) Variables defined from JavaScript code for API HTTP tests.
 
 ### Read-Only
 
@@ -365,11 +566,14 @@ Optional:
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
 - `request_definition` (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
+- `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--api_step--request_file))
 - `request_headers` (Map of String) Header name and value map.
+- `request_metadata` (Map of String) Metadata to include when performing the gRPC request.
 - `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
-- `subtype` (String) The subtype of the Synthetic multistep API test step. Valid values are `http`.
+- `subtype` (String) The subtype of the Synthetic multi-step API test step. Valid values are `http`, `grpc`, `wait`. Defaults to `"http"`.
+- `value` (Number) The time to wait in seconds. Minimum value: 0. Maximum value: 180.
 
 <a id="nestedblock--api_step--assertion"></a>
 ### Nested Schema for `api_step.assertion`
@@ -377,14 +581,16 @@ Optional:
 Required:
 
 - `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`.
 
 Optional:
 
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
+- `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonschema))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetxpath))
+- `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
 
 <a id="nestedblock--api_step--assertion--targetjsonpath"></a>
 ### Nested Schema for `api_step.assertion.targetjsonpath`
@@ -396,7 +602,20 @@ Required:
 
 Optional:
 
+- `elementsoperator` (String) The element from the list of results to assert on. Select from `firstElementMatches` (the first element in the list), `everyElementMatches` (every element in the list), `atLeastOneElementMatches` (at least one element in the list), or `serializationMatches` (the serialized value of the list). Defaults to `firstElementMatches`. Defaults to `"firstElementMatches"`.
 - `targetvalue` (String) Expected matching value.
+
+
+<a id="nestedblock--api_step--assertion--targetjsonschema"></a>
+### Nested Schema for `api_step.assertion.targetjsonschema`
+
+Required:
+
+- `jsonschema` (String) The JSON Schema to validate the body against.
+
+Optional:
+
+- `metaschema` (String) The meta schema to use for the JSON Schema. Defaults to `"draft-07"`.
 
 
 <a id="nestedblock--api_step--assertion--targetxpath"></a>
@@ -447,19 +666,19 @@ Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
 - `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
-- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication.
+- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
 - `password` (String, Sensitive) Password for authentication.
 - `region` (String) Region for `SIGV4` authentication.
-- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication.
-- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication.
+- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
+- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
 - `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Valid values are `header`, `body`.
-- `type` (String) Type of basic authentication to use when performing the test.
+- `type` (String) Type of basic authentication to use when performing the test. Defaults to `"web"`.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
 
@@ -481,7 +700,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--api_step--request_client_certificate--key"></a>
@@ -493,7 +712,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 
@@ -502,25 +721,48 @@ Optional:
 
 Optional:
 
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
+- `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `body` (String) The request body.
-- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
+- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (Number) DNS server port to use for DNS tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `host` (String) Host name to perform the test with.
+- `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
 - `message` (String) For UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
+- `persist_cookies` (Boolean) Persist cookies across redirects.
+- `plain_proto_file` (String) The content of a proto file as a string.
 - `port` (Number) Port to use when performing the test.
+- `proto_json_descriptor` (String, Deprecated) A protobuf JSON descriptor. **Deprecated.** Use `plain_proto_file` instead.
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
-- `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
+- `timeout` (Number) Timeout in seconds for the test.
 - `url` (String) The URL to send the request to.
+
+
+<a id="nestedblock--api_step--request_file"></a>
+### Nested Schema for `api_step.request_file`
+
+Required:
+
+- `name` (String) Name of the file.
+- `size` (Number) Size of the file.
+- `type` (String) Type of the file.
+
+Optional:
+
+- `content` (String) Content of the file.
+- `original_file_name` (String) Original name of the file.
+
+Read-Only:
+
+- `bucket_key` (String) Bucket key of the file.
 
 
 <a id="nestedblock--api_step--request_proxy"></a>
@@ -540,8 +782,8 @@ Optional:
 
 Optional:
 
-- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert.
-- `interval` (Number) Interval between a failed test and the next retry in milliseconds.
+- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Defaults to `0`.
+- `interval` (Number) Interval between a failed test and the next retry in milliseconds. Defaults to `300`.
 
 
 
@@ -551,14 +793,16 @@ Optional:
 Required:
 
 - `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`.
 
 Optional:
 
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
+- `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonschema))
 - `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetxpath))
+- `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
 
 <a id="nestedblock--assertion--targetjsonpath"></a>
 ### Nested Schema for `assertion.targetjsonpath`
@@ -570,7 +814,20 @@ Required:
 
 Optional:
 
+- `elementsoperator` (String) The element from the list of results to assert on. Select from `firstElementMatches` (the first element in the list), `everyElementMatches` (every element in the list), `atLeastOneElementMatches` (at least one element in the list), or `serializationMatches` (the serialized value of the list). Defaults to `firstElementMatches`. Defaults to `"firstElementMatches"`.
 - `targetvalue` (String) Expected matching value.
+
+
+<a id="nestedblock--assertion--targetjsonschema"></a>
+### Nested Schema for `assertion.targetjsonschema`
+
+Required:
+
+- `jsonschema` (String) The JSON Schema to validate the body against.
+
+Optional:
+
+- `metaschema` (String) The meta schema to use for the JSON Schema. Defaults to `"draft-07"`.
 
 
 <a id="nestedblock--assertion--targetxpath"></a>
@@ -614,11 +871,11 @@ Optional:
 - `click_type` (String) Type of click to use for a "click" step.
 - `code` (String) Javascript code to use for the step.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
-- `element` (String) Element to use for the step, json encoded string.
+- `element` (String) Element to use for the step, JSON encoded string.
 - `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
-- `email` (String) Details of the email for an "assert email" step.
-- `file` (String) For an "assert download" step.
-- `files` (String) Details of the files for an "upload files" step, json encoded string.
+- `email` (String) Details of the email for an "assert email" step, JSON encoded string.
+- `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
+- `files` (String) Details of the files for an "upload files" step, JSON encoded string.
 - `modifiers` (List of String) Modifier to use for a "press key" step.
 - `playing_tab_id` (String) ID of the tab to play the subtest.
 - `request` (String) Request for an API step.
@@ -638,7 +895,7 @@ Required:
 
 Optional:
 
-- `fail_test_on_cannot_locate` (Boolean)
+- `fail_test_on_cannot_locate` (Boolean) Defaults to `false`.
 
 <a id="nestedblock--browser_step--params--element_user_locator--value"></a>
 ### Nested Schema for `browser_step.params.element_user_locator.value`
@@ -649,7 +906,7 @@ Required:
 
 Optional:
 
-- `type` (String)
+- `type` (String) Defaults to `"css"`.
 
 
 
@@ -658,7 +915,7 @@ Optional:
 
 Optional:
 
-- `example` (String) Example of the extracted variable.
+- `example` (String) Example of the extracted variable. Defaults to `""`.
 - `name` (String) Name of the extracted variable.
 
 
@@ -674,9 +931,9 @@ Required:
 
 Optional:
 
-- `example` (String) Example for the variable.
+- `example` (String) Example for the variable. Defaults to `""`.
 - `id` (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
-- `pattern` (String) Pattern of the variable.
+- `pattern` (String) Pattern of the variable. Defaults to `""`.
 - `secure` (Boolean) Determines whether or not the browser test variable is obfuscated. Can only be used with a browser variable of type `text`
 
 
@@ -693,7 +950,7 @@ Optional:
 - `example` (String) Example for the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
 - `id` (String) When type = `global`, ID of the global variable to use.
 - `pattern` (String) Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
-- `secure` (Boolean) Whether the value of this variable will be obfuscated in test results.
+- `secure` (Boolean) Whether the value of this variable will be obfuscated in test results. Defaults to `false`.
 
 
 <a id="nestedblock--options_list"></a>
@@ -706,17 +963,17 @@ Required:
 Optional:
 
 - `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
-- `allow_insecure` (Boolean) Allows loading insecure content for an HTTP request in an API test or in a multistep API test step.
+- `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
 - `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
 - `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
-- `http_version` (String) HTTP version to use for a Synthetics API test. Valid values are `http1`, `http2`, `any`.
+- `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
 - `ignore_server_certificate_error` (Boolean) Ignore server certificate error for browser tests.
 - `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
 - `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
-- `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Default is `1`.
+- `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Defaults to `1`.
 - `monitor_name` (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
 - `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - `monitor_priority` (Number)
@@ -739,7 +996,7 @@ Optional:
 
 Optional:
 
-- `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`.
+- `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
 
 
 <a id="nestedblock--options_list--retry"></a>
@@ -747,8 +1004,8 @@ Optional:
 
 Optional:
 
-- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert.
-- `interval` (Number) Interval between a failed test and the next retry in milliseconds.
+- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Defaults to `0`.
+- `interval` (Number) Interval between a failed test and the next retry in milliseconds. Defaults to `300`.
 
 
 <a id="nestedblock--options_list--rum_settings"></a>
@@ -791,19 +1048,19 @@ Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
 - `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
-- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication.
+- `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
 - `domain` (String) Domain for `ntlm` authentication.
 - `password` (String, Sensitive) Password for authentication.
 - `region` (String) Region for `SIGV4` authentication.
-- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication.
-- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication.
+- `resource` (String) Resource for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
+- `scope` (String) Scope for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `secret_key` (String, Sensitive) Secret key for `SIGV4` authentication.
 - `service_name` (String) Service name for `SIGV4` authentication.
 - `session_token` (String) Session token for `SIGV4` authentication.
 - `token_api_authentication` (String) Token API Authentication for `oauth-client` or `oauth-rop` authentication. Valid values are `header`, `body`.
-- `type` (String) Type of basic authentication to use when performing the test.
+- `type` (String) Type of basic authentication to use when performing the test. Defaults to `"web"`.
 - `username` (String) Username for authentication.
 - `workstation` (String) Workstation for `ntlm` authentication.
 
@@ -825,7 +1082,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 <a id="nestedblock--request_client_certificate--key"></a>
@@ -837,7 +1094,7 @@ Required:
 
 Optional:
 
-- `filename` (String) File name for the certificate.
+- `filename` (String) File name for the certificate. Defaults to `"Provided in Terraform config"`.
 
 
 
@@ -847,22 +1104,45 @@ Optional:
 Optional:
 
 - `body` (String) The request body.
-- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`.
+- `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (Number) DNS server port to use for DNS tests.
 - `host` (String) Host name to perform the test with.
+- `http_version` (String, Deprecated) HTTP version to use for an HTTP request in an API test or step. **Deprecated.** Use `http_version` in the `options_list` field instead.
 - `message` (String) For UDP and websocket tests, message to send with the request.
 - `method` (String) Either the HTTP method/verb to use or a gRPC method available on the service set in the `service` field. Required if `subtype` is `HTTP` or if `subtype` is `grpc` and `callType` is `unary`.
 - `no_saving_response_body` (Boolean) Determines whether or not to save the response body.
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
+- `persist_cookies` (Boolean) Persist cookies across redirects.
+- `plain_proto_file` (String) The content of a proto file as a string.
 - `port` (Number) Port to use when performing the test.
+- `proto_json_descriptor` (String, Deprecated) A protobuf JSON descriptor. **Deprecated.** Use `plain_proto_file` instead.
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
 - `should_track_hops` (Boolean) This will turn on a traceroute probe to discover all gateways along the path to the host destination. For ICMP tests (`subtype = "icmp"`).
-- `timeout` (Number) Timeout in seconds for the test. Defaults to `60`.
+- `timeout` (Number) Timeout in seconds for the test.
 - `url` (String) The URL to send the request to.
+
+
+<a id="nestedblock--request_file"></a>
+### Nested Schema for `request_file`
+
+Required:
+
+- `name` (String) Name of the file.
+- `size` (Number) Size of the file.
+- `type` (String) Type of the file.
+
+Optional:
+
+- `content` (String) Content of the file.
+- `original_file_name` (String) Original name of the file.
+
+Read-Only:
+
+- `bucket_key` (String) Bucket key of the file.
 
 
 <a id="nestedblock--request_proxy"></a>

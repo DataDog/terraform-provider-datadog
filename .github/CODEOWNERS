@@ -3,42 +3,44 @@
 # and another the rest of the directory.
 
 # All your base
-*                                         @DataDog/integrations-tools-and-libraries
+*                                         @DataDog/api-clients
 
-/docs/                                    @DataDog/integrations-tools-and-libraries @DataDog/documentation
+/docs/                                    @DataDog/api-clients @DataDog/documentation
 
 # Terraform plugin sdk resources/data-sources
-datadog/*datadog_dashboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
-datadog/*datadog_downtime*                @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
-datadog/*datadog_integration_aws*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
-datadog/*datadog_integration_gcp*         @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
-datadog/*datadog_integration_pagerduty*   @DataDog/integrations-tools-and-libraries @DataDog/web-integrations
-datadog/*datadog_integration_opsgenie*    @DataDog/integrations-tools-and-libraries @Datadog/collaboration-integrations
-datadog/*datadog_logs*                    @DataDog/integrations-tools-and-libraries @DataDog/logs-backend @DataDog/logs-app
-datadog/*datadog_metric*                  @DataDog/integrations-tools-and-libraries @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation
-datadog/*datadog_monitor*                 @DataDog/integrations-tools-and-libraries @DataDog/monitor-app
-datadog/*datadog_screenboard*             @DataDog/integrations-tools-and-libraries @DataDog/dashboards
-datadog/*security_monitoring*             @DataDog/integrations-tools-and-libraries @DataDog/k9-cloud-security-platform
-datadog/*datadog_service_definition*      @DataDog/integrations-tools-and-libraries @DataDog/service-catalog
-datadog/*datadog_service_level_objective* @DataDog/integrations-tools-and-libraries @DataDog/slo-app
-datadog/*datadog_synthetics*              @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
-datadog/*datadog_timeboard*               @DataDog/integrations-tools-and-libraries @DataDog/dashboards
-datadog/*datadog_user*                    @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
-datadog/*cloud_configuration*             @DataDog/integrations-tools-and-libraries @DataDog/k9-cloud-security-posture-management
-datadog/*service_account*                 @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
+datadog/*datadog_dashboard*               @DataDog/api-clients @DataDog/dashboards-backend
+datadog/*datadog_downtime*                @DataDog/api-clients @DataDog/monitor-app
+datadog/*datadog_integration_aws*         @DataDog/api-clients @DataDog/cloud-integrations
+datadog/*datadog_integration_pagerduty*   @DataDog/api-clients @DataDog/saas-integrations @DataDog/saas-integrations
+datadog/*datadog_integration_opsgenie*    @DataDog/api-clients @Datadog/collaboration-integrations
+datadog/*datadog_logs*                    @DataDog/api-clients @DataDog/logs-backend @DataDog/logs-app
+datadog/*datadog_metric*                  @DataDog/api-clients @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation
+datadog/*datadog_monitor*                 @DataDog/api-clients @DataDog/monitor-app
+datadog/*datadog_screenboard*             @DataDog/api-clients @DataDog/dashboards-backend
+datadog/*security_monitoring*             @DataDog/api-clients @DataDog/k9-cloud-security-platform
+datadog/*datadog_service_definition*      @DataDog/api-clients @DataDog/service-catalog
+datadog/*datadog_service_level_objective* @DataDog/api-clients @DataDog/slo-app
+datadog/*datadog_synthetics*              @DataDog/api-clients @DataDog/synthetics-ct
+datadog/*datadog_timeboard*               @DataDog/api-clients @DataDog/dashboards-backend
+datadog/*datadog_user*                    @DataDog/api-clients @DataDog/team-aaa
+datadog/*cloud_configuration*             @DataDog/api-clients @DataDog/k9-cloud-security-posture-management
+datadog/*service_account*                 @DataDog/api-clients @DataDog/team-aaa
 
 # Framework resources/data-sources
-datadog/**/*datadog_api_key*                    @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
-datadog/**/*datadog_hosts*                      @DataDog/integrations-tools-and-libraries @DataDog/redapl-storage
-datadog/**/*datadog_ip_ranges*                  @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
-datadog/**/*datadog_integration_aws*            @DataDog/integrations-tools-and-libraries @DataDog/cloud-integrations
-datadog/**/*datadog_integration_cloudflare*     @DataDog/integrations-tools-and-libraries @Datadog/web-integrations
-datadog/**/*datadog_integration_confluent*      @DataDog/integrations-tools-and-libraries @Datadog/web-integrations
-datadog/**/*datadog_integration_fastly*         @DataDog/integrations-tools-and-libraries @Datadog/web-integrations
-datadog/**/*datadog_integration_gcp_sts*        @DataDog/integrations-tools-and-libraries @DataDog/gcp-integrations
-datadog/**/*datadog_restriction_policy*         @DataDog/integrations-tools-and-libraries @DataDog/aaa-granular-access
-datadog/**/*datadog_sensitive_data_scanner*     @DataDog/integrations-tools-and-libraries @DataDog/logs-app @DataDog/logs-core
-datadog/**/*datadog_service_account*            @DataDog/integrations-tools-and-libraries @DataDog/team-aaa
-datadog/**/*datadog_spans_metric*               @DataDog/integrations-tools-and-libraries @DataDog/apm-trace-intake
-datadog/**/*datadog_synthetics_concurrency_cap* @DataDog/integrations-tools-and-libraries @DataDog/synthetics-app
-datadog/**/*datadog_team*                       @DataDog/integrations-tools-and-libraries @DataDog/core-app
+datadog/**/*datadog_api_key*                    @DataDog/api-clients @DataDog/team-aaa
+datadog/**/*datadog_apm_retention_filter*       @DataDog/api-clients @DataDog/apm-trace-intake
+datadog/**/*datadog_hosts*                      @DataDog/api-clients @DataDog/redapl-storage
+datadog/**/*datadog_ip_ranges*                  @DataDog/api-clients @DataDog/team-aaa
+datadog/**/*datadog_integration_aws*            @DataDog/api-clients @DataDog/cloud-integrations
+datadog/**/*datadog_integration_azure*          @DataDog/api-clients @DataDog/azure-integrations
+datadog/**/*datadog_integration_cloudflare*     @DataDog/api-clients @DataDog/saas-integrations
+datadog/**/*datadog_integration_confluent*      @DataDog/api-clients @DataDog/saas-integrations
+datadog/**/*datadog_integration_fastly*         @DataDog/api-clients @DataDog/saas-integrations
+datadog/**/*datadog_integration_gcp*            @DataDog/api-clients @DataDog/gcp-integrations
+datadog/**/*datadog_restriction_policy*         @DataDog/api-clients @DataDog/aaa-granular-access
+datadog/**/*datadog_sensitive_data_scanner*     @DataDog/api-clients @DataDog/logs-app @DataDog/sensitive-data-scanner
+datadog/**/*datadog_service_account*            @DataDog/api-clients @DataDog/team-aaa
+datadog/**/*datadog_spans_metric*               @DataDog/api-clients @DataDog/apm-trace-intake
+datadog/**/*datadog_synthetics_concurrency_cap* @DataDog/api-clients @DataDog/synthetics-app @DataDog/synthetics-ct
+datadog/**/*datadog_team*                       @DataDog/api-clients @DataDog/core-app
+datadog/**/*datadog_organization_settings*      @DataDog/api-clients @DataDog/core-app @DataDog/trust-and-safety

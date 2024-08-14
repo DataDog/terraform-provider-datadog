@@ -3,12 +3,12 @@
 page_title: "datadog_downtime Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
+  This resource is deprecated — use the datadog_downtime_schedule resource instead. Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
 ---
 
 # datadog_downtime (Resource)
 
-Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
+This resource is deprecated — use the `datadog_downtime_schedule resource` instead. Provides a Datadog downtime resource. This can be used to create and manage Datadog downtimes.
 
 ## Example Usage
 
@@ -55,11 +55,11 @@ resource "datadog_downtime" "foo" {
 - `message` (String) An optional message to provide when creating the downtime, can include notification handles
 - `monitor_id` (Number) When specified, this downtime will only apply to this monitor
 - `monitor_tags` (Set of String) A list of monitor tags (up to 32) to base the scheduled downtime on. Only monitors that have all selected tags are silenced
-- `mute_first_recovery_notification` (Boolean) When true the first recovery notification during the downtime will be muted
+- `mute_first_recovery_notification` (Boolean) When true the first recovery notification during the downtime will be muted Defaults to `false`.
 - `recurrence` (Block List, Max: 1) Optional recurring schedule for this downtime (see [below for nested schema](#nestedblock--recurrence))
 - `start` (Number) Specify when this downtime should start. Accepts a Unix timestamp in UTC.
 - `start_date` (String) String representing date and time to start the downtime in RFC3339 format.
-- `timezone` (String) The timezone for the downtime, default UTC. Follows IANA timezone database identifiers.
+- `timezone` (String) The timezone for the downtime. Follows IANA timezone database identifiers. Defaults to `"UTC"`.
 
 ### Read-Only
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -25,10 +26,11 @@ func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
-					Type:        schema.TypeString,
-					Required:    true,
-					ForceNew:    true,
+					Description:      "Your AWS Account ID without dashes.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ForceNew:         true,
+					ValidateDiagFunc: validators.ValidateAWSAccountID,
 				},
 				"services": {
 					Description: "A list of services to collect logs from. See the [api docs](https://docs.datadoghq.com/api/v1/aws-logs-integration/#get-list-of-aws-log-ready-services) for more details on which services are supported.",
@@ -61,8 +63,8 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	accountID := d.Get("account_id").(string)
 
@@ -78,7 +80,11 @@ func resourceDatadogIntegrationAwsLogCollectionCreate(ctx context.Context, d *sc
 
 	d.SetId(accountID)
 
-	return resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration log collection resource with account id `%s` not found after creation", accountID))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -87,8 +93,8 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *sc
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	enableLogCollectionServices := buildDatadogIntegrationAwsLogCollectionStruct(d)
 	_, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().EnableAWSLogServices(auth, *enableLogCollectionServices)
@@ -96,7 +102,11 @@ func resourceDatadogIntegrationAwsLogCollectionUpdate(ctx context.Context, d *sc
 		return utils.TranslateClientErrorDiag(err, httpresp, "error updating log collection services for Amazon Web Services integration account")
 	}
 
-	return resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsLogCollectionRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration log collection resource with account id `%s` not found after creation", enableLogCollectionServices.GetAccountId()))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsLogCollectionRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -131,8 +141,8 @@ func resourceDatadogIntegrationAwsLogCollectionDelete(ctx context.Context, d *sc
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	accountID := d.Id()
 	services := []string{}

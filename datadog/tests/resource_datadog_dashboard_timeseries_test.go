@@ -546,6 +546,20 @@ resource "datadog_dashboard" "timeseries_dashboard" {
 			}
 		}
 	}
+	widget {
+		timeseries_definition {
+			request {
+				query {
+					cloud_cost_query {
+						data_source = "cloud_cost"
+						query = "sum:aws.cost.amortized{*}"
+						name = "query1"
+						aggregator = "sum"
+					}
+				}
+			}
+		}
+	}
 }
 `
 
@@ -768,6 +782,10 @@ var datadogDashboardFormulaAsserts = []string{
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.measure = slo_status",
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.slo_query_type = metric",
 	"widget.3.timeseries_definition.0.request.0.query.0.slo_query.0.additional_query_filters = *",
+	"widget.4.timeseries_definition.0.request.0.query.0.cloud_cost_query.0.data_source = cloud_cost",
+	"widget.4.timeseries_definition.0.request.0.query.0.cloud_cost_query.0.name = query1",
+	"widget.4.timeseries_definition.0.request.0.query.0.cloud_cost_query.0.aggregator = sum",
+	"widget.4.timeseries_definition.0.request.0.query.0.cloud_cost_query.0.query = sum:aws.cost.amortized{*}",
 }
 
 func TestAccDatadogDashboardTimeseries(t *testing.T) {

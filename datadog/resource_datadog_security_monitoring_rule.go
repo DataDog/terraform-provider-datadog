@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -20,21 +21,22 @@ func resourceDatadogSecurityMonitoringRule() *schema.Resource {
 		ReadContext:   resourceDatadogSecurityMonitoringRuleRead,
 		UpdateContext: resourceDatadogSecurityMonitoringRuleUpdate,
 		DeleteContext: resourceDatadogSecurityMonitoringRuleDelete,
+		CustomizeDiff: resourceDatadogSecurityMonitoringRuleCustomizeDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		SchemaFunc: func() map[string]*schema.Schema {
-			return datadogSecurityMonitoringRuleSchema()
+			return datadogSecurityMonitoringRuleSchema( /* includeValidate= */ true)
 		},
 	}
 }
 
-func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
-	return map[string]*schema.Schema{
+func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schema.Schema {
+	basicSchema := map[string]*schema.Schema{
 		"case": {
 			Type:        schema.TypeList,
-			Required:    true,
+			Optional:    true,
 			Description: "Cases for generating signals.",
 			MaxItems:    10,
 			Elem: &schema.Resource{
@@ -48,6 +50,39 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 						Type:        schema.TypeString,
 						Optional:    true,
 						Description: "A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.",
+					},
+					"notifications": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						Description: "Notification targets for each rule case.",
+						Elem:        &schema.Schema{Type: schema.TypeString},
+					},
+					"status": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
+						Required:         true,
+						Description:      "Severity of the Security Signal.",
+					},
+				},
+			},
+		},
+
+		"third_party_case": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Cases for generating signals for third-party rules. Only required and accepted for third-party rules",
+			MaxItems:    10,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"name": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Name of the case.",
+					},
+					"query": {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "A query to associate a third-party event to this case.",
 					},
 					"notifications": {
 						Type:        schema.TypeList,
@@ -117,14 +152,14 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 					"keep_alive": {
 						Type:             schema.TypeInt,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleKeepAliveFromValue),
-						Required:         true,
+						Optional:         true,
 						Description:      "Once a signal is generated, the signal will remain “open” if a case is matched at least once within this keep alive window (in seconds).",
 					},
 
 					"max_signal_duration": {
 						Type:             schema.TypeInt,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleMaxSignalDurationFromValue),
-						Required:         true,
+						Optional:         true,
 						Description:      "A signal will “close” regardless of the query being matched once the time exceeds the maximum duration (in seconds). This time is calculated from the first seen timestamp.",
 					},
 
@@ -180,6 +215,58 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 									Optional:    true,
 									Default:     false,
 									Description: "If true, signals are suppressed for the first 24 hours. During that time, Datadog learns the user's regular access locations. This can be helpful to reduce noise and infer VPN usage or credentialed API access.",
+								},
+							},
+						},
+					},
+
+					"third_party_rule_options": {
+						Type:        schema.TypeList,
+						Optional:    true,
+						MaxItems:    1,
+						Description: "Options for rules using the third-party detection method.",
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"default_notifications": {
+									Type:        schema.TypeList,
+									Optional:    true,
+									Description: "Notification targets for the default rule case, when none of the third-party cases match.",
+									Elem:        &schema.Schema{Type: schema.TypeString},
+								},
+								"default_status": {
+									Type:             schema.TypeString,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleSeverityFromValue),
+									Required:         true,
+									Description:      "Severity of the default rule case, when none of the third-party cases match.",
+								},
+								"signal_title_template": {
+									Type:        schema.TypeString,
+									Optional:    true,
+									Description: "A template for the signal title; if omitted, the title is generated based on the case name.",
+								},
+								"root_query": {
+									Type:        schema.TypeList,
+									Required:    true,
+									MaxItems:    10,
+									Description: "Queries to be combined with third-party case queries. Each of them can have different group by fields, to aggregate differently based on the type of alert.",
+									Elem: &schema.Resource{
+										Schema: map[string]*schema.Schema{
+											"query": {
+												Type:        schema.TypeString,
+												Required:    true,
+												Description: "Query to filter logs.",
+											},
+											"group_by_fields": {
+												Type:        schema.TypeList,
+												Optional:    true,
+												Description: "Fields to group by. If empty, each log triggers a signal.",
+												Elem: &schema.Schema{
+													Type:             schema.TypeString,
+													ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+												},
+											},
+										},
+									},
 								},
 							},
 						},
@@ -327,7 +414,7 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 		"filter": {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Additional queries to filter matched events before they are processed.",
+			Description: "Additional queries to filter matched events before they are processed. **Note**: This field is deprecated for log detection, signal correlation, and workload security rules.",
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"query": {
@@ -347,13 +434,26 @@ func datadogSecurityMonitoringRuleSchema() map[string]*schema.Schema {
 
 		"type": {
 			Type: schema.TypeString,
-			ValidateDiagFunc: validators.ValidateStringEnumValue(datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION,
+			ValidateDiagFunc: validators.ValidateStringEnumValue(
+				datadogV2.SECURITYMONITORINGRULETYPEREAD_APPLICATION_SECURITY, datadogV2.SECURITYMONITORINGRULETYPEREAD_LOG_DETECTION,
 				datadogV2.SECURITYMONITORINGRULETYPEREAD_WORKLOAD_SECURITY, datadogV2.SECURITYMONITORINGSIGNALRULETYPE_SIGNAL_CORRELATION),
 			Optional:    true,
 			Description: "The rule type.",
 			Default:     "log_detection",
 		},
 	}
+	if includeValidate {
+		basicSchema["validate"] = &schema.Schema{
+			Description: "Whether or not to validate the Rule.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+			DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+				// This is never sent to the backend, so it should never generate a diff
+				return true
+			},
+		}
+	}
+	return basicSchema
 }
 
 // securityMonitoringRuleInterface Common Interface to securityMonitoringRuleCreateInterface and SecurityMonitoringRuleReadInterface
@@ -424,7 +524,7 @@ func resourceDatadogSecurityMonitoringRuleCreate(ctx context.Context, d *schema.
 	return nil
 }
 
-func isSignalCorrelationSchema(d *schema.ResourceData) bool {
+func isSignalCorrelationSchema(d utils.Resource) bool {
 	if v, ok := d.GetOk("type"); ok {
 		_, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(v.(string))
 		return err == nil
@@ -432,7 +532,7 @@ func isSignalCorrelationSchema(d *schema.ResourceData) bool {
 	return false
 }
 
-func checkQueryConsistency(d *schema.ResourceData) error {
+func checkQueryConsistency(d utils.Resource) error {
 	query := d.Get("query").([]interface{})
 	signalQuery := d.Get("signal_query").([]interface{})
 	if len(query) > 0 && len(signalQuery) > 0 {
@@ -448,7 +548,7 @@ func checkQueryConsistency(d *schema.ResourceData) error {
 	return nil
 }
 
-func buildCreatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRuleCreatePayload, error) {
+func buildCreatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleCreatePayload, error) {
 
 	if err := checkQueryConsistency(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleCreatePayload{}, err
@@ -463,9 +563,22 @@ func buildCreatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 	return &createPayload, err
 }
 
-func buildCreateCommonPayload(d *schema.ResourceData, payload securityMonitoringRuleCreateInterface) {
-	payload.SetCases(buildCreatePayloadCases(d))
+func buildValidatePayload(d utils.Resource) (*datadogV2.SecurityMonitoringRuleValidatePayload, error) {
 
+	if err := checkQueryConsistency(d); err != nil {
+		return &datadogV2.SecurityMonitoringRuleValidatePayload{}, err
+	}
+	if isSignalCorrelationSchema(d) {
+		payload, err := buildSignalPayload(d)
+		createPayload := datadogV2.SecurityMonitoringSignalRulePayloadAsSecurityMonitoringRuleValidatePayload(payload)
+		return &createPayload, err
+	}
+	payload, err := buildStandardPayload(d)
+	createPayload := datadogV2.SecurityMonitoringStandardRulePayloadAsSecurityMonitoringRuleValidatePayload(payload)
+	return &createPayload, err
+}
+
+func buildCreateCommonPayload(d utils.Resource, payload securityMonitoringRuleCreateInterface) {
 	payload.SetIsEnabled(d.Get("enabled").(bool))
 	payload.SetMessage(d.Get("message").(string))
 	payload.SetName(d.Get("name").(string))
@@ -492,11 +605,32 @@ func buildCreateCommonPayload(d *schema.ResourceData, payload securityMonitoring
 	}
 }
 
-func buildCreateStandardPayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
+func isThirdPartyRule(d utils.Resource) bool {
+	tfOptionsList, ok := d.GetOk("options")
+
+	if !ok {
+		return false
+	}
+
+	options := extractMapFromInterface(tfOptionsList.([]interface{}))
+
+	if detectionMethod, ok := options["detection_method"]; ok {
+		return datadogV2.SecurityMonitoringRuleDetectionMethod(detectionMethod.(string)) == datadogV2.SECURITYMONITORINGRULEDETECTIONMETHOD_THIRD_PARTY
+	} else {
+		return false
+	}
+}
+
+func buildCreateStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoringStandardRuleCreatePayload, error) {
 	payload := datadogV2.SecurityMonitoringStandardRuleCreatePayload{}
 	buildCreateCommonPayload(d, &payload)
 
-	payload.SetQueries(buildCreateStandardPayloadQueries(d))
+	if isThirdPartyRule(d) {
+		payload.SetThirdPartyCases(buildPayloadThirdPartyCases(d))
+	} else {
+		payload.SetCases(buildCreatePayloadCases(d))
+		payload.SetQueries(buildCreateStandardPayloadQueries(d))
+	}
 
 	if v, ok := d.GetOk("type"); ok {
 		if ruleType, err := datadogV2.NewSecurityMonitoringRuleTypeCreateFromValue(v.(string)); err == nil {
@@ -508,10 +642,31 @@ func buildCreateStandardPayload(d *schema.ResourceData) (*datadogV2.SecurityMoni
 	return &payload, nil
 }
 
-func buildCreateSignalPayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
-	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
+func buildStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoringStandardRulePayload, error) {
+	payload := datadogV2.SecurityMonitoringStandardRulePayload{}
 	buildCreateCommonPayload(d, &payload)
 
+	if isThirdPartyRule(d) {
+		payload.SetThirdPartyCases(buildPayloadThirdPartyCases(d))
+	} else {
+		payload.SetCases(buildCreatePayloadCases(d))
+		payload.SetQueries(buildCreateStandardPayloadQueries(d))
+	}
+
+	if v, ok := d.GetOk("type"); ok {
+		if ruleType, err := datadogV2.NewSecurityMonitoringRuleTypeCreateFromValue(v.(string)); err == nil {
+			payload.SetType(*ruleType)
+		} else {
+			return &payload, err
+		}
+	}
+	return &payload, nil
+}
+
+func buildCreateSignalPayload(d utils.Resource) (*datadogV2.SecurityMonitoringSignalRuleCreatePayload, error) {
+	payload := datadogV2.SecurityMonitoringSignalRuleCreatePayload{}
+	buildCreateCommonPayload(d, &payload)
+	payload.SetCases(buildCreatePayloadCases(d))
 	if queries, err := buildCreateSignalPayloadQueries(d); err == nil {
 		payload.SetQueries(queries)
 	} else {
@@ -529,7 +684,28 @@ func buildCreateSignalPayload(d *schema.ResourceData) (*datadogV2.SecurityMonito
 	return &payload, nil
 }
 
-func buildCreatePayloadCases(d *schema.ResourceData) []datadogV2.SecurityMonitoringRuleCaseCreate {
+func buildSignalPayload(d utils.Resource) (*datadogV2.SecurityMonitoringSignalRulePayload, error) {
+	payload := datadogV2.SecurityMonitoringSignalRulePayload{}
+	buildCreateCommonPayload(d, &payload)
+	payload.SetCases(buildCreatePayloadCases(d))
+	if queries, err := buildCreateSignalPayloadQueries(d); err == nil {
+		payload.SetQueries(queries)
+	} else {
+		return &payload, err
+	}
+
+	if v, ok := d.GetOk("type"); ok {
+		if ruleType, err := datadogV2.NewSecurityMonitoringSignalRuleTypeFromValue(v.(string)); err == nil {
+			payload.SetType(*ruleType)
+		} else {
+			return &payload, err
+		}
+	}
+
+	return &payload, nil
+}
+
+func buildCreatePayloadCases(d utils.Resource) []datadogV2.SecurityMonitoringRuleCaseCreate {
 	tfCases := d.Get("case").([]interface{})
 	payloadCases := make([]datadogV2.SecurityMonitoringRuleCaseCreate, len(tfCases))
 
@@ -546,16 +722,41 @@ func buildCreatePayloadCases(d *schema.ResourceData) []datadogV2.SecurityMonitor
 			structRuleCase.SetCondition(condition)
 		}
 		if v, ok := ruleCase["notifications"]; ok {
-			tfNotifications := v.([]interface{})
-			notifications := make([]string, len(tfNotifications))
-			for i, value := range tfNotifications {
-				notifications[i] = value.(string)
-			}
-			structRuleCase.SetNotifications(notifications)
+			structRuleCase.SetNotifications(parseStringArray(v.([]interface{})))
 		}
 		payloadCases[idx] = *structRuleCase
 	}
 	return payloadCases
+}
+
+func buildPayloadThirdPartyCase(tfThirdPartyCase map[string]interface{}) *datadogV2.SecurityMonitoringThirdPartyRuleCaseCreate {
+	status := datadogV2.SecurityMonitoringRuleSeverity(tfThirdPartyCase["status"].(string))
+	thirdPartyCase := datadogV2.NewSecurityMonitoringThirdPartyRuleCaseCreate(status)
+
+	if v, ok := tfThirdPartyCase["query"]; ok {
+		thirdPartyCase.SetQuery(v.(string))
+	}
+
+	if v, ok := tfThirdPartyCase["name"]; ok {
+		thirdPartyCase.SetName(v.(string))
+	}
+
+	if v, ok := tfThirdPartyCase["notifications"]; ok {
+		thirdPartyCase.SetNotifications(parseStringArray(v.([]interface{})))
+	}
+
+	return thirdPartyCase
+}
+
+func buildPayloadThirdPartyCases(d utils.Resource) []datadogV2.SecurityMonitoringThirdPartyRuleCaseCreate {
+	tfThirdPartyCases := d.Get("third_party_case").([]interface{})
+	payloadThirdPartyCases := make([]datadogV2.SecurityMonitoringThirdPartyRuleCaseCreate, len(tfThirdPartyCases))
+
+	for idx, tfThirdPartyCase := range tfThirdPartyCases {
+		payloadThirdPartyCases[idx] = *buildPayloadThirdPartyCase(tfThirdPartyCase.(map[string]interface{}))
+	}
+
+	return payloadThirdPartyCases
 }
 
 func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV2.SecurityMonitoringRuleOptions {
@@ -593,6 +794,13 @@ func buildPayloadOptions(tfOptionsList []interface{}, ruleType string) *datadogV
 		tfImpossibleTravelOptionsList := v.([]interface{})
 		if payloadImpossibleTravelOptions, ok := buildPayloadImpossibleTravelOptions(tfImpossibleTravelOptionsList); ok {
 			payloadOptions.ImpossibleTravelOptions = payloadImpossibleTravelOptions
+		}
+	}
+
+	if v, ok := tfOptions["third_party_rule_options"]; ok {
+		tfThirdPartyOptionsList := v.([]interface{})
+		if payloadThirdPartyRuleOptions, ok := buildPayloadThirdPartyRuleOptions(tfThirdPartyOptionsList); ok {
+			payloadOptions.ThirdPartyRuleOptions = payloadThirdPartyRuleOptions
 		}
 	}
 
@@ -641,6 +849,75 @@ func buildPayloadNewValueOptions(tfOptionsList []interface{}) (*datadogV2.Securi
 	return payloadNewValueRulesOptions, hasPayload
 }
 
+func buildPayloadThirdPartyRuleOptions(tfOptionsList []interface{}) (*datadogV2.SecurityMonitoringRuleThirdPartyOptions, bool) {
+	payload := datadogV2.NewSecurityMonitoringRuleThirdPartyOptions()
+	hasPayload := false
+
+	tfOptions := extractMapFromInterface(tfOptionsList)
+
+	if v, ok := tfOptions["default_status"]; ok {
+		hasPayload = true
+		payload.SetDefaultStatus(datadogV2.SecurityMonitoringRuleSeverity(v.(string)))
+	}
+
+	if v, ok := tfOptions["default_notifications"]; ok {
+		tfNotifications := v.([]interface{})
+
+		if len(tfNotifications) > 0 {
+			hasPayload = true
+		}
+
+		payload.SetDefaultNotifications(parseStringArray(tfNotifications))
+	}
+
+	if v, ok := tfOptions["signal_title_template"]; ok {
+		hasPayload = true
+		payload.SetSignalTitleTemplate(v.(string))
+	}
+
+	if v, ok := tfOptions["root_query"]; ok {
+		tfRootQueries := v.([]interface{})
+
+		if len(tfRootQueries) > 0 {
+			hasPayload = true
+		}
+
+		payloadRootQueries := make([]datadogV2.SecurityMonitoringThirdPartyRootQuery, len(tfRootQueries))
+
+		for idx, tfQuery := range tfRootQueries {
+			payloadRootQueries[idx] = *buildRootQueryPayload(tfQuery.(map[string]interface{}))
+		}
+
+		payload.SetRootQueries(payloadRootQueries)
+	}
+
+	return payload, hasPayload
+}
+
+func buildRootQueryPayload(rootQuery map[string]interface{}) *datadogV2.SecurityMonitoringThirdPartyRootQuery {
+	payloadRootQuery := datadogV2.NewSecurityMonitoringThirdPartyRootQuery()
+
+	if v, ok := rootQuery["query"]; ok {
+		payloadRootQuery.SetQuery(v.(string))
+	}
+
+	if v, ok := rootQuery["group_by_fields"]; ok {
+		payloadRootQuery.SetGroupByFields(parseStringArray(v.([]interface{})))
+	}
+
+	return payloadRootQuery
+}
+
+func parseStringArray(array []interface{}) []string {
+	parsed := make([]string, len(array))
+
+	for idx, value := range array {
+		parsed[idx] = value.(string)
+	}
+
+	return parsed
+}
+
 func extractMapFromInterface(tfOptionsList []interface{}) map[string]interface{} {
 	var tfOptions map[string]interface{}
 	if len(tfOptionsList) == 0 || tfOptionsList[0] == nil {
@@ -651,7 +928,7 @@ func extractMapFromInterface(tfOptionsList []interface{}) map[string]interface{}
 	return tfOptions
 }
 
-func buildCreateStandardPayloadQueries(d *schema.ResourceData) []datadogV2.SecurityMonitoringStandardRuleQuery {
+func buildCreateStandardPayloadQueries(d utils.Resource) []datadogV2.SecurityMonitoringStandardRuleQuery {
 	tfQueries := d.Get("query").([]interface{})
 	payloadQueries := make([]datadogV2.SecurityMonitoringStandardRuleQuery, len(tfQueries))
 	for idx, tfQuery := range tfQueries {
@@ -664,25 +941,11 @@ func buildCreateStandardPayloadQueries(d *schema.ResourceData) []datadogV2.Secur
 		}
 
 		if v, ok := query["group_by_fields"]; ok {
-			tfGroupByFields := v.([]interface{})
-			groupByFields := make([]string, 0)
-			for _, value := range tfGroupByFields {
-				if value != nil {
-					groupByFields = append(groupByFields, value.(string))
-				}
-			}
-			payloadQuery.SetGroupByFields(groupByFields)
+			payloadQuery.SetGroupByFields(parseStringArray(v.([]interface{})))
 		}
 
 		if v, ok := query["distinct_fields"]; ok {
-			tfDistinctFields := v.([]interface{})
-			distinctFields := make([]string, 0)
-			for _, value := range tfDistinctFields {
-				if value != nil {
-					distinctFields = append(distinctFields, value.(string))
-				}
-			}
-			payloadQuery.SetDistinctFields(distinctFields)
+			payloadQuery.SetDistinctFields(parseStringArray(v.([]interface{})))
 		}
 
 		if v, ok := query["metric"]; ok {
@@ -690,13 +953,7 @@ func buildCreateStandardPayloadQueries(d *schema.ResourceData) []datadogV2.Secur
 		}
 
 		if v, ok := query["metrics"]; ok && v != nil {
-			if tfMetrics, ok := v.([]interface{}); ok && len(tfMetrics) > 0 {
-				metrics := make([]string, len(tfMetrics))
-				for i, value := range tfMetrics {
-					metrics[i] = value.(string)
-				}
-				payloadQuery.SetMetrics(metrics)
-			}
+			payloadQuery.SetMetrics(parseStringArray(v.([]interface{})))
 		}
 
 		if v, ok := query["name"]; ok {
@@ -711,7 +968,7 @@ func buildCreateStandardPayloadQueries(d *schema.ResourceData) []datadogV2.Secur
 	return payloadQueries
 }
 
-func buildCreateSignalPayloadQueries(d *schema.ResourceData) ([]datadogV2.SecurityMonitoringSignalRuleQuery, error) {
+func buildCreateSignalPayloadQueries(d utils.Resource) ([]datadogV2.SecurityMonitoringSignalRuleQuery, error) {
 	tfQueries := d.Get("signal_query").([]interface{})
 	payloadQueries := make([]datadogV2.SecurityMonitoringSignalRuleQuery, len(tfQueries))
 	for idx, tfQuery := range tfQueries {
@@ -724,12 +981,7 @@ func buildCreateSignalPayloadQueries(d *schema.ResourceData) ([]datadogV2.Securi
 		}
 
 		if v, ok := query["correlated_by_fields"]; ok {
-			tfCorrelatedByFields := v.([]interface{})
-			correlatedByFields := make([]string, len(tfCorrelatedByFields))
-			for i, value := range tfCorrelatedByFields {
-				correlatedByFields[i] = value.(string)
-			}
-			payloadQuery.SetCorrelatedByFields(correlatedByFields)
+			payloadQuery.SetCorrelatedByFields(parseStringArray(v.([]interface{})))
 		}
 
 		if v, ok := query["correlated_query_index"]; ok && len(v.(string)) > 0 {
@@ -797,7 +1049,6 @@ func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.Re
 }
 
 func updateCommonResourceDataFromResponse(d *schema.ResourceData, ruleResponse securityMonitoringRuleResponseInterface) {
-	d.Set("case", extractRuleCases(ruleResponse.GetCases()))
 	d.Set("message", ruleResponse.GetMessage())
 	d.Set("name", ruleResponse.GetName())
 	d.Set("has_extended_title", ruleResponse.GetHasExtendedTitle())
@@ -817,13 +1068,53 @@ func updateCommonResourceDataFromResponse(d *schema.ResourceData, ruleResponse s
 	}
 }
 
+func extractThirdPartyCases(responseThirdPartyCases []datadogV2.SecurityMonitoringThirdPartyRuleCase) []map[string]interface{} {
+	tfThirdPartyCases := make([]map[string]interface{}, len(responseThirdPartyCases))
+
+	for idx, thirdPartyCase := range responseThirdPartyCases {
+		tfThirdPartyCase := make(map[string]interface{})
+
+		if status, ok := thirdPartyCase.GetStatusOk(); ok {
+			tfThirdPartyCase["status"] = *status
+		}
+
+		if name, ok := thirdPartyCase.GetNameOk(); ok {
+			tfThirdPartyCase["name"] = *name
+		}
+
+		if notifications, ok := thirdPartyCase.GetNotificationsOk(); ok {
+			tfThirdPartyCase["notifications"] = *notifications
+		}
+
+		if query, ok := thirdPartyCase.GetQueryOk(); ok {
+			tfThirdPartyCase["query"] = *query
+		}
+
+		tfThirdPartyCases[idx] = tfThirdPartyCase
+	}
+
+	return tfThirdPartyCases
+}
+
 func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringStandardRuleResponse) {
 	updateCommonResourceDataFromResponse(d, ruleResponse)
+	if options, ok := ruleResponse.GetOptionsOk(); ok && options.GetDetectionMethod() == datadogV2.SECURITYMONITORINGRULEDETECTIONMETHOD_THIRD_PARTY {
+		d.Set("third_party_case", extractThirdPartyCases(ruleResponse.GetThirdPartyCases()))
+	} else {
+		d.Set("case", extractRuleCases(ruleResponse.GetCases()))
+		d.Set("query", extractStandardRuleQueries(ruleResponse.GetQueries()))
+	}
 
-	ruleQueries := make([]map[string]interface{}, len(ruleResponse.GetQueries()))
-	for idx := range ruleResponse.GetQueries() {
+	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
+		d.Set("type", *ruleType)
+	}
+}
+
+func extractStandardRuleQueries(responseRuleQueries []datadogV2.SecurityMonitoringStandardRuleQuery) []map[string]interface{} {
+	ruleQueries := make([]map[string]interface{}, len(responseRuleQueries))
+
+	for idx, responseRuleQuery := range responseRuleQueries {
 		ruleQuery := make(map[string]interface{})
-		responseRuleQuery := ruleResponse.GetQueries()[idx]
 
 		if aggregation, ok := responseRuleQuery.GetAggregationOk(); ok {
 			ruleQuery["aggregation"] = *aggregation
@@ -849,15 +1140,14 @@ func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse
 
 		ruleQueries[idx] = ruleQuery
 	}
-	d.Set("query", ruleQueries)
 
-	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
-		d.Set("type", *ruleType)
-	}
+	return ruleQueries
 }
 
 func updateSignalResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datadogV2.SecurityMonitoringSignalRuleResponse) {
 	updateCommonResourceDataFromResponse(d, ruleResponse)
+
+	d.Set("case", extractRuleCases(ruleResponse.GetCases()))
 
 	ruleQueries := make([]map[string]interface{}, len(ruleResponse.GetQueries()))
 	for idx := range ruleResponse.GetQueries() {
@@ -964,6 +1254,31 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 		tfImpossibleTravelOptions["baseline_user_locations"] = impossibleTravelOptions.GetBaselineUserLocations()
 		tfOptions["impossible_travel_options"] = []map[string]interface{}{tfImpossibleTravelOptions}
 	}
+	if thirdPartyOptions, ok := options.GetThirdPartyRuleOptionsOk(); ok {
+		tfThirdPartyOptions := make(map[string]interface{})
+		tfThirdPartyOptions["default_status"] = thirdPartyOptions.GetDefaultStatus()
+
+		if defaultNotifications, ok := thirdPartyOptions.GetDefaultNotificationsOk(); ok {
+			tfThirdPartyOptions["default_notifications"] = *defaultNotifications
+		}
+
+		if signalTitleTemplate, ok := thirdPartyOptions.GetSignalTitleTemplateOk(); ok {
+			tfThirdPartyOptions["signal_title_template"] = signalTitleTemplate
+		}
+
+		tfRootQueries := make([]map[string]interface{}, len(thirdPartyOptions.GetRootQueries()))
+
+		for idx, rootQuery := range thirdPartyOptions.GetRootQueries() {
+			tfRootQueries[idx] = map[string]interface{}{
+				"query":           rootQuery.GetQuery(),
+				"group_by_fields": rootQuery.GetGroupByFields(),
+			}
+		}
+
+		tfThirdPartyOptions["root_query"] = tfRootQueries
+
+		tfOptions["third_party_rule_options"] = []map[string]interface{}{tfThirdPartyOptions}
+	}
 	return tfOptions
 }
 
@@ -999,74 +1314,94 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 		return &datadogV2.SecurityMonitoringRuleUpdatePayload{}, err
 	}
 
-	tfCases := d.Get("case").([]interface{})
-	payloadCases := make([]datadogV2.SecurityMonitoringRuleCase, len(tfCases))
+	if isThirdPartyRule(d) {
+		tfThirdPartyCases := d.Get("third_party_case").([]interface{})
+		payloadThirdPartyCases := make([]datadogV2.SecurityMonitoringThirdPartyRuleCase, len(tfThirdPartyCases))
 
-	for idx, tfRuleCase := range tfCases {
-		structRuleCase := datadogV2.SecurityMonitoringRuleCase{}
+		for idx, tfThirdPartyCase := range tfThirdPartyCases {
+			parsedCase := tfThirdPartyCase.(map[string]interface{})
+			payloadCase := datadogV2.SecurityMonitoringThirdPartyRuleCase{}
 
-		ruleCase := tfRuleCase.(map[string]interface{})
-		status := datadogV2.SecurityMonitoringRuleSeverity(ruleCase["status"].(string))
-		structRuleCase.SetStatus(status)
-
-		if name, ok := ruleCase["name"]; ok {
-			structRuleCase.SetName(name.(string))
-		}
-		if condition, ok := ruleCase["condition"]; ok {
-			structRuleCase.SetCondition(condition.(string))
-		}
-		if v, ok := ruleCase["notifications"]; ok {
-			tfNotifications := v.([]interface{})
-			notifications := make([]string, len(tfNotifications))
-			for i, value := range tfNotifications {
-				notifications[i] = value.(string)
+			if v, ok := parsedCase["status"]; ok {
+				payloadCase.SetStatus(datadogV2.SecurityMonitoringRuleSeverity(v.(string)))
 			}
-			structRuleCase.SetNotifications(notifications)
+			if v, ok := parsedCase["notifications"]; ok {
+				payloadCase.SetNotifications(parseStringArray(v.([]interface{})))
+			}
+			if v, ok := parsedCase["query"]; ok {
+				payloadCase.SetQuery(v.(string))
+			}
+			if v, ok := parsedCase["name"]; ok {
+				payloadCase.SetName(v.(string))
+			}
+
+			payloadThirdPartyCases[idx] = payloadCase
 		}
-		payloadCases[idx] = structRuleCase
+
+		payload.SetThirdPartyCases(payloadThirdPartyCases)
+	} else {
+		tfCases := d.Get("case").([]interface{})
+		payloadCases := make([]datadogV2.SecurityMonitoringRuleCase, len(tfCases))
+
+		for idx, tfRuleCase := range tfCases {
+			structRuleCase := datadogV2.SecurityMonitoringRuleCase{}
+
+			ruleCase := tfRuleCase.(map[string]interface{})
+			status := datadogV2.SecurityMonitoringRuleSeverity(ruleCase["status"].(string))
+			structRuleCase.SetStatus(status)
+
+			if name, ok := ruleCase["name"]; ok {
+				structRuleCase.SetName(name.(string))
+			}
+			if condition, ok := ruleCase["condition"]; ok {
+				structRuleCase.SetCondition(condition.(string))
+			}
+			if v, ok := ruleCase["notifications"]; ok {
+				structRuleCase.SetNotifications(parseStringArray(v.([]interface{})))
+			}
+			payloadCases[idx] = structRuleCase
+		}
+		payload.SetCases(payloadCases)
+
+		isSignalCorrelation := isSignalCorrelationSchema(d)
+		var v interface{}
+		var ok bool
+		if isSignalCorrelation {
+			v, ok = d.GetOk("signal_query")
+		} else {
+			v, ok = d.GetOk("query")
+		}
+		var err error
+		if ok {
+			tfQueries := v.([]interface{})
+			payloadQueries := make([]datadogV2.SecurityMonitoringRuleQuery, len(tfQueries))
+			for idx, tfQuery := range tfQueries {
+				if isSignalCorrelation {
+					if payloadQueries[idx], err = buildUpdateSignalRuleQuery(tfQuery); err != nil {
+						return &payload, err
+					}
+				} else {
+					payloadQueries[idx] = *buildUpdateStandardRuleQuery(tfQuery)
+				}
+			}
+
+			payload.SetQueries(payloadQueries)
+		}
 	}
-	payload.SetCases(payloadCases)
 
 	payload.SetIsEnabled(d.Get("enabled").(bool))
 	payload.SetHasExtendedTitle(d.Get("has_extended_title").(bool))
 
 	if v, ok := d.GetOk("message"); ok {
-		message := v.(string)
-		payload.Message = &message
+		payload.SetMessage(v.(string))
 	}
 
 	if v, ok := d.GetOk("name"); ok {
-		name := v.(string)
-		payload.Name = &name
+		payload.SetName(v.(string))
 	}
 
 	if v, ok := d.GetOk("options"); ok {
 		payload.Options = buildPayloadOptions(v.([]interface{}), d.Get("type").(string))
-	}
-
-	isSignalCorrelation := isSignalCorrelationSchema(d)
-	var v interface{}
-	var ok bool
-	if isSignalCorrelation {
-		v, ok = d.GetOk("signal_query")
-	} else {
-		v, ok = d.GetOk("query")
-	}
-	var err error
-	if ok {
-		tfQueries := v.([]interface{})
-		payloadQueries := make([]datadogV2.SecurityMonitoringRuleQuery, len(tfQueries))
-		for idx, tfQuery := range tfQueries {
-			if isSignalCorrelation {
-				if payloadQueries[idx], err = buildUpdateSignalRuleQuery(tfQuery); err != nil {
-					return &payload, err
-				}
-			} else {
-				payloadQueries[idx] = *buildUpdateStandardRuleQuery(tfQuery)
-			}
-		}
-
-		payload.SetQueries(payloadQueries)
 	}
 
 	if v, ok := d.GetOk("tags"); ok {
@@ -1078,10 +1413,8 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 		payload.SetTags(tags)
 	}
 
-	if v, ok := d.GetOk("filter"); ok {
-		tfFilters := v.([]interface{})
-		payload.SetFilters(buildPayloadFilters(tfFilters))
-	}
+	tfFilters := d.Get("filter")
+	payload.SetFilters(buildPayloadFilters(tfFilters.([]interface{})))
 
 	return &payload, nil
 }
@@ -1096,25 +1429,11 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonito
 	}
 
 	if v, ok := query["group_by_fields"]; ok {
-		tfGroupByFields := v.([]interface{})
-		groupByFields := make([]string, 0)
-		for _, value := range tfGroupByFields {
-			if value != nil {
-				groupByFields = append(groupByFields, value.(string))
-			}
-		}
-		payloadQuery.SetGroupByFields(groupByFields)
+		payloadQuery.SetGroupByFields(parseStringArray(v.([]interface{})))
 	}
 
 	if v, ok := query["distinct_fields"]; ok {
-		tfDistinctFields := v.([]interface{})
-		distinctFields := make([]string, 0)
-		for _, value := range tfDistinctFields {
-			if value != nil {
-				distinctFields = append(distinctFields, value.(string))
-			}
-		}
-		payloadQuery.SetDistinctFields(distinctFields)
+		payloadQuery.SetDistinctFields(parseStringArray(v.([]interface{})))
 	}
 
 	if v, ok := query["metric"]; ok {
@@ -1123,12 +1442,7 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonito
 	}
 
 	if v, ok := query["metrics"]; ok {
-		tfMetrics := v.([]interface{})
-		metrics := make([]string, len(tfMetrics))
-		for i, value := range tfMetrics {
-			metrics[i] = value.(string)
-		}
-		payloadQuery.SetMetrics(metrics)
+		payloadQuery.SetMetrics(parseStringArray(v.([]interface{})))
 	}
 
 	if v, ok := query["name"]; ok {
@@ -1153,12 +1467,7 @@ func buildUpdateSignalRuleQuery(tfQuery interface{}) (datadogV2.SecurityMonitori
 	}
 
 	if v, ok := query["correlated_by_fields"]; ok {
-		tfCorrelatedByFields := v.([]interface{})
-		correlatedByFields := make([]string, len(tfCorrelatedByFields))
-		for i, value := range tfCorrelatedByFields {
-			correlatedByFields[i] = value.(string)
-		}
-		payloadQuery.SetCorrelatedByFields(correlatedByFields)
+		payloadQuery.SetCorrelatedByFields(parseStringArray(v.([]interface{})))
 	}
 
 	if v, ok := query["correlated_query_index"]; ok && len(v.(string)) > 0 {
@@ -1192,5 +1501,26 @@ func resourceDatadogSecurityMonitoringRuleDelete(ctx context.Context, d *schema.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting security monitoring rule")
 	}
 
+	return nil
+}
+
+func resourceDatadogSecurityMonitoringRuleCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	if validate, ok := diff.GetOkExists("validate"); !ok || !validate.(bool) {
+		// Explicitly skip validation
+		log.Printf("[DEBUG] Validate is %v, skipping validation", validate.(bool))
+		return nil
+	}
+
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	if payload, err := buildValidatePayload(diff); err == nil {
+		if httpResponse, err := apiInstances.GetSecurityMonitoringApiV2().ValidateSecurityMonitoringRule(auth, *payload); err != nil || httpResponse == nil {
+			return utils.TranslateClientError(err, httpResponse, "error validating security monitoring rule")
+		}
+	} else {
+		log.Printf("[DEBUG] Skipping validation due to an error: %v", err)
+	}
 	return nil
 }

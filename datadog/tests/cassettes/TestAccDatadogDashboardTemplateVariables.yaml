@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard
     method: POST
+    id: 0
   response:
     body: |
       {"id":"maf-qky-msx","title":"tf-TestAccDatadogDashboardTemplateVariables-local-1682003486","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/maf-qky-msx/tf-testaccdatadogdashboardtemplatevariables-local-1682003486","is_read_only":true,"template_variables":[{"defaults":["foo","bar"],"name":"var_1","prefix":"host"},{"defaults":["autoscaling","two"],"name":"var_2","prefix":"service_name"}],"widgets":[{"definition":{"background_color":"pink","content":"note text","font_size":"14","has_padding":true,"show_tick":true,"text_align":"center","tick_edge":"left","tick_pos":"50%","type":"note"},"id":5419317167478845}],"notify_list":[],"created_at":"2023-04-20T15:11:28.311679+00:00","modified_at":"2023-04-20T15:11:28.311679+00:00","template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","values":["host.dc"]}]},{"name":"preset_2","template_variables":[{"name":"var_2","values":["host.dc","foo"]},{"name":"var_3","values":["my_service"]}]}],"tags":[]}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard/maf-qky-msx
     method: GET
+    id: 1
   response:
     body: |
       {"id":"maf-qky-msx","title":"tf-TestAccDatadogDashboardTemplateVariables-local-1682003486","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/maf-qky-msx/tf-testaccdatadogdashboardtemplatevariables-local-1682003486","is_read_only":true,"template_variables":[{"defaults":["foo","bar"],"name":"var_1","prefix":"host"},{"defaults":["autoscaling","two"],"name":"var_2","prefix":"service_name"}],"widgets":[{"definition":{"background_color":"pink","content":"note text","font_size":"14","has_padding":true,"show_tick":true,"text_align":"center","tick_edge":"left","tick_pos":"50%","type":"note"},"id":5419317167478845}],"notify_list":[],"created_at":"2023-04-20T15:11:28.311679+00:00","modified_at":"2023-04-20T15:11:28.311679+00:00","template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","values":["host.dc"]}]},{"name":"preset_2","template_variables":[{"name":"var_2","values":["host.dc","foo"]},{"name":"var_3","values":["my_service"]}]}],"tags":[]}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard/maf-qky-msx
     method: GET
+    id: 2
   response:
     body: |
       {"id":"maf-qky-msx","title":"tf-TestAccDatadogDashboardTemplateVariables-local-1682003486","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/maf-qky-msx/tf-testaccdatadogdashboardtemplatevariables-local-1682003486","is_read_only":true,"template_variables":[{"defaults":["foo","bar"],"name":"var_1","prefix":"host"},{"defaults":["autoscaling","two"],"name":"var_2","prefix":"service_name"}],"widgets":[{"definition":{"background_color":"pink","content":"note text","font_size":"14","has_padding":true,"show_tick":true,"text_align":"center","tick_edge":"left","tick_pos":"50%","type":"note"},"id":5419317167478845}],"notify_list":[],"created_at":"2023-04-20T15:11:28.311679+00:00","modified_at":"2023-04-20T15:11:28.311679+00:00","template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","values":["host.dc"]}]},{"name":"preset_2","template_variables":[{"name":"var_2","values":["host.dc","foo"]},{"name":"var_3","values":["my_service"]}]}],"tags":[]}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard/maf-qky-msx
     method: GET
+    id: 3
   response:
     body: |
       {"id":"maf-qky-msx","title":"tf-TestAccDatadogDashboardTemplateVariables-local-1682003486","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/maf-qky-msx/tf-testaccdatadogdashboardtemplatevariables-local-1682003486","is_read_only":true,"template_variables":[{"defaults":["foo","bar"],"name":"var_1","prefix":"host"},{"defaults":["autoscaling","two"],"name":"var_2","prefix":"service_name"}],"widgets":[{"definition":{"background_color":"pink","content":"note text","font_size":"14","has_padding":true,"show_tick":true,"text_align":"center","tick_edge":"left","tick_pos":"50%","type":"note"},"id":5419317167478845}],"notify_list":[],"created_at":"2023-04-20T15:11:28.311679+00:00","modified_at":"2023-04-20T15:11:28.311679+00:00","template_variable_presets":[{"name":"preset_1","template_variables":[{"name":"var_1","values":["host.dc"]}]},{"name":"preset_2","template_variables":[{"name":"var_2","values":["host.dc","foo"]},{"name":"var_3","values":["my_service"]}]}],"tags":[]}
@@ -71,7 +74,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -80,6 +83,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v1/dashboard/maf-qky-msx
     method: DELETE
+    id: 4
   response:
     body: |
       {"deleted_dashboard_id":"maf-qky-msx"}
@@ -88,4 +92,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

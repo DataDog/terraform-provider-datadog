@@ -1,0 +1,167 @@
+version: 2
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters
+    method: GET
+    id: 0
+  response:
+    body: |
+      {"data":[{"id":"cQ9X4t6OROuFAgx4pDlVjw","attributes":{"name":"Dynamic Instrumentation Default","rate":1.0,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"operation_name:dd.dynamic.span"},"editable":true,"execution_order":1,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"7RBOb7dLSYWI01yc3pIH8w","attributes":{"name":"Error Default","rate":1.0,"enabled":true,"filter_type":"spans-errors-sampling-processor","filter":{"query":"status:error"},"editable":true,"execution_order":2,"modified_by":"frog@datadoghq.com","modified_at":1695634009,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"jdZrilSJQLqzb6Cu7aub9Q","attributes":{"name":"Application Security Monitoring Default","rate":1.0,"enabled":false,"filter_type":"spans-appsec-sampling-processor","filter":{"query":"@appsec.event:true"},"editable":true,"execution_order":3,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters
+    method: GET
+    id: 1
+  response:
+    body: |
+      {"data":[{"id":"cQ9X4t6OROuFAgx4pDlVjw","attributes":{"name":"Dynamic Instrumentation Default","rate":1.0,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"operation_name:dd.dynamic.span"},"editable":true,"execution_order":1,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"7RBOb7dLSYWI01yc3pIH8w","attributes":{"name":"Error Default","rate":1.0,"enabled":true,"filter_type":"spans-errors-sampling-processor","filter":{"query":"status:error"},"editable":true,"execution_order":2,"modified_by":"frog@datadoghq.com","modified_at":1695634009,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"jdZrilSJQLqzb6Cu7aub9Q","attributes":{"name":"Application Security Monitoring Default","rate":1.0,"enabled":false,"filter_type":"spans-appsec-sampling-processor","filter":{"query":"@appsec.event:true"},"editable":true,"execution_order":3,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: |
+      {"data":[{"id":"jdZrilSJQLqzb6Cu7aub9Q","type":"apm_retention_filter"},{"id":"7RBOb7dLSYWI01yc3pIH8w","type":"apm_retention_filter"},{"id":"cQ9X4t6OROuFAgx4pDlVjw","type":"apm_retention_filter"}]}
+    form: {}
+    headers:
+      Accept:
+      - '*/*'
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters-execution-order
+    method: PUT
+    id: 2
+  response:
+    body: |
+      {}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters
+    method: GET
+    id: 3
+  response:
+    body: |
+      {"data":[{"id":"jdZrilSJQLqzb6Cu7aub9Q","attributes":{"name":"Application Security Monitoring Default","rate":1.0,"enabled":false,"filter_type":"spans-appsec-sampling-processor","filter":{"query":"@appsec.event:true"},"editable":true,"execution_order":1,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"7RBOb7dLSYWI01yc3pIH8w","attributes":{"name":"Error Default","rate":1.0,"enabled":true,"filter_type":"spans-errors-sampling-processor","filter":{"query":"status:error"},"editable":true,"execution_order":2,"modified_by":"frog@datadoghq.com","modified_at":1695634009,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"cQ9X4t6OROuFAgx4pDlVjw","attributes":{"name":"Dynamic Instrumentation Default","rate":1.0,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"operation_name:dd.dynamic.span"},"editable":true,"execution_order":3,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters
+    method: GET
+    id: 4
+  response:
+    body: |
+      {"data":[{"id":"jdZrilSJQLqzb6Cu7aub9Q","attributes":{"name":"Application Security Monitoring Default","rate":1.0,"enabled":false,"filter_type":"spans-appsec-sampling-processor","filter":{"query":"@appsec.event:true"},"editable":true,"execution_order":1,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"7RBOb7dLSYWI01yc3pIH8w","attributes":{"name":"Error Default","rate":1.0,"enabled":true,"filter_type":"spans-errors-sampling-processor","filter":{"query":"status:error"},"editable":true,"execution_order":2,"modified_by":"frog@datadoghq.com","modified_at":1695634009,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"cQ9X4t6OROuFAgx4pDlVjw","attributes":{"name":"Dynamic Instrumentation Default","rate":1.0,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"operation_name:dd.dynamic.span"},"editable":true,"execution_order":3,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters
+    method: GET
+    id: 5
+  response:
+    body: |
+      {"data":[{"id":"jdZrilSJQLqzb6Cu7aub9Q","attributes":{"name":"Application Security Monitoring Default","rate":1.0,"enabled":false,"filter_type":"spans-appsec-sampling-processor","filter":{"query":"@appsec.event:true"},"editable":true,"execution_order":1,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"7RBOb7dLSYWI01yc3pIH8w","attributes":{"name":"Error Default","rate":1.0,"enabled":true,"filter_type":"spans-errors-sampling-processor","filter":{"query":"status:error"},"editable":true,"execution_order":2,"modified_by":"frog@datadoghq.com","modified_at":1695634009,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"cQ9X4t6OROuFAgx4pDlVjw","attributes":{"name":"Dynamic Instrumentation Default","rate":1.0,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"operation_name:dd.dynamic.span"},"editable":true,"execution_order":3,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters
+    method: GET
+    id: 6
+  response:
+    body: |
+      {"data":[{"id":"jdZrilSJQLqzb6Cu7aub9Q","attributes":{"name":"Application Security Monitoring Default","rate":1.0,"enabled":false,"filter_type":"spans-appsec-sampling-processor","filter":{"query":"@appsec.event:true"},"editable":true,"execution_order":1,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"7RBOb7dLSYWI01yc3pIH8w","attributes":{"name":"Error Default","rate":1.0,"enabled":true,"filter_type":"spans-errors-sampling-processor","filter":{"query":"status:error"},"editable":true,"execution_order":2,"modified_by":"frog@datadoghq.com","modified_at":1695634009,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"cQ9X4t6OROuFAgx4pDlVjw","attributes":{"name":"Dynamic Instrumentation Default","rate":1.0,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"operation_name:dd.dynamic.span"},"editable":true,"execution_order":3,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters
+    method: GET
+    id: 7
+  response:
+    body: |
+      {"data":[{"id":"jdZrilSJQLqzb6Cu7aub9Q","attributes":{"name":"Application Security Monitoring Default","rate":1.0,"enabled":false,"filter_type":"spans-appsec-sampling-processor","filter":{"query":"@appsec.event:true"},"editable":true,"execution_order":1,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"7RBOb7dLSYWI01yc3pIH8w","attributes":{"name":"Error Default","rate":1.0,"enabled":true,"filter_type":"spans-errors-sampling-processor","filter":{"query":"status:error"},"editable":true,"execution_order":2,"modified_by":"frog@datadoghq.com","modified_at":1695634009,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"cQ9X4t6OROuFAgx4pDlVjw","attributes":{"name":"Dynamic Instrumentation Default","rate":1.0,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"operation_name:dd.dynamic.span"},"editable":true,"execution_order":3,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v2/apm/config/retention-filters
+    method: GET
+    id: 8
+  response:
+    body: |
+      {"data":[{"id":"jdZrilSJQLqzb6Cu7aub9Q","attributes":{"name":"Application Security Monitoring Default","rate":1.0,"enabled":false,"filter_type":"spans-appsec-sampling-processor","filter":{"query":"@appsec.event:true"},"editable":true,"execution_order":1,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"7RBOb7dLSYWI01yc3pIH8w","attributes":{"name":"Error Default","rate":1.0,"enabled":true,"filter_type":"spans-errors-sampling-processor","filter":{"query":"status:error"},"editable":true,"execution_order":2,"modified_by":"frog@datadoghq.com","modified_at":1695634009,"created_by":"","created_at":0},"type":"apm_retention_filter"},{"id":"cQ9X4t6OROuFAgx4pDlVjw","attributes":{"name":"Dynamic Instrumentation Default","rate":1.0,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"operation_name:dd.dynamic.span"},"editable":true,"execution_order":3,"modified_by":"","modified_at":0,"created_by":"","created_at":0},"type":"apm_retention_filter"}]}
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"

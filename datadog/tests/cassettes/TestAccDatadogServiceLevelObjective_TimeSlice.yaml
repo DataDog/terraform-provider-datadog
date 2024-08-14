@@ -1,0 +1,180 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 695
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"some description about foo SLO","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1712268775","sli_specification":{"time_slice":{"comparator":"\u003e","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}},"tags":["foo:bar","baz"],"target_threshold":99,"thresholds":[{"target":99,"timeframe":"7d","warning":99.5}],"timeframe":"7d","type":"time_slice","warning_threshold":99.5}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":[{"id":"a6d2d7f64b81594abce512badd8e8f28","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1712268775","tags":["baz","foo:bar"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"time_slice","type_id":2,"description":"some description about foo SLO","timeframe":"7d","warning_threshold":99.5,"target_threshold":99,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"created_at":1712268777,"modified_at":1712268777,"sli_specification":{"time_slice":{"comparator":">","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}}}],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 185.92225ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/a6d2d7f64b81594abce512badd8e8f28
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"a6d2d7f64b81594abce512badd8e8f28","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1712268775","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"time_slice","type_id":2,"description":"some description about foo SLO","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"created_at":1712268777,"modified_at":1712268777,"sli_specification":{"time_slice":{"comparator":">","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 67.932459ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/a6d2d7f64b81594abce512badd8e8f28
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"a6d2d7f64b81594abce512badd8e8f28","name":"tf-TestAccDatadogServiceLevelObjective_TimeSlice-local-1712268775","tags":["foo:bar","baz"],"monitor_tags":[],"thresholds":[{"timeframe":"7d","target":99.0,"target_display":"99.","warning":99.5,"warning_display":"99.5"}],"type":"time_slice","type_id":2,"description":"some description about foo SLO","timeframe":"7d","warning_threshold":99.5,"target_threshold":99.0,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"created_at":1712268777,"modified_at":1712268777,"sli_specification":{"time_slice":{"comparator":">","query":{"formulas":[{"formula":"(query1-query2)/query1"}],"queries":[{"data_source":"metrics","name":"query1","query":"sum:trace.grpc.server.hits{service:monitor-history-reader}"},{"data_source":"metrics","name":"query2","query":"sum:trace.grpc.server.errors{service:monitor-history-reader}"}]},"query_interval_seconds":300,"threshold":0.99}}},"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 70.134417ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/a6d2d7f64b81594abce512badd8e8f28
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":["a6d2d7f64b81594abce512badd8e8f28"],"error":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 153.077708ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/slo/a6d2d7f64b81594abce512badd8e8f28
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["SLO not found: a6d2d7f64b81594abce512badd8e8f28 not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 75.270708ms

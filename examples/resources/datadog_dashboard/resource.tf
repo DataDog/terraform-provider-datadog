@@ -1,9 +1,8 @@
 # Example Ordered Layout
 resource "datadog_dashboard" "ordered_dashboard" {
-  title        = "Ordered Layout Dashboard"
-  description  = "Created using the Datadog provider in Terraform"
-  layout_type  = "ordered"
-  is_read_only = true
+  title       = "Ordered Layout Dashboard"
+  description = "Created using the Datadog provider in Terraform"
+  layout_type = "ordered"
 
   widget {
     alert_graph_definition {
@@ -397,10 +396,9 @@ resource "datadog_dashboard" "ordered_dashboard" {
 
 # Example Free Layout
 resource "datadog_dashboard" "free_dashboard" {
-  title        = "Free Layout Dashboard"
-  description  = "Created using the Datadog provider in Terraform"
-  layout_type  = "free"
-  is_read_only = false
+  title       = "Free Layout Dashboard"
+  description = "Created using the Datadog provider in Terraform"
+  layout_type = "free"
 
   widget {
     event_stream_definition {
@@ -646,6 +644,45 @@ resource "datadog_dashboard" "free_dashboard" {
       width  = 28
       x      = 0
       y      = 83
+    }
+  }
+  widget {
+    timeseries_definition {
+      request {
+        formula {
+          formula_expression = "query1"
+          alias              = "my cloud cost query"
+        }
+        query {
+          cloud_cost_query {
+            data_source = "cloud_cost"
+            query       = "sum:aws.cost.amortized{*}"
+            name        = "query1"
+            aggregator  = "sum"
+          }
+        }
+      }
+    }
+  }
+  widget {
+    powerpack_definition {
+      powerpack_id     = "00000000-0000-0000-0000-000000000000"
+      background_color = "blue"
+      banner_img       = "https://example.org/example.png"
+      show_title       = true
+      title            = "Powerpack Widget"
+      template_variables {
+        controlled_externally {
+          name   = "var_2"
+          values = ["autoscaling"]
+          prefix = "service_name"
+        }
+        controlled_by_powerpack {
+          name   = "var_3"
+          prefix = "timeframe"
+          values = ["default", "values", "here"]
+        }
+      }
     }
   }
 

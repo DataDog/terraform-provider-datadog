@@ -9,28 +9,27 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccDatadogApplgicationKeyDatasource_matchId(t *testing.T) {
+func TestAccDatadogApplicationKeyDatasource_matchId(t *testing.T) {
 	if isRecording() || isReplaying() {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	applicationKeyName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
+	applicationKeyName := uniqueEntityName(ctx, t)
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApplicationKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceApplicationKeyIdConfig(applicationKeyName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogApplicationKeyExists(accProvider, "datadog_application_key.app_key_1"),
+					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, "datadog_application_key.app_key_1"),
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_1", "name", fmt.Sprintf("%s 1", applicationKeyName)),
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_2", "name", fmt.Sprintf("%s 2", applicationKeyName)),
 					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "name", fmt.Sprintf("%s 1", applicationKeyName)),
+					resource.TestCheckResourceAttrSet("data.datadog_application_key.app_key", "id"),
 				),
 			},
 		},
@@ -42,23 +41,59 @@ func TestAccDatadogApplicationKeyDatasource_matchName(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApplicationKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceApplicationKeyNameConfig(applicationKeyName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogApplicationKeyExists(accProvider, "datadog_application_key.app_key_1"),
+					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, "datadog_application_key.app_key_1"),
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_1", "name", fmt.Sprintf("%s 1", applicationKeyName)),
 					resource.TestCheckResourceAttr("datadog_application_key.app_key_2", "name", fmt.Sprintf("%s 2", applicationKeyName)),
 					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "name", fmt.Sprintf("%s 1", applicationKeyName)),
+					resource.TestCheckResourceAttrSet("data.datadog_application_key.app_key", "id"),
+				),
+			},
+			{
+				Config: testAccDatasourceAppKeyExactMatch(applicationKeyName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, "datadog_application_key.app_key_1"),
+					resource.TestCheckResourceAttr("datadog_application_key.app_key_1", "name", applicationKeyName),
+					resource.TestCheckResourceAttr("datadog_application_key.app_key_2", "name", fmt.Sprintf("%s 2", applicationKeyName)),
+					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "name", applicationKeyName),
+					resource.TestCheckResourceAttrSet("data.datadog_application_key.app_key", "id"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogApplicationKeyDatasource_exactMatchName(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	applicationKeyName := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceAppKeyExactMatch(applicationKeyName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, "datadog_application_key.app_key_1"),
+					resource.TestCheckResourceAttr("datadog_application_key.app_key_1", "name", applicationKeyName),
+					resource.TestCheckResourceAttr("datadog_application_key.app_key_2", "name", fmt.Sprintf("%s 2", applicationKeyName)),
+					resource.TestCheckResourceAttr("data.datadog_application_key.app_key", "name", applicationKeyName),
+					resource.TestCheckResourceAttrSet("data.datadog_application_key.app_key", "id"),
 				),
 			},
 		},
@@ -70,13 +105,12 @@ func TestAccDatadogApplicationKeyDatasource_matchIdError(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApplicationKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceApplicationKeyIdOnlyConfig("11111111-2222-3333-4444-555555555555"),
@@ -91,15 +125,13 @@ func TestAccDatadogApplicationKeyDatasource_matchNameError(t *testing.T) {
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	applicationKeyName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApplicationKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceApplicationKeyNameOnlyConfig(applicationKeyName),
@@ -114,13 +146,12 @@ func TestAccDatadogApplicationKeyDatasource_missingParametersError(t *testing.T)
 		t.Skip("This test doesn't support recording or replaying")
 	}
 	t.Parallel()
-	_, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogApplicationKeyDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccDatasourceApplicationKeyMissingParametersConfig(),
@@ -180,7 +211,26 @@ data "datadog_application_key" "app_key" {
 }
 
 func testAccDatasourceApplicationKeyMissingParametersConfig() string {
-	return fmt.Sprintf(`
+	return `
 data "datadog_application_key" "app_key" {
-}`)
+}`
+}
+
+func testAccDatasourceAppKeyExactMatch(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_application_key" "app_key_1" {
+  name = "%s"
+}
+
+resource "datadog_application_key" "app_key_2" {
+  name = "%s 2"
+}
+data "datadog_application_key" "app_key" {
+  depends_on = [
+    datadog_application_key.app_key_1,
+    datadog_application_key.app_key_2,
+  ]
+  exact_match = true
+  name = "%s"
+}`, uniq, uniq, uniq)
 }

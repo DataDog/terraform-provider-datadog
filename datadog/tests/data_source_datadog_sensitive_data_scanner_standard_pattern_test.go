@@ -11,6 +11,10 @@ import (
 
 func TestAccDatadogStandardPatternDatasourceNameFilter(t *testing.T) {
 	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
 	_, accProviders := testAccProviders(context.Background(), t)
 	name := "AWS Access Key ID Scanner"
 
@@ -33,6 +37,10 @@ func TestAccDatadogStandardPatternDatasourceNameFilter(t *testing.T) {
 
 func TestAccDatadogStandardPatternDatasourceErrorMultiple(t *testing.T) {
 	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
 	_, accProviders := testAccProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{
@@ -49,6 +57,10 @@ func TestAccDatadogStandardPatternDatasourceErrorMultiple(t *testing.T) {
 
 func TestAccDatadogStandardPatternDatasourceErrorNotFound(t *testing.T) {
 	t.Parallel()
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+
 	_, accProviders := testAccProviders(context.Background(), t)
 
 	resource.Test(t, resource.TestCase{

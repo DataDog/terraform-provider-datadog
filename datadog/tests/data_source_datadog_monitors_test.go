@@ -79,7 +79,6 @@ resource "datadog_monitor" "foo" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["test_datasource_monitor:%s", "baz"]
 }
 resource "datadog_monitor" "bar" {
@@ -112,7 +111,6 @@ resource "datadog_monitor" "bar" {
   evaluation_delay = 700
   include_tags = true
   require_full_window = true
-  locked = false
   tags = ["test_datasource_monitor:%s", "baz"]
 }`, uniq, uniq, uniq, uniq, uniq, uniq)
 }

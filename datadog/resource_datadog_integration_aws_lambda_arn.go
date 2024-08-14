@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +22,7 @@ func buildDatadogIntegrationAwsLambdaArnStruct(d *schema.ResourceData) *datadogV
 
 func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the log collection Lambdas for an account.\n\nUpdate operations are currently not supported with datadog API so any change forces a new resource.",
+		Description:   "Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the log collection Lambdas for an account.\n\nUpdate operations are currently not supported with datadog API so any change forces a new resource.\n\n**Note**: If you are using AWS GovCloud or the AWS China* region, update the `lambda_arn` parameter for your environment.\n\n *\\*All use of Datadog Services in (or in connection with environments within) mainland China is subject to the disclaimer published in the <a href=\"https://www.datadoghq.com/legal/restricted-service-locations/\">Restricted Service Locations</a> section on our website.*",
 		CreateContext: resourceDatadogIntegrationAwsLambdaArnCreate,
 		ReadContext:   resourceDatadogIntegrationAwsLambdaArnRead,
 		DeleteContext: resourceDatadogIntegrationAwsLambdaArnDelete,
@@ -32,10 +33,11 @@ func resourceDatadogIntegrationAwsLambdaArn() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
 				"account_id": {
-					Description: "Your AWS Account ID without dashes. If your account is a GovCloud or China account, specify the `access_key_id` here.",
-					Type:        schema.TypeString,
-					Required:    true,
-					ForceNew:    true, // waits for update API call support
+					Description:      "Your AWS Account ID without dashes.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ForceNew:         true, // waits for update API call support
+					ValidateDiagFunc: validators.ValidateAWSAccountID,
 				},
 				"lambda_arn": {
 					Description: "The ARN of the Datadog forwarder Lambda.",
@@ -54,8 +56,8 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	attachLambdaArnRequest := buildDatadogIntegrationAwsLambdaArnStruct(d)
 	response, httpresp, err := apiInstances.GetAWSLogsIntegrationApiV1().CreateAWSLambdaARN(auth, *attachLambdaArnRequest)
@@ -73,7 +75,11 @@ func resourceDatadogIntegrationAwsLambdaArnCreate(ctx context.Context, d *schema
 
 	d.SetId(fmt.Sprintf("%s %s", attachLambdaArnRequest.GetAccountId(), attachLambdaArnRequest.GetLambdaArn()))
 
-	return resourceDatadogIntegrationAwsLambdaArnRead(ctx, d, meta)
+	readDiag := resourceDatadogIntegrationAwsLambdaArnRead(ctx, d, meta)
+	if !readDiag.HasError() && d.Id() == "" {
+		return diag.FromErr(fmt.Errorf("aws integration lambda arn with account id `%s` and lambda arn `%s` not found after creation", attachLambdaArnRequest.GetAccountId(), attachLambdaArnRequest.GetLambdaArn()))
+	}
+	return readDiag
 }
 
 func resourceDatadogIntegrationAwsLambdaArnRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -115,8 +121,8 @@ func resourceDatadogIntegrationAwsLambdaArnDelete(ctx context.Context, d *schema
 	auth := providerConf.Auth
 
 	// shared with datadog_integration_aws resource
-	integrationAwsMutex.Lock()
-	defer integrationAwsMutex.Unlock()
+	utils.IntegrationAwsMutex.Lock()
+	defer utils.IntegrationAwsMutex.Unlock()
 
 	accountID, lambdaArn, err := utils.AccountAndLambdaArnFromID(d.Id())
 	if err != nil {

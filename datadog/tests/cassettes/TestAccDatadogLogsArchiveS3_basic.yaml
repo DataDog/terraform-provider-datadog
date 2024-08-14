@@ -1,170 +1,356 @@
 ---
-version: 1
+version: 2
 interactions:
-- request:
-    body: |
-      {"account_id":"994854531005","account_specific_namespace_rules":{},"cspm_resource_collection_enabled":false,"excluded_regions":[],"filter_tags":[],"host_tags":[],"metrics_collection_enabled":true,"resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/aws
-    method: POST
-  response:
-    body: '{"external_id":"a076c21c36fd442ca89868bab4708bef"}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/aws
-    method: GET
-  response:
-    body: '{"accounts":[{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575248491025","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575248491025\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"101505597571","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 101505597571\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"559953484856","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 559953484856\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"545697555751","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 545697555751\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"505154995199","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 505154995199\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"505656974848","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 505656974848\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"994854531005","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: |
-      {"data":{"attributes":{"destination":{"bucket":"my-bucket","integration":{"account_id":"994854531005","role_name":"testacc-datadog-integration-role"},"path":"/path/foo","type":"s3"},"include_tags":true,"name":"my first s3 archive","query":"service:tutu","rehydration_max_scan_size_in_gb":123,"rehydration_tags":["team:intake","team:app"]},"type":"archives"}}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives
-    method: POST
-  response:
-    body: '{"data":{"type":"archives","id":"Vs29MivsSUWiLUagOW08qQ","attributes":{"name":"my first s3 archive","query":"service:tutu","state":"UNKNOWN","destination":{"bucket":"my-bucket","path":"/path/foo","type":"s3","integration":{"role_name":"testacc-datadog-integration-role","account_id":"994854531005"}},"rehydration_tags":["team:intake","team:app"],"include_tags":true,"rehydration_max_scan_size_in_gb":123}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/Vs29MivsSUWiLUagOW08qQ
-    method: GET
-  response:
-    body: '{"data":{"type":"archives","id":"Vs29MivsSUWiLUagOW08qQ","attributes":{"name":"my first s3 archive","query":"service:tutu","state":"UNKNOWN","destination":{"bucket":"my-bucket","path":"/path/foo","type":"s3","integration":{"role_name":"testacc-datadog-integration-role","account_id":"994854531005"}},"rehydration_tags":["team:intake","team:app"],"include_tags":true,"rehydration_max_scan_size_in_gb":123}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/aws
-    method: GET
-  response:
-    body: '{"accounts":[{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575248491025","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575248491025\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"101505597571","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 101505597571\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"559953484856","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 559953484856\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"545697555751","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 545697555751\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"505154995199","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 505154995199\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"505656974848","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 505656974848\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"994854531005","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":[],"resource_collection_enabled":false,"filter_tags":[]}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/Vs29MivsSUWiLUagOW08qQ
-    method: GET
-  response:
-    body: '{"data":{"type":"archives","id":"Vs29MivsSUWiLUagOW08qQ","attributes":{"name":"my first s3 archive","query":"service:tutu","state":"UNKNOWN","destination":{"bucket":"my-bucket","path":"/path/foo","type":"s3","integration":{"role_name":"testacc-datadog-integration-role","account_id":"994854531005"}},"rehydration_tags":["team:intake","team:app"],"include_tags":true,"rehydration_max_scan_size_in_gb":123}}}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - '*/*'
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/Vs29MivsSUWiLUagOW08qQ
-    method: DELETE
-  response:
-    body: ""
-    headers: {}
-    status: 204 No Content
-    code: 204
-    duration: ""
-- request:
-    body: |
-      {"account_id":"994854531005","role_name":"testacc-datadog-integration-role"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/aws
-    method: DELETE
-  response:
-    body: '{}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v2/logs/config/archives/Vs29MivsSUWiLUagOW08qQ
-    method: GET
-  response:
-    body: '{"errors": ["Archive Vs29MivsSUWiLUagOW08qQ not found"]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 404 Not Found
-    code: 404
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/aws
-    method: GET
-  response:
-    body: '{"accounts":[{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"575248491025","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 575248491025\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"101505597571","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 101505597571\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"559953484856","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 559953484856\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"545697555751","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 545697555751\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"505154995199","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 505154995199\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]},{"cspm_resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role","excluded_regions":[],"account_id":"505656974848","host_tags":[],"account_specific_namespace_rules":{},"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 505656974848\nRegions affected: every region\nError was last seen 1m ago"],"resource_collection_enabled":false,"filter_tags":[]}]}'
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: ""
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 325
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"account_id":"555650995497","account_specific_namespace_rules":{},"cspm_resource_collection_enabled":false,"excluded_regions":[],"extended_resource_collection_enabled":false,"filter_tags":[],"host_tags":[],"metrics_collection_enabled":true,"resource_collection_enabled":false,"role_name":"testacc-datadog-integration-role"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/aws
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"external_id":"e4c5ec532a6b4458b62dc07484366b2e"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.0297355s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/aws
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"accounts":[{"account_id":"171198138700","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 171198138700\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170844477300","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170844477300\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170844527600","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170844527600\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170871287700","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170871287700\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170871288100","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170871288100\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170845483500","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170845483500\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170845483800","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170845483800\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 15m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 16m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 15m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"171092901600","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 171092901600\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"529910099511","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"505610257565","role_name":"1234@testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"509899511014","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4856521025550515","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"571025451524","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1011015010051561","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4854981009849554","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4850102521029797","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"569951985050","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"555650995497","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"170059471500","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170059471500\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170076337600","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170076337600\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 121.5275ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 359
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"destination":{"bucket":"my-bucket","integration":{"account_id":"555650995497","role_name":"testacc-datadog-integration-role"},"path":"/path/foo","type":"s3"},"include_tags":true,"name":"my first s3 archive","query":"service:tutu","rehydration_max_scan_size_in_gb":123,"rehydration_tags":["team:intake","team:app"]},"type":"archives"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/archives
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"archives","id":"h569RjVXTbqdMWCdLqu7Dw","attributes":{"name":"my first s3 archive","query":"service:tutu","state":"UNKNOWN","destination":{"bucket":"my-bucket","path":"/path/foo","type":"s3","integration":{"role_name":"testacc-datadog-integration-role","account_id":"555650995497"}},"rehydration_tags":["team:intake","team:app"],"include_tags":true,"rehydration_max_scan_size_in_gb":123}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 146.897875ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/archives/h569RjVXTbqdMWCdLqu7Dw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"archives","id":"h569RjVXTbqdMWCdLqu7Dw","attributes":{"name":"my first s3 archive","query":"service:tutu","state":"UNKNOWN","destination":{"bucket":"my-bucket","path":"/path/foo","type":"s3","integration":{"role_name":"testacc-datadog-integration-role","account_id":"555650995497"}},"rehydration_tags":["team:intake","team:app"],"include_tags":true,"rehydration_max_scan_size_in_gb":123}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 105.884333ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/aws
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"accounts":[{"account_id":"171198138700","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 171198138700\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170844477300","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170844477300\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170844527600","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170844527600\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170871287700","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170871287700\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170871288100","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170871288100\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170845483500","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170845483500\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170845483800","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170845483800\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 15m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 16m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 15m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"171092901600","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 171092901600\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"529910099511","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"505610257565","role_name":"1234@testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"509899511014","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4856521025550515","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"571025451524","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1011015010051561","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4854981009849554","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4850102521029797","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"569951985050","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"555650995497","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"170059471500","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170059471500\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170076337600","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170076337600\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 110.6905ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/archives/h569RjVXTbqdMWCdLqu7Dw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"archives","id":"h569RjVXTbqdMWCdLqu7Dw","attributes":{"name":"my first s3 archive","query":"service:tutu","state":"UNKNOWN","destination":{"bucket":"my-bucket","path":"/path/foo","type":"s3","integration":{"role_name":"testacc-datadog-integration-role","account_id":"555650995497"}},"rehydration_tags":["team:intake","team:app"],"include_tags":true,"rehydration_max_scan_size_in_gb":123}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 107.975125ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/logs/config/archives/h569RjVXTbqdMWCdLqu7Dw
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 127.765333ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 77
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"account_id":"555650995497","role_name":"testacc-datadog-integration-role"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/aws
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 581.767458ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/logs/config/archives/h569RjVXTbqdMWCdLqu7Dw
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Archive h569RjVXTbqdMWCdLqu7Dw not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 75.979708ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/integration/aws
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"accounts":[{"account_id":"171198138700","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 171198138700\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170844477300","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170844477300\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170844527600","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170844527600\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170871287700","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170871287700\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170871288100","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170871288100\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170845483500","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170845483500\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170845483800","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170845483800\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"access_key_id":"4949579948531019","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 4949579948531019\nRegions affected: every region \nError was last seen 15m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1009898975398489","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 1009898975398489\nRegions affected: every region \nError was last seen 16m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"9952495110098101","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action cloudwatch:ListMetrics \nAccount affected: 9952495110098101\nRegions affected: every region \nError was last seen 15m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"171092901600","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":true,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 171092901600\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"529910099511","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"505610257565","role_name":"1234@testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"509899511014","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4856521025550515","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"571025451524","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"1011015010051561","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4854981009849554","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"access_key_id":"4850102521029797","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"569951985050","role_name":"testacc-datadog-integration-role","filter_tags":[],"host_tags":[],"account_specific_namespace_rules":{},"excluded_regions":[],"metrics_collection_enabled":true,"errors":[],"cspm_resource_collection_enabled":false,"extended_resource_collection_enabled":false,"resource_collection_enabled":false},{"account_id":"170059471500","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170059471500\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true},{"account_id":"170076337600","role_name":"DatadogAWSIntegrationRole","filter_tags":["$KEY:$VALUE"],"host_tags":["$KEY:$VALUE"],"account_specific_namespace_rules":{"auto_scaling":false},"excluded_regions":["us-east-1","us-west-2"],"metrics_collection_enabled":false,"errors":["Datadog is not authorized to perform action sts:AssumeRole\nAccount affected: 170076337600\nRegions affected: every region\nError was last seen 1m ago"],"cspm_resource_collection_enabled":true,"extended_resource_collection_enabled":true,"resource_collection_enabled":true}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 127.85975ms

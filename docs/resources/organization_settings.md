@@ -25,6 +25,7 @@ resource "datadog_organization_settings" "organization" {
 ### Optional
 
 - `name` (String) Name for Organization.
+- `security_contacts` (List of String) List of emails used for security event notifications from the organization.
 - `settings` (Block List, Max: 1) Organization settings (see [below for nested schema](#nestedblock--settings))
 
 ### Read-Only
@@ -45,8 +46,8 @@ Required:
 
 Optional:
 
-- `private_widget_share` (Boolean) Whether or not the organization users can share widgets outside of Datadog.
-- `saml_autocreate_access_role` (String) The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm` , `ro`, `ERROR`
+- `private_widget_share` (Boolean) Whether or not the organization users can share widgets outside of Datadog. Defaults to `false`.
+- `saml_autocreate_access_role` (String) The access role of the user. Options are `st` (standard user), `adm` (admin user), or `ro` (read-only user). Allowed enum values: `st`, `adm` , `ro`, `ERROR` Defaults to `"st"`.
 
 Read-Only:
 
@@ -60,7 +61,7 @@ Read-Only:
 
 Optional:
 
-- `enabled` (Boolean) Whether or not SAML is enabled for this organization.
+- `enabled` (Boolean) Whether or not SAML is enabled for this organization. Defaults to `false`.
 
 
 <a id="nestedblock--settings--saml_autocreate_users_domains"></a>
@@ -69,7 +70,7 @@ Optional:
 Optional:
 
 - `domains` (List of String) List of domains where the SAML automated user creation is enabled.
-- `enabled` (Boolean) Whether or not the automated user creation based on SAML domain is enabled.
+- `enabled` (Boolean) Whether or not the automated user creation based on SAML domain is enabled. Defaults to `false`.
 
 
 <a id="nestedblock--settings--saml_idp_initiated_login"></a>
@@ -77,7 +78,7 @@ Optional:
 
 Optional:
 
-- `enabled` (Boolean) Whether or not a SAML identity provider metadata file was provided to the Datadog organization.
+- `enabled` (Boolean) Whether or not a SAML identity provider metadata file was provided to the Datadog organization. Defaults to `false`.
 
 
 <a id="nestedblock--settings--saml_strict_mode"></a>
@@ -85,7 +86,7 @@ Optional:
 
 Optional:
 
-- `enabled` (Boolean) Whether or not the SAML strict mode is enabled. If true, all users must log in with SAML.
+- `enabled` (Boolean) Whether or not the SAML strict mode is enabled. If true, all users must log in with SAML. Defaults to `false`.
 
 ## Import
 

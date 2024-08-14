@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: |
@@ -12,6 +11,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/apm/config/metrics
     method: POST
+    id: 0
   response:
     body: |
       {"data":{"id":"tf_TestAccSpansMetric_import_local_1682069305","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name","tag_name":"resource_name"}],"compute":{"aggregation_type":"distribution","path":"@duration","include_percentiles":false}},"type":"spans_metrics"}}
@@ -20,7 +20,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -29,6 +29,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetric_import_local_1682069305
     method: GET
+    id: 1
   response:
     body: |
       {"data":{"id":"tf_TestAccSpansMetric_import_local_1682069305","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name","tag_name":"resource_name"}],"compute":{"aggregation_type":"distribution","path":"@duration","include_percentiles":false}},"type":"spans_metrics"}}
@@ -37,7 +38,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -46,6 +47,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetric_import_local_1682069305
     method: GET
+    id: 2
   response:
     body: |
       {"data":{"id":"tf_TestAccSpansMetric_import_local_1682069305","attributes":{"filter":{"query":"@http.status_code:200 service:my-service"},"group_by":[{"path":"resource_name","tag_name":"resource_name"}],"compute":{"aggregation_type":"distribution","path":"@duration","include_percentiles":false}},"type":"spans_metrics"}}
@@ -54,7 +56,7 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"
 - request:
     body: ""
     form: {}
@@ -63,6 +65,7 @@ interactions:
       - '*/*'
     url: https://api.datadoghq.com/api/v2/apm/config/metrics/tf_TestAccSpansMetric_import_local_1682069305
     method: DELETE
+    id: 3
   response:
     body: ""
     headers:
@@ -70,4 +73,4 @@ interactions:
       - text/html; charset=utf-8
     status: 204 No Content
     code: 204
-    duration: ""
+    duration: "0ms"

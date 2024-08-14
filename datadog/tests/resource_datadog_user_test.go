@@ -293,6 +293,7 @@ func testCheckUserHasRole(username string, roleSource string) resource.TestCheck
 	}
 }
 
+// TODO: Migrate it to testAccCheckDatadogUserV2FwDestroy in service account test when migrating to framework
 func testAccCheckDatadogUserV2Destroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
@@ -403,6 +404,10 @@ resource "datadog_user" "bar" {
 
 func datadogUserV2DestroyHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_user" {
+			continue
+		}
+
 		id := r.Primary.ID
 		userResponse, httpResponse, err := apiInstances.GetUsersApiV2().GetUser(ctx, id)
 

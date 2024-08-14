@@ -44,7 +44,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 - `query` (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
 
 **Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).
-- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`.
+- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`.
 
 ### Optional
 
@@ -63,24 +63,22 @@ For example, if the value is set to `300` (5min), the `timeframe` is set to `las
 - `new_group_delay` (Number) The time (in seconds) to skip evaluations for new groups.
 
 `new_group_delay` overrides `new_host_delay` if it is set to a nonzero value.
-- `new_host_delay` (Number, Deprecated) **Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. Defaults to `300`. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host. **Deprecated.** Use `new_group_delay` except when setting `new_host_delay` to zero.
-- `no_data_timeframe` (Number) The number of minutes before a monitor will notify when data stops reporting. Provider defaults to 10 minutes.
+- `new_host_delay` (Number, Deprecated) **Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host. **Deprecated.** Use `new_group_delay` except when setting `new_host_delay` to zero. Defaults to `300`.
+- `no_data_timeframe` (Number) The number of minutes before a monitor will notify when data stops reporting.
 
-We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.
+We recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks. Defaults to `10`.
 - `notification_preset_name` (String) Toggles the display of additional content sent in the monitor notification. Valid values are `show_all`, `hide_query`, `hide_handles`, `hide_all`.
 - `notify_audit` (Boolean) A boolean indicating whether tagged users will be notified on changes to this monitor. Defaults to `false`.
 - `notify_by` (Set of String) Controls what granularity a monitor alerts on. Only available for monitors with groupings. For instance, a monitor grouped by `cluster`, `namespace`, and `pod` can be configured to only notify on each new `cluster` violating the alert conditions by setting `notify_by` to `['cluster']`. Tags mentioned in `notify_by` must be a subset of the grouping tags in the query. For example, a query grouped by `cluster` and `namespace` cannot notify on `region`. Setting `notify_by` to `[*]` configures the monitor to notify as a simple-alert.
 - `notify_no_data` (Boolean) A boolean indicating whether this monitor will notify when data stops reporting. Defaults to `false`.
 - `on_missing_data` (String) Controls how groups or monitors are treated if an evaluation does not return any data points. The default option results in different behavior depending on the monitor query type. For monitors using `Count` queries, an empty monitor evaluation is treated as 0 and is compared to the threshold conditions. For monitors using any query type other than `Count`, for example `Gauge`, `Measure`, or `Rate`, the monitor shows the last known status. This option is only available for APM Trace Analytics, Audit Trail, CI, Error Tracking, Event, Logs, and RUM monitors. Valid values are: `show_no_data`, `show_and_notify_no_data`, `resolve`, and `default`.
-- `priority` (Number) Integer from 1 (high) to 5 (low) indicating alert severity.
+- `priority` (String) Integer from 1 (high) to 5 (low) indicating alert severity.
 - `renotify_interval` (Number) The number of minutes after the last notification before a monitor will re-notify on the current status. It will only re-notify if it's not resolved.
 - `renotify_occurrences` (Number) The number of re-notification messages that should be sent on the current status.
 - `renotify_statuses` (Set of String) The types of statuses for which re-notification messages should be sent. Valid values are `alert`, `warn`, `no data`.
-- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated.
-
-We highly recommend you set this to `false` for sparse metrics, otherwise some evaluations will be skipped. Default: `true` for `on average`, `at all times` and `in total` aggregation. `false` otherwise.
+- `require_full_window` (Boolean) A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. If there's a custom_schedule set, `require_full_window` must be false and will be ignored. Defaults to `true`.
 - `restricted_roles` (Set of String) A list of unique role identifiers to define which roles are allowed to edit the monitor. Editing a monitor includes any updates to the monitor configuration, monitor deletion, and muting of the monitor for any amount of time. Roles unique identifiers can be pulled from the [Roles API](https://docs.datadoghq.com/api/latest/roles/#list-roles) in the `data.id` field.
-- `scheduling_options` (Block List) Configuration options for scheduling. (see [below for nested schema](#nestedblock--scheduling_options))
+- `scheduling_options` (Block List, Max: 1) Configuration options for scheduling. (see [below for nested schema](#nestedblock--scheduling_options))
 - `tags` (Set of String) A list of tags to associate with your monitor. This can help you categorize and filter monitors in the manage monitors page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
 - `timeout_h` (Number) The number of hours of the monitor not reporting data before it automatically resolves from a triggered state. The minimum allowed value is 0 hours. The maximum allowed value is 24 hours.
 - `validate` (Boolean) If set to `false`, skip the validation call done during plan.
@@ -116,9 +114,31 @@ Optional:
 <a id="nestedblock--scheduling_options"></a>
 ### Nested Schema for `scheduling_options`
 
+Optional:
+
+- `custom_schedule` (Block List, Max: 1) Configuration options for the custom schedules. If `start` is omitted, the monitor creation time will be used. (see [below for nested schema](#nestedblock--scheduling_options--custom_schedule))
+- `evaluation_window` (Block List, Max: 1) Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together. (see [below for nested schema](#nestedblock--scheduling_options--evaluation_window))
+
+<a id="nestedblock--scheduling_options--custom_schedule"></a>
+### Nested Schema for `scheduling_options.custom_schedule`
+
 Required:
 
-- `evaluation_window` (Block List, Min: 1) Configuration options for the evaluation window. If `hour_starts` is set, no other fields may be set. Otherwise, `day_starts` and `month_starts` must be set together. (see [below for nested schema](#nestedblock--scheduling_options--evaluation_window))
+- `recurrence` (Block List, Min: 1, Max: 1) A list of recurrence definitions. Length must be 1. (see [below for nested schema](#nestedblock--scheduling_options--custom_schedule--recurrence))
+
+<a id="nestedblock--scheduling_options--custom_schedule--recurrence"></a>
+### Nested Schema for `scheduling_options.custom_schedule.recurrence`
+
+Required:
+
+- `rrule` (String) Must be a valid `rrule`. See API docs for supported fields
+- `timezone` (String) 'tz database' format. Example: `America/New_York` or `UTC`
+
+Optional:
+
+- `start` (String) Time to start recurrence cycle. Similar to DTSTART. Expected format 'YYYY-MM-DDThh:mm:ss'
+
+
 
 <a id="nestedblock--scheduling_options--evaluation_window"></a>
 ### Nested Schema for `scheduling_options.evaluation_window`
@@ -144,7 +164,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`.
 - `name` (String) The name of query for use in formulas.
 - `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--event_query--search))
 

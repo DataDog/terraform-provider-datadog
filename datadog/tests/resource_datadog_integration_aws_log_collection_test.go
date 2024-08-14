@@ -34,24 +34,25 @@ resource "datadog_integration_aws_log_collection" "main" {
 }`, uniq, uniq)
 }
 
-func testAccDatadogIntegrationAWSLogCollectionConfigAccessKey(uniq string) string {
+func testAccDatadogIntegrationAWSLogCollectionConfigAccessKey(accountID string, accessKeyID string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
+  account_id        = "%s"
   access_key_id     = "%s"
   secret_access_key = "testacc-datadog-integration-secret"
 }
 
 resource "datadog_integration_aws_lambda_arn" "lambda" {
-  account_id = datadog_integration_aws.account.access_key_id
+  account_id = datadog_integration_aws.account.account_id
   lambda_arn = "arn:aws:lambda:us-east-1:1234567890:function:datadog-forwarder-Forwarder"
   depends_on = [datadog_integration_aws.account]
 }
 
 resource "datadog_integration_aws_log_collection" "main" {
-  account_id = datadog_integration_aws.account.access_key_id
+  account_id = datadog_integration_aws.account.account_id
   services = ["lambda"]
   depends_on = [datadog_integration_aws_lambda_arn.lambda]
-}`, uniq)
+}`, accountID, accessKeyID)
 }
 
 func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
@@ -84,6 +85,7 @@ func TestAccDatadogIntegrationAWSLogCollection(t *testing.T) {
 func TestAccDatadogIntegrationAWSLogCollectionAccessKey(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
+	accountID := uniqueAWSAccountID(ctx, t)
 	accessKeyID := uniqueAWSAccessKeyID(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
@@ -93,12 +95,12 @@ func TestAccDatadogIntegrationAWSLogCollectionAccessKey(t *testing.T) {
 		CheckDestroy:      checkIntegrationAWSLogCollectionDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccDatadogIntegrationAWSLogCollectionConfigAccessKey(accessKeyID),
+				Config: testAccDatadogIntegrationAWSLogCollectionConfigAccessKey(accountID, accessKeyID),
 				Check: resource.ComposeTestCheckFunc(
 					checkIntegrationAWSLogCollectionExists(accProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_log_collection.main",
-						"account_id", accessKeyID),
+						"account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_log_collection.main",
 						"services.0", "lambda"),
@@ -128,7 +130,7 @@ func checkIntegrationAWSLogCollectionExistsHelper(ctx context.Context, s *terraf
 		if strings.Contains(resourceType, "datadog_integration_aws_log_collection") {
 			accountID := r.Primary.Attributes["account_id"]
 			for _, logCollection := range logCollections {
-				if *logCollection.AccountId == accountID && len(logCollection.GetServices()) > 0 {
+				if v, ok := logCollection.GetAccountIdOk(); ok && *v == accountID && len(logCollection.GetServices()) > 0 {
 					return nil
 				}
 			}
@@ -160,8 +162,9 @@ func checkIntegrationAWSLogCollectionDestroyHelper(ctx context.Context, s *terra
 			for _, r := range s.RootModule().Resources {
 				if r.Primary.ID != "" {
 					for _, logCollection := range logCollections {
-						if *logCollection.AccountId == accountID && len(logCollection.GetServices()) > 0 {
+						if v, ok := logCollection.GetAccountIdOk(); ok && *v == accountID && len(logCollection.GetServices()) > 0 {
 							return &utils.RetryableError{Prob: fmt.Sprintf("The AWS Log Collection is still enabled for the account: accountID=%s", accountID)}
+
 						}
 					}
 				}

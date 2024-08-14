@@ -9,7 +9,7 @@ description: |-
 
 The [Datadog](https://www.datadoghq.com) provider is used to interact with the resources supported by Datadog. The provider needs to be configured with the proper credentials before it can be used. It requires terraform 0.12 or later.
 
-Try the [hands-on tutorial](https://learn.hashicorp.com/tutorials/terraform/datadog-provider?in=terraform/use-case?utm_source=WEBSITE&utm_medium=WEB_IO&utm_offer=ARTICLE_PAGE&utm_content=DOCS) on the Datadog provider on the HashiCorp Learn site.
+Try the [hands-on tutorial](https://developer.hashicorp.com/terraform/tutorials/use-case/datadog-provider) on the Datadog provider on the HashiCorp Learn site.
 
 Use the navigation to the left to read about the available resources.
 
@@ -50,11 +50,19 @@ provider "datadog" {
 ### Optional
 
 - `api_key` (String, Sensitive) (Required unless validate is false) Datadog API key. This can also be set via the DD_API_KEY environment variable.
-- `api_url` (String) The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with "EU" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.
+- `api_url` (String) The API URL. This can also be set via the DD_HOST environment variable, and defaults to `https://api.datadoghq.com`. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with "EU" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.
 - `app_key` (String, Sensitive) (Required unless validate is false) Datadog APP key. This can also be set via the DD_APP_KEY environment variable.
+- `default_tags` (Block List, Max: 1) [Experimental - Monitors only] Configuration block containing settings to apply default resource tags across all resources. (see [below for nested schema](#nestedblock--default_tags))
 - `http_client_retry_backoff_base` (Number) The HTTP request retry back off base. Defaults to 2.
 - `http_client_retry_backoff_multiplier` (Number) The HTTP request retry back off multiplier. Defaults to 2.
 - `http_client_retry_enabled` (String) Enables request retries on HTTP status codes 429 and 5xx. Valid values are [`true`, `false`]. Defaults to `true`.
 - `http_client_retry_max_retries` (Number) The HTTP request maximum retry number. Defaults to 3.
 - `http_client_retry_timeout` (Number) The HTTP request retry timeout period. Defaults to 60 seconds.
 - `validate` (String) Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.
+
+<a id="nestedblock--default_tags"></a>
+### Nested Schema for `default_tags`
+
+Optional:
+
+- `tags` (Map of String) [Experimental - Monitors only] Resource tags to be applied by default across all resources.

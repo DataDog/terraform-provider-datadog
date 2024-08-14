@@ -1,5 +1,4 @@
----
-version: 1
+version: 2
 interactions:
 - request:
     body: ""
@@ -9,6 +8,7 @@ interactions:
       - application/json
     url: https://api.datadoghq.com/api/v2/users?filter=doesntexist01b0bb82-2000-4113-bb6b-e34b48ef37ff%40example.com%27
     method: GET
+    id: 0
   response:
     body: '{"meta":{"page":{"total_filtered_count":0,"total_count":9426}},"data":[]}'
     headers:
@@ -16,4 +16,4 @@ interactions:
       - application/json
     status: 200 OK
     code: 200
-    duration: ""
+    duration: "0ms"

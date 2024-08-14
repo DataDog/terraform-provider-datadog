@@ -47,5 +47,5 @@ resource "datadog_integration_fastly_service" "foo" {
 Import is supported using the following syntax:
 
 ```shell
-terraform import datadog_integration_fastly_service.new_list "service-id"
+terraform import datadog_integration_fastly_service.new_list "account-id:service-id"
 ```

@@ -12,6 +12,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -27,40 +28,62 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-var (
-	_ provider.Provider = &FrameworkProvider{}
-)
+var _ provider.Provider = &FrameworkProvider{}
 
 var Resources = []func() resource.Resource{
+	NewOpenapiApiResource,
 	NewAPIKeyResource,
+	NewApplicationKeyResource,
+	NewApmRetentionFilterResource,
+	NewApmRetentionFiltersOrderResource,
 	NewDashboardListResource,
 	NewDowntimeScheduleResource,
+	NewIntegrationAzureResource,
+	NewIntegrationAwsEventBridgeResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
 	NewIntegrationFastlyAccountResource,
 	NewIntegrationFastlyServiceResource,
+	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
+	NewIpAllowListResource,
 	NewRestrictionPolicyResource,
+	NewRumApplicationResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
+	NewTeamPermissionSettingResource,
 	NewTeamResource,
+	NewUserRoleResource,
+	NewSecurityMonitoringSuppressionResource,
+	NewCSMThreatsAgentRuleResource,
+	NewServiceAccountResource,
+	NewWebhookResource,
+	NewWebhookCustomVariableResource,
 }
 
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
+	NewApplicationKeyDataSource,
+	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
+	NewDatadogPowerpackDataSource,
 	NewDatadogServiceAccountDatasource,
 	NewDatadogTeamDataSource,
 	NewDatadogTeamMembershipsDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
+	NewRumApplicationDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
+	NewDatadogUsersDataSource,
+	NewDatadogRoleUsersDataSource,
+	NewSecurityMonitoringSuppressionDataSource,
+	NewCSMThreatsAgentRulesDataSource,
 }
 
 // FrameworkProvider struct
@@ -84,6 +107,7 @@ type ProviderSchema struct {
 	HttpClientRetryBackoffMultiplier types.Int64  `tfsdk:"http_client_retry_backoff_multiplier"`
 	HttpClientRetryBackoffBase       types.Int64  `tfsdk:"http_client_retry_backoff_base"`
 	HttpClientRetryMaxRetries        types.Int64  `tfsdk:"http_client_retry_max_retries"`
+	DefaultTags                      types.List   `tfsdk:"default_tags"`
 }
 
 func New() provider.Provider {
@@ -134,7 +158,7 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			},
 			"api_url": schema.StringAttribute{
 				Optional:    true,
-				Description: "The API URL. This can also be set via the DD_HOST environment variable. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with \"EU\" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.",
+				Description: "The API URL. This can also be set via the DD_HOST environment variable, and defaults to `https://api.datadoghq.com`. Note that this URL must not end with the `/api/` path. For example, `https://api.datadoghq.com/` is a correct value, while `https://api.datadoghq.com/api/` is not. And if you're working with \"EU\" version of Datadog, use `https://api.datadoghq.eu/`. Other Datadog region examples: `https://api.us5.datadoghq.com/`, `https://api.us3.datadoghq.com/` and `https://api.ddog-gov.com/`. See https://docs.datadoghq.com/getting_started/site/ for all available regions.",
 			},
 			"validate": schema.StringAttribute{
 				Optional:    true,
@@ -159,6 +183,23 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 			"http_client_retry_max_retries": schema.Int64Attribute{
 				Optional:    true,
 				Description: "The HTTP request maximum retry number. Defaults to 3.",
+			},
+		},
+		Blocks: map[string]schema.Block{
+			"default_tags": schema.ListNestedBlock{
+				Validators: []validator.List{
+					listvalidator.SizeAtMost(1),
+				},
+				Description: "[Experimental - Monitors only] Configuration block containing settings to apply default resource tags across all resources.",
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"tags": schema.MapAttribute{
+							ElementType: types.StringType,
+							Optional:    true,
+							Description: "[Experimental - Monitors only] Resource tags to be applied by default across all resources.",
+						},
+					},
+				},
 			},
 		},
 	}
@@ -348,11 +389,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.UserAgent = utils.GetUserAgentFramework(ddClientConfig.UserAgent, request.TerraformVersion)
 	ddClientConfig.Debug = logging.IsDebugOrHigher()
 
-	// Temp - enable Downtime v2 which is currently in private beta
-	ddClientConfig.SetUnstableOperationEnabled("v2.CancelDowntime", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.CreateDowntime", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.GetDowntime", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateDowntime", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
@@ -407,6 +447,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 		}
 	}
 
+	ddClientConfig.HTTPClient = utils.NewHTTPClient()
 	datadogClient := datadog.NewAPIClient(ddClientConfig)
 
 	p.DatadogApiInstances = &utils.ApiInstances{HttpClient: datadogClient}
@@ -476,7 +517,7 @@ func (r *FrameworkResourceWrapper) Metadata(ctx context.Context, req resource.Me
 
 func (r *FrameworkResourceWrapper) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	(*r.innerResource).Schema(ctx, req, resp)
-	resp.Schema = fwutils.EnrichFrameworkResourceSchema(resp.Schema)
+	fwutils.EnrichFrameworkResourceSchema(&resp.Schema)
 }
 
 func (r *FrameworkResourceWrapper) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -497,6 +538,10 @@ func (r *FrameworkResourceWrapper) Delete(ctx context.Context, req resource.Dele
 
 func (r *FrameworkResourceWrapper) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	if rCasted, ok := (*r.innerResource).(resource.ResourceWithImportState); ok {
+		if req.ID == "" {
+			resp.Diagnostics.AddError("resource ID is required for import and cannot be empty", "")
+			return
+		}
 		rCasted.ImportState(ctx, req, resp)
 		return
 	}

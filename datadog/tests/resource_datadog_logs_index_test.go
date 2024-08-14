@@ -34,6 +34,9 @@ func TestAccDatadogLogsIndex_Basic(t *testing.T) {
 					sleep(),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit", "200000"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit_reset.0.reset_time", "10:00"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit_reset.0.reset_utc_offset", "+02:00"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit_warning_threshold_percentage", "70"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "disable_daily_limit", "false"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "retention_days", "15"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "filter.#", "1"),
@@ -47,6 +50,9 @@ func TestAccDatadogLogsIndex_Basic(t *testing.T) {
 					sleep(),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "name", uniq),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit", "20000"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit_reset.0.reset_time", "12:00"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit_reset.0.reset_utc_offset", "-02:00"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit_warning_threshold_percentage", "99.99"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "disable_daily_limit", "false"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "retention_days", "15"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "filter.0.query", "test:query"),
@@ -86,6 +92,11 @@ func testAccCheckDatadogCreateLogsIndexConfig(name string) string {
 resource "datadog_logs_index" "sample_index" {
   name           = "%s"
   daily_limit    = 200000
+  daily_limit_reset {
+	reset_time = "10:00"
+	reset_utc_offset = "+02:00"
+  }
+  daily_limit_warning_threshold_percentage = 70
   retention_days = 15
   filter {
     query = "non-existent-query"
@@ -99,6 +110,11 @@ func testAccCheckDatadogUpdateLogsIndexConfig(name string) string {
 resource "datadog_logs_index" "sample_index" {
   name                   = "%s"
   daily_limit            = 20000
+  daily_limit_reset {
+	reset_time = "12:00"
+	reset_utc_offset = "-02:00"
+  }
+  daily_limit_warning_threshold_percentage = 99.99
   disable_daily_limit    = false
   retention_days         = 15
   filter {
@@ -121,6 +137,11 @@ func testAccCheckDatadogUpdateLogsIndexDisableDailyLimitConfig(name string) stri
 resource "datadog_logs_index" "sample_index" {
   name                   = "%s"
   daily_limit            = 20000
+  daily_limit_reset {
+	reset_time = "10:00"
+	reset_utc_offset = "+02:00"
+  }
+  daily_limit_warning_threshold_percentage = 70
   disable_daily_limit    = true
   retention_days         = 15
   filter {

@@ -41,7 +41,7 @@ func cloudWorkloadSecurityCheckAgentRulesCount(accProvider func() (*schema.Provi
 		auth := providerConf.Auth
 		apiInstances := providerConf.DatadogApiInstances
 
-		agentRulesResponse, _, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCloudWorkloadSecurityAgentRules(auth)
+		agentRulesResponse, _, err := apiInstances.GetCSMThreatsApiV2().ListCloudWorkloadSecurityAgentRules(auth)
 		if err != nil {
 			return err
 		}

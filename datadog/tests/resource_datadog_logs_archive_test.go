@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -21,7 +20,7 @@ func archiveAzureConfigForCreation(uniq string) string {
 resource "datadog_integration_azure" "an_azure_integration" {
   tenant_name   = "%s"
   client_id     = "a75fbdd2-ade6-43d0-a810-4d886c53871e"
-  client_secret = "testingx./Sw*g/Y33t..R1cH+hScMDt"
+  client_secret = "TestingRh2nx664kUy5dIApvM54T4AtO"
 }
 
 resource "datadog_logs_archive" "my_azure_archive" {
@@ -40,20 +39,19 @@ resource "datadog_logs_archive" "my_azure_archive" {
 
 func TestAccDatadogLogsArchiveAzure_basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	unique_hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
 	tenantName := fmt.Sprintf("%s-%s-%s-%s-%s", unique_hash[:8], unique_hash[8:12], unique_hash[12:16], unique_hash[16:20], unique_hash[20:32])
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckArchiveAndIntegrationAzureDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckArchiveAndIntegrationAzureDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveAzureConfigForCreation(tenantName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckArchiveExists(accProvider),
+					testAccCheckArchiveExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_azure_archive", "name", "my first azure archive"),
 					resource.TestCheckResourceAttr(
@@ -108,19 +106,18 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 	if !isReplaying() {
 		t.Skip("This test only supports replaying")
 	}
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	client := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckArchiveAndIntegrationGCSDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckArchiveAndIntegrationGCSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveGCSConfigForCreation(client),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckArchiveExists(accProvider),
+					testAccCheckArchiveExists(providers.frameworkProvider),
 					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_gcs_archive", "gcs"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_gcs_archive", "name", "my first gcs archive"),
@@ -170,19 +167,18 @@ resource "datadog_logs_archive" "my_s3_archive" {
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveS3ConfigForCreation(accountID),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckArchiveExists(accProvider),
+					testAccCheckArchiveExists(providers.frameworkProvider),
 					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive"),
@@ -235,18 +231,18 @@ resource "datadog_logs_archive" "my_s3_archive" {
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckArchiveAndIntegrationAWSDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: archiveS3ConfigForCreation(accountID),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckArchiveExists(accProvider),
+					testAccCheckArchiveExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive"),
 					resource.TestCheckResourceAttr(
@@ -286,12 +282,10 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	})
 }
 
-func testAccCheckArchiveExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testAccCheckArchiveExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		if err := archiveExistsChecker(auth, s, apiInstances); err != nil {
 			return err
@@ -312,7 +306,7 @@ func archiveExistsChecker(ctx context.Context, s *terraform.State, apiInstances 
 	return nil
 }
 
-func testAccCheckArchiveAndIntegrationAzureDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckArchiveAndIntegrationAzureDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		err := testAccCheckArchiveDestroy(accProvider)(s)
 		if err != nil {
@@ -323,7 +317,7 @@ func testAccCheckArchiveAndIntegrationAzureDestroy(accProvider func() (*schema.P
 	}
 }
 
-func testAccCheckArchiveAndIntegrationGCSDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckArchiveAndIntegrationGCSDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		err := testAccCheckArchiveDestroy(accProvider)(s)
 		if err != nil {
@@ -334,7 +328,7 @@ func testAccCheckArchiveAndIntegrationGCSDestroy(accProvider func() (*schema.Pro
 	}
 }
 
-func testAccCheckArchiveAndIntegrationAWSDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckArchiveAndIntegrationAWSDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		err := testAccCheckArchiveDestroy(accProvider)(s)
 		if err != nil {
@@ -345,12 +339,10 @@ func testAccCheckArchiveAndIntegrationAWSDestroy(accProvider func() (*schema.Pro
 	}
 }
 
-func testAccCheckArchiveDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckArchiveDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 		if err := archiveDestroyHelper(auth, s, apiInstances); err != nil {
 			return err
 		}

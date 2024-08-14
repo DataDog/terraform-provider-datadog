@@ -34,7 +34,7 @@ resource "datadog_sensitive_data_scanner_group" "mygroup" {
 - `filter` (Block List, Min: 1, Max: 1) Filter object the scanning group applies. (see [below for nested schema](#nestedblock--filter))
 - `is_enabled` (Boolean) Whether or not the scanning group is enabled. If the group doesn't contain any rule or if all the rules in it are disabled, the group is force-disabled by our backend
 - `name` (String) Name of the Datadog scanning group.
-- `product_list` (Set of String) List of products the scanning group applies.
+- `product_list` (Set of String) List of products the scanning group applies. Valid values are `logs`, `rum`, `events`, `apm`.
 
 ### Optional
 
@@ -56,5 +56,5 @@ Required:
 Import is supported using the following syntax:
 
 ```shell
-terraform import datadog_sensitive_data_scanner_group.new_list ""
+terraform import datadog_sensitive_data_scanner_group.new_list "<group_id>"
 ```

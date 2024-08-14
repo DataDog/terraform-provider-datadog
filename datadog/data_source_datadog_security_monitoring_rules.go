@@ -61,7 +61,7 @@ func dataSourceDatadogSecurityMonitoringRules() *schema.Resource {
 					Type:        schema.TypeList,
 					Computed:    true,
 					Elem: &schema.Resource{
-						Schema: datadogSecurityMonitoringRuleSchema(),
+						Schema: datadogSecurityMonitoringRuleSchema( /* includeValidate= */ false),
 					},
 				},
 			}

@@ -12,8 +12,9 @@ import (
 
 func dataSourceDatadogCloudWorkloadSecurityAgentRules() *schema.Resource {
 	return &schema.Resource{
-		Description: "Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources.",
-		ReadContext: dataSourceDatadogCloudWorkloadSecurityAgentRulesRead,
+		Description:        "Use this data source to retrieve information about existing Cloud Workload Security Agent Rules for use in other resources. Deprecated, use datadog_csm_threats_agent_rules data source instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/csm_threats_agent_rules",
+		DeprecationMessage: "This data source is deprecated — use the datadog_csm_threats_agent_rules data source instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/csm_threats_agent_rules",
+		ReadContext:        dataSourceDatadogCloudWorkloadSecurityAgentRulesRead,
 
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
@@ -63,7 +64,7 @@ func dataSourceDatadogCloudWorkloadSecurityAgentRulesRead(ctx context.Context, d
 	auth := providerConf.Auth
 
 	agentRules := make([]map[string]interface{}, 0)
-	response, httpresp, err := apiInstances.GetCloudWorkloadSecurityApiV2().ListCloudWorkloadSecurityAgentRules(auth)
+	response, httpresp, err := apiInstances.GetCSMThreatsApiV2().ListCloudWorkloadSecurityAgentRules(auth)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error listing agent rules")
 	}

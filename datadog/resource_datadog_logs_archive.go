@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -34,10 +35,15 @@ func resourceDatadogLogsArchive() *schema.Resource {
 					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
-							"bucket":     {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
-							"path":       {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
-							"account_id": {Description: "Your AWS account id.", Type: schema.TypeString, Required: true},
-							"role_name":  {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
+							"bucket": {Description: "Name of your s3 bucket.", Type: schema.TypeString, Required: true},
+							"path":   {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
+							"account_id": {
+								Description:      "Your AWS account id.",
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateAWSAccountID,
+							},
+							"role_name": {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
 						},
 					},
 				},
@@ -66,7 +72,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 							"bucket":       {Description: "Name of your GCS bucket.", Type: schema.TypeString, Required: true},
 							"path":         {Description: "Path where the archive is stored.", Type: schema.TypeString, Optional: true},
 							"client_email": {Description: "Your client email.", Type: schema.TypeString, Required: true},
-							"project_id":   {Description: "Your project id.", Type: schema.TypeString, Required: true},
+							"project_id":   {Description: "Your project id.", Type: schema.TypeString, Optional: true},
 						},
 					},
 				},
@@ -217,7 +223,7 @@ func buildDestination(archiveDestination datadogV2.NullableLogsArchiveDestinatio
 			return "s3", buildS3Map(*d), nil
 		}
 	}
-	return "", emptyDestination, fmt.Errorf("destination should be not null")
+	return "", emptyDestination, fmt.Errorf("failed to get archive definition, please make sure the user associated with your application key has Logs Read Archives permission")
 }
 
 func buildAzureMap(destination datadogV2.LogsArchiveDestinationAzure) map[string]interface{} {
@@ -235,9 +241,12 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]int
 	result := make(map[string]interface{})
 	integration := destination.GetIntegration()
 	result["client_email"] = integration.GetClientEmail()
-	result["project_id"] = integration.GetProjectId()
 	result["bucket"] = destination.GetBucket()
 	result["path"] = destination.GetPath()
+	if v, ok := integration.GetProjectIdOk(); ok {
+		result["project_id"] = *v
+	}
+
 	return result
 }
 
@@ -365,13 +374,8 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 	if !ok {
 		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("client_email is not defined")
 	}
-	projectID, ok := d["project_id"]
-	if !ok {
-		return &datadogV2.LogsArchiveDestinationGCS{}, fmt.Errorf("project_id is not defined")
-	}
 	integration := datadogV2.NewLogsArchiveIntegrationGCS(
 		clientEmail.(string),
-		projectID.(string),
 	)
 	bucket, ok := d["bucket"]
 	if !ok {
@@ -381,6 +385,11 @@ func buildGCSDestination(dest interface{}) (*datadogV2.LogsArchiveDestinationGCS
 	if !ok {
 		path = ""
 	}
+	projectID, ok := d["project_id"]
+	if ok && projectID != "" {
+		integration.SetProjectId(projectID.(string))
+	}
+
 	destination := datadogV2.NewLogsArchiveDestinationGCS(
 		bucket.(string),
 		*integration,
