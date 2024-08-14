@@ -8,7 +8,7 @@
 ### FEATURES
 * [datadog_synthetics_test] Support upload file in multistep API test by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2516
 * [datadog_dashboard] Update docs for new `incident_analytics` datasource by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/2523
-* [provider] Add a default_tags attribute in the Datadog provider config. by @Amaury-Behague in https://github.com/DataDog/terraform-provider-datadog/pull/2486
+* [provider] Add a default_tags attribute in the Datadog provider config, currently only used by the `datadog_monitor` resource by @Amaury-Behague in https://github.com/DataDog/terraform-provider-datadog/pull/2486
 ### NOTES
 * [provider] bump go, fix type change by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2528
 
