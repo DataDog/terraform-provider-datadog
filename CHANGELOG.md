@@ -1,3 +1,26 @@
+## 3.43.0 (August 14, 2024)
+
+### BUGFIXES
+* [datadog_synthetics_test] prevent unnecessary marshalling unmarshalling of proto files / json descriptors by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2503
+### IMPROVEMENTS
+* [RUM] Update terraform definition with `rum_stream` for `data_source` by @ThibautGeriz in https://github.com/DataDog/terraform-provider-datadog/pull/2497
+* [datadog_ip_allowlist] add ip allowlist example by @afrieds in https://github.com/DataDog/terraform-provider-datadog/pull/2509
+### FEATURES
+* [datadog_synthetics_test] Support upload file in multistep API test by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2516
+* [datadog_dashboard] Update docs for new `incident_analytics` datasource by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/2523
+* [provider] Add a default_tags attribute in the Datadog provider config, currently only used by the `datadog_monitor` resource by @Amaury-Behague in https://github.com/DataDog/terraform-provider-datadog/pull/2486
+### NOTES
+* [provider] bump go, fix type change by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2528
+
+## New Contributors
+* @ThibautGeriz made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2497
+* @afrieds made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2509
+* @brtu made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2523
+* @Amaury-Behague made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2486
+* @JHPart made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2512
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.42.0...v3.43.0
+
 ## 3.42.0 (July 22, 2024)
 
 ### BUGFIXES
