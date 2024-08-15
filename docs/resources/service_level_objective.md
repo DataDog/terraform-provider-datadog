@@ -127,6 +127,7 @@ resource "datadog_service_level_objective" "time_slice_slo" {
 - `tags` (Set of String) A list of tags to associate with your service level objective. This can help you categorize and filter service level objectives in the service level objectives page of the UI. Note: it's not currently possible to filter by these tags when querying via the API
 - `target_threshold` (Number) The objective's target in `(0,100)`. This must match the corresponding thresholds of the primary time frame.
 - `timeframe` (String) The primary time frame for the objective. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API documentation page. Valid values are `7d`, `30d`, `90d`, `custom`.
+- `validate` "Whether or not to validate the SLO. It checks if monitors added to a monitor SLO already exist."
 - `warning_threshold` (Number) The objective's warning value in `(0,100)`. This must be greater than the target value and match the corresponding thresholds of the primary time frame.
 
 ### Read-Only
