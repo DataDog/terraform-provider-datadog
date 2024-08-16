@@ -2934,8 +2934,11 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 		value := datadogV1.SyntheticsParsingOptions{}
 
 		value.SetName(extractedValueMap["name"].(string))
-		value.SetField(extractedValueMap["field"].(string))
 		value.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(extractedValueMap["type"].(string)))
+
+		if extractedValueMap["field"] != "" {
+			value.SetField(extractedValueMap["field"].(string))
+		}
 
 		valueParsers := extractedValueMap["parser"].([]interface{})
 		valueParser := valueParsers[0].(map[string]interface{})
