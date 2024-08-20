@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/Masterminds/semver/v3"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
@@ -61,10 +62,36 @@ func resourceDatadogCatalogEntity() *schema.Resource {
 	}
 }
 
-func validEntity(entity any, k string) (warnings []string, errors []error) {
-	// validate that it only contains one document
-	// apiVersion is v3 or above
-	// kind and name are present
+func validEntity(in any, k string) (warnings []string, errors []error) {
+	// verify one yaml document 
+	inYAML, ok := in.(string)
+	if !ok {
+		errors = append(errors, fmt.Errorf("Input is not string %q", k))
+	}
+	e, err := entityFromYAML(inYAML)
+	if err != nil {
+		errors = append(errors, fmt.Errorf("Error while parsing input %q, err %s", k, err))
+	}
+
+	// verify apiVersion is v3 or above 
+	if e.APIVersion == "" {
+		errors = append(errors, fmt.Errorf("Missing apiVersion %q", k))
+	}
+	v, err := semver.NewVersion(e.APIVersion)
+	if err != nil {
+		errors = append(errors, fmt.Errorf("Invalid apiVersion string %q, err %s", k, err))
+	}
+	if v.Major() < 3 {
+		errors = append(errors, fmt.Errorf("apiVersion v3 or above is required %q", k))
+	}
+	
+	// verify name and kind are present 
+	if e.Kind == "" {
+		errors = append(errors, fmt.Errorf("Missing kind %q", k))
+	}
+	if e.Metadata != nil && e.Metadata.name() == "" {
+		errors = append(errors, fmt.Errorf("Missing name %q", k))
+	}
 	return nil, nil
 }
 
@@ -94,9 +121,9 @@ func resourceEntityRead(_ context.Context, d *schema.ResourceData, meta any) dia
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	// id represents an entity's reference, e.g. service:default/myservice 
+	// id represents an entity's reference, e.g. service:default/myservice
 	id := d.Id()
-	respByte, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", catalogPath+ "?filter[ref]=" +id, nil)
+	respByte, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", catalogPath+"?filter[ref]="+id, nil)
 	if err != nil {
 		if resp.StatusCode == 404 {
 			d.SetId("")
@@ -119,14 +146,13 @@ func resourceEntityRead(_ context.Context, d *schema.ResourceData, meta any) dia
 
 	e := response.Included[0].Attributes.Schema
 
-
 	return updateEntityState(d, *e)
 }
 
 func resourceEntityCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	e, diag := resourceEntityUpsert(d, meta, "creating entity")
 	if diag != nil {
-		return diag 
+		return diag
 	}
 	d.SetId(e.reference().String())
 	return updateEntityState(d, e)
@@ -135,7 +161,7 @@ func resourceEntityCreate(ctx context.Context, d *schema.ResourceData, meta any)
 func resourceEntityUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	e, diag := resourceEntityUpsert(d, meta, "updating entity")
 	if diag != nil {
-		return diag 
+		return diag
 	}
 	return updateEntityState(d, e)
 }
@@ -149,7 +175,7 @@ func resourceEntityUpsert(d *schema.ResourceData, meta any, action string) (Enti
 
 	respByte, resp, err := utils.SendRequest(auth, apiInstances.HttpClient, "POST", catalogPath, &entity)
 	if err != nil {
-		return Entity{}, utils.TranslateClientErrorDiag(err, resp, "error " + action)
+		return Entity{}, utils.TranslateClientErrorDiag(err, resp, "error "+action)
 	}
 
 	var response UpsertEntityResponse
@@ -162,7 +188,7 @@ func resourceEntityUpsert(d *schema.ResourceData, meta any, action string) (Enti
 		return Entity{}, diag.FromErr(errors.New("error retrieving data from response"))
 	}
 	e := response.Included[0].Attributes.Schema
-	return *e, nil 
+	return *e, nil
 }
 
 func resourceEntityDelete(_ context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
