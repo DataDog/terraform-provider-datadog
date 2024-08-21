@@ -6,8 +6,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/Masterminds/semver/v3"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
@@ -63,7 +64,7 @@ func resourceDatadogCatalogEntity() *schema.Resource {
 }
 
 func validEntity(in any, k string) (warnings []string, errors []error) {
-	// verify one yaml document 
+	// verify one yaml document
 	inYAML, ok := in.(string)
 	if !ok {
 		errors = append(errors, fmt.Errorf("Input is not string %q", k))
@@ -73,7 +74,7 @@ func validEntity(in any, k string) (warnings []string, errors []error) {
 		errors = append(errors, fmt.Errorf("Error while parsing input %q, err %s", k, err))
 	}
 
-	// verify apiVersion is v3 or above 
+	// verify apiVersion is v3 or above
 	if e.APIVersion == "" {
 		errors = append(errors, fmt.Errorf("Missing apiVersion %q", k))
 	}
@@ -84,8 +85,8 @@ func validEntity(in any, k string) (warnings []string, errors []error) {
 	if v.Major() < 3 {
 		errors = append(errors, fmt.Errorf("apiVersion v3 or above is required %q", k))
 	}
-	
-	// verify name and kind are present 
+
+	// verify name and kind are present
 	if e.Kind == "" {
 		errors = append(errors, fmt.Errorf("Missing kind %q", k))
 	}
