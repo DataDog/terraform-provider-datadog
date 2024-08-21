@@ -4557,19 +4557,31 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.metaschema", "draft-07"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.#", "1"),
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.#", "2"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.name", "VAR_EXTRACT"),
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.name", "VAR_EXTRACT_BODY"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.type", "http_header"),
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.type", "http_body"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.field", "content-length"),
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.field", ""),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "regex"),
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "json_path"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", ".*"),
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", "$.id"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.secure", "true"),
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.secure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.name", "VAR_EXTRACT_HEADER"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.type", "http_header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.field", "content-length"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.type", "regex"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.value", ".*"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.secure", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
 			resource.TestCheckResourceAttr(
@@ -4783,7 +4795,6 @@ resource "datadog_synthetics_test" "multi" {
       operator = "is"
       target   = "200"
     }
-
 	assertion {
 		type = "body"
 		operator = "validatesJSONSchema"
@@ -4792,9 +4803,16 @@ resource "datadog_synthetics_test" "multi" {
 			metaschema = "draft-07"
 		}
 	}
-
     extracted_value {
-      name  = "VAR_EXTRACT"
+      name  = "VAR_EXTRACT_BODY"
+      type  = "http_body"
+      parser {
+        type  = "json_path"
+        value = "$.id"
+      }
+    }
+    extracted_value {
+      name  = "VAR_EXTRACT_HEADER"
       field = "content-length"
       type  = "http_header"
       parser {
@@ -4805,12 +4823,12 @@ resource "datadog_synthetics_test" "multi" {
     }
     allow_failure = true
     is_critical   = false
-
     retry {
       count    = 5
       interval = 1000
     }
   }
+
   api_step {
     name = "Second api step"
     request_definition {
