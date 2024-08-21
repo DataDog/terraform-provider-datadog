@@ -1,0 +1,1 @@
+terraform import datadog_service_definition_yaml.service_definition "<dd-service>"
