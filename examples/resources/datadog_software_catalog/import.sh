@@ -1,1 +1,1 @@
-terraform import datadog_service_definition_yaml.service_definition "<dd-service>"
+terraform import datadog_software_catalog.this <name>
