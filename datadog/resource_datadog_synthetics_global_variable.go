@@ -157,7 +157,8 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 	auth := providerConf.Auth
 
 	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
-	createdSyntheticsGlobalVariable, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateGlobalVariable(auth, *syntheticsGlobalVariable)
+	syntheticsGlobalVariableRequest := datadogV1.NewSyntheticsGlobalVariableRequest(syntheticsGlobalVariable.Description, syntheticsGlobalVariable.Name, syntheticsGlobalVariable.Tags)
+	createdSyntheticsGlobalVariable, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateGlobalVariable(auth, *syntheticsGlobalVariableRequest)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics global variable")
@@ -221,7 +222,8 @@ func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schem
 	auth := providerConf.Auth
 
 	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
-	if _, httpResponse, err := apiInstances.GetSyntheticsApiV1().EditGlobalVariable(auth, d.Id(), *syntheticsGlobalVariable); err != nil {
+	syntheticsGlobalVariableRequest := datadogV1.NewSyntheticsGlobalVariableRequest(syntheticsGlobalVariable.Description, syntheticsGlobalVariable.Name, syntheticsGlobalVariable.Tags)
+	if _, httpResponse, err := apiInstances.GetSyntheticsApiV1().EditGlobalVariable(auth, d.Id(), *syntheticsGlobalVariableRequest); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
 		utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics global variable")
 	}

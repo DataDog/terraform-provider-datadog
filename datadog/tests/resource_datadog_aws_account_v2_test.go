@@ -40,8 +40,8 @@ func testAccCheckDatadogAwsAccountV2(accountID, uniq string) string {
 	// Update me to make use of the unique value
 	return fmt.Sprintf(`
 	resource "datadog_aws_account_v2" "foo" {
-	    account_tags = []
 	    aws_account_id = %s
+	    account_tags = ["tag:%s"]
 	    aws_partition = "aws"
 	    logs_config {
 		    lambda_forwarder {
