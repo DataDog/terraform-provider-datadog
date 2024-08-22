@@ -156,8 +156,8 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	syntheticsGlobalRequestVariable := buildSyntheticsGlobalVariableRequestStruct(d)
-	createdSyntheticsGlobalVariable, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateGlobalVariable(auth, *syntheticsGlobalRequestVariable)
+	syntheticsGlobalVariableRequest := buildSyntheticsGlobalVariableRequestStruct(d)
+	createdSyntheticsGlobalVariable, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateGlobalVariable(auth, *syntheticsGlobalVariableRequest)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics global variable")
