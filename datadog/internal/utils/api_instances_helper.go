@@ -46,6 +46,7 @@ type ApiInstances struct {
 	//V2 APIs
 	apiManagementAPIV2         *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2   *datadogV2.APMRetentionFiltersApi
+	awsIntegrationApiV2        *datadogV2.AWSIntegrationApi
 	auditApiV2                 *datadogV2.AuditApi
 	authNMappingsApiV2         *datadogV2.AuthNMappingsApi
 	cloudflareIntegrationApiV2 *datadogV2.CloudflareIntegrationApi
@@ -329,6 +330,14 @@ func (i *ApiInstances) GetWebhooksIntegrationApiV1() *datadogV1.WebhooksIntegrat
 		i.webhooksIntegrationApiV1 = datadogV1.NewWebhooksIntegrationApi(i.HttpClient)
 	}
 	return i.webhooksIntegrationApiV1
+}
+
+// GetAWSIntegrationApiV2 get instance of AWSIntegrationApi
+func (i *ApiInstances) GetAWSIntegrationApiV2() *datadogV2.AWSIntegrationApi {
+	if i.awsIntegrationApiV2 == nil {
+		i.awsIntegrationApiV2 = datadogV2.NewAWSIntegrationApi(i.HttpClient)
+	}
+	return i.awsIntegrationApiV2
 }
 
 // GetAuditApiV2 get instance of AuditApi

@@ -1,4 +1,3 @@
-
 package test
 
 import (
@@ -10,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -18,55 +16,56 @@ func TestAccAwsAccountV2Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
+	accountID := uniqueAWSAccountID(ctx, t)
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:      		  testAccCheckDatadogAwsAccountV2Destroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckDatadogAwsAccountV2Destroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogAwsAccountV2(uniq),
+				Config: testAccCheckDatadogAwsAccountV2(accountID, uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAwsAccountV2Exists(providers.frameworkProvider),
-                                    resource.TestCheckResourceAttr(
-                                        "datadog_aws_account_v2.foo", "aws_account_id", "123456789012"),
-                                    resource.TestCheckResourceAttr(
-                                        "datadog_aws_account_v2.foo", "aws_partition", "aws"),
-                        
+					resource.TestCheckResourceAttr(
+						"datadog_aws_account_v2.foo", "aws_account_id", "123456789012"),
+					resource.TestCheckResourceAttr(
+						"datadog_aws_account_v2.foo", "aws_partition", "aws"),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckDatadogAwsAccountV2(uniq string) string {
-// Update me to make use of the unique value
-	return fmt.Sprintf(`resource "datadog_aws_account_v2" "foo" {
-    account_tags = "UPDATE ME"
-    aws_account_id = "123456789012"
-    aws_partition = "aws"
-    logs_config {
-    lambda_forwarder {
-    lambdas = "UPDATE ME"
-    sources = "UPDATE ME"
-    }
-    }
-    metrics_config {
-    automute_enabled = "UPDATE ME"
-    collect_cloudwatch_alarms = "UPDATE ME"
-    collect_custom_metrics = "UPDATE ME"
-    enabled = "UPDATE ME"
-    tag_filters {
-    namespace = "AWS/EC2"
-    tags = "UPDATE ME"
-    }
-    }
-    resources_config {
-    cloud_security_posture_management_collection = "UPDATE ME"
-    extended_collection = "UPDATE ME"
-    }
-    traces_config {
-    }
-}`, uniq)
+func testAccCheckDatadogAwsAccountV2(accountID, uniq string) string {
+	// Update me to make use of the unique value
+	return fmt.Sprintf(`
+	resource "datadog_aws_account_v2" "foo" {
+	    account_tags = []
+	    aws_account_id = %s
+	    aws_partition = "aws"
+	    logs_config {
+		    lambda_forwarder {
+			    lambdas = []
+			    sources = []
+		    }
+	    }
+	    metrics_config {
+	  	  automute_enabled = true
+	  	  collect_cloudwatch_alarms = true
+	  	  collect_custom_metrics = true
+	  	  enabled = true
+	  	  tag_filters {
+	 		   namespace = "AWS/EC2"
+	 		   tags = []
+	 	  }
+	  	}
+	    resources_config {
+	 	   cloud_security_posture_management_collection = true
+	 	   extended_collection = true
+	    }
+	    traces_config {
+	    }
+	}`, accountID, uniq)
 }
 
 func testAccCheckDatadogAwsAccountV2Destroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
@@ -84,12 +83,12 @@ func testAccCheckDatadogAwsAccountV2Destroy(accProvider *fwprovider.FrameworkPro
 func AwsAccountV2DestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-            if r.Type != "resource_datadog_aws_account_v2" {
-                continue
-            }
-                id := r.Primary.ID
+			if r.Type != "resource_datadog_aws_account_v2" {
+				continue
+			}
+			id := r.Primary.ID
 
-	        _, httpResp, err := apiInstances.GetAWSIntegrationApiV2().GetAWSAccount(auth, id,)
+			_, httpResp, err := apiInstances.GetAWSIntegrationApiV2().GetAWSAccount(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -117,12 +116,12 @@ func testAccCheckDatadogAwsAccountV2Exists(accProvider *fwprovider.FrameworkProv
 
 func awsAccountV2ExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-        if r.Type != "resource_datadog_aws_account_v2" {
-            continue
-        }
-            id := r.Primary.ID
+		if r.Type != "resource_datadog_aws_account_v2" {
+			continue
+		}
+		id := r.Primary.ID
 
-        _, httpResp, err := apiInstances.GetAWSIntegrationApiV2().GetAWSAccount(auth, id,)
+		_, httpResp, err := apiInstances.GetAWSIntegrationApiV2().GetAWSAccount(auth, id)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving AwsAccountV2")
 		}
