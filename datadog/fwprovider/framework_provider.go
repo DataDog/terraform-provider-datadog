@@ -36,6 +36,7 @@ var Resources = []func() resource.Resource{
 	NewApplicationKeyResource,
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
+	NewAwsAccountV2Resource,
 	NewDashboardListResource,
 	NewDowntimeScheduleResource,
 	NewIntegrationAzureResource,
