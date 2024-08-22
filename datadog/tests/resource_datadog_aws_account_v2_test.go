@@ -39,33 +39,38 @@ func TestAccAwsAccountV2Basic(t *testing.T) {
 func testAccCheckDatadogAwsAccountV2(accountID, uniq string) string {
 	// Update me to make use of the unique value
 	return fmt.Sprintf(`
-	resource "datadog_aws_account_v2" "foo" {
-	    aws_account_id = %s
-	    account_tags = ["tag:%s"]
-	    aws_partition = "aws"
-	    logs_config {
-		    lambda_forwarder {
-			    lambdas = []
-			    sources = []
-		    }
+resource "datadog_aws_account_v2" "foo" {
+    aws_account_id = %s
+    account_tags = ["tag:%s"]
+    aws_partition = "aws"
+	auth_config {
+		aws_auth_config_role {
+			role_name = "test"
+		}
+	}
+    logs_config {
+	    lambda_forwarder {
+		    lambdas = []
+		    sources = []
 	    }
-	    metrics_config {
-	  	  automute_enabled = true
-	  	  collect_cloudwatch_alarms = true
-	  	  collect_custom_metrics = true
-	  	  enabled = true
-	  	  tag_filters {
-	 		   namespace = "AWS/EC2"
-	 		   tags = []
-	 	  }
-	  	}
-	    resources_config {
-	 	   cloud_security_posture_management_collection = true
-	 	   extended_collection = true
-	    }
-	    traces_config {
-	    }
-	}`, accountID, uniq)
+    }
+    metrics_config {
+  	  automute_enabled = true
+  	  collect_cloudwatch_alarms = true
+  	  collect_custom_metrics = true
+  	  enabled = true
+  	  tag_filters {
+ 		   namespace = "AWS/EC2"
+ 		   tags = []
+ 	  }
+  	}
+    resources_config {
+ 	   cloud_security_posture_management_collection = true
+ 	   extended_collection = true
+    }
+    traces_config {
+    }
+}`, accountID, uniq)
 }
 
 func testAccCheckDatadogAwsAccountV2Destroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

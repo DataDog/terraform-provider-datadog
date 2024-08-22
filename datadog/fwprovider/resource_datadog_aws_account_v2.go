@@ -138,11 +138,11 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 		Description: "Provides a Datadog AwsAccountV2 resource. This can be used to create and manage Datadog aws_account_v2.",
 		Attributes: map[string]schema.Attribute{
 			"aws_account_id": schema.StringAttribute{
-				Optional:    true,
+				Required:    true,
 				Description: "AWS Account ID",
 			},
 			"aws_partition": schema.StringAttribute{
-				Optional:    true,
+				Required:    true,
 				Description: "AWS Account partition",
 			},
 			"account_tags": schema.ListAttribute{
@@ -565,6 +565,32 @@ func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context,
 
 	attributes.SetAwsAccountId(state.AwsAccountId.ValueString())
 	attributes.SetAwsPartition(datadogV2.AWSAccountPartition(state.AwsPartition.ValueString()))
+
+	if state.AuthConfig != nil {
+		authConfig := datadogV2.AWSAuthConfig{}
+
+		if state.AuthConfig.AwsAuthConfigKeys != nil {
+			authConfig.AWSAuthConfigKeys = datadogV2.NewAWSAuthConfigKeysWithDefaults()
+			if !state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.IsNull() {
+				authConfig.AWSAuthConfigKeys.SetAccessKeyId(state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.ValueString())
+			}
+			if !state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.IsNull() {
+				authConfig.AWSAuthConfigKeys.SetSecretAccessKey(state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.ValueString())
+			}
+		}
+
+		if state.AuthConfig.AwsAuthConfigRole != nil {
+			authConfig.AWSAuthConfigRole = datadogV2.NewAWSAuthConfigRoleWithDefaults()
+			if !state.AuthConfig.AwsAuthConfigRole.ExternalId.IsNull() {
+				authConfig.AWSAuthConfigRole.SetExternalId(state.AuthConfig.AwsAuthConfigRole.ExternalId.ValueString())
+			}
+			if !state.AuthConfig.AwsAuthConfigRole.RoleName.IsNull() {
+				authConfig.AWSAuthConfigRole.SetRoleName(state.AuthConfig.AwsAuthConfigRole.RoleName.ValueString())
+			}
+		}
+
+		attributes.SetAuthConfig(authConfig)
+	}
 
 	if !state.AccountTags.IsNull() {
 		var accountTags []string
