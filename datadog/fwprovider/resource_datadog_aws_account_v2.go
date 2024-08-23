@@ -353,8 +353,8 @@ func (r *awsAccountV2Resource) Read(ctx context.Context, request resource.ReadRe
 		return
 	}
 
-	id := state.ID.ValueString()
-	resp, httpResp, err := r.Api.GetAWSAccount(r.Auth, id)
+	aws_account_id := state.AwsAccountId.ValueString()
+	resp, httpResp, err := r.Api.GetAWSAccount(r.Auth, aws_account_id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -409,7 +409,7 @@ func (r *awsAccountV2Resource) Update(ctx context.Context, request resource.Upda
 		return
 	}
 
-	id := state.ID.ValueString()
+	aws_account_id := state.AwsAccountId.ValueString()
 
 	body, diags := r.buildAwsAccountV2UpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
@@ -417,7 +417,7 @@ func (r *awsAccountV2Resource) Update(ctx context.Context, request resource.Upda
 		return
 	}
 
-	resp, _, err := r.Api.UpdateAWSAccount(r.Auth, id, *body)
+	resp, _, err := r.Api.UpdateAWSAccount(r.Auth, aws_account_id, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AwsAccountV2"))
 		return
@@ -439,9 +439,9 @@ func (r *awsAccountV2Resource) Delete(ctx context.Context, request resource.Dele
 		return
 	}
 
-	id := state.ID.ValueString()
+	aws_account_id := state.AwsAccountId.ValueString()
 
-	httpResp, err := r.Api.DeleteAWSAccount(r.Auth, id)
+	httpResp, err := r.Api.DeleteAWSAccount(r.Auth, aws_account_id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
