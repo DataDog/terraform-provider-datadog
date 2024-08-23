@@ -27,7 +27,7 @@ func TestAccAwsAccountV2Basic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAwsAccountV2Exists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_aws_account_v2.foo", "aws_account_id", "123456789012"),
+						"datadog_aws_account_v2.foo", "aws_account_id", accountID),
 					resource.TestCheckResourceAttr(
 						"datadog_aws_account_v2.foo", "aws_partition", "aws"),
 				),
@@ -48,27 +48,15 @@ resource "datadog_aws_account_v2" "foo" {
 			role_name = "test"
 		}
 	}
-    logs_config {
-	    lambda_forwarder {
-		    lambdas = []
-		    sources = []
-	    }
-    }
     metrics_config {
   	  automute_enabled = true
   	  collect_cloudwatch_alarms = true
   	  collect_custom_metrics = true
   	  enabled = true
-  	  tag_filters {
- 		   namespace = "AWS/EC2"
- 		   tags = []
- 	  }
   	}
     resources_config {
  	   cloud_security_posture_management_collection = true
  	   extended_collection = true
-    }
-    traces_config {
     }
 }`, accountID, uniq)
 }
