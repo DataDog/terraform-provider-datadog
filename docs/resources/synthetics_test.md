@@ -131,7 +131,7 @@ resource "datadog_synthetics_test" "test_ssl" {
 
   request_definition {
     host = "example.org"
-    port = 443
+    port = "443"
   }
 
   assertion {
@@ -160,7 +160,7 @@ resource "datadog_synthetics_test" "test_tcp" {
 
   request_definition {
     host = "example.org"
-    port = 443
+    port = "443"
   }
 
   assertion {
@@ -268,7 +268,7 @@ resource "datadog_synthetics_test" "test_multi_step" {
 
     request_definition {
       host      = "example.org"
-      port      = 443
+      port      = "443"
       call_type = "healthcheck"
       service   = "greeter.Greeter"
     }
@@ -286,7 +286,7 @@ resource "datadog_synthetics_test" "test_multi_step" {
 
     request_definition {
       host      = "example.org"
-      port      = 443
+      port      = "443"
       call_type = "unary"
       service   = "greeter.Greeter"
       method    = "SayHello"
@@ -412,7 +412,7 @@ resource "datadog_synthetics_test" "test_grpc_unary" {
 
   request_definition {
     host      = "example.org"
-    port      = 443
+    port      = "443"
     call_type = "unary"
     service   = "greeter.Greeter"
     method    = "SayHello"
@@ -488,7 +488,7 @@ resource "datadog_synthetics_test" "test_grpc_health" {
 
   request_definition {
     host      = "example.org"
-    port      = 443
+    port      = "443"
     call_type = "healthcheck"
     service   = "greeter.Greeter"
   }
