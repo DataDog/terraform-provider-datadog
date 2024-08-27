@@ -8,6 +8,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/Masterminds/semver/v3"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -67,6 +68,7 @@ type Entity struct {
 	Metadata     Metadata       `yaml:"metadata" json:"metadata"`
 	Spec         map[string]any `yaml:"spec,omitempty" json:"spec,omitempty"`
 	Integrations map[string]any `yaml:"integrations,omitempty" json:"integrations,omitempty"`
+	Extensions   map[string]any `yaml:"extensions,omitempty" json:"extensions,omitempty"`
 	Datadog      map[string]any `yaml:"datadog,omitempty" json:"datadog,omitempty"`
 }
 
@@ -131,8 +133,8 @@ type catalogEntityResource struct {
 }
 
 type entityTFState struct {
-	EntityYAML types.String `tfsdk:"entity"`
-	ID         types.String `tfsdk:"id"`
+	EntityYAML customtypes.YAMLStringValue `tfsdk:"entity"`
+	ID         types.String                `tfsdk:"id"`
 }
 
 func (e *entityTFState) entityYAML() string {
@@ -140,7 +142,8 @@ func (e *entityTFState) entityYAML() string {
 }
 
 func (e *entityTFState) update(entityYAML string, ref *Reference) {
-	e.EntityYAML = types.StringValue(entityYAML)
+	e.EntityYAML = customtypes.YAMLStringValue{StringValue: types.StringValue(entityYAML)}
+
 	if ref != nil {
 		e.ID = types.StringValue(ref.String())
 	}
@@ -170,6 +173,7 @@ func (r *catalogEntityResource) Schema(_ context.Context, _ resource.SchemaReque
 				Required:      true,
 				Validators:    []validator.String{validEntityYAMLValidator{}},
 				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIf(replacePlanModifier, modifierDesc, modifierDesc)},
+				CustomType:    customtypes.YAMLStringType{},
 			},
 			// Resource ID
 			"id": utils.ResourceIDAttribute(),
