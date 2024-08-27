@@ -204,7 +204,7 @@ var replacePlanModifier = func(ctx context.Context, request planmodifier.StringR
 	if oldEntity.reference() != nil && newEntity.reference() != nil {
 		oldRef := oldEntity.reference()
 		newRef := newEntity.reference()
-		response.RequiresReplace = oldRef.equal(*newRef)
+		response.RequiresReplace = !oldRef.equal(*newRef)
 	}
 }
 
