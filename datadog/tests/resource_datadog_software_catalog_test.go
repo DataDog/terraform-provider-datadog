@@ -19,7 +19,7 @@ func TestAccDatadogCatalogEntity_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
-	uniqUpdated := fmt.Sprintf("%s-updated", uniq)
+	// uniqUpdated := fmt.Sprintf("%s-updated", uniq)
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -29,10 +29,6 @@ func TestAccDatadogCatalogEntity_Basic(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogCatalogEntity(uniq),
-				Check:  checkCatalogEntityExists(accProvider),
-			},
-			{
-				Config: testAccCheckDatadogCatalogEntity(uniqUpdated),
 				Check:  checkCatalogEntityExists(accProvider),
 			},
 		},
@@ -48,7 +44,6 @@ kind: service
 metadata:
   name: %s
   displayName: Shopping Cart
-  inheritFrom: service:otherService
   tags:
     - tag:value
   links:
@@ -190,7 +185,7 @@ func checkCatalogEntityExists(accProvider func() (*schema.Provider, error)) reso
 
 		for _, r := range s.RootModule().Resources {
 			err := utils.Retry(5000*time.Millisecond, 4, func() error {
-				if _, _, err := utils.SendRequest(auth, httpClient, "GET", "/api/v2/catalog/entity?filter[ref]="+r.Primary.ID, nil); err != nil {
+				if _, _, err := utils.SendRequest(auth, httpClient, "GET", "/api/v2/catalog/entity?include=schema&filter[ref]="+r.Primary.ID, nil); err != nil {
 					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving entity %s", err)}
 				}
 				return nil

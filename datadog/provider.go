@@ -213,7 +213,6 @@ func Provider() *schema.Provider {
 			"datadog_service_level_objective":              resourceDatadogServiceLevelObjective(),
 			"datadog_service_definition_yaml":              resourceDatadogServiceDefinitionYAML(),
 			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
-			"datadog_software_catalog":                     resourceDatadogCatalogEntity(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
