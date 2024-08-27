@@ -43,11 +43,17 @@ resource "datadog_aws_account_v2" "foo" {
     aws_account_id = %s
     account_tags = ["tag:%s"]
     aws_partition = "aws"
+	aws_regions {
+		aws_regions_include_all {
+			include_all = true
+		}
+	}
 	auth_config {
 		aws_auth_config_role {
 			role_name = "test"
 		}
 	}
+	logs_config {}
     metrics_config {
   	  automute_enabled = true
   	  collect_cloudwatch_alarms = true
@@ -58,6 +64,7 @@ resource "datadog_aws_account_v2" "foo" {
  	   cloud_security_posture_management_collection = true
  	   extended_collection = true
     }
+	traces_config {}
 }`, accountID, uniq)
 }
 
