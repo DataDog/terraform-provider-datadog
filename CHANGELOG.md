@@ -1,3 +1,11 @@
+## 3.43.1 (August 20, 2024)
+
+### BUGFIXES
+* [datadog_synthetics_test] Do not send `field` if empty by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2533
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.43.0...v3.43.1
+
 ## 3.43.0 (August 14, 2024)
 
 ### BUGFIXES

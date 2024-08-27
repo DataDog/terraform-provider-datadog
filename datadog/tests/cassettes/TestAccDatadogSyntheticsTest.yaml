@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1720190903","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
+            {"config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"locations":["aws:ap-northeast-1"],"message":"","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1724351356","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"live","subtype":"http","tags":["env:prod","foo"],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"bhx-vnb-vwz","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1720190903","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:28.175856+00:00","modified_at":"2024-07-05T14:48:28.175856+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":148641987,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"kcm-h7i-cc8","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1724351356","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-08-22T18:29:17.531818+00:00","modified_at":"2024-08-22T18:29:17.531818+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":152019645,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.586389459s
+        duration: 333.290792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhx-vnb-vwz
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kcm-h7i-cc8
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"bhx-vnb-vwz","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1720190903","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:28.175856+00:00","modified_at":"2024-07-05T14:48:28.175856+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148641987,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"kcm-h7i-cc8","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1724351356","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-08-22T18:29:17.531818+00:00","modified_at":"2024-08-22T18:29:17.531818+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":152019645,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 82.851792ms
+        duration: 150.242875ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhx-vnb-vwz
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kcm-h7i-cc8
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"bhx-vnb-vwz","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1720190903","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:28.175856+00:00","modified_at":"2024-07-05T14:48:28.175856+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148641987,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"kcm-h7i-cc8","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1724351356","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-08-22T18:29:17.531818+00:00","modified_at":"2024-08-22T18:29:17.531818+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":152019645,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 87.424333ms
+        duration: 161.738166ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhx-vnb-vwz
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kcm-h7i-cc8
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"bhx-vnb-vwz","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1720190903","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:28.175856+00:00","modified_at":"2024-07-05T14:48:28.175856+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148641987,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"kcm-h7i-cc8","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1724351356","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-08-22T18:29:17.531818+00:00","modified_at":"2024-08-22T18:29:17.531818+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":152019645,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 78.437667ms
+        duration: 151.597125ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhx-vnb-vwz
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/kcm-h7i-cc8
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"bhx-vnb-vwz","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1720190903","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:28.175856+00:00","modified_at":"2024-07-05T14:48:28.175856+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148641987,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"kcm-h7i-cc8","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1724351356","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-08-22T18:29:17.531818+00:00","modified_at":"2024-08-22T18:29:17.531818+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":152019645,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 82.237375ms
+        duration: 141.750167ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +195,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhx-vnb-vwz
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kcm-h7i-cc8
         method: GET
       response:
         proto: HTTP/1.1
@@ -207,13 +207,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"bhx-vnb-vwz","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1720190903","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:28.175856+00:00","modified_at":"2024-07-05T14:48:28.175856+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148641987,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"kcm-h7i-cc8","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1724351356","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-08-22T18:29:17.531818+00:00","modified_at":"2024-08-22T18:29:17.531818+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":152019645,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 112.260875ms
+        duration: 317.567334ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhx-vnb-vwz
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kcm-h7i-cc8
         method: GET
       response:
         proto: HTTP/1.1
@@ -242,13 +242,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"bhx-vnb-vwz","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1720190903","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:28.175856+00:00","modified_at":"2024-07-05T14:48:28.175856+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148641987,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"kcm-h7i-cc8","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1724351356","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-08-22T18:29:17.531818+00:00","modified_at":"2024-08-22T18:29:17.531818+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":152019645,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 110.587542ms
+        duration: 261.165709ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -265,7 +265,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/bhx-vnb-vwz
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/kcm-h7i-cc8
         method: GET
       response:
         proto: HTTP/1.1
@@ -277,13 +277,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"bhx-vnb-vwz","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1720190903","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-07-05T14:48:28.175856+00:00","modified_at":"2024-07-05T14:48:28.175856+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":148641987,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"kcm-h7i-cc8","name":"TF_TESTACCDATADOGSYNTHETICSTEST_LOCAL_1724351356","status":"live","type":"api","tags":["env:prod","foo"],"created_at":"2024-08-22T18:29:17.531818+00:00","modified_at":"2024-08-22T18:29:17.531818+00:00","config":{"assertions":[{"operator":"is","target":200,"type":"statusCode"}],"configVariables":[],"request":{"method":"GET","url":"https://www.example.com"}},"message":"","options":{"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:ap-northeast-1"],"subtype":"http","monitor_id":152019645,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 81.63475ms
+        duration: 177.070709ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -296,7 +296,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["bhx-vnb-vwz"]}
+            {"public_ids":["kcm-h7i-cc8"]}
         form: {}
         headers:
             Accept:
@@ -315,13 +315,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"bhx-vnb-vwz","deleted_at":"2024-07-05T14:48:32.310022+00:00"}]}
+            {"deleted_tests":[{"public_id":"kcm-h7i-cc8","deleted_at":"2024-08-22T18:29:21.805183+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 518.687416ms
+        duration: 639.341417ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -338,7 +338,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhx-vnb-vwz
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/kcm-h7i-cc8
         method: GET
       response:
         proto: HTTP/1.1
@@ -355,7 +355,7 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 46.7705ms
+        duration: 170.8695ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -372,7 +372,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/bhx-vnb-vwz
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/kcm-h7i-cc8
         method: GET
       response:
         proto: HTTP/1.1
@@ -389,4 +389,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 51.796834ms
+        duration: 124.400417ms

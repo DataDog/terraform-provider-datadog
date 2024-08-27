@@ -156,8 +156,8 @@ func resourceDatadogSyntheticsGlobalVariableCreate(ctx context.Context, d *schem
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
-	createdSyntheticsGlobalVariable, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateGlobalVariable(auth, *syntheticsGlobalVariable)
+	syntheticsGlobalVariableRequest := buildSyntheticsGlobalVariableRequestStruct(d)
+	createdSyntheticsGlobalVariable, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateGlobalVariable(auth, *syntheticsGlobalVariableRequest)
 	if err != nil {
 		// Note that Id won't be set, so no state will be saved.
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics global variable")
@@ -220,8 +220,8 @@ func resourceDatadogSyntheticsGlobalVariableUpdate(ctx context.Context, d *schem
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	syntheticsGlobalVariable := buildSyntheticsGlobalVariableStruct(d)
-	if _, httpResponse, err := apiInstances.GetSyntheticsApiV1().EditGlobalVariable(auth, d.Id(), *syntheticsGlobalVariable); err != nil {
+	syntheticsGlobalVariableRequest := buildSyntheticsGlobalVariableRequestStruct(d)
+	if _, httpResponse, err := apiInstances.GetSyntheticsApiV1().EditGlobalVariable(auth, d.Id(), *syntheticsGlobalVariableRequest); err != nil {
 		// If the Update callback returns with or without an error, the full state is saved.
 		utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics global variable")
 	}
@@ -244,13 +244,13 @@ func resourceDatadogSyntheticsGlobalVariableDelete(ctx context.Context, d *schem
 	return nil
 }
 
-func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.SyntheticsGlobalVariable {
-	syntheticsGlobalVariable := datadogV1.NewSyntheticsGlobalVariableWithDefaults()
+func buildSyntheticsGlobalVariableRequestStruct(d *schema.ResourceData) *datadogV1.SyntheticsGlobalVariableRequest {
+	syntheticsGlobalVariableRequest := datadogV1.NewSyntheticsGlobalVariableRequestWithDefaults()
 
-	syntheticsGlobalVariable.SetName(d.Get("name").(string))
+	syntheticsGlobalVariableRequest.SetName(d.Get("name").(string))
 
 	if description, ok := d.GetOk("description"); ok {
-		syntheticsGlobalVariable.SetDescription(description.(string))
+		syntheticsGlobalVariableRequest.SetDescription(description.(string))
 	}
 
 	tags := make([]string, 0)
@@ -259,7 +259,7 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 			tags = append(tags, s.(string))
 		}
 	}
-	syntheticsGlobalVariable.SetTags(tags)
+	syntheticsGlobalVariableRequest.SetTags(tags)
 
 	syntheticsGlobalVariableValue := datadogV1.SyntheticsGlobalVariableValue{}
 
@@ -279,11 +279,11 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 		syntheticsGlobalVariableValue.SetOptions(variableOptions)
 	}
 
-	syntheticsGlobalVariable.SetValue(syntheticsGlobalVariableValue)
+	syntheticsGlobalVariableRequest.SetValue(syntheticsGlobalVariableValue)
 
 	if parseTestID, ok := d.GetOk("parse_test_id"); ok {
 		if _, ok := d.GetOk("parse_test_options.0"); ok {
-			syntheticsGlobalVariable.SetParseTestPublicId(parseTestID.(string))
+			syntheticsGlobalVariableRequest.SetParseTestPublicId(parseTestID.(string))
 
 			parseTestOptions := datadogV1.SyntheticsGlobalVariableParseTestOptions{}
 			parseTestOptions.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(d.Get("parse_test_options.0.type").(string)))
@@ -307,7 +307,7 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 				parseTestOptions.SetLocalVariableName(localVariableName.(string))
 			}
 
-			syntheticsGlobalVariable.SetParseTestOptions(parseTestOptions)
+			syntheticsGlobalVariableRequest.SetParseTestOptions(parseTestOptions)
 		}
 	}
 
@@ -316,10 +316,10 @@ func buildSyntheticsGlobalVariableStruct(d *schema.ResourceData) *datadogV1.Synt
 		attributes := datadogV1.SyntheticsGlobalVariableAttributes{
 			RestrictedRoles: *restrictedRoles,
 		}
-		syntheticsGlobalVariable.SetAttributes(attributes)
+		syntheticsGlobalVariableRequest.SetAttributes(attributes)
 	}
 
-	return syntheticsGlobalVariable
+	return syntheticsGlobalVariableRequest
 }
 
 func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, syntheticsGlobalVariable *datadogV1.SyntheticsGlobalVariable) diag.Diagnostics {
