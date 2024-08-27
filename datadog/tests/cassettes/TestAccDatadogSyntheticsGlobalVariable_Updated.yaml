@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"a global variable","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115","tags":["foo:bar","baz"],"value":{"secure":false,"value":"variable-value"}}
+            {"description":"a global variable","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336","tags":["foo:bar","baz"],"value":{"secure":false,"value":"variable-value"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"last_error":null,"value":{"secure":false,"value":"variable-value"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 223.384458ms
+        duration: 236.624042ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:16.614049+00:00","modified_at":"2024-06-28T15:55:16.614049+00:00","parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-08-22T18:28:58.404875+00:00","modified_at":"2024-08-22T18:28:58.404875+00:00","last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 152.091916ms
+        duration: 199.03425ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:16.614049+00:00","modified_at":"2024-06-28T15:55:16.614049+00:00","parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-08-22T18:28:58.404875+00:00","modified_at":"2024-08-22T18:28:58.404875+00:00","last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 205.050958ms
+        duration: 150.121417ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:16.614049+00:00","modified_at":"2024-06-28T15:55:16.614049+00:00","parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-08-22T18:28:58.404875+00:00","modified_at":"2024-08-22T18:28:58.404875+00:00","last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 160.479375ms
+        duration: 146.088125ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:16.614049+00:00","modified_at":"2024-06-28T15:55:16.614049+00:00","parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-08-22T18:28:58.404875+00:00","modified_at":"2024-08-22T18:28:58.404875+00:00","last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.902209ms
+        duration: 270.800709ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +195,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: GET
       response:
         proto: HTTP/1.1
@@ -207,13 +207,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-06-28T15:55:16.614049+00:00","modified_at":"2024-06-28T15:55:16.614049+00:00","parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336","description":"a global variable","type":"variable","tags":["foo:bar","baz"],"created_at":"2024-08-22T18:28:58.404875+00:00","modified_at":"2024-08-22T18:28:58.404875+00:00","last_error":null,"value":{"secure":false,"value":"variable-value"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 185.831541ms
+        duration: 317.159625ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -226,14 +226,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"an updated global variable","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115_UPDATED","tags":["foo:bar","baz","env:test"],"value":{"secure":false,"value":"variable-value-updated"}}
+            {"description":"an updated global variable","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336_UPDATED","tags":["foo:bar","baz","env:test"],"value":{"secure":false,"value":"variable-value-updated"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: PUT
       response:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115_UPDATED","description":"an updated global variable","type":"variable","tags":["foo:bar","baz","env:test"],"parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value-updated"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336_UPDATED","description":"an updated global variable","type":"variable","tags":["foo:bar","baz","env:test"],"last_error":null,"value":{"secure":false,"value":"variable-value-updated"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 360.598416ms
+        duration: 215.387875ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: GET
       response:
         proto: HTTP/1.1
@@ -280,13 +280,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115_UPDATED","description":"an updated global variable","type":"variable","tags":["foo:bar","baz","env:test"],"created_at":"2024-06-28T15:55:16.614049+00:00","modified_at":"2024-06-28T15:55:19.702677+00:00","parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value-updated"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336_UPDATED","description":"an updated global variable","type":"variable","tags":["foo:bar","baz","env:test"],"created_at":"2024-08-22T18:28:58.404875+00:00","modified_at":"2024-08-22T18:29:02.012876+00:00","last_error":null,"value":{"secure":false,"value":"variable-value-updated"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 150.982292ms
+        duration: 150.206125ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -303,7 +303,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: GET
       response:
         proto: HTTP/1.1
@@ -315,13 +315,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115_UPDATED","description":"an updated global variable","type":"variable","tags":["foo:bar","baz","env:test"],"created_at":"2024-06-28T15:55:16.614049+00:00","modified_at":"2024-06-28T15:55:19.702677+00:00","parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value-updated"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336_UPDATED","description":"an updated global variable","type":"variable","tags":["foo:bar","baz","env:test"],"created_at":"2024-08-22T18:28:58.404875+00:00","modified_at":"2024-08-22T18:29:02.012876+00:00","last_error":null,"value":{"secure":false,"value":"variable-value-updated"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.73475ms
+        duration: 153.26925ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -338,7 +338,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: GET
       response:
         proto: HTTP/1.1
@@ -350,13 +350,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"dcac9d3a-aa3e-4565-9233-113f24911b53","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1719590115_UPDATED","description":"an updated global variable","type":"variable","tags":["foo:bar","baz","env:test"],"created_at":"2024-06-28T15:55:16.614049+00:00","modified_at":"2024-06-28T15:55:19.702677+00:00","parse_test_public_id":null,"parse_test_name":null,"parse_test_options":null,"parse_test_extracted_at":null,"is_totp":null,"is_fido":null,"last_error":null,"value":{"secure":false,"value":"variable-value-updated"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"id":"025eac7e-44a3-4f24-868c-d0e40592efea","name":"TF_TESTACCDATADOGSYNTHETICSGLOBALVARIABLE_UPDATED_LOCAL_1724351336_UPDATED","description":"an updated global variable","type":"variable","tags":["foo:bar","baz","env:test"],"created_at":"2024-08-22T18:28:58.404875+00:00","modified_at":"2024-08-22T18:29:02.012876+00:00","last_error":null,"value":{"secure":false,"value":"variable-value-updated"},"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"editor":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 199.500834ms
+        duration: 228.806833ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -373,7 +373,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -389,7 +389,7 @@ interactions:
                 - text/html; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 384.624292ms
+        duration: 378.020583ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -406,7 +406,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/variables/dcac9d3a-aa3e-4565-9233-113f24911b53
+        url: https://api.datadoghq.com/api/v1/synthetics/variables/025eac7e-44a3-4f24-868c-d0e40592efea
         method: GET
       response:
         proto: HTTP/1.1
@@ -423,4 +423,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 144.873167ms
+        duration: 154.264167ms

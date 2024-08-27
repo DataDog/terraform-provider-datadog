@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1720206668","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"paused","steps":[{"allowFailure":false,"isCritical":false,"name":"click step","noScreenshot":false,"params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click"}],"tags":["foo:bar"],"type":"browser"}
+            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1724351336","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"status":"paused","steps":[{"allowFailure":false,"isCritical":false,"name":"click step","noScreenshot":false,"params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click"}],"tags":["foo:bar"],"type":"browser"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"8bm-p6w-wvq","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1720206668","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-07-05T19:11:11.888115+00:00","modified_at":"2024-07-05T19:11:11.888115+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":148654934,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"click step","params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click","allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":0,"total":1}}
+            {"public_id":"aif-5hr-jcx","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1724351336","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-08-22T18:28:58.673070+00:00","modified_at":"2024-08-22T18:28:58.673070+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":152019584,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"click step","params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click","allowFailure":false,"isCritical":false,"noScreenshot":false}],"stepCount":{"assertions":0,"subtests":0,"total":1}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.310798167s
+        duration: 1.214790917s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/8bm-p6w-wvq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/aif-5hr-jcx
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"8bm-p6w-wvq","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1720206668","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-07-05T19:11:11.888115+00:00","modified_at":"2024-07-05T19:11:11.888115+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":148654934,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"click step","params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click","allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+            {"public_id":"aif-5hr-jcx","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1724351336","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-08-22T18:28:58.673070+00:00","modified_at":"2024-08-22T18:28:58.673070+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":152019584,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"click step","params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click","allowFailure":false,"isCritical":false,"noScreenshot":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 88.181625ms
+        duration: 148.774292ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/8bm-p6w-wvq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/aif-5hr-jcx
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"8bm-p6w-wvq","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1720206668","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-07-05T19:11:11.888115+00:00","modified_at":"2024-07-05T19:11:11.888115+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":148654934,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"aif-5hr-jcx","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1724351336","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-08-22T18:28:58.673070+00:00","modified_at":"2024-08-22T18:28:58.673070+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":152019584,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 200.367792ms
+        duration: 234.024583ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/8bm-p6w-wvq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/aif-5hr-jcx
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"8bm-p6w-wvq","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1720206668","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-07-05T19:11:11.888115+00:00","modified_at":"2024-07-05T19:11:11.888115+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":148654934,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"aif-5hr-jcx","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1724351336","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-08-22T18:28:58.673070+00:00","modified_at":"2024-08-22T18:28:58.673070+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":152019584,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 95.034041ms
+        duration: 375.402667ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/8bm-p6w-wvq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/aif-5hr-jcx
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"8bm-p6w-wvq","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1720206668","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-07-05T19:11:11.888115+00:00","modified_at":"2024-07-05T19:11:11.888115+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":148654934,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"click step","params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click","allowFailure":false,"isCritical":false,"noScreenshot":false}]}
+            {"public_id":"aif-5hr-jcx","name":"tf-TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement-local-1724351336","status":"paused","type":"browser","tags":["foo:bar"],"created_at":"2024-08-22T18:28:58.673070+00:00","modified_at":"2024-08-22T18:28:58.673070+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":152019584,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"click step","params":{"element":{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}},"timeout":0,"type":"click","allowFailure":false,"isCritical":false,"noScreenshot":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 89.453667ms
+        duration: 160.103208ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -191,7 +191,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["8bm-p6w-wvq"]}
+            {"public_ids":["aif-5hr-jcx"]}
         form: {}
         headers:
             Accept:
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"8bm-p6w-wvq","deleted_at":"2024-07-05T19:11:14.868201+00:00"}]}
+            {"deleted_tests":[{"public_id":"aif-5hr-jcx","deleted_at":"2024-08-22T18:29:02.718128+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 694.15175ms
+        duration: 674.581458ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/8bm-p6w-wvq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/aif-5hr-jcx
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,4 +250,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 56.676375ms
+        duration: 124.706042ms
