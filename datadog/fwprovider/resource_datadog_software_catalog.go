@@ -11,6 +11,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -191,12 +192,15 @@ var replacePlanModifier = func(ctx context.Context, request planmodifier.StringR
 	if request.Plan.Raw.IsNull() {
 		return
 	}
-
-	oldEntity, errO := entityFromYAML(request.State.Raw.String())
+	var oldEntityType customtypes.YAMLStringValue
+	request.State.GetAttribute(ctx, path.Root("entity"), &oldEntityType)
+	oldEntity, errO := entityFromYAML(oldEntityType.ValueString())
 	if errO != nil {
 		return
 	}
-	newEntity, errN := entityFromYAML(request.Plan.Raw.String())
+	var newEntityType customtypes.YAMLStringValue
+	request.Plan.GetAttribute(ctx, path.Root("entity"), &newEntityType)
+	newEntity, errN := entityFromYAML(newEntityType.ValueString())
 	if errN != nil {
 		return
 	}
@@ -204,7 +208,7 @@ var replacePlanModifier = func(ctx context.Context, request planmodifier.StringR
 	if oldEntity.reference() != nil && newEntity.reference() != nil {
 		oldRef := oldEntity.reference()
 		newRef := newEntity.reference()
-		response.RequiresReplace = oldRef.equal(*newRef)
+		response.RequiresReplace = !oldRef.equal(*newRef)
 	}
 }
 
