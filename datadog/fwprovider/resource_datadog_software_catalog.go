@@ -150,7 +150,7 @@ func (r *catalogEntityResource) Configure(_ context.Context, request resource.Co
 }
 
 func (r *catalogEntityResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "catalog_entity"
+	response.TypeName = "software_catalog"
 }
 
 func (r *catalogEntityResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
