@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/Masterminds/semver/v3"
@@ -310,7 +311,9 @@ func (r *catalogEntityResource) Update(ctx context.Context, request resource.Upd
 }
 
 func (r *catalogEntityResource) resourceEntityUpsert(state *entityTFState, action string) error {
-	respByte, _, err := utils.SendRequest(r.Auth, r.Api, "POST", catalogPath, state.EntityYAML)
+	log.Printf("======body %s", state.EntityYAML)
+
+	respByte, _, err := utils.SendRequest(r.Auth, r.Api, "POST", catalogPath, &state.EntityYAML)
 	if err != nil {
 		return fmt.Errorf("error while calling Software Catalog to %s entity", action)
 	}
