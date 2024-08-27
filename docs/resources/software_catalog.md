@@ -248,7 +248,7 @@ EOF
 
 ### Required
 
-- `entity` (String) The YAML/JSON definition of entity
+- `entity` (String) The YAML/JSON definition of the entity.
 
 ### Read-Only
 
