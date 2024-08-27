@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/Masterminds/semver/v3"
@@ -136,8 +135,15 @@ type entityTFState struct {
 	ID         types.String `tfsdk:"id"`
 }
 
-func (e *entityTFState) update(entityYAML string) {
+func (e *entityTFState) entityYAML() string {
+	return e.EntityYAML.ValueString()
+}
+
+func (e *entityTFState) update(entityYAML string, ref *Reference) {
 	e.EntityYAML = types.StringValue(entityYAML)
+	if ref != nil {
+		e.ID = types.StringValue(ref.String())
+	}
 }
 
 func NewCatalogEntityResource() resource.Resource {
@@ -276,7 +282,7 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error marshalling entity"))
 		return
 	}
-	state.update(entityYAML)
+	state.update(entityYAML, e.reference())
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -311,9 +317,8 @@ func (r *catalogEntityResource) Update(ctx context.Context, request resource.Upd
 }
 
 func (r *catalogEntityResource) resourceEntityUpsert(state *entityTFState, action string) error {
-	log.Printf("======body %s", state.EntityYAML)
-
-	respByte, _, err := utils.SendRequest(r.Auth, r.Api, "POST", catalogPath, &state.EntityYAML)
+	entityYAML := state.entityYAML()
+	respByte, _, err := utils.SendRequest(r.Auth, r.Api, "POST", catalogPath, &entityYAML)
 	if err != nil {
 		return fmt.Errorf("error while calling Software Catalog to %s entity", action)
 	}
@@ -328,11 +333,11 @@ func (r *catalogEntityResource) resourceEntityUpsert(state *entityTFState, actio
 		return errors.New("missing entity in the response")
 	}
 	e := response.Included[0].Attributes.Schema
-	entityYAML, err := e.toYAML()
+	entityYAML, err = e.toYAML()
 	if err != nil {
 		return err
 	}
-	state.update(entityYAML)
+	state.update(entityYAML, e.reference())
 	return nil
 }
 
