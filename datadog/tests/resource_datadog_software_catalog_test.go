@@ -7,29 +7,27 @@ import (
 	"testing"
 	"time"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestAccDatadogCatalogEntity_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 	// uniqUpdated := fmt.Sprintf("%s-updated", uniq)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogCatalogEntityDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogCatalogEntityDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogCatalogEntity(uniq),
-				Check:  checkCatalogEntityExists(accProvider),
+				Check:  checkCatalogEntityExists(providers.frameworkProvider),
 			},
 		},
 	})
@@ -128,18 +126,17 @@ EOF
 
 func TestAccDatadogCatalogEntity_Order(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testAccCheckDatadogCatalogEntityDestroy(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogCatalogEntityDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogCatalogEntityOrder(uniq),
-				Check:  checkCatalogEntityExists(accProvider),
+				Check:  checkCatalogEntityExists(providers.frameworkProvider),
 			},
 		},
 	})
@@ -152,40 +149,37 @@ resource "datadog_software_catalog" "entity" {
 apiVersion: v3
 kind: service
 metadata: 
-	name: %s
-	contacts:
-		- name: AA
-			type: slack
-			contact: AAA
-		- name: BB
-			type: email
-			contact: BBB@example.com
-		- name: AA
-			type: email
-			contact: AAA@example.com
-		- name: BB
-			type: email
-			contact: AAA@example.com
-		- name: AA
-			type: email
-			contact: BBB@example.com
-	tags:
-		- 'bbb'
-		- 'aaa'
+  name: %s
+  contacts:
+    - name: AA
+      type: slack
+      contact: AAA
+    - name: BB
+      type: email
+      contact: BBB@example.com
+    - name: AA
+      type: email
+      contact: AAA@example.com
+    - name: BB
+      type: email
+      contact: AAA@example.com
+    - name: AA
+      type: email
+      contact: BBB@example.com
+  tags:
+    - 'bbb'
+    - 'aaa'
 EOF
 }`, uniq)
 }
 
-func checkCatalogEntityExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func checkCatalogEntityExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		httpClient := providerConf.DatadogApiInstances.HttpClient
-		auth := providerConf.Auth
-
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 		for _, r := range s.RootModule().Resources {
 			err := utils.Retry(5000*time.Millisecond, 4, func() error {
-				if _, _, err := utils.SendRequest(auth, httpClient, "GET", "/api/v2/catalog/entity?include=schema&filter[ref]="+r.Primary.ID, nil); err != nil {
+				if _, _, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", "/api/v2/catalog/entity?include=schema&filter[ref]="+r.Primary.ID, nil); err != nil {
 					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving entity %s", err)}
 				}
 				return nil
@@ -198,16 +192,14 @@ func checkCatalogEntityExists(accProvider func() (*schema.Provider, error)) reso
 	}
 }
 
-func testAccCheckDatadogCatalogEntityDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
+func testAccCheckDatadogCatalogEntityDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		httpClient := providerConf.DatadogApiInstances.HttpClient
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, r := range s.RootModule().Resources {
 			err := utils.Retry(200*time.Millisecond, 4, func() error {
-				if _, httpResp, err := utils.SendRequest(auth, httpClient, "GET", "/api/v2/catalog/entity?filter[ref]="+r.Primary.ID, nil); err != nil {
+				if _, httpResp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", "/api/v2/catalog/entity?filter[ref]="+r.Primary.ID, nil); err != nil {
 					if httpResp != nil && httpResp.StatusCode != 404 {
 						return &utils.RetryableError{Prob: "entity still exists"}
 					}
