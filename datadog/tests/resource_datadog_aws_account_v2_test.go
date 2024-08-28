@@ -53,7 +53,12 @@ resource "datadog_aws_account_v2" "foo" {
 			role_name = "test"
 		}
 	}
-	logs_config {}
+	logs_config {
+		lambda_forwarder {
+			lambdas = []
+			sources = []
+		}
+	}
     metrics_config {
   	  automute_enabled = true
   	  collect_cloudwatch_alarms = true

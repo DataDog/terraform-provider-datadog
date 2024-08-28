@@ -210,12 +210,12 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 					"lambda_forwarder": schema.SingleNestedBlock{
 						Attributes: map[string]schema.Attribute{
 							"lambdas": schema.ListAttribute{
-								Optional:    true,
+								Required:    true,
 								Description: "List of Datadog Lambda Log Forwarder ARNs",
 								ElementType: types.StringType,
 							},
 							"sources": schema.ListAttribute{
-								Optional:    true,
+								Required:    true,
 								Description: "List of AWS services that will send logs to the Datadog Lambda Log Forwarder",
 								ElementType: types.StringType,
 							},
@@ -468,19 +468,21 @@ func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccoun
 	if logsConfig, ok := attributes.GetLogsConfigOk(); ok {
 
 		logsConfigTf := logsConfigModel{}
+		lambdaForwarderTf := lambdaForwarderModel{}
 		if lambdaForwarder, ok := logsConfig.GetLambdaForwarderOk(); ok {
-
-			lambdaForwarderTf := lambdaForwarderModel{}
 			if lambdas, ok := lambdaForwarder.GetLambdasOk(); ok && len(*lambdas) > 0 {
 				lambdaForwarderTf.Lambdas, _ = types.ListValueFrom(ctx, types.StringType, *lambdas)
+			} else {
+				lambdaForwarderTf.Lambdas, _ = types.ListValueFrom(ctx, types.StringType, &[]string{})
 			}
+
 			if sources, ok := lambdaForwarder.GetSourcesOk(); ok && len(*sources) > 0 {
 				lambdaForwarderTf.Sources, _ = types.ListValueFrom(ctx, types.StringType, *sources)
+			} else {
+				lambdaForwarderTf.Sources, _ = types.ListValueFrom(ctx, types.StringType, &[]string{})
 			}
-
-			logsConfigTf.LambdaForwarder = &lambdaForwarderTf
 		}
-
+		logsConfigTf.LambdaForwarder = &lambdaForwarderTf
 		state.LogsConfig = &logsConfigTf
 	}
 
