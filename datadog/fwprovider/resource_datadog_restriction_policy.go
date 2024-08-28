@@ -197,7 +197,7 @@ func (r *RestrictionPolicyResource) updateState(ctx context.Context, state *Rest
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	if bindings, ok := attributes.GetBindingsOk(); ok && len(*bindings) > 0 {
+	if bindings, ok := attributes.GetBindingsOk(); ok {
 		state.Bindings = []*BindingsModel{}
 		for _, bindingsDd := range *bindings {
 			bindingsTfItem := BindingsModel{}
