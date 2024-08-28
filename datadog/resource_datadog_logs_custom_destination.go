@@ -335,9 +335,9 @@ func buildCustomDestinationCreateRequest(d *schema.ResourceData) (*datadogV2.Cus
 	attributes.SetForwarderDestination(*forwarderDestination)
 	attributes.SetForwardTags(d.Get("forward_tags").(bool))
 
-	if rawList, ok := d.GetOk("forward_tags_restriction_list"); ok {
-		var list []string
-		for _, item := range rawList.([]interface{}) {
+	if rawList, ok := d.Get("forward_tags_restriction_list").([]interface{}); ok {
+		list := make([]string, 0)
+		for _, item := range rawList {
 			list = append(list, item.(string))
 		}
 		attributes.SetForwardTagsRestrictionList(list)
@@ -372,9 +372,9 @@ func buildCustomDestinationUpdateRequest(d *schema.ResourceData) (*datadogV2.Cus
 	attributes.SetForwarderDestination(*forwarderDestination)
 	attributes.SetForwardTags(d.Get("forward_tags").(bool))
 
-	if rawList, ok := d.GetOk("forward_tags_restriction_list"); ok {
-		var list []string
-		for _, item := range rawList.([]interface{}) {
+	if rawList, ok := d.Get("forward_tags_restriction_list").([]interface{}); ok {
+		list := make([]string, 0)
+		for _, item := range rawList {
 			list = append(list, item.(string))
 		}
 		attributes.SetForwardTagsRestrictionList(list)
