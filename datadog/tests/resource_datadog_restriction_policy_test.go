@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
@@ -86,6 +88,41 @@ func TestAccRestrictionPolicyInvalidInput(t *testing.T) {
 		},
 	})
 
+}
+
+func TestUpdateStateWithEmptyRespClearsBindings(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+	policy := &fwprovider.RestrictionPolicyResource{}
+	initialState := fwprovider.RestrictionPolicyModel{
+		ID:         basetypes.NewStringValue("baz"),
+		ResourceId: basetypes.NewStringValue("security-rule:abc-def-ghi"),
+		Bindings:   []*fwprovider.BindingsModel{},
+	}
+	resp := datadogV2.RestrictionPolicyResponse{
+		Data: datadogV2.RestrictionPolicy{
+			Attributes: datadogV2.RestrictionPolicyAttributes{
+				Bindings: []datadogV2.RestrictionPolicyBinding{
+					{
+						Principals: []string{"org:4dee724d-00cc-11ea-a77b-570c9d03c6c5"},
+						Relation:   "editor",
+					},
+				},
+			},
+			Id:   "security-rule:abc-def-ghi",
+			Type: datadogV2.RESTRICTIONPOLICYTYPE_RESTRICTION_POLICY,
+		},
+	}
+	policy.UpdateState(ctx, &initialState, &resp)
+	if len(initialState.Bindings) != 1 {
+		t.Fatalf("Expected to find one binding, got %d", len(initialState.Bindings))
+	}
+
+	resp.Data.Attributes.Bindings = []datadogV2.RestrictionPolicyBinding{}
+	policy.UpdateState(ctx, &initialState, &resp)
+	if len(initialState.Bindings) != 0 {
+		t.Fatalf("Expected to find one binding, got %d", len(initialState.Bindings))
+	}
 }
 
 func testAccCheckDatadogRestrictionPolicy(ruleName string, resourceType string) string {

@@ -109,7 +109,7 @@ func (r *RestrictionPolicyResource) Read(ctx context.Context, request resource.R
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
+	r.UpdateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -138,7 +138,7 @@ func (r *RestrictionPolicyResource) Create(ctx context.Context, request resource
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.UpdateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -167,7 +167,7 @@ func (r *RestrictionPolicyResource) Update(ctx context.Context, request resource
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
+	r.UpdateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -191,7 +191,7 @@ func (r *RestrictionPolicyResource) Delete(ctx context.Context, request resource
 	}
 }
 
-func (r *RestrictionPolicyResource) updateState(ctx context.Context, state *RestrictionPolicyModel, resp *datadogV2.RestrictionPolicyResponse) {
+func (r *RestrictionPolicyResource) UpdateState(ctx context.Context, state *RestrictionPolicyModel, resp *datadogV2.RestrictionPolicyResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 	state.ResourceId = types.StringValue(resp.Data.GetId())
 	data := resp.GetData()
