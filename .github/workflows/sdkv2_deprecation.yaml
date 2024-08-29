@@ -1,0 +1,18 @@
+on:
+  pull_request:
+    paths:
+      - 'datadog/provider.go'
+jobs:
+  post-deprecation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 it looks like the `terraform-plugin-sdkv2` provider definition was changed (`datadog/provider.go`) - are you adding a new SDKv2 resource? If so, this is deprecated - going forward, all new resources must use the terraform-plugin-framework. If you are a Datadog employee and need guidance on this process, reach out to us at #api-clients.'
+            })
+      - run: exit 1
