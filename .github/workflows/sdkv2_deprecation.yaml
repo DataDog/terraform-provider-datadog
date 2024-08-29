@@ -1,12 +1,24 @@
+name: SDKv2 Deprecation Check
+
 on:
   pull_request:
-    paths:
-      - 'datadog/provider.go'
+    branches:
+      - main
+
 jobs:
-  post-deprecation:
+  check-sdkv2:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     steps:
+      - uses: actions/checkout@v4
+      - name: Get changed files
+        id: new-resources
+        uses: tj-actions/changed-files@v45
+        with:
+          files: "datadog/*.go"
       - uses: actions/github-script@v6
+        if: steps.new-resources.outputs.added_files_count != '0'
         with:
           script: |
             github.rest.issues.createComment({
@@ -16,3 +28,4 @@ jobs:
               body: '👋 it looks like the `terraform-plugin-sdkv2` provider definition was changed (`datadog/provider.go`) - are you adding a new SDKv2 resource? If so, this is deprecated - going forward, all new resources must use the terraform-plugin-framework. If you are a Datadog employee and need guidance on this process, reach out to us at #api-clients.'
             })
       - run: exit 1
+        if: steps.new-resources.outputs.added_files_count != '0'
