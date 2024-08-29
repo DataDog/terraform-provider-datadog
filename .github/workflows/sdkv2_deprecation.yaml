@@ -9,7 +9,7 @@ jobs:
   check-sdkv2:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - name: Get changed files
