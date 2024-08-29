@@ -725,29 +725,34 @@ func (r *awsAccountV2Resource) buildAwsAccountV2UpdateRequestBody(ctx context.Co
 		attributes.SetAccountTags(accountTags)
 	}
 
-	if state.LogsConfig != nil {
-		var logsConfig datadogV2.AWSLogsConfig
+	var logsConfig datadogV2.AWSLogsConfig
+	var lambdaForwarder datadogV2.AWSLambdaForwarderConfig
 
-		if state.LogsConfig.LambdaForwarder != nil {
-			var lambdaForwarder datadogV2.AWSLambdaForwarderConfig
+	if state.LogsConfig != nil && state.LogsConfig.LambdaForwarder != nil {
 
-			if !state.LogsConfig.LambdaForwarder.Lambdas.IsNull() {
-				var lambdas []string
-				diags.Append(state.LogsConfig.LambdaForwarder.Lambdas.ElementsAs(ctx, &lambdas, false)...)
-				lambdaForwarder.SetLambdas(lambdas)
-			}
-
-			if !state.LogsConfig.LambdaForwarder.Sources.IsNull() {
-				var sources []string
-				diags.Append(state.LogsConfig.LambdaForwarder.Sources.ElementsAs(ctx, &sources, false)...)
-				lambdaForwarder.SetSources(sources)
-			}
-
-			logsConfig.LambdaForwarder = &lambdaForwarder
+		if !state.LogsConfig.LambdaForwarder.Lambdas.IsNull() {
+			var lambdas []string
+			diags.Append(state.LogsConfig.LambdaForwarder.Lambdas.ElementsAs(ctx, &lambdas, false)...)
+			lambdaForwarder.SetLambdas(lambdas)
+		} else {
+			lambdaForwarder.SetLambdas([]string{})
 		}
 
-		attributes.LogsConfig = &logsConfig
+		if !state.LogsConfig.LambdaForwarder.Sources.IsNull() {
+			var sources []string
+			diags.Append(state.LogsConfig.LambdaForwarder.Sources.ElementsAs(ctx, &sources, false)...)
+			lambdaForwarder.SetSources(sources)
+		} else {
+			lambdaForwarder.SetSources([]string{})
+		}
+
+	} else {
+		lambdaForwarder.SetLambdas([]string{})
+		lambdaForwarder.SetSources([]string{})
 	}
+
+	logsConfig.LambdaForwarder = &lambdaForwarder
+	attributes.LogsConfig = &logsConfig
 
 	if state.MetricsConfig != nil {
 		var metricsConfig datadogV2.AWSMetricsConfig
