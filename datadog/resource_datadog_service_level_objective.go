@@ -285,7 +285,7 @@ func resourceDatadogServiceLevelObjective() *schema.Resource {
 					Elem:          &schema.Schema{Type: schema.TypeString, MinItems: 1},
 				},
 				"validate": {
-					Description: "Whether or not to validate the SLO.",
+					Description: "Whether or not to validate the SLO. It checks if monitors added to a monitor SLO already exist.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
