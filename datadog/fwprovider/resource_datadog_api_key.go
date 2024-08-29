@@ -166,5 +166,7 @@ func (r *apiKeyResource) buildDatadogApiKeyUpdateV2Struct(state *apiKeyResourceM
 func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) {
 	apiKeyAttributes := apiKeyData.GetAttributes()
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
-	state.Key = types.StringValue(apiKeyAttributes.GetKey())
+	if apiKeyAttributes.HasKey() {
+		state.Key = types.StringValue(apiKeyAttributes.GetKey())
+	}
 }
