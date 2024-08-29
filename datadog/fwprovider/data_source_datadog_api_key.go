@@ -43,7 +43,7 @@ func (d *apiKeyDataSource) Metadata(_ context.Context, req datasource.MetadataRe
 
 func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing api key.",
+		Description: "Use this data source to retrieve information about an existing api key. Deprecated. This will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use the datadog_api_key resource to manage API keys in your Datadog account.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Name for API Key.",
@@ -63,6 +63,7 @@ func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Sensitive:   true,
 			},
 		},
+		DeprecationMessage: "Deprecated. This will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use the datadog_api_key resource to manage API keys in your Datadog account.",
 	}
 }
 
@@ -80,7 +81,9 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 			return
 		}
 		apiKeyData := ddResp.GetData()
-		d.updateState(&state, &apiKeyData)
+		if !d.checkAPIDeprecated(&apiKeyData, resp) {
+			d.updateState(&state, &apiKeyData)
+		}
 	} else if !state.Name.IsNull() {
 		optionalParams := datadogV2.NewListAPIKeysOptionalParameters()
 		optionalParams.WithFilter(state.Name.ValueString())
@@ -125,7 +128,9 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 				resp.Diagnostics.AddError("your query returned no exact matches, please try a less specific search criteria", "")
 				return
 			}
-			d.updateState(&state, &apiKeyData)
+			if !d.checkAPIDeprecated(&apiKeyData, resp) {
+				d.updateState(&state, &apiKeyData)
+			}
 		} else {
 			id := apiKeysData[0].GetId()
 			ddResp, _, err := d.Api.GetAPIKey(d.Auth, id)
@@ -134,7 +139,9 @@ func (d *apiKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 				return
 			}
 			apiKeyData := ddResp.GetData()
-			d.updateState(&state, &apiKeyData)
+			if !d.checkAPIDeprecated(&apiKeyData, resp) {
+				d.updateState(&state, &apiKeyData)
+			}
 		}
 	} else {
 		resp.Diagnostics.AddError("missing id or name parameter", "")
@@ -150,4 +157,13 @@ func (r *apiKeyDataSource) updateState(state *apiKeyDataSourceModel, apiKeyData 
 	state.ID = types.StringValue(apiKeyData.GetId())
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
 	state.Key = types.StringValue(apiKeyAttributes.GetKey())
+}
+
+func (r *apiKeyDataSource) checkAPIDeprecated(apiKeyData *datadogV2.FullAPIKey, resp *datasource.ReadResponse) bool {
+	apiKeyAttributes := apiKeyData.GetAttributes()
+	if !apiKeyAttributes.HasKey() {
+		resp.Diagnostics.AddError("Deprecated", "The datadog_api_key data source is deprecated and will be removed in a future release. Securely store your API key using a secret management system or use the datadog_api_key resource to manage API keys in your Datadog account.")
+		return true
+	}
+	return false
 }
