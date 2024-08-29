@@ -3,12 +3,12 @@
 page_title: "datadog_api_key Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys.
+  Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use this resource to create and manage new API keys.
 ---
 
 # datadog_api_key (Resource)
 
-Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys.
+Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use this resource to create and manage new API keys.
 
 ## Example Usage
 
