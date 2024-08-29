@@ -55,8 +55,8 @@ resource "datadog_aws_account_v2" "foo" {
 	}
 	logs_config {
 		lambda_forwarder {
-			lambdas = []
-			sources = []
+			sources = ["s3"]
+			lambdas = ["arn:aws:lambda:us-east-1:123456789123:function:test-fn"]
 		}
 	}
     metrics_config {
