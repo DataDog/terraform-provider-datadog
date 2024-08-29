@@ -4,10 +4,13 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -213,11 +216,13 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 								Optional:    true,
 								Description: "List of Datadog Lambda Log Forwarder ARNs",
 								ElementType: types.StringType,
+								Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 							},
 							"sources": schema.ListAttribute{
 								Optional:    true,
 								Description: "List of AWS services that will send logs to the Datadog Lambda Log Forwarder",
 								ElementType: types.StringType,
+								Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 							},
 						},
 					},
@@ -453,6 +458,7 @@ func (r *awsAccountV2Resource) Delete(ctx context.Context, request resource.Dele
 
 func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccountV2Model, resp *datadogV2.AWSAccountResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
+	diags := diag.Diagnostics{}
 
 	data := resp.GetData()
 	attributes := data.GetAttributes()
@@ -475,10 +481,10 @@ func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccoun
 	if lambdaForwarder, ok := logsConfig.GetLambdaForwarderOk(); ok {
 		if lambdaForwarder != nil && (lambdaForwarder.HasLambdas() || lambdaForwarder.HasSources()) {
 			lambdas := lambdaForwarder.GetLambdas()
-			lambdaForwarderTf.Lambdas, _ = types.ListValueFrom(ctx, types.StringType, lambdas)
+			lambdaForwarderTf.Lambdas = ListValueOrNull(ctx, types.StringType, lambdas, &diags)
 
 			sources := lambdaForwarder.GetSources()
-			lambdaForwarderTf.Sources, _ = types.ListValueFrom(ctx, types.StringType, sources)
+			lambdaForwarderTf.Sources = ListValueOrNull(ctx, types.StringType, sources, &diags)
 
 			logsConfigTf.LambdaForwarder = &lambdaForwarderTf
 			state.LogsConfig = &logsConfigTf
@@ -815,4 +821,16 @@ func (r *awsAccountV2Resource) buildAwsAccountV2UpdateRequestBody(ctx context.Co
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+// ListValueOrNull returns a types.List based on the supplied elements. If the
+// supplied elements is empty, the returned types.List will be flagged as null.
+func ListValueOrNull[T any](ctx context.Context, elementType attr.Type, elements []T, diags *diag.Diagnostics) types.List {
+	if len(elements) == 0 {
+		return types.ListNull(elementType)
+	}
+
+	result, d := types.ListValueFrom(ctx, elementType, elements)
+	diags.Append(d...)
+	return result
 }
