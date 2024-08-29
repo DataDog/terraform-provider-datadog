@@ -1,0 +1,9 @@
+comment:
+  on-update: recreate
+  snippets:
+    - id: post-deprecation-warning
+      files:
+        - 'datadog/*.go' # The actual check for new files is done in the workflow
+      body: |
+        > [!WARNING]
+        > It looks like you're adding a new `terraform-plugin-sdkv2` resource. If so, this is deprecated - going forward, all new resources must use the `terraform-plugin-framework`. If you are a Datadog employee and need guidance on this process, reach out to us at #api-clients.

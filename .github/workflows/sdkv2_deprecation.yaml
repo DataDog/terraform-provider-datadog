@@ -1,0 +1,28 @@
+name: SDKv2 Deprecation Check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check-sdkv2:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Get changed files
+        id: new-resources
+        uses: tj-actions/changed-files@v45
+        with:
+          files: "datadog/*.go"
+      - uses: exercism/pr-commenter-action@v1.5.1
+        if: steps.new-resources.outputs.added_files_count != '0'
+        with:
+          github-token: "${{ github.token }}"
+          config-file: ".github/sdkv2-warning.yml"
+      - run: exit 1
+        if: steps.new-resources.outputs.added_files_count != '0'
