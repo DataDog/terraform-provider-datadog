@@ -461,8 +461,10 @@ func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccoun
 
 	state.AwsPartition = types.StringValue(string(attributes.GetAwsPartition()))
 
-	if accountTags, ok := attributes.GetAccountTagsOk(); ok && len(*accountTags) > 0 {
-		state.AccountTags, _ = types.ListValueFrom(ctx, types.StringType, *accountTags)
+	if accountTags, ok := attributes.GetAccountTagsOk(); ok {
+		if accountTags != nil && len(*accountTags) > 0 {
+			state.AccountTags, _ = types.ListValueFrom(ctx, types.StringType, *accountTags)
+		}
 	}
 
 	if logsConfig, ok := attributes.GetLogsConfigOk(); ok {
@@ -692,8 +694,32 @@ func (r *awsAccountV2Resource) buildAwsAccountV2UpdateRequestBody(ctx context.Co
 	attributes := datadogV2.NewAWSAccountPatchRequestAttributesWithDefaults()
 
 	attributes.SetAwsAccountId(state.AwsAccountId.ValueString())
-	if !state.AwsPartition.IsNull() {
-		attributes.SetAwsPartition(datadogV2.AWSAccountPartition(state.AwsPartition.ValueString()))
+	attributes.SetAwsPartition(datadogV2.AWSAccountPartition(state.AwsPartition.ValueString()))
+
+	if state.AuthConfig != nil {
+		authConfig := datadogV2.AWSAuthConfig{}
+
+		if state.AuthConfig.AwsAuthConfigKeys != nil {
+			authConfig.AWSAuthConfigKeys = datadogV2.NewAWSAuthConfigKeysWithDefaults()
+			if !state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.IsNull() {
+				authConfig.AWSAuthConfigKeys.SetAccessKeyId(state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.ValueString())
+			}
+			if !state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.IsNull() {
+				authConfig.AWSAuthConfigKeys.SetSecretAccessKey(state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.ValueString())
+			}
+		}
+
+		if state.AuthConfig.AwsAuthConfigRole != nil {
+			authConfig.AWSAuthConfigRole = datadogV2.NewAWSAuthConfigRoleWithDefaults()
+			if !state.AuthConfig.AwsAuthConfigRole.ExternalId.IsNull() {
+				authConfig.AWSAuthConfigRole.SetExternalId(state.AuthConfig.AwsAuthConfigRole.ExternalId.ValueString())
+			}
+			if !state.AuthConfig.AwsAuthConfigRole.RoleName.IsNull() {
+				authConfig.AWSAuthConfigRole.SetRoleName(state.AuthConfig.AwsAuthConfigRole.RoleName.ValueString())
+			}
+		}
+
+		attributes.SetAuthConfig(authConfig)
 	}
 
 	if !state.AccountTags.IsNull() {
