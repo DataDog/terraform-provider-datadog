@@ -154,6 +154,18 @@ func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.
 			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_all"),
 			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_only"),
 		),
+		resourcevalidator.Conflicting(
+			path.MatchRoot("aws_regions").AtName("aws_regions_include_all"),
+			path.MatchRoot("aws_regions").AtName("aws_regions_include_only"),
+		),
+		resourcevalidator.Conflicting(
+			path.MatchRoot("auth_config").AtName("aws_auth_config_keys"),
+			path.MatchRoot("auth_config").AtName("aws_auth_config_role"),
+		),
+		resourcevalidator.RequiredTogether(
+			path.MatchRoot("auth_config").AtName("aws_auth_config_keys").AtName("access_key_id"),
+			path.MatchRoot("auth_config").AtName("aws_auth_config_keys").AtName("secret_access_key"),
+		),
 	}
 }
 
@@ -173,6 +185,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 				Optional:    true,
 				Description: "Tags to apply to all metrics in the account",
 				ElementType: types.StringType,
+				Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -223,6 +236,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 								Optional:    true,
 								Description: "Include only these regions",
 								ElementType: types.StringType,
+								Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 							},
 						},
 					},
@@ -280,6 +294,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 									Optional:    true,
 									Description: "The tags to filter based on",
 									ElementType: types.StringType,
+									Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 								},
 							},
 						},
@@ -301,6 +316,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 										Optional:    true,
 										Description: "Exclude only these namespaces",
 										ElementType: types.StringType,
+										Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 									},
 								},
 							},
@@ -318,6 +334,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 										Optional:    true,
 										Description: "Include only these namespaces",
 										ElementType: types.StringType,
+										Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 									},
 								},
 							},
@@ -333,7 +350,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 					},
 					"extended_collection": schema.BoolAttribute{
 						Optional:    true,
-						Description: "Whether Datadog collects additional attributes and configuration information about the resources in your AWS account. Required for `cspm_resource_collection`.",
+						Description: "Whether Datadog collects additional attributes and configuration information about the resources in your AWS account. Required for `cloud_security_posture_management_collection`.",
 					},
 				},
 			},
@@ -357,6 +374,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 										Optional:    true,
 										Description: "Include only these services",
 										ElementType: types.StringType,
+										Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 									},
 								},
 							},
@@ -489,9 +507,7 @@ func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccoun
 	state.AwsPartition = types.StringValue(string(attributes.GetAwsPartition()))
 
 	if accountTags, ok := attributes.GetAccountTagsOk(); ok {
-		if accountTags != nil && len(*accountTags) > 0 {
-			state.AccountTags, _ = types.ListValueFrom(ctx, types.StringType, *accountTags)
-		}
+		state.AccountTags = ListValueOrNull(ctx, types.StringType, *accountTags, &diags)
 	}
 
 	logsConfig := attributes.GetLogsConfig()
@@ -535,7 +551,7 @@ func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccoun
 					tagFiltersTfItem.Namespace = types.StringValue(*namespace)
 				}
 				if tags, ok := tagFiltersDd.GetTagsOk(); ok && len(*tags) > 0 {
-					tagFiltersTfItem.Tags, _ = types.ListValueFrom(ctx, types.StringType, *tags)
+					tagFiltersTfItem.Tags = ListValueOrNull(ctx, types.StringType, *tags, &diags)
 				}
 				metricsConfigTf.TagFilters = append(metricsConfigTf.TagFilters, &tagFiltersTfItem)
 			}
@@ -545,46 +561,32 @@ func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccoun
 	}
 
 	if resourcesConfig, ok := attributes.GetResourcesConfigOk(); ok {
-
 		resourcesConfigTf := resourcesConfigModel{}
-		if cloudSecurityPostureManagementCollection, ok := resourcesConfig.GetCloudSecurityPostureManagementCollectionOk(); ok {
-			resourcesConfigTf.CloudSecurityPostureManagementCollection = types.BoolValue(*cloudSecurityPostureManagementCollection)
-		}
-		if extendedCollection, ok := resourcesConfig.GetExtendedCollectionOk(); ok {
-			resourcesConfigTf.ExtendedCollection = types.BoolValue(*extendedCollection)
-		}
-
+		resourcesConfigTf.CloudSecurityPostureManagementCollection = types.BoolValue(resourcesConfig.GetCloudSecurityPostureManagementCollection())
+		resourcesConfigTf.ExtendedCollection = types.BoolValue(resourcesConfig.GetExtendedCollection())
 		state.ResourcesConfig = &resourcesConfigTf
 	}
 
+	tracesConfigTf := tracesConfigModel{}
+	tracesConfigTf.XrayServices = &xrayServicesModel{}
+	xrayServicesIncludeOnlyTf := xRayServicesIncludeOnlyModel{IncludeOnly: types.ListNull(types.StringType)}
+
 	if tracesConfig, ok := attributes.GetTracesConfigOk(); ok {
 
-		tracesConfigTf := tracesConfigModel{}
-
-		tracesConfigTf.XrayServices = &xrayServicesModel{}
-
 		if xrayServices, ok := tracesConfig.GetXrayServicesOk(); ok {
-			if xrayServices.XRayServicesIncludeAll != nil {
+			if includeAll, ok := xrayServices.XRayServicesIncludeAll.GetIncludeAllOk(); ok {
 				xrayServicesIncludeAllTf := xRayServicesIncludeAllModel{}
-				if includeAll, ok := xrayServices.XRayServicesIncludeAll.GetIncludeAllOk(); ok {
-					xrayServicesIncludeAllTf.IncludeAll = types.BoolValue(*includeAll)
-				}
-
+				xrayServicesIncludeAllTf.IncludeAll = types.BoolValue(*includeAll)
 				tracesConfigTf.XrayServices.XRayServicesIncludeAll = &xrayServicesIncludeAllTf
 			}
 
-			if xrayServices.XRayServicesIncludeOnly != nil {
-				xrayServicesIncludeOnlyTf := xRayServicesIncludeOnlyModel{}
-				if includeOnly, ok := xrayServices.XRayServicesIncludeOnly.GetIncludeOnlyOk(); ok && len(*includeOnly) > 0 {
-					xrayServicesIncludeOnlyTf.IncludeOnly, _ = types.ListValueFrom(ctx, types.StringType, *includeOnly)
-				}
-
-				tracesConfigTf.XrayServices.XRayServicesIncludeOnly = &xrayServicesIncludeOnlyTf
-			}
+			includeOnly := xrayServices.XRayServicesIncludeOnly.GetIncludeOnly()
+			xrayServicesIncludeOnlyTf.IncludeOnly = ListValueOrNull(ctx, types.StringType, includeOnly, &diags)
 		}
 
-		state.TracesConfig = &tracesConfigTf
+		tracesConfigTf.XrayServices.XRayServicesIncludeOnly = &xrayServicesIncludeOnlyTf
 	}
+	state.TracesConfig = &tracesConfigTf
 }
 
 func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context, state *awsAccountV2Model) (*datadogV2.AWSAccountCreateRequest, diag.Diagnostics) {
@@ -650,6 +652,27 @@ func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context,
 		attributes.LogsConfig = &logsConfig
 	}
 
+	if state.TracesConfig != nil {
+		tracesConfig := datadogV2.NewAWSTracesConfigWithDefaults()
+
+		if state.TracesConfig.XrayServices != nil {
+			var ddXRayServiceList datadogV2.XRayServicesList
+
+			if state.TracesConfig.XrayServices.XRayServicesIncludeAll != nil {
+				includeAll := state.TracesConfig.XrayServices.XRayServicesIncludeAll.IncludeAll.ValueBool()
+				ddXRayServiceList = datadogV2.XRayServicesIncludeAllAsXRayServicesList(&datadogV2.XRayServicesIncludeAll{IncludeAll: includeAll})
+			} else if state.TracesConfig.XrayServices.XRayServicesIncludeOnly != nil {
+				includeOnlyTf := state.TracesConfig.XrayServices.XRayServicesIncludeOnly.IncludeOnly
+				var ddIncludeOnly []string
+				diags.Append(includeOnlyTf.ElementsAs(ctx, &ddIncludeOnly, false)...)
+				ddXRayServiceList = datadogV2.XRayServicesIncludeOnlyAsXRayServicesList(&datadogV2.XRayServicesIncludeOnly{IncludeOnly: ddIncludeOnly})
+			}
+			tracesConfig.SetXrayServices(ddXRayServiceList)
+		}
+
+		attributes.TracesConfig = tracesConfig
+	}
+
 	if state.MetricsConfig != nil {
 		var metricsConfig datadogV2.AWSMetricsConfig
 
@@ -690,20 +713,10 @@ func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context,
 	if state.ResourcesConfig != nil {
 		var resourcesConfig datadogV2.AWSResourcesConfig
 
-		if !state.ResourcesConfig.CloudSecurityPostureManagementCollection.IsNull() {
-			resourcesConfig.SetCloudSecurityPostureManagementCollection(state.ResourcesConfig.CloudSecurityPostureManagementCollection.ValueBool())
-		}
-		if !state.ResourcesConfig.ExtendedCollection.IsNull() {
-			resourcesConfig.SetExtendedCollection(state.ResourcesConfig.ExtendedCollection.ValueBool())
-		}
+		resourcesConfig.SetCloudSecurityPostureManagementCollection(state.ResourcesConfig.CloudSecurityPostureManagementCollection.ValueBool())
+		resourcesConfig.SetExtendedCollection(state.ResourcesConfig.ExtendedCollection.ValueBool())
 
 		attributes.ResourcesConfig = &resourcesConfig
-	}
-
-	if state.TracesConfig != nil {
-		var tracesConfig datadogV2.AWSTracesConfig
-
-		attributes.TracesConfig = &tracesConfig
 	}
 
 	req := datadogV2.NewAWSAccountCreateRequestWithDefaults()

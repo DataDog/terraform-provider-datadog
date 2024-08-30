@@ -44,8 +44,8 @@ resource "datadog_aws_account_v2" "foo" {
     account_tags = ["tag:%s"]
     aws_partition = "aws"
 	aws_regions {
-		aws_regions_include_all {
-			include_all = true
+		aws_regions_include_only {
+			include_only = ["us-east-1"]
 		}
 	}
 	auth_config {
@@ -66,10 +66,9 @@ resource "datadog_aws_account_v2" "foo" {
   	  enabled = true
   	}
     resources_config {
- 	   cloud_security_posture_management_collection = true
- 	   extended_collection = true
+		cloud_security_posture_management_collection = false
+		extended_collection = true
     }
-	traces_config {}
 }`, accountID, uniq)
 }
 
