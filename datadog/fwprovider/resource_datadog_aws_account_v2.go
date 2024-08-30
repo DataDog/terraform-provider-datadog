@@ -5,8 +5,10 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -134,6 +136,25 @@ func (r *awsAccountV2Resource) Configure(_ context.Context, request resource.Con
 
 func (r *awsAccountV2Resource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "aws_account_v2"
+}
+
+func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
+	return []resource.ConfigValidator{
+		resourcevalidator.Conflicting(
+			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_all"),
+			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_only"),
+		),
+		resourcevalidator.Conflicting(
+			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_include_all"),
+			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_include_only"),
+			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_exclude_all"),
+			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_exclude_only"),
+		),
+		resourcevalidator.Conflicting(
+			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_all"),
+			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_only"),
+		),
+	}
 }
 
 func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
