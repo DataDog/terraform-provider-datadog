@@ -1,8 +1,9 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
-	github.com/DataDog/datadog-api-client-go/v2 v2.29.1-0.20240822201543-a20fb03b69a8
+	github.com/DataDog/datadog-api-client-go/v2 v2.29.1-0.20240903142749-8f9d8330d4fb
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
+	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/google/go-cmp v0.5.9
 	github.com/google/uuid v1.5.0
 	github.com/hashicorp/go-cleanhttp v0.5.2
@@ -28,7 +29,6 @@ require (
 	github.com/DataDog/sketches-go v1.2.1 // indirect
 	github.com/DataDog/zstd v1.5.2 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
-	github.com/Masterminds/semver/v3 v3.1.1 // indirect
 	github.com/Masterminds/sprig/v3 v3.2.2 // indirect
 	github.com/Microsoft/go-winio v0.5.2 // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20230217124315-7d5c6f04bbb8 // indirect

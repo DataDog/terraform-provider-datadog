@@ -4705,6 +4705,18 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, John!"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.name", "VAR_EXTRACT_MESSAGE"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.type", "grpc_message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.type", "json_path"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.value", "$.id"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.6.subtype", "wait"),
@@ -4944,6 +4956,14 @@ resource "datadog_synthetics_test" "multi" {
         jsonpath    = "$.message"
         operator    = "is"
         targetvalue = "Hello, John!"
+      }
+    }
+    extracted_value {
+      name  = "VAR_EXTRACT_MESSAGE"
+      type  = "grpc_message"
+      parser {
+        type  = "json_path"
+        value = "$.id"
       }
     }
   }
