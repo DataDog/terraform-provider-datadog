@@ -65,7 +65,7 @@ Required:
 
 Required:
 
-- `type` (String) Defines the source to use to extract the value. Valid values are `http_body`, `http_header`, `local_variable`.
+- `type` (String) Defines the source to use to extract the value. Valid values are `http_body`, `http_header`, `http_status_code`, `local_variable`.
 
 Optional:
 
