@@ -856,7 +856,7 @@ func syntheticsTestAPIStep() *schema.Schema {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsLocalVariableParsingOptionsTypeFromValue),
 							},
 							"field": {
-								Description: "When type is `http_header`, name of the header to use to extract the value.",
+								Description: "When type is `http_header` or `grpc_metadata`, name of the header or metadatum to extract.",
 								Type:        schema.TypeString,
 								Optional:    true,
 							},

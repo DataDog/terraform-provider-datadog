@@ -643,7 +643,7 @@ Required:
 
 Optional:
 
-- `field` (String) When type is `http_header`, name of the header to use to extract the value.
+- `field` (String) When type is `http_header` or `grpc_metadata`, name of the header or metadatum to extract.
 - `secure` (Boolean) Determines whether or not the extracted value will be obfuscated.
 
 <a id="nestedblock--api_step--extracted_value--parser"></a>
