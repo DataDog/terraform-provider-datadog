@@ -193,7 +193,6 @@ func Provider() *schema.Provider {
 			"datadog_integration_slack_channel":            resourceDatadogIntegrationSlackChannel(),
 			"datadog_logs_archive":                         resourceDatadogLogsArchive(),
 			"datadog_logs_archive_order":                   resourceDatadogLogsArchiveOrder(),
-			"datadog_logs_custom_destination":              resourceDatadogLogsCustomDestination(),
 			"datadog_logs_custom_pipeline":                 resourceDatadogLogsCustomPipeline(),
 			"datadog_logs_index":                           resourceDatadogLogsIndex(),
 			"datadog_logs_index_order":                     resourceDatadogLogsIndexOrder(),
