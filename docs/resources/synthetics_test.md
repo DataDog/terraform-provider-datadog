@@ -639,11 +639,11 @@ Required:
 
 - `name` (String)
 - `parser` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--extracted_value--parser))
-- `type` (String) Property of the Synthetics Test Response to use for the variable. Valid values are `http_body`, `http_header`, `local_variable`.
+- `type` (String) Property of the Synthetics Test Response to use for the variable. Valid values are `grpc_message`, `grpc_metadata`, `http_body`, `http_header`, `http_status_code`.
 
 Optional:
 
-- `field` (String) When type is `http_header`, name of the header to use to extract the value.
+- `field` (String) When type is `http_header` or `grpc_metadata`, name of the header or metadatum to extract.
 - `secure` (Boolean) Determines whether or not the extracted value will be obfuscated.
 
 <a id="nestedblock--api_step--extracted_value--parser"></a>

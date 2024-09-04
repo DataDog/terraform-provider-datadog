@@ -853,10 +853,10 @@ func syntheticsTestAPIStep() *schema.Schema {
 								Description:      "Property of the Synthetics Test Response to use for the variable.",
 								Type:             schema.TypeString,
 								Required:         true,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsLocalVariableParsingOptionsTypeFromValue),
 							},
 							"field": {
-								Description: "When type is `http_header`, name of the header to use to extract the value.",
+								Description: "When type is `http_header` or `grpc_metadata`, name of the header or metadatum to extract.",
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
@@ -2933,7 +2933,7 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 		value := datadogV1.SyntheticsParsingOptions{}
 
 		value.SetName(extractedValueMap["name"].(string))
-		value.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(extractedValueMap["type"].(string)))
+		value.SetType(datadogV1.SyntheticsLocalVariableParsingOptionsType(extractedValueMap["type"].(string)))
 
 		if extractedValueMap["field"] != "" {
 			value.SetField(extractedValueMap["field"].(string))
