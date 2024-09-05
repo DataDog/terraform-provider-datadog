@@ -1,3 +1,25 @@
+## 3.44.0 (September 5, 2024)
+
+### BUGFIXES
+* [datadog_api_key] Stop overwriting key values in state when the API omits the key by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/2544
+* [datadog_restriction_policy] Allow policy deletions outside of terraform to prompt resource recreation by @dchayes-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2545
+### FEATURES
+* [datadog_software_catalog] Entity resource by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/2537
+* [datadog_logs_custom_destination] Introduce logs custom destination resource by @Prepager in https://github.com/DataDog/terraform-provider-datadog/pull/2542
+* [datadog_synthetics_test] Support `grpc_message` extracted variables by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2552
+* [datadog_logs_custom_destination] Introduce logs custom destination resource by @Prepager in https://github.com/DataDog/terraform-provider-datadog/pull/2555
+### NOTES
+* [datadog_synthetics_test] allow variable in port by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2522
+* [datadog_api_key] Add deprecation warning to datadog_api_key data source by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/2541
+* [datadog_api_key] Add deprecation warning for importing datadog_api_key resources by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/2543
+* [SOCE-1320] update description for slo validate option by @zhengshizhao in https://github.com/DataDog/terraform-provider-datadog/pull/2532
+
+## New Contributors
+* @tyjet made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2541
+* @dchayes-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2545
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.43.1...v3.44.0
+
 ## 3.43.1 (August 20, 2024)
 
 ### BUGFIXES
