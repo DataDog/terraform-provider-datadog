@@ -40,10 +40,10 @@ resource "datadog_logs_custom_destination" "sample_destination" {
 - `elasticsearch_destination` (Block List) The Elasticsearch destination. (see [below for nested schema](#nestedblock--elasticsearch_destination))
 - `enabled` (Boolean) Whether logs matching this custom destination should be forwarded or not.
 - `forward_tags` (Boolean) Whether tags from the forwarded logs should be forwarded or not.
-- `forward_tags_restriction_list` (List of String) List of [keys of tags](https://docs.datadoghq.com/getting_started/tagging/#define-tags) to be filtered.
+- `forward_tags_restriction_list` (List of String) List of [tag keys](https://docs.datadoghq.com/getting_started/tagging/#define-tags) to be filtered.
 				An empty list represents no restriction is in place and either all or no tags will be
 				forwarded depending on `forward_tags_restriction_list_type` parameter.
-- `forward_tags_restriction_list_type` (String) How `forward_tags_restriction_list` parameter should be interpreted.
+- `forward_tags_restriction_list_type` (String) How the `forward_tags_restriction_list` parameter should be interpreted.
 				If `ALLOW_LIST`, then only tags whose keys on the forwarded logs match the ones on the restriction list
 				are forwarded.
 				`BLOCK_LIST` works the opposite way. It does not forward the tags matching the ones on the list. Valid values are `ALLOW_LIST`, `BLOCK_LIST`.
@@ -60,7 +60,7 @@ resource "datadog_logs_custom_destination" "sample_destination" {
 
 Required:
 
-- `endpoint` (String) The destination for which logs will be forwarded to. Must have HTTPS scheme and forwarding back to Datadog is not allowed.
+- `endpoint` (String) The destination for which logs will be forwarded to. Must have HTTPS scheme. Forwarding back to Datadog is not allowed.
 - `index_name` (String) Name of the Elasticsearch index (must follow [Elasticsearch's criteria](https://www.elastic.co/guide/en/elasticsearch/reference/8.11/indices-create-index.html#indices-create-api-path-params)).
 
 Optional:
@@ -91,7 +91,7 @@ Required:
 
 Required:
 
-- `endpoint` (String) The destination for which logs will be forwarded to. Must have HTTPS scheme and forwarding back to Datadog is not allowed.
+- `endpoint` (String) The destination for which logs will be forwarded to. Must have HTTPS scheme. Forwarding back to Datadog is not allowed.
 
 Optional:
 
@@ -123,13 +123,13 @@ Required:
 Required:
 
 - `access_token` (String, Sensitive) Access token of the Splunk HTTP Event Collector. This field is not returned by the API.
-- `endpoint` (String) The destination for which logs will be forwarded to. Must have HTTPS scheme and forwarding back to Datadog is not allowed.
+- `endpoint` (String) The destination for which logs will be forwarded to. Must have HTTPS scheme. Forwarding back to Datadog is not allowed.
 
 ## Import
 
 Import is supported using the following syntax:
 
 ```shell
-# Custom destinations can be imported using the destination ID. Beware auth credentials can not be imported.
+# Custom destinations can be imported using the destination ID. Caution: auth credentials can not be imported.
 terraform import datadog_logs_custom_destination.sample_destination "destination-id"
 ```

@@ -128,7 +128,7 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 				Computed:    true,
 			},
 			"forward_tags_restriction_list": schema.ListAttribute{
-				Description: `List of [keys of tags](https://docs.datadoghq.com/getting_started/tagging/#define-tags) to be filtered.
+				Description: `List of [tag keys](https://docs.datadoghq.com/getting_started/tagging/#define-tags) to be filtered.
 				An empty list represents no restriction is in place and either all or no tags will be
 				forwarded depending on ` + "`forward_tags_restriction_list_type`" + ` parameter.`,
 				Optional:    true,
@@ -139,7 +139,7 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 				},
 			},
 			"forward_tags_restriction_list_type": schema.StringAttribute{
-				Description: `How ` + "`forward_tags_restriction_list`" + ` parameter should be interpreted.
+				Description: `How the ` + "`forward_tags_restriction_list`" + ` parameter should be interpreted.
 				If ` + "`ALLOW_LIST`" + `, then only tags whose keys on the forwarded logs match the ones on the restriction list
 				are forwarded.
 				` + "`BLOCK_LIST`" + ` works the opposite way. It does not forward the tags matching the ones on the list.`,
@@ -156,7 +156,7 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"endpoint": schema.StringAttribute{
-							Description: "The destination for which logs will be forwarded to. Must have HTTPS scheme and forwarding back to Datadog is not allowed.",
+							Description: "The destination for which logs will be forwarded to. Must have HTTPS scheme. Forwarding back to Datadog is not allowed.",
 							Required:    true,
 						},
 					},
@@ -213,7 +213,7 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"endpoint": schema.StringAttribute{
-							Description: "The destination for which logs will be forwarded to. Must have HTTPS scheme and forwarding back to Datadog is not allowed.",
+							Description: "The destination for which logs will be forwarded to. Must have HTTPS scheme. Forwarding back to Datadog is not allowed.",
 							Required:    true,
 						},
 						"access_token": schema.StringAttribute{
@@ -233,7 +233,7 @@ func (r *logsCustomDestinationResource) Schema(_ context.Context, _ resource.Sch
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"endpoint": schema.StringAttribute{
-							Description: "The destination for which logs will be forwarded to. Must have HTTPS scheme and forwarding back to Datadog is not allowed.",
+							Description: "The destination for which logs will be forwarded to. Must have HTTPS scheme. Forwarding back to Datadog is not allowed.",
 							Required:    true,
 						},
 						"index_name": schema.StringAttribute{
