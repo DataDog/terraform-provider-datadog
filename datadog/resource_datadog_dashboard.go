@@ -1863,7 +1863,7 @@ func buildDatadogAlertGraphDefinition(terraformDefinition map[string]interface{}
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	return datadogDefinition
@@ -1885,7 +1885,7 @@ func buildTerraformAlertGraphDefinition(datadogDefinition *datadogV1.AlertGraphW
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -2046,7 +2046,7 @@ func buildDatadogChangeDefinition(terraformDefinition map[string]interface{}) *d
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
@@ -2070,7 +2070,7 @@ func buildTerraformChangeDefinition(datadogDefinition *datadogV1.ChangeWidgetDef
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -2327,7 +2327,7 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	return datadogDefinition
@@ -2355,7 +2355,7 @@ func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.Distribut
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -2517,7 +2517,7 @@ func buildDatadogEventStreamDefinition(terraformDefinition map[string]interface{
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["tags_execution"].(string); ok && len(v) > 0 {
@@ -2544,7 +2544,7 @@ func buildTerraformEventStreamDefinition(datadogDefinition *datadogV1.EventStrea
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if datadogDefinition.TagsExecution != nil {
 		terraformDefinition["tags_execution"] = *datadogDefinition.TagsExecution
@@ -2604,7 +2604,7 @@ func buildDatadogEventTimelineDefinition(terraformDefinition map[string]interfac
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["tags_execution"].(string); ok && len(v) > 0 {
@@ -2629,7 +2629,7 @@ func buildTerraformEventTimelineDefinition(datadogDefinition *datadogV1.EventTim
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetTagsExecutionOk(); ok {
 		terraformDefinition["tags_execution"] = *v
@@ -2725,7 +2725,7 @@ func buildDatadogCheckStatusDefinition(terraformDefinition map[string]interface{
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	return datadogDefinition
@@ -2764,7 +2764,7 @@ func buildTerraformCheckStatusDefinition(datadogDefinition *datadogV1.CheckStatu
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -2933,7 +2933,7 @@ func buildDatadogHeatmapDefinition(terraformDefinition map[string]interface{}) *
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
@@ -2969,7 +2969,7 @@ func buildTerraformHeatmapDefinition(datadogDefinition *datadogV1.HeatMapWidgetD
 		terraformDefinition["legend_size"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
@@ -3663,7 +3663,7 @@ func buildDatadogLogStreamDefinition(terraformDefinition map[string]interface{})
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	return datadogDefinition
@@ -3720,7 +3720,7 @@ func buildTerraformLogStreamDefinition(datadogDefinition *datadogV1.LogStreamWid
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	return terraformDefinition
 }
@@ -4109,7 +4109,7 @@ func buildDatadogQueryValueDefinition(terraformDefinition map[string]interface{}
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
@@ -4165,7 +4165,7 @@ func buildTerraformQueryValueDefinition(datadogDefinition *datadogV1.QueryValueW
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -4400,7 +4400,7 @@ func buildDatadogQueryTableDefinition(terraformDefinition map[string]interface{}
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
@@ -4427,7 +4427,7 @@ func buildTerraformQueryTableDefinition(datadogDefinition *datadogV1.TableWidget
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -4790,7 +4790,7 @@ func buildDatadogScatterplotDefinition(terraformDefinition map[string]interface{
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
@@ -4845,7 +4845,7 @@ func buildTerraformScatterplotDefinition(datadogDefinition *datadogV1.ScatterPlo
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -5925,7 +5925,7 @@ func buildDatadogGeomapDefinition(terraformDefinition map[string]interface{}) *d
 
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 
@@ -6147,7 +6147,7 @@ func buildDatadogTimeseriesDefinition(terraformDefinition map[string]interface{}
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["show_legend"].(bool); ok {
@@ -6202,7 +6202,7 @@ func buildTerraformTimeseriesDefinition(datadogDefinition *datadogV1.TimeseriesW
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetShowLegendOk(); ok {
 		terraformDefinition["show_legend"] = *v
@@ -6413,7 +6413,7 @@ func buildDatadogSunburstDefinition(terraformDefinition map[string]interface{}) 
 
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 
@@ -6607,7 +6607,7 @@ func buildTerraformSunburstDefinition(datadogDefinition *datadogV1.SunburstWidge
 	}
 
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 
 	return terraformDefinition
@@ -7812,7 +7812,7 @@ func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
@@ -7836,7 +7836,7 @@ func buildTerraformToplistDefinition(datadogDefinition *datadogV1.ToplistWidgetD
 		terraformDefinition["title_align"] = *datadogDefinition.TitleAlign
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -8118,7 +8118,7 @@ func buildDatadogTraceServiceDefinition(terraformDefinition map[string]interface
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 
@@ -8359,7 +8359,7 @@ func buildDatadogSplitGraphDefinition(terraformDefinition map[string]interface{}
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 
@@ -8509,7 +8509,7 @@ func buildTerraformSplitGraphDefinition(datadogDefinition *datadogV1.SplitGraphW
 		terraformDefinition["title"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 
 	return terraformDefinition, nil
@@ -8686,7 +8686,7 @@ func buildDatadogRunWorkflowDefinition(terraformDefinition map[string]interface{
 	}
 	if ls, ok := terraformDefinition["live_span"].(string); ok && ls != "" {
 		datadogDefinition.Time = &datadogV1.WidgetTime{
-			LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr(),
+			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
@@ -8725,7 +8725,7 @@ func buildTerraformRunWorkflowDefinition(datadogDefinition *datadogV1.RunWorkflo
 		terraformDefinition["title_align"] = *v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
@@ -8890,7 +8890,7 @@ func buildTerraformGeomapDefinition(datadogDefinition *datadogV1.GeomapWidgetDef
 	}
 
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 
 	return terraformDefinition
@@ -9003,7 +9003,7 @@ func buildTerraformTraceServiceDefinition(datadogDefinition *datadogV1.ServiceSu
 		terraformDefinition["title_align"] = v
 	}
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
-		terraformDefinition["live_span"] = v.GetLiveSpan()
+		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	return terraformDefinition
 }
