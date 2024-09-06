@@ -12,6 +12,50 @@ func TestAccDatadogLogsCustomDestination_basic(t *testing.T) {
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
+
+	destinationWithRequiredFieldsOnly := `
+		resource "datadog_logs_custom_destination" "sample_destination" {
+			name = "` + name + `"
+			http_destination {
+				endpoint = "https://example.org"
+				basic_auth {
+					username = "test-user"
+					password = "test-pass"
+				}
+			}
+		}
+	`
+
+	path := "datadog_logs_custom_destination.sample_destination"
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: destinationWithRequiredFieldsOnly,
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(path, "name", name),
+					resource.TestCheckResourceAttr(path, "query", ""),
+					resource.TestCheckResourceAttr(path, "enabled", "true"),
+					resource.TestCheckResourceAttr(path, "forward_tags", "true"),
+					resource.TestCheckResourceAttr(path, "forward_tags_restriction_list.#", "0"),
+					resource.TestCheckResourceAttr(path, "forward_tags_restriction_list_type", "ALLOW_LIST"),
+
+					resource.TestCheckResourceAttr(path, "http_destination.#", "1"),
+					resource.TestCheckResourceAttr(path, "http_destination.0.endpoint", "https://example.org"),
+					resource.TestCheckResourceAttr(path, "http_destination.0.basic_auth.#", "1"),
+					resource.TestCheckResourceAttr(path, "http_destination.0.basic_auth.0.username", "test-user"),
+					resource.TestCheckResourceAttr(path, "http_destination.0.basic_auth.0.password", "test-pass"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogLogsCustomDestination_forwarder_types(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	name := uniqueEntityName(ctx, t)
 	nameUpdated := name + "-updated"
 
 	httpWithBasicAuth := `
