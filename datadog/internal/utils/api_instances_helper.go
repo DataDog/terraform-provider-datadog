@@ -46,6 +46,7 @@ type ApiInstances struct {
 	//V2 APIs
 	apiManagementAPIV2          *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2    *datadogV2.APMRetentionFiltersApi
+	ASMExclusionFiltersApiV2    *datadogV2.ASMExclusionFiltersApi
 	auditApiV2                  *datadogV2.AuditApi
 	authNMappingsApiV2          *datadogV2.AuthNMappingsApi
 	cloudflareIntegrationApiV2  *datadogV2.CloudflareIntegrationApi
@@ -330,6 +331,14 @@ func (i *ApiInstances) GetWebhooksIntegrationApiV1() *datadogV1.WebhooksIntegrat
 		i.webhooksIntegrationApiV1 = datadogV1.NewWebhooksIntegrationApi(i.HttpClient)
 	}
 	return i.webhooksIntegrationApiV1
+}
+
+// GetASMExclusionFiltersApiV2 get instance of ASMExclusionFiltersApi
+func (i *ApiInstances) GetASMExclusionFiltersApiV2() *datadogV2.ASMExclusionFiltersApi {
+	if i.ASMExclusionFiltersApiV2 == nil {
+		i.ASMExclusionFiltersApiV2 = datadogV2.NewASMExclusionFiltersApi(i.HttpClient)
+	}
+	return i.ASMExclusionFiltersApiV2
 }
 
 // GetAuditApiV2 get instance of AuditApi
