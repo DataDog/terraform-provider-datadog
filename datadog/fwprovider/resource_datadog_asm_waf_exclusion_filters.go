@@ -2,15 +2,15 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -23,10 +23,11 @@ var (
 )
 
 type asmWafExclusionFiltersModel struct {
-	Id           types.String `tfsdk:"id"`
-	Description  types.String `tfsdk:"description"`
-	Enabled      types.Bool   `tfsdk:"enabled"`
-	Search_Query types.String `tfsdk:"search_query"`
+	Id          types.String `tfsdk:"id"`
+	Description types.String `tfsdk:"description"`
+	Enabled     types.Bool   `tfsdk:"enabled"`
+	PathGlob    types.String `tfsdk:"path_glob"`
+	Scope       types.List   `tfsdk:"scope"`
 }
 
 type asmWafExclusionFiltersResource struct {
@@ -48,7 +49,7 @@ func (r *asmWafExclusionFiltersResource) Configure(_ context.Context, request re
 	r.auth = providerData.Auth
 }
 
-func (r *asmWafExclusionFiltersResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) { // to change
+func (r *asmWafExclusionFiltersResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog ASM WAF Exclusion Filters API resource.",
 		Attributes: map[string]schema.Attribute{
@@ -63,11 +64,15 @@ func (r *asmWafExclusionFiltersResource) Schema(_ context.Context, _ resource.Sc
 				Required:    true,
 				Description: "Indicates whether the exclusion filter is enabled.",
 			},
-			"search_query": schema.StringAttribute{
+			"path_glob": schema.StringAttribute{
 				Required:    true,
-				Description: "The search query of the exclusion filter",
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+				Description: "The path glob for the exclusion filter.",
+			},
+			"scope": schema.ListAttribute{
+				Description: "The scope of the exclusion filter. Each entry is a map with 'env' and 'service' keys.",
+				Optional:    true,
+				ElementType: types.MapType{
+					ElemType: types.StringType,
 				},
 			},
 		},
@@ -114,37 +119,51 @@ func (r *asmWafExclusionFiltersResource) Read(ctx context.Context, request resou
 		return
 	}
 
-	exclusionFiltersId := state.Id.ValueString()
-	res, httpResponse, err := r.api.ListASMExclusionFilters(r.auth)
+	// Récupérer l'ID de l'exclusion filter
+	exclusionFilterId := state.Id.ValueString()
 
+	// Appel à l'API pour obtenir le filtre d'exclusion correspondant à l'ID
+	res, httpResponse, err := r.api.GetASMExclusionFilters(r.auth, exclusionFilterId)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error fetching exclusion filters"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error fetching exclusion filter"))
 		return
 	}
 
-	var matchedExclusionFilter *datadogV2.ASMExclusionFilter
-	for _, exclusionFilter := range res.GetData() {
-		if exclusionFilter.GetId() == exclusionFiltersId {
-			matchedExclusionFilter = &exclusionFilter
-			break
+	// Extraire les données à partir de la réponse
+	dataList, ok := res.AdditionalProperties["data"].([]interface{})
+	if !ok || len(dataList) == 0 {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(fmt.Errorf("no data found in response"), "error extracting exclusion filter data"))
+		return
+	}
+
+	// Extraire les informations du premier élément (car la requête renvoie un seul filtre d'exclusion)
+	filterData := dataList[0].(map[string]interface{})
+	attributes := filterData["attributes"].(map[string]interface{})
+
+	// Mettre à jour l'état en fonction des attributs extraits
+	state.Id = types.StringValue(filterData["id"].(string))
+	state.Description = types.StringValue(attributes["description"].(string))
+	state.Enabled = types.BoolValue(attributes["enabled"].(bool))
+
+	// Extraire le scope
+	var scopes []attr.Value
+	if scopeList, ok := attributes["scope"].([]interface{}); ok {
+		for _, scopeItem := range scopeList {
+			scopeMap := scopeItem.(map[string]interface{})
+			scopeValue, _ := types.MapValue(types.StringType, map[string]attr.Value{
+				"env":     types.StringValue(scopeMap["env"].(string)),
+				"service": types.StringValue(scopeMap["service"].(string)),
+			})
+			scopes = append(scopes, scopeValue)
 		}
 	}
+	state.Scope, _ = types.ListValue(types.MapType{ElemType: types.StringType}, scopes)
 
-	if matchedExclusionFilter == nil {
-		response.State.RemoveResource(ctx)
-		return
-	}
-
-	if err := utils.CheckForUnparsed(response); err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "response contains unparsed object"))
-		return
-	}
-
-	r.updateStateFromResponse(ctx, &state, matchedExclusionFilter)
+	// Mettre à jour l'état
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -236,14 +255,3 @@ func (r *asmWafExclusionFiltersResource) Delete(ctx context.Context, request res
 
 // 	return id, description, enabled, search_query
 // }
-
-// to change: from the Create and Update functions
-func (r *asmWafExclusionFiltersResource) updateStateFromResponse(ctx context.Context, state *asmWafExclusionFiltersModel, exclusionFilter *datadogV2.ASMExclusionFilter) {
-	// Met à jour l'état avec les attributs de l'API
-	state.Id = types.StringValue(exclusionFilter.GetId())
-	attributes := exclusionFilter.GetAttributes()
-
-	state.Enabled = types.BoolValue(attributes.GetEnabled())
-	state.Description = types.StringValue(attributes.GetDescription())
-	state.Search_Query = types.StringValue(attributes.GetSearchQuery())
-}

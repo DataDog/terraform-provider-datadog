@@ -69,27 +69,57 @@ func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request dat
 		// Direct mapping of fields from exclusionFilter struct
 		exclusionFilterModel.Id = types.StringValue(exclusionFilter.GetId())
 
-		// Corrected access to Attributes (with uppercase A)
 		attributes := exclusionFilter.GetAttributes()
-
 		exclusionFilterModel.Description = types.StringValue(attributes.GetDescription())
 		exclusionFilterModel.Enabled = types.BoolValue(attributes.GetEnabled())
-		exclusionFilterModel.Search_Query = types.StringValue(attributes.GetSearchQuery())
+		exclusionFilterModel.PathGlob = types.StringValue(attributes.GetPathGlob())
+
+		// Handle scope as a list of nested objects
+		var scopes []attr.Value
+		for _, scope := range attributes.GetScope() {
+			scopeObject, diags := types.ObjectValue(map[string]attr.Type{
+				"env":     types.StringType,
+				"service": types.StringType,
+			}, map[string]attr.Value{
+				"env":     types.StringValue(scope.GetEnv()),
+				"service": types.StringValue(scope.GetService()),
+			})
+			// Append diagnostics if there are any issues
+			response.Diagnostics.Append(diags...)
+			scopes = append(scopes, scopeObject)
+		}
+
+		// Convert the scopes to a Terraform list
+		tfScopes, diags := types.ListValue(types.ObjectType{
+			AttrTypes: map[string]attr.Type{
+				"env":     types.StringType,
+				"service": types.StringType,
+			},
+		}, scopes)
+		// Append diagnostics if there are any issues
+		response.Diagnostics.Append(diags...)
+		exclusionFilterModel.Scope = tfScopes
 
 		// Collect the exclusion filter IDs and model
 		exclusionFiltersIds[idx] = exclusionFilter.GetId()
 		exclusionFilters[idx] = exclusionFilterModel
 	}
 
-	// Set the state ID based on the exclusion filters IDs
-	stateId := strings.Join(exclusionFiltersIds, "--")
-	state.Id = types.StringValue(computeExclusionFiltersDataSourceID(&stateId))
+	// Convert exclusionFiltersIds from []string to []attr.Value
+	var exclusionFiltersIdsAttr []attr.Value
+	for _, id := range exclusionFiltersIds {
+		exclusionFiltersIdsAttr = append(exclusionFiltersIdsAttr, types.StringValue(id))
+	}
 
 	// Convert the exclusion filter IDs to a Terraform list
-	tfExclusionFiltersIds, diags := types.ListValueFrom(ctx, types.StringType, exclusionFiltersIds)
+	tfExclusionFiltersIds, diags := types.ListValue(types.StringType, exclusionFiltersIdsAttr)
 	response.Diagnostics.Append(diags...)
 	state.ExclusionFiltersIds = tfExclusionFiltersIds
 	state.ExclusionFilters = exclusionFilters
+
+	// Set the state ID based on the exclusion filters IDs
+	stateId := strings.Join(exclusionFiltersIds, "--")
+	state.Id = types.StringValue(computeExclusionFiltersDataSourceID(&stateId))
 
 	// Save the state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -108,28 +138,29 @@ func computeExclusionFiltersDataSourceID(exclusionFiltersIds *string) string { /
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func (*asmWafExclusionFiltersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (r *asmWafExclusionFiltersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about existing WAF exclusion filters.",
+		Description: "Retrieves Datadog ASM WAF Exclusion Filters.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
-			"exclusion_filters_ids": schema.ListAttribute{
+			"description": schema.StringAttribute{
+				Optional:    true,
 				Computed:    true,
-				Description: "List of IDs for the exclusion filters.",
-				ElementType: types.StringType,
+				Description: "A description for the exclusion filter.",
 			},
-			"exclusion_filters": schema.ListAttribute{
+			"enabled": schema.BoolAttribute{
 				Computed:    true,
-				Description: "List of exclusion filters",
-				ElementType: types.ObjectType{
-					AttrTypes: map[string]attr.Type{
-						"id": types.StringType,
-						// "type":        types.StringType,
-						"description": types.StringType,
-						"enabled":     types.BoolType,
-						// "path_glob":    types.StringType,
-						"search_query": types.StringType,
-					},
+				Description: "Indicates whether the exclusion filter is enabled.",
+			},
+			"path_glob": schema.StringAttribute{
+				Computed:    true,
+				Description: "The path glob for the exclusion filter.",
+			},
+			"scope": schema.ListAttribute{
+				Description: "The scope of the exclusion filter. Each entry is a map with 'env' and 'service' keys.",
+				Computed:    true,
+				ElementType: types.MapType{
+					ElemType: types.StringType,
 				},
 			},
 		},
