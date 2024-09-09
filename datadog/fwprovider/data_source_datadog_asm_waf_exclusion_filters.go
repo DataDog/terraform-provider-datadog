@@ -51,7 +51,6 @@ func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request dat
 		return
 	}
 
-	// Fetch the exclusion filters using the API
 	res, _, err := r.api.ListASMExclusionFilters(r.auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error while fetching exclusion filters"))
@@ -62,11 +61,9 @@ func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request dat
 	exclusionFiltersIds := make([]string, len(data))
 	exclusionFilters := make([]asmWafExclusionFiltersModel, len(data))
 
-	// Iterate through the exclusion filters data received
 	for idx, exclusionFilter := range res.GetData() {
 		var exclusionFilterModel asmWafExclusionFiltersModel
 
-		// Direct mapping of fields from exclusionFilter struct
 		exclusionFilterModel.Id = types.StringValue(exclusionFilter.GetId())
 
 		attributes := exclusionFilter.GetAttributes()
@@ -74,7 +71,6 @@ func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request dat
 		exclusionFilterModel.Enabled = types.BoolValue(attributes.GetEnabled())
 		exclusionFilterModel.PathGlob = types.StringValue(attributes.GetPathGlob())
 
-		// Handle scope as a list of nested objects
 		var scopes []attr.Value
 		for _, scope := range attributes.GetScope() {
 			scopeObject, diags := types.ObjectValue(map[string]attr.Type{
@@ -84,44 +80,38 @@ func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request dat
 				"env":     types.StringValue(scope.GetEnv()),
 				"service": types.StringValue(scope.GetService()),
 			})
-			// Append diagnostics if there are any issues
+
 			response.Diagnostics.Append(diags...)
 			scopes = append(scopes, scopeObject)
 		}
 
-		// Convert the scopes to a Terraform list
 		tfScopes, diags := types.ListValue(types.ObjectType{
 			AttrTypes: map[string]attr.Type{
 				"env":     types.StringType,
 				"service": types.StringType,
 			},
 		}, scopes)
-		// Append diagnostics if there are any issues
+
 		response.Diagnostics.Append(diags...)
 		exclusionFilterModel.Scope = tfScopes
 
-		// Collect the exclusion filter IDs and model
 		exclusionFiltersIds[idx] = exclusionFilter.GetId()
 		exclusionFilters[idx] = exclusionFilterModel
 	}
 
-	// Convert exclusionFiltersIds from []string to []attr.Value
 	var exclusionFiltersIdsAttr []attr.Value
 	for _, id := range exclusionFiltersIds {
 		exclusionFiltersIdsAttr = append(exclusionFiltersIdsAttr, types.StringValue(id))
 	}
 
-	// Convert the exclusion filter IDs to a Terraform list
 	tfExclusionFiltersIds, diags := types.ListValue(types.StringType, exclusionFiltersIdsAttr)
 	response.Diagnostics.Append(diags...)
 	state.ExclusionFiltersIds = tfExclusionFiltersIds
 	state.ExclusionFilters = exclusionFilters
 
-	// Set the state ID based on the exclusion filters IDs
 	stateId := strings.Join(exclusionFiltersIds, "--")
 	state.Id = types.StringValue(computeExclusionFiltersDataSourceID(&stateId))
 
-	// Save the state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 

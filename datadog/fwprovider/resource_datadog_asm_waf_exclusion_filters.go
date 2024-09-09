@@ -119,10 +119,8 @@ func (r *asmWafExclusionFiltersResource) Read(ctx context.Context, request resou
 		return
 	}
 
-	// Récupérer l'ID de l'exclusion filter
 	exclusionFilterId := state.Id.ValueString()
 
-	// Appel à l'API pour obtenir le filtre d'exclusion correspondant à l'ID
 	res, httpResponse, err := r.api.GetASMExclusionFilters(r.auth, exclusionFilterId)
 	if err != nil {
 		if httpResponse != nil && httpResponse.StatusCode == 404 {
@@ -133,37 +131,44 @@ func (r *asmWafExclusionFiltersResource) Read(ctx context.Context, request resou
 		return
 	}
 
-	// Extraire les données à partir de la réponse
 	dataList, ok := res.AdditionalProperties["data"].([]interface{})
 	if !ok || len(dataList) == 0 {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(fmt.Errorf("no data found in response"), "error extracting exclusion filter data"))
 		return
 	}
 
-	// Extraire les informations du premier élément (car la requête renvoie un seul filtre d'exclusion)
 	filterData := dataList[0].(map[string]interface{})
 	attributes := filterData["attributes"].(map[string]interface{})
 
-	// Mettre à jour l'état en fonction des attributs extraits
 	state.Id = types.StringValue(filterData["id"].(string))
 	state.Description = types.StringValue(attributes["description"].(string))
 	state.Enabled = types.BoolValue(attributes["enabled"].(bool))
+	state.PathGlob = types.StringValue(attributes["path_glob"].(string))
 
-	// Extraire le scope
 	var scopes []attr.Value
 	if scopeList, ok := attributes["scope"].([]interface{}); ok {
 		for _, scopeItem := range scopeList {
-			scopeMap := scopeItem.(map[string]interface{})
-			scopeValue, _ := types.MapValue(types.StringType, map[string]attr.Value{
-				"env":     types.StringValue(scopeMap["env"].(string)),
-				"service": types.StringValue(scopeMap["service"].(string)),
-			})
-			scopes = append(scopes, scopeValue)
+			scopeMap, isMap := scopeItem.(map[string]interface{})
+			if isMap {
+				scopeValues := map[string]attr.Value{}
+
+				if envValue, envExists := scopeMap["env"]; envExists {
+					scopeValues["env"] = types.StringValue(envValue.(string))
+				}
+
+				if serviceValue, serviceExists := scopeMap["service"]; serviceExists {
+					scopeValues["service"] = types.StringValue(serviceValue.(string))
+				}
+
+				if len(scopeValues) > 0 {
+					scopeValue, _ := types.MapValue(types.StringType, scopeValues)
+					scopes = append(scopes, scopeValue)
+				}
+			}
 		}
 	}
 	state.Scope, _ = types.ListValue(types.MapType{ElemType: types.StringType}, scopes)
 
-	// Mettre à jour l'état
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
