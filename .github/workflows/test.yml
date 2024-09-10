@@ -50,7 +50,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.20"
+          go-version: "1.23"
           cache: true
       - name: Vet
         run: make vet
@@ -78,7 +78,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.20"
+          go-version: "1.23"
           cache: true
       - name: Setup terraform CLI
         uses: hashicorp/setup-terraform@v2
@@ -118,7 +118,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v4
         with:
-          go-version: "1.20"
+          go-version: "1.23"
           cache: true
       - uses: opentofu/setup-opentofu@v1
         with:
