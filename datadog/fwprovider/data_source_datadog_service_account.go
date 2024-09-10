@@ -122,7 +122,7 @@ func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	var userData *datadogV2.User
+	var userData datadogV2.User
 	if !state.ID.IsNull() {
 		serviceAccountID := state.ID.ValueString()
 		ddResp, _, err := d.Api.GetUser(d.Auth, serviceAccountID)
@@ -135,7 +135,7 @@ func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 			resp.Diagnostics.AddError("Obtained entity was not a service account", "")
 			return
 		}
-		userData = ddResp.Data
+		userData = *ddResp.Data
 	} else {
 		optionalParams := datadogV2.ListUsersOptionalParameters{}
 		filter := state.Filter.ValueString()
@@ -166,17 +166,17 @@ func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 			resp.Diagnostics.AddError("filter keyword returned no results", "")
 			return
 		}
-		userData = &serviceAccounts[0]
+		userData = serviceAccounts[0]
 		if isExactMatch {
 			matchCount := 0
 			for _, serviceAccount := range serviceAccounts {
 				if *serviceAccount.GetAttributes().Email == filter {
-					userData = &serviceAccount
+					userData = serviceAccount
 					matchCount++
 					continue
 				}
 				if *serviceAccount.GetAttributes().Name.Get() == filter {
-					userData = &serviceAccount
+					userData = serviceAccount
 					matchCount++
 					continue
 				}
@@ -191,7 +191,7 @@ func (d *datadogServiceAccountDatasource) Read(ctx context.Context, req datasour
 			}
 		}
 	}
-	d.updateState(ctx, &state, userData)
+	d.updateState(ctx, &state, &userData)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
