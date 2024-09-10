@@ -28,6 +28,7 @@ type asmWafExclusionFiltersModel struct {
 	Enabled     types.Bool   `tfsdk:"enabled"`
 	PathGlob    types.String `tfsdk:"path_glob"`
 	Scope       types.List   `tfsdk:"scope"`
+	RulesTarget types.List   `tfsdk:"rules_target"`
 }
 
 type asmWafExclusionFiltersResource struct {
@@ -71,6 +72,15 @@ func (r *asmWafExclusionFiltersResource) Schema(_ context.Context, _ resource.Sc
 			"scope": schema.ListAttribute{
 				Description: "The scope of the exclusion filter. Each entry is a map with 'env' and 'service' keys.",
 				Optional:    true,
+				Computed:    true,
+				ElementType: types.MapType{
+					ElemType: types.StringType,
+				},
+			},
+			"rules_target": schema.ListAttribute{
+				Description: "The rules target of the exclusion filter. Each entry contains tags with 'category' and 'type'.",
+				Optional:    true,
+				Computed:    true,
 				ElementType: types.MapType{
 					ElemType: types.StringType,
 				},
@@ -84,32 +94,34 @@ func (r *asmWafExclusionFiltersResource) ImportState(ctx context.Context, reques
 }
 
 func (r *asmWafExclusionFiltersResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	// 	var state asmWafExclusionFiltersModel
-	// 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	// 	if response.Diagnostics.HasError() {
-	// 		return
-	// 	}
+	var state asmWafExclusionFiltersModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
-	// 	asmWafExclusionFiltersMutex.Lock()
-	// 	defer asmWafExclusionFiltersMutex.Unlock()
+	asmWafExclusionFiltersMutex.Lock()
+	defer asmWafExclusionFiltersMutex.Unlock()
 
-	// 	exclusionFiltersPayload, err := r.buildCreateAsmWafExclusionFiltersPayload(&state)
-	// 	if err != nil {
-	// 		response.Diagnostics.AddError("error while parsing resource", err.Error())
-	// 	}
+	exclusionFilterPayload, err := r.buildCreateASMExclusionFilterPayload(&state)
+	if err != nil {
+		response.Diagnostics.AddError("error while parsing resource", err.Error())
+		return
+	}
 
-	// 	res, _, err := r.api.handlePostExclusionFilters(r.auth, *exclusionFiltersPayload) // to change: endpoint POST
-	// 	if err != nil {
-	// 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating agent rule"))
-	// 		return
-	// 	}
-	// 	if err := utils.CheckForUnparsed(response); err != nil {
-	// 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "response contains unparsed object"))
-	// 		return
-	// 	}
+	res, _, err := r.api.CreateASMExclusionFilter(r.auth, *exclusionFilterPayload)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating exclusion filter"))
+		return
+	}
 
-	// r.updateStateFromResponse(ctx, &state, &res)
-	// response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	if err := utils.CheckForUnparsed(response); err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "response contains unparsed object"))
+		return
+	}
+
+	r.updateStateFromCreateResponse(ctx, &state, &res)
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *asmWafExclusionFiltersResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -131,132 +143,165 @@ func (r *asmWafExclusionFiltersResource) Read(ctx context.Context, request resou
 		return
 	}
 
-	dataList, ok := res.AdditionalProperties["data"].([]interface{})
-	if !ok || len(dataList) == 0 {
+	if len(res.Data) == 0 {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(fmt.Errorf("no data found in response"), "error extracting exclusion filter data"))
 		return
 	}
 
-	filterData := dataList[0].(map[string]interface{})
-	attributes := filterData["attributes"].(map[string]interface{})
-
-	state.Id = types.StringValue(filterData["id"].(string))
-	state.Description = types.StringValue(attributes["description"].(string))
-	state.Enabled = types.BoolValue(attributes["enabled"].(bool))
-	state.PathGlob = types.StringValue(attributes["path_glob"].(string))
-
-	var scopes []attr.Value
-	if scopeList, ok := attributes["scope"].([]interface{}); ok {
-		for _, scopeItem := range scopeList {
-			scopeMap, isMap := scopeItem.(map[string]interface{})
-			if isMap {
-				scopeValues := map[string]attr.Value{}
-
-				if envValue, envExists := scopeMap["env"]; envExists {
-					scopeValues["env"] = types.StringValue(envValue.(string))
-				}
-
-				if serviceValue, serviceExists := scopeMap["service"]; serviceExists {
-					scopeValues["service"] = types.StringValue(serviceValue.(string))
-				}
-
-				if len(scopeValues) > 0 {
-					scopeValue, _ := types.MapValue(types.StringType, scopeValues)
-					scopes = append(scopes, scopeValue)
-				}
-			}
-		}
-	}
-	state.Scope, _ = types.ListValue(types.MapType{ElemType: types.StringType}, scopes)
+	r.updateStateFromResponse(ctx, &state, &res)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *asmWafExclusionFiltersResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	// 	var state asmWafExclusionFiltersModel
-	// 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	// 	if response.Diagnostics.HasError() {
-	// 		return
-	// 	}
+	var state asmWafExclusionFiltersModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
-	// 	asmWafExclusionFiltersMutex.Lock()
-	// 	defer asmWafExclusionFiltersMutex.Unlock()
+	asmWafExclusionFiltersMutex.Lock()
+	defer asmWafExclusionFiltersMutex.Unlock()
 
-	// 	exclusionFiltersPayload, err := r.buildUpdateAsmWafExclusionFiltersPayload(&state)
-	// 	if err != nil {
-	// 		response.Diagnostics.AddError("error while parsing resource", err.Error())
-	// 	}
+	exclusionFiltersPayload, err := r.buildUpdateAsmWafExclusionFiltersPayload(&state)
+	if err != nil {
+		response.Diagnostics.AddError("error while parsing resource", err.Error())
+	}
 
-	// 	res, _, err := r.api.handlePutExclusionFilter(r.auth, state.Id.ValueString(), *exclusionFiltersPayload) // to change: endpoint PATCH/PUT
-	// 	if err != nil {
-	// 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating agent rule"))
-	// 		return
-	// 	}
-	// 	if err := utils.CheckForUnparsed(response); err != nil {
-	// 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "response contains unparsed object"))
-	// 		return
-	// 	}
+	res, _, err := r.api.UpdateASMExclusionFilter(r.auth, state.Id.ValueString(), *exclusionFiltersPayload) // to change: endpoint PATCH/PUT
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating agent rule"))
+		return
+	}
+	if err := utils.CheckForUnparsed(response); err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "response contains unparsed object"))
+		return
+	}
 
-	// r.updateStateFromResponse(ctx, &state, &res)
-	// response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	r.updateStateFromResponse(ctx, &state, &res)
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *asmWafExclusionFiltersResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	// 	var state asmWafExclusionFiltersModel
-	// 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	// 	if response.Diagnostics.HasError() {
-	// 		return
-	// 	}
+	var state asmWafExclusionFiltersModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
-	// 	asmWafExclusionFiltersMutex.Lock()
-	// 	defer asmWafExclusionFiltersMutex.Unlock()
+	asmWafExclusionFiltersMutex.Lock()
+	defer asmWafExclusionFiltersMutex.Unlock()
 
-	// 	id := state.Id.ValueString()
+	id := state.Id.ValueString()
 
-	// httpResp, err := r.api.handleDeleteExclusionFilterByID(r.auth, id) // to change: endpoint DELETE
-	//
-	//	if err != nil {
-	//		if httpResp != nil && httpResp.StatusCode == 404 {
-	//			return
-	//		}
-	//		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting agent rule"))
-	//		return
-	//	}
+	httpResp, err := r.api.DeleteASMExclusionFilter(r.auth, id)
+
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting exclusion filter"))
+		return
+	}
 }
 
-// // to change: payload from the Create function
-// func (r *asmWafExclusionFiltersResource) buildCreateAsmWafExclusionFiltersPayload(state *asmWafExclusionFiltersModel) (*datadogV2.CloudWorkloadSecurityExclusionFiltersCreateRequest, error) {
-// 	_, description, enabled, search_query := r.extractExclusionFiltersAttributesFromResource(state)
+func (r *asmWafExclusionFiltersResource) buildUpdateAsmWafExclusionFiltersPayload(state *asmWafExclusionFiltersModel) (*datadogV2.ASMExclusionFilterUpdateRequest, error) {
+	exclusionFiltersId, enabled, description, pathGlob := r.extractExclusionFilterAttributesFromResource(state)
 
-// 	attributes := datadogV2.CloudWorkloadSecurityExclusionFiltersCreateAttributes{}
-// 	attributes.Search_Query = search_query
-// 	attributes.Description = description
-// 	attributes.Enabled = &enabled
+	attributes := datadogV2.ASMExclusionFilterUpdateAttributes{}
+	attributes.Description = &description
+	attributes.Enabled = &enabled
+	attributes.PathGlob = &pathGlob
 
-// 	data := datadogV2.NewCloudWorkloadSecurityExclusionFiltersCreateData(attributes, datadogV2.CLOUDWORKLOADSECURITYEXCLUSIONFILTERSTYPE_AGENT_RULE)
-// 	return datadogV2.NewCloudWorkloadSecurityExclusionFiltersCreateRequest(*data), nil
-// }
+	data := datadogV2.NewASMExclusionFilterUpdateData(attributes, datadogV2.ASMEXCLUSIONFILTERTYPE_EXCLUSION_FILTER)
+	data.Id = &exclusionFiltersId
+	return datadogV2.NewASMExclusionFilterUpdateRequest(*data), nil
+}
 
-// // to change: payload from the Update function
-// func (r *asmWafExclusionFiltersResource) buildUpdateAsmWafExclusionFiltersPayload(state *asmWafExclusionFiltersModel) (*datadogV2.CloudWorkloadSecurityExclusionFiltersUpdateRequest, error) {
-// 	exclusionFiltersId, _, description, enabled, _ := r.extractExclusionFiltersAttributesFromResource(state)
+func (r *asmWafExclusionFiltersResource) buildCreateASMExclusionFilterPayload(state *asmWafExclusionFiltersModel) (*datadogV2.ASMExclusionFilterCreateRequest, error) {
+	_, enabled, description, pathGlob := r.extractExclusionFilterAttributesFromResource(state)
 
-// 	attributes := datadogV2.CloudWorkloadSecurityExclusionFiltersUpdateAttributes{}
-// 	attributes.Description = description
-// 	attributes.Enabled = &enabled
+	attributes := datadogV2.ASMExclusionFilterCreateAttributes{}
+	attributes.Description = description
+	attributes.Enabled = enabled
+	attributes.PathGlob = &pathGlob
 
-// 	data := datadogV2.NewCloudWorkloadSecurityExclusionFiltersUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYEXCLUSIONFILTERSTYPE_AGENT_RULE)
-// 	data.Id = &exclusionFiltersId
-// 	return datadogV2.NewCloudWorkloadSecurityExclusionFiltersUpdateRequest(*data), nil
-// }
+	data := datadogV2.NewASMExclusionFilterCreateData(attributes, datadogV2.ASMEXCLUSIONFILTERTYPE_EXCLUSION_FILTER)
+	return datadogV2.NewASMExclusionFilterCreateRequest(*data), nil
+}
 
-// // called from the payloads above
-// func (r *asmWafExclusionFiltersResource) extractExclusionFiltersAttributesFromResource(state *asmWafExclusionFiltersModel) (string, *string, bool, string) {
-// 	// Mandatory fields
-// 	id := state.Id.ValueString()
-// 	enabled := state.Enabled.ValueBool()
-// 	search_query := state.Search_Query.ValueString()
-// 	description := state.Description.ValueStringPointer()
+func (r *asmWafExclusionFiltersResource) extractExclusionFilterAttributesFromResource(state *asmWafExclusionFiltersModel) (string, bool, string, string) {
+	id := state.Id.ValueString()
+	enabled := state.Enabled.ValueBool()
+	description := state.Description.ValueString()
+	pathGlob := state.PathGlob.ValueString()
 
-// 	return id, description, enabled, search_query
-// }
+	return id, enabled, description, pathGlob
+}
+
+func (r *asmWafExclusionFiltersResource) updateStateFromCreateResponse(ctx context.Context, state *asmWafExclusionFiltersModel, res *datadogV2.ASMExclusionFilterResponse) {
+	if len(res.GetData()) == 0 {
+		return
+	}
+
+	filterData := res.GetData()[0]
+	attributes := filterData.Attributes
+
+	state.Id = types.StringValue(filterData.GetId())
+	state.Description = types.StringValue(attributes.GetDescription())
+	state.Enabled = types.BoolValue(attributes.GetEnabled())
+	state.PathGlob = types.StringValue(attributes.GetPathGlob())
+}
+
+func (r *asmWafExclusionFiltersResource) updateStateFromResponse(ctx context.Context, state *asmWafExclusionFiltersModel, res *datadogV2.ASMExclusionFilterResponse) {
+
+	if len(res.Data) == 0 {
+		return
+	}
+
+	filterData := res.Data[0]
+
+	attributes := filterData.Attributes
+
+	state.Id = types.StringValue(filterData.GetId())
+	state.Description = types.StringValue(attributes.GetDescription())
+	state.Enabled = types.BoolValue(attributes.GetEnabled())
+	state.PathGlob = types.StringValue(attributes.GetPathGlob())
+
+	var scopes []attr.Value
+	if scopeList := attributes.GetScope(); len(scopeList) > 0 {
+		for _, scopeItem := range scopeList {
+			scopeValues := map[string]attr.Value{}
+
+			if envValue := scopeItem.GetEnv(); envValue != "" {
+				scopeValues["env"] = types.StringValue(envValue)
+			}
+
+			if serviceValue := scopeItem.GetService(); serviceValue != "" {
+				scopeValues["service"] = types.StringValue(serviceValue)
+			}
+
+			if len(scopeValues) > 0 {
+				scopeValue, _ := types.MapValue(types.StringType, scopeValues)
+				scopes = append(scopes, scopeValue)
+			}
+		}
+	}
+	state.Scope, _ = types.ListValue(types.MapType{ElemType: types.StringType}, scopes)
+
+	var rulesTarget []attr.Value
+	if rulesTargetList := attributes.GetRulesTarget(); len(rulesTargetList) > 0 {
+		for _, targetItem := range rulesTargetList {
+			tags, tagsOk := targetItem.GetTagsOk()
+			if tagsOk && tags != nil {
+				tagValues := map[string]attr.Value{
+					"category": types.StringValue(tags.GetCategory()),
+					"type":     types.StringValue(tags.GetType()),
+				}
+				tagMapValue, _ := types.MapValue(types.StringType, tagValues)
+				rulesTarget = append(rulesTarget, tagMapValue)
+			}
+		}
+	}
+	state.RulesTarget, _ = types.ListValue(types.MapType{ElemType: types.StringType}, rulesTarget)
+}

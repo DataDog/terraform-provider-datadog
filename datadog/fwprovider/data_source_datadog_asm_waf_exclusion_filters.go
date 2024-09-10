@@ -58,12 +58,11 @@ func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request dat
 	}
 
 	data := res.GetData()
-	exclusionFiltersIds := make([]string, len(data))
+	exclusionFilterIds := make([]string, len(data))
 	exclusionFilters := make([]asmWafExclusionFiltersModel, len(data))
 
 	for idx, exclusionFilter := range res.GetData() {
 		var exclusionFilterModel asmWafExclusionFiltersModel
-
 		exclusionFilterModel.Id = types.StringValue(exclusionFilter.GetId())
 
 		attributes := exclusionFilter.GetAttributes()
@@ -80,42 +79,57 @@ func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request dat
 				"env":     types.StringValue(scope.GetEnv()),
 				"service": types.StringValue(scope.GetService()),
 			})
-
 			response.Diagnostics.Append(diags...)
 			scopes = append(scopes, scopeObject)
 		}
-
 		tfScopes, diags := types.ListValue(types.ObjectType{
 			AttrTypes: map[string]attr.Type{
 				"env":     types.StringType,
 				"service": types.StringType,
 			},
 		}, scopes)
-
 		response.Diagnostics.Append(diags...)
 		exclusionFilterModel.Scope = tfScopes
 
-		exclusionFiltersIds[idx] = exclusionFilter.GetId()
+		var rulesTargets []attr.Value
+		for _, ruleTarget := range attributes.GetRulesTarget() {
+			tags, tagsOk := ruleTarget.GetTagsOk()
+			if tagsOk && tags != nil {
+				ruleTargetObject, diags := types.ObjectValue(map[string]attr.Type{
+					"category": types.StringType,
+					"type":     types.StringType,
+				}, map[string]attr.Value{
+					"category": types.StringValue(tags.GetCategory()),
+					"type":     types.StringValue(tags.GetType()),
+				})
+				response.Diagnostics.Append(diags...)
+				rulesTargets = append(rulesTargets, ruleTargetObject)
+			}
+		}
+		tfRulesTargets, diags := types.ListValue(types.ObjectType{
+			AttrTypes: map[string]attr.Type{
+				"category": types.StringType,
+				"type":     types.StringType,
+			},
+		}, rulesTargets)
+		response.Diagnostics.Append(diags...)
+		exclusionFilterModel.RulesTarget = tfRulesTargets
+
+		exclusionFilterIds[idx] = exclusionFilter.GetId()
 		exclusionFilters[idx] = exclusionFilterModel
 	}
 
-	var exclusionFiltersIdsAttr []attr.Value
-	for _, id := range exclusionFiltersIds {
-		exclusionFiltersIdsAttr = append(exclusionFiltersIdsAttr, types.StringValue(id))
-	}
-
-	tfExclusionFiltersIds, diags := types.ListValue(types.StringType, exclusionFiltersIdsAttr)
-	response.Diagnostics.Append(diags...)
-	state.ExclusionFiltersIds = tfExclusionFiltersIds
-	state.ExclusionFilters = exclusionFilters
-
-	stateId := strings.Join(exclusionFiltersIds, "--")
+	stateId := strings.Join(exclusionFilterIds, "--")
 	state.Id = types.StringValue(computeExclusionFiltersDataSourceID(&stateId))
+	tfExclusionFilterIds, diags := types.ListValueFrom(ctx, types.StringType, exclusionFilterIds)
+	response.Diagnostics.Append(diags...)
+	state.ExclusionFiltersIds = tfExclusionFilterIds
+	state.ExclusionFilters = exclusionFilters
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func computeExclusionFiltersDataSourceID(exclusionFiltersIds *string) string { // return to state.Id
+func computeExclusionFiltersDataSourceID(exclusionFiltersIds *string) string {
 	// Key for hashing
 	var b strings.Builder
 	if exclusionFiltersIds != nil {
@@ -133,24 +147,33 @@ func (r *asmWafExclusionFiltersDataSource) Schema(_ context.Context, _ datasourc
 		Description: "Retrieves Datadog ASM WAF Exclusion Filters.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
-			"description": schema.StringAttribute{
-				Optional:    true,
+			"exclusion_filters_ids": schema.ListAttribute{
 				Computed:    true,
-				Description: "A description for the exclusion filter.",
+				Description: "List of IDs for the ASM exclusion filters.",
+				ElementType: types.StringType,
 			},
-			"enabled": schema.BoolAttribute{
+			"exclusion_filters": schema.ListAttribute{
 				Computed:    true,
-				Description: "Indicates whether the exclusion filter is enabled.",
-			},
-			"path_glob": schema.StringAttribute{
-				Computed:    true,
-				Description: "The path glob for the exclusion filter.",
-			},
-			"scope": schema.ListAttribute{
-				Description: "The scope of the exclusion filter. Each entry is a map with 'env' and 'service' keys.",
-				Computed:    true,
-				ElementType: types.MapType{
-					ElemType: types.StringType,
+				Description: "List of ASM WAF exclusion filters",
+				ElementType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"id":          types.StringType,
+						"description": types.StringType,
+						"enabled":     types.BoolType,
+						"path_glob":   types.StringType,
+						"scope": types.ListType{ElemType: types.ObjectType{
+							AttrTypes: map[string]attr.Type{
+								"env":     types.StringType,
+								"service": types.StringType,
+							},
+						}},
+						"rules_target": types.ListType{ElemType: types.ObjectType{
+							AttrTypes: map[string]attr.Type{
+								"category": types.StringType,
+								"type":     types.StringType,
+							},
+						}},
+					},
 				},
 			},
 		},
