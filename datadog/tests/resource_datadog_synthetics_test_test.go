@@ -974,6 +974,10 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.3.target", "terraform"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertion.5.type", "javascript"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertion.5.code", "const hello = 'world';"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.#", "1"),
 			resource.TestCheckTypeSetElemAttr(
 				"datadog_synthetics_test.foo", "locations.*", "aws:eu-central-1"),
@@ -1100,6 +1104,10 @@ resource "datadog_synthetics_test" "foo" {
 		type = "bodyHash"
 		operator = "md5"
 		target = "a"
+	}
+	assertion {
+		type = "javascript"
+		code = "const hello = 'world';"
 	}
 	locations = [ "aws:eu-central-1" ]
 
@@ -1454,6 +1462,10 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.10.targetjsonpath.0.operator", "isUndefined"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.11.type", "javascript"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.11.code", "const hello = 'world';"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
@@ -1616,6 +1628,10 @@ resource "datadog_synthetics_test" "bar" {
 			operator    = "isUndefined"
 		}
     }
+	assertion {
+		type = "javascript"
+		code = "const hello = 'world';"
+	}
 
 	locations = [ "aws:eu-central-1" ]
 	options_list {
