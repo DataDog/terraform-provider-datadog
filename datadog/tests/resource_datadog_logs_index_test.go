@@ -39,7 +39,7 @@ func TestAccDatadogLogsIndex_Basic(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "daily_limit_warning_threshold_percentage", "70"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "disable_daily_limit", "false"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "retention_days", "15"),
-					// resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "flex_retention_days", "180"),
+					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "flex_retention_days", "180"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "filter.#", "1"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "filter.0.query", "non-existent-query"),
 					resource.TestCheckResourceAttr("datadog_logs_index.sample_index", "exclusion_filter.#", "0"),
