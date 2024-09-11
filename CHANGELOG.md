@@ -1,3 +1,14 @@
+## 3.44.1 (September 11, 2024)
+
+### BUGFIXES
+* [datadog_logs_custom_destination] Fix creation failing without forward_tags_restriction_list set by @Prepager in https://github.com/DataDog/terraform-provider-datadog/pull/2565
+* [datadog_synthetics_test] Handle both integer and string values for port by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2577
+### IMPROVEMENTS
+* [datadog_provider] Bump go version in provider by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2573
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.44.0...v3.44.1
+
 ## 3.44.0 (September 5, 2024)
 
 ### BUGFIXES
