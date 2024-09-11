@@ -47,6 +47,48 @@ func testAccDatasourceServiceAccountConfig(email string, name string) string {
 	}`, email, name)
 }
 
+func TestAccDatadogServiceAccountDatasourceMatchFilterExact(t *testing.T) {
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	unique_hash := fmt.Sprintf("%x", sha256.Sum256([]byte(uniqueEntityName(ctx, t))))
+	name := fmt.Sprintf("tf-TestAccServiceAccountExact-%s", unique_hash[:16])
+	email := strings.ToLower(uniqueEntityName(ctx, t)) + "@example.com"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccDatasourceServiceAccountConfigMatchExact(email, name),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttrPair("data.datadog_service_account.test", "id", "datadog_service_account.foo", "id"),
+					resource.TestCheckResourceAttrPair("data.datadog_service_account.test", "name", "datadog_service_account.foo", "name"),
+				),
+			},
+		},
+	})
+}
+
+func testAccDatasourceServiceAccountConfigMatchExact(email string, name string) string {
+	return fmt.Sprintf(`
+	data "datadog_service_account" "test" {
+		filter = "%[2]s"
+		exact_match = true
+		depends_on = [
+			datadog_service_account.foo,
+			datadog_service_account.foo_plus,
+		]
+	}
+	resource "datadog_service_account" "foo" {
+		email = "%[1]s"
+		name = "%[2]s"
+	}
+	resource "datadog_service_account" "foo_plus" {
+		email = "%[1]s"
+		name = "%[2]s - Plus"
+	}`, email, name)
+}
+
 func TestAccDatadogServiceAccountDatasourceMatchID(t *testing.T) {
 	t.Parallel()
 	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
