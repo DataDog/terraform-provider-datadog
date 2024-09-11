@@ -2365,7 +2365,16 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 		assertionMap := assertion.(map[string]interface{})
 		if v, ok := assertionMap["type"]; ok {
 			assertionType := v.(string)
-			if v, ok := assertionMap["operator"]; ok {
+			if assertionType == string(datadogV1.SYNTHETICSASSERTIONJAVASCRIPTTYPE_JAVASCRIPT) {
+				// Handling the case for javascript assertion that does not contains any `operator`
+				assertionJavascript := datadogV1.NewSyntheticsAssertionJavascriptWithDefaults()
+				assertionJavascript.SetType(datadogV1.SYNTHETICSASSERTIONJAVASCRIPTTYPE_JAVASCRIPT)
+				if v, ok := assertionMap["code"]; ok {
+					assertionCode := v.(string)
+					assertionJavascript.SetCode((assertionCode))
+				}
+				assertions = append(assertions, datadogV1.SyntheticsAssertionJavascriptAsSyntheticsAssertion(assertionJavascript))
+			} else if v, ok := assertionMap["operator"]; ok {
 				assertionOperator := v.(string)
 				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
 					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
@@ -2500,15 +2509,6 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 					}
 					assertions = append(assertions, datadogV1.SyntheticsAssertionTargetAsSyntheticsAssertion(assertionTarget))
 				}
-				// Handling the case for javascript assertion that does not contains any `operator`
-			} else if assertionType == string(datadogV1.SYNTHETICSASSERTIONJAVASCRIPTTYPE_JAVASCRIPT) {
-				assertionJavascript := datadogV1.NewSyntheticsAssertionJavascriptWithDefaults()
-				assertionJavascript.SetType(datadogV1.SyntheticsAssertionJavascriptType(assertionType))
-				if v, ok := assertionMap["code"]; ok {
-					assertionCode := v.(string)
-					assertionJavascript.SetCode((assertionCode))
-				}
-				assertions = append(assertions, datadogV1.SyntheticsAssertionJavascriptAsSyntheticsAssertion(assertionJavascript))
 			}
 		}
 	}
@@ -2639,7 +2639,7 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 			}
 
 			if v, ok := assertionTarget.GetCodeOk(); ok {
-				localAssertion["type"] = v
+				localAssertion["code"] = v
 			}
 		}
 		localAssertions[i] = localAssertion

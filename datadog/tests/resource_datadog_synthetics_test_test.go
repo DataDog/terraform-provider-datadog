@@ -944,7 +944,7 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "variables_from_script", "dd.variable.set('FOO', 'hello');"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertion.#", "5"),
+				"datadog_synthetics_test.foo", "assertion.#", "6"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -1360,7 +1360,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.#", "11"),
+				"datadog_synthetics_test.bar", "assertion.#", "12"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
