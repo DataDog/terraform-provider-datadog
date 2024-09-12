@@ -2940,7 +2940,6 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 
 		value.SetName(extractedValueMap["name"].(string))
 		value.SetType(datadogV1.SyntheticsLocalVariableParsingOptionsType(extractedValueMap["type"].(string)))
-
 		if extractedValueMap["field"] != "" {
 			value.SetField(extractedValueMap["field"].(string))
 		}
@@ -2950,7 +2949,9 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 
 		parser := datadogV1.SyntheticsVariableParser{}
 		parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(valueParser["type"].(string)))
-		parser.SetValue(valueParser["value"].(string))
+		if valueParser["value"] != "" {
+			parser.SetValue(valueParser["value"].(string))
+		}
 
 		value.SetParser(parser)
 
