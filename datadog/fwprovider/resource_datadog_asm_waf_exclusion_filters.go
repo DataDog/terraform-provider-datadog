@@ -70,19 +70,23 @@ func (r *asmWafExclusionFiltersResource) Schema(_ context.Context, _ resource.Sc
 				Description: "The path glob for the exclusion filter.",
 			},
 			"scope": schema.ListAttribute{
-				Description: "The scope of the exclusion filter. Each entry is a map with 'env' and 'service' keys.",
+				Description: "The scope of the exclusion filter. Each entry contains 'env' and 'service'.",
 				Optional:    true,
-				Computed:    true,
-				ElementType: types.MapType{
-					ElemType: types.StringType,
+				ElementType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"env":     types.StringType,
+						"service": types.StringType,
+					},
 				},
 			},
 			"rules_target": schema.ListAttribute{
-				Description: "The rules target of the exclusion filter. Each entry contains tags with 'category' and 'type'.",
 				Optional:    true,
-				Computed:    true,
-				ElementType: types.MapType{
-					ElemType: types.StringType,
+				Description: "The rules target of the exclusion filter with 'rule_id' and 'rule_name'.",
+				ElementType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"rule_id":   types.StringType,
+						"rule_name": types.StringType,
+					},
 				},
 			},
 		},
@@ -126,6 +130,7 @@ func (r *asmWafExclusionFiltersResource) Create(ctx context.Context, request res
 
 func (r *asmWafExclusionFiltersResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state asmWafExclusionFiltersModel
+
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return

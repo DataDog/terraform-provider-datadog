@@ -489,29 +489,27 @@ func (r *logsCustomDestinationResource) buildLogsCustomDestinationCreateRequestB
 		attributes.SetForwarderDestination(*forwarderDestination)
 	}
 
-	if !state.Name.IsNull() {
-		attributes.SetName(state.Name.ValueString())
-	}
+	attributes.SetName(state.Name.ValueString())
 
-	if !state.Query.IsNull() {
+	if !state.Query.IsUnknown() {
 		attributes.SetQuery(state.Query.ValueString())
 	}
 
-	if !state.Enabled.IsNull() {
+	if !state.Enabled.IsUnknown() {
 		attributes.SetEnabled(state.Enabled.ValueBool())
 	}
 
-	if !state.ForwardTags.IsNull() {
+	if !state.ForwardTags.IsUnknown() {
 		attributes.SetForwardTags(state.ForwardTags.ValueBool())
 	}
 
-	if !state.ForwardTagsRestrictionList.IsNull() {
+	if !state.ForwardTagsRestrictionList.IsUnknown() {
 		var forwardTagsRestrictionList []string
 		diags.Append(state.ForwardTagsRestrictionList.ElementsAs(ctx, &forwardTagsRestrictionList, false)...)
 		attributes.SetForwardTagsRestrictionList(forwardTagsRestrictionList)
 	}
 
-	if !state.ForwardTagsRestrictionListType.IsNull() {
+	if !state.ForwardTagsRestrictionListType.IsUnknown() {
 		forwardTagsRestrictionListType, err := datadogV2.NewCustomDestinationAttributeTagsRestrictionListTypeFromValue(state.ForwardTagsRestrictionListType.ValueString())
 		if err == nil {
 			attributes.SetForwardTagsRestrictionListType(*forwardTagsRestrictionListType)
@@ -534,29 +532,27 @@ func (r *logsCustomDestinationResource) buildLogsCustomDestinationUpdateRequestB
 		attributes.SetForwarderDestination(*forwarderDestination)
 	}
 
-	if !state.Name.IsNull() {
-		attributes.SetName(state.Name.ValueString())
-	}
+	attributes.SetName(state.Name.ValueString())
 
-	if !state.Query.IsNull() {
+	if !state.Query.IsUnknown() {
 		attributes.SetQuery(state.Query.ValueString())
 	}
 
-	if !state.Enabled.IsNull() {
+	if !state.Enabled.IsUnknown() {
 		attributes.SetEnabled(state.Enabled.ValueBool())
 	}
 
-	if !state.ForwardTags.IsNull() {
+	if !state.ForwardTags.IsUnknown() {
 		attributes.SetForwardTags(state.ForwardTags.ValueBool())
 	}
 
-	if !state.ForwardTagsRestrictionList.IsNull() {
+	if !state.ForwardTagsRestrictionList.IsUnknown() {
 		var forwardTagsRestrictionList []string
 		diags.Append(state.ForwardTagsRestrictionList.ElementsAs(ctx, &forwardTagsRestrictionList, false)...)
 		attributes.SetForwardTagsRestrictionList(forwardTagsRestrictionList)
 	}
 
-	if !state.ForwardTagsRestrictionListType.IsNull() {
+	if !state.ForwardTagsRestrictionListType.IsUnknown() {
 		forwardTagsRestrictionListType, err := datadogV2.NewCustomDestinationAttributeTagsRestrictionListTypeFromValue(state.ForwardTagsRestrictionListType.ValueString())
 		if err == nil {
 			attributes.SetForwardTagsRestrictionListType(*forwardTagsRestrictionListType)
