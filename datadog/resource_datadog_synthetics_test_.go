@@ -1967,7 +1967,10 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		request.SetHost(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.port"); ok {
-		request.SetPort(attr.(string))
+		port := attr.(string)
+		request.SetPort(datadogV1.SyntheticsTestRequestPort{
+			SyntheticsTestRequestVariablePort: &port,
+		})
 	}
 	if attr, ok := d.GetOk("request_definition.0.dns_server"); ok {
 		request.SetDnsServer(attr.(string))
@@ -2061,7 +2064,10 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 					request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
 					if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
 						request.SetHost(requestMap["host"].(string))
-						request.SetPort(requestMap["port"].(string))
+						port := requestMap["port"].(string)
+						request.SetPort(datadogV1.SyntheticsTestRequestPort{
+							SyntheticsTestRequestVariablePort: &port,
+						})
 						request.SetService(requestMap["service"].(string))
 						request.SetMessage(requestMap["message"].(string))
 						if v, ok := requestMap["call_type"].(string); ok && v != "" {
@@ -2934,7 +2940,6 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 
 		value.SetName(extractedValueMap["name"].(string))
 		value.SetType(datadogV1.SyntheticsLocalVariableParsingOptionsType(extractedValueMap["type"].(string)))
-
 		if extractedValueMap["field"] != "" {
 			value.SetField(extractedValueMap["field"].(string))
 		}
@@ -2944,7 +2949,9 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 
 		parser := datadogV1.SyntheticsVariableParser{}
 		parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(valueParser["type"].(string)))
-		parser.SetValue(valueParser["value"].(string))
+		if valueParser["value"] != "" {
+			parser.SetValue(valueParser["value"].(string))
+		}
 
 		value.SetParser(parser)
 
@@ -3397,7 +3404,12 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) map[stri
 		localRequest["host"] = request.GetHost()
 	}
 	if request.HasPort() {
-		localRequest["port"] = request.GetPort()
+		var port = request.GetPort()
+		if port.SyntheticsTestRequestNumericalPort != nil {
+			localRequest["port"] = strconv.FormatInt(*port.SyntheticsTestRequestNumericalPort, 10)
+		} else if port.SyntheticsTestRequestVariablePort != nil {
+			localRequest["port"] = *port.SyntheticsTestRequestVariablePort
+		}
 	}
 	if request.HasDnsServer() {
 		localRequest["dns_server"] = convertToString(request.GetDnsServer())
