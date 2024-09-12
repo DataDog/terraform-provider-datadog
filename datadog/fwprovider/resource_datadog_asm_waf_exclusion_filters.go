@@ -80,8 +80,8 @@ func (r *asmWafExclusionFiltersResource) Schema(_ context.Context, _ resource.Sc
 				},
 			},
 			"rules_target": schema.ListAttribute{
-				Optional:    true,
 				Description: "The rules target of the exclusion filter with 'rule_id' and 'rule_name'.",
+				Optional:    true,
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
 						"rule_id":   types.StringType,
@@ -124,7 +124,7 @@ func (r *asmWafExclusionFiltersResource) Create(ctx context.Context, request res
 		return
 	}
 
-	r.updateStateFromCreateResponse(ctx, &state, &res)
+	r.updateStateFromResponse(ctx, &state, &res)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -211,12 +211,35 @@ func (r *asmWafExclusionFiltersResource) Delete(ctx context.Context, request res
 }
 
 func (r *asmWafExclusionFiltersResource) buildUpdateAsmWafExclusionFiltersPayload(state *asmWafExclusionFiltersModel) (*datadogV2.ASMExclusionFilterUpdateRequest, error) {
-	exclusionFiltersId, enabled, description, pathGlob := r.extractExclusionFilterAttributesFromResource(state)
+	exclusionFiltersId, enabled, description, pathGlob, scopeList, rulesTargetList := r.extractExclusionFilterAttributesFromResource(state)
 
-	attributes := datadogV2.ASMExclusionFilterUpdateAttributes{}
-	attributes.Description = &description
-	attributes.Enabled = &enabled
-	attributes.PathGlob = &pathGlob
+	attributes := datadogV2.ASMExclusionFilterUpdateAttributes{
+		Description: description,
+		Enabled:     enabled,
+		PathGlob:    &pathGlob,
+	}
+
+	if len(scopeList) > 0 {
+		var newScopeList []datadogV2.ASMExclusionFilterScope
+		for _, scopeItem := range scopeList {
+			newScopeList = append(newScopeList, datadogV2.ASMExclusionFilterScope{
+				Env:     scopeItem.Env,
+				Service: scopeItem.Service,
+			})
+		}
+		attributes.Scope = newScopeList
+	}
+
+	if len(rulesTargetList) > 0 {
+		var newRulesTargetList []datadogV2.ASMExclusionFilterRulesTarget
+		for _, targetItem := range rulesTargetList {
+			newRulesTargetList = append(newRulesTargetList, datadogV2.ASMExclusionFilterRulesTarget{
+				RuleId:   targetItem.RuleId,
+				RuleName: targetItem.RuleName,
+			})
+		}
+		attributes.RulesTarget = newRulesTargetList
+	}
 
 	data := datadogV2.NewASMExclusionFilterUpdateData(attributes, datadogV2.ASMEXCLUSIONFILTERTYPE_EXCLUSION_FILTER)
 	data.Id = &exclusionFiltersId
@@ -224,38 +247,83 @@ func (r *asmWafExclusionFiltersResource) buildUpdateAsmWafExclusionFiltersPayloa
 }
 
 func (r *asmWafExclusionFiltersResource) buildCreateASMExclusionFilterPayload(state *asmWafExclusionFiltersModel) (*datadogV2.ASMExclusionFilterCreateRequest, error) {
-	_, enabled, description, pathGlob := r.extractExclusionFilterAttributesFromResource(state)
+	_, enabled, description, pathGlob, scopeList, rulesTargetList := r.extractExclusionFilterAttributesFromResource(state)
 
-	attributes := datadogV2.ASMExclusionFilterCreateAttributes{}
-	attributes.Description = description
-	attributes.Enabled = enabled
-	attributes.PathGlob = &pathGlob
+	attributes := datadogV2.ASMExclusionFilterCreateAttributes{
+		Description: description,
+		Enabled:     enabled,
+		PathGlob:    &pathGlob,
+	}
+
+	if len(scopeList) > 0 {
+		var newScopeList []datadogV2.ASMExclusionFilterScope
+		for _, scopeItem := range scopeList {
+			newScopeList = append(newScopeList, datadogV2.ASMExclusionFilterScope{
+				Env:     scopeItem.Env,
+				Service: scopeItem.Service,
+			})
+		}
+		attributes.Scope = newScopeList
+	}
+
+	if len(rulesTargetList) > 0 {
+		var newRulesTargetList []datadogV2.ASMExclusionFilterRulesTarget
+		for _, targetItem := range rulesTargetList {
+			newRulesTargetList = append(newRulesTargetList, datadogV2.ASMExclusionFilterRulesTarget{
+				RuleId:   targetItem.RuleId,
+				RuleName: targetItem.RuleName,
+			})
+		}
+		attributes.RulesTarget = newRulesTargetList
+	}
 
 	data := datadogV2.NewASMExclusionFilterCreateData(attributes, datadogV2.ASMEXCLUSIONFILTERTYPE_EXCLUSION_FILTER)
 	return datadogV2.NewASMExclusionFilterCreateRequest(*data), nil
 }
 
-func (r *asmWafExclusionFiltersResource) extractExclusionFilterAttributesFromResource(state *asmWafExclusionFiltersModel) (string, bool, string, string) {
+func (r *asmWafExclusionFiltersResource) extractExclusionFilterAttributesFromResource(state *asmWafExclusionFiltersModel) (string, bool, string, string, []datadogV2.ASMExclusionFilterScope, []datadogV2.ASMExclusionFilterRulesTarget) {
 	id := state.Id.ValueString()
 	enabled := state.Enabled.ValueBool()
 	description := state.Description.ValueString()
 	pathGlob := state.PathGlob.ValueString()
 
-	return id, enabled, description, pathGlob
-}
+	var scopeList []datadogV2.ASMExclusionFilterScope
+	if !state.Scope.IsNull() && len(state.Scope.Elements()) > 0 {
+		for _, scopeItem := range state.Scope.Elements() {
+			scopeMap := scopeItem.(types.Object).Attributes()
 
-func (r *asmWafExclusionFiltersResource) updateStateFromCreateResponse(ctx context.Context, state *asmWafExclusionFiltersModel, res *datadogV2.ASMExclusionFilterResponse) {
-	if len(res.GetData()) == 0 {
-		return
+			env := scopeMap["env"].(types.String).ValueString()
+			service := scopeMap["service"].(types.String).ValueString()
+
+			envPtr := &env
+			servicePtr := &service
+
+			scopeList = append(scopeList, datadogV2.ASMExclusionFilterScope{
+				Env:     envPtr,
+				Service: servicePtr,
+			})
+		}
 	}
 
-	filterData := res.GetData()[0]
-	attributes := filterData.Attributes
+	var rulesTargetList []datadogV2.ASMExclusionFilterRulesTarget
+	if !state.RulesTarget.IsNull() && len(state.RulesTarget.Elements()) > 0 {
+		for _, targetItem := range state.RulesTarget.Elements() {
+			rulesMap := targetItem.(types.Object).Attributes()
 
-	state.Id = types.StringValue(filterData.GetId())
-	state.Description = types.StringValue(attributes.GetDescription())
-	state.Enabled = types.BoolValue(attributes.GetEnabled())
-	state.PathGlob = types.StringValue(attributes.GetPathGlob())
+			ruleId := rulesMap["rule_id"].(types.String).ValueString()
+			ruleName := rulesMap["rule_name"].(types.String).ValueString()
+
+			ruleIdPtr := &ruleId
+			ruleNamePtr := &ruleName
+
+			rulesTargetList = append(rulesTargetList, datadogV2.ASMExclusionFilterRulesTarget{
+				RuleId:   ruleIdPtr,
+				RuleName: ruleNamePtr,
+			})
+		}
+	}
+
+	return id, enabled, description, pathGlob, scopeList, rulesTargetList
 }
 
 func (r *asmWafExclusionFiltersResource) updateStateFromResponse(ctx context.Context, state *asmWafExclusionFiltersModel, res *datadogV2.ASMExclusionFilterResponse) {
@@ -276,37 +344,43 @@ func (r *asmWafExclusionFiltersResource) updateStateFromResponse(ctx context.Con
 	var scopes []attr.Value
 	if scopeList := attributes.GetScope(); len(scopeList) > 0 {
 		for _, scopeItem := range scopeList {
-			scopeValues := map[string]attr.Value{}
-
-			if envValue := scopeItem.GetEnv(); envValue != "" {
-				scopeValues["env"] = types.StringValue(envValue)
+			scopeObject := map[string]attr.Value{
+				"env":     types.StringValue(scopeItem.GetEnv()),
+				"service": types.StringValue(scopeItem.GetService()),
 			}
-
-			if serviceValue := scopeItem.GetService(); serviceValue != "" {
-				scopeValues["service"] = types.StringValue(serviceValue)
-			}
-
-			if len(scopeValues) > 0 {
-				scopeValue, _ := types.MapValue(types.StringType, scopeValues)
-				scopes = append(scopes, scopeValue)
-			}
+			scopeValue, _ := types.ObjectValue(map[string]attr.Type{
+				"env":     types.StringType,
+				"service": types.StringType,
+			}, scopeObject)
+			scopes = append(scopes, scopeValue)
 		}
 	}
-	state.Scope, _ = types.ListValue(types.MapType{ElemType: types.StringType}, scopes)
+	state.Scope, _ = types.ListValue(types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"env":     types.StringType,
+			"service": types.StringType,
+		},
+	}, scopes)
 
 	var rulesTarget []attr.Value
 	if rulesTargetList := attributes.GetRulesTarget(); len(rulesTargetList) > 0 {
 		for _, targetItem := range rulesTargetList {
-			tags, tagsOk := targetItem.GetTagsOk()
-			if tagsOk && tags != nil {
-				tagValues := map[string]attr.Value{
-					"category": types.StringValue(tags.GetCategory()),
-					"type":     types.StringValue(tags.GetType()),
-				}
-				tagMapValue, _ := types.MapValue(types.StringType, tagValues)
-				rulesTarget = append(rulesTarget, tagMapValue)
+			ruleValues := map[string]attr.Value{
+				"rule_id":   types.StringValue(targetItem.GetRuleId()),
+				"rule_name": types.StringValue(targetItem.GetRuleName()),
 			}
+			ruleObject, _ := types.ObjectValue(map[string]attr.Type{
+				"rule_id":   types.StringType,
+				"rule_name": types.StringType,
+			}, ruleValues)
+			rulesTarget = append(rulesTarget, ruleObject)
 		}
 	}
-	state.RulesTarget, _ = types.ListValue(types.MapType{ElemType: types.StringType}, rulesTarget)
+	state.RulesTarget, _ = types.ListValue(types.ObjectType{
+		AttrTypes: map[string]attr.Type{
+			"rule_id":   types.StringType,
+			"rule_name": types.StringType,
+		},
+	}, rulesTarget)
+
 }
