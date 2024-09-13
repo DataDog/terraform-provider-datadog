@@ -11998,6 +11998,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
+- `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--style))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -12631,6 +12632,23 @@ Optional:
 Optional:
 
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--style"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.style`
+
+Optional:
+
+- `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display))
+- `palette` (String) The color palette for the widget.
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.style.display`
+
+Required:
+
+- `type` (String) The display type for the widget.
 
 
 
@@ -14446,6 +14464,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request))
+- `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -15079,6 +15098,23 @@ Optional:
 Optional:
 
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--style"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.style`
+
+Optional:
+
+- `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display))
+- `palette` (String) The color palette for the widget.
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--style--display"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.style.display`
+
+Required:
+
+- `type` (String) The display type for the widget.
 
 
 
@@ -23692,6 +23728,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request))
+- `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -24325,6 +24362,23 @@ Optional:
 Optional:
 
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.style`
+
+Optional:
+
+- `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display))
+- `palette` (String) The color palette for the widget.
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.style.display`
+
+Required:
+
+- `type` (String) The display type for the widget.
 
 
 
@@ -26140,6 +26194,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
+- `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--toplist_definition--style))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -26773,6 +26828,23 @@ Optional:
 Optional:
 
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+<a id="nestedblock--widget--toplist_definition--style"></a>
+### Nested Schema for `widget.toplist_definition.style`
+
+Optional:
+
+- `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display))
+- `palette` (String) The color palette for the widget.
+
+<a id="nestedblock--widget--toplist_definition--style--display"></a>
+### Nested Schema for `widget.toplist_definition.style.display`
+
+Required:
+
+- `type` (String) The display type for the widget.
 
 
 
