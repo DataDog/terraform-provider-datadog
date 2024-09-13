@@ -70,6 +70,14 @@ func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request dat
 		exclusionFilterModel.Enabled = types.BoolValue(attributes.GetEnabled())
 		exclusionFilterModel.PathGlob = types.StringValue(attributes.GetPathGlob())
 
+		var parameters []attr.Value
+		for _, param := range attributes.GetParameters() {
+			parameters = append(parameters, types.StringValue(param))
+		}
+		tfParameters, diags := types.ListValue(types.StringType, parameters)
+		response.Diagnostics.Append(diags...)
+		exclusionFilterModel.Parameters = tfParameters
+
 		var scopes []attr.Value
 		for _, scope := range attributes.GetScope() {
 			scopeObject, diags := types.ObjectValue(map[string]attr.Type{
@@ -161,6 +169,9 @@ func (r *asmWafExclusionFiltersDataSource) Schema(_ context.Context, _ datasourc
 						"description": types.StringType,
 						"enabled":     types.BoolType,
 						"path_glob":   types.StringType,
+						"parameters": types.ListType{
+							ElemType: types.StringType,
+						},
 						"scope": types.ListType{ElemType: types.ObjectType{
 							AttrTypes: map[string]attr.Type{
 								"env":     types.StringType,

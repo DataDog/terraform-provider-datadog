@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -27,6 +26,7 @@ type asmWafExclusionFiltersModel struct {
 	Description types.String `tfsdk:"description"`
 	Enabled     types.Bool   `tfsdk:"enabled"`
 	PathGlob    types.String `tfsdk:"path_glob"`
+	Parameters  types.List   `tfsdk:"parameters"`
 	Scope       types.List   `tfsdk:"scope"`
 	RulesTarget types.List   `tfsdk:"rules_target"`
 }
@@ -56,10 +56,8 @@ func (r *asmWafExclusionFiltersResource) Schema(_ context.Context, _ resource.Sc
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"description": schema.StringAttribute{
-				Optional:    true,
+				Required:    true,
 				Description: "A description for the exclusion filter.",
-				Default:     stringdefault.StaticString(""),
-				Computed:    true,
 			},
 			"enabled": schema.BoolAttribute{
 				Required:    true,
@@ -68,6 +66,11 @@ func (r *asmWafExclusionFiltersResource) Schema(_ context.Context, _ resource.Sc
 			"path_glob": schema.StringAttribute{
 				Required:    true,
 				Description: "The path glob for the exclusion filter.",
+			},
+			"parameters": schema.ListAttribute{
+				Description: "List of parameters for the exclusion filters.",
+				Optional:    true,
+				ElementType: types.StringType,
 			},
 			"scope": schema.ListAttribute{
 				Description: "The scope of the exclusion filter. Each entry contains 'env' and 'service'.",
@@ -211,12 +214,16 @@ func (r *asmWafExclusionFiltersResource) Delete(ctx context.Context, request res
 }
 
 func (r *asmWafExclusionFiltersResource) buildUpdateAsmWafExclusionFiltersPayload(state *asmWafExclusionFiltersModel) (*datadogV2.ASMExclusionFilterUpdateRequest, error) {
-	exclusionFiltersId, enabled, description, pathGlob, scopeList, rulesTargetList := r.extractExclusionFilterAttributesFromResource(state)
+	exclusionFiltersId, enabled, description, pathGlob, parameters, scopeList, rulesTargetList := r.extractExclusionFilterAttributesFromResource(state)
 
 	attributes := datadogV2.ASMExclusionFilterUpdateAttributes{
 		Description: description,
 		Enabled:     enabled,
-		PathGlob:    &pathGlob,
+		PathGlob:    pathGlob,
+	}
+
+	if len(parameters) > 0 {
+		attributes.Parameters = parameters
 	}
 
 	if len(scopeList) > 0 {
@@ -247,12 +254,16 @@ func (r *asmWafExclusionFiltersResource) buildUpdateAsmWafExclusionFiltersPayloa
 }
 
 func (r *asmWafExclusionFiltersResource) buildCreateASMExclusionFilterPayload(state *asmWafExclusionFiltersModel) (*datadogV2.ASMExclusionFilterCreateRequest, error) {
-	_, enabled, description, pathGlob, scopeList, rulesTargetList := r.extractExclusionFilterAttributesFromResource(state)
+	_, enabled, description, pathGlob, parameters, scopeList, rulesTargetList := r.extractExclusionFilterAttributesFromResource(state)
 
 	attributes := datadogV2.ASMExclusionFilterCreateAttributes{
 		Description: description,
 		Enabled:     enabled,
-		PathGlob:    &pathGlob,
+		PathGlob:    pathGlob,
+	}
+
+	if len(parameters) > 0 {
+		attributes.Parameters = parameters
 	}
 
 	if len(scopeList) > 0 {
@@ -281,11 +292,18 @@ func (r *asmWafExclusionFiltersResource) buildCreateASMExclusionFilterPayload(st
 	return datadogV2.NewASMExclusionFilterCreateRequest(*data), nil
 }
 
-func (r *asmWafExclusionFiltersResource) extractExclusionFilterAttributesFromResource(state *asmWafExclusionFiltersModel) (string, bool, string, string, []datadogV2.ASMExclusionFilterScope, []datadogV2.ASMExclusionFilterRulesTarget) {
+func (r *asmWafExclusionFiltersResource) extractExclusionFilterAttributesFromResource(state *asmWafExclusionFiltersModel) (string, bool, string, string, []string, []datadogV2.ASMExclusionFilterScope, []datadogV2.ASMExclusionFilterRulesTarget) {
 	id := state.Id.ValueString()
 	enabled := state.Enabled.ValueBool()
 	description := state.Description.ValueString()
 	pathGlob := state.PathGlob.ValueString()
+
+	var parameters []string
+	if !state.Parameters.IsNull() && len(state.Parameters.Elements()) > 0 {
+		for _, param := range state.Parameters.Elements() {
+			parameters = append(parameters, param.(types.String).ValueString())
+		}
+	}
 
 	var scopeList []datadogV2.ASMExclusionFilterScope
 	if !state.Scope.IsNull() && len(state.Scope.Elements()) > 0 {
@@ -323,7 +341,7 @@ func (r *asmWafExclusionFiltersResource) extractExclusionFilterAttributesFromRes
 		}
 	}
 
-	return id, enabled, description, pathGlob, scopeList, rulesTargetList
+	return id, enabled, description, pathGlob, parameters, scopeList, rulesTargetList
 }
 
 func (r *asmWafExclusionFiltersResource) updateStateFromResponse(ctx context.Context, state *asmWafExclusionFiltersModel, res *datadogV2.ASMExclusionFilterResponse) {
@@ -340,6 +358,12 @@ func (r *asmWafExclusionFiltersResource) updateStateFromResponse(ctx context.Con
 	state.Description = types.StringValue(attributes.GetDescription())
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
 	state.PathGlob = types.StringValue(attributes.GetPathGlob())
+
+	var parameters []attr.Value
+	for _, param := range attributes.GetParameters() {
+		parameters = append(parameters, types.StringValue(param))
+	}
+	state.Parameters, _ = types.ListValue(types.StringType, parameters)
 
 	var scopes []attr.Value
 	if scopeList := attributes.GetScope(); len(scopeList) > 0 {
