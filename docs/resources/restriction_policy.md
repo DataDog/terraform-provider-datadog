@@ -51,7 +51,7 @@ Note: Dashboards support is in private beta. Reach out to your Datadog contact o
 
 Required:
 
-- `principals` (Set of String) An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role` and `org`. The org ID can be obtained through the api/v2/users API.
+- `principals` (Set of String) An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `team` , `role` , `org` and `user`. The org ID can be obtained through the api/v2/users API.
 - `relation` (String) The role/level of access. See this page for more details https://docs.datadoghq.com/api/latest/restriction-policies/#supported-relations-for-resources
 
 ## Import
