@@ -308,8 +308,8 @@ func Float64Between(min, max float64) validator.String {
 func ValidateHttpRequestHeader(v interface{}, k string) (ws []string, errors []error) {
 	value := v.(map[string]interface{})
 	for headerField, headerValue := range value {
-		if !isValidToken(headerField) {
-			errors = append(errors, fmt.Errorf("invalid value for %s (header field must be a valid token)", k))
+		if !isValidToken(headerField) && !isRequestPseudoHeader(headerField) {
+			errors = append(errors, fmt.Errorf("invalid value for %s (header field must be a valid token or a http/2 request pseudo-header)", k))
 			return
 		}
 		headerStringValue, ok := headerValue.(string)
@@ -326,6 +326,11 @@ func ValidateHttpRequestHeader(v interface{}, k string) (ws []string, errors []e
 		}
 	}
 	return
+}
+
+func isRequestPseudoHeader(header string) bool {
+	// :status is a response pseudo-header, and :protocol may only be used internally in websockets
+	return header == ":method" || header == ":scheme" || header == ":authority" || header == ":path"
 }
 
 func isValidToken(token string) bool {
