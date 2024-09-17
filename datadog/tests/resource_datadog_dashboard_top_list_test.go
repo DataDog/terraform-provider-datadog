@@ -134,6 +134,78 @@ resource "datadog_dashboard" "top_list_dashboard" {
 }
 `
 
+const datadogDashboardTopListConfigWithStyle = `
+resource "datadog_dashboard" "top_list_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+	is_read_only  = "true"
+
+	widget {
+		toplist_definition {
+			title_size = "16"
+			title = "Toplist with flat style"
+			title_align = "right"
+			live_span = "1w"
+			request {
+				q = "top(avg:system.cpu.user{*} by {service,app_id}, 10, 'sum', 'desc')"
+				conditional_formats {
+					palette = "white_on_red"
+					value = 15000
+					comparator = ">"
+				}
+			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				is_hidden = true
+				override_label = "logs"
+			}
+			style {
+				display {
+					type = "flat"
+				}
+			}
+		}
+	}
+
+	widget {
+		toplist_definition {
+			title_size = "16"
+			title = "Toplist with stacked style"
+			title_align = "right"
+			live_span = "1w"
+			request {
+				q = "top(avg:system.cpu.user{*} by {service,app_id}, 10, 'sum', 'desc')"
+				conditional_formats {
+					palette = "white_on_red"
+					value = 15000
+					comparator = ">"
+				}
+			}
+      			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				label = "Test Custom Link label"
+			}
+			custom_link {
+				link = "https://app.datadoghq.com/dashboard/lists"
+				is_hidden = true
+				override_label = "logs"
+			}
+			style {
+				display {
+					type = "stacked"
+				}
+				palette = "datadog16"
+			}
+		}
+	}
+}
+`
+
 var datadogDashboardTopListAsserts = []string{
 	"description = Created using the Datadog provider in Terraform",
 	"widget.0.toplist_definition.0.request.0.conditional_formats.0.timeframe =",
@@ -188,6 +260,62 @@ var datadogDashboardTopListFormulaAsserts = []string{
 	"widget.1.toplist_definition.0.request.0.query.0.event_query.0.compute.0.aggregation = count",
 }
 
+var datadogDashboardTopListAssertsWithStyle = []string{
+	"title = {{uniq}}",
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"is_read_only = true",
+
+	"widget.0.toplist_definition.0.request.0.conditional_formats.0.timeframe =",
+	"widget.0.toplist_definition.0.request.0.conditional_formats.0.image_url =",
+	"widget.0.toplist_definition.0.request.0.conditional_formats.0.comparator = >",
+	"widget.0.toplist_definition.0.request.0.conditional_formats.0.custom_bg_color =",
+	"widget.0.toplist_definition.0.request.0.conditional_formats.0.palette = white_on_red",
+	"widget.0.toplist_definition.0.live_span = 1w",
+	"widget.0.toplist_definition.0.time.% = 0",
+	"widget.0.toplist_definition.0.request.0.conditional_formats.0.hide_value = false",
+	"widget.0.toplist_definition.0.request.0.q = top(avg:system.cpu.user{*} by {service,app_id}, 10, 'sum', 'desc')",
+	"widget.0.toplist_definition.0.title_size = 16",
+	"widget.0.toplist_definition.0.title_align = right",
+	"widget.0.toplist_definition.0.request.0.conditional_formats.0.value = 15000",
+	"widget.0.toplist_definition.0.title = Toplist with flat style",
+	"widget.0.toplist_definition.0.request.0.conditional_formats.0.custom_fg_color =",
+	"widget.0.toplist_definition.0.custom_link.# = 2",
+	"widget.0.toplist_definition.0.custom_link.0.label = Test Custom Link label",
+	"widget.0.toplist_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.toplist_definition.0.custom_link.1.override_label = logs",
+	"widget.0.toplist_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.0.toplist_definition.0.custom_link.1.is_hidden = true",
+	"widget.0.toplist_definition.0.style.# = 1",
+	"widget.0.toplist_definition.0.style.0.display.# = 1",
+	"widget.0.toplist_definition.0.style.0.display.0.type = flat",
+
+	"widget.1.toplist_definition.0.request.0.conditional_formats.0.timeframe =",
+	"widget.1.toplist_definition.0.request.0.conditional_formats.0.image_url =",
+	"widget.1.toplist_definition.0.request.0.conditional_formats.0.comparator = >",
+	"widget.1.toplist_definition.0.request.0.conditional_formats.0.custom_bg_color =",
+	"widget.1.toplist_definition.0.request.0.conditional_formats.0.palette = white_on_red",
+	"widget.1.toplist_definition.0.live_span = 1w",
+	"widget.1.toplist_definition.0.time.% = 0",
+	"widget.1.toplist_definition.0.request.0.conditional_formats.0.hide_value = false",
+	"widget.1.toplist_definition.0.request.0.q = top(avg:system.cpu.user{*} by {service,app_id}, 10, 'sum', 'desc')",
+	"widget.1.toplist_definition.0.title_size = 16",
+	"widget.1.toplist_definition.0.title_align = right",
+	"widget.1.toplist_definition.0.request.0.conditional_formats.0.value = 15000",
+	"widget.1.toplist_definition.0.title = Toplist with stacked style",
+	"widget.1.toplist_definition.0.request.0.conditional_formats.0.custom_fg_color =",
+	"widget.1.toplist_definition.0.custom_link.# = 2",
+	"widget.1.toplist_definition.0.custom_link.0.label = Test Custom Link label",
+	"widget.1.toplist_definition.0.custom_link.0.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.1.toplist_definition.0.custom_link.1.override_label = logs",
+	"widget.1.toplist_definition.0.custom_link.1.link = https://app.datadoghq.com/dashboard/lists",
+	"widget.1.toplist_definition.0.custom_link.1.is_hidden = true",
+	"widget.1.toplist_definition.0.style.# = 1",
+	"widget.1.toplist_definition.0.style.0.display.# = 1",
+	"widget.1.toplist_definition.0.style.0.display.0.type = stacked",
+	"widget.1.toplist_definition.0.style.0.palette = datadog16",
+}
+
 func TestAccDatadogDashboardTopList(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTopListConfig, "datadog_dashboard.top_list_dashboard", datadogDashboardTopListAsserts)
 }
@@ -202,4 +330,8 @@ func TestAccDatadogDashboardTopListFormula(t *testing.T) {
 
 func TestAccDatadogDashboardTopListFormula_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardTopListFormulaConfig, "datadog_dashboard.top_list_dashboard")
+}
+
+func TestAccDatadogDashboardTopListWithStyle(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardTopListConfigWithStyle, "datadog_dashboard.top_list_dashboard", datadogDashboardTopListAssertsWithStyle)
 }

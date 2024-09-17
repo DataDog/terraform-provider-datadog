@@ -7793,6 +7793,14 @@ func getToplistDefinitionSchema() map[string]*schema.Schema {
 				Schema: getWidgetCustomLinkSchema(),
 			},
 		},
+		"style": {
+			Description: "The style of the widget",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getToplistWidgetStyleSchema(),
+			},
+		},
 	}
 }
 func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *datadogV1.ToplistWidgetDefinition {
@@ -7818,8 +7826,42 @@ func buildDatadogToplistDefinition(terraformDefinition map[string]interface{}) *
 	if v, ok := terraformDefinition["custom_link"].([]interface{}); ok && len(v) > 0 {
 		datadogDefinition.SetCustomLinks(*buildDatadogWidgetCustomLinks(&v))
 	}
+
+	if style, ok := terraformDefinition["style"].([]interface{}); ok && len(style) > 0 {
+		if v, ok := style[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.SetStyle(buildDatadogToplistStyle(v))
+		}
+	}
 	return datadogDefinition
 }
+
+func buildDatadogToplistStyle(terraformToplistStyle map[string]interface{}) datadogV1.ToplistWidgetStyle {
+	datadogToplistStyle := datadogV1.NewToplistWidgetStyleWithDefaults()
+
+	if display, ok := terraformToplistStyle["display"].([]interface{}); ok && len(display) > 0 {
+		if v, ok := display[0].(map[string]interface{}); ok && len(v) > 0 {
+			if t, ok := v["type"].(string); ok && len(t) != 0 {
+				if t == "stacked" {
+					datadogToplistStyle.SetDisplay(datadogV1.ToplistWidgetDisplay{
+						ToplistWidgetStacked: datadogV1.NewToplistWidgetStacked(
+							datadogV1.TOPLISTWIDGETLEGEND_AUTOMATIC,
+							datadogV1.TOPLISTWIDGETSTACKEDTYPE_STACKED,
+						),
+					})
+				} else if t == "flat" {
+					datadogToplistStyle.SetDisplay(datadogV1.ToplistWidgetDisplay{
+						ToplistWidgetFlat: datadogV1.NewToplistWidgetFlatWithDefaults(),
+					})
+				}
+			}
+		}
+	}
+	if palette, ok := terraformToplistStyle["palette"].(string); ok && len(palette) != 0 {
+		datadogToplistStyle.SetPalette(palette)
+	}
+	return *datadogToplistStyle
+}
+
 func buildTerraformToplistDefinition(datadogDefinition *datadogV1.ToplistWidgetDefinition) map[string]interface{} {
 	terraformDefinition := map[string]interface{}{}
 	// Required params
@@ -7840,6 +7882,9 @@ func buildTerraformToplistDefinition(datadogDefinition *datadogV1.ToplistWidgetD
 	}
 	if v, ok := datadogDefinition.GetCustomLinksOk(); ok {
 		terraformDefinition["custom_link"] = buildTerraformWidgetCustomLinks(v)
+	}
+	if v, ok := datadogDefinition.GetStyleOk(); ok {
+		terraformDefinition["style"] = buildTerraformToplistWidgetStyle(v)
 	}
 	return terraformDefinition
 }
@@ -7991,6 +8036,27 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
+}
+
+func buildTerraformToplistWidgetStyle(datadogToplistStyle *datadogV1.ToplistWidgetStyle) *[]map[string]interface{} {
+	terraformStyles := make([]map[string]interface{}, 1)
+	terraformStyle := map[string]interface{}{}
+	if display, ok := datadogToplistStyle.GetDisplayOk(); ok {
+		terraformDisplays := make([]map[string]interface{}, 1)
+		terraformDisplay := map[string]interface{}{}
+		if display.ToplistWidgetStacked != nil {
+			terraformDisplay["type"] = datadogV1.TOPLISTWIDGETSTACKEDTYPE_STACKED
+		} else if display.ToplistWidgetFlat != nil {
+			terraformDisplay["type"] = datadogV1.TOPLISTWIDGETFLATTYPE_FLAT
+		}
+		terraformDisplays[0] = terraformDisplay
+		terraformStyle["display"] = terraformDisplays
+	}
+	if palette, ok := datadogToplistStyle.GetPaletteOk(); ok {
+		terraformStyle["palette"] = palette
+	}
+	terraformStyles[0] = terraformStyle
+	return &terraformStyles
 }
 
 //
@@ -9146,6 +9212,38 @@ func getWidgetCustomLinkSchema() map[string]*schema.Schema {
 			Description: "The label ID that refers to a context menu link item. When `override_label` is provided, the client request omits the label field.",
 			Type:        schema.TypeString,
 			Optional:    true,
+		},
+	}
+}
+
+// Toplist Widget Style helpers
+
+func getToplistWidgetStyleSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"display": {
+			Description: "The display mode for the widget.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetDisplaySchema(),
+			},
+		},
+		"palette": {
+			Description: "The color palette for the widget.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+	}
+}
+
+// Widget Display helper
+
+func getWidgetDisplaySchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"type": {
+			Description: "The display type for the widget.",
+			Type:        schema.TypeString,
+			Required:    true,
 		},
 	}
 }
