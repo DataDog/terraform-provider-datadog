@@ -2934,8 +2934,7 @@ Optional:
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
 - `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
-- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](
-- #nestedblock--widget--query_table_definition--request--conditional_formats))
+- `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
 - `log_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--log_query))
@@ -2945,7 +2944,6 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
-- `text_formats` (List of Block List) Text formats allow you to set the color of your text content, depending on the rule applied to your data. Multiple `text_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query"></a>
 ### Nested Schema for `widget.query_table_definition.request.apm_query`
@@ -3509,40 +3507,6 @@ Optional:
 
 
 
-<a id="nestedblock--widget--query_table_definition--request--text_formats"></a>
-### Nested Schema for `widget.query_table_definition.request.text_formats.
-
-Required:
-
-- `match` (Block List, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--match))
-
-Optional:
-
-- `replace` (Block List, Max: 1) Replace rule for the table widget text format.
-- `palette` (String) Color-on-color palette to highlight replaced text.
-- `custom_bg_color` (String) Hex representation of the custom background color. Used with custom background palette option.
-- `custom_fg_color` (String) Hex representation of the custom text color. Used with custom text palette option.
-
-
-
-<a id="nestedblock--widget--query_table_definition--request--text_formats--match"></a>
-### Nested Schema for `widget.query_table_definition.request.text_formats.match.
-
-Required:
-
-- `type` (String) Match or compare option.
-- `value` (String) Table Widget Match String.
-
-
-
-<a id="nestedblock--widget--query_table_definition--request--text_formats--replace"></a>
-### Nested Schema for `widget.query_table_definition.request.text_formats.replace.
-
-Required:
-
-- `type` (String) Match or compare option.
-- `with` (String) Text that will replace original sub-string.
-- `substring` (String) Text that will be replaced.
 
 
 <a id="nestedblock--widget--query_value_definition"></a>
