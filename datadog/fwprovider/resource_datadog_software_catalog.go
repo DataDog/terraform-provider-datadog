@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -41,7 +42,8 @@ type Included struct {
 }
 
 type IncludedAttributes struct {
-	Schema *Entity `json:"schema"`
+	Schema    *Entity `json:"schema"`
+	RawSchema string  `json:"raw_schema"`
 }
 
 func entityFromYAML(inYAML string) (Entity, error) {
@@ -254,6 +256,15 @@ func (r *catalogEntityResource) ImportState(ctx context.Context, request resourc
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
+func decodeBase64String(data string, response *resource.ReadResponse) []byte {
+	bytes, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error decoding base64 string"))
+		return nil
+	}
+	return bytes
+}
+
 func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state entityTFState
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
@@ -262,7 +273,7 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 	}
 
 	id := state.ID.ValueString()
-	path := catalogPath + "?include=schema&filter[ref]=" + id
+	path := catalogPath + "?include=raw_schema&filter[ref]=" + id
 	httpRespByte, httpResp, err := utils.SendRequest(r.Auth, r.Api, "GET", path, nil)
 
 	if err != nil {
@@ -279,13 +290,21 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unmarshalling entity"))
 	}
 
-	if len(entityResp.Included) != 1 || entityResp.Included[0].Attributes == nil || entityResp.Included[0].Attributes.Schema == nil {
+	if len(entityResp.Included) != 2 || entityResp.Included[1].Attributes == nil || entityResp.Included[1].Attributes.RawSchema == "" {
 		err := fmt.Errorf("no entity is found in the response, path=%v response=%v", path, httpRespByte)
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving entity"))
 		return
 	}
 
-	e := entityResp.Included[0].Attributes.Schema
+	var e Entity
+	rawSchema := entityResp.Included[1].Attributes.RawSchema
+	encodedBytes := decodeBase64String(rawSchema, response)
+	err = json.Unmarshal(encodedBytes, &e)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unmarshalling entity"))
+		return
+	}
+
 	entityYAML, err := e.toYAML()
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error marshalling entity"))
