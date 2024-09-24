@@ -94,7 +94,6 @@ func (e *Entity) reference() *Reference {
 }
 
 func (e *Entity) toYAML() (string, error) {
-	e.removeComputed()
 	result, err := yaml.Marshal(e)
 	if err != nil {
 		return "", err
@@ -361,6 +360,7 @@ func (r *catalogEntityResource) resourceEntityUpsert(state *entityTFState, actio
 		return errors.New("missing entity in the response")
 	}
 	e := response.Included[0].Attributes.Schema
+	e.removeComputed()
 	entityYAML, err = e.toYAML()
 	if err != nil {
 		return err
