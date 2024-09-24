@@ -179,7 +179,7 @@ func checkCatalogEntityExists(accProvider *fwprovider.FrameworkProvider) resourc
 		auth := accProvider.Auth
 		for _, r := range s.RootModule().Resources {
 			err := utils.Retry(5000*time.Millisecond, 4, func() error {
-				if _, _, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", "/api/v2/catalog/entity?include=schema&filter[ref]="+r.Primary.ID, nil); err != nil {
+				if _, _, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", "/api/v2/catalog/entity?include=raw_schema&filter[ref]="+r.Primary.ID, nil); err != nil {
 					return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving entity %s", err)}
 				}
 				return nil
