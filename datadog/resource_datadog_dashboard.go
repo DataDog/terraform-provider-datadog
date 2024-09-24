@@ -4492,8 +4492,9 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"text_formats": {
-			Type:     schema.TypeList,
-			Optional: true,
+			Description: "Text formats define how to format text in table widget. This resource is in beta and is subject to change.",
+			Type:        schema.TypeList,
+			Optional:    true,
 			Elem: &schema.Schema{
 				Type: schema.TypeList,
 				Elem: &schema.Resource{
