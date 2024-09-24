@@ -290,14 +290,14 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unmarshalling entity"))
 	}
 
-	if len(entityResp.Included) != 2 || entityResp.Included[1].Attributes == nil || entityResp.Included[1].Attributes.RawSchema == "" {
+	if len(entityResp.Included) != 1 || entityResp.Included[0].Attributes == nil || entityResp.Included[0].Attributes.RawSchema == "" {
 		err := fmt.Errorf("no entity is found in the response, path=%v response=%v", path, httpRespByte)
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving entity"))
 		return
 	}
 
 	var e Entity
-	rawSchema := entityResp.Included[1].Attributes.RawSchema
+	rawSchema := entityResp.Included[0].Attributes.RawSchema
 	encodedBytes := decodeBase64String(rawSchema, response)
 	err = json.Unmarshal(encodedBytes, &e)
 	if err != nil {
