@@ -118,7 +118,7 @@ Read-Only:
 - `signal_title_template` (String)
 
 <a id="nestedobjatt--rules--options--third_party_rule_options--root_query"></a>
-### Nested Schema for `rules.options.third_party_rule_options.signal_title_template`
+### Nested Schema for `rules.options.third_party_rule_options.root_query`
 
 Read-Only:
 
