@@ -3,7 +3,7 @@
 page_title: "datadog_integration_confluent_resource Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog IntegrationConfluentResource resource. This can be used to create and manage Datadog integrationconfluentresource.
+  Provides a Datadog IntegrationConfluentResource resource. This can be used to create and manage Datadog integration_confluent_resource.
 ---
 
 # datadog_integration_confluent_resource (Resource)

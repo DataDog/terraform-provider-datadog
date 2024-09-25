@@ -3,7 +3,7 @@
 page_title: "datadog_cloud_workload_security_agent_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules. Deprecated, use datadogcsmthreatsagentrules resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csmthreatsagent_rule
+  Provides a Datadog Cloud Workload Security Agent Rule API resource for agent rules. Deprecated, use datadog_csm_threats_agent_rules resource instead: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/csm_threats_agent_rule
 ---
 
 # datadog_cloud_workload_security_agent_rule (Resource)

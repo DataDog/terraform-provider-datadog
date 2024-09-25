@@ -3,7 +3,7 @@
 page_title: "datadog_integration_confluent_account Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog IntegrationConfluentAccount resource. This can be used to create and manage Datadog integrationconfluentaccount.
+  Provides a Datadog IntegrationConfluentAccount resource. This can be used to create and manage Datadog integration_confluent_account.
 ---
 
 # datadog_integration_confluent_account (Resource)
