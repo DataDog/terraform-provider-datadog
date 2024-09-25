@@ -4495,43 +4495,49 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Description: "Text formats define how to format text in table widget. This resource is in beta and is subject to change.",
 			Type:        schema.TypeList,
 			Optional:    true,
-			Elem: &schema.Schema{
-				Type: schema.TypeList,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"match": {
-							Type:        schema.TypeMap,
-							MaxItems:    1,
-							Required:    true,
-							Description: "Match rule for the table widget text format.",
-							Elem: &schema.Resource{
-								Schema: getTableWidgetTextFormatMatchSchema(),
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"text_format": {
+						Description: "The text format to apply to the items in the table widget.",
+						Type:        schema.TypeList,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"match": {
+									Type:        schema.TypeList,
+									MaxItems:    1,
+									Required:    true,
+									Description: "Match rule for the table widget text format.",
+									Elem: &schema.Resource{
+										Schema: getTableWidgetTextFormatMatchSchema(),
+									},
+								},
+								"palette": {
+									Description:      "The color palette to apply.",
+									Type:             schema.TypeString,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetTextFormatPaletteFromValue),
+									Optional:         true,
+								},
+								"replace": {
+									Type:        schema.TypeList,
+									MaxItems:    1,
+									Optional:    true,
+									Description: "Match rule for the table widget text format.",
+									Elem: &schema.Resource{
+										Schema: getTableWidgetTextFormatReplaceSchema(),
+									},
+								},
+								"custom_bg_color": {
+									Description: "The custom color palette to apply to the background.",
+									Type:        schema.TypeString,
+									Optional:    true,
+								},
+								"custom_fg_color": {
+									Description: "The custom color palette to apply to the foreground text.",
+									Type:        schema.TypeString,
+									Optional:    true,
+								},
 							},
-						},
-						"palette": {
-							Description:      "The color palette to apply.",
-							Type:             schema.TypeString,
-							ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetTextFormatPaletteFromValue),
-							Optional:         true,
-						},
-						"replace": {
-							Type:        schema.TypeMap,
-							MaxItems:    1,
-							Optional:    true,
-							Description: "Match rule for the table widget text format.",
-							Elem: &schema.Resource{
-								Schema: getTableWidgetTextFormatReplaceSchema(),
-							},
-						},
-						"custom_bg_color": {
-							Description: "The custom color palette to apply to the background.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"custom_fg_color": {
-							Description: "The custom color palette to apply to the foreground text.",
-							Type:        schema.TypeString,
-							Optional:    true,
 						},
 					},
 				},
@@ -4629,12 +4635,15 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		}
 		if v, ok := terraformRequest["text_formats"].([]interface{}); ok && len(v) != 0 {
 			datadogQueryTableRequest.TextFormats = make([][]datadogV1.TableWidgetTextFormatRule, len(v))
-			for i, textFormat := range v {
-				if w, ok := textFormat.([]interface{}); ok {
-					datadogQueryTableRequest.TextFormats[i] = *buildDatadogQueryTableTextFormat(&w)
+			for i, w := range v {
+				if c, ok := w.(map[string]interface{})["text_format"]; ok {
+					if textFormat, ok := c.([]interface{}); ok && len(textFormat) > 0 {
+						datadogQueryTableRequest.TextFormats[i] = *buildDatadogQueryTableTextFormat(&textFormat)
+					}
 				}
 			}
 		}
+
 		datadogRequests[i] = *datadogQueryTableRequest
 	}
 	return &datadogRequests
@@ -4696,10 +4705,11 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 			terraformRequest["cell_display_mode"] = terraformCellDisplayMode
 		}
 		if v, ok := datadogRequest.GetTextFormatsOk(); ok {
-			terraformTextFormats := make([][]map[string]interface{}, len(*v))
+			terraformTextFormats := make([]map[string][]map[string]interface{}, len(*v))
 			for i, textFormat := range *v {
 				test := buildTerraformQueryTableTextFormat(&textFormat)
-				terraformTextFormats[i] = *test
+				terraformTextFormats[i] = make(map[string][]map[string]interface{})
+				terraformTextFormats[i]["text_format"] = *test
 			}
 			terraformRequest["text_formats"] = terraformTextFormats
 		}
@@ -4713,23 +4723,28 @@ func buildDatadogQueryTableTextFormat(terraformQueryTableTextFormat *[]interface
 	datadogQueryTableTextFormat := make([]datadogV1.TableWidgetTextFormatRule, len(*terraformQueryTableTextFormat))
 	for j, textFormatRule := range *terraformQueryTableTextFormat {
 		terraformTextFormatRule := textFormatRule.(map[string]interface{})
-		terraformTextFormatMatch := terraformTextFormatRule["match"].(map[string]interface{})
+
+		match, _ := terraformTextFormatRule["match"].([]interface{})
+		terraformTextFormatMatch := match[0].(map[string]interface{})
 		datadogMatch := datadogV1.NewTableWidgetTextFormatMatch(datadogV1.TableWidgetTextFormatMatchType(terraformTextFormatMatch["type"].(string)), terraformTextFormatMatch["value"].(string))
 		datadogTextFormatRule := datadogV1.NewTableWidgetTextFormatRule(*datadogMatch)
 		// Optional
-		if v, ok := terraformTextFormatRule["replace"].(map[string]interface{}); ok {
-			if w, ok := v["type"].(string); ok && len(w) != 0 {
-				switch w {
-				case "all":
-					datadogReplace := datadogV1.NewTableWidgetTextFormatReplaceAll(datadogV1.TABLEWIDGETTEXTFORMATREPLACEALLTYPE_ALL, v["with"].(string))
-					datadogTextFormatRule.SetReplace(datadogV1.TableWidgetTextFormatReplaceAllAsTableWidgetTextFormatReplace(datadogReplace))
-				case "substring":
-					datadogReplace := datadogV1.NewTableWidgetTextFormatReplaceSubstring(v["substring"].(string), datadogV1.TABLEWIDGETTEXTFORMATREPLACESUBSTRINGTYPE_SUBSTRING, v["with"].(string))
-					datadogTextFormatRule.SetReplace(datadogV1.TableWidgetTextFormatReplaceSubstringAsTableWidgetTextFormatReplace(datadogReplace))
+
+		if v, ok := terraformTextFormatRule["replace"].([]interface{}); ok && len(v) > 0 {
+			if replace, ok := v[0].(map[string]interface{}); ok {
+				if w, ok := replace["type"].(string); ok && len(w) != 0 {
+					switch w {
+					case "all":
+						datadogReplace := datadogV1.NewTableWidgetTextFormatReplaceAll(datadogV1.TABLEWIDGETTEXTFORMATREPLACEALLTYPE_ALL, replace["with"].(string))
+						datadogTextFormatRule.SetReplace(datadogV1.TableWidgetTextFormatReplaceAllAsTableWidgetTextFormatReplace(datadogReplace))
+					case "substring":
+						datadogReplace := datadogV1.NewTableWidgetTextFormatReplaceSubstring(replace["substring"].(string), datadogV1.TABLEWIDGETTEXTFORMATREPLACESUBSTRINGTYPE_SUBSTRING, replace["with"].(string))
+						datadogTextFormatRule.SetReplace(datadogV1.TableWidgetTextFormatReplaceSubstringAsTableWidgetTextFormatReplace(datadogReplace))
+					}
 				}
+			} else {
+				datadogTextFormatRule.Replace = nil
 			}
-		} else {
-			datadogTextFormatRule.Replace = nil
 		}
 		if v, ok := terraformTextFormatRule["palette"].(string); ok && len(v) != 0 {
 			datadogTextFormatRule.SetPalette(datadogV1.TableWidgetTextFormatPalette(v))
@@ -4758,21 +4773,21 @@ func buildTerraformQueryTableTextFormat(datadogQueryTableTextFormat *[]datadogV1
 		match := make(map[string]interface{})
 		match["type"] = datadogQueryTableTextFormatRule.GetMatch().Type
 		match["value"] = datadogQueryTableTextFormatRule.GetMatch().Value
-		terraformQueryTableTextFormatRule["match"] = match
+		terraformQueryTableTextFormatRule["match"] = []interface{}{match}
 		// Optional params
 		if v, ok := datadogQueryTableTextFormatRule.GetReplaceOk(); ok {
 			if v.TableWidgetTextFormatReplaceAll != nil {
 				replace := make(map[string]interface{})
 				replace["type"] = v.TableWidgetTextFormatReplaceAll.Type
 				replace["with"] = v.TableWidgetTextFormatReplaceAll.With
-				terraformQueryTableTextFormatRule["replace"] = replace
+				terraformQueryTableTextFormatRule["replace"] = []interface{}{replace}
 			}
 			if v.TableWidgetTextFormatReplaceSubstring != nil {
 				replace := make(map[string]interface{})
 				replace["type"] = v.TableWidgetTextFormatReplaceSubstring.Type
 				replace["with"] = v.TableWidgetTextFormatReplaceSubstring.With
 				replace["substring"] = v.TableWidgetTextFormatReplaceSubstring.Substring
-				terraformQueryTableTextFormatRule["replace"] = replace
+				terraformQueryTableTextFormatRule["replace"] = []interface{}{replace}
 			}
 		}
 		if v, ok := datadogQueryTableTextFormatRule.GetPaletteOk(); ok {

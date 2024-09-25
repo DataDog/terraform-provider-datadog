@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 773
+        content_length: 771
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727067678","widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}}],[{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"}}]}
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727285046","widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}},{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"}}]}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"gew-xb3-x68","title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727067678","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/gew-xb3-x68/tf-testaccdatadogdashboardquerytablewithtextformatsimport-local-1727067678","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}}],[{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"},"id":3333511283603654}],"notify_list":[],"created_at":"2024-09-23T05:01:24.236878+00:00","modified_at":"2024-09-23T05:01:24.236878+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"axg-bkb-xu4","title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727285046","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/axg-bkb-xu4/tf-testaccdatadogdashboardquerytablewithtextformatsimport-local-1727285046","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}},{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"},"id":1732405584480392}],"notify_list":[],"created_at":"2024-09-25T17:24:09.650543+00:00","modified_at":"2024-09-25T17:24:09.650543+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 280.881083ms
+        duration: 382.662792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/gew-xb3-x68
+        url: https://api.datadoghq.com/api/v1/dashboard/axg-bkb-xu4
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"gew-xb3-x68","title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727067678","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/gew-xb3-x68/tf-testaccdatadogdashboardquerytablewithtextformatsimport-local-1727067678","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}}],[{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"},"id":3333511283603654}],"notify_list":[],"created_at":"2024-09-23T05:01:24.236878+00:00","modified_at":"2024-09-23T05:01:24.236878+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"axg-bkb-xu4","title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727285046","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/axg-bkb-xu4/tf-testaccdatadogdashboardquerytablewithtextformatsimport-local-1727285046","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}},{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"},"id":1732405584480392}],"notify_list":[],"created_at":"2024-09-25T17:24:09.650543+00:00","modified_at":"2024-09-25T17:24:09.650543+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 86.779459ms
+        duration: 104.676708ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/gew-xb3-x68
+        url: https://api.datadoghq.com/api/v1/dashboard/axg-bkb-xu4
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"gew-xb3-x68","title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727067678","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/gew-xb3-x68/tf-testaccdatadogdashboardquerytablewithtextformatsimport-local-1727067678","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}}],[{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"},"id":3333511283603654}],"notify_list":[],"created_at":"2024-09-23T05:01:24.236878+00:00","modified_at":"2024-09-23T05:01:24.236878+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"axg-bkb-xu4","title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727285046","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/axg-bkb-xu4/tf-testaccdatadogdashboardquerytablewithtextformatsimport-local-1727285046","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}},{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"},"id":1732405584480392}],"notify_list":[],"created_at":"2024-09-25T17:24:09.650543+00:00","modified_at":"2024-09-25T17:24:09.650543+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 99.190625ms
+        duration: 99.391542ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/gew-xb3-x68
+        url: https://api.datadoghq.com/api/v1/dashboard/axg-bkb-xu4
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"gew-xb3-x68","title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727067678","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/gew-xb3-x68/tf-testaccdatadogdashboardquerytablewithtextformatsimport-local-1727067678","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}}],[{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"},"id":3333511283603654}],"notify_list":[],"created_at":"2024-09-23T05:01:24.236878+00:00","modified_at":"2024-09-23T05:01:24.236878+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"axg-bkb-xu4","title":"tf-TestAccDatadogDashboardQueryTableWithTextFormats_import-local-1727285046","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":null,"layout_type":"ordered","url":"/dashboard/axg-bkb-xu4/tf-testaccdatadogdashboardquerytablewithtextformatsimport-local-1727285046","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"has_search_bar":"auto","requests":[{"aggregator":"max","alias":"cpu user","cell_display_mode":["number"],"limit":25,"order":"desc","q":"avg:system.cpu.user{account:prod} by {service, team}","text_formats":[[{"match":{"type":"is","value":"test"},"palette":"black_on_light_yellow","replace":{"type":"all","with":"test"}},{"match":{"type":"is","value":"versus"}}]]}],"time":{"live_span":"1d"},"title":"this is hyung","title_align":"right","title_size":"16","type":"query_table"},"id":1732405584480392}],"notify_list":[],"created_at":"2024-09-25T17:24:09.650543+00:00","modified_at":"2024-09-25T17:24:09.650543+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 93.784542ms
+        duration: 177.237916ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/gew-xb3-x68
+        url: https://api.datadoghq.com/api/v1/dashboard/axg-bkb-xu4
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_dashboard_id":"gew-xb3-x68"}
+            {"deleted_dashboard_id":"axg-bkb-xu4"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 178.421666ms
+        duration: 151.719791ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +195,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/gew-xb3-x68
+        url: https://api.datadoghq.com/api/v1/dashboard/axg-bkb-xu4
         method: GET
       response:
         proto: HTTP/1.1
@@ -206,10 +206,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["Dashboard with ID gew-xb3-x68 not found"]}'
+        body: '{"errors":["Dashboard with ID axg-bkb-xu4 not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 79.450375ms
+        duration: 83.804208ms

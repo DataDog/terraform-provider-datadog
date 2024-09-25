@@ -238,31 +238,25 @@ resource "datadog_dashboard" "query_table_dashboard" {
 				limit = 25
 				order = "desc"
 				cell_display_mode = ["number"]
-				text_formats = [
-					[{
-						match = {
+				text_formats {
+					text_format {
+						match {
 							type = "is"
 							value = "test"
 						}
 						palette = "black_on_light_yellow"
-						replace = {
+						replace {
 							type = "all"
 							with = "test"
-				        },
-						custom_bg_color = null 
-						custom_fg_color = null 
-					}],
-					[{
-						match = {
+				        }
+					}
+					text_format {
+						match {
 							type = "is"
 							value = "versus"
 						}
-						palette = null
-						replace = null 
-						custom_bg_color = null
-						custom_fg_color = null
-					}]
-				]
+					}
+				}
 			}
 			has_search_bar = "auto"
 		}
@@ -380,18 +374,18 @@ var datadogDashboardQueryTableWithTextFormatsAsserts = []string{
 	"widget.0.query_table_definition.0.request.0.limit = 25",
 	"widget.0.query_table_definition.0.request.0.order = desc",
 	"widget.0.query_table_definition.0.request.0.cell_display_mode.0 = number",
-	"widget.0.query_table_definition.0.request.0.text_formats.0.0.match.type = is",
-	"widget.0.query_table_definition.0.request.0.text_formats.0.0.match.value = test",
-	"widget.0.query_table_definition.0.request.0.text_formats.0.0.palette = black_on_light_yellow",
-	"widget.0.query_table_definition.0.request.0.text_formats.0.0.replace.type = all",
-	"widget.0.query_table_definition.0.request.0.text_formats.0.0.replace.with = test",
-	"widget.0.query_table_definition.0.request.0.text_formats.0.0.custom_bg_color = ",
-	"widget.0.query_table_definition.0.request.0.text_formats.0.0.custom_fg_color = ",
-	"widget.0.query_table_definition.0.request.0.text_formats.1.0.match.type = is",
-	"widget.0.query_table_definition.0.request.0.text_formats.1.0.match.value = versus",
-	"widget.0.query_table_definition.0.request.0.text_formats.1.0.palette = ",
-	"widget.0.query_table_definition.0.request.0.text_formats.1.0.custom_bg_color = ",
-	"widget.0.query_table_definition.0.request.0.text_formats.1.0.custom_fg_color = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.match.0.type = is",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.match.0.value = test",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.palette = black_on_light_yellow",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.replace.0.type = all",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.replace.0.with = test",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.custom_bg_color = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.custom_fg_color = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.match.0.type = is",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.match.0.value = versus",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.palette = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.custom_bg_color = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.custom_fg_color = ",
 }
 
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
