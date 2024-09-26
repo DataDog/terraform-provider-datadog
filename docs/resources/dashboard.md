@@ -5182,7 +5182,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--security_query))
-- `text_formats` (Block List) Text formats define how to format text in table widget. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats))
+- `text_formats` (Block List) Text formats define how to format text in table widget content. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.query_table_definition.request.apm_query`
@@ -5751,7 +5751,7 @@ Optional:
 
 Optional:
 
-- `text_format` (Block List) The text format to apply to the items in the table widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats--text_format))
+- `text_format` (Block List) The text format to apply to the items in a table widget column. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats--text_format))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats--text_format"></a>
 ### Nested Schema for `widget.group_definition.widget.query_table_definition.request.text_formats.text_format`
@@ -5770,7 +5770,7 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats--text_format--match"></a>
 ### Nested Schema for `widget.group_definition.widget.query_table_definition.request.text_formats.text_format.match`
 
-Optional:
+Required:
 
 - `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
 - `value` (String) Table Widget Match String.
@@ -5779,11 +5779,14 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--text_formats--text_format--replace"></a>
 ### Nested Schema for `widget.group_definition.widget.query_table_definition.request.text_formats.text_format.replace`
 
+Required:
+
+- `type` (String) Table widget text format replace all type.
+- `with` (String) Table Widget Match String.
+
 Optional:
 
 - `substring` (String) Text that will be replaced.
-- `type` (String) Table widget text format replace all type.
-- `with` (String) Table Widget Match String.
 
 
 
@@ -8484,7 +8487,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--security_query))
-- `text_formats` (Block List) Text formats define how to format text in table widget. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats))
+- `text_formats` (Block List) Text formats define how to format text in table widget content. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_query"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.apm_query`
@@ -9053,7 +9056,7 @@ Optional:
 
 Optional:
 
-- `text_format` (Block List) The text format to apply to the items in the table widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format))
+- `text_format` (Block List) The text format to apply to the items in a table widget column. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.text_formats.text_format`
@@ -9072,7 +9075,7 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format--match"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.text_formats.text_format.match`
 
-Optional:
+Required:
 
 - `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
 - `value` (String) Table Widget Match String.
@@ -9081,11 +9084,14 @@ Optional:
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format--replace"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.text_formats.text_format.replace`
 
+Required:
+
+- `type` (String) Table widget text format replace all type.
+- `with` (String) Table Widget Match String.
+
 Optional:
 
 - `substring` (String) Text that will be replaced.
-- `type` (String) Table widget text format replace all type.
-- `with` (String) Table Widget Match String.
 
 
 
@@ -16998,7 +17004,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
-- `text_formats` (Block List) Text formats define how to format text in table widget. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats))
+- `text_formats` (Block List) Text formats define how to format text in table widget content. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query"></a>
 ### Nested Schema for `widget.query_table_definition.request.apm_query`
@@ -17567,7 +17573,7 @@ Optional:
 
 Optional:
 
-- `text_format` (Block List) The text format to apply to the items in the table widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--text_format))
+- `text_format` (Block List) The text format to apply to the items in a table widget column. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--text_format))
 
 <a id="nestedblock--widget--query_table_definition--request--text_formats--text_format"></a>
 ### Nested Schema for `widget.query_table_definition.request.text_formats.text_format`
@@ -17586,7 +17592,7 @@ Optional:
 <a id="nestedblock--widget--query_table_definition--request--text_formats--text_format--match"></a>
 ### Nested Schema for `widget.query_table_definition.request.text_formats.text_format.match`
 
-Optional:
+Required:
 
 - `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
 - `value` (String) Table Widget Match String.
@@ -17595,11 +17601,14 @@ Optional:
 <a id="nestedblock--widget--query_table_definition--request--text_formats--text_format--replace"></a>
 ### Nested Schema for `widget.query_table_definition.request.text_formats.text_format.replace`
 
+Required:
+
+- `type` (String) Table widget text format replace all type.
+- `with` (String) Table Widget Match String.
+
 Optional:
 
 - `substring` (String) Text that will be replaced.
-- `type` (String) Table widget text format replace all type.
-- `with` (String) Table Widget Match String.
 
 
 
@@ -20300,7 +20309,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--security_query))
-- `text_formats` (Block List) Text formats define how to format text in table widget. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats))
+- `text_formats` (Block List) Text formats define how to format text in table widget content. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_query"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.apm_query`
@@ -20869,7 +20878,7 @@ Optional:
 
 Optional:
 
-- `text_format` (Block List) The text format to apply to the items in the table widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format))
+- `text_format` (Block List) The text format to apply to the items in a table widget column. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.text_formats.text_format`
@@ -20888,7 +20897,7 @@ Optional:
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format--match"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.text_formats.text_format.match`
 
-Optional:
+Required:
 
 - `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
 - `value` (String) Table Widget Match String.
@@ -20897,11 +20906,14 @@ Optional:
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--text_formats--text_format--replace"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.text_formats.text_format.replace`
 
+Required:
+
+- `type` (String) Table widget text format replace all type.
+- `with` (String) Table Widget Match String.
+
 Optional:
 
 - `substring` (String) Text that will be replaced.
-- `type` (String) Table widget text format replace all type.
-- `with` (String) Table Widget Match String.
 
 
 
