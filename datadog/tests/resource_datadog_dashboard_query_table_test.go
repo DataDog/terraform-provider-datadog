@@ -257,6 +257,24 @@ resource "datadog_dashboard" "query_table_dashboard" {
 						}
 					}
 				}
+				text_formats {
+					text_format {
+						match {	
+							type = "is"
+							value = "apple"
+						}
+						palette = "custom_bg"
+						custom_bg_color = "#632CA6"
+					}
+					text_format {
+						match {	
+							type = "is"
+							value = "orange"
+						}
+						palette = "custom_text"
+						custom_fg_color = "#632CA6"
+					}
+				}
 			}
 			has_search_bar = "auto"
 		}
@@ -386,6 +404,14 @@ var datadogDashboardQueryTableWithTextFormatsAsserts = []string{
 	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.palette = ",
 	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.custom_bg_color = ",
 	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.custom_fg_color = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.0.match.0.type = is",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.0.match.0.value = apple",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.0.palette = custom_bg",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.0.custom_bg_color = #632CA6",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.1.match.0.type = is",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.1.match.0.value = orange",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.1.palette = custom_text",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.1.custom_fg_color = #632CA6",
 }
 
 func TestAccDatadogDashboardQueryTable(t *testing.T) {

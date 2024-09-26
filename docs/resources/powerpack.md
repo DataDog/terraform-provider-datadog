@@ -2944,7 +2944,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
-- `text_formats` (Block List) Text formats define how to format text in table widget content. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats))
+- `text_formats` (Block List) Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query"></a>
 ### Nested Schema for `widget.query_table_definition.request.apm_query`

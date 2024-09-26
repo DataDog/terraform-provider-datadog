@@ -4492,7 +4492,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			},
 		},
 		"text_formats": {
-			Description: "Text formats define how to format text in table widget content. This resource is in beta and is subject to change.",
+			Description: "Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Resource{
@@ -4742,8 +4742,6 @@ func buildDatadogQueryTableTextFormat(terraformQueryTableTextFormat *[]interface
 						datadogTextFormatRule.SetReplace(datadogV1.TableWidgetTextFormatReplaceSubstringAsTableWidgetTextFormatReplace(datadogReplace))
 					}
 				}
-			} else {
-				datadogTextFormatRule.Replace = nil
 			}
 		}
 		if v, ok := terraformTextFormatRule["palette"].(string); ok && len(v) != 0 {
@@ -4753,13 +4751,9 @@ func buildDatadogQueryTableTextFormat(terraformQueryTableTextFormat *[]interface
 		}
 		if v, ok := terraformTextFormatRule["custom_bg_color"].(string); ok && len(v) != 0 {
 			datadogTextFormatRule.SetCustomBgColor(v)
-		} else {
-			datadogTextFormatRule.CustomBgColor = nil
 		}
 		if v, ok := terraformTextFormatRule["custom_fg_color"].(string); ok && len(v) != 0 {
 			datadogTextFormatRule.SetCustomFgColor(v)
-		} else {
-			datadogTextFormatRule.CustomFgColor = nil
 		}
 		datadogQueryTableTextFormat[j] = *datadogTextFormatRule
 	}
