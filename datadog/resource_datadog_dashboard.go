@@ -4809,12 +4809,12 @@ func getTableWidgetTextFormatMatchSchema() map[string]*schema.Schema {
 			Description:      "Match or compare option.",
 			Type:             schema.TypeString,
 			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetTextFormatMatchTypeFromValue),
-			Optional:         true,
+			Required:         true,
 		},
 		"value": {
 			Description: "Table Widget Match String.",
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 	}
 }
@@ -4823,12 +4823,12 @@ func getTableWidgetTextFormatReplaceSchema() map[string]*schema.Schema {
 		"type": {
 			Description: "Table widget text format replace all type.",
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 		"with": {
 			Description: "Table Widget Match String.",
 			Type:        schema.TypeString,
-			Optional:    true,
+			Required:    true,
 		},
 		"substring": {
 			Description: "Text that will be replaced.",
