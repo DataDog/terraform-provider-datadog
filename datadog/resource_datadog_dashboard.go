@@ -4636,10 +4636,12 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 		if v, ok := terraformRequest["text_formats"].([]interface{}); ok && len(v) != 0 {
 			datadogQueryTableRequest.TextFormats = make([][]datadogV1.TableWidgetTextFormatRule, len(v))
 			for i, w := range v {
-				if c, ok := w.(map[string]interface{})["text_format"]; ok {
-					if textFormat, ok := c.([]interface{}); ok && len(textFormat) > 0 {
+				if c, ok := w.(map[string]interface{}); ok {
+					if textFormat, ok := c["text_format"].([]interface{}); ok && len(textFormat) > 0 {
 						datadogQueryTableRequest.TextFormats[i] = *buildDatadogQueryTableTextFormat(&textFormat)
 					}
+				} else {
+					datadogQueryTableRequest.TextFormats[i] = []datadogV1.TableWidgetTextFormatRule{}
 				}
 			}
 		}
