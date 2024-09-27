@@ -14,7 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
-func TestAccDatadogCatalogEntity_Basic(t *testing.T) {
+func TestAccDatadogSoftwareCatalogEntity_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
@@ -124,7 +124,7 @@ EOF
 }`, uniq)
 }
 
-func TestAccDatadogCatalogEntity_Order(t *testing.T) {
+func TestAccDatadogSoftwareCatalogEntity_Order(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
