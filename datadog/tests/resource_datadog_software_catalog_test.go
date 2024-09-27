@@ -124,7 +124,7 @@ EOF
 }`, uniq)
 }
 
-func TestAccDatadogSoftwareCatalogEntity_Order(t *testing.T) {
+func TestAccDatadogCatalogEntity_Order(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
