@@ -42,8 +42,8 @@ type Included struct {
 }
 
 type IncludedAttributes struct {
-	Schema    *Entity `json:"schema"`
-	RawSchema string  `json:"raw_schema"`
+	Schema    *Entity `json:"schema,omitempty"`
+	RawSchema string  `json:"raw_schema,omitempty"`
 }
 
 func entityFromYAML(inYAML string) (Entity, error) {

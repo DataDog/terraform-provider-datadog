@@ -18,7 +18,6 @@ func TestAccDatadogSoftwareCatalogEntity_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToLower(uniqueEntityName(ctx, t))
-	// uniqUpdated := fmt.Sprintf("%s-updated", uniq)
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
