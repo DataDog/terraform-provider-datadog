@@ -37,13 +37,14 @@ type EntityResponse struct {
 }
 
 type Included struct {
-	ID         string
+	ID         string              `json:"id"`
+	Type       string              `json:"type"`
 	Attributes *IncludedAttributes `json:"attributes"`
 }
 
 type IncludedAttributes struct {
 	Schema    *Entity `json:"schema,omitempty"`
-	RawSchema string  `json:"raw_schema,omitempty"`
+	RawSchema string
 }
 
 func entityFromYAML(inYAML string) (Entity, error) {
@@ -276,7 +277,7 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 	}
 
 	if len(entityResp.Included) != 1 || entityResp.Included[0].Attributes == nil || entityResp.Included[0].Attributes.RawSchema == "" {
-		err := fmt.Errorf("no entity is found in the response, path=%v response=%v", path, httpRespByte)
+		err := fmt.Errorf("no entity is found in the response, path=%v response=%v", path, string(httpRespByte))
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving entity"))
 		return
 	}
@@ -284,7 +285,7 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 	var e Entity
 	rawSchema := entityResp.Included[0].Attributes.RawSchema
 	encodedBytes := decodeBase64String(rawSchema, response)
-	err = json.Unmarshal(encodedBytes, &e)
+	err = yaml.Unmarshal(encodedBytes, &e)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unmarshalling entity"))
 		return
