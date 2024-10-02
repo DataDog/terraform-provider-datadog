@@ -44,7 +44,7 @@ type Included struct {
 
 type IncludedAttributes struct {
 	Schema    *Entity `json:"schema,omitempty"`
-	RawSchema string
+	RawSchema string  `json:"rawSchema,omitempty"`
 }
 
 func entityFromYAML(inYAML string) (Entity, error) {
@@ -242,13 +242,12 @@ func (r *catalogEntityResource) ImportState(ctx context.Context, request resourc
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func decodeBase64String(data string, response *resource.ReadResponse) []byte {
+func decodeBase64String(data string, response *resource.ReadResponse) ([]byte, error) {
 	bytes, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error decoding base64 string"))
-		return nil
+		return nil, err
 	}
-	return bytes
+	return bytes, nil
 }
 
 func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -284,7 +283,12 @@ func (r *catalogEntityResource) Read(ctx context.Context, request resource.ReadR
 
 	var e Entity
 	rawSchema := entityResp.Included[0].Attributes.RawSchema
-	encodedBytes := decodeBase64String(rawSchema, response)
+	encodedBytes, err := decodeBase64String(rawSchema, response)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unmarshalling entity"))
+		return
+	}
+
 	err = yaml.Unmarshal(encodedBytes, &e)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error unmarshalling entity"))
