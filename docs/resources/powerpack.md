@@ -2944,6 +2944,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
+- `text_formats` (Block List) Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query"></a>
 ### Nested Schema for `widget.query_table_definition.request.apm_query`
@@ -3504,6 +3505,51 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--query_table_definition--request--text_formats"></a>
+### Nested Schema for `widget.query_table_definition.request.text_formats`
+
+Optional:
+
+- `text_format` (Block List) The text format to apply to the items in a table widget column. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--text_format))
+
+<a id="nestedblock--widget--query_table_definition--request--text_formats--text_format"></a>
+### Nested Schema for `widget.query_table_definition.request.text_formats.text_format`
+
+Required:
+
+- `match` (Block List, Min: 1, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--text_format--match))
+
+Optional:
+
+- `custom_bg_color` (String) The custom color palette to apply to the background.
+- `custom_fg_color` (String) The custom color palette to apply to the foreground text.
+- `palette` (String) The color palette to apply. Valid values are `white_on_red`, `white_on_yellow`, `white_on_green`, `black_on_light_red`, `black_on_light_yellow`, `black_on_light_green`, `red_on_white`, `yellow_on_white`, `green_on_white`, `custom_bg`, `custom_text`.
+- `replace` (Block List, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--text_format--replace))
+
+<a id="nestedblock--widget--query_table_definition--request--text_formats--text_format--match"></a>
+### Nested Schema for `widget.query_table_definition.request.text_formats.text_format.match`
+
+Required:
+
+- `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
+- `value` (String) Table Widget Match String.
+
+
+<a id="nestedblock--widget--query_table_definition--request--text_formats--text_format--replace"></a>
+### Nested Schema for `widget.query_table_definition.request.text_formats.text_format.replace`
+
+Required:
+
+- `type` (String) Table widget text format replace all type.
+- `with` (String) Table Widget Match String.
+
+Optional:
+
+- `substring` (String) Text that will be replaced. Must be used with type `substring`.
+
 
 
 

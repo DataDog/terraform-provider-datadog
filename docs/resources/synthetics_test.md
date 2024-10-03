@@ -945,7 +945,7 @@ Optional:
 Required:
 
 - `name` (String) Name of the variable.
-- `type` (String) Type of test configuration variable. Valid values are `global`, `text`.
+- `type` (String) Type of test configuration variable. Valid values are `global`, `text`, `email`.
 
 Optional:
 
