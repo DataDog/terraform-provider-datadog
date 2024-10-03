@@ -1,3 +1,19 @@
+## 3.45.0 (October 3, 2024)
+
+### BUGFIXES
+* [datadog_synthetics_test] Do not send `value` if empty by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2580
+* [datadog_synthetics_test] Fix http2 pseudo-headers not accepted by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2581
+### IMPROVEMENTS
+* [datadog_logs_index] Add Flex Index Configuration support for Logs Indexes by @KillerPaperMice in https://github.com/DataDog/terraform-provider-datadog/pull/2569
+### FEATURES
+* [resource_datadog_dashboard] add support for toplist widget styles in dashboards by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/2566
+* [datadog_synthetics_test] Add javascript assertion to Synthetics Assertion by @RomainGuarinoni in https://github.com/DataDog/terraform-provider-datadog/pull/2576
+
+## New Contributors
+* @KillerPaperMice made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2569
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.44.1...v3.45.0
+
 ## 3.44.1 (September 11, 2024)
 
 ### BUGFIXES
