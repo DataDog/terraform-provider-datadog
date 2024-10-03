@@ -1,0 +1,237 @@
+package fwprovider
+
+import (
+	"context"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+var (
+	_ resource.ResourceWithConfigure   = &tenantBasedHandleResource{}
+	_ resource.ResourceWithImportState = &tenantBasedHandleResource{}
+)
+
+type tenantBasedHandleResource struct {
+	Api  *datadogV2.MicrosoftTeamsIntegrationApi
+	Auth context.Context
+}
+
+type tenantBasedHandleModel struct {
+	ID          types.String `tfsdk:"id"`
+	ChannelName types.String `tfsdk:"channel_name"`
+	TeamName    types.String `tfsdk:"team_name"`
+	TenantName  types.String `tfsdk:"tenant_name"`
+	Name        types.String `tfsdk:"name"`
+}
+
+func NewTenantBasedHandleResource() resource.Resource {
+	return &tenantBasedHandleResource{}
+}
+
+func (r *teamResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+	providerData := request.ProviderData.(*FrameworkProvider)
+	r.Api = providerData.DatadogApiInstances.GetMicrosoftTeamsIntegrationApiV2()
+	r.Auth = providerData.Auth
+}
+
+func (r *teamResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "tenant_based_handle"
+}
+
+func (r *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+	response.Schema = schema.Schema{
+		Description: "Resource for interacting with Datadog Microsoft Teams Integration tenant-based handles.",
+		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Required:    true,
+				Description: "Your tenant-based handle name.",
+			},
+			"tenant_name": schema.StringAttribute{
+				Required:    true,
+				Description: "Your tenant name.",
+			},
+			"team_name": schema.Int64Attribute{
+				Description: "Your team name.",
+				Required:    true,
+			},
+			"channel_name": schema.StringAttribute{
+				Description: "Your channel name.",
+				Required:    true,
+			},
+			"id": utils.ResourceIDAttribute(),
+		},
+	}
+}
+
+func (r *teamResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+}
+
+func (r *teamResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state teamModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	id := state.ID.ValueString()
+	resp, httpResp, err := r.Api.GetTenantBasedHandle(r.Auth, id)
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			response.State.RemoveResource(ctx)
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving tenant-based handle"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+
+	r.updateState(ctx, &state, &resp)
+
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func (r *teamResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state teamModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	body, diags := r.buildTenantBasedHandleRequestBody(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resp, _, err := r.Api.CreateTenantBasedHandle(r.Auth, *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating tenant-based handle"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+	r.updateState(ctx, &state, &resp)
+
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func (r *teamResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state teamModel
+	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	id := state.ID.ValueString()
+
+	body, diags := r.buildTenantBasedHandleUpdateRequestBody(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	resp, _, err := r.Api.UpdateTeam(r.Auth, id, *body)
+	if err != nil {
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating tenant-based handle"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+	r.updateState(ctx, &state, &resp)
+
+	// Save data into Terraform state
+	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func (r *teamResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state teamModel
+	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	id := state.ID.ValueString()
+
+	httpResp, err := r.Api.DeleteTenantBasedHandle(r.Auth, id)
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			return
+		}
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting tenant-based handle"))
+		return
+	}
+}
+
+func (r *teamResource) updateState(ctx context.Context, state *tenantBasedHandleModel, resp *datadogV2.TenantBasedHandleResponse) {
+	state.ID = types.StringValue(resp.Data.GetId())
+
+	data := resp.GetData()
+	attributes := data.GetAttributes()
+
+	if name, ok := attributes.GetNameOk(); ok && name != nil {
+		state.Name = types.StringValue(*name)
+	}
+
+	if tenantName, ok := attributes.GetTenantNameOk(); ok && tenantName != nil {
+		state.TenantName = types.StringValue(*tenantName)
+	}
+
+	if teamName, ok := attributes.GetTeamNameOk(); ok && teamName != nil {
+		state.TeamName = types.StringValue(*teamName)
+	}
+
+	if channelName, ok := attributes.GetChannelNameOk(); ok && channelName != nil {
+		state.ChannelName = types.StringValue(*channelName)
+	}
+}
+
+func (r *teamResource) buildTenantBasedHandleRequestBody(ctx context.Context, state *tenantBasedHandleModel) (*datadogV2.TenantBasedHandleCreateRequest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	attributes := datadogV2.NewTenantBasedHandleCreateAttributesWithDefaults()
+
+	attributes.SetHandle(state.Handle.ValueString())
+
+	attributes.SetName(state.Name.ValueString())
+
+	req := datadogV2.NewTenantBasedHandleCreateRequestWithDefaults()
+	req.Data = *datadogV2.NewTenantBasedHandleCreateWithDefaults()
+	req.Data.SetAttributes(*attributes)
+
+	return req, diags
+}
+
+func (r *teamResource) buildTenantBasedHandleUpdateRequestBody(ctx context.Context, state *tenantBasedHandleModel) (*datadogV2.TenantBasedHandleUpdateRequest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	attributes := datadogV2.NewTeamUpdateAttributesWithDefaults()
+
+	if !state.Description.IsNull() {
+		attributes.SetDescription(state.Description.ValueString())
+	}
+
+	attributes.SetHandle(state.Handle.ValueString())
+
+	attributes.SetName(state.Name.ValueString())
+
+	req := datadogV2.NewTenantBasedHandleUpdateRequestWithDefaults()
+	req.Data = *datadogV2.NewTenantBasedHandleUpdateWithDefaults()
+	req.Data.SetAttributes(*attributes)
+
+	return req, diags
+}
