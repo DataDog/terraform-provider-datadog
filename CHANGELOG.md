@@ -1,3 +1,8 @@
+## 3.46.0 (October 3, 2024)
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.45.0...v3.46.0
+
 ## 3.45.0 (October 3, 2024)
 
 ### BUGFIXES
