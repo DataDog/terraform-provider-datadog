@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: write
-  workflows: write
 
 jobs:
   create_release:
