@@ -4827,7 +4827,7 @@ func getTableWidgetTextFormatReplaceSchema() map[string]*schema.Schema {
 			Required:    true,
 		},
 		"substring": {
-			Description: "Text that will be replaced.",
+			Description: "Text that will be replaced. Must be used with type `substring`.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},

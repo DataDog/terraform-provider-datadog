@@ -5786,7 +5786,7 @@ Required:
 
 Optional:
 
-- `substring` (String) Text that will be replaced.
+- `substring` (String) Text that will be replaced. Must be used with type `substring`.
 
 
 
@@ -9091,7 +9091,7 @@ Required:
 
 Optional:
 
-- `substring` (String) Text that will be replaced.
+- `substring` (String) Text that will be replaced. Must be used with type `substring`.
 
 
 
@@ -17608,7 +17608,7 @@ Required:
 
 Optional:
 
-- `substring` (String) Text that will be replaced.
+- `substring` (String) Text that will be replaced. Must be used with type `substring`.
 
 
 
@@ -20913,7 +20913,7 @@ Required:
 
 Optional:
 
-- `substring` (String) Text that will be replaced.
+- `substring` (String) Text that will be replaced. Must be used with type `substring`.
 
 
 
