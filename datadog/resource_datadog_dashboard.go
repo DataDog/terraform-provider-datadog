@@ -94,7 +94,8 @@ func resourceDatadogDashboard() *schema.Resource {
 					Optional:      true,
 					Elem:          &schema.Schema{Type: schema.TypeString},
 					ConflictsWith: []string{"is_read_only"},
-					Description:   "UUIDs of roles whose associated users are authorized to edit the dashboard.",
+					Description:   "**Deprecated** UUIDs of roles whose associated users are authorized to edit the dashboard.",
+					Deprecated:    "This attribute is deprecated and will be removed in a future major version release. Please use the `datadog_restriction_policy` resource to manage authorization (https://docs.datadoghq.com/dashboards/guide/how-to-use-terraform-to-restrict-dashboard-edit/#restricting-a-dashboard-using-a-restriction-policy)",
 				},
 				"template_variable": {
 					Type:        schema.TypeList,
@@ -135,8 +136,8 @@ func resourceDatadogDashboard() *schema.Resource {
 					Optional:      true,
 					Default:       false,
 					ConflictsWith: []string{"restricted_roles"},
-					Description:   "Whether this dashboard is read-only.",
-					Deprecated:    "Prefer using `restricted_roles` to define which roles are required to edit the dashboard.",
+					Description:   "**Deprecated** Whether this dashboard is read-only.",
+					Deprecated:    "This attribute is deprecated and will be removed in a future major version release. Please use the `datadog_restriction_policy` resource to manage authorization (https://docs.datadoghq.com/dashboards/guide/how-to-use-terraform-to-restrict-dashboard-edit/#restricting-a-dashboard-using-a-restriction-policy)",
 				},
 				"tags": {
 					Type:        schema.TypeList,
