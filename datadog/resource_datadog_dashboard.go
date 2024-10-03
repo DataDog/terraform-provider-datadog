@@ -4491,6 +4491,51 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
 			},
 		},
+		"text_formats": {
+			Type:     schema.TypeList,
+			Optional: true,
+			Elem: &schema.Schema{
+				Type: schema.TypeList,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"match": {
+							Type:        schema.TypeMap,
+							MaxItems:    1,
+							Required:    true,
+							Description: "Match rule for the table widget text format.",
+							Elem: &schema.Resource{
+								Schema: getTableWidgetTextFormatMatchSchema(),
+							},
+						},
+						"palette": {
+							Description:      "The color palette to apply.",
+							Type:             schema.TypeString,
+							ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetTextFormatPaletteFromValue),
+							Optional:         true,
+						},
+						"replace": {
+							Type:        schema.TypeMap,
+							MaxItems:    1,
+							Optional:    true,
+							Description: "Match rule for the table widget text format.",
+							Elem: &schema.Resource{
+								Schema: getTableWidgetTextFormatReplaceSchema(),
+							},
+						},
+						"custom_bg_color": {
+							Description: "The custom color palette to apply to the background.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"custom_fg_color": {
+							Description: "The custom color palette to apply to the foreground text.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+					},
+				},
+			},
+		},
 	}
 }
 func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadogV1.TableWidgetRequest {
@@ -4581,6 +4626,9 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 			}
 			datadogQueryTableRequest.CellDisplayMode = datadogCellDisplayMode
 		}
+		if v, ok := terraformRequest["text_formats"].([][]interface{}); ok && len(v) != 0 {
+			datadogQueryTableRequest.TextFormats = *buildDatadogQueryTableTextFormat(&v)
+		}
 		datadogRequests[i] = *datadogQueryTableRequest
 	}
 	return &datadogRequests
@@ -4641,9 +4689,153 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 			}
 			terraformRequest["cell_display_mode"] = terraformCellDisplayMode
 		}
+		if v, ok := datadogRequest.GetTextFormatsOk(); ok {
+			terraformTextFormats := buildTerraformQueryTableTextFormat(v)
+			terraformRequest["text_formats"] = terraformTextFormats
+		}
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
+}
+
+// Widget Text Format helpers
+func buildDatadogQueryTableTextFormat(terraformQueryTableTextFormat *[][]interface{}) *[][]datadogV1.TableWidgetTextFormatRule {
+	datadogQueryTableTextFormat := make([][]datadogV1.TableWidgetTextFormatRule, len(*terraformQueryTableTextFormat))
+	for i, textFormatArray := range *terraformQueryTableTextFormat {
+		terraformTextFormatArray := make([]datadogV1.TableWidgetTextFormatRule, len(textFormatArray))
+		for j, textFormatRule := range textFormatArray {
+			terraformTextFormatRule := textFormatRule.(map[string]interface{})
+			terraformTextFormatMatch := terraformTextFormatRule["match"].(map[string]interface{})
+			datadogMatch := datadogV1.NewTableWidgetTextFormatMatch(datadogV1.TableWidgetTextFormatMatchType(terraformTextFormatMatch["type"].(string)), terraformTextFormatMatch["value"].(string))
+			datadogTextFormatRule := datadogV1.NewTableWidgetTextFormatRule(*datadogMatch)
+			// Optional
+			if v, ok := terraformTextFormatRule["replace"].(interface{}); ok {
+				switch v.(type) {
+				case datadogV1.TableWidgetTextFormatReplaceAll:
+					datadogReplace := v.(datadogV1.TableWidgetTextFormatReplaceAll)
+					datadogTextFormatRule.SetReplace(datadogV1.TableWidgetTextFormatReplaceAllAsTableWidgetTextFormatReplace(&datadogReplace))
+				case datadogV1.TableWidgetTextFormatReplaceSubstring:
+					datadogReplace := v.(datadogV1.TableWidgetTextFormatReplaceSubstring)
+					datadogTextFormatRule.SetReplace(datadogV1.TableWidgetTextFormatReplaceSubstringAsTableWidgetTextFormatReplace(&datadogReplace))
+				default:
+				}
+			}
+			if v, ok := terraformTextFormatRule["palette"].(string); ok && len(v) != 0 {
+				datadogTextFormatRule.SetPalette(datadogV1.TableWidgetTextFormatPalette(v))
+			}
+			if v, ok := terraformTextFormatRule["custom_bg_color"].(string); ok && len(v) != 0 {
+				datadogTextFormatRule.SetCustomBgColor(v)
+			}
+			if v, ok := terraformTextFormatRule["custom_fg_color"].(string); ok && len(v) != 0 {
+				datadogTextFormatRule.SetCustomFgColor(v)
+			}
+			terraformTextFormatArray[j] = *datadogTextFormatRule
+		}
+		datadogQueryTableTextFormat[i] = terraformTextFormatArray
+	}
+	return &datadogQueryTableTextFormat
+}
+func buildTerraformQueryTableTextFormat(datadogQueryTableTextFormats *[][]datadogV1.TableWidgetTextFormatRule) *[][]map[string]interface{} {
+	terraformQueryTableTextFormats := make([][]map[string]interface{}, len(*datadogQueryTableTextFormats))
+	for i, datadogQueryTableTextFormatRuleArray := range *datadogQueryTableTextFormats {
+		terraformQueryTableTextFormatRuleArray := make([]map[string]interface{}, len(datadogQueryTableTextFormatRuleArray))
+		for j, datadogQueryTableTextFormatRule := range datadogQueryTableTextFormatRuleArray {
+			terraformQueryTableTextFormatRule := map[string]interface{}{}
+			// Required params
+			terraformQueryTableTextFormatRule["match"] = datadogQueryTableTextFormatRule.GetMatch()
+			// Optional params
+			if v, ok := datadogQueryTableTextFormatRule.GetReplaceOk(); ok {
+				terraformQueryTableTextFormatRule["replace"] = v
+			}
+			if v, ok := datadogQueryTableTextFormatRule.GetPaletteOk(); ok {
+				terraformQueryTableTextFormatRule["palette"] = v
+			}
+			if v, ok := datadogQueryTableTextFormatRule.GetCustomBgColorOk(); ok {
+				terraformQueryTableTextFormatRule["custom_bg_color"] = v
+			}
+			if v, ok := datadogQueryTableTextFormatRule.GetCustomFgColorOk(); ok {
+				terraformQueryTableTextFormatRule["custom_fg_color"] = v
+			}
+			terraformQueryTableTextFormatRuleArray[j] = terraformQueryTableTextFormatRule
+		}
+		terraformQueryTableTextFormats[i] = terraformQueryTableTextFormatRuleArray
+	}
+	return &terraformQueryTableTextFormats
+}
+
+// Table Widget Text Format helpers
+
+func getQueryTableFormatRuleSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"match": {
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Description: "Match rule for the table widget text format.",
+			Elem: &schema.Resource{
+				Schema: getTableWidgetTextFormatMatchSchema(),
+			},
+		},
+		"palette": {
+			Description:      "The color palette to apply.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetTextFormatPaletteFromValue),
+			Required:         true,
+		},
+		"replace": {
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Description: "Match rule for the table widget text format.",
+			Elem: &schema.Resource{
+				Schema: getTableWidgetTextFormatReplaceSchema(),
+			},
+		},
+		"custom_bg_color": {
+			Description: "The custom color palette to apply to the background.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"custom_fg_color": {
+			Description: "The custom color palette to apply to the foreground text.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+	}
+}
+func getTableWidgetTextFormatMatchSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"type": {
+			Description:      "Match or compare option.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetTextFormatMatchTypeFromValue),
+			Optional:         true,
+		},
+		"value": {
+			Description: "Table Widget Match String.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+	}
+}
+func getTableWidgetTextFormatReplaceSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"type": {
+			Description: "Table widget text format replace all type.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"with": {
+			Description: "Table Widget Match String.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"substring": {
+			Description: "Text that will be replaced.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+	}
 }
 
 //
