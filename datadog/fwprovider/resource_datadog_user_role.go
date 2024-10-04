@@ -121,12 +121,16 @@ func (r *userRoleResource) Read(ctx context.Context, request resource.ReadReques
 		pageNumber++
 	}
 
-	updated := r.updatedStateFromUserResponse(ctx, &state, roleUsers, false)
-
-	// Delete state if updated is false, since that means the user doesn't exist
-	if !updated {
-		response.State.RemoveResource(ctx)
+	for _, user := range roleUsers {
+		if user.GetId() == state.UserId.ValueString() {
+			userId := user.GetId()
+			state.ID = types.StringValue(state.RoleId.ValueString() + ":" + userId)
+			state.UserId = types.StringValue(userId)
+			return
+		}
 	}
+
+	response.State.RemoveResource(ctx)
 }
 
 func (r *userRoleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
@@ -154,7 +158,7 @@ func (r *userRoleResource) Create(ctx context.Context, request resource.CreateRe
 	}
 
 	// Save data into Terraform state
-	r.updatedStateFromUserResponse(ctx, &state, resp.GetData(), true)
+	state.ID = types.StringValue(state.RoleId.ValueString() + ":" + state.UserId.ValueString())
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -176,7 +180,7 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	}
 
 	roleId := state.RoleId.ValueString()
-	resp, httpResp, err := r.Api.RemoveUserFromRole(r.Auth, roleId, *body)
+	_, httpResp, err := r.Api.RemoveUserFromRole(r.Auth, roleId, *body)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -187,7 +191,7 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	}
 
 	// Save data into Terraform state
-	r.updatedStateFromUserResponse(ctx, &state, resp.GetData(), true)
+	state.ID = types.StringValue(state.RoleId.ValueString() + ":" + state.UserId.ValueString())
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -200,23 +204,4 @@ func (r *userRoleResource) buildUserRoleRequestBody(ctx context.Context, state *
 	relationship.Data.Id = state.UserId.ValueString()
 
 	return relationship, diags
-}
-
-func (r *userRoleResource) updatedStateFromUserResponse(ctx context.Context, state *UserRoleModel, resp []datadogV2.User, force bool) bool {
-	// if force, just set the state to the user and role ID that's already in the state
-	// this is useful for create/delete since the API doesn't return all the users
-	if force {
-		state.ID = types.StringValue(state.RoleId.ValueString() + ":" + state.UserId.ValueString())
-		return true
-	}
-
-	for _, user := range resp {
-		if user.GetId() == state.UserId.ValueString() {
-			userId := user.GetId()
-			state.ID = types.StringValue(state.RoleId.ValueString() + ":" + userId)
-			state.UserId = types.StringValue(userId)
-			return true
-		}
-	}
-	return false
 }
