@@ -39,6 +39,12 @@ func dataSourceDatadogMonitor() *schema.Resource {
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
+				"monitor_id": {
+					Description: "The ID of the monitor.",
+					Type:        schema.TypeString,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
 
 				// Computed values
 				"name": {
@@ -327,6 +333,9 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	monitors, httpresp, err := apiInstances.GetMonitorsApiV1().ListMonitors(auth, *optionalParams)
+	if v, ok := d.GetOk("monitor_id"); ok {
+		monitors = fitlerByMonitorId(fmt.Sprint(v), monitors)
+	}
 	if len(monitors) > 1 {
 		return diag.Errorf("your query returned more than one result, please try a more specific search criteria")
 	}
@@ -464,6 +473,19 @@ func dataSourceDatadogMonitorRead(ctx context.Context, d *schema.ResourceData, m
 	}
 
 	return nil
+}
+
+func fitlerByMonitorId(monitorId string, monitors []datadogV1.Monitor) []datadogV1.Monitor {
+	var filteredMonitiors []datadogV1.Monitor
+
+	for index, monitor := range monitors {
+		currentMonitorId := fmt.Sprint(monitor.GetId())
+
+		if currentMonitorId == monitorId {
+			filteredMonitiors = append(filteredMonitiors, monitors[index])
+		}
+	}
+	return filteredMonitiors
 }
 
 func expandStringList(configured []interface{}) []string {
