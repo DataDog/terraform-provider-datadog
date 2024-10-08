@@ -2308,7 +2308,7 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			MaxItems:    1,
 			Optional:    true,
 			Elem: &schema.Resource{
-				Schema: getWidgetAxisSchema(),
+				Schema: getDistributionWidgetXAxisSchema(),
 			},
 		},
 		"yaxis": {
@@ -2317,7 +2317,7 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			MaxItems:    1,
 			Optional:    true,
 			Elem: &schema.Resource{
-				Schema: getWidgetAxisSchema(),
+				Schema: getDistributionWidgetYAxisSchema(),
 			},
 		},
 	}
@@ -2350,12 +2350,12 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 	}
 	if axis, ok := terraformDefinition["xaxis"].([]interface{}); ok && len(axis) > 0 {
 		if v, ok := axis[0].(map[string]interface{}); ok && len(v) > 0 {
-			datadogDefinition.Xaxis = buildDatadogWidgetAxis(v)
+			datadogDefinition.Xaxis = buildDatadogDistributionWidgetXAxis(v)
 		}
 	}
 	if axis, ok := terraformDefinition["yaxis"].([]interface{}); ok && len(axis) > 0 {
 		if v, ok := axis[0].(map[string]interface{}); ok && len(v) > 0 {
-			datadogDefinition.Yaxis = buildDatadogWidgetAxis(v)
+			datadogDefinition.Yaxis = buildDatadogDistributionWidgetYAxis(v)
 		}
 	}
 	return datadogDefinition
@@ -2386,11 +2386,11 @@ func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.Distribut
 		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
 	}
 	if v, ok := datadogDefinition.GetXaxisOk(); ok {
-		axis := buildTerraformWidgetAxis(*v)
+		axis := buildTerraformDistributionWidgetXAxis(*v)
 		terraformDefinition["xaxis"] = []map[string]interface{}{axis}
 	}
 	if v, ok := datadogDefinition.GetYaxisOk(); ok {
-		axis := buildTerraformWidgetAxis(*v)
+		axis := buildTerraformDistributionWidgetYAxis(*v)
 		terraformDefinition["yaxis"] = []map[string]interface{}{axis}
 	}
 	return terraformDefinition
@@ -10576,6 +10576,128 @@ func buildTerraformWidgetAxis(datadogWidgetAxis datadogV1.WidgetAxis) map[string
 		terraformWidgetAxis["include_zero"] = v
 	}
 	return terraformWidgetAxis
+}
+
+// Distribution Widget XAxis helpers
+
+func getDistributionWidgetXAxisSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"scale": {
+			Description: "Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"min": {
+			Description: "Specify the minimum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"max": {
+			Description: "Specify the maximum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"include_zero": {
+			Description: "Always include zero or fit the axis to the data range.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+	}
+}
+
+func buildDatadogDistributionWidgetXAxis(terraformDistributionWidgetXAxis map[string]interface{}) *datadogV1.DistributionWidgetXAxis {
+	datadogDistributionWidgetXAxis := &datadogV1.DistributionWidgetXAxis{}
+	if v, ok := terraformDistributionWidgetXAxis["scale"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetXAxis.SetScale(v)
+	}
+	if v, ok := terraformDistributionWidgetXAxis["min"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetXAxis.SetMin(v)
+	}
+	if v, ok := terraformDistributionWidgetXAxis["max"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetXAxis.SetMax(v)
+	}
+	if v, ok := terraformDistributionWidgetXAxis["include_zero"].(bool); ok {
+		datadogDistributionWidgetXAxis.SetIncludeZero(v)
+	}
+	return datadogDistributionWidgetXAxis
+}
+
+func buildTerraformDistributionWidgetXAxis(datadogDistributionWidgetXAxis datadogV1.DistributionWidgetXAxis) map[string]interface{} {
+	terraformDistributionWidgetXAxis := map[string]interface{}{}
+	if v, ok := datadogDistributionWidgetXAxis.GetScaleOk(); ok {
+		terraformDistributionWidgetXAxis["scale"] = v
+	}
+	if v, ok := datadogDistributionWidgetXAxis.GetMinOk(); ok {
+		terraformDistributionWidgetXAxis["min"] = v
+	}
+	if v, ok := datadogDistributionWidgetXAxis.GetMaxOk(); ok {
+		terraformDistributionWidgetXAxis["max"] = v
+	}
+	if v, ok := datadogDistributionWidgetXAxis.GetIncludeZeroOk(); ok {
+		terraformDistributionWidgetXAxis["include_zero"] = v
+	}
+	return terraformDistributionWidgetXAxis
+}
+
+// Distribution Widget YAxis helpers
+
+func getDistributionWidgetYAxisSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"scale": {
+			Description: "Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"min": {
+			Description: "Specify the minimum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"max": {
+			Description: "Specify the maximum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"include_zero": {
+			Description: "Always include zero or fit the axis to the data range.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+	}
+}
+
+func buildDatadogDistributionWidgetYAxis(terraformDistributionWidgetYAxis map[string]interface{}) *datadogV1.DistributionWidgetYAxis {
+	datadogDistributionWidgetYAxis := &datadogV1.DistributionWidgetYAxis{}
+	if v, ok := terraformDistributionWidgetYAxis["scale"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetYAxis.SetScale(v)
+	}
+	if v, ok := terraformDistributionWidgetYAxis["min"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetYAxis.SetMin(v)
+	}
+	if v, ok := terraformDistributionWidgetYAxis["max"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetYAxis.SetMax(v)
+	}
+	if v, ok := terraformDistributionWidgetYAxis["include_zero"].(bool); ok {
+		datadogDistributionWidgetYAxis.SetIncludeZero(v)
+	}
+	return datadogDistributionWidgetYAxis
+}
+
+func buildTerraformDistributionWidgetYAxis(datadogDistributionWidgetYAxis datadogV1.DistributionWidgetYAxis) map[string]interface{} {
+	terraformDistributionWidgetYAxis := map[string]interface{}{}
+	if v, ok := datadogDistributionWidgetYAxis.GetScaleOk(); ok {
+		terraformDistributionWidgetYAxis["scale"] = v
+	}
+	if v, ok := datadogDistributionWidgetYAxis.GetMinOk(); ok {
+		terraformDistributionWidgetYAxis["min"] = v
+	}
+	if v, ok := datadogDistributionWidgetYAxis.GetMaxOk(); ok {
+		terraformDistributionWidgetYAxis["max"] = v
+	}
+	if v, ok := datadogDistributionWidgetYAxis.GetIncludeZeroOk(); ok {
+		terraformDistributionWidgetYAxis["include_zero"] = v
+	}
+	return terraformDistributionWidgetYAxis
 }
 
 // Widget Style helpers
