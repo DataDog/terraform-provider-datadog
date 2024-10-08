@@ -48,6 +48,7 @@ resource "datadog_integration_gcp_sts" "foo" {
 
 - `account_tags` (Set of String) Tags to be associated with GCP metrics and service checks from your account.
 - `automute` (Boolean) Silence monitors for expected GCE instance shutdowns.
+- `cloud_run_revision_filters` (Set of String) Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria will be monitored.
 - `host_filters` (Set of String) Your Host Filters.
 - `is_cspm_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.
 - `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account. Defaults to `false`.
