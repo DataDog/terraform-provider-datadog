@@ -83,12 +83,11 @@ func (r *asmWafExclusionFiltersResource) Schema(_ context.Context, _ resource.Sc
 				},
 			},
 			"rules_target": schema.ListAttribute{
-				Description: "The rules target of the exclusion filter with 'rule_id' and 'rule_name'.",
+				Description: "The rules target of the exclusion filter with 'rule_id'.",
 				Optional:    true,
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
-						"rule_id":   types.StringType,
-						"rule_name": types.StringType,
+						"rule_id": types.StringType,
 					},
 				},
 			},
@@ -241,8 +240,7 @@ func (r *asmWafExclusionFiltersResource) buildUpdateAsmWafExclusionFiltersPayloa
 		var newRulesTargetList []datadogV2.ASMExclusionFilterRulesTarget
 		for _, targetItem := range rulesTargetList {
 			newRulesTargetList = append(newRulesTargetList, datadogV2.ASMExclusionFilterRulesTarget{
-				RuleId:   targetItem.RuleId,
-				RuleName: targetItem.RuleName,
+				RuleId: targetItem.RuleId,
 			})
 		}
 		attributes.RulesTarget = newRulesTargetList
@@ -281,8 +279,7 @@ func (r *asmWafExclusionFiltersResource) buildCreateASMExclusionFilterPayload(st
 		var newRulesTargetList []datadogV2.ASMExclusionFilterRulesTarget
 		for _, targetItem := range rulesTargetList {
 			newRulesTargetList = append(newRulesTargetList, datadogV2.ASMExclusionFilterRulesTarget{
-				RuleId:   targetItem.RuleId,
-				RuleName: targetItem.RuleName,
+				RuleId: targetItem.RuleId,
 			})
 		}
 		attributes.RulesTarget = newRulesTargetList
@@ -329,14 +326,11 @@ func (r *asmWafExclusionFiltersResource) extractExclusionFilterAttributesFromRes
 			rulesMap := targetItem.(types.Object).Attributes()
 
 			ruleId := rulesMap["rule_id"].(types.String).ValueString()
-			ruleName := rulesMap["rule_name"].(types.String).ValueString()
 
 			ruleIdPtr := &ruleId
-			ruleNamePtr := &ruleName
 
 			rulesTargetList = append(rulesTargetList, datadogV2.ASMExclusionFilterRulesTarget{
-				RuleId:   ruleIdPtr,
-				RuleName: ruleNamePtr,
+				RuleId: ruleIdPtr,
 			})
 		}
 	}
@@ -390,20 +384,17 @@ func (r *asmWafExclusionFiltersResource) updateStateFromResponse(ctx context.Con
 	if rulesTargetList := attributes.GetRulesTarget(); len(rulesTargetList) > 0 {
 		for _, targetItem := range rulesTargetList {
 			ruleValues := map[string]attr.Value{
-				"rule_id":   types.StringValue(targetItem.GetRuleId()),
-				"rule_name": types.StringValue(targetItem.GetRuleName()),
+				"rule_id": types.StringValue(targetItem.GetRuleId()),
 			}
 			ruleObject, _ := types.ObjectValue(map[string]attr.Type{
-				"rule_id":   types.StringType,
-				"rule_name": types.StringType,
+				"rule_id": types.StringType,
 			}, ruleValues)
 			rulesTarget = append(rulesTarget, ruleObject)
 		}
 	}
 	state.RulesTarget, _ = types.ListValue(types.ObjectType{
 		AttrTypes: map[string]attr.Type{
-			"rule_id":   types.StringType,
-			"rule_name": types.StringType,
+			"rule_id": types.StringType,
 		},
 	}, rulesTarget)
 
