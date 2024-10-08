@@ -2302,6 +2302,24 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"live_span": getWidgetLiveSpanSchema(),
+		"xaxis": {
+			Description: "A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetAxisSchema(),
+			},
+		},
+		"yaxis": {
+			Description: "A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getWidgetAxisSchema(),
+			},
+		},
 	}
 }
 func buildDatadogDistributionDefinition(terraformDefinition map[string]interface{}) *datadogV1.DistributionWidgetDefinition {
@@ -2330,6 +2348,16 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
+	if axis, ok := terraformDefinition["xaxis"].([]interface{}); ok && len(axis) > 0 {
+		if v, ok := axis[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Xaxis = buildDatadogWidgetAxis(v)
+		}
+	}
+	if axis, ok := terraformDefinition["yaxis"].([]interface{}); ok && len(axis) > 0 {
+		if v, ok := axis[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Yaxis = buildDatadogWidgetAxis(v)
+		}
+	}
 	return datadogDefinition
 }
 func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.DistributionWidgetDefinition) map[string]interface{} {
@@ -2356,6 +2384,14 @@ func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.Distribut
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 
 		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+	}
+	if v, ok := datadogDefinition.GetXaxisOk(); ok {
+		axis := buildTerraformWidgetAxis(*v)
+		terraformDefinition["xaxis"] = []map[string]interface{}{axis}
+	}
+	if v, ok := datadogDefinition.GetYaxisOk(); ok {
+		axis := buildTerraformWidgetAxis(*v)
+		terraformDefinition["yaxis"] = []map[string]interface{}{axis}
 	}
 	return terraformDefinition
 }
