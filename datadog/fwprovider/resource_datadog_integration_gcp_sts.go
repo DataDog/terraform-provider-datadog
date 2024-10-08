@@ -36,6 +36,7 @@ type integrationGcpStsModel struct {
 	ClientEmail                    types.String `tfsdk:"client_email"`
 	DelegateAccountEmail           types.String `tfsdk:"delegate_account_email"`
 	HostFilters                    types.Set    `tfsdk:"host_filters"`
+	CloudRunRevisionFilters        types.Set    `tfsdk:"cloud_run_revision_filters"`
 	IsCspmEnabled                  types.Bool   `tfsdk:"is_cspm_enabled"`
 	IsSecurityCommandCenterEnabled types.Bool   `tfsdk:"is_security_command_center_enabled"`
 	ResourceCollectionEnabled      types.Bool   `tfsdk:"resource_collection_enabled"`
@@ -86,6 +87,11 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 			"host_filters": schema.SetAttribute{
 				Optional:    true,
 				Description: "Your Host Filters.",
+				ElementType: types.StringType,
+			},
+			"cloud_run_revision_filters": schema.SetAttribute{
+				Optional:    true,
+				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria will be monitored.",
 				ElementType: types.StringType,
 			},
 			"is_cspm_enabled": schema.BoolAttribute{
@@ -272,6 +278,9 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	if hostFilters, ok := attributes.GetHostFiltersOk(); ok && len(*hostFilters) > 0 {
 		state.HostFilters, _ = types.SetValueFrom(ctx, types.StringType, *hostFilters)
 	}
+	if runFilters, ok := attributes.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
+		state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, *runFilters)
+	}
 	if isCspmEnabled, ok := attributes.GetIsCspmEnabledOk(); ok {
 		state.IsCspmEnabled = types.BoolValue(*isCspmEnabled)
 	}
@@ -308,6 +317,11 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 		diags.Append(state.HostFilters.ElementsAs(ctx, &hostFilters, false)...)
 	}
 	attributes.SetHostFilters(hostFilters)
+
+	runFilters := make([]string, 0)
+	if !state.CloudRunRevisionFilters.IsNull() {
+		diags.Append(state.CloudRunRevisionFilters.ElementsAs(ctx, &runFilters, false)...)
+	}
 
 	if !state.IsSecurityCommandCenterEnabled.IsUnknown() {
 		attributes.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
