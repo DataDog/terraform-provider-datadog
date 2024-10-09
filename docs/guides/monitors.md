@@ -9,7 +9,7 @@ description: |-
 
 This page lists examples of how to create different Datadog monitor types within Terraform. This list is not exhaustive and will be updated over time to provide more examples.
 
-## Composite monitors
+## Composite Monitors
 
 You can compose monitors of all types in order to define more specific alert conditions (see the [doc](https://docs.datadoghq.com/monitors/monitor_types/composite/)). You just need to reuse the ID of your `datadog_monitor` resources. You can also compose any monitor with a `datadog_synthetics_test` by passing the computed `monitor_id` attribute in the query.
 
