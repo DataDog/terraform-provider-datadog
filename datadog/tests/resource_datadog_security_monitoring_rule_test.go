@@ -1461,6 +1461,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyConfig(ruleName strin
 
 			options {
 				detection_method = "third_party"
+				max_signal_duration = 900
 
 				third_party_rule_options {
 					default_status = "info"
@@ -1526,6 +1527,7 @@ func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyConfig(ruleName strin
 
 			options {
 				detection_method = "third_party"
+				max_signal_duration = 900
 
 				third_party_rule_options {
 					default_status = "info"
