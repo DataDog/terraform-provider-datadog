@@ -47,6 +47,7 @@ type integrationGcpModel struct {
 	ClientId                       types.String `tfsdk:"client_id"`
 	Automute                       types.Bool   `tfsdk:"automute"`
 	HostFilters                    types.String `tfsdk:"host_filters"`
+	CloudRunRevisionFilters        types.String `tfskd:"cloud_run_revision_filters"`
 	ResourceCollectionEnabled      types.Bool   `tfsdk:"resource_collection_enabled"`
 	CspmResourceCollectionEnabled  types.Bool   `tfsdk:"cspm_resource_collection_enabled"`
 	IsSecurityCommandCenterEnabled types.Bool   `tfsdk:"is_security_command_center_enabled"`
@@ -108,6 +109,12 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 			},
 			"host_filters": schema.StringAttribute{
 				Description: "Limit the GCE instances that are pulled into Datadog by using tags. Only hosts that match one of the defined tags are imported into Datadog.",
+				Optional:    true,
+				Computed:    true,
+				Default:     stringdefault.StaticString(""),
+			},
+			"cloud_run_revision_filters": schema.StringAttribute{
+				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.",
 				Optional:    true,
 				Computed:    true,
 				Default:     stringdefault.StaticString(""),
