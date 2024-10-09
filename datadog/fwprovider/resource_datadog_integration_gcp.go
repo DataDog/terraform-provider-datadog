@@ -359,6 +359,7 @@ func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, bo
 	if !state.CloudRunRevisionFilters.IsNull() {
 		diags.Append(state.CloudRunRevisionFilters.ElementsAs(ctx, &runFilters, false)...)
 	}
+	body.SetCloudRunRevisionFilters(runFilters)
 
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		body.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())

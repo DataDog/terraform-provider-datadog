@@ -322,6 +322,7 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	if !state.CloudRunRevisionFilters.IsNull() {
 		diags.Append(state.CloudRunRevisionFilters.ElementsAs(ctx, &runFilters, false)...)
 	}
+	attributes.SetCloudRunRevisionFilters(runFilters)
 
 	if !state.IsSecurityCommandCenterEnabled.IsUnknown() {
 		attributes.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
