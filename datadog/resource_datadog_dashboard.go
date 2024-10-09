@@ -10663,6 +10663,11 @@ func getDistributionWidgetYAxisSchema() map[string]*schema.Schema {
 			Type:        schema.TypeBool,
 			Optional:    true,
 		},
+		"label": {
+			Description: "The label of the axis to display on the graph.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 	}
 }
 
@@ -10680,6 +10685,9 @@ func buildDatadogDistributionWidgetYAxis(terraformDistributionWidgetYAxis map[st
 	if v, ok := terraformDistributionWidgetYAxis["include_zero"].(bool); ok {
 		datadogDistributionWidgetYAxis.SetIncludeZero(v)
 	}
+	if v, ok := terraformDistributionWidgetYAxis["label"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetYAxis.SetLabel(v)
+	}
 	return datadogDistributionWidgetYAxis
 }
 
@@ -10696,6 +10704,9 @@ func buildTerraformDistributionWidgetYAxis(datadogDistributionWidgetYAxis datado
 	}
 	if v, ok := datadogDistributionWidgetYAxis.GetIncludeZeroOk(); ok {
 		terraformDistributionWidgetYAxis["include_zero"] = v
+	}
+	if v, ok := datadogDistributionWidgetYAxis.GetLabelOk(); ok {
+		terraformDistributionWidgetYAxis["label"] = v
 	}
 	return terraformDistributionWidgetYAxis
 }
