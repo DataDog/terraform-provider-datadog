@@ -80,9 +80,9 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"host_filters", "foo:bar,buzz:lightyear"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts.foo", "cloud_run_revision_filters.*", "tag:two"),
+						"datadog_integration_gcp.awesome_gcp_project_integration", "cloud_run_revision_filters.*", "tag:two"),
 					resource.TestCheckTypeSetElemAttr(
-						"datadog_integration_gcp_sts.foo", "cloud_run_revision_filters.*", "tag:one"),
+						"datadog_integration_gcp.awesome_gcp_project_integration", "cloud_run_revision_filters.*", "tag:one"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"automute", "false"),
