@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -118,7 +117,7 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.",
 				Optional:    true,
 				Computed:    true,
-				Default:     setdefault.StaticValue(types.Set{}),
+				ElementType: types.StringType,
 			},
 			"automute": schema.BoolAttribute{
 				Description: "Silence monitors for expected GCE instance shutdowns.",
