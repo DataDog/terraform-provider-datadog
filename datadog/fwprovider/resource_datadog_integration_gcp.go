@@ -295,10 +295,6 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 	state.ResourceCollectionEnabled = types.BoolValue(resp.GetResourceCollectionEnabled())
 	state.IsSecurityCommandCenterEnabled = types.BoolValue(resp.GetIsSecurityCommandCenterEnabled())
 
-	if runFilters, ok := resp.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
-		state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, *runFilters)
-	}
-
 	// Non-computed values
 	if clientId, ok := resp.GetClientIdOk(); ok {
 		state.ClientId = types.StringValue(*clientId)
@@ -308,6 +304,9 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 	}
 	if privateKeyId, ok := resp.GetPrivateKeyIdOk(); ok {
 		state.PrivateKeyId = types.StringValue(*privateKeyId)
+	}
+	if runFilters, ok := resp.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
+		state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, *runFilters)
 	}
 }
 
