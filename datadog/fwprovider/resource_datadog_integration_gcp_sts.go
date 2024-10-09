@@ -291,6 +291,7 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	if !state.AccountTags.IsNull() {
 		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
 	}
+
 	attributes.SetAccountTags(accountTags)
 
 	if !state.Automute.IsNull() {
