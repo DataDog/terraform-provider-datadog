@@ -188,7 +188,7 @@ func (r *integrationGcpResource) Create(ctx context.Context, request resource.Cr
 	body := r.buildIntegrationGcpRequestBodyBase(state)
 	r.addDefaultsToBody(body, state)
 	r.addRequiredFieldsToBody(body, state)
-	r.addOptionalFieldsToBody(body, state)
+	r.addOptionalFieldsToBody(ctx, body, state)
 
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -228,7 +228,7 @@ func (r *integrationGcpResource) Update(ctx context.Context, request resource.Up
 
 	diags := diag.Diagnostics{}
 	body := r.buildIntegrationGcpRequestBodyBase(state)
-	r.addOptionalFieldsToBody(body, state)
+	r.addOptionalFieldsToBody(ctx, body, state)
 
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -351,14 +351,16 @@ func (r *integrationGcpResource) addRequiredFieldsToBody(body *datadogV1.GCPAcco
 	body.SetPrivateKeyId(state.PrivateKeyId.ValueString())
 }
 
-func (r *integrationGcpResource) addOptionalFieldsToBody(body *datadogV1.GCPAccount, state integrationGcpModel) {
+func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, body *datadogV1.GCPAccount, state integrationGcpModel) {
+	diags := diag.Diagnostics{}
 	body.SetAutomute(state.Automute.ValueBool())
 	body.SetIsCspmEnabled(state.CspmResourceCollectionEnabled.ValueBool())
 	body.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
 	body.SetHostFilters(state.HostFilters.ValueString())
 
-	if runFilters, ok := body.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
-		body.SetCloudRunRevisionFilters(body.GetCloudRunRevisionFilters())
+	runFilters := make([]string, 0)
+	if !state.CloudRunRevisionFilters.IsNull() {
+		diags.Append(state.CloudRunRevisionFilters.ElementsAs(ctx, &runFilters, false)...)
 	}
 
 	if !state.ResourceCollectionEnabled.IsUnknown() {
