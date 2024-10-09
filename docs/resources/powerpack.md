@@ -745,6 +745,8 @@ Optional:
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+- `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--xaxis))
+- `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--yaxis))
 
 <a id="nestedblock--widget--distribution_definition--request"></a>
 ### Nested Schema for `widget.distribution_definition.request`
@@ -1068,6 +1070,29 @@ Optional:
 
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
+
+
+<a id="nestedblock--widget--distribution_definition--xaxis"></a>
+### Nested Schema for `widget.distribution_definition.xaxis`
+
+Optional:
+
+- `include_zero` (Boolean) Always include zero or fit the axis to the data range.
+- `max` (String) Specify the maximum value to show on the Y-axis.
+- `min` (String) Specify the minimum value to show on the Y-axis.
+- `scale` (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
+
+
+<a id="nestedblock--widget--distribution_definition--yaxis"></a>
+### Nested Schema for `widget.distribution_definition.yaxis`
+
+Optional:
+
+- `include_zero` (Boolean) Always include zero or fit the axis to the data range.
+- `label` (String) The label of the axis to display on the graph.
+- `max` (String) Specify the maximum value to show on the Y-axis.
+- `min` (String) Specify the minimum value to show on the Y-axis.
+- `scale` (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
 
 
 
