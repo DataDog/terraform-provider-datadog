@@ -91,7 +91,7 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 			},
 			"cloud_run_revision_filters": schema.SetAttribute{
 				Optional:    true,
-				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria will be monitored.",
+				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.",
 				ElementType: types.StringType,
 			},
 			"is_cspm_enabled": schema.BoolAttribute{
