@@ -21,6 +21,7 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
   client_email   = "awesome-service-account@awesome-project-id.iam.gserviceaccount.com"
   client_id      = "123456789012345678901"
   host_filters   = "foo:bar,buzz:lightyear"
+  cloud_run_revision_filters = ["filter_one", "filter_two"]
 }
 
 
