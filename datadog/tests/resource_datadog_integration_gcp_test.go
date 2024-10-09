@@ -20,7 +20,7 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
   client_email   = "%s@awesome-project-id.iam.gserviceaccount.com"
   client_id      = "123456789012345678901"
   host_filters   = "foo:bar,buzz:lightyear"
-  cloud_run_revision_filters = "foo:bar,buzz:lightyear"
+  cloud_run_revision_filters = ["foo:bar", "buzz:lightyear"]
 }`, uniq, uniq)
 }
 
@@ -81,7 +81,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 						"host_filters", "foo:bar,buzz:lightyear"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
-						"cloud_run_revision_filters", "foo:bar,buzz:lightyear"),
+						"cloud_run_revision_filters", "[\"foo:bar\", \"buzz:lightyear\"]"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"automute", "false"),
@@ -114,7 +114,7 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 						"host_filters", ""),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
-						"cloud_run_revision_filters", ""),
+						"cloud_run_revision_filters", "[\"foo:bar\", \"buzz:lightyear\"]"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"automute", "false"),

@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -47,7 +48,7 @@ type integrationGcpModel struct {
 	ClientId                       types.String `tfsdk:"client_id"`
 	Automute                       types.Bool   `tfsdk:"automute"`
 	HostFilters                    types.String `tfsdk:"host_filters"`
-	CloudRunRevisionFilters        types.String `tfskd:"cloud_run_revision_filters"`
+	CloudRunRevisionFilters        types.Set    `tfskd:"cloud_run_revision_filters"`
 	ResourceCollectionEnabled      types.Bool   `tfsdk:"resource_collection_enabled"`
 	CspmResourceCollectionEnabled  types.Bool   `tfsdk:"cspm_resource_collection_enabled"`
 	IsSecurityCommandCenterEnabled types.Bool   `tfsdk:"is_security_command_center_enabled"`
@@ -113,11 +114,11 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Computed:    true,
 				Default:     stringdefault.StaticString(""),
 			},
-			"cloud_run_revision_filters": schema.StringAttribute{
+			"cloud_run_revision_filters": schema.SetAttribute{
 				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.",
 				Optional:    true,
 				Computed:    true,
-				Default:     stringdefault.StaticString(""),
+				Default:     setdefault.StaticValue(types.Set{}),
 			},
 			"automute": schema.BoolAttribute{
 				Description: "Silence monitors for expected GCE instance shutdowns.",
@@ -296,6 +297,10 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 	state.ResourceCollectionEnabled = types.BoolValue(resp.GetResourceCollectionEnabled())
 	state.IsSecurityCommandCenterEnabled = types.BoolValue(resp.GetIsSecurityCommandCenterEnabled())
 
+	if runFilters, ok := resp.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
+		state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, *runFilters)
+	}
+
 	// Non-computed values
 	if clientId, ok := resp.GetClientIdOk(); ok {
 		state.ClientId = types.StringValue(*clientId)
@@ -353,6 +358,11 @@ func (r *integrationGcpResource) addOptionalFieldsToBody(body *datadogV1.GCPAcco
 	body.SetIsCspmEnabled(state.CspmResourceCollectionEnabled.ValueBool())
 	body.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
 	body.SetHostFilters(state.HostFilters.ValueString())
+
+	if runFilters, ok := body.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
+		body.SetCloudRunRevisionFilters(body.GetCloudRunRevisionFilters())
+	}
+
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		body.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
 	}
