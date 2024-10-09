@@ -184,11 +184,10 @@ func (r *integrationGcpResource) Create(ctx context.Context, request resource.Cr
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	diags := diag.Diagnostics{}
 	body := r.buildIntegrationGcpRequestBodyBase(state)
 	r.addDefaultsToBody(body, state)
 	r.addRequiredFieldsToBody(body, state)
-	r.addOptionalFieldsToBody(ctx, body, state)
+	diags := r.addOptionalFieldsToBody(ctx, body, state)
 
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -226,9 +225,8 @@ func (r *integrationGcpResource) Update(ctx context.Context, request resource.Up
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	diags := diag.Diagnostics{}
 	body := r.buildIntegrationGcpRequestBodyBase(state)
-	r.addOptionalFieldsToBody(ctx, body, state)
+	diags := r.addOptionalFieldsToBody(ctx, body, state)
 
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -350,7 +348,7 @@ func (r *integrationGcpResource) addRequiredFieldsToBody(body *datadogV1.GCPAcco
 	body.SetPrivateKeyId(state.PrivateKeyId.ValueString())
 }
 
-func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, body *datadogV1.GCPAccount, state integrationGcpModel) {
+func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, body *datadogV1.GCPAccount, state integrationGcpModel) diag.Diagnostics {
 	diags := diag.Diagnostics{}
 	body.SetAutomute(state.Automute.ValueBool())
 	body.SetIsCspmEnabled(state.CspmResourceCollectionEnabled.ValueBool())
@@ -365,4 +363,6 @@ func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, bo
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		body.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
 	}
+
+	return diags
 }
