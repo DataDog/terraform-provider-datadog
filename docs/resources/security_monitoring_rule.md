@@ -65,6 +65,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title. Defaults to `false`.
 - `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
+- `reference_tables` (Block List) Reference tables for filtering query results. (see [below for nested schema](#nestedblock--reference_tables))
 - `signal_query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--signal_query))
 - `tags` (Set of String) Tags for generated signals.
 - `third_party_case` (Block List, Max: 10) Cases for generating signals for third-party rules. Only required and accepted for third-party rules (see [below for nested schema](#nestedblock--third_party_case))
@@ -186,6 +187,18 @@ Required:
 - `agent_rule_id` (String) **Deprecated**. It won't be applied anymore.
 - `expression` (String) **Deprecated**. It won't be applied anymore.
 
+
+
+<a id="nestedblock--reference_tables"></a>
+### Nested Schema for `reference_tables`
+
+Required:
+
+- `check_presence` (Boolean) Whether to include or exclude logs that match the reference table.
+- `column_name` (String) The name of the column in the reference table.
+- `log_field_path` (String) The field in the log that should be matched against the reference table.
+- `rule_query_name` (String) The name of the query to filter.
+- `table_name` (String) The name of the reference table.
 
 
 <a id="nestedblock--signal_query"></a>

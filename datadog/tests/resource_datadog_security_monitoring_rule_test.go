@@ -323,6 +323,14 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
     }
 
     tags = ["i:tomato", "u:tomato"]
+
+	reference_tables {
+		table_name = "table1"
+		column_name = "column1"
+		log_field_path = "@testattribute"
+		rule_query_name = "first"
+		check_presence = true
+	}
 }
 `, suffix, name)
 }
@@ -406,6 +414,16 @@ func testAccCheckDatadogSecurityMonitorCreatedCheckWithId(accProvider func() (*s
 			tfSecurityRuleName, "tags.*", "i:tomato"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "u:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.table_name", "table1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.column_name", "column1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.log_field_path", "@testattribute"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.rule_query_name", "first"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.check_presence", "true"),
 	)
 }
 
@@ -824,6 +842,14 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     }
 
     tags = ["u:tomato", "i:tomato"]
+
+	reference_tables {
+		table_name = "table1"
+		column_name = "column1"
+		log_field_path = "@testattribute"
+		rule_query_name = "first_updated"
+		check_presence = true
+	}
 }
 `, name)
 }
@@ -875,6 +901,16 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheck(accProvider func() (*schem
 			tfSecurityRuleName, "tags.*", "u:tomato"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.table_name", "table1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.column_name", "column1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.log_field_path", "@testattribute"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.rule_query_name", "first_updated"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.check_presence", "true"),
 	)
 }
 
@@ -1075,6 +1111,14 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     }
 
     tags = ["u:tomato", "i:tomato"]
+
+	reference_tables {
+		table_name = "table1"
+		column_name = "column1"
+		log_field_path = "@testattribute"
+		rule_query_name = "first_updated"
+		check_presence = true
+	}
 }
 `, name)
 }
@@ -1329,6 +1373,16 @@ func testAccCheckDatadogSecurityMonitoringEnabledDefaultCheck(accProvider func()
 			tfSecurityRuleName, "tags.*", "u:tomato"),
 		resource.TestCheckTypeSetElemAttr(
 			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.table_name", "table1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.column_name", "column1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.log_field_path", "@testattribute"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.rule_query_name", "first_updated"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "reference_tables.0.check_presence", "true"),
 	)
 }
 
@@ -1407,6 +1461,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedThirdPartyConfig(ruleName strin
 
 			options {
 				detection_method = "third_party"
+				max_signal_duration = 900
 
 				third_party_rule_options {
 					default_status = "info"
@@ -1472,6 +1527,7 @@ func testAccCheckDatadogSecurityMonitoringUpdatedThirdPartyConfig(ruleName strin
 
 			options {
 				detection_method = "third_party"
+				max_signal_duration = 900
 
 				third_party_rule_options {
 					default_status = "info"
