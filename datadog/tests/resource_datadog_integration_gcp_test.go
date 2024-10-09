@@ -14,13 +14,13 @@ import (
 func testAccCheckDatadogIntegrationGCPConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
-  project_id     = "%s"
-  private_key_id = "1234567890123456789012345678901234567890"
-  private_key    = "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-  client_email   = "%s@awesome-project-id.iam.gserviceaccount.com"
-  client_id      = "123456789012345678901"
-  host_filters   = "foo:bar,buzz:lightyear"
-  cloud_run_revision_filters = ["tag:one", "tag:two"]
+  project_id                   = "%s"
+  private_key_id               = "1234567890123456789012345678901234567890"
+  private_key                  = "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+  client_email                 = "%s@awesome-project-id.iam.gserviceaccount.com"
+  client_id                    = "123456789012345678901"
+  host_filters                 = "foo:bar,buzz:lightyear"
+  cloud_run_revision_filters   = ["tag:one", "tag:two"]
 }`, uniq, uniq)
 }
 
