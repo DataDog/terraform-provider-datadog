@@ -1,323 +1,596 @@
+---
 version: 2
 interactions:
-- request:
-    body: |
-      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","is_cspm_enabled":false,"is_security_command_center_enabled":false,"private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: POST
-    id: 0
-  response:
-    body: |
-      {}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 1
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 2
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 3
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 4
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","host_filters":"","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: PUT
-    id: 5
-  response:
-    body: |
-      {}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 6
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 7
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 8
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 9
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: DELETE
-    id: 10
-  response:
-    body: |
-      {}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":true,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","host_filters":"","is_cspm_enabled":false,"is_security_command_center_enabled":false,"private_key":"-----BEGIN PRIVATE KEY-----\n key updated \n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: POST
-    id: 11
-  response:
-    body: |
-      {}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 12
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":true,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 13
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":true,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 14
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":true,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: |
-      {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254310@awesome-project-id.iam.gserviceaccount.com","is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254310"}
-    form: {}
-    headers:
-      Accept:
-      - application/json
-      Content-Type:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: DELETE
-    id: 15
-  response:
-    body: |
-      {}
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
-- request:
-    body: ""
-    form: {}
-    headers:
-      Accept:
-      - application/json
-    url: https://api.datadoghq.com/api/v1/integration/gcp
-    method: GET
-    id: 16
-  response:
-    body: |
-      [{"errors":[],"automute":false,"client_email":"Test-Go-TestGCPCreate-1674259475@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"Test-Go-TestGCPCreate-1674259475","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-createGCPIntegrationTest-local-1620768601","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768605","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-listAndDeleteGCPIntegrationTest-local-1620768615","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768610","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"api-test@fake-sandbox.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"java-updateGCPIntegrationTest-local-1620768612","host_filters":"fake:tag,example:test"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1653178599@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1653178599","host_filters":""},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656504612@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656504612","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1656677395@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1656677395","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1675254142@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1675254142","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-86797-1641902904","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-87727-1642766962","host_filters":"foo:bar,buzz:lightyear"},{"errors":[],"automute":false,"client_email":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433@awesome-project-id.iam.gserviceaccount.com","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogLogsArchiveGCS_basic-local-1656677433","host_filters":"foo:bar,buzz:lightyear"}]
-    headers:
-      Content-Type:
-      - application/json
-    status: 200 OK
-    code: 200
-    duration: "0ms"
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 896
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","cloud_run_revision_filters":["tag:one","tag:two"],"host_filters":"foo:bar,buzz:lightyear","is_cspm_enabled":false,"is_security_command_center_enabled":false,"private_key":"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 632.124875ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["tag:one","tag:two"],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 65.9485ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["tag:one","tag:two"],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 83.54275ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["tag:one","tag:two"],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 79.975542ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"foo:bar,buzz:lightyear","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["tag:one","tag:two"],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 78.422333ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 328
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"automute":false,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","cloud_run_revision_filters":["tag:one","tag:two"],"host_filters":"","is_cspm_enabled":false,"is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: PUT
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 86.432834ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["tag:one","tag:two"],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 71.854791ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["tag:one","tag:two"],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 72.260791ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["tag:one","tag:two"],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 92.041292ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":["tag:one","tag:two"],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 67.553875ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 218
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 94.428834ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 864
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","auth_uri":"https://accounts.google.com/o/oauth2/auth","automute":true,"client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","client_id":"123456789012345678901","client_x509_cert_url":"https://www.googleapis.com/robot/v1/metadata/x509/tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":"","is_cspm_enabled":false,"is_security_command_center_enabled":false,"private_key":"-----BEGIN PRIVATE KEY-----\n key updated \n-----END PRIVATE KEY-----\n","private_key_id":"1234567890123456789012345678901234567890","project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","token_uri":"https://oauth2.googleapis.com/token","type":"service_account"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 683.436291ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 74.073375ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 59.405083ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622","client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","host_filters":"","automute":true,"is_cspm_enabled":false,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 67.312375ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 218
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1728576622@awesome-project-id.iam.gserviceaccount.com","is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728576622"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 71.115958ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: dd.datad0g.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://dd.datad0g.com/api/v1/integration/gcp
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            [{"project_id":"","client_email":"ashraf-hanafy-sabbirs-test-org@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":true,"resource_collection_enabled":true,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"mitch-getting-around-sanbox-qu@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-a","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"datadog-gcp-ints-test-b@appspot.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]},{"project_id":"datadog-gcp-ints-test-b","client_email":"nina-synethetics@datadog-gcp-ints-test-b.iam.gserviceaccount.com","host_filters":"","automute":false,"is_cspm_enabled":false,"resource_collection_enabled":false,"is_security_command_center_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"errors":[]}]
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 63.89ms

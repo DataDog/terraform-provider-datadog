@@ -166,8 +166,8 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 	integrationGcpStsMutex.Lock()
 	defer integrationGcpStsMutex.Unlock()
 
-	// This resource is special and uses datadog delagate account.
-	// The datadog delegate account cannot mutated after creation hence it is safe
+	// This resource is special and uses datadog delegate account.
+	// The datadog delegate account cannot mutate after creation hence it is safe
 	// to call MakeGCPSTSDelegate multiple times. And to ensure it is created, we call it once before creating
 	// gcp sts resource.
 	delegateResponse, _, err := r.Api.MakeGCPSTSDelegate(r.Auth, *datadogV2.NewMakeGCPSTSDelegateOptionalParameters())
@@ -180,6 +180,10 @@ func (r *integrationGcpStsResource) Create(ctx context.Context, request resource
 	state.DelegateAccountEmail = types.StringValue(delegateEmail)
 
 	attributes, diags := r.buildIntegrationGcpStsRequestBody(ctx, &state)
+	if !state.ClientEmail.IsNull() {
+		attributes.SetClientEmail(state.ClientEmail.ValueString())
+	}
+
 	body := datadogV2.NewGCPSTSServiceAccountCreateRequestWithDefaults()
 	body.Data = datadogV2.NewGCPSTSServiceAccountDataWithDefaults()
 	body.Data.SetAttributes(attributes)
@@ -304,9 +308,6 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 
 	if !state.Automute.IsNull() {
 		attributes.SetAutomute(state.Automute.ValueBool())
-	}
-	if !state.ClientEmail.IsNull() {
-		attributes.SetClientEmail(state.ClientEmail.ValueString())
 	}
 	if !state.IsCspmEnabled.IsNull() {
 		attributes.SetIsCspmEnabled(state.IsCspmEnabled.ValueBool())
