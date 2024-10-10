@@ -7,7 +7,7 @@ description: |-
 
 ### Metric Resource Examples
 
-This page lists examples of how to create different Datadog monitor types within Terraform. This list is not exhaustive and will be updated over time to provide more examples.
+This page lists examples of how to create different Datadog metric types within Terraform. This list is not exhaustive and will be updated over time to provide more examples.
 
 ## Metric metadata
 

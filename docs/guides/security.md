@@ -7,7 +7,7 @@ description: |-
 
 ### Security resource examples
 
-This page lists examples of how to create Datadog security monitoring resources within Terraform. This list is not exhaustive and will be updated over time to provide more examples.
+This page lists examples of how to create Datadog Security Monitoring resources within Terraform. This list is not exhaustive and will be updated over time to provide more examples.
 
 ## Security monitoring rules
 
