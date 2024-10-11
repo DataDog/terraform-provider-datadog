@@ -19,16 +19,17 @@ resource "datadog_dashboard" "distribution_dashboard" {
 			show_legend = "true"
 			legend_size = "2"
 			live_span = "1h"
-                        xaxis {
+			xaxis {
 				scale = "linear"
+				min = "10"
 				max = "100"
-				min = "0"
 				include_zero = true
 			}
-                        yaxis {
+            yaxis {
 				scale = "linear"
-				include_zero = true
 				min = "0"
+				max = "50"
+				include_zero = true
 				label = "cpu (%)"
 			}
 			request {
@@ -57,16 +58,17 @@ resource "datadog_dashboard" "distribution_dashboard" {
 			show_legend = "true"
 			legend_size = "2"
 			live_span = "1h"
-                        xaxis {
+			xaxis {
 				scale = "linear"
+				min = "10"
 				max = "100"
-				min = "0"
 				include_zero = true
 			}
-                        yaxis {
+            yaxis {
 				scale = "linear"
-				include_zero = true
 				min = "0"
+				max = "50"
+				include_zero = true
 				label = "cpu (%)"
 			}
 			request {
@@ -98,16 +100,17 @@ resource "datadog_dashboard" "distribution_dashboard" {
 			show_legend = "true"
 			legend_size = "2"
 			live_span = "1h"
-                        xaxis {
+			xaxis {
 				scale = "linear"
+				min = "10"
 				max = "100"
-				min = "0"
 				include_zero = true
 			}
-                        yaxis {
+            yaxis {
 				scale = "linear"
-				include_zero = true
 				min = "0"
+				max = "50"
+				include_zero = true
 				label = "cpu (%)"
 			}
 			request {
@@ -133,13 +136,14 @@ var datadogDashboardDistributionAsserts = []string{
 	"widget.0.distribution_definition.0.request.0.q = avg:system.cpu.user{account:prod} by {service,account}",
 	"widget.0.distribution_definition.0.request.0.style.0.palette = purple",
 	"widget.0.distribution_definition.0.xaxis.0.scale = linear",
-	"widget.0.distribution_definition.0.xaxis.0.min = 0",
+	"widget.0.distribution_definition.0.xaxis.0.min = 10",
 	"widget.0.distribution_definition.0.xaxis.0.max = 100",
 	"widget.0.distribution_definition.0.xaxis.0.include_zero = true",
 	"widget.0.distribution_definition.0.yaxis.0.scale = linear",
 	"widget.0.distribution_definition.0.yaxis.0.min = 0",
-	"widget.0.distribution_definition.0.yaxis.0.label = cpu (%)",
+	"widget.0.distribution_definition.0.yaxis.0.max = 50",
 	"widget.0.distribution_definition.0.yaxis.0.include_zero = true",
+	"widget.0.distribution_definition.0.yaxis.0.label = cpu (%)",
 	"layout_type = ordered",
 	"is_read_only = true",
 }
