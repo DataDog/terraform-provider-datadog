@@ -22,8 +22,9 @@ var (
 )
 
 type userRoleResource struct {
-	Api  *datadogV2.RolesApi
-	Auth context.Context
+	Api   *datadogV2.RolesApi
+	Auth  context.Context
+	Users *datadogV2.UsersApi
 }
 
 type UserRoleModel struct {
@@ -40,6 +41,7 @@ func (r *userRoleResource) Configure(_ context.Context, request resource.Configu
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetRolesApiV2()
 	r.Auth = providerData.Auth
+	r.Users = providerData.DatadogApiInstances.GetUsersApiV2()
 }
 
 func (r *userRoleResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -88,48 +90,33 @@ func (r *userRoleResource) Read(ctx context.Context, request resource.ReadReques
 	if response.Diagnostics.HasError() {
 		return
 	}
-	roleId := state.RoleId.ValueString()
 
-	pageSize := int64(100)
-	pageNumber := int64(0)
-
-	var roleUsers []datadogV2.User
-	for {
-		resp, httpResp, err := r.Api.ListRoleUsers(r.Auth, roleId, *datadogV2.NewListRoleUsersOptionalParameters().
-			WithPageSize(pageSize).
-			WithPageNumber(pageNumber))
-		if err != nil {
-			if httpResp != nil && httpResp.StatusCode == 404 {
-				// Role no longer exists, remove the mapping
-				response.State.RemoveResource(ctx)
-				return
-			}
-
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RoleUsers"))
-			return
-		}
-		if err := utils.CheckForUnparsed(resp); err != nil {
-			response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+	// get User
+	userId := state.UserId.ValueString()
+	resp, httpResp, err := r.Users.GetUser(r.Auth, userId)
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			response.State.RemoveResource(ctx)
 			return
 		}
 
-		roleUsers = append(roleUsers, resp.GetData()...)
-		if len(resp.GetData()) < 100 {
-			break
-		}
-
-		pageNumber++
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RoleUsers"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
 	}
 
-	for _, user := range roleUsers {
-		if user.GetId() == state.UserId.ValueString() {
-			userId := user.GetId()
-			state.ID = types.StringValue(state.RoleId.ValueString() + ":" + userId)
-			state.UserId = types.StringValue(userId)
+	// check if User already has Role
+	for _, role := range resp.GetData().Relationships.GetRoles().Data {
+		if roleId := role.GetId(); roleId == state.RoleId.ValueString() {
+			state.ID = types.StringValue(roleId + ":" + userId)
 			return
 		}
 	}
 
+	// User doesn't have Role
 	response.State.RemoveResource(ctx)
 }
 
