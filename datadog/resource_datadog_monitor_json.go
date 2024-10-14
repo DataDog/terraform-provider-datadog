@@ -117,7 +117,16 @@ func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, m
 	auth := providerConf.Auth
 
 	id := d.Id()
-	respByte, httpResp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", monitorPath+"/"+id, nil)
+	url := monitorPath + "/" + id
+
+	// Check if restriction_policy is defined in the JSON
+	monitor := d.Get("monitor").(string)
+	attrMap, _ := structure.ExpandJsonFromString(monitor)
+	if _, ok := attrMap["restriction_policy"]; ok {
+		url += "?with_restriction_policy=true"
+	}
+
+	respByte, httpResp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", url, nil)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			d.SetId("")
