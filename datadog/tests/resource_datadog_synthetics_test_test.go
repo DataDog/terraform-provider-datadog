@@ -944,7 +944,7 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "variables_from_script", "dd.variable.set('FOO', 'hello');"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "assertion.#", "5"),
+				"datadog_synthetics_test.foo", "assertion.#", "6"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -973,6 +973,10 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 				"datadog_synthetics_test.foo", "assertion.3.operator", "doesNotContain"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "assertion.3.target", "terraform"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertion.5.type", "javascript"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "assertion.5.code", "const hello = 'world';"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "locations.#", "1"),
 			resource.TestCheckTypeSetElemAttr(
@@ -1100,6 +1104,10 @@ resource "datadog_synthetics_test" "foo" {
 		type = "bodyHash"
 		operator = "md5"
 		target = "a"
+	}
+	assertion {
+		type = "javascript"
+		code = "const hello = 'world';"
 	}
 	locations = [ "aws:eu-central-1" ]
 
@@ -1352,7 +1360,7 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "assertion.#", "11"),
+				"datadog_synthetics_test.bar", "assertion.#", "12"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.0.type", "header"),
 			resource.TestCheckResourceAttr(
@@ -1453,6 +1461,10 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 				"datadog_synthetics_test.bar", "assertion.10.targetjsonpath.0.jsonpath", "$.myKey"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "assertion.10.targetjsonpath.0.operator", "isUndefined"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.11.type", "javascript"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "assertion.11.code", "const hello = 'world';"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "locations.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -1616,6 +1628,10 @@ resource "datadog_synthetics_test" "bar" {
 			operator    = "isUndefined"
 		}
     }
+	assertion {
+		type = "javascript"
+		code = "const hello = 'world';"
+	}
 
 	locations = [ "aws:eu-central-1" ]
 	options_list {
@@ -4705,7 +4721,7 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, John!"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.#", "1"),
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.#", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.name", "VAR_EXTRACT_MESSAGE"),
 			resource.TestCheckResourceAttr(
@@ -4716,6 +4732,14 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.type", "json_path"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.value", "$.id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.name", "VAR_EXTRACT_MESSAGE_2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.type", "grpc_message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.0.type", "raw"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
 			resource.TestCheckResourceAttr(
@@ -4964,6 +4988,13 @@ resource "datadog_synthetics_test" "multi" {
       parser {
         type  = "json_path"
         value = "$.id"
+      }
+    }
+	extracted_value {
+      name  = "VAR_EXTRACT_MESSAGE_2"
+      type  = "grpc_message"
+      parser {
+        type  = "raw"
       }
     }
   }

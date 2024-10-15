@@ -3,7 +3,7 @@
 page_title: "datadog_application_key Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve information about an existing application key. Deprecated. This will be removed in a future release with prior notice. Securely store your application keys using a secret management system or use the datadogapplicationkey resource to manage application keys in your Datadog account.
+  Use this data source to retrieve information about an existing application key. Deprecated. This will be removed in a future release with prior notice. Securely store your application keys using a secret management system or use the datadog_application_key resource to manage application keys in your Datadog account.
 ---
 
 # datadog_application_key (Data Source)

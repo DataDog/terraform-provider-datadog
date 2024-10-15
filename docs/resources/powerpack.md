@@ -2944,6 +2944,7 @@ Optional:
 - `query` (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--query))
 - `rum_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--rum_query))
 - `security_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--security_query))
+- `text_formats` (Block List) Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats))
 
 <a id="nestedblock--widget--query_table_definition--request--apm_query"></a>
 ### Nested Schema for `widget.query_table_definition.request.apm_query`
@@ -3504,6 +3505,51 @@ Optional:
 
 - `facet` (String) The facet name.
 - `interval` (Number) Define the time interval in seconds.
+
+
+
+<a id="nestedblock--widget--query_table_definition--request--text_formats"></a>
+### Nested Schema for `widget.query_table_definition.request.text_formats`
+
+Optional:
+
+- `text_format` (Block List) The text format to apply to the items in a table widget column. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--text_format))
+
+<a id="nestedblock--widget--query_table_definition--request--text_formats--text_format"></a>
+### Nested Schema for `widget.query_table_definition.request.text_formats.text_format`
+
+Required:
+
+- `match` (Block List, Min: 1, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--text_format--match))
+
+Optional:
+
+- `custom_bg_color` (String) The custom color palette to apply to the background.
+- `custom_fg_color` (String) The custom color palette to apply to the foreground text.
+- `palette` (String) The color palette to apply. Valid values are `white_on_red`, `white_on_yellow`, `white_on_green`, `black_on_light_red`, `black_on_light_yellow`, `black_on_light_green`, `red_on_white`, `yellow_on_white`, `green_on_white`, `custom_bg`, `custom_text`.
+- `replace` (Block List, Max: 1) Match rule for the table widget text format. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--text_formats--text_format--replace))
+
+<a id="nestedblock--widget--query_table_definition--request--text_formats--text_format--match"></a>
+### Nested Schema for `widget.query_table_definition.request.text_formats.text_format.match`
+
+Required:
+
+- `type` (String) Match or compare option. Valid values are `is`, `is_not`, `contains`, `does_not_contain`, `starts_with`, `ends_with`.
+- `value` (String) Table Widget Match String.
+
+
+<a id="nestedblock--widget--query_table_definition--request--text_formats--text_format--replace"></a>
+### Nested Schema for `widget.query_table_definition.request.text_formats.text_format.replace`
+
+Required:
+
+- `type` (String) Table widget text format replace all type.
+- `with` (String) Table Widget Match String.
+
+Optional:
+
+- `substring` (String) Text that will be replaced. Must be used with type `substring`.
+
 
 
 
@@ -6630,6 +6676,7 @@ Optional:
 - `custom_link` (Block List) A nested block describing a custom link. Multiple `custom_link` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--custom_link))
 - `live_span` (String) The timeframe to use when displaying the widget. Valid values are `1m`, `5m`, `10m`, `15m`, `30m`, `1h`, `4h`, `1d`, `2d`, `1w`, `1mo`, `3mo`, `6mo`, `week_to_date`, `month_to_date`, `1y`, `alert`.
 - `request` (Block List) A nested block describing the request to use when displaying the widget. Multiple `request` blocks are allowed using the structure below (exactly one of `q`, `apm_query`, `log_query`, `rum_query`, `security_query` or `process_query` is required within the `request` block). (see [below for nested schema](#nestedblock--widget--toplist_definition--request))
+- `style` (Block List) The style of the widget (see [below for nested schema](#nestedblock--widget--toplist_definition--style))
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
@@ -7263,6 +7310,23 @@ Optional:
 Optional:
 
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
+
+
+
+<a id="nestedblock--widget--toplist_definition--style"></a>
+### Nested Schema for `widget.toplist_definition.style`
+
+Optional:
+
+- `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display))
+- `palette` (String) The color palette for the widget.
+
+<a id="nestedblock--widget--toplist_definition--style--display"></a>
+### Nested Schema for `widget.toplist_definition.style.display`
+
+Required:
+
+- `type` (String) The display type for the widget.
 
 
 

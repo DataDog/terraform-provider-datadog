@@ -34,6 +34,7 @@ Read-Only:
 - `daily_limit_warning_threshold_percentage` (Number)
 - `exclusion_filter` (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--exclusion_filter))
 - `filter` (List of Object) (see [below for nested schema](#nestedobjatt--logs_indexes--filter))
+- `flex_retention_days` (Number)
 - `name` (String)
 - `retention_days` (Number)
 

@@ -22,8 +22,9 @@ var (
 )
 
 type userRoleResource struct {
-	Api  *datadogV2.RolesApi
-	Auth context.Context
+	Api   *datadogV2.RolesApi
+	Auth  context.Context
+	Users *datadogV2.UsersApi
 }
 
 type UserRoleModel struct {
@@ -40,6 +41,7 @@ func (r *userRoleResource) Configure(_ context.Context, request resource.Configu
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetRolesApiV2()
 	r.Auth = providerData.Auth
+	r.Users = providerData.DatadogApiInstances.GetUsersApiV2()
 }
 
 func (r *userRoleResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -88,45 +90,34 @@ func (r *userRoleResource) Read(ctx context.Context, request resource.ReadReques
 	if response.Diagnostics.HasError() {
 		return
 	}
-	roleId := state.RoleId.ValueString()
 
-	pageSize := int64(100)
-	pageNumber := int64(0)
-
-	var roleUsers []datadogV2.User
-	for {
-		resp, httpResp, err := r.Api.ListRoleUsers(r.Auth, roleId, *datadogV2.NewListRoleUsersOptionalParameters().
-			WithPageSize(pageSize).
-			WithPageNumber(pageNumber))
-		if err != nil {
-			if httpResp != nil && httpResp.StatusCode == 404 {
-				// Role no longer exists, remove the mapping
-				response.State.RemoveResource(ctx)
-				return
-			}
-
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RoleUsers"))
-			return
-		}
-		if err := utils.CheckForUnparsed(resp); err != nil {
-			response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+	// get User
+	userId := state.UserId.ValueString()
+	resp, httpResp, err := r.Users.GetUser(r.Auth, userId)
+	if err != nil {
+		if httpResp != nil && httpResp.StatusCode == 404 {
+			response.State.RemoveResource(ctx)
 			return
 		}
 
-		roleUsers = append(roleUsers, resp.GetData()...)
-		if len(resp.GetData()) < 100 {
-			break
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RoleUsers"))
+		return
+	}
+	if err := utils.CheckForUnparsed(resp); err != nil {
+		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+
+	// check if User already has Role
+	for _, role := range resp.GetData().Relationships.GetRoles().Data {
+		if roleId := role.GetId(); roleId == state.RoleId.ValueString() {
+			state.ID = types.StringValue(roleId + ":" + userId)
+			return
 		}
-
-		pageNumber++
 	}
 
-	updated := r.updatedStateFromUserResponse(ctx, &state, roleUsers, false)
-
-	// Delete state if updated is false, since that means the user doesn't exist
-	if !updated {
-		response.State.RemoveResource(ctx)
-	}
+	// User doesn't have Role
+	response.State.RemoveResource(ctx)
 }
 
 func (r *userRoleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
@@ -154,7 +145,7 @@ func (r *userRoleResource) Create(ctx context.Context, request resource.CreateRe
 	}
 
 	// Save data into Terraform state
-	r.updatedStateFromUserResponse(ctx, &state, resp.GetData(), true)
+	state.ID = types.StringValue(state.RoleId.ValueString() + ":" + state.UserId.ValueString())
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -176,7 +167,7 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	}
 
 	roleId := state.RoleId.ValueString()
-	resp, httpResp, err := r.Api.RemoveUserFromRole(r.Auth, roleId, *body)
+	_, httpResp, err := r.Api.RemoveUserFromRole(r.Auth, roleId, *body)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -187,7 +178,7 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	}
 
 	// Save data into Terraform state
-	r.updatedStateFromUserResponse(ctx, &state, resp.GetData(), true)
+	state.ID = types.StringValue(state.RoleId.ValueString() + ":" + state.UserId.ValueString())
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -200,23 +191,4 @@ func (r *userRoleResource) buildUserRoleRequestBody(ctx context.Context, state *
 	relationship.Data.Id = state.UserId.ValueString()
 
 	return relationship, diags
-}
-
-func (r *userRoleResource) updatedStateFromUserResponse(ctx context.Context, state *UserRoleModel, resp []datadogV2.User, force bool) bool {
-	// if force, just set the state to the user and role ID that's already in the state
-	// this is useful for create/delete since the API doesn't return all the users
-	if force {
-		state.ID = types.StringValue(state.RoleId.ValueString() + ":" + state.UserId.ValueString())
-		return true
-	}
-
-	for _, user := range resp {
-		if user.GetId() == state.UserId.ValueString() {
-			userId := user.GetId()
-			state.ID = types.StringValue(state.RoleId.ValueString() + ":" + userId)
-			state.UserId = types.StringValue(userId)
-			return true
-		}
-	}
-	return false
 }

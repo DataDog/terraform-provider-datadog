@@ -3,7 +3,7 @@
 page_title: "datadog_integration_fastly_service Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog IntegrationFastlyService resource. This can be used to create and manage Datadog integrationfastlyservice.
+  Provides a Datadog IntegrationFastlyService resource. This can be used to create and manage Datadog integration_fastly_service.
 ---
 
 # datadog_integration_fastly_service (Resource)

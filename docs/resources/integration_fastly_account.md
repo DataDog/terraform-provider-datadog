@@ -3,7 +3,7 @@
 page_title: "datadog_integration_fastly_account Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog IntegrationFastlyAccount resource. This can be used to create and manage Datadog integrationfastlyaccount.
+  Provides a Datadog IntegrationFastlyAccount resource. This can be used to create and manage Datadog integration_fastly_account.
 ---
 
 # datadog_integration_fastly_account (Resource)

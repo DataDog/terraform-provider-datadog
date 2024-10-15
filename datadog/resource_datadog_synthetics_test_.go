@@ -477,13 +477,13 @@ func syntheticsAPIAssertion() *schema.Schema {
 				"type": {
 					Description:      "Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue, datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue),
 					Required:         true,
 				},
 				"operator": {
 					Description:  "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Type:         schema.TypeString,
-					Required:     true,
+					Optional:     true,
 					ValidateFunc: validateSyntheticsAssertionOperator,
 				},
 				"property": {
@@ -493,6 +493,11 @@ func syntheticsAPIAssertion() *schema.Schema {
 				},
 				"target": {
 					Description: "Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"code": {
+					Description: "If assertion type is `javascript`, this is the JavaScript code that performs the assertions.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -2360,7 +2365,16 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 		assertionMap := assertion.(map[string]interface{})
 		if v, ok := assertionMap["type"]; ok {
 			assertionType := v.(string)
-			if v, ok := assertionMap["operator"]; ok {
+			if assertionType == string(datadogV1.SYNTHETICSASSERTIONJAVASCRIPTTYPE_JAVASCRIPT) {
+				// Handling the case for javascript assertion that does not contains any `operator`
+				assertionJavascript := datadogV1.NewSyntheticsAssertionJavascriptWithDefaults()
+				assertionJavascript.SetType(datadogV1.SYNTHETICSASSERTIONJAVASCRIPTTYPE_JAVASCRIPT)
+				if v, ok := assertionMap["code"]; ok {
+					assertionCode := v.(string)
+					assertionJavascript.SetCode((assertionCode))
+				}
+				assertions = append(assertions, datadogV1.SyntheticsAssertionJavascriptAsSyntheticsAssertion(assertionJavascript))
+			} else if v, ok := assertionMap["operator"]; ok {
 				assertionOperator := v.(string)
 				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
 					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
@@ -2616,6 +2630,16 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
+			}
+		} else if assertion.SyntheticsAssertionJavascript != nil {
+			assertionTarget := assertion.SyntheticsAssertionJavascript
+
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+
+			if v, ok := assertionTarget.GetCodeOk(); ok {
+				localAssertion["code"] = v
 			}
 		}
 		localAssertions[i] = localAssertion
@@ -2940,7 +2964,6 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 
 		value.SetName(extractedValueMap["name"].(string))
 		value.SetType(datadogV1.SyntheticsLocalVariableParsingOptionsType(extractedValueMap["type"].(string)))
-
 		if extractedValueMap["field"] != "" {
 			value.SetField(extractedValueMap["field"].(string))
 		}
@@ -2950,7 +2973,9 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 
 		parser := datadogV1.SyntheticsVariableParser{}
 		parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(valueParser["type"].(string)))
-		parser.SetValue(valueParser["value"].(string))
+		if valueParser["value"] != "" {
+			parser.SetValue(valueParser["value"].(string))
+		}
 
 		value.SetParser(parser)
 
