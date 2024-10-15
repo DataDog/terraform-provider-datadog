@@ -16,42 +16,42 @@ import (
 )
 
 var (
-	_ datasource.DataSourceWithConfigure = &asmWafExclusionFiltersDataSource{}
+	_ datasource.DataSourceWithConfigure = &applicationSecurityExclusionFiltersDataSource{}
 )
 
-type asmWafExclusionFiltersDataSource struct {
-	api  *datadogV2.ASMExclusionFiltersApi
+type applicationSecurityExclusionFiltersDataSource struct {
+	api  *datadogV2.ApplicationSecurityExclusionFiltersApi
 	auth context.Context
 }
 
-type asmWafExclusionFiltersDataSourceModel struct {
-	Id                  types.String                  `tfsdk:"id"`
-	ExclusionFiltersIds types.List                    `tfsdk:"exclusion_filters_ids"`
-	ExclusionFilters    []asmWafExclusionFiltersModel `tfsdk:"exclusion_filters"`
+type applicationSecurityExclusionFiltersDataSourceModel struct {
+	Id                  types.String                               `tfsdk:"id"`
+	ExclusionFiltersIds types.List                                 `tfsdk:"exclusion_filters_ids"`
+	ExclusionFilters    []applicationSecurityExclusionFiltersModel `tfsdk:"exclusion_filters"`
 }
 
-func NewAsmWafExclusionFiltersDataSource() datasource.DataSource {
-	return &asmWafExclusionFiltersDataSource{}
+func NewApplicationSecurityExclusionFiltersDataSource() datasource.DataSource {
+	return &applicationSecurityExclusionFiltersDataSource{}
 }
 
-func (r *asmWafExclusionFiltersDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
+func (r *applicationSecurityExclusionFiltersDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, _ *datasource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
-	r.api = providerData.DatadogApiInstances.GetASMExclusionFiltersApiV2()
+	r.api = providerData.DatadogApiInstances.GetApplicationSecurityExclusionFiltersApiV2()
 	r.auth = providerData.Auth
 }
 
-func (*asmWafExclusionFiltersDataSource) Metadata(_ context.Context, _ datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = "asm_waf_exclusion_filters"
+func (*applicationSecurityExclusionFiltersDataSource) Metadata(_ context.Context, _ datasource.MetadataRequest, response *datasource.MetadataResponse) {
+	response.TypeName = "application_security_exclusion_filters"
 }
 
-func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state asmWafExclusionFiltersDataSourceModel
+func (r *applicationSecurityExclusionFiltersDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state applicationSecurityExclusionFiltersDataSourceModel
 	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	res, _, err := r.api.ListASMExclusionFilters(r.auth)
+	res, _, err := r.api.ListApplicationSecurityExclusionFilters(r.auth)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error while fetching exclusion filters"))
 		return
@@ -59,10 +59,10 @@ func (r *asmWafExclusionFiltersDataSource) Read(ctx context.Context, request dat
 
 	data := res.GetData()
 	exclusionFilterIds := make([]string, len(data))
-	exclusionFilters := make([]asmWafExclusionFiltersModel, len(data))
+	exclusionFilters := make([]applicationSecurityExclusionFiltersModel, len(data))
 
 	for idx, exclusionFilter := range res.GetData() {
-		var exclusionFilterModel asmWafExclusionFiltersModel
+		var exclusionFilterModel applicationSecurityExclusionFiltersModel
 		exclusionFilterModel.Id = types.StringValue(exclusionFilter.GetId())
 
 		attributes := exclusionFilter.GetAttributes()
@@ -150,19 +150,19 @@ func computeExclusionFiltersDataSourceID(exclusionFiltersIds *string) string {
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
-func (r *asmWafExclusionFiltersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (r *applicationSecurityExclusionFiltersDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Retrieves Datadog ASM WAF Exclusion Filters.",
+		Description: "Retrieves Datadog Application Security Exclusion Filters.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"exclusion_filters_ids": schema.ListAttribute{
 				Computed:    true,
-				Description: "List of IDs for the ASM exclusion filters.",
+				Description: "List of IDs for the Application Security exclusion filters.",
 				ElementType: types.StringType,
 			},
 			"exclusion_filters": schema.ListAttribute{
 				Computed:    true,
-				Description: "List of ASM WAF exclusion filters",
+				Description: "List of Application Security exclusion filters",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
 						"id":          types.StringType,

@@ -62,7 +62,7 @@ var Resources = []func() resource.Resource{
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
 	NewCSMThreatsAgentRuleResource,
-	NewAsmWafExclusionFiltersResource,
+	NewApplicationSecurityExclusionFiltersResource,
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
@@ -87,7 +87,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
 	NewCSMThreatsAgentRulesDataSource,
-	NewAsmWafExclusionFiltersDataSource,
+	NewApplicationSecurityExclusionFiltersDataSource,
 }
 
 // FrameworkProvider struct
