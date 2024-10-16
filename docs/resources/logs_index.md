@@ -25,6 +25,7 @@ resource "datadog_logs_index" "sample_index" {
   }
   daily_limit_warning_threshold_percentage = 50
   retention_days                           = 7
+  flex_retention_days                      = 180
   filter {
     query = "*"
   }
@@ -62,7 +63,8 @@ resource "datadog_logs_index" "sample_index" {
 - `daily_limit_warning_threshold_percentage` (Number) A percentage threshold of the daily quota at which a Datadog warning event is generated.
 - `disable_daily_limit` (Boolean) If true, sets the daily_limit value to null and the index is not limited on a daily basis (any specified daily_limit value in the request is ignored). If false or omitted, the index's current daily_limit is maintained.
 - `exclusion_filter` (Block List) List of exclusion filters. (see [below for nested schema](#nestedblock--exclusion_filter))
-- `retention_days` (Number) The number of days before logs are deleted from this index.
+- `flex_retention_days` (Number) The total number of days logs are stored in Standard and Flex Tier before being deleted from the index.
+- `retention_days` (Number) The number of days logs are stored in Standard Tier before aging into the Flex Tier or being deleted from the index.
 
 ### Read-Only
 

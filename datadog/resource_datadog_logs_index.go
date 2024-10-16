@@ -69,7 +69,13 @@ var indexSchema = map[string]*schema.Schema{
 		DiffSuppressFunc: suppressDiffWhenDisabledDailyLimit,
 	},
 	"retention_days": {
-		Description: "The number of days before logs are deleted from this index.",
+		Description: "The number of days logs are stored in Standard Tier before aging into the Flex Tier or being deleted from the index.",
+		Type:        schema.TypeInt,
+		Optional:    true,
+		Computed:    true,
+	},
+	"flex_retention_days": {
+		Description: "The total number of days logs are stored in Standard and Flex Tier before being deleted from the index.",
 		Type:        schema.TypeInt,
 		Optional:    true,
 		Computed:    true,
@@ -202,6 +208,9 @@ func updateLogsIndexState(d *schema.ResourceData, index *datadogV1.LogsIndex) di
 	if err := d.Set("retention_days", index.GetNumRetentionDays()); err != nil {
 		return diag.FromErr(err)
 	}
+	if err := d.Set("flex_retention_days", index.GetNumFlexLogsRetentionDays()); err != nil {
+		return diag.FromErr(err)
+	}
 	if err := d.Set("filter", buildTerraformIndexFilter(index.GetFilter())); err != nil {
 		return diag.FromErr(err)
 	}
@@ -275,6 +284,9 @@ func buildDatadogIndexUpdateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 	if v, ok := d.GetOk("retention_days"); ok {
 		ddIndex.SetNumRetentionDays(int64(v.(int)))
 	}
+	if v, ok := d.GetOk("flex_retention_days"); ok {
+		ddIndex.SetNumFlexLogsRetentionDays(int64(v.(int)))
+	}
 
 	ddIndex.ExclusionFilters = *buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
 	return &ddIndex
@@ -299,6 +311,9 @@ func buildDatadogIndexCreateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 	}
 	if v, ok := d.GetOk("retention_days"); ok {
 		ddIndex.SetNumRetentionDays(int64(v.(int)))
+	}
+	if v, ok := d.GetOk("flex_retention_days"); ok {
+		ddIndex.SetNumFlexLogsRetentionDays(int64(v.(int)))
 	}
 	ddIndex.ExclusionFilters = *buildDatadogExclusionFilters(d.Get("exclusion_filter").([]interface{}))
 	return &ddIndex

@@ -131,7 +131,7 @@ resource "datadog_synthetics_test" "test_ssl" {
 
   request_definition {
     host = "example.org"
-    port = 443
+    port = "443"
   }
 
   assertion {
@@ -160,7 +160,7 @@ resource "datadog_synthetics_test" "test_tcp" {
 
   request_definition {
     host = "example.org"
-    port = 443
+    port = "443"
   }
 
   assertion {
@@ -268,7 +268,7 @@ resource "datadog_synthetics_test" "test_multi_step" {
 
     request_definition {
       host      = "example.org"
-      port      = 443
+      port      = "443"
       call_type = "healthcheck"
       service   = "greeter.Greeter"
     }
@@ -286,7 +286,7 @@ resource "datadog_synthetics_test" "test_multi_step" {
 
     request_definition {
       host      = "example.org"
-      port      = 443
+      port      = "443"
       call_type = "unary"
       service   = "greeter.Greeter"
       method    = "SayHello"
@@ -412,7 +412,7 @@ resource "datadog_synthetics_test" "test_grpc_unary" {
 
   request_definition {
     host      = "example.org"
-    port      = 443
+    port      = "443"
     call_type = "unary"
     service   = "greeter.Greeter"
     method    = "SayHello"
@@ -488,7 +488,7 @@ resource "datadog_synthetics_test" "test_grpc_health" {
 
   request_definition {
     host      = "example.org"
-    port      = 443
+    port      = "443"
     call_type = "healthcheck"
     service   = "greeter.Greeter"
   }
@@ -580,11 +580,12 @@ Optional:
 
 Required:
 
-- `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`, `javascript`.
 
 Optional:
 
+- `code` (String) If assertion type is `javascript`, this is the JavaScript code that performs the assertions.
+- `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
@@ -639,11 +640,11 @@ Required:
 
 - `name` (String)
 - `parser` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--extracted_value--parser))
-- `type` (String) Property of the Synthetics Test Response to use for the variable. Valid values are `http_body`, `http_header`, `local_variable`.
+- `type` (String) Property of the Synthetics Test Response to use for the variable. Valid values are `grpc_message`, `grpc_metadata`, `http_body`, `http_header`, `http_status_code`.
 
 Optional:
 
-- `field` (String) When type is `http_header`, name of the header to use to extract the value.
+- `field` (String) When type is `http_header` or `grpc_metadata`, name of the header or metadatum to extract.
 - `secure` (Boolean) Determines whether or not the extracted value will be obfuscated.
 
 <a id="nestedblock--api_step--extracted_value--parser"></a>
@@ -727,7 +728,7 @@ Optional:
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
-- `dns_server_port` (Number) DNS server port to use for DNS tests.
+- `dns_server_port` (String) DNS server port to use for DNS tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `host` (String) Host name to perform the test with.
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
@@ -737,7 +738,7 @@ Optional:
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - `persist_cookies` (Boolean) Persist cookies across redirects.
 - `plain_proto_file` (String) The content of a proto file as a string.
-- `port` (Number) Port to use when performing the test.
+- `port` (String) Port to use when performing the test.
 - `proto_json_descriptor` (String, Deprecated) A protobuf JSON descriptor. **Deprecated.** Use `plain_proto_file` instead.
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.
@@ -792,11 +793,12 @@ Optional:
 
 Required:
 
-- `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`, `javascript`.
 
 Optional:
 
+- `code` (String) If assertion type is `javascript`, this is the JavaScript code that performs the assertions.
+- `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
 - `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
@@ -943,7 +945,7 @@ Optional:
 Required:
 
 - `name` (String) Name of the variable.
-- `type` (String) Type of test configuration variable. Valid values are `global`, `text`.
+- `type` (String) Type of test configuration variable. Valid values are `global`, `text`, `email`.
 
 Optional:
 
@@ -1108,7 +1110,7 @@ Optional:
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
 - `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
-- `dns_server_port` (Number) DNS server port to use for DNS tests.
+- `dns_server_port` (String) DNS server port to use for DNS tests.
 - `host` (String) Host name to perform the test with.
 - `http_version` (String, Deprecated) HTTP version to use for an HTTP request in an API test or step. **Deprecated.** Use `http_version` in the `options_list` field instead.
 - `message` (String) For UDP and websocket tests, message to send with the request.
@@ -1117,7 +1119,7 @@ Optional:
 - `number_of_packets` (Number) Number of pings to use per test for ICMP tests (`subtype = "icmp"`) between 0 and 10.
 - `persist_cookies` (Boolean) Persist cookies across redirects.
 - `plain_proto_file` (String) The content of a proto file as a string.
-- `port` (Number) Port to use when performing the test.
+- `port` (String) Port to use when performing the test.
 - `proto_json_descriptor` (String, Deprecated) A protobuf JSON descriptor. **Deprecated.** Use `plain_proto_file` instead.
 - `servername` (String) For SSL tests, it specifies on which server you want to initiate the TLS handshake, allowing the server to present one of multiple possible certificates on the same IP address and TCP port number.
 - `service` (String) The gRPC service on which you want to perform the gRPC call.

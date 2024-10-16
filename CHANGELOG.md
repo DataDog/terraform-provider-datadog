@@ -1,3 +1,59 @@
+## 3.46.0 (October 3, 2024)
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.45.0...v3.46.0
+
+## 3.45.0 (October 3, 2024)
+
+### BUGFIXES
+* [datadog_synthetics_test] Do not send `value` if empty by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2580
+* [datadog_synthetics_test] Fix http2 pseudo-headers not accepted by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2581
+* [datadog_dashboard] Add support for text_formats in query table widget requests by @hyungl in https://github.com/DataDog/terraform-provider-datadog/pull/2587
+### IMPROVEMENTS
+* [datadog_logs_index] Add Flex Index Configuration support for Logs Indexes by @KillerPaperMice in https://github.com/DataDog/terraform-provider-datadog/pull/2569
+### FEATURES
+* [resource_datadog_dashboard] add support for toplist widget styles in dashboards by @brtu in https://github.com/DataDog/terraform-provider-datadog/pull/2566
+* [datadog_synthetics_test] Add javascript assertion to Synthetics Assertion by @RomainGuarinoni in https://github.com/DataDog/terraform-provider-datadog/pull/2576
+
+## New Contributors
+* @KillerPaperMice made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2569
+* @hyungl made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2587
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.44.1...v3.45.0
+
+## 3.44.1 (September 11, 2024)
+
+### BUGFIXES
+* [datadog_logs_custom_destination] Fix creation failing without forward_tags_restriction_list set by @Prepager in https://github.com/DataDog/terraform-provider-datadog/pull/2565
+* [datadog_synthetics_test] Handle both integer and string values for port by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2577
+### IMPROVEMENTS
+* [datadog_provider] Bump go version in provider by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2573
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.44.0...v3.44.1
+
+## 3.44.0 (September 5, 2024)
+
+### BUGFIXES
+* [datadog_api_key] Stop overwriting key values in state when the API omits the key by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/2544
+* [datadog_restriction_policy] Allow policy deletions outside of terraform to prompt resource recreation by @dchayes-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2545
+### FEATURES
+* [datadog_software_catalog] Entity resource by @hyperloglogy in https://github.com/DataDog/terraform-provider-datadog/pull/2537
+* [datadog_logs_custom_destination] Introduce logs custom destination resource by @Prepager in https://github.com/DataDog/terraform-provider-datadog/pull/2542
+* [datadog_synthetics_test] Support `grpc_message` extracted variables by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2552
+* [datadog_logs_custom_destination] Introduce logs custom destination resource by @Prepager in https://github.com/DataDog/terraform-provider-datadog/pull/2555
+### NOTES
+* [datadog_synthetics_test] allow variable in port by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2522
+* [datadog_api_key] Add deprecation warning to datadog_api_key data source by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/2541
+* [datadog_api_key] Add deprecation warning for importing datadog_api_key resources by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/2543
+* [SOCE-1320] update description for slo validate option by @zhengshizhao in https://github.com/DataDog/terraform-provider-datadog/pull/2532
+
+## New Contributors
+* @tyjet made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2541
+* @dchayes-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2545
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.43.1...v3.44.0
+
 ## 3.43.1 (August 20, 2024)
 
 ### BUGFIXES

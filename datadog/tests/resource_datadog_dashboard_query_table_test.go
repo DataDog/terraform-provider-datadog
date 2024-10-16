@@ -219,6 +219,69 @@ resource "datadog_dashboard" "query_table_dashboard" {
 }
 `
 
+const datadogDashboardQueryTableConfigWithTextFormats = `
+resource "datadog_dashboard" "query_table_dashboard" {
+	title         = "{{uniq}}"
+	description   = "Created using the Datadog provider in Terraform"
+	layout_type   = "ordered"
+
+	widget {
+		query_table_definition {
+			title_size = "16"
+			title = "this is hyung"
+			title_align = "right"
+			live_span = "1d"
+			request {
+				aggregator = "max"
+				q = "avg:system.cpu.user{account:prod} by {service, team}"
+				alias = "cpu user"
+				limit = 25
+				order = "desc"
+				cell_display_mode = ["number"]
+				text_formats {
+					text_format {
+						match {
+							type = "is"
+							value = "test"
+						}
+						palette = "black_on_light_yellow"
+						replace {
+							type = "all"
+							with = "test"
+				        }
+					}
+					text_format {
+						match {
+							type = "is"
+							value = "versus"
+						}
+					}
+				}
+				text_formats {
+					text_format {
+						match {	
+							type = "is"
+							value = "apple"
+						}
+						palette = "custom_bg"
+						custom_bg_color = "#632CA6"
+					}
+					text_format {
+						match {	
+							type = "is"
+							value = "orange"
+						}
+						palette = "custom_text"
+						custom_fg_color = "#632CA6"
+					}
+				}
+			}
+			has_search_bar = "auto"
+		}
+	}
+}
+`
+
 var datadogDashboardQueryTableAsserts = []string{
 	"widget.0.query_table_definition.0.live_span = 1d",
 	"widget.0.query_table_definition.0.request.1.order =",
@@ -315,6 +378,42 @@ var datadogDashboardQueryTableFormulaAsserts = []string{
 	"widget.2.query_table_definition.0.request.0.query.0.apm_resource_stats_query.0.primary_tag_value = abc",
 }
 
+var datadogDashboardQueryTableWithTextFormatsAsserts = []string{
+	"title = {{uniq}}",
+	"description = Created using the Datadog provider in Terraform",
+	"layout_type = ordered",
+	"widget.0.query_table_definition.0.title_size = 16",
+	"widget.0.query_table_definition.0.title = this is hyung",
+	"widget.0.query_table_definition.0.title_align = right",
+	"widget.0.query_table_definition.0.live_span = 1d",
+	"widget.0.query_table_definition.0.request.0.aggregator = max",
+	"widget.0.query_table_definition.0.request.0.q = avg:system.cpu.user{account:prod} by {service, team}",
+	"widget.0.query_table_definition.0.request.0.alias = cpu user",
+	"widget.0.query_table_definition.0.request.0.limit = 25",
+	"widget.0.query_table_definition.0.request.0.order = desc",
+	"widget.0.query_table_definition.0.request.0.cell_display_mode.0 = number",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.match.0.type = is",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.match.0.value = test",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.palette = black_on_light_yellow",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.replace.0.type = all",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.replace.0.with = test",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.custom_bg_color = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.0.custom_fg_color = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.match.0.type = is",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.match.0.value = versus",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.palette = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.custom_bg_color = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.0.text_format.1.custom_fg_color = ",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.0.match.0.type = is",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.0.match.0.value = apple",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.0.palette = custom_bg",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.0.custom_bg_color = #632CA6",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.1.match.0.type = is",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.1.match.0.value = orange",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.1.palette = custom_text",
+	"widget.0.query_table_definition.0.request.0.text_formats.1.text_format.1.custom_fg_color = #632CA6",
+}
+
 func TestAccDatadogDashboardQueryTable(t *testing.T) {
 	testAccDatadogDashboardWidgetUtil(t, datadogDashboardQueryTableConfig, "datadog_dashboard.query_table_dashboard", datadogDashboardQueryTableAsserts)
 }
@@ -329,4 +428,12 @@ func TestAccDatadogDashboardQueryTableFormula(t *testing.T) {
 
 func TestAccDatadogDashboardQueryTableFormula_import(t *testing.T) {
 	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardQueryTableFormulaConfig, "datadog_dashboard.query_table_dashboard")
+}
+
+func TestAccDatadogDashboardQueryTableWithTextFormats(t *testing.T) {
+	testAccDatadogDashboardWidgetUtil(t, datadogDashboardQueryTableConfigWithTextFormats, "datadog_dashboard.query_table_dashboard", datadogDashboardQueryTableWithTextFormatsAsserts)
+}
+
+func TestAccDatadogDashboardQueryTableWithTextFormats_import(t *testing.T) {
+	testAccDatadogDashboardWidgetUtilImport(t, datadogDashboardQueryTableConfigWithTextFormats, "datadog_dashboard.query_table_dashboard")
 }

@@ -173,6 +173,8 @@ func Provider() *schema.Provider {
 			},
 		},
 
+		// NEW RESOURCES ARE NOT ALLOWED TO BE ADDED HERE
+		// New resources must be implemented using the `terraform-plugin-framework`, and added to the `datadog/fwprovider` directory.
 		ResourcesMap: map[string]*schema.Resource{
 			"datadog_authn_mapping":                        resourceDatadogAuthnMapping(),
 			"datadog_child_organization":                   resourceDatadogChildOrganization(),
@@ -219,6 +221,8 @@ func Provider() *schema.Provider {
 			"datadog_user":                                 resourceDatadogUser(),
 		},
 
+		// NEW DATA SOURCES ARE NOT ALLOWED TO BE ADDED HERE
+		// New data sources must be implemented using the `terraform-plugin-framework`, and added to the `datadog/fwprovider` directory.
 		DataSourcesMap: map[string]*schema.Resource{
 			"datadog_cloud_workload_security_agent_rules":     dataSourceDatadogCloudWorkloadSecurityAgentRules(),
 			"datadog_dashboard":                               dataSourceDatadogDashboard(),

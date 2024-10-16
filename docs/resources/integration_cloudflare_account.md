@@ -3,7 +3,7 @@
 page_title: "datadog_integration_cloudflare_account Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog IntegrationCloudflareAccount resource. This can be used to create and manage Datadog integrationcloudflareaccount.
+  Provides a Datadog IntegrationCloudflareAccount resource. This can be used to create and manage Datadog integration_cloudflare_account.
 ---
 
 # datadog_integration_cloudflare_account (Resource)

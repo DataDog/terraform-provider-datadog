@@ -216,3 +216,52 @@ func TestValidateFloat64Between(t *testing.T) {
 		}
 	}
 }
+
+func TestValidateHttpRequestHeader(t *testing.T) {
+	cases := []struct {
+		Value    map[string]interface{}
+		ErrCount int
+	}{
+		{
+			Value:    map[string]interface{}{"foo": "bar"},
+			ErrCount: 0,
+		},
+		{
+			Value:    map[string]interface{}{"content-length": "1"},
+			ErrCount: 0,
+		},
+		{
+			Value:    map[string]interface{}{":authority": "example.com"},
+			ErrCount: 0,
+		},
+		{
+			Value:    map[string]interface{}{"foo": "\t"},
+			ErrCount: 0,
+		},
+		{
+			Value:    map[string]interface{}{"not?token": "any"},
+			ErrCount: 1,
+		},
+		{
+			Value:    map[string]interface{}{":unknown": "any"},
+			ErrCount: 1,
+		},
+		{
+			Value:    map[string]interface{}{"foo": "\r"},
+			ErrCount: 1,
+		},
+		{
+			Value:    map[string]interface{}{"foo": "\n"},
+			ErrCount: 1,
+		},
+	}
+
+	for _, tc := range cases {
+		_, errors := ValidateHttpRequestHeader(tc.Value, "request_headers")
+
+		if len(errors) != tc.ErrCount {
+			t.Fatalf("Expected http request header validation to trigger %d error(s) for value %q - instead saw %d",
+				tc.ErrCount, tc.Value, len(errors))
+		}
+	}
+}

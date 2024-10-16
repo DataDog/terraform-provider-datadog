@@ -49,6 +49,7 @@ Read-Only:
 - `name` (String)
 - `options` (List of Object) (see [below for nested schema](#nestedobjatt--rules--options))
 - `query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--query))
+- `reference_tables` (List of Object) (see [below for nested schema](#nestedobjatt--rules--reference_tables))
 - `signal_query` (List of Object) (see [below for nested schema](#nestedobjatt--rules--signal_query))
 - `tags` (Set of String)
 - `third_party_case` (List of Object) (see [below for nested schema](#nestedobjatt--rules--third_party_case))
@@ -118,7 +119,7 @@ Read-Only:
 - `signal_title_template` (String)
 
 <a id="nestedobjatt--rules--options--third_party_rule_options--root_query"></a>
-### Nested Schema for `rules.options.third_party_rule_options.signal_title_template`
+### Nested Schema for `rules.options.third_party_rule_options.root_query`
 
 Read-Only:
 
@@ -150,6 +151,18 @@ Read-Only:
 - `agent_rule_id` (String)
 - `expression` (String)
 
+
+
+<a id="nestedobjatt--rules--reference_tables"></a>
+### Nested Schema for `rules.reference_tables`
+
+Read-Only:
+
+- `check_presence` (Boolean)
+- `column_name` (String)
+- `log_field_path` (String)
+- `rule_query_name` (String)
+- `table_name` (String)
 
 
 <a id="nestedobjatt--rules--signal_query"></a>

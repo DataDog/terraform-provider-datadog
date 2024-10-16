@@ -441,6 +441,46 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 			Description: "The rule type.",
 			Default:     "log_detection",
 		},
+
+		"reference_tables": {
+			Type:        schema.TypeList,
+			Optional:    true,
+			Description: "Reference tables for filtering query results.",
+
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"table_name": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+						Required:         true,
+						Description:      "The name of the reference table.",
+					},
+					"column_name": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+						Required:         true,
+						Description:      "The name of the column in the reference table.",
+					},
+					"log_field_path": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+						Required:         true,
+						Description:      "The field in the log that should be matched against the reference table.",
+					},
+					"rule_query_name": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+						Required:         true,
+						Description:      "The name of the query to filter.",
+					},
+					"check_presence": {
+						Type:        schema.TypeBool,
+						Required:    true,
+						Description: "Whether to include or exclude logs that match the reference table.",
+					},
+				},
+			},
+		},
 	}
 	if includeValidate {
 		basicSchema["validate"] = &schema.Schema{
@@ -639,6 +679,12 @@ func buildCreateStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoring
 			return &payload, err
 		}
 	}
+
+	if v, ok := d.GetOk("reference_tables"); ok {
+		tfReferenceTables := v.([]interface{})
+		payload.SetReferenceTables(buildPayloadReferenceTables(tfReferenceTables))
+	}
+
 	return &payload, nil
 }
 
@@ -660,6 +706,12 @@ func buildStandardPayload(d utils.Resource) (*datadogV2.SecurityMonitoringStanda
 			return &payload, err
 		}
 	}
+
+	if v, ok := d.GetOk("reference_tables"); ok {
+		tfReferenceTables := v.([]interface{})
+		payload.SetReferenceTables(buildPayloadReferenceTables(tfReferenceTables))
+	}
+
 	return &payload, nil
 }
 
@@ -1022,6 +1074,23 @@ func buildPayloadFilters(tfFilters []interface{}) []datadogV2.SecurityMonitoring
 	return payloadFilters
 }
 
+func buildPayloadReferenceTables(tfReferenceTables []interface{}) []datadogV2.SecurityMonitoringReferenceTable {
+	payloadReferenceTables := make([]datadogV2.SecurityMonitoringReferenceTable, len(tfReferenceTables))
+	for idx, tfReferenceTable := range tfReferenceTables {
+		referenceTable := tfReferenceTable.(map[string]interface{})
+		payloadReferenceTable := datadogV2.SecurityMonitoringReferenceTable{}
+
+		payloadReferenceTable.SetTableName(referenceTable["table_name"].(string))
+		payloadReferenceTable.SetColumnName(referenceTable["column_name"].(string))
+		payloadReferenceTable.SetLogFieldPath(referenceTable["log_field_path"].(string))
+		payloadReferenceTable.SetRuleQueryName(referenceTable["rule_query_name"].(string))
+		payloadReferenceTable.SetCheckPresence(referenceTable["check_presence"].(bool))
+
+		payloadReferenceTables[idx] = payloadReferenceTable
+	}
+	return payloadReferenceTables
+}
+
 func resourceDatadogSecurityMonitoringRuleRead(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -1108,6 +1177,12 @@ func updateStandardResourceDataFromResponse(d *schema.ResourceData, ruleResponse
 	if ruleType, ok := ruleResponse.GetTypeOk(); ok {
 		d.Set("type", *ruleType)
 	}
+
+	if referenceTables, ok := ruleResponse.GetReferenceTablesOk(); ok {
+		refTables := extractReferenceTables(*referenceTables)
+		d.Set("reference_tables", refTables)
+	}
+
 }
 
 func extractStandardRuleQueries(responseRuleQueries []datadogV2.SecurityMonitoringStandardRuleQuery) []map[string]interface{} {
@@ -1282,6 +1357,20 @@ func extractTfOptions(options datadogV2.SecurityMonitoringRuleOptions) map[strin
 	return tfOptions
 }
 
+func extractReferenceTables(referenceTables []datadogV2.SecurityMonitoringReferenceTable) []interface{} {
+	tfReferenceTables := make([]interface{}, len(referenceTables))
+	for idx, referenceTable := range referenceTables {
+		tfReferenceTable := make(map[string]interface{})
+		tfReferenceTable["table_name"] = referenceTable.GetTableName()
+		tfReferenceTable["column_name"] = referenceTable.GetColumnName()
+		tfReferenceTable["log_field_path"] = referenceTable.GetLogFieldPath()
+		tfReferenceTable["rule_query_name"] = referenceTable.GetRuleQueryName()
+		tfReferenceTable["check_presence"] = referenceTable.GetCheckPresence()
+		tfReferenceTables[idx] = tfReferenceTable
+	}
+	return tfReferenceTables
+}
+
 func resourceDatadogSecurityMonitoringRuleUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
@@ -1313,6 +1402,8 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 	if err := checkQueryConsistency(d); err != nil {
 		return &datadogV2.SecurityMonitoringRuleUpdatePayload{}, err
 	}
+
+	isSignalCorrelation := isSignalCorrelationSchema(d)
 
 	if isThirdPartyRule(d) {
 		tfThirdPartyCases := d.Get("third_party_case").([]interface{})
@@ -1363,7 +1454,6 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 		}
 		payload.SetCases(payloadCases)
 
-		isSignalCorrelation := isSignalCorrelationSchema(d)
 		var v interface{}
 		var ok bool
 		if isSignalCorrelation {
@@ -1415,6 +1505,13 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 
 	tfFilters := d.Get("filter")
 	payload.SetFilters(buildPayloadFilters(tfFilters.([]interface{})))
+
+	if !isSignalCorrelation {
+		if v, ok := d.GetOk("reference_tables"); ok {
+			tfReferenceTables := v.([]interface{})
+			payload.SetReferenceTables(buildPayloadReferenceTables(tfReferenceTables))
+		}
+	}
 
 	return &payload, nil
 }

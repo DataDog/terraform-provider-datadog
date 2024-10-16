@@ -44,7 +44,7 @@ func (r *apiKeyResource) Metadata(_ context.Context, request resource.MetadataRe
 
 func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys.",
+		Description: "Provides a Datadog API Key resource. This can be used to create and manage Datadog API Keys. Import functionality for this resource is deprecated and will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use this resource to create and manage new API keys.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Name for API Key.",
@@ -140,6 +140,10 @@ func (r *apiKeyResource) Delete(ctx context.Context, request resource.DeleteRequ
 }
 
 func (r *apiKeyResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	response.Diagnostics.AddWarning(
+		"Deprecated",
+		"The import functionality for datadog_api_key resources is deprecated and will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use the datadog_api_key resource to create and manage new API keys.",
+	)
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
@@ -162,5 +166,7 @@ func (r *apiKeyResource) buildDatadogApiKeyUpdateV2Struct(state *apiKeyResourceM
 func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) {
 	apiKeyAttributes := apiKeyData.GetAttributes()
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
-	state.Key = types.StringValue(apiKeyAttributes.GetKey())
+	if apiKeyAttributes.HasKey() {
+		state.Key = types.StringValue(apiKeyAttributes.GetKey())
+	}
 }

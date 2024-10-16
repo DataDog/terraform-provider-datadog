@@ -3,7 +3,7 @@
 page_title: "datadog_team_permission_setting Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog TeamPermissionSetting resource. This can be used to manage Datadog teampermissionsetting.
+  Provides a Datadog TeamPermissionSetting resource. This can be used to manage Datadog team_permission_setting.
 ---
 
 # datadog_team_permission_setting (Resource)

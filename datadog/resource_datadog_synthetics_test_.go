@@ -477,13 +477,13 @@ func syntheticsAPIAssertion() *schema.Schema {
 				"type": {
 					Description:      "Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue),
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAssertionTypeFromValue, datadogV1.NewSyntheticsAssertionBodyHashTypeFromValue, datadogV1.NewSyntheticsAssertionJavascriptTypeFromValue),
 					Required:         true,
 				},
 				"operator": {
 					Description:  "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Type:         schema.TypeString,
-					Required:     true,
+					Optional:     true,
 					ValidateFunc: validateSyntheticsAssertionOperator,
 				},
 				"property": {
@@ -493,6 +493,11 @@ func syntheticsAPIAssertion() *schema.Schema {
 				},
 				"target": {
 					Description: "Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"code": {
+					Description: "If assertion type is `javascript`, this is the JavaScript code that performs the assertions.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
@@ -853,10 +858,10 @@ func syntheticsTestAPIStep() *schema.Schema {
 								Description:      "Property of the Synthetics Test Response to use for the variable.",
 								Type:             schema.TypeString,
 								Required:         true,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsGlobalVariableParseTestOptionsTypeFromValue),
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsLocalVariableParsingOptionsTypeFromValue),
 							},
 							"field": {
-								Description: "When type is `http_header`, name of the header to use to extract the value.",
+								Description: "When type is `http_header` or `grpc_metadata`, name of the header or metadatum to extract.",
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
@@ -1967,7 +1972,10 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		request.SetHost(attr.(string))
 	}
 	if attr, ok := d.GetOk("request_definition.0.port"); ok {
-		request.SetPort(attr.(string))
+		port := attr.(string)
+		request.SetPort(datadogV1.SyntheticsTestRequestPort{
+			SyntheticsTestRequestVariablePort: &port,
+		})
 	}
 	if attr, ok := d.GetOk("request_definition.0.dns_server"); ok {
 		request.SetDnsServer(attr.(string))
@@ -2061,7 +2069,10 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 					request.SetAllowInsecure(requestMap["allow_insecure"].(bool))
 					if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
 						request.SetHost(requestMap["host"].(string))
-						request.SetPort(requestMap["port"].(string))
+						port := requestMap["port"].(string)
+						request.SetPort(datadogV1.SyntheticsTestRequestPort{
+							SyntheticsTestRequestVariablePort: &port,
+						})
 						request.SetService(requestMap["service"].(string))
 						request.SetMessage(requestMap["message"].(string))
 						if v, ok := requestMap["call_type"].(string); ok && v != "" {
@@ -2354,7 +2365,16 @@ func buildDatadogAssertions(attr []interface{}) []datadogV1.SyntheticsAssertion 
 		assertionMap := assertion.(map[string]interface{})
 		if v, ok := assertionMap["type"]; ok {
 			assertionType := v.(string)
-			if v, ok := assertionMap["operator"]; ok {
+			if assertionType == string(datadogV1.SYNTHETICSASSERTIONJAVASCRIPTTYPE_JAVASCRIPT) {
+				// Handling the case for javascript assertion that does not contains any `operator`
+				assertionJavascript := datadogV1.NewSyntheticsAssertionJavascriptWithDefaults()
+				assertionJavascript.SetType(datadogV1.SYNTHETICSASSERTIONJAVASCRIPTTYPE_JAVASCRIPT)
+				if v, ok := assertionMap["code"]; ok {
+					assertionCode := v.(string)
+					assertionJavascript.SetCode((assertionCode))
+				}
+				assertions = append(assertions, datadogV1.SyntheticsAssertionJavascriptAsSyntheticsAssertion(assertionJavascript))
+			} else if v, ok := assertionMap["operator"]; ok {
 				assertionOperator := v.(string)
 				if assertionOperator == string(datadogV1.SYNTHETICSASSERTIONJSONSCHEMAOPERATOR_VALIDATES_JSON_SCHEMA) {
 					assertionJSONSchemaTarget := datadogV1.NewSyntheticsAssertionJSONSchemaTarget(datadogV1.SyntheticsAssertionJSONSchemaOperator(assertionOperator), datadogV1.SyntheticsAssertionType(assertionType))
@@ -2610,6 +2630,16 @@ func buildTerraformAssertions(actualAssertions []datadogV1.SyntheticsAssertion) 
 			}
 			if v, ok := assertionTarget.GetTypeOk(); ok {
 				localAssertion["type"] = string(*v)
+			}
+		} else if assertion.SyntheticsAssertionJavascript != nil {
+			assertionTarget := assertion.SyntheticsAssertionJavascript
+
+			if v, ok := assertionTarget.GetTypeOk(); ok {
+				localAssertion["type"] = string(*v)
+			}
+
+			if v, ok := assertionTarget.GetCodeOk(); ok {
+				localAssertion["code"] = v
 			}
 		}
 		localAssertions[i] = localAssertion
@@ -2933,8 +2963,7 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 		value := datadogV1.SyntheticsParsingOptions{}
 
 		value.SetName(extractedValueMap["name"].(string))
-		value.SetType(datadogV1.SyntheticsGlobalVariableParseTestOptionsType(extractedValueMap["type"].(string)))
-
+		value.SetType(datadogV1.SyntheticsLocalVariableParsingOptionsType(extractedValueMap["type"].(string)))
 		if extractedValueMap["field"] != "" {
 			value.SetField(extractedValueMap["field"].(string))
 		}
@@ -2944,7 +2973,9 @@ func buildDatadogExtractedValues(stepExtractedValues []interface{}) []datadogV1.
 
 		parser := datadogV1.SyntheticsVariableParser{}
 		parser.SetType(datadogV1.SyntheticsGlobalVariableParserType(valueParser["type"].(string)))
-		parser.SetValue(valueParser["value"].(string))
+		if valueParser["value"] != "" {
+			parser.SetValue(valueParser["value"].(string))
+		}
 
 		value.SetParser(parser)
 
@@ -3397,7 +3428,12 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) map[stri
 		localRequest["host"] = request.GetHost()
 	}
 	if request.HasPort() {
-		localRequest["port"] = request.GetPort()
+		var port = request.GetPort()
+		if port.SyntheticsTestRequestNumericalPort != nil {
+			localRequest["port"] = strconv.FormatInt(*port.SyntheticsTestRequestNumericalPort, 10)
+		} else if port.SyntheticsTestRequestVariablePort != nil {
+			localRequest["port"] = *port.SyntheticsTestRequestVariablePort
+		}
 	}
 	if request.HasDnsServer() {
 		localRequest["dns_server"] = convertToString(request.GetDnsServer())
