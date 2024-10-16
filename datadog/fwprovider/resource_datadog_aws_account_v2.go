@@ -4,15 +4,12 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -140,6 +137,10 @@ func (r *awsAccountV2Resource) Metadata(_ context.Context, request resource.Meta
 
 func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
 	return []resource.ConfigValidator{
+		resourcevalidator.ExactlyOneOf(
+			path.MatchRoot("auth_config").AtName("aws_auth_config_keys"),
+			path.MatchRoot("auth_config").AtName("aws_auth_config_role"),
+		),
 		resourcevalidator.Conflicting(
 			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_all"),
 			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_only"),
@@ -182,10 +183,9 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "AWS Account partition",
 			},
 			"account_tags": schema.ListAttribute{
-				Optional:    true,
+				Required:    true,
 				Description: "Tags to apply to all metrics in the account",
 				ElementType: types.StringType,
-				Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -197,10 +197,13 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 						Attributes: map[string]schema.Attribute{
 							"access_key_id": schema.StringAttribute{
 								Optional:    true,
+								Computed:    true,
 								Description: "AWS Access Key ID",
 							},
 							"secret_access_key": schema.StringAttribute{
 								Optional:    true,
+								Computed:    true,
+								Sensitive:   true,
 								Description: "AWS Secret Access Key",
 							},
 						},
@@ -209,10 +212,12 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 						Attributes: map[string]schema.Attribute{
 							"external_id": schema.StringAttribute{
 								Optional:    true,
+								Computed:    true,
 								Description: "AWS IAM External ID for associated role",
 							},
 							"role_name": schema.StringAttribute{
 								Optional:    true,
+								Computed:    true,
 								Description: "AWS IAM Role name",
 							},
 						},
@@ -226,6 +231,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 						Attributes: map[string]schema.Attribute{
 							"include_all": schema.BoolAttribute{
 								Optional:    true,
+								Computed:    true,
 								Description: "Include all regions",
 							},
 						},
@@ -234,9 +240,9 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 						Attributes: map[string]schema.Attribute{
 							"include_only": schema.ListAttribute{
 								Optional:    true,
+								Computed:    true,
 								Description: "Include only these regions",
 								ElementType: types.StringType,
-								Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 							},
 						},
 					},
@@ -248,16 +254,14 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 					"lambda_forwarder": schema.SingleNestedBlock{
 						Attributes: map[string]schema.Attribute{
 							"lambdas": schema.ListAttribute{
-								Optional:    true,
+								Required:    true,
 								Description: "List of Datadog Lambda Log Forwarder ARNs",
 								ElementType: types.StringType,
-								Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 							},
 							"sources": schema.ListAttribute{
-								Optional:    true,
+								Required:    true,
 								Description: "List of AWS services that will send logs to the Datadog Lambda Log Forwarder",
 								ElementType: types.StringType,
-								Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 							},
 						},
 					},
@@ -266,19 +270,19 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 			"metrics_config": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"automute_enabled": schema.BoolAttribute{
-						Optional:    true,
+						Required:    true,
 						Description: "Enable EC2 automute for AWS metrics",
 					},
 					"collect_cloudwatch_alarms": schema.BoolAttribute{
-						Optional:    true,
+						Required:    true,
 						Description: "Enable CloudWatch alarms collection",
 					},
 					"collect_custom_metrics": schema.BoolAttribute{
-						Optional:    true,
+						Required:    true,
 						Description: "Enable custom metrics collection",
 					},
 					"enabled": schema.BoolAttribute{
-						Optional:    true,
+						Required:    true,
 						Description: "Enable AWS metrics collection",
 					},
 				},
@@ -287,14 +291,13 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"namespace": schema.StringAttribute{
-									Optional:    true,
+									Required:    true,
 									Description: "The AWS Namespace to apply the tag filters against",
 								},
 								"tags": schema.ListAttribute{
-									Optional:    true,
+									Required:    true,
 									Description: "The tags to filter based on",
 									ElementType: types.StringType,
-									Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 								},
 							},
 						},
@@ -306,6 +309,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 								Attributes: map[string]schema.Attribute{
 									"exclude_all": schema.BoolAttribute{
 										Optional:    true,
+										Computed:    true,
 										Description: "Exclude all namespaces",
 									},
 								},
@@ -314,9 +318,9 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 								Attributes: map[string]schema.Attribute{
 									"exclude_only": schema.ListAttribute{
 										Optional:    true,
+										Computed:    true,
 										Description: "Exclude only these namespaces",
 										ElementType: types.StringType,
-										Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 									},
 								},
 							},
@@ -324,6 +328,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 								Attributes: map[string]schema.Attribute{
 									"include_all": schema.BoolAttribute{
 										Optional:    true,
+										Computed:    true,
 										Description: "Include all namespaces",
 									},
 								},
@@ -332,9 +337,9 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 								Attributes: map[string]schema.Attribute{
 									"include_only": schema.ListAttribute{
 										Optional:    true,
+										Computed:    true,
 										Description: "Include only these namespaces",
 										ElementType: types.StringType,
-										Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 									},
 								},
 							},
@@ -345,11 +350,11 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 			"resources_config": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"cloud_security_posture_management_collection": schema.BoolAttribute{
-						Optional:    true,
+						Required:    true,
 						Description: "Whether Datadog collects cloud security posture management resources from your AWS account.",
 					},
 					"extended_collection": schema.BoolAttribute{
-						Optional:    true,
+						Required:    true,
 						Description: "Whether Datadog collects additional attributes and configuration information about the resources in your AWS account. Required for `cloud_security_posture_management_collection`.",
 					},
 				},
@@ -364,6 +369,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 								Attributes: map[string]schema.Attribute{
 									"include_all": schema.BoolAttribute{
 										Optional:    true,
+										Computed:    true,
 										Description: "Include all services",
 									},
 								},
@@ -372,9 +378,9 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 								Attributes: map[string]schema.Attribute{
 									"include_only": schema.ListAttribute{
 										Optional:    true,
+										Computed:    true,
 										Description: "Include only these services",
 										ElementType: types.StringType,
-										Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 									},
 								},
 							},
@@ -453,14 +459,13 @@ func (r *awsAccountV2Resource) Update(ctx context.Context, request resource.Upda
 		return
 	}
 
-	aws_account_id := state.AwsAccountId.ValueString()
-
 	body, diags := r.buildAwsAccountV2UpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
+	aws_account_id := state.AwsAccountId.ValueString()
 	resp, _, err := r.Api.UpdateAWSAccount(r.Auth, aws_account_id, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AwsAccountV2"))
@@ -484,7 +489,6 @@ func (r *awsAccountV2Resource) Delete(ctx context.Context, request resource.Dele
 	}
 
 	aws_account_id := state.AwsAccountId.ValueString()
-
 	httpResp, err := r.Api.DeleteAWSAccount(r.Auth, aws_account_id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -495,21 +499,23 @@ func (r *awsAccountV2Resource) Delete(ctx context.Context, request resource.Dele
 	}
 }
 
-func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccountV2Model, resp *datadogV2.AWSAccountResponse) {
-	state.ID = types.StringValue(resp.Data.GetId())
-	diags := diag.Diagnostics{}
-
-	data := resp.GetData()
-	attributes := data.GetAttributes()
-
-	state.AwsAccountId = types.StringValue(attributes.GetAwsAccountId())
-
-	state.AwsPartition = types.StringValue(string(attributes.GetAwsPartition()))
-
-	if accountTags, ok := attributes.GetAccountTagsOk(); ok {
-		state.AccountTags = ListValueOrNull(ctx, types.StringType, *accountTags, &diags)
+func buildStateAuthConfig(attributes datadogV2.AWSAccountResponseAttributes) *authConfigModel {
+	authConfigTf := authConfigModel{}
+	if authConfig, ok := attributes.GetAuthConfigOk(); ok {
+		if authConfig.AWSAuthConfigKeys != nil {
+			authConfigTf.AwsAuthConfigKeys = &awsAuthConfigKeysModel{}
+			authConfigTf.AwsAuthConfigKeys.AccessKeyId = types.StringValue(authConfig.AWSAuthConfigKeys.GetAccessKeyId())
+			authConfigTf.AwsAuthConfigKeys.SecretAccessKey = types.StringValue(authConfig.AWSAuthConfigKeys.GetSecretAccessKey())
+		} else if authConfig.AWSAuthConfigRole != nil {
+			authConfigTf.AwsAuthConfigRole = &awsAuthConfigRoleModel{}
+			authConfigTf.AwsAuthConfigRole.RoleName = types.StringValue(authConfig.AWSAuthConfigRole.GetRoleName())
+			authConfigTf.AwsAuthConfigRole.ExternalId = types.StringValue(authConfig.AWSAuthConfigRole.GetExternalId())
+		}
 	}
+	return &authConfigTf
+}
 
+func buildStateLogsConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) *logsConfigModel {
 	logsConfig := attributes.GetLogsConfig()
 
 	logsConfigTf := logsConfigModel{}
@@ -518,75 +524,127 @@ func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccoun
 	if lambdaForwarder, ok := logsConfig.GetLambdaForwarderOk(); ok {
 		if lambdaForwarder != nil && (lambdaForwarder.HasLambdas() || lambdaForwarder.HasSources()) {
 			lambdas := lambdaForwarder.GetLambdas()
-			lambdaForwarderTf.Lambdas = ListValueOrNull(ctx, types.StringType, lambdas, &diags)
+			var d diag.Diagnostics
+			lambdaForwarderTf.Lambdas, d = types.ListValueFrom(ctx, types.StringType, lambdas)
+			diags.Append(d...)
 
 			sources := lambdaForwarder.GetSources()
-			lambdaForwarderTf.Sources = ListValueOrNull(ctx, types.StringType, sources, &diags)
+			lambdaForwarderTf.Sources, d = types.ListValueFrom(ctx, types.StringType, sources)
+			diags.Append(d...)
 
 			logsConfigTf.LambdaForwarder = &lambdaForwarderTf
-			state.LogsConfig = &logsConfigTf
 		}
 	}
 
-	if metricsConfig, ok := attributes.GetMetricsConfigOk(); ok {
+	return &logsConfigTf
+}
 
-		metricsConfigTf := metricsConfigModel{}
-		if automuteEnabled, ok := metricsConfig.GetAutomuteEnabledOk(); ok {
-			metricsConfigTf.AutomuteEnabled = types.BoolValue(*automuteEnabled)
+func buildStateAwsRegions(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) *awsRegionsModel {
+	awsRegions := attributes.GetAwsRegions()
+
+	awsRegionsTf := awsRegionsModel{}
+	if awsRegions.AWSRegionsIncludeAll != nil {
+		awsRegionsTf.AwsRegionsIncludeAll = &awsRegionsIncludeAllModel{
+			IncludeAll: types.BoolValue(awsRegions.AWSRegionsIncludeAll.GetIncludeAll()),
 		}
-		if collectCloudwatchAlarms, ok := metricsConfig.GetCollectCloudwatchAlarmsOk(); ok {
-			metricsConfigTf.CollectCloudwatchAlarms = types.BoolValue(*collectCloudwatchAlarms)
+	} else if awsRegions.AWSRegionsIncludeOnly != nil {
+		includeOnly, d := types.ListValueFrom(ctx, types.StringType, awsRegions.AWSRegionsIncludeOnly.GetIncludeOnly())
+		awsRegionsTf.AwsRegionsIncludeOnly = &awsRegionsIncludeOnlyModel{
+			IncludeOnly: includeOnly,
 		}
-		if collectCustomMetrics, ok := metricsConfig.GetCollectCustomMetricsOk(); ok {
-			metricsConfigTf.CollectCustomMetrics = types.BoolValue(*collectCustomMetrics)
-		}
-		if enabled, ok := metricsConfig.GetEnabledOk(); ok {
-			metricsConfigTf.Enabled = types.BoolValue(*enabled)
-		}
-		if tagFilters, ok := metricsConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
-			metricsConfigTf.TagFilters = []*tagFiltersModel{}
-			for _, tagFiltersDd := range *tagFilters {
-				tagFiltersTfItem := tagFiltersModel{}
-				if namespace, ok := tagFiltersDd.GetNamespaceOk(); ok {
-					tagFiltersTfItem.Namespace = types.StringValue(*namespace)
-				}
-				if tags, ok := tagFiltersDd.GetTagsOk(); ok && len(*tags) > 0 {
-					tagFiltersTfItem.Tags = ListValueOrNull(ctx, types.StringType, *tags, &diags)
-				}
-				metricsConfigTf.TagFilters = append(metricsConfigTf.TagFilters, &tagFiltersTfItem)
+		diags.Append(d...)
+	}
+
+	return &awsRegionsTf
+}
+
+func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) *metricsConfigModel {
+	metricsConfig := attributes.GetMetricsConfig()
+	metricsConfigTf := metricsConfigModel{}
+	if automuteEnabled, ok := metricsConfig.GetAutomuteEnabledOk(); ok {
+		metricsConfigTf.AutomuteEnabled = types.BoolValue(*automuteEnabled)
+	}
+	if collectCloudwatchAlarms, ok := metricsConfig.GetCollectCloudwatchAlarmsOk(); ok {
+		metricsConfigTf.CollectCloudwatchAlarms = types.BoolValue(*collectCloudwatchAlarms)
+	}
+	if collectCustomMetrics, ok := metricsConfig.GetCollectCustomMetricsOk(); ok {
+		metricsConfigTf.CollectCustomMetrics = types.BoolValue(*collectCustomMetrics)
+	}
+	if enabled, ok := metricsConfig.GetEnabledOk(); ok {
+		metricsConfigTf.Enabled = types.BoolValue(*enabled)
+	}
+	if tagFilters, ok := metricsConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
+		metricsConfigTf.TagFilters = []*tagFiltersModel{}
+		for _, tagFiltersDd := range *tagFilters {
+			tagFiltersTfItem := tagFiltersModel{}
+			if namespace, ok := tagFiltersDd.GetNamespaceOk(); ok {
+				tagFiltersTfItem.Namespace = types.StringValue(*namespace)
 			}
+			if tags, ok := tagFiltersDd.GetTagsOk(); ok && len(*tags) > 0 {
+				tagsTf, d := types.ListValueFrom(ctx, types.StringType, *tags)
+				tagFiltersTfItem.Tags = tagsTf
+				diags.Append(d...)
+			}
+			metricsConfigTf.TagFilters = append(metricsConfigTf.TagFilters, &tagFiltersTfItem)
 		}
-
-		state.MetricsConfig = &metricsConfigTf
 	}
 
-	if resourcesConfig, ok := attributes.GetResourcesConfigOk(); ok {
-		resourcesConfigTf := resourcesConfigModel{}
-		resourcesConfigTf.CloudSecurityPostureManagementCollection = types.BoolValue(resourcesConfig.GetCloudSecurityPostureManagementCollection())
-		resourcesConfigTf.ExtendedCollection = types.BoolValue(resourcesConfig.GetExtendedCollection())
-		state.ResourcesConfig = &resourcesConfigTf
-	}
+	return &metricsConfigTf
+}
 
+func buildStateResourcesConfig(attributes datadogV2.AWSAccountResponseAttributes) *resourcesConfigModel {
+	resourcesConfig := attributes.GetResourcesConfig()
+	resourcesConfigTf := resourcesConfigModel{}
+	resourcesConfigTf.CloudSecurityPostureManagementCollection = types.BoolValue(resourcesConfig.GetCloudSecurityPostureManagementCollection())
+	resourcesConfigTf.ExtendedCollection = types.BoolValue(resourcesConfig.GetExtendedCollection())
+	return &resourcesConfigTf
+}
+
+func buildStateTracesConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) *tracesConfigModel {
+	tracesConfig := attributes.GetTracesConfig()
 	tracesConfigTf := tracesConfigModel{}
-	tracesConfigTf.XrayServices = &xrayServicesModel{}
-	xrayServicesIncludeOnlyTf := xRayServicesIncludeOnlyModel{IncludeOnly: types.ListNull(types.StringType)}
 
-	if tracesConfig, ok := attributes.GetTracesConfigOk(); ok {
-
-		if xrayServices, ok := tracesConfig.GetXrayServicesOk(); ok {
-			if includeAll, ok := xrayServices.XRayServicesIncludeAll.GetIncludeAllOk(); ok {
-				xrayServicesIncludeAllTf := xRayServicesIncludeAllModel{}
-				xrayServicesIncludeAllTf.IncludeAll = types.BoolValue(*includeAll)
-				tracesConfigTf.XrayServices.XRayServicesIncludeAll = &xrayServicesIncludeAllTf
+	if xrayServices, ok := tracesConfig.GetXrayServicesOk(); ok {
+		xrayServicesTf := xrayServicesModel{}
+		if xrayServices.XRayServicesIncludeAll != nil {
+			xrayServicesTf.XRayServicesIncludeAll = &xRayServicesIncludeAllModel{
+				IncludeAll: types.BoolValue(xrayServices.XRayServicesIncludeAll.GetIncludeAll()),
 			}
-
-			includeOnly := xrayServices.XRayServicesIncludeOnly.GetIncludeOnly()
-			xrayServicesIncludeOnlyTf.IncludeOnly = ListValueOrNull(ctx, types.StringType, includeOnly, &diags)
+		} else if xrayServices.XRayServicesIncludeOnly != nil {
+			includeOnly, d := types.ListValueFrom(ctx, types.StringType, xrayServices.XRayServicesIncludeOnly.GetIncludeOnly())
+			xrayServicesTf.XRayServicesIncludeOnly = &xRayServicesIncludeOnlyModel{
+				IncludeOnly: includeOnly,
+			}
+			diags.Append(d...)
 		}
-
-		tracesConfigTf.XrayServices.XRayServicesIncludeOnly = &xrayServicesIncludeOnlyTf
+		tracesConfigTf.XrayServices = &xrayServicesTf
 	}
-	state.TracesConfig = &tracesConfigTf
+
+	return &tracesConfigTf
+}
+
+func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccountV2Model, resp *datadogV2.AWSAccountResponse) {
+	state.ID = types.StringValue(resp.Data.GetId())
+	diags := diag.Diagnostics{}
+
+	data := resp.GetData()
+	attributes := data.GetAttributes()
+
+	state.AwsAccountId = types.StringValue(attributes.GetAwsAccountId())
+	state.AwsPartition = types.StringValue(string(attributes.GetAwsPartition()))
+
+	if accountTags, ok := attributes.GetAccountTagsOk(); ok {
+		tags, d := types.ListValueFrom(ctx, types.StringType, accountTags)
+		state.AccountTags = tags
+		diags.Append(d...)
+	}
+
+	state.AuthConfig = buildStateAuthConfig(attributes)
+	state.AwsRegions = buildStateAwsRegions(ctx, attributes, diags)
+	state.LogsConfig = buildStateLogsConfig(ctx, attributes, diags)
+	state.MetricsConfig = buildStateMetricsConfig(ctx, attributes, diags)
+	state.ResourcesConfig = buildStateResourcesConfig(attributes)
+	state.TracesConfig = buildStateTracesConfig(ctx, attributes, diags)
 }
 
 func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context, state *awsAccountV2Model) (*datadogV2.AWSAccountCreateRequest, diag.Diagnostics) {
@@ -595,129 +653,13 @@ func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context,
 
 	attributes.SetAwsAccountId(state.AwsAccountId.ValueString())
 	attributes.SetAwsPartition(datadogV2.AWSAccountPartition(state.AwsPartition.ValueString()))
-
-	if state.AuthConfig != nil {
-		authConfig := datadogV2.AWSAuthConfig{}
-
-		if state.AuthConfig.AwsAuthConfigKeys != nil {
-			authConfig.AWSAuthConfigKeys = datadogV2.NewAWSAuthConfigKeysWithDefaults()
-			if !state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.IsNull() {
-				authConfig.AWSAuthConfigKeys.SetAccessKeyId(state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.ValueString())
-			}
-			if !state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.IsNull() {
-				authConfig.AWSAuthConfigKeys.SetSecretAccessKey(state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.ValueString())
-			}
-		}
-
-		if state.AuthConfig.AwsAuthConfigRole != nil {
-			authConfig.AWSAuthConfigRole = datadogV2.NewAWSAuthConfigRoleWithDefaults()
-			if !state.AuthConfig.AwsAuthConfigRole.ExternalId.IsNull() {
-				authConfig.AWSAuthConfigRole.SetExternalId(state.AuthConfig.AwsAuthConfigRole.ExternalId.ValueString())
-			}
-			if !state.AuthConfig.AwsAuthConfigRole.RoleName.IsNull() {
-				authConfig.AWSAuthConfigRole.SetRoleName(state.AuthConfig.AwsAuthConfigRole.RoleName.ValueString())
-			}
-		}
-
-		attributes.SetAuthConfig(authConfig)
-	}
-
-	if !state.AccountTags.IsNull() {
-		var accountTags []string
-		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
-		attributes.SetAccountTags(accountTags)
-	}
-
-	if state.LogsConfig != nil {
-		var logsConfig datadogV2.AWSLogsConfig
-
-		if state.LogsConfig.LambdaForwarder != nil {
-			var lambdaForwarder datadogV2.AWSLambdaForwarderConfig
-
-			if !state.LogsConfig.LambdaForwarder.Lambdas.IsNull() {
-				var lambdas []string
-				diags.Append(state.LogsConfig.LambdaForwarder.Lambdas.ElementsAs(ctx, &lambdas, false)...)
-				lambdaForwarder.SetLambdas(lambdas)
-			}
-
-			if !state.LogsConfig.LambdaForwarder.Sources.IsNull() {
-				var sources []string
-				diags.Append(state.LogsConfig.LambdaForwarder.Sources.ElementsAs(ctx, &sources, false)...)
-				lambdaForwarder.SetSources(sources)
-			}
-
-			logsConfig.LambdaForwarder = &lambdaForwarder
-		}
-
-		attributes.LogsConfig = &logsConfig
-	}
-
-	if state.TracesConfig != nil {
-		tracesConfig := datadogV2.NewAWSTracesConfigWithDefaults()
-
-		if state.TracesConfig.XrayServices != nil {
-			var ddXRayServiceList datadogV2.XRayServicesList
-
-			if state.TracesConfig.XrayServices.XRayServicesIncludeAll != nil {
-				includeAll := state.TracesConfig.XrayServices.XRayServicesIncludeAll.IncludeAll.ValueBool()
-				ddXRayServiceList = datadogV2.XRayServicesIncludeAllAsXRayServicesList(&datadogV2.XRayServicesIncludeAll{IncludeAll: includeAll})
-			} else if state.TracesConfig.XrayServices.XRayServicesIncludeOnly != nil {
-				includeOnlyTf := state.TracesConfig.XrayServices.XRayServicesIncludeOnly.IncludeOnly
-				var ddIncludeOnly []string
-				diags.Append(includeOnlyTf.ElementsAs(ctx, &ddIncludeOnly, false)...)
-				ddXRayServiceList = datadogV2.XRayServicesIncludeOnlyAsXRayServicesList(&datadogV2.XRayServicesIncludeOnly{IncludeOnly: ddIncludeOnly})
-			}
-			tracesConfig.SetXrayServices(ddXRayServiceList)
-		}
-
-		attributes.TracesConfig = tracesConfig
-	}
-
-	if state.MetricsConfig != nil {
-		var metricsConfig datadogV2.AWSMetricsConfig
-
-		if !state.MetricsConfig.AutomuteEnabled.IsNull() {
-			metricsConfig.SetAutomuteEnabled(state.MetricsConfig.AutomuteEnabled.ValueBool())
-		}
-		if !state.MetricsConfig.CollectCloudwatchAlarms.IsNull() {
-			metricsConfig.SetCollectCloudwatchAlarms(state.MetricsConfig.CollectCloudwatchAlarms.ValueBool())
-		}
-		if !state.MetricsConfig.CollectCustomMetrics.IsNull() {
-			metricsConfig.SetCollectCustomMetrics(state.MetricsConfig.CollectCustomMetrics.ValueBool())
-		}
-		if !state.MetricsConfig.Enabled.IsNull() {
-			metricsConfig.SetEnabled(state.MetricsConfig.Enabled.ValueBool())
-		}
-
-		if state.MetricsConfig.TagFilters != nil {
-			var tagFilters []datadogV2.AWSNamespaceTagFilter
-			for _, tagFiltersTFItem := range state.MetricsConfig.TagFilters {
-				tagFiltersDDItem := datadogV2.NewAWSNamespaceTagFilter()
-
-				if !tagFiltersTFItem.Namespace.IsNull() {
-					tagFiltersDDItem.SetNamespace(tagFiltersTFItem.Namespace.ValueString())
-				}
-
-				if !tagFiltersTFItem.Tags.IsNull() {
-					var tags []string
-					diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
-					tagFiltersDDItem.SetTags(tags)
-				}
-			}
-			metricsConfig.SetTagFilters(tagFilters)
-		}
-
-		attributes.MetricsConfig = &metricsConfig
-	}
-
-	if state.ResourcesConfig != nil {
-		var resourcesConfig datadogV2.AWSResourcesConfig
-
-		resourcesConfig.SetCloudSecurityPostureManagementCollection(state.ResourcesConfig.CloudSecurityPostureManagementCollection.ValueBool())
-		resourcesConfig.SetExtendedCollection(state.ResourcesConfig.ExtendedCollection.ValueBool())
-
-		attributes.ResourcesConfig = &resourcesConfig
-	}
+	attributes.SetAwsRegions(buildRequestAwsRegions(ctx, state, diags))
+	attributes.SetAuthConfig(buildRequestAuthConfig(state))
+	attributes.SetAccountTags(buildRequestAccountTags(ctx, state, diags))
+	attributes.SetLogsConfig(buildRequestLogsConfig(ctx, state, diags))
+	attributes.SetMetricsConfig(buildRequestMetricsConfig(ctx, state, diags))
+	attributes.SetResourcesConfig(buildRequestResourcesConfig(state))
+	attributes.SetTracesConfig(buildRequestTracesConfig(ctx, state, diags))
 
 	req := datadogV2.NewAWSAccountCreateRequestWithDefaults()
 	req.Data = datadogV2.NewAWSAccountCreateRequestDataWithDefaults()
@@ -726,48 +668,55 @@ func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context,
 	return req, diags
 }
 
-func (r *awsAccountV2Resource) buildAwsAccountV2UpdateRequestBody(ctx context.Context, state *awsAccountV2Model) (*datadogV2.AWSAccountPatchRequest, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewAWSAccountPatchRequestAttributesWithDefaults()
+func buildRequestAwsRegions(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSRegions {
+	regions := datadogV2.AWSRegions{}
+	if state.AwsRegions.AwsRegionsIncludeAll != nil {
+		regions.AWSRegionsIncludeAll = datadogV2.NewAWSRegionsIncludeAllWithDefaults()
+		regions.AWSRegionsIncludeAll.IncludeAll = state.AwsRegions.AwsRegionsIncludeAll.IncludeAll.ValueBool()
+	}
+	if state.AwsRegions.AwsRegionsIncludeOnly != nil {
+		regions.AWSRegionsIncludeOnly = datadogV2.NewAWSRegionsIncludeOnlyWithDefaults()
+		var includeOnly []string
+		diags.Append(state.AwsRegions.AwsRegionsIncludeOnly.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
+		regions.AWSRegionsIncludeOnly.IncludeOnly = includeOnly
+	}
+	return regions
+}
+func buildRequestAuthConfig(state *awsAccountV2Model) datadogV2.AWSAuthConfig {
+	authConfig := datadogV2.AWSAuthConfig{}
 
-	attributes.SetAwsAccountId(state.AwsAccountId.ValueString())
-	attributes.SetAwsPartition(datadogV2.AWSAccountPartition(state.AwsPartition.ValueString()))
-
-	if state.AuthConfig != nil {
-		authConfig := datadogV2.AWSAuthConfig{}
-
-		if state.AuthConfig.AwsAuthConfigKeys != nil {
-			authConfig.AWSAuthConfigKeys = datadogV2.NewAWSAuthConfigKeysWithDefaults()
-			if !state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.IsNull() {
-				authConfig.AWSAuthConfigKeys.SetAccessKeyId(state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.ValueString())
-			}
-			if !state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.IsNull() {
-				authConfig.AWSAuthConfigKeys.SetSecretAccessKey(state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.ValueString())
-			}
+	if state.AuthConfig.AwsAuthConfigKeys != nil {
+		authConfig.AWSAuthConfigKeys = datadogV2.NewAWSAuthConfigKeysWithDefaults()
+		if !state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.IsNull() {
+			authConfig.AWSAuthConfigKeys.SetAccessKeyId(state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.ValueString())
 		}
-
-		if state.AuthConfig.AwsAuthConfigRole != nil {
-			authConfig.AWSAuthConfigRole = datadogV2.NewAWSAuthConfigRoleWithDefaults()
-			if !state.AuthConfig.AwsAuthConfigRole.ExternalId.IsNull() {
-				authConfig.AWSAuthConfigRole.SetExternalId(state.AuthConfig.AwsAuthConfigRole.ExternalId.ValueString())
-			}
-			if !state.AuthConfig.AwsAuthConfigRole.RoleName.IsNull() {
-				authConfig.AWSAuthConfigRole.SetRoleName(state.AuthConfig.AwsAuthConfigRole.RoleName.ValueString())
-			}
+		if !state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.IsNull() {
+			authConfig.AWSAuthConfigKeys.SetSecretAccessKey(state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.ValueString())
 		}
-
-		attributes.SetAuthConfig(authConfig)
 	}
 
-	if !state.AccountTags.IsNull() {
-		var accountTags []string
-		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
-		attributes.SetAccountTags(accountTags)
+	if state.AuthConfig.AwsAuthConfigRole != nil {
+		authConfig.AWSAuthConfigRole = datadogV2.NewAWSAuthConfigRoleWithDefaults()
+		if !state.AuthConfig.AwsAuthConfigRole.ExternalId.IsNull() {
+			authConfig.AWSAuthConfigRole.SetExternalId(state.AuthConfig.AwsAuthConfigRole.ExternalId.ValueString())
+		}
+		if !state.AuthConfig.AwsAuthConfigRole.RoleName.IsNull() {
+			authConfig.AWSAuthConfigRole.SetRoleName(state.AuthConfig.AwsAuthConfigRole.RoleName.ValueString())
+		}
 	}
 
+	return authConfig
+}
+
+func buildRequestAccountTags(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) []string {
+	var accountTags []string
+	diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
+	return accountTags
+}
+
+func buildRequestLogsConfig(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSLogsConfig {
 	var logsConfig datadogV2.AWSLogsConfig
 	var lambdaForwarder datadogV2.AWSLambdaForwarderConfig
-
 	if state.LogsConfig != nil && state.LogsConfig.LambdaForwarder != nil {
 
 		if !state.LogsConfig.LambdaForwarder.Lambdas.IsNull() {
@@ -792,79 +741,95 @@ func (r *awsAccountV2Resource) buildAwsAccountV2UpdateRequestBody(ctx context.Co
 	}
 
 	logsConfig.LambdaForwarder = &lambdaForwarder
-	attributes.LogsConfig = &logsConfig
+	return logsConfig
+}
 
-	if state.MetricsConfig != nil {
-		var metricsConfig datadogV2.AWSMetricsConfig
+func buildRequestMetricsConfig(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSMetricsConfig {
+	var metricsConfig datadogV2.AWSMetricsConfig
 
-		if !state.MetricsConfig.AutomuteEnabled.IsNull() {
-			metricsConfig.SetAutomuteEnabled(state.MetricsConfig.AutomuteEnabled.ValueBool())
-		}
-		if !state.MetricsConfig.CollectCloudwatchAlarms.IsNull() {
-			metricsConfig.SetCollectCloudwatchAlarms(state.MetricsConfig.CollectCloudwatchAlarms.ValueBool())
-		}
-		if !state.MetricsConfig.CollectCustomMetrics.IsNull() {
-			metricsConfig.SetCollectCustomMetrics(state.MetricsConfig.CollectCustomMetrics.ValueBool())
-		}
-		if !state.MetricsConfig.Enabled.IsNull() {
-			metricsConfig.SetEnabled(state.MetricsConfig.Enabled.ValueBool())
-		}
-
-		if state.MetricsConfig.TagFilters != nil {
-			var tagFilters []datadogV2.AWSNamespaceTagFilter
-			for _, tagFiltersTFItem := range state.MetricsConfig.TagFilters {
-				tagFiltersDDItem := datadogV2.NewAWSNamespaceTagFilter()
-
-				if !tagFiltersTFItem.Namespace.IsNull() {
-					tagFiltersDDItem.SetNamespace(tagFiltersTFItem.Namespace.ValueString())
-				}
-
-				if !tagFiltersTFItem.Tags.IsNull() {
-					var tags []string
-					diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
-					tagFiltersDDItem.SetTags(tags)
-				}
-			}
-			metricsConfig.SetTagFilters(tagFilters)
-		}
-
-		attributes.MetricsConfig = &metricsConfig
+	if !state.MetricsConfig.AutomuteEnabled.IsNull() {
+		metricsConfig.SetAutomuteEnabled(state.MetricsConfig.AutomuteEnabled.ValueBool())
+	}
+	if !state.MetricsConfig.CollectCloudwatchAlarms.IsNull() {
+		metricsConfig.SetCollectCloudwatchAlarms(state.MetricsConfig.CollectCloudwatchAlarms.ValueBool())
+	}
+	if !state.MetricsConfig.CollectCustomMetrics.IsNull() {
+		metricsConfig.SetCollectCustomMetrics(state.MetricsConfig.CollectCustomMetrics.ValueBool())
+	}
+	if !state.MetricsConfig.Enabled.IsNull() {
+		metricsConfig.SetEnabled(state.MetricsConfig.Enabled.ValueBool())
 	}
 
-	if state.ResourcesConfig != nil {
-		var resourcesConfig datadogV2.AWSResourcesConfig
+	var tagFilters []datadogV2.AWSNamespaceTagFilter
+	for _, tagFiltersTFItem := range state.MetricsConfig.TagFilters {
+		tagFiltersDDItem := datadogV2.NewAWSNamespaceTagFilter()
 
-		if !state.ResourcesConfig.CloudSecurityPostureManagementCollection.IsNull() {
-			resourcesConfig.SetCloudSecurityPostureManagementCollection(state.ResourcesConfig.CloudSecurityPostureManagementCollection.ValueBool())
-		}
-		if !state.ResourcesConfig.ExtendedCollection.IsNull() {
-			resourcesConfig.SetExtendedCollection(state.ResourcesConfig.ExtendedCollection.ValueBool())
+		if !tagFiltersTFItem.Namespace.IsNull() {
+			tagFiltersDDItem.SetNamespace(tagFiltersTFItem.Namespace.ValueString())
 		}
 
-		attributes.ResourcesConfig = &resourcesConfig
+		if !tagFiltersTFItem.Tags.IsNull() {
+			tags := []string{}
+			diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
+			tagFiltersDDItem.SetTags(tags)
+		}
+	}
+	metricsConfig.SetTagFilters(tagFilters)
+
+	return metricsConfig
+}
+
+func buildRequestResourcesConfig(state *awsAccountV2Model) datadogV2.AWSResourcesConfig {
+	var resourcesConfig datadogV2.AWSResourcesConfig
+
+	if !state.ResourcesConfig.CloudSecurityPostureManagementCollection.IsNull() {
+		resourcesConfig.SetCloudSecurityPostureManagementCollection(state.ResourcesConfig.CloudSecurityPostureManagementCollection.ValueBool())
+	}
+	if !state.ResourcesConfig.ExtendedCollection.IsNull() {
+		resourcesConfig.SetExtendedCollection(state.ResourcesConfig.ExtendedCollection.ValueBool())
 	}
 
-	if state.TracesConfig != nil {
-		var tracesConfig datadogV2.AWSTracesConfig
+	return resourcesConfig
+}
 
-		attributes.TracesConfig = &tracesConfig
+func buildRequestTracesConfig(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSTracesConfig {
+	tracesConfig := datadogV2.NewAWSTracesConfigWithDefaults()
+
+	if state.TracesConfig.XrayServices != nil {
+		var ddXRayServiceList datadogV2.XRayServicesList
+
+		if state.TracesConfig.XrayServices.XRayServicesIncludeAll != nil {
+			includeAll := state.TracesConfig.XrayServices.XRayServicesIncludeAll.IncludeAll.ValueBool()
+			ddXRayServiceList = datadogV2.XRayServicesIncludeAllAsXRayServicesList(&datadogV2.XRayServicesIncludeAll{IncludeAll: includeAll})
+		} else if state.TracesConfig.XrayServices.XRayServicesIncludeOnly != nil {
+			includeOnlyTf := state.TracesConfig.XrayServices.XRayServicesIncludeOnly.IncludeOnly
+			var ddIncludeOnly []string
+			diags.Append(includeOnlyTf.ElementsAs(ctx, &ddIncludeOnly, false)...)
+			ddXRayServiceList = datadogV2.XRayServicesIncludeOnlyAsXRayServicesList(&datadogV2.XRayServicesIncludeOnly{IncludeOnly: ddIncludeOnly})
+		}
+		tracesConfig.SetXrayServices(ddXRayServiceList)
 	}
+
+	return *tracesConfig
+}
+
+func (r *awsAccountV2Resource) buildAwsAccountV2UpdateRequestBody(ctx context.Context, state *awsAccountV2Model) (*datadogV2.AWSAccountPatchRequest, diag.Diagnostics) {
+	diags := diag.Diagnostics{}
+	attributes := datadogV2.NewAWSAccountPatchRequestAttributesWithDefaults()
+
+	attributes.SetAwsAccountId(state.AwsAccountId.ValueString())
+	attributes.SetAwsPartition(datadogV2.AWSAccountPartition(state.AwsPartition.ValueString()))
+	attributes.SetAwsRegions(buildRequestAwsRegions(ctx, state, diags))
+	attributes.SetAuthConfig(buildRequestAuthConfig(state))
+	attributes.SetAccountTags(buildRequestAccountTags(ctx, state, diags))
+	attributes.SetLogsConfig(buildRequestLogsConfig(ctx, state, diags))
+	attributes.SetMetricsConfig(buildRequestMetricsConfig(ctx, state, diags))
+	attributes.SetResourcesConfig(buildRequestResourcesConfig(state))
+	attributes.SetTracesConfig(buildRequestTracesConfig(ctx, state, diags))
 
 	req := datadogV2.NewAWSAccountPatchRequestWithDefaults()
 	req.Data = datadogV2.NewAWSAccountPatchRequestDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
-}
-
-// ListValueOrNull returns a types.List based on the supplied elements. If the
-// supplied elements is empty, the returned types.List will be flagged as null.
-func ListValueOrNull[T any](ctx context.Context, elementType attr.Type, elements []T, diags *diag.Diagnostics) types.List {
-	if len(elements) == 0 {
-		return types.ListNull(elementType)
-	}
-
-	result, d := types.ListValueFrom(ctx, elementType, elements)
-	diags.Append(d...)
-	return result
 }
