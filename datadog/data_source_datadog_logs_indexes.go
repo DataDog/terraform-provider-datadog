@@ -59,7 +59,12 @@ func dataSourceDatadogLogsIndexes() *schema.Resource {
 								Computed:    true,
 							},
 							"retention_days": {
-								Description: "The number of days before logs are deleted from this index.",
+								Description: "The number of days logs are stored in Standard Tier before aging into the Flex Tier or being deleted from the index.",
+								Type:        schema.TypeInt,
+								Computed:    true,
+							},
+							"flex_retention_days": {
+								Description: "The total number of days logs are stored in Standard and Flex Tier before being deleted from the index.",
 								Type:        schema.TypeInt,
 								Computed:    true,
 							},
@@ -151,9 +156,10 @@ func dataSourceDatadogLogsIndexesRead(ctx context.Context, d *schema.ResourceDat
 			"daily_limit":       l.GetDailyLimit(),
 			"daily_limit_reset": buildTerraformIndexDailyLimitReset(l.GetDailyLimitReset()),
 			"daily_limit_warning_threshold_percentage": l.GetDailyLimitWarningThresholdPercentage(),
-			"retention_days":   l.GetNumRetentionDays(),
-			"filter":           buildTerraformIndexFilter(l.GetFilter()),
-			"exclusion_filter": buildTerraformExclusionFilters(l.GetExclusionFilters()),
+			"retention_days":      l.GetNumRetentionDays(),
+			"flex_retention_days": l.GetNumFlexLogsRetentionDays(),
+			"filter":              buildTerraformIndexFilter(l.GetFilter()),
+			"exclusion_filter":    buildTerraformExclusionFilters(l.GetExclusionFilters()),
 		}
 	}
 	if err := d.Set("logs_indexes", tfLogsIndexes); err != nil {

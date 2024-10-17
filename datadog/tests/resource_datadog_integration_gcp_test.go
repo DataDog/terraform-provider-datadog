@@ -14,12 +14,13 @@ import (
 func testAccCheckDatadogIntegrationGCPConfig(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
-  project_id     = "%s"
-  private_key_id = "1234567890123456789012345678901234567890"
-  private_key    = "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
-  client_email   = "%s@awesome-project-id.iam.gserviceaccount.com"
-  client_id      = "123456789012345678901"
-  host_filters   = "foo:bar,buzz:lightyear"
+  project_id                   = "%s"
+  private_key_id               = "1234567890123456789012345678901234567890"
+  private_key                  = "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+  client_email                 = "%s@awesome-project-id.iam.gserviceaccount.com"
+  client_id                    = "123456789012345678901"
+  host_filters                 = "foo:bar,buzz:lightyear"
+  cloud_run_revision_filters   = ["tag:one", "tag:two"]
 }`, uniq, uniq)
 }
 
@@ -31,6 +32,7 @@ resource "datadog_integration_gcp" "awesome_gcp_project_integration" {
   private_key    = "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
   client_email   = "%s@awesome-project-id.iam.gserviceaccount.com"
   client_id      = "123456789012345678901"
+  cloud_run_revision_filters   = ["tag:one", "tag:two"]
 }`, uniq, uniq)
 }
 
@@ -78,6 +80,10 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"host_filters", "foo:bar,buzz:lightyear"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration", "cloud_run_revision_filters.*", "tag:two"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration", "cloud_run_revision_filters.*", "tag:one"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"automute", "false"),
@@ -108,6 +114,10 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"host_filters", ""),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration", "cloud_run_revision_filters.*", "tag:two"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration", "cloud_run_revision_filters.*", "tag:one"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"automute", "false"),
@@ -135,6 +145,8 @@ func TestAccDatadogIntegrationGCP(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"host_filters", ""),
+					resource.TestCheckNoResourceAttr(
+						"datadog_integration_gcp.awesome_gcp_project_integration", "cloud_run_revision_filters"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp.awesome_gcp_project_integration",
 						"automute", "true"),

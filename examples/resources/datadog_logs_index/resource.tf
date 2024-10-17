@@ -9,6 +9,7 @@ resource "datadog_logs_index" "sample_index" {
   }
   daily_limit_warning_threshold_percentage = 50
   retention_days                           = 7
+  flex_retention_days                      = 180
   filter {
     query = "*"
   }

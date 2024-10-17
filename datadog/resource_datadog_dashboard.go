@@ -2302,6 +2302,24 @@ func getDistributionDefinitionSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"live_span": getWidgetLiveSpanSchema(),
+		"xaxis": {
+			Description: "A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getDistributionWidgetXAxisSchema(),
+			},
+		},
+		"yaxis": {
+			Description: "A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: getDistributionWidgetYAxisSchema(),
+			},
+		},
 	}
 }
 func buildDatadogDistributionDefinition(terraformDefinition map[string]interface{}) *datadogV1.DistributionWidgetDefinition {
@@ -2330,6 +2348,16 @@ func buildDatadogDistributionDefinition(terraformDefinition map[string]interface
 			WidgetLegacyLiveSpan: &datadogV1.WidgetLegacyLiveSpan{LiveSpan: datadogV1.WidgetLiveSpan(ls).Ptr()},
 		}
 	}
+	if axis, ok := terraformDefinition["xaxis"].([]interface{}); ok && len(axis) > 0 {
+		if v, ok := axis[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Xaxis = buildDatadogDistributionWidgetXAxis(v)
+		}
+	}
+	if axis, ok := terraformDefinition["yaxis"].([]interface{}); ok && len(axis) > 0 {
+		if v, ok := axis[0].(map[string]interface{}); ok && len(v) > 0 {
+			datadogDefinition.Yaxis = buildDatadogDistributionWidgetYAxis(v)
+		}
+	}
 	return datadogDefinition
 }
 func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.DistributionWidgetDefinition) map[string]interface{} {
@@ -2356,6 +2384,14 @@ func buildTerraformDistributionDefinition(datadogDefinition *datadogV1.Distribut
 	if v, ok := datadogDefinition.GetTimeOk(); ok {
 
 		terraformDefinition["live_span"] = v.WidgetLegacyLiveSpan.GetLiveSpan()
+	}
+	if v, ok := datadogDefinition.GetXaxisOk(); ok {
+		axis := buildTerraformDistributionWidgetXAxis(*v)
+		terraformDefinition["xaxis"] = []map[string]interface{}{axis}
+	}
+	if v, ok := datadogDefinition.GetYaxisOk(); ok {
+		axis := buildTerraformDistributionWidgetYAxis(*v)
+		terraformDefinition["yaxis"] = []map[string]interface{}{axis}
 	}
 	return terraformDefinition
 }
@@ -4491,6 +4527,58 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 				ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
 			},
 		},
+		"text_formats": {
+			Description: "Text formats define how to format text in table widget content. Multiple `text_formats` blocks are allowed using the structure below. This resource is in beta and is subject to change.",
+			Type:        schema.TypeList,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"text_format": {
+						Description: "The text format to apply to the items in a table widget column.",
+						Type:        schema.TypeList,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"match": {
+									Type:        schema.TypeList,
+									MaxItems:    1,
+									Required:    true,
+									Description: "Match rule for the table widget text format.",
+									Elem: &schema.Resource{
+										Schema: getTableWidgetTextFormatMatchSchema(),
+									},
+								},
+								"palette": {
+									Description:      "The color palette to apply.",
+									Type:             schema.TypeString,
+									ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetTextFormatPaletteFromValue),
+									Optional:         true,
+								},
+								"replace": {
+									Type:        schema.TypeList,
+									MaxItems:    1,
+									Optional:    true,
+									Description: "Match rule for the table widget text format.",
+									Elem: &schema.Resource{
+										Schema: getTableWidgetTextFormatReplaceSchema(),
+									},
+								},
+								"custom_bg_color": {
+									Description: "The custom color palette to apply to the background.",
+									Type:        schema.TypeString,
+									Optional:    true,
+								},
+								"custom_fg_color": {
+									Description: "The custom color palette to apply to the foreground text.",
+									Type:        schema.TypeString,
+									Optional:    true,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
 	}
 }
 func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadogV1.TableWidgetRequest {
@@ -4581,6 +4669,19 @@ func buildDatadogQueryTableRequests(terraformRequests *[]interface{}) *[]datadog
 			}
 			datadogQueryTableRequest.CellDisplayMode = datadogCellDisplayMode
 		}
+		if v, ok := terraformRequest["text_formats"].([]interface{}); ok && len(v) != 0 {
+			datadogQueryTableRequest.TextFormats = make([][]datadogV1.TableWidgetTextFormatRule, len(v))
+			for i, w := range v {
+				if c, ok := w.(map[string]interface{}); ok {
+					if textFormat, ok := c["text_format"].([]interface{}); ok && len(textFormat) > 0 {
+						datadogQueryTableRequest.TextFormats[i] = *buildDatadogQueryTableTextFormat(&textFormat)
+					}
+				} else {
+					datadogQueryTableRequest.TextFormats[i] = []datadogV1.TableWidgetTextFormatRule{}
+				}
+			}
+		}
+
 		datadogRequests[i] = *datadogQueryTableRequest
 	}
 	return &datadogRequests
@@ -4641,9 +4742,132 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 			}
 			terraformRequest["cell_display_mode"] = terraformCellDisplayMode
 		}
+		if v, ok := datadogRequest.GetTextFormatsOk(); ok {
+			terraformTextFormats := make([]map[string][]map[string]interface{}, len(*v))
+			for i, textFormat := range *v {
+				test := buildTerraformQueryTableTextFormat(&textFormat)
+				terraformTextFormats[i] = make(map[string][]map[string]interface{})
+				terraformTextFormats[i]["text_format"] = *test
+			}
+			terraformRequest["text_formats"] = terraformTextFormats
+		}
 		terraformRequests[i] = terraformRequest
 	}
 	return &terraformRequests
+}
+
+// Query Table Widget Text Format Helpers
+func buildDatadogQueryTableTextFormat(terraformQueryTableTextFormat *[]interface{}) *[]datadogV1.TableWidgetTextFormatRule {
+	datadogQueryTableTextFormat := make([]datadogV1.TableWidgetTextFormatRule, len(*terraformQueryTableTextFormat))
+	for j, textFormatRule := range *terraformQueryTableTextFormat {
+		terraformTextFormatRule := textFormatRule.(map[string]interface{})
+
+		match, _ := terraformTextFormatRule["match"].([]interface{})
+		terraformTextFormatMatch := match[0].(map[string]interface{})
+		datadogMatch := datadogV1.NewTableWidgetTextFormatMatch(datadogV1.TableWidgetTextFormatMatchType(terraformTextFormatMatch["type"].(string)), terraformTextFormatMatch["value"].(string))
+		datadogTextFormatRule := datadogV1.NewTableWidgetTextFormatRule(*datadogMatch)
+		// Optional
+
+		if v, ok := terraformTextFormatRule["replace"].([]interface{}); ok && len(v) > 0 {
+			if replace, ok := v[0].(map[string]interface{}); ok {
+				if w, ok := replace["type"].(string); ok && len(w) != 0 {
+					switch w {
+					case "all":
+						datadogReplace := datadogV1.NewTableWidgetTextFormatReplaceAll(datadogV1.TABLEWIDGETTEXTFORMATREPLACEALLTYPE_ALL, replace["with"].(string))
+						datadogTextFormatRule.SetReplace(datadogV1.TableWidgetTextFormatReplaceAllAsTableWidgetTextFormatReplace(datadogReplace))
+					case "substring":
+						datadogReplace := datadogV1.NewTableWidgetTextFormatReplaceSubstring(replace["substring"].(string), datadogV1.TABLEWIDGETTEXTFORMATREPLACESUBSTRINGTYPE_SUBSTRING, replace["with"].(string))
+						datadogTextFormatRule.SetReplace(datadogV1.TableWidgetTextFormatReplaceSubstringAsTableWidgetTextFormatReplace(datadogReplace))
+					}
+				}
+			}
+		}
+		if v, ok := terraformTextFormatRule["palette"].(string); ok && len(v) != 0 {
+			datadogTextFormatRule.SetPalette(datadogV1.TableWidgetTextFormatPalette(v))
+		} else {
+			datadogTextFormatRule.Palette = nil
+		}
+		if v, ok := terraformTextFormatRule["custom_bg_color"].(string); ok && len(v) != 0 {
+			datadogTextFormatRule.SetCustomBgColor(v)
+		}
+		if v, ok := terraformTextFormatRule["custom_fg_color"].(string); ok && len(v) != 0 {
+			datadogTextFormatRule.SetCustomFgColor(v)
+		}
+		datadogQueryTableTextFormat[j] = *datadogTextFormatRule
+	}
+	return &datadogQueryTableTextFormat
+}
+func buildTerraformQueryTableTextFormat(datadogQueryTableTextFormat *[]datadogV1.TableWidgetTextFormatRule) *[]map[string]interface{} {
+	terraformQueryTableTextFormat := make([]map[string]interface{}, len(*datadogQueryTableTextFormat))
+	for i, datadogQueryTableTextFormatRule := range *datadogQueryTableTextFormat {
+		terraformQueryTableTextFormatRule := map[string]interface{}{}
+		// Required params
+		match := make(map[string]interface{})
+		match["type"] = datadogQueryTableTextFormatRule.GetMatch().Type
+		match["value"] = datadogQueryTableTextFormatRule.GetMatch().Value
+		terraformQueryTableTextFormatRule["match"] = []interface{}{match}
+		// Optional params
+		if v, ok := datadogQueryTableTextFormatRule.GetReplaceOk(); ok {
+			if v.TableWidgetTextFormatReplaceAll != nil {
+				replace := make(map[string]interface{})
+				replace["type"] = v.TableWidgetTextFormatReplaceAll.Type
+				replace["with"] = v.TableWidgetTextFormatReplaceAll.With
+				terraformQueryTableTextFormatRule["replace"] = []interface{}{replace}
+			}
+			if v.TableWidgetTextFormatReplaceSubstring != nil {
+				replace := make(map[string]interface{})
+				replace["type"] = v.TableWidgetTextFormatReplaceSubstring.Type
+				replace["with"] = v.TableWidgetTextFormatReplaceSubstring.With
+				replace["substring"] = v.TableWidgetTextFormatReplaceSubstring.Substring
+				terraformQueryTableTextFormatRule["replace"] = []interface{}{replace}
+			}
+		}
+		if v, ok := datadogQueryTableTextFormatRule.GetPaletteOk(); ok {
+			terraformQueryTableTextFormatRule["palette"] = v
+		}
+		if v, ok := datadogQueryTableTextFormatRule.GetCustomBgColorOk(); ok {
+			terraformQueryTableTextFormatRule["custom_bg_color"] = v
+		}
+		if v, ok := datadogQueryTableTextFormatRule.GetCustomFgColorOk(); ok {
+			terraformQueryTableTextFormatRule["custom_fg_color"] = v
+		}
+		terraformQueryTableTextFormat[i] = terraformQueryTableTextFormatRule
+	}
+	return &terraformQueryTableTextFormat
+}
+func getTableWidgetTextFormatMatchSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"type": {
+			Description:      "Match or compare option.",
+			Type:             schema.TypeString,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetTextFormatMatchTypeFromValue),
+			Required:         true,
+		},
+		"value": {
+			Description: "Table Widget Match String.",
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+	}
+}
+func getTableWidgetTextFormatReplaceSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"type": {
+			Description: "Table widget text format replace all type.",
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+		"with": {
+			Description: "Table Widget Match String.",
+			Type:        schema.TypeString,
+			Required:    true,
+		},
+		"substring": {
+			Description: "Text that will be replaced. Must be used with type `substring`.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+	}
 }
 
 //
@@ -10352,6 +10576,139 @@ func buildTerraformWidgetAxis(datadogWidgetAxis datadogV1.WidgetAxis) map[string
 		terraformWidgetAxis["include_zero"] = v
 	}
 	return terraformWidgetAxis
+}
+
+// Distribution Widget XAxis helpers
+
+func getDistributionWidgetXAxisSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"scale": {
+			Description: "Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"min": {
+			Description: "Specify the minimum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"max": {
+			Description: "Specify the maximum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"include_zero": {
+			Description: "Always include zero or fit the axis to the data range.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+	}
+}
+
+func buildDatadogDistributionWidgetXAxis(terraformDistributionWidgetXAxis map[string]interface{}) *datadogV1.DistributionWidgetXAxis {
+	datadogDistributionWidgetXAxis := &datadogV1.DistributionWidgetXAxis{}
+	if v, ok := terraformDistributionWidgetXAxis["scale"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetXAxis.SetScale(v)
+	}
+	if v, ok := terraformDistributionWidgetXAxis["min"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetXAxis.SetMin(v)
+	}
+	if v, ok := terraformDistributionWidgetXAxis["max"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetXAxis.SetMax(v)
+	}
+	if v, ok := terraformDistributionWidgetXAxis["include_zero"].(bool); ok {
+		datadogDistributionWidgetXAxis.SetIncludeZero(v)
+	}
+	return datadogDistributionWidgetXAxis
+}
+
+func buildTerraformDistributionWidgetXAxis(datadogDistributionWidgetXAxis datadogV1.DistributionWidgetXAxis) map[string]interface{} {
+	terraformDistributionWidgetXAxis := map[string]interface{}{}
+	if v, ok := datadogDistributionWidgetXAxis.GetScaleOk(); ok {
+		terraformDistributionWidgetXAxis["scale"] = v
+	}
+	if v, ok := datadogDistributionWidgetXAxis.GetMinOk(); ok {
+		terraformDistributionWidgetXAxis["min"] = v
+	}
+	if v, ok := datadogDistributionWidgetXAxis.GetMaxOk(); ok {
+		terraformDistributionWidgetXAxis["max"] = v
+	}
+	if v, ok := datadogDistributionWidgetXAxis.GetIncludeZeroOk(); ok {
+		terraformDistributionWidgetXAxis["include_zero"] = v
+	}
+	return terraformDistributionWidgetXAxis
+}
+
+// Distribution Widget YAxis helpers
+
+func getDistributionWidgetYAxisSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"scale": {
+			Description: "Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"min": {
+			Description: "Specify the minimum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"max": {
+			Description: "Specify the maximum value to show on the Y-axis.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"include_zero": {
+			Description: "Always include zero or fit the axis to the data range.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
+		"label": {
+			Description: "The label of the axis to display on the graph.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+	}
+}
+
+func buildDatadogDistributionWidgetYAxis(terraformDistributionWidgetYAxis map[string]interface{}) *datadogV1.DistributionWidgetYAxis {
+	datadogDistributionWidgetYAxis := &datadogV1.DistributionWidgetYAxis{}
+	if v, ok := terraformDistributionWidgetYAxis["scale"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetYAxis.SetScale(v)
+	}
+	if v, ok := terraformDistributionWidgetYAxis["min"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetYAxis.SetMin(v)
+	}
+	if v, ok := terraformDistributionWidgetYAxis["max"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetYAxis.SetMax(v)
+	}
+	if v, ok := terraformDistributionWidgetYAxis["include_zero"].(bool); ok {
+		datadogDistributionWidgetYAxis.SetIncludeZero(v)
+	}
+	if v, ok := terraformDistributionWidgetYAxis["label"].(string); ok && len(v) != 0 {
+		datadogDistributionWidgetYAxis.SetLabel(v)
+	}
+	return datadogDistributionWidgetYAxis
+}
+
+func buildTerraformDistributionWidgetYAxis(datadogDistributionWidgetYAxis datadogV1.DistributionWidgetYAxis) map[string]interface{} {
+	terraformDistributionWidgetYAxis := map[string]interface{}{}
+	if v, ok := datadogDistributionWidgetYAxis.GetScaleOk(); ok {
+		terraformDistributionWidgetYAxis["scale"] = v
+	}
+	if v, ok := datadogDistributionWidgetYAxis.GetMinOk(); ok {
+		terraformDistributionWidgetYAxis["min"] = v
+	}
+	if v, ok := datadogDistributionWidgetYAxis.GetMaxOk(); ok {
+		terraformDistributionWidgetYAxis["max"] = v
+	}
+	if v, ok := datadogDistributionWidgetYAxis.GetIncludeZeroOk(); ok {
+		terraformDistributionWidgetYAxis["include_zero"] = v
+	}
+	if v, ok := datadogDistributionWidgetYAxis.GetLabelOk(); ok {
+		terraformDistributionWidgetYAxis["label"] = v
+	}
+	return terraformDistributionWidgetYAxis
 }
 
 // Widget Style helpers
