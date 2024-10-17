@@ -101,6 +101,14 @@ func (i *ApiInstances) GetAWSIntegrationApiV1() *datadogV1.AWSIntegrationApi {
 	return i.awsIntegrationApiV1
 }
 
+// GetAWSIntegrationApiV2 get instance of AWSIntegrationApi
+func (i *ApiInstances) GetAWSIntegrationApiV2() *datadogV2.AWSIntegrationApi {
+	if i.awsIntegrationApiV2 == nil {
+		i.awsIntegrationApiV2 = datadogV2.NewAWSIntegrationApi(i.HttpClient)
+	}
+	return i.awsIntegrationApiV2
+}
+
 // GetAWSLogsIntegrationApiV1 get instance of AwsLogsIntegrationApi
 func (i *ApiInstances) GetAWSLogsIntegrationApiV1() *datadogV1.AWSLogsIntegrationApi {
 	if i.awsLogsIntegrationApiV1 == nil {
