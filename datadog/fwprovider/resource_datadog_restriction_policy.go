@@ -73,7 +73,7 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 						},
 						"principals": schema.SetAttribute{
 							Required:    true,
-							Description: "An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role`, `team`, `user`, and `org`. Org ID can be obtained from the GET /api/v2/current_user API request. Find it in the `data.relationships.org.data.id` field.",
+							Description: "An array of principals. A principal is a subject or group of subjects. Each principal is formatted as `type:id`. Supported types: `role`, `team`, `user`, and `org`. Org ID can be obtained using a `GET /api/v2/current_user` API request. Find it in the `data.relationships.org.data.id` field.",
 							ElementType: types.StringType,
 						},
 					},
