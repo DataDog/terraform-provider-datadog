@@ -69,6 +69,13 @@ resource "datadog_aws_account_v2" "foo" {
 		cloud_security_posture_management_collection = false
 		extended_collection = true
     }
+	traces_config {
+		xray_services {
+			x_ray_services_include_all {
+				include_all = true
+			}
+		}
+	}
 }`, accountID, uniq)
 }
 

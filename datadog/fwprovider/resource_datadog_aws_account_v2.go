@@ -152,10 +152,6 @@ func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.
 			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_exclude_only"),
 		),
 		resourcevalidator.Conflicting(
-			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_all"),
-			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_only"),
-		),
-		resourcevalidator.Conflicting(
 			path.MatchRoot("aws_regions").AtName("aws_regions_include_all"),
 			path.MatchRoot("aws_regions").AtName("aws_regions_include_only"),
 		),
@@ -403,8 +399,8 @@ func (r *awsAccountV2Resource) Read(ctx context.Context, request resource.ReadRe
 		return
 	}
 
-	aws_account_id := state.AwsAccountId.ValueString()
-	resp, httpResp, err := r.Api.GetAWSAccount(r.Auth, aws_account_id)
+	awsAccountConfigId := state.ID.String()
+	resp, httpResp, err := r.Api.GetAWSAccount(r.Auth, awsAccountConfigId)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -465,8 +461,8 @@ func (r *awsAccountV2Resource) Update(ctx context.Context, request resource.Upda
 		return
 	}
 
-	aws_account_id := state.AwsAccountId.ValueString()
-	resp, _, err := r.Api.UpdateAWSAccount(r.Auth, aws_account_id, *body)
+	awsAccountConfigId := state.ID.String()
+	resp, _, err := r.Api.UpdateAWSAccount(r.Auth, awsAccountConfigId, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AwsAccountV2"))
 		return
@@ -488,8 +484,8 @@ func (r *awsAccountV2Resource) Delete(ctx context.Context, request resource.Dele
 		return
 	}
 
-	aws_account_id := state.AwsAccountId.ValueString()
-	httpResp, err := r.Api.DeleteAWSAccount(r.Auth, aws_account_id)
+	awsAccountConfigId := state.ID.String()
+	httpResp, err := r.Api.DeleteAWSAccount(r.Auth, awsAccountConfigId)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -795,19 +791,21 @@ func buildRequestResourcesConfig(state *awsAccountV2Model) datadogV2.AWSResource
 func buildRequestTracesConfig(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSTracesConfig {
 	tracesConfig := datadogV2.NewAWSTracesConfigWithDefaults()
 
-	if state.TracesConfig.XrayServices != nil {
-		var ddXRayServiceList datadogV2.XRayServicesList
+	if state.TracesConfig != nil {
+		if state.TracesConfig.XrayServices != nil {
+			var ddXRayServiceList datadogV2.XRayServicesList
 
-		if state.TracesConfig.XrayServices.XRayServicesIncludeAll != nil {
-			includeAll := state.TracesConfig.XrayServices.XRayServicesIncludeAll.IncludeAll.ValueBool()
-			ddXRayServiceList = datadogV2.XRayServicesIncludeAllAsXRayServicesList(&datadogV2.XRayServicesIncludeAll{IncludeAll: includeAll})
-		} else if state.TracesConfig.XrayServices.XRayServicesIncludeOnly != nil {
-			includeOnlyTf := state.TracesConfig.XrayServices.XRayServicesIncludeOnly.IncludeOnly
-			var ddIncludeOnly []string
-			diags.Append(includeOnlyTf.ElementsAs(ctx, &ddIncludeOnly, false)...)
-			ddXRayServiceList = datadogV2.XRayServicesIncludeOnlyAsXRayServicesList(&datadogV2.XRayServicesIncludeOnly{IncludeOnly: ddIncludeOnly})
+			if state.TracesConfig.XrayServices.XRayServicesIncludeAll != nil {
+				includeAll := state.TracesConfig.XrayServices.XRayServicesIncludeAll.IncludeAll.ValueBool()
+				ddXRayServiceList = datadogV2.XRayServicesIncludeAllAsXRayServicesList(&datadogV2.XRayServicesIncludeAll{IncludeAll: includeAll})
+			} else if state.TracesConfig.XrayServices.XRayServicesIncludeOnly != nil {
+				includeOnlyTf := state.TracesConfig.XrayServices.XRayServicesIncludeOnly.IncludeOnly
+				var ddIncludeOnly []string
+				diags.Append(includeOnlyTf.ElementsAs(ctx, &ddIncludeOnly, false)...)
+				ddXRayServiceList = datadogV2.XRayServicesIncludeOnlyAsXRayServicesList(&datadogV2.XRayServicesIncludeOnly{IncludeOnly: ddIncludeOnly})
+			}
+			tracesConfig.SetXrayServices(ddXRayServiceList)
 		}
-		tracesConfig.SetXrayServices(ddXRayServiceList)
 	}
 
 	return *tracesConfig
