@@ -81,6 +81,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"config_initial_application_arguments": { // AS added
 					Description: "Initial application arguments for the mobile test.",
 					Type:        schema.TypeMap, // TODO is this correct? -> it should be now
+					Optional:    true,
 				},
 				"variables_from_script": {
 					Description: "Variables defined from JavaScript code for API HTTP tests.",
@@ -863,13 +864,16 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 								Optional:    true,
 							},
 							"escalation_message": {
-								Type: schema.TypeString,
+								Type:     schema.TypeString,
+								Optional: true,
 							},
 							"renotify_occurrences": {
-								Type: schema.TypeInt,
+								Type:     schema.TypeInt,
+								Optional: true,
 							},
 							"notification_preset_name": {
 								Type:             schema.TypeString,
+								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileTestOptionsMonitorOptionsNotificationPresetNameFromValue),
 							},
 						},
@@ -887,17 +891,20 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"bindings": { // AS added :| bruh this object is awful
-					Type: schema.TypeList, // TODO which type should be here -> yes this type
+					Type:     schema.TypeList, // TODO which type should be here -> yes this type
+					Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"principal": {
-								Type: schema.TypeList,
+								Type:     schema.TypeList,
+								Optional: true,
 								Elem: &schema.Schema{
 									Type: schema.TypeString,
 								},
 							},
 							"relation": {
 								Type:             schema.TypeString,
+								Optional:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileTestBindingItemsRoleFromValue),
 							},
 						},
@@ -913,8 +920,8 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 							"execution_rule": {
 								Type:             schema.TypeString,
 								Description:      "Execution rule for a Synthetics test.",
+								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestExecutionRuleFromValue),
-								Optional:         true,
 							},
 						},
 					},
@@ -926,7 +933,7 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 				},
 				"device_ids": { // AS added
 					Type:     schema.TypeList,
-					Optional: true,
+					Required: true,
 					Elem: &schema.Schema{
 						Type: schema.TypeString,
 					},
@@ -951,18 +958,21 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 				},
 				"mobile_application": { // AS added
 					Type:     schema.TypeList, // TODO which type should be here -> should be now
-					Optional: true,
+					Required: true,
 					MaxItems: 1,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"application_id": {
-								Type: schema.TypeString,
+								Type:     schema.TypeString,
+								Required: true,
 							},
 							"reference_id": {
-								Type: schema.TypeString,
+								Type:     schema.TypeString,
+								Required: true,
 							},
 							"reference_type": {
 								Type:             schema.TypeString,
+								Required:         true,
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileTestsMobileApplicationReferenceTypeFromValue),
 							},
 						},
@@ -1375,47 +1385,238 @@ func syntheticsBrowserStepParams() schema.Schema {
 }
 
 func syntheticsTestMobileStep() *schema.Schema {
+	paramsSchema := syntheticsMobileStepParams()
 	return &schema.Schema{
 		Description: "Steps for mobile tests",
 		Type:        schema.TypeList,
+		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"allow_failure": {
 					Description: "A boolean set to allow this step to fail.",
 					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"has_new_step_element": {
 					Description: "A boolean set to determine if the step has a new step element.",
 					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"is_critical": {
 					Description: "A boolean to use in addition to `allowFailure` to determine if the test should be marked as failed when the step fails.",
 					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"name": {
 					Description: "The name of the step.",
 					Type:        schema.TypeString,
+					Required:    true,
 				},
 				"no_screenshot": {
 					Description: "A boolean set to not take a screenshot for the step.",
 					Type:        schema.TypeBool,
+					Optional:    true,
 				},
-				"params": {
-					Description: "The parameters of the step.",
-					Type:        schema.TypeMap,
-				},
+				"params": &paramsSchema,
 				"public_id": {
 					Description: "The public ID of the step.",
 					Type:        schema.TypeString,
+					Optional:    true,
 				},
 				"timeout": {
 					Description: "The time before declaring a step failed.",
 					Type:        schema.TypeInt,
+					Optional:    true,
 				},
 				"type": {
 					Description:      "The type of the step.",
 					Type:             schema.TypeString,
+					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepTypeFromValue),
+				},
+			},
+		},
+	}
+}
+
+func syntheticsMobileStepParams() schema.Schema {
+	return schema.Schema{
+		Description: "Parameters for the step.",
+		Type:        schema.TypeList,
+		MaxItems:    1,
+		Required:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"value": {
+					Description: "Value of the step.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"check": {
+					Description:      "Check type to use for an assertion step.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
+				},
+				"element": { // TODO this one probably need to change
+					Description: "Element to use for the step, JSON encoded string.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"multi_locator": {
+								Type:     schema.TypeMap, // TODO i think this shoudld be TypeMap but worth checking
+								Optional: true,
+							},
+							"context": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"context_type": {
+								Type:     schema.TypeString,
+								Optional: true,
+								// ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.), // TODO put the correct validator after api-spec is merged
+							},
+							"user_locator": {
+								Type:     schema.TypeList,
+								MaxItems: 1,
+								Optional: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"fail_test_on_cannot_locate": {
+											Type:     schema.TypeBool,
+											Optional: true,
+										},
+										"values": {
+											Type:     schema.TypeList,
+											Optional: true,
+											MinItems: 1,
+											MaxItems: 5,
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"type": {
+														Type:     schema.TypeString,
+														Optional: true,
+														// ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.), // TODO put the correct validator after api-spec is merged
+													},
+													"value": {
+														Type:     schema.TypeString,
+														Optional: true,
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"element_description": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"relative_position": {
+								Type:     schema.TypeList,
+								MaxItems: 1,
+								Optional: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"x": {
+											Type:     schema.TypeInt,
+											Optional: true,
+										},
+										"y": {
+											Type:     schema.TypeInt,
+											Optional: true,
+										},
+									},
+								},
+							},
+							"text_content": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"view_name": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"variable": {
+					Description: "Details of the variable to extract.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Description: "Name of the extracted variable.",
+								Type:        schema.TypeString,
+								// Optional:    true,
+								Required: true, // TODO need to double check this
+							},
+							"example": {
+								Description: "Example of the extracted variable.",
+								Default:     "",
+								Type:        schema.TypeString,
+								Optional:    true,
+								// Required: true, // TODO need to double check this
+							},
+						},
+					},
+				},
+				"positions": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"x": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+							"y": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"subtest_public_id": {
+					Description: "ID of the Synthetics test to use as subtest.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"x": {
+					Description: `X coordinates for a "scroll step".`,
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"y": {
+					Description: `Y coordinates for a "scroll step".`,
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"direction": {
+					Type:     schema.TypeString,
+					Optional: true,
+					// ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.), // TODO put the correct validator after api-spec is merged
+				},
+				"max_scrolls": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"enable": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"delay": {
+					Description: `Delay between each key stroke for a "type test" step.`,
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"with_enter": {
+					Type:     schema.TypeBool,
+					Optional: true,
 				},
 			},
 		},
@@ -1476,7 +1677,7 @@ func syntheticsConfigVariable() *schema.Schema {
 	return &schema.Schema{
 		Description: "Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below.",
 		Type:        schema.TypeList,
-		Optional:    true,
+		Optional:    true, // TODO this is required in the schema for mobile check if it's the same for the rest
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"example": {
@@ -2814,15 +3015,16 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 		}
 	}
 
-	if attrInitialApplicationArguments, ok := d.GetOk("initial_application_arguments"); ok { // TODO figure out what initialApplicationArguments exactly should be
-		initialApplicationArguments := attrInitialApplicationArguments.(map[string]interface{})
-		if len(initialApplicationArguments) > 0 {
-			config.SetInitialApplicationArguments(make(map[string]string))
-		}
-		for k, v := range initialApplicationArguments {
-			config.GetInitialApplicationArguments()[k] = v.(string)
-		}
-	}
+	// if attrInitialApplicationArguments, ok := d.GetOk("initial_application_arguments"); ok { // TODO figure out what initialApplicationArguments exactly should be
+	// 	initialApplicationArguments := attrInitialApplicationArguments.(map[string]interface{})
+	// 	if len(initialApplicationArguments) > 0 {
+	// 		config.SetInitialApplicationArguments(make(map[string]string))
+	// 	}
+	// 	for k, v := range initialApplicationArguments {
+	// 		config.GetInitialApplicationArguments()[k] = v.(string)
+	// 	}
+	// }
+
 	syntheticsTest.SetConfig(config)
 
 	if attr, ok := d.GetOk("device_ids"); ok {
@@ -3878,24 +4080,24 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 			options.SetRestrictedRoles(roles)
 		}
 		// TODO check this again
-		if attr, ok := d.GetOk("mobile_options_list.bindings"); ok {
-			bindings := []datadogV1.SyntheticsMobileTestBinding{}
-			for _, b := range attr.([]interface{}) {
-				binding := datadogV1.NewSyntheticsMobileTestBinding()
-				if ps, ok := b.(map[string]interface{})["principals"]; ok {
-					principals := []string{}
-					for _, p := range ps.([]string) {
-						principals = append(principals, p)
-					}
-					binding.SetPrincipals(principals)
-				}
-				if r, ok := b.(map[string]interface{})["relation"]; ok {
-					binding.SetRelation(r.(datadogV1.SyntheticsMobileTestBindingItemsRelation))
-				}
-				bindings = append(bindings, *binding)
-			}
-			options.SetBindings(bindings)
-		}
+		// if attr, ok := d.GetOk("mobile_options_list.bindings"); ok {
+		// 	bindings := []datadogV1.SyntheticsMobileTestBinding{}
+		// 	for _, b := range attr.([]interface{}) {
+		// 		binding := datadogV1.NewSyntheticsMobileTestBinding()
+		// 		if ps, ok := b.(map[string]interface{})["principals"]; ok {
+		// 			principals := []string{}
+		// 			for _, p := range ps.([]string) {
+		// 				principals = append(principals, p)
+		// 			}
+		// 			binding.SetPrincipals(principals)
+		// 		}
+		// 		if r, ok := b.(map[string]interface{})["relation"]; ok {
+		// 			binding.SetRelation(r.(datadogV1.SyntheticsMobileTestBindingItemsRelation))
+		// 		}
+		// 		bindings = append(bindings, *binding)
+		// 	}
+		// 	options.SetBindings(bindings)
+		// }
 
 		if ci, ok := d.GetOk("mobile_options_list.ci"); ok {
 			if testCiOptions, ok := ci.(map[string]interface{}); ok {
@@ -4141,28 +4343,28 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 		}
 	}
 
-	if actualOptions.HasBindings() { // TODO check this again (i hate this object :|)
-		actualBindings := actualOptions.GetBindings()
-		optionsListBindings := make([]map[string]interface{}, 0, len(actualBindings))
-		for _, binding := range actualBindings {
+	// if actualOptions.HasBindings() { // TODO check this again (i hate this object :|)
+	// 	actualBindings := actualOptions.GetBindings()
+	// 	optionsListBindings := make([]map[string]interface{}, 0, len(actualBindings))
+	// 	for _, binding := range actualBindings {
 
-			if binding.HasPrincipals() {
-				actualBindingsItemsPrincipals := binding.GetPrincipals()
-				optionsListBindingsItemsPrincipals := make([]string, 0, len(actualBindingsItemsPrincipals))
-				for _, principal := range actualBindingsItemsPrincipals {
-					optionsListBindingsItemsPrincipals = append(optionsListBindingsItemsPrincipals, principal)
-				}
-				optionsListBindingsItems["principals"] = optionsListBindingsItemsPrincipals
-			}
+	// 		if binding.HasPrincipals() {
+	// 			actualBindingsItemsPrincipals := binding.GetPrincipals()
+	// 			optionsListBindingsItemsPrincipals := make([]string, 0, len(actualBindingsItemsPrincipals))
+	// 			for _, principal := range actualBindingsItemsPrincipals {
+	// 				optionsListBindingsItemsPrincipals = append(optionsListBindingsItemsPrincipals, principal)
+	// 			}
+	// 			optionsListBindingsItems["principals"] = optionsListBindingsItemsPrincipals
+	// 		}
 
-			if binding.HasRelation() {
-				optionsListBindingsItems["relation"] = binding.GetRelation()
-			}
+	// 		if binding.HasRelation() {
+	// 			optionsListBindingsItems["relation"] = binding.GetRelation()
+	// 		}
 
-			optionsListBindings = append(optionsListBindings, optionsListBindingsItems)
-		}
-		localOptionsList["bindings"] = optionsListBindings
-	}
+	// 		optionsListBindings = append(optionsListBindings, optionsListBindingsItems)
+	// 	}
+	// 	localOptionsList["bindings"] = optionsListBindings
+	// }
 
 	if actualOptions.HasCi() {
 		actualCi := actualOptions.GetCi()
