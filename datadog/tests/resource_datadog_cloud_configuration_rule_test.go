@@ -97,8 +97,8 @@ resource "datadog_cloud_configuration_rule" "acceptance_test" {
   related_resource_types = [ "gcp_compute_disk" ]
   severity = "low"
   tags = [
-    "test:acceptance",
     "terraform:true",
+    "test:acceptance",
   ]
   filter {
     action = "suppress"
@@ -134,9 +134,9 @@ func testAccCheckDatadogCloudConfigurationCreatedCheck(accProvider func() (*sche
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "severity", "low"),
 		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "tags.0", "test:acceptance"),
+			tfCloudConfRuleName, "tags.0", "terraform:true"),
 		resource.TestCheckResourceAttr(
-			tfCloudConfRuleName, "tags.1", "terraform:true"),
+			tfCloudConfRuleName, "tags.1", "test:acceptance"),
 		resource.TestCheckResourceAttr(
 			tfCloudConfRuleName, "filter.0.action", "suppress"),
 		resource.TestCheckResourceAttr(
