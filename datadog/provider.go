@@ -262,6 +262,9 @@ type ProviderConfiguration struct {
 	Auth                context.Context
 	DefaultTags         map[string]interface{}
 
+	// 
+	ResourceContext map[string]interface{}
+
 	Now func() time.Time
 }
 

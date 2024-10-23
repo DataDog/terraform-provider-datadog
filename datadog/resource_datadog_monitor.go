@@ -23,6 +23,8 @@ import (
 
 const defaultNoDataTimeframeMinutes = 10
 
+const internalClearRestrictedRolesIndicator = "INTERNAL_CLEAR_RESTRICTED_ROLES_INDICATOR"
+
 var retryTimeout = time.Minute
 
 func resourceDatadogMonitor() *schema.Resource {
@@ -789,6 +791,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		}
 		sort.Strings(roles)
 	}
+	// Only delete if it's marked for delete
 	m.SetRestrictedRoles(roles)
 	u.SetRestrictedRoles(roles)
 
@@ -875,8 +878,21 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 	return &definition
 }
 
-// Use CustomizeDiff to do monitor validation
 func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	err := doRestrictedRolesChangeDetection(ctx, diff, meta)
+	if err != nil {
+		return err
+	}
+	return validateMonitor(ctx, diff, meta)
+}
+
+func doRestrictedRolesChangeDetection(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	oldVal, newVal := diff.GetChange("restricted_roles")
+
+	return nil
+}
+
+func validateMonitor(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if _, ok := diff.GetOk("query"); !ok {
 		// If "query" depends on other resources, we can't validate as the variables may not be interpolated yet.
 		return nil
