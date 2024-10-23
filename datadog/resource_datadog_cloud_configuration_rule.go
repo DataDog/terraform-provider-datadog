@@ -3,6 +3,7 @@ package datadog
 import (
 	"context"
 	"fmt"
+	"sort"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -305,7 +306,11 @@ func updateResourceDataFromResponse(d *schema.ResourceData, ruleResponse *datado
 	d.Set(severityField, ruleCase.Status)
 	d.Set(notificationsField, ruleCase.GetNotifications())
 	d.Set(groupByField, ruleResponse.ComplianceSignalOptions.GetUserGroupByFields())
-	d.Set(tagsField, ruleResponse.GetTags())
+
+	var tags []string
+	tags = append(tags, ruleResponse.GetTags()...)
+	sort.Strings(tags)
+	d.Set(tagsField, tags)
 
 	if filters, ok := ruleResponse.GetFiltersOk(); ok {
 		d.Set(filterField, extractFiltersFromRuleResponse(*filters))
