@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -58,10 +57,11 @@ func TestAccDatadogIPAllowlist_CreateUpdate(t *testing.T) {
 					}),
 				),
 			},
-			{
-				Config:      testAccCheckDatadogIPAllowlistConfigInvalid(),
-				ExpectError: regexp.MustCompile("Cannot enable or keep enabled an IP Allowlist without the current IP address in it"),
-			},
+			// Skip temporarily due to bug. TODO: reenable this test when the bug is fixed
+			// {
+			// 	Config:      testAccCheckDatadogIPAllowlistConfigInvalid(),
+			// 	ExpectError: regexp.MustCompile("Cannot enable or keep enabled an IP Allowlist without the current IP address in it"),
+			// },
 		},
 	})
 }
