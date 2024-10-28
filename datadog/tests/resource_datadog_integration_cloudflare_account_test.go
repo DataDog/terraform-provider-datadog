@@ -34,6 +34,12 @@ func TestAccIntegrationCloudflareAccountBasic(t *testing.T) {
 						"datadog_integration_cloudflare_account.foo", "email", "test-email@example.com"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_cloudflare_account.foo", "name", uniq),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_cloudflare_account.foo", "resources.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_cloudflare_account.foo", "resources.0", "lb"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_cloudflare_account.foo", "resources.1", "worker"),
 				),
 			},
 		},
@@ -46,6 +52,7 @@ resource "datadog_integration_cloudflare_account" "foo" {
     api_key = "1234567891012331asdd"
     email = "test-email@example.com"
     name = "%s"
+	resources = ["lb", "worker"]
 }`, uniq)
 }
 

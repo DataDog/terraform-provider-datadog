@@ -26,10 +26,11 @@ type integrationCloudflareAccountResource struct {
 }
 
 type integrationCloudflareAccountModel struct {
-	ID     types.String `tfsdk:"id"`
-	ApiKey types.String `tfsdk:"api_key"`
-	Email  types.String `tfsdk:"email"`
-	Name   types.String `tfsdk:"name"`
+	ID        types.String `tfsdk:"id"`
+	ApiKey    types.String `tfsdk:"api_key"`
+	Email     types.String `tfsdk:"email"`
+	Name      types.String `tfsdk:"name"`
+	Resources types.List   `tfsdk:"resources"`
 }
 
 func NewIntegrationCloudflareAccountResource() resource.Resource {
@@ -67,6 +68,11 @@ func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 				},
 			},
 			"id": utils.ResourceIDAttribute(),
+			"resources": schema.ListAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+				Description: "An allowlist of resources to restrict pulling metrics for including `web`, `dns`, `lb` (load balancer), `worker`)",
+			},
 		},
 	}
 }
