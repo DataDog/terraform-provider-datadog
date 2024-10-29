@@ -1028,9 +1028,19 @@ func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schem
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.foo", "config_variable.0.secure", "false"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "config_variable.1.type", "global"),
+				"datadog_synthetics_test.foo", "config_variable.1.type", "text"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.foo", "config_variable.1.name", "GLOBAL_VAR"),
+				"datadog_synthetics_test.foo", "config_variable.1.name", "SECURE_VARIABLE_NAME"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.1.pattern", ""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.1.example", ""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.1.secure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.2.type", "global"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.foo", "config_variable.2.name", "GLOBAL_VAR"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.foo", "monitor_id"),
 		),
@@ -1141,6 +1151,17 @@ resource "datadog_synthetics_test" "foo" {
 		secure = false
 		pattern = "{{numeric(3)}}"
 		example = "123"
+	}
+
+	config_variable {
+		type = "text"
+		name = "SECURE_VARIABLE_NAME"
+		secure = true
+		# when importing secure local variable, the pattern and example can't be set back into the state so they are left empty,
+		# this makes the TestAccDatadogSyntheticsAPITest_importBasic test fail to validate the imported test definition against this original.
+		# Instead we cheat and keep them undefined here to have them match the values in the imported test.
+		pattern = ""
+		example = ""
 	}
 
 	config_variable {
