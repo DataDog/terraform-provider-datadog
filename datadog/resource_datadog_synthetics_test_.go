@@ -3114,10 +3114,7 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			if rawTimeframes, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
 				var timeFrames []datadogV1.SyntheticsTestOptionsSchedulingTimeframe
 				for _, tf := range rawTimeframes.(*schema.Set).List() {
-					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe()
-					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
-					timeframe.SetFrom(tf.(map[string]interface{})["from"].(string))
-					timeframe.SetTo(tf.(map[string]interface{})["to"].(string))
+					timeframe := datadogV1.NewSyntheticsTestOptionsSchedulingTimeframe(int32(tf.(map[string]interface{})["day"].(int)), tf.(map[string]interface{})["from"].(string), tf.(map[string]interface{})["to"].(string))
 					timeFrames = append(timeFrames, *timeframe)
 				}
 				optionsScheduling.SetTimeframes(timeFrames)

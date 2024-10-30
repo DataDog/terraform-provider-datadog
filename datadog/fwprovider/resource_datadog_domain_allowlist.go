@@ -82,11 +82,11 @@ func (r *domainAllowlistResource) Read(ctx context.Context, request resource.Rea
 	}
 	domainAllowListData := resp.GetData()
 
-	apiEntries, ok := domainAllowListData.Attributes.GetDomainsOk()
+	apiDomains, ok := domainAllowListData.Attributes.GetDomainsOk()
 	priorEntries := state.Domains
 
-	if !compareDomainEntries(priorEntries, *apiEntries) && ok && priorEntries != nil {
-		r.updateDomainAllowlistEntriesState(ctx, &state, *apiEntries)
+	if !compareDomainEntries(priorEntries, *apiDomains) && ok && priorEntries != nil {
+		state.Domains = *apiDomains
 	}
 
 	r.updateEnableState(ctx, &state, domainAllowListData.GetAttributes())
@@ -184,7 +184,7 @@ func (r *domainAllowlistResource) updateRequestState(ctx context.Context, state 
 		}
 
 		if domains, ok := domainAllowlistAttrs.GetDomainsOk(); ok && len(*domains) > 0 {
-			r.updateDomainAllowlistEntriesState(ctx, state, *domains)
+			state.Domains = domainAllowlistAttrs.GetDomains()
 		}
 	}
 }
@@ -193,12 +193,6 @@ func (r *domainAllowlistResource) updateEnableState(ctx context.Context, state *
 	if enabled, ok := domainAllowlistAttrs.GetEnabledOk(); ok && enabled != nil {
 		state.Enabled = types.BoolValue(*enabled)
 	}
-}
-
-func (r *domainAllowlistResource) updateDomainAllowlistEntriesState(ctx context.Context, state *domainAllowlistResourceModel, domainAllowlistEntries []string) {
-	var domains []string
-	domains = append(domains, domainAllowlistEntries...)
-	state.Domains = domains
 }
 
 func buildDomainAllowlistUpdateRequest(state domainAllowlistResourceModel) (*datadogV2.DomainAllowlistRequest, error) {
