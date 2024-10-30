@@ -52,6 +52,7 @@ type ApiInstances struct {
 	csmThreatsApiV2             *datadogV2.CSMThreatsApi
 	confluentCloudApiV2         *datadogV2.ConfluentCloudApi
 	dashboardListsApiV2         *datadogV2.DashboardListsApi
+	domainAllowlistApiV2        *datadogV2.DomainAllowlistApi
 	downtimesApiV2              *datadogV2.DowntimesApi
 	eventsApiV2                 *datadogV2.EventsApi
 	fastlyIntegrationApiV2      *datadogV2.FastlyIntegrationApi
@@ -354,6 +355,14 @@ func (i *ApiInstances) GetCSMThreatsApiV2() *datadogV2.CSMThreatsApi {
 		i.csmThreatsApiV2 = datadogV2.NewCSMThreatsApi(i.HttpClient)
 	}
 	return i.csmThreatsApiV2
+}
+
+// GetDoomainAllowlittApiV2 get instance of DowntimesApi
+func (i *ApiInstances) GetDomainAllowlistApiV2() *datadogV2.DomainAllowlistApi {
+	if i.domainAllowlistApiV2 == nil {
+		i.domainAllowlistApiV2 = datadogV2.NewDomainAllowlistApi(i.HttpClient)
+	}
+	return i.domainAllowlistApiV2
 }
 
 // GetDowntimesApiV2 get instance of DowntimesApi
