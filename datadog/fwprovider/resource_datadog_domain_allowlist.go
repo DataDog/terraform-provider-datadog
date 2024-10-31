@@ -102,8 +102,8 @@ func (r *domainAllowlistResource) Create(ctx context.Context, request resource.C
 		return
 	}
 
-	ipAllowlistReq, _ := buildDomainAllowlistUpdateRequest(state)
-	resp, httpResp, err := r.Api.PatchDomainAllowlist(r.Auth, *ipAllowlistReq)
+	domainAllowlistReq, _ := buildDomainAllowlistUpdateRequest(state)
+	resp, httpResp, err := r.Api.PatchDomainAllowlist(r.Auth, *domainAllowlistReq)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, ""), "error updating email domain allowlist"))
 		return
@@ -114,10 +114,10 @@ func (r *domainAllowlistResource) Create(ctx context.Context, request resource.C
 		return
 	}
 
-	ipAllowlistData := resp.GetData()
+	domainAllowlistData := resp.GetData()
 
-	state.ID = types.StringValue(ipAllowlistData.GetId())
-	r.updateRequestState(ctx, &state, ipAllowlistData.Attributes)
+	state.ID = types.StringValue(domainAllowlistData.GetId())
+	r.updateRequestState(ctx, &state, domainAllowlistData.Attributes)
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -127,12 +127,12 @@ func (r *domainAllowlistResource) Update(ctx context.Context, request resource.U
 	if response.Diagnostics.HasError() {
 		return
 	}
-	ipAllowlistReq, err := buildDomainAllowlistUpdateRequest(state)
+	domainAllowlistReq, err := buildDomainAllowlistUpdateRequest(state)
 	if err != nil {
 		response.Diagnostics.AddError("", err.Error())
 		return
 	}
-	resp, httpResp, err := r.Api.PatchDomainAllowlist(r.Auth, *ipAllowlistReq)
+	resp, httpResp, err := r.Api.PatchDomainAllowlist(r.Auth, *domainAllowlistReq)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, " error updating IP allowlist"), ""))
 		return
