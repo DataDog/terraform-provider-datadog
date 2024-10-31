@@ -25,16 +25,16 @@ func TestAccDatadogDomainAllowlist_CreateUpdate(t *testing.T) {
 				Config: testAccCheckDatadogDomainAllowlistConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "enabled", "false"),
-					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.0", "test.com"),
-					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.1", "datadoghq.com"),
+					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.0", "@test.com"),
+					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.1", "@datadoghq.com"),
 				),
 			},
 			{
 				Config: testAccCheckDatadogDomainAllowlistConfigUpdated(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "enabled", "true"),
-					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.0", "gmail.com"),
-					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.1", "datadoghq.com"),
+					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.0", "@gmail.com"),
+					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.1", "@datadoghq.com"),
 				),
 			},
 		},
@@ -68,7 +68,7 @@ func testAccCheckDatadogDomainAllowlistConfig() string {
 	return `
 resource "datadog_domain_allowlist" "foo" {
 	enabled = false
-	domains = ["test.com", "datadoghq.com"]
+	domains = ["@test.com", "@datadoghq.com"]
 }`
 }
 
@@ -76,6 +76,6 @@ func testAccCheckDatadogDomainAllowlistConfigUpdated() string {
 	return `
 resource "datadog_domain_allowlist" "foo" {
 	enabled = true
-	domains = ["gmail.com", "datadoghq.com"]
+	domains = ["@gmail.com", "@datadoghq.com"]
 }`
 }
