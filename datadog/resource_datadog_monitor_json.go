@@ -117,7 +117,19 @@ func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, m
 	auth := providerConf.Auth
 
 	id := d.Id()
-	respByte, httpResp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", monitorPath+"/"+id, nil)
+	url := monitorPath + "/" + id
+
+	// Check if restricted_roles is defined in the JSON, if not explicitly
+	// defined, we tell the API to not return it so there is no diff. Get
+	// ("monitor") shouldn't be trusted as it's not the raw values, but we
+	// try to keep restricted_roles from mixing into it from API responses
+	monitor := d.Get("monitor").(string)
+	attrMap, _ := structure.ExpandJsonFromString(monitor)
+	if _, ok := attrMap["restricted_roles"]; !ok {
+		url += "?with_restricted_roles=false"
+	}
+
+	respByte, httpResp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", url, nil)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			d.SetId("")
@@ -216,6 +228,17 @@ func updateMonitorJSONState(d *schema.ResourceData, monitor map[string]interface
 	}
 	if val := reflect.ValueOf(monitor["restriction_policy"]); !val.IsValid() {
 		utils.DeleteKeyInMap(monitor, []string{"restriction_policy"})
+	}
+	// In addition to checking the API response, we check to see if the user
+	// specified restricted_roles in the config. Note: the value returned
+	// from the ResourceData is not the raw value - it's mixed with state.
+	// However, using GetRawConfig only returns null values here. If the user
+	// did not specify restricted_roles, do not store them in the state -
+	// treat them as a separately managed resource, likely in restriction
+	// policy resource.
+	attrMap, _ := structure.ExpandJsonFromString(d.Get("monitor").(string))
+	if val := reflect.ValueOf(attrMap["restricted_roles"]); !val.IsValid() {
+		utils.DeleteKeyInMap(monitor, []string{"restricted_roles"})
 	}
 
 	monitorString, err := structure.FlattenJsonToString(monitor)
