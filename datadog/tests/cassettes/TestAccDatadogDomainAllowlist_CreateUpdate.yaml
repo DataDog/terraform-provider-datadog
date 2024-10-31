@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 109
+        content_length: 108
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"domains":["@test.com","@datadoghq.com"],"enabled":false},"type":"domain_allowlist"}}
+            {"data":{"attributes":{"domains":["@test.com","@datadoghq.com"],"enabled":true},"type":"domain_allowlist"}}
         form: {}
         headers:
             Accept:
@@ -32,14 +32,49 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"domain_allowlist","attributes":{"enabled":false,"domains":["@test.com","@datadoghq.com"]}}}
+            {"data":{"type":"domain_allowlist","attributes":{"enabled":true,"domains":["@test.com","@datadoghq.com"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 231.420958ms
+        duration: 234.080042ms
     - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/domain_allowlist
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"domain_allowlist","attributes":{"enabled":true,"domains":["@test.com","@datadoghq.com"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 81.839ms
+    - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -73,8 +108,81 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 84.48225ms
-    - id: 2
+        duration: 87.23575ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 110
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"domains":["@gmail.com","@datadoghq.com"],"enabled":false},"type":"domain_allowlist"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/domain_allowlist
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"domain_allowlist","attributes":{"enabled":false,"domains":["@gmail.com","@datadoghq.com"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 146.109542ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/domain_allowlist
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"type":"domain_allowlist","attributes":{"enabled":false,"domains":["@gmail.com","@datadoghq.com"]}}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 91.206459ms
+    - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -111,8 +219,8 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 158.533542ms
-    - id: 3
+        duration: 240.557959ms
+    - id: 6
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -146,4 +254,4 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 80.075ms
+        duration: 73.478459ms
