@@ -33,7 +33,7 @@ type domainAllowlistResourceModel struct {
 }
 
 func (r *domainAllowlistResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "email_domain_allowlist"
+	response.TypeName = "domain_allowlist"
 }
 
 func (r *domainAllowlistResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -48,6 +48,7 @@ func (r *domainAllowlistResource) Schema(_ context.Context, _ resource.SchemaReq
 			"domains": schema.ListAttribute{
 				Description: "The domains within the domain allowlist.",
 				ElementType: types.StringType,
+				Required:    true,
 				Computed:    false,
 			},
 		},

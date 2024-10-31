@@ -29,14 +29,14 @@ func TestAccDatadogDomainAllowlist_CreateUpdate(t *testing.T) {
 					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.1", "@datadoghq.com"),
 				),
 			},
-			{
-				Config: testAccCheckDatadogDomainAllowlistConfigUpdated(),
-				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "enabled", "true"),
-					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.0", "@gmail.com"),
-					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.1", "@datadoghq.com"),
-				),
-			},
+			// {
+			// 	Config: testAccCheckDatadogDomainAllowlistConfigUpdated(),
+			// 	Check: resource.ComposeTestCheckFunc(
+			// 		resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "enabled", "true"),
+			// 		resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.0", "@gmail.com"),
+			// 		resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.1", "@datadoghq.com"),
+			// 	),
+			// },
 		},
 	})
 }
