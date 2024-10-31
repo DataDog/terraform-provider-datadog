@@ -199,6 +199,10 @@ func (r *integrationCloudflareAccountResource) updateState(ctx context.Context, 
 	if name, ok := attributes.GetNameOk(); ok {
 		state.Name = types.StringValue(*name)
 	}
+
+	if resources, ok := attributes.GetResourcesOk(); ok {
+		state.Resources, _ = types.ListValueFrom(ctx, types.StringType, resources)
+	}
 }
 
 func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccountRequestBody(ctx context.Context, state *integrationCloudflareAccountModel) (*datadogV2.CloudflareAccountCreateRequest, diag.Diagnostics) {
@@ -210,6 +214,12 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 		attributes.SetEmail(state.Email.ValueString())
 	}
 	attributes.SetName(state.Name.ValueString())
+
+	if !state.Resources.IsNull() {
+		var resources []string
+		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
+		attributes.SetResources(resources)
+	}
 
 	req := datadogV2.NewCloudflareAccountCreateRequestWithDefaults()
 	req.Data = *datadogV2.NewCloudflareAccountCreateRequestDataWithDefaults()
@@ -225,6 +235,12 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 	attributes.SetApiKey(state.ApiKey.ValueString())
 	if !state.Email.IsNull() {
 		attributes.SetEmail(state.Email.ValueString())
+	}
+
+	if !state.Resources.IsNull() {
+		var resources []string
+		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
+		attributes.SetResources(resources)
 	}
 
 	req := datadogV2.NewCloudflareAccountUpdateRequestWithDefaults()

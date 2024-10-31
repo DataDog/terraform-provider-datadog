@@ -29,17 +29,15 @@ func TestAccIntegrationCloudflareAccountBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogIntegrationCloudflareAccountExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_cloudflare_account.foo", "api_key", "1234567891012331asdd"),
+						"datadog_integration_cloudflare_account.foo", "api_key", "12345"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_cloudflare_account.foo", "email", "test-email@example.com"),
+						"datadog_integration_cloudflare_account.foo", "email", "test@email.com"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_cloudflare_account.foo", "name", uniq),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_cloudflare_account.foo", "resources.#", "2"),
+						"datadog_integration_cloudflare_account.foo", "resources.#", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_cloudflare_account.foo", "resources.0", "lb"),
-					resource.TestCheckResourceAttr(
-						"datadog_integration_cloudflare_account.foo", "resources.1", "worker"),
+						"datadog_integration_cloudflare_account.foo", "resources.0", "web"),
 				),
 			},
 		},
@@ -49,10 +47,10 @@ func TestAccIntegrationCloudflareAccountBasic(t *testing.T) {
 func testAccCheckDatadogIntegrationCloudflareAccount(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_cloudflare_account" "foo" {
-    api_key = "1234567891012331asdd"
-    email = "test-email@example.com"
+    api_key = "12345"
+    email = "test@email.com"
     name = "%s"
-	resources = ["lb", "worker"]
+	resources = ["web"]
 }`, uniq)
 }
 
