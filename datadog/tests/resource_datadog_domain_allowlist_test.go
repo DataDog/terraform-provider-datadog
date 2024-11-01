@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -30,7 +31,8 @@ func TestAccDatadogDomainAllowlist_CreateUpdate(t *testing.T) {
 				),
 			},
 			{
-				Config: testAccCheckDatadogDomainAllowlistConfigUpdated(),
+				PreConfig: func() { time.Sleep(time.Second) },
+				Config:    testAccCheckDatadogDomainAllowlistConfigUpdated(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.0", "@gmail.com"),
 					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.1", "@datadoghq.com"),
