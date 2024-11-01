@@ -38,7 +38,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 234.080042ms
+        duration: 245.557625ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -73,7 +73,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 81.839ms
+        duration: 79.644292ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"domain_allowlist","attributes":{"enabled":false,"domains":["@test.com","@datadoghq.com"]}}}
+            {"data":{"type":"domain_allowlist","attributes":{"enabled":true,"domains":["@test.com","@datadoghq.com"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 87.23575ms
+        duration: 91.414084ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -146,7 +146,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 146.109542ms
+        duration: 168.003416ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -181,7 +181,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 91.206459ms
+        duration: 78.078875ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -213,13 +213,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"domain_allowlist","attributes":{"enabled":false,"domains":[]}}}
+            {"data":{"type":"domain_allowlist","attributes":{"enabled":false,"domains":["@gmail.com","@datadoghq.com"]}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 240.557959ms
+        duration: 146.356292ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -254,4 +254,4 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 73.478459ms
+        duration: 104.246584ms
