@@ -8068,7 +8068,6 @@ func buildDatadogToplistStyle(terraformToplistStyle map[string]interface{}) data
 				if t == "stacked" {
 					datadogToplistStyle.SetDisplay(datadogV1.ToplistWidgetDisplay{
 						ToplistWidgetStacked: datadogV1.NewToplistWidgetStacked(
-							datadogV1.TOPLISTWIDGETLEGEND_AUTOMATIC,
 							datadogV1.TOPLISTWIDGETSTACKEDTYPE_STACKED,
 						),
 					})
