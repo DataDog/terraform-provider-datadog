@@ -4,10 +4,12 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -71,7 +73,9 @@ func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 			"resources": schema.ListAttribute{
 				ElementType: types.StringType,
 				Optional:    true,
-				Description: "(List of String) An allowlist of resources to restrict pulling metrics for including `web`, `dns`, `lb` (load balancer), `worker`)",
+				Computed:    true,
+				Description: "An allowlist of resources to restrict pulling metrics for including `web`, `dns`, `lb` (load balancer), `worker`)",
+				Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 			},
 		},
 	}

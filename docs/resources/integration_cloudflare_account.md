@@ -33,7 +33,7 @@ resource "datadog_integration_cloudflare_account" "foo" {
 ### Optional
 
 - `email` (String) The email associated with the Cloudflare account. If an API key is provided (and not a token), this field is also required.
-- `resources` (List of String) (List of String) An allowlist of resources to restrict pulling metrics for including `web`, `dns`, `lb` (load balancer), `worker`)
+- `resources` (List of String) An allowlist of resources to restrict pulling metrics for including `web`, `dns`, `lb` (load balancer), `worker`)
 
 ### Read-Only
 
