@@ -71,7 +71,7 @@ func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 			"resources": schema.ListAttribute{
 				ElementType: types.StringType,
 				Optional:    true,
-				Description: "An allowlist of resources to restrict pulling metrics for including `web`, `dns`, `lb` (load balancer), `worker`)",
+				Description: "(List of String) An allowlist of resources to restrict pulling metrics for including `web`, `dns`, `lb` (load balancer), `worker`)",
 			},
 		},
 	}
