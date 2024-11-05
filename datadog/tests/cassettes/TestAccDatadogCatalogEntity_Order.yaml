@@ -12,7 +12,7 @@ interactions:
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
-        body: "apiVersion: v3\nkind: service\nmetadata: \n  name: tf-testaccdatadogcatalogentity_order-local-1724787783\n  contacts:\n    - name: AA\n      type: slack\n      contact: AAA\n    - name: BB\n      type: email\n      contact: BBB@example.com\n    - name: AA\n      type: email\n      contact: AAA@example.com\n    - name: BB\n      type: email\n      contact: AAA@example.com\n    - name: AA\n      type: email\n      contact: BBB@example.com\n  tags:\n    - 'bbb'\n    - 'aaa'\n"
+        body: "apiVersion: v3\nkind: service\nmetadata: \n  name: tf-testaccdatadogcatalogentity_order-local-1730817507\n  contacts:\n    - name: AA\n      type: slack\n      contact: AAA\n    - name: BB\n      type: email\n      contact: BBB@example.com\n    - name: AA\n      type: email\n      contact: AAA@example.com\n    - name: BB\n      type: email\n      contact: AAA@example.com\n    - name: AA\n      type: email\n      contact: BBB@example.com\n  tags:\n    - 'bbb'\n    - 'aaa'\n"
         form: {}
         headers:
             Content-Type:
@@ -25,15 +25,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: '{"data":[{"id":"b5dca440-5302-4917-b084-2bfcd9516a3b","type":"entity","attributes":{"apiVersion":"v3","kind":"service","name":"tf-testaccdatadogcatalogentity_order-local-1724787783","namespace":"default","tags":["bbb","aaa"]},"relationships":{"schema":{"data":{"id":"b5dca440-5302-4917-b084-2bfcd9516a3b","type":"schema"}}},"meta":{"createdAt":"2024-08-27T19:43:04.799711772Z","modifiedAt":"2024-08-27T19:43:04.799711665Z","ingestionSource":"api","origin":"unknown"}}],"meta":{"count":1,"includeCount":1},"included":[{"id":"b5dca440-5302-4917-b084-2bfcd9516a3b","type":"schema","attributes":{"schema":{"apiVersion":"v3","kind":"service","metadata":{"name":"tf-testaccdatadogcatalogentity_order-local-1724787783","namespace":"default","tags":["bbb","aaa"],"contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"BBB@example.com"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"}],"managed":{"origin":{"origin":"unknown"},"ingestionSource":"api","createdAt":"2024-08-27T19:43:04.799711772Z","modifiedAt":"2024-08-27T19:43:04.799711665Z","status":{"warnings":[{"keyword_location":"/allOf/0/$ref/properties/metadata/$ref/properties/contacts/items/else/properties/contact/format","instance_location":"/metadata/contacts/0/contact","message":"''AAA'' is not valid ''uri''"}]}}}}}}]}'
+        content_length: 1154
+        uncompressed: false
+        body: '{"data":[{"id":"e8872f9d-30ba-4bb9-ab04-fd6732b87d83","type":"entity","attributes":{"apiVersion":"v3","kind":"service","name":"tf-testaccdatadogcatalogentity_order-local-1730817507","namespace":"default","tags":["bbb","aaa"]},"relationships":{"schema":{"data":{"id":"e8872f9d-30ba-4bb9-ab04-fd6732b87d83","type":"schema"}}},"meta":{"createdAt":"2024-11-05T14:38:28.541369494Z","modifiedAt":"2024-11-05T14:38:28.541369364Z","ingestionSource":"api"}}],"meta":{"count":1,"includeCount":1},"included":[{"id":"e8872f9d-30ba-4bb9-ab04-fd6732b87d83","type":"schema","attributes":{"schema":{"apiVersion":"v3","kind":"service","metadata":{"name":"tf-testaccdatadogcatalogentity_order-local-1730817507","namespace":"default","tags":["bbb","aaa"],"contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"BBB@example.com"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"}],"managed":{"ingestionSource":"api","createdAt":"2024-11-05T14:38:28.541369494Z","modifiedAt":"2024-11-05T14:38:28.541369364Z"}}}}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 202 Accepted
         code: 202
-        duration: 100.970792ms
+        duration: 428.148417ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -50,7 +50,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1724787783&include=schema
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1730817507&include=raw_schema
         method: GET
       response:
         proto: HTTP/1.1
@@ -60,13 +60,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"b5dca440-5302-4917-b084-2bfcd9516a3b","type":"entity","attributes":{"apiVersion":"v3","kind":"service","name":"tf-testaccdatadogcatalogentity_order-local-1724787783","namespace":"default","tags":["bbb","aaa"]},"relationships":{"schema":{"data":{"id":"b5dca440-5302-4917-b084-2bfcd9516a3b","type":"schema"}}},"meta":{"createdAt":"2024-08-27T19:43:04.799711772Z","modifiedAt":"2024-08-27T19:43:04.799711665Z","ingestionSource":"api","origin":"unknown"}}],"meta":{"count":1,"includeCount":1},"links":{"self":"/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1724787783\u0026include=schema\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"},"included":[{"id":"b5dca440-5302-4917-b084-2bfcd9516a3b","type":"schema","attributes":{"schema":{"apiVersion":"v3","kind":"service","metadata":{"name":"tf-testaccdatadogcatalogentity_order-local-1724787783","namespace":"default","tags":["bbb","aaa"],"contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"BBB@example.com"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"}],"managed":{"origin":{"origin":"unknown"},"ingestionSource":"api","createdAt":"2024-08-27T19:43:04.799711772Z","modifiedAt":"2024-08-27T19:43:04.799711665Z","status":{"warnings":[{"keyword_location":"/allOf/0/$ref/properties/metadata/$ref/properties/contacts/items/else/properties/contact/format","instance_location":"/metadata/contacts/0/contact","message":"''AAA'' is not valid ''uri''"}]}}}}}}]}'
+        body: '{"data":[{"id":"e8872f9d-30ba-4bb9-ab04-fd6732b87d83","type":"entity","attributes":{"apiVersion":"v3","kind":"service","name":"tf-testaccdatadogcatalogentity_order-local-1730817507","namespace":"default","tags":["bbb","aaa"]},"relationships":{"rawSchema":{"data":{"id":"e8872f9d-30ba-4bb9-ab04-fd6732b87d83","type":"rawSchema"}}},"meta":{"createdAt":"2024-11-05T14:38:28.541369Z","modifiedAt":"2024-11-05T14:38:28.541369364Z","ingestionSource":"api"}}],"meta":{"count":1,"includeCount":1},"links":{"self":"/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1730817507\u0026include=raw_schema\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"},"included":[{"id":"e8872f9d-30ba-4bb9-ab04-fd6732b87d83","type":"rawSchema","attributes":{"rawSchema":"LS0tCmFwaVZlcnNpb246IHYzCmtpbmQ6IHNlcnZpY2UKbWV0YWRhdGE6CiAgbmFtZTogdGYtdGVzdGFjY2RhdGFkb2djYXRhbG9nZW50aXR5X29yZGVyLWxvY2FsLTE3MzA4MTc1MDcKICBjb250YWN0czoKICAgIC0gbmFtZTogQUEKICAgICAgdHlwZTogc2xhY2sKICAgICAgY29udGFjdDogQUFBCiAgICAtIG5hbWU6IEJCCiAgICAgIHR5cGU6IGVtYWlsCiAgICAgIGNvbnRhY3Q6IEJCQkBleGFtcGxlLmNvbQogICAgLSBuYW1lOiBBQQogICAgICB0eXBlOiBlbWFpbAogICAgICBjb250YWN0OiBBQUFAZXhhbXBsZS5jb20KICAgIC0gbmFtZTogQkIKICAgICAgdHlwZTogZW1haWwKICAgICAgY29udGFjdDogQUFBQGV4YW1wbGUuY29tCiAgICAtIG5hbWU6IEFBCiAgICAgIHR5cGU6IGVtYWlsCiAgICAgIGNvbnRhY3Q6IEJCQkBleGFtcGxlLmNvbQogIHRhZ3M6CiAgICAtICdiYmInCiAgICAtICdhYWEnCg=="}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 36.993375ms
+        duration: 50.328ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -83,7 +83,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1724787783&include=schema
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1730817507&include=raw_schema
         method: GET
       response:
         proto: HTTP/1.1
@@ -93,13 +93,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"data":[{"id":"b5dca440-5302-4917-b084-2bfcd9516a3b","type":"entity","attributes":{"apiVersion":"v3","kind":"service","name":"tf-testaccdatadogcatalogentity_order-local-1724787783","namespace":"default","tags":["bbb","aaa"]},"relationships":{"schema":{"data":{"id":"b5dca440-5302-4917-b084-2bfcd9516a3b","type":"schema"}}},"meta":{"createdAt":"2024-08-27T19:43:04.799711772Z","modifiedAt":"2024-08-27T19:43:04.799711665Z","ingestionSource":"api","origin":"unknown"}}],"meta":{"count":1,"includeCount":1},"links":{"self":"/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1724787783\u0026include=schema\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"},"included":[{"id":"b5dca440-5302-4917-b084-2bfcd9516a3b","type":"schema","attributes":{"schema":{"apiVersion":"v3","kind":"service","metadata":{"name":"tf-testaccdatadogcatalogentity_order-local-1724787783","namespace":"default","tags":["bbb","aaa"],"contacts":[{"name":"AA","type":"slack","contact":"AAA"},{"name":"BB","type":"email","contact":"BBB@example.com"},{"name":"AA","type":"email","contact":"AAA@example.com"},{"name":"BB","type":"email","contact":"AAA@example.com"},{"name":"AA","type":"email","contact":"BBB@example.com"}],"managed":{"origin":{"origin":"unknown"},"ingestionSource":"api","createdAt":"2024-08-27T19:43:04.799711772Z","modifiedAt":"2024-08-27T19:43:04.799711665Z","status":{"warnings":[{"keyword_location":"/allOf/0/$ref/properties/metadata/$ref/properties/contacts/items/else/properties/contact/format","instance_location":"/metadata/contacts/0/contact","message":"''AAA'' is not valid ''uri''"}]}}}}}}]}'
+        body: '{"data":[{"id":"e8872f9d-30ba-4bb9-ab04-fd6732b87d83","type":"entity","attributes":{"apiVersion":"v3","kind":"service","name":"tf-testaccdatadogcatalogentity_order-local-1730817507","namespace":"default","tags":["bbb","aaa"]},"relationships":{"rawSchema":{"data":{"id":"e8872f9d-30ba-4bb9-ab04-fd6732b87d83","type":"rawSchema"}}},"meta":{"createdAt":"2024-11-05T14:38:28.541369Z","modifiedAt":"2024-11-05T14:38:28.541369364Z","ingestionSource":"api"}}],"meta":{"count":1,"includeCount":1},"links":{"self":"/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1730817507\u0026include=raw_schema\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"},"included":[{"id":"e8872f9d-30ba-4bb9-ab04-fd6732b87d83","type":"rawSchema","attributes":{"rawSchema":"LS0tCmFwaVZlcnNpb246IHYzCmtpbmQ6IHNlcnZpY2UKbWV0YWRhdGE6CiAgbmFtZTogdGYtdGVzdGFjY2RhdGFkb2djYXRhbG9nZW50aXR5X29yZGVyLWxvY2FsLTE3MzA4MTc1MDcKICBjb250YWN0czoKICAgIC0gbmFtZTogQUEKICAgICAgdHlwZTogc2xhY2sKICAgICAgY29udGFjdDogQUFBCiAgICAtIG5hbWU6IEJCCiAgICAgIHR5cGU6IGVtYWlsCiAgICAgIGNvbnRhY3Q6IEJCQkBleGFtcGxlLmNvbQogICAgLSBuYW1lOiBBQQogICAgICB0eXBlOiBlbWFpbAogICAgICBjb250YWN0OiBBQUFAZXhhbXBsZS5jb20KICAgIC0gbmFtZTogQkIKICAgICAgdHlwZTogZW1haWwKICAgICAgY29udGFjdDogQUFBQGV4YW1wbGUuY29tCiAgICAtIG5hbWU6IEFBCiAgICAgIHR5cGU6IGVtYWlsCiAgICAgIGNvbnRhY3Q6IEJCQkBleGFtcGxlLmNvbQogIHRhZ3M6CiAgICAtICdiYmInCiAgICAtICdhYWEnCg=="}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 42.53075ms
+        duration: 56.086917ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -116,7 +116,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/catalog/entity/service:default/tf-testaccdatadogcatalogentity_order-local-1724787783
+        url: https://api.datadoghq.com/api/v2/catalog/entity/service:default/tf-testaccdatadogcatalogentity_order-local-1730817507
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -127,12 +127,10 @@ interactions:
         content_length: 0
         uncompressed: false
         body: ""
-        headers:
-            Content-Type:
-                - application/vnd.api+json
+        headers: {}
         status: 204 No Content
         code: 204
-        duration: 77.101958ms
+        duration: 320.06ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -149,7 +147,7 @@ interactions:
         headers:
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1724787783
+        url: https://api.datadoghq.com/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1730817507
         method: GET
       response:
         proto: HTTP/1.1
@@ -159,10 +157,10 @@ interactions:
         trailer: {}
         content_length: 228
         uncompressed: false
-        body: '{"data":[],"meta":{"count":0,"includeCount":0},"links":{"self":"/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1724787783\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"}}'
+        body: '{"data":[],"meta":{"count":0,"includeCount":0},"links":{"self":"/api/v2/catalog/entity?filter%5Bref%5D=service%3Adefault%2Ftf-testaccdatadogcatalogentity_order-local-1730817507\u0026page%5Blimit%5D=100\u0026page%5Boffset%5D=0"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 38.293541ms
+        duration: 46.6085ms
