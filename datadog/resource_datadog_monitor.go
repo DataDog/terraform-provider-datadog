@@ -798,10 +798,10 @@ func buildMonitorStruct(d utils.Resource, meta interface{}) (*datadogV1.Monitor,
 	providerConf := meta.(*ProviderConfiguration)
 
 	// TMP TO CHECK THIS IS BEING SET
-	_, ok := providerConf.Metadata[restrictedRolesClearedKey]
-	if !ok {
-		panic("metadata not being set")
-	}
+	// _, ok := providerConf.Metadata[restrictedRolesClearedKey]
+	// if !ok {
+	// 	panic("metadata not being set")
+	// }
 
 	restrictedRolesCleared := len(roles) == 0 && providerConf.Metadata[restrictedRolesClearedKey].(bool)
 	if len(roles) > 0 || restrictedRolesCleared {
