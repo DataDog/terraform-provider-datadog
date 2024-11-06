@@ -803,7 +803,12 @@ func buildMonitorStruct(d utils.Resource, meta interface{}) (*datadogV1.Monitor,
 	// 	panic("metadata not being set")
 	// }
 
-	restrictedRolesCleared := len(roles) == 0 && providerConf.Metadata[restrictedRolesClearedKey].(bool)
+	clearedVal := false
+	_, ok := providerConf.Metadata[restrictedRolesClearedKey]
+	if ok {
+		clearedVal = providerConf.Metadata[restrictedRolesClearedKey].(bool)
+	}
+	restrictedRolesCleared := len(roles) == 0 && clearedVal
 	if len(roles) > 0 || restrictedRolesCleared {
 		m.SetRestrictedRoles(roles)
 		u.SetRestrictedRoles(roles)
