@@ -942,8 +942,8 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 func detectChangesInRestrictedRoles(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	// providerConf := meta.(*ProviderConfiguration)
 	oldVal, newVal := diff.GetChange("restricted_roles")
-	oldRestrictedRoles := oldVal.([]string)
-	newRestrictedRoles := newVal.([]string)
+	oldRestrictedRoles := oldVal.(*schema.Set).List()
+	newRestrictedRoles := newVal.(*schema.Set).List()
 	panic(fmt.Sprintf("what are these? oldVal: %v, newVal: %v, oldRestrictedRoles: %v, newRestrictedRoles: %v",
 		oldVal, newVal, oldRestrictedRoles, newRestrictedRoles))
 	// if len(oldRestrictedRoles) > 0 && len(newRestrictedRoles) == 0 {
