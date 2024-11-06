@@ -445,7 +445,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		DatadogApiInstances: apiInstances,
 		Auth:                auth,
 
-        Metadata: make(map[string]interface{}),
+		Metadata: make(map[string]interface{}),
 		Now: time.Now,
 	}
 	if v, ok := d.GetOk("default_tags"); ok && len(v.([]interface{})) > 0 && v.([]interface{})[0] != nil {
