@@ -939,6 +939,7 @@ func detectChangesInRestrictedRoles(ctx context.Context, diff *schema.ResourceDi
 	oldVal, newVal := diff.GetChange("restricted_roles")
 	oldRestrictedRoles := oldVal.([]string)
 	newRestrictedRoles := newVal.([]string)
+	panic(fmt.Sprintf("what are these? oldVal: %v, newVal: %v", oldVal, newVal))
 	if len(oldRestrictedRoles) > 0 && len(newRestrictedRoles) == 0 {
 		providerConf.Metadata[restrictedRolesClearedKey] = true
 	} else {
