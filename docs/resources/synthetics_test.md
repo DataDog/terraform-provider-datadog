@@ -858,6 +858,8 @@ Required:
 Optional:
 
 - `allow_failure` (Boolean) Determines if the step should be allowed to fail.
+- `always_execute` (Boolean) Determines whether or not to always execute this step even if the previous step failed or was skipped.
+- `exit_if_succeed` (Boolean) Determines whether or not to exit the test if the step succeeds.
 - `force_element_update` (Boolean) Force update of the "element" parameter for the step
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
 - `no_screenshot` (Boolean) Prevents saving screenshots of the step.
