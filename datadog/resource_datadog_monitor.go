@@ -940,12 +940,12 @@ func detectChangesInRestrictedRoles(ctx context.Context, diff *schema.ResourceDi
 	oldRestrictedRoles := oldVal.([]string)
 	newRestrictedRoles := newVal.([]string)
 	panic(fmt.Sprintf("what are these? oldVal: %v, newVal: %v", oldVal, newVal))
-	if len(oldRestrictedRoles) > 0 && len(newRestrictedRoles) == 0 {
-		providerConf.Metadata[restrictedRolesClearedKey] = true
-	} else {
-		providerConf.Metadata[restrictedRolesClearedKey] = false
-	}
-	return nil
+	// if len(oldRestrictedRoles) > 0 && len(newRestrictedRoles) == 0 {
+	// 	providerConf.Metadata[restrictedRolesClearedKey] = true
+	// } else {
+	// 	providerConf.Metadata[restrictedRolesClearedKey] = false
+	// }
+	// return nil
 }
 
 func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
