@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"testing"
-	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -17,6 +16,8 @@ func TestAccDatadogDomainAllowlist_CreateUpdate(t *testing.T) {
 
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
+	// When generating the casette, it may be necessary to add sleep functions before the check
+	// The endpoint has a zonal cache with a ttl of 2 second
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
@@ -31,8 +32,7 @@ func TestAccDatadogDomainAllowlist_CreateUpdate(t *testing.T) {
 				),
 			},
 			{
-				PreConfig: func() { time.Sleep(time.Second) },
-				Config:    testAccCheckDatadogDomainAllowlistConfigUpdated(),
+				Config: testAccCheckDatadogDomainAllowlistConfigUpdated(),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.0", "@gmail.com"),
 					resource.TestCheckResourceAttr("datadog_domain_allowlist.foo", "domains.1", "@datadoghq.com"),
