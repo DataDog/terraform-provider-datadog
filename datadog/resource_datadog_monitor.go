@@ -803,7 +803,7 @@ func buildMonitorStruct(d utils.Resource, meta interface{}) (*datadogV1.Monitor,
 		panic("metadata not being set")
 	}
 
-	restrictedRolesCleared := len(roles) == 0 && providerConf.Metadata[restrictedRolesClearedKey]
+	restrictedRolesCleared := len(roles) == 0 && providerConf.Metadata[restrictedRolesClearedKey].(bool)
 	if len(roles) > 0 || restrictedRolesCleared {
 		m.SetRestrictedRoles(roles)
 		u.SetRestrictedRoles(roles)
@@ -906,7 +906,7 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 		// Explicitly skip validation
 		return nil
 	}
-	m, _ := buildMonitorStruct(diff)
+	m, _ := buildMonitorStruct(diff, meta)
 
 	hasID := false
 	id, err := strconv.ParseInt(diff.Id(), 10, 64)
@@ -937,7 +937,9 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 func detectChangesInRestrictedRoles(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
 	oldVal, newVal := diff.GetChange("restricted_roles")
-	if len(oldVal) > 0 && len(newVal) == 0 {
+	oldRestrictedRoles := oldVal.([]string)
+	newRestrictedRoles := newVal.([]string)
+	if len(oldRestrictedRoles) > 0 && len(newRestrictedRoles) == 0 {
 		providerConf.Metadata[restrictedRolesClearedKey] = true
 	} else {
 		providerConf.Metadata[restrictedRolesClearedKey] = false
