@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 215
+        content_length: 226
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"api_key":"1234567891012331asdd","email":"test-email@example.com","name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1730900687"},"type":"cloudflare-accounts"}}
+            {"data":{"attributes":{"api_key":"12345","email":"test@email.com","name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1730405592","resources":["web"]},"type":"cloudflare-accounts"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"cloudflare-accounts","attributes":{"name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1730900687","email":"test-email@example.com","zones":[],"resources":[]},"id":"341ae30fea634712fd2f3aafe5aee450070a5ddafecfaf8a8aa48071aef67b87"}}
+            {"data":{"type":"cloudflare-accounts","attributes":{"resources":["web"],"email":"test@email.com","zones":[],"name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1730405592"},"id":"0b7e1a40578e2e4742c5183aa3b0502f9116ab249b16dc10ff09135a51663560"}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 841.112375ms
+        duration: 554.743709ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts/341ae30fea634712fd2f3aafe5aee450070a5ddafecfaf8a8aa48071aef67b87
+        url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts/0b7e1a40578e2e4742c5183aa3b0502f9116ab249b16dc10ff09135a51663560
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"cloudflare-accounts","attributes":{"name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1730900687","zones":[],"email":"test-email@example.com","resources":[]},"id":"341ae30fea634712fd2f3aafe5aee450070a5ddafecfaf8a8aa48071aef67b87"}}
+            {"data":{"type":"cloudflare-accounts","attributes":{"zones":[],"email":"test@email.com","resources":["web"],"name":"tf-TestAccIntegrationCloudflareAccountBasic-local-1730405592"},"id":"0b7e1a40578e2e4742c5183aa3b0502f9116ab249b16dc10ff09135a51663560"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 80.868917ms
+        duration: 85.251292ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts/341ae30fea634712fd2f3aafe5aee450070a5ddafecfaf8a8aa48071aef67b87
+        url: https://api.datadoghq.com/api/v2/integrations/cloudflare/accounts/0b7e1a40578e2e4742c5183aa3b0502f9116ab249b16dc10ff09135a51663560
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -106,4 +106,4 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 179.57325ms
+        duration: 194.638084ms
