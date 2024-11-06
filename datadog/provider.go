@@ -262,8 +262,9 @@ type ProviderConfiguration struct {
 	Auth                context.Context
 	DefaultTags         map[string]interface{}
 
-	// 
-	ResourceContext map[string]interface{}
+	// To allow passing values between lifecycle hooks that are only needed for provider-internal
+	// logic and don't represent part of the resource's state
+	Metadata map[string]interface{}
 
 	Now func() time.Time
 }
@@ -444,6 +445,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		DatadogApiInstances: apiInstances,
 		Auth:                auth,
 
+        Metadata: make(map[string]interface{}),
 		Now: time.Now,
 	}
 	if v, ok := d.GetOk("default_tags"); ok && len(v.([]interface{})) > 0 && v.([]interface{})[0] != nil {
