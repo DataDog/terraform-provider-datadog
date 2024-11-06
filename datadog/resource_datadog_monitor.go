@@ -933,6 +933,9 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 
 func detectChangesInRestrictedRoles(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	providerConf := meta.(*ProviderConfiguration)
+	if providerConf.Metadata == nil {
+		providerConf.Metadata = make(map[string]interface{})
+	}
 	oldVal, newVal := diff.GetChange("restricted_roles")
 	oldRestrictedRoles := oldVal.(*schema.Set).List()
 	newRestrictedRoles := newVal.(*schema.Set).List()
