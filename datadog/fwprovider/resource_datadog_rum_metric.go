@@ -3,7 +3,6 @@ package fwprovider
 import (
 	"context"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -25,30 +24,30 @@ type rumMetricResource struct {
 }
 
 type rumMetricModel struct {
-	ID         types.String     `tfsdk:"id"`
-	EventType  types.String     `tfsdk:"event_type"`
-	GroupBy    []*groupByModel  `tfsdk:"group_by"`
-	Compute    *computeModel    `tfsdk:"compute"`
-	Filter     *filterModel     `tfsdk:"filter"`
-	Uniqueness *uniquenessModel `tfsdk:"uniqueness"`
+	ID         types.String              `tfsdk:"id"`
+	EventType  types.String              `tfsdk:"event_type"`
+	GroupBy    []*rumMetricGroupByModel  `tfsdk:"group_by"`
+	Compute    *rumMetricComputeModel    `tfsdk:"compute"`
+	Filter     *rumMetricFilterModel     `tfsdk:"filter"`
+	Uniqueness *rumMetricUniquenessModel `tfsdk:"uniqueness"`
 }
 
-type groupByModel struct {
+type rumMetricGroupByModel struct {
 	Path    types.String `tfsdk:"path"`
 	TagName types.String `tfsdk:"tag_name"`
 }
 
-type computeModel struct {
+type rumMetricComputeModel struct {
 	AggregationType    types.String `tfsdk:"aggregation_type"`
 	IncludePercentiles types.Bool   `tfsdk:"include_percentiles"`
 	Path               types.String `tfsdk:"path"`
 }
 
-type filterModel struct {
+type rumMetricFilterModel struct {
 	Query types.String `tfsdk:"query"`
 }
 
-type uniquenessModel struct {
+type rumMetricUniquenessModel struct {
 	When types.String `tfsdk:"when"`
 }
 
@@ -71,8 +70,8 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 		Description: "Provides a Datadog RumMetric resource. This can be used to create and manage Datadog rum_metric.",
 		Attributes: map[string]schema.Attribute{
 			"event_type": schema.StringAttribute{
-				Optional:    true,
 				Description: "The type of RUM events to filter on.",
+				Required:    true,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -81,8 +80,8 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"path": schema.StringAttribute{
-							Optional:    true,
 							Description: "The path to the value the rum-based metric will be aggregated over.",
+							Optional:    true,
 						},
 						"tag_name": schema.StringAttribute{
 							Optional:    true,
@@ -94,7 +93,7 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"compute": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"aggregation_type": schema.StringAttribute{
-						Optional:    true,
+						Required:    true,
 						Description: "The type of aggregation to use.",
 					},
 					"include_percentiles": schema.BoolAttribute{
@@ -242,34 +241,29 @@ func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricMod
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	state.EventType = types.StringValue(attributes.GetEventType())
+	state.EventType = types.StringValue(string(attributes.GetEventType()))
 
 	if groupBy, ok := attributes.GetGroupByOk(); ok && len(*groupBy) > 0 {
-		state.GroupBy = []*groupByModel{}
-		for _, groupByDd := range *groupBy {
-			groupByTfItem := groupByModel{}
+		state.GroupBy = []*rumMetricGroupByModel{}
+		for _, groupByDdItem := range *groupBy {
+			groupByTfItem := rumMetricGroupByModel{}
 
-			if groupBy, ok := groupByDd.GetGroupByOk(); ok {
-
-				groupByTf := groupByModel{}
-				if path, ok := groupBy.GetPathOk(); ok {
-					groupByTf.Path = types.StringValue(*path)
-				}
-				if tagName, ok := groupBy.GetTagNameOk(); ok {
-					groupByTf.TagName = types.StringValue(*tagName)
-				}
-
-				groupByTfItem.GroupBy = &groupByTf
+			if path, ok := groupByDdItem.GetPathOk(); ok {
+				groupByTfItem.Path = types.StringValue(*path)
 			}
+			if tagName, ok := groupByDdItem.GetTagNameOk(); ok {
+				groupByTfItem.TagName = types.StringValue(*tagName)
+			}
+
 			state.GroupBy = append(state.GroupBy, &groupByTfItem)
 		}
 	}
 
 	if compute, ok := attributes.GetComputeOk(); ok {
 
-		computeTf := computeModel{}
+		computeTf := rumMetricComputeModel{}
 		if aggregationType, ok := compute.GetAggregationTypeOk(); ok {
-			computeTf.AggregationType = types.StringValue(*aggregationType)
+			computeTf.AggregationType = types.StringValue(string(*aggregationType))
 		}
 		if includePercentiles, ok := compute.GetIncludePercentilesOk(); ok {
 			computeTf.IncludePercentiles = types.BoolValue(*includePercentiles)
@@ -283,7 +277,7 @@ func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricMod
 
 	if filter, ok := attributes.GetFilterOk(); ok {
 
-		filterTf := filterModel{}
+		filterTf := rumMetricFilterModel{}
 		if query, ok := filter.GetQueryOk(); ok {
 			filterTf.Query = types.StringValue(*query)
 		}
@@ -293,9 +287,9 @@ func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricMod
 
 	if uniqueness, ok := attributes.GetUniquenessOk(); ok {
 
-		uniquenessTf := uniquenessModel{}
+		uniquenessTf := rumMetricUniquenessModel{}
 		if when, ok := uniqueness.GetWhenOk(); ok {
-			uniquenessTf.When = types.StringValue(*when)
+			uniquenessTf.When = types.StringValue(string(*when))
 		}
 
 		state.Uniqueness = &uniquenessTf
@@ -306,14 +300,13 @@ func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewRumMetricCreateAttributesWithDefaults()
 
-	attributes.SetEventType(state.EventType.ValueString())
+	attributes.SetEventType(datadogV2.RumMetricEventType(state.EventType.ValueString()))
 
 	if state.GroupBy != nil {
 		var groupBy []datadogV2.RumMetricGroupBy
 		for _, groupByTFItem := range state.GroupBy {
-			groupByDDItem := datadogV2.NewRumMetricGroupBy()
+			groupByDDItem := datadogV2.NewRumMetricGroupBy(groupByTFItem.Path.ValueString())
 
-			groupByDDItem.SetPath(groupByTFItem.Path.ValueString())
 			if !groupByTFItem.TagName.IsNull() {
 				groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
 			}
@@ -323,7 +316,7 @@ func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state
 
 	var compute datadogV2.RumMetricCompute
 
-	compute.SetAggregationType(state.Compute.AggregationType.ValueString())
+	compute.SetAggregationType(datadogV2.RumMetricComputeAggregationType(state.Compute.AggregationType.ValueString()))
 	if !state.Compute.IncludePercentiles.IsNull() {
 		compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
 	}
@@ -344,7 +337,7 @@ func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state
 	if state.Uniqueness != nil {
 		var uniqueness datadogV2.RumMetricUniqueness
 
-		uniqueness.SetWhen(state.Uniqueness.When.ValueString())
+		uniqueness.SetWhen(datadogV2.RumMetricUniquenessWhen(state.Uniqueness.When.ValueString()))
 
 		attributes.Uniqueness = &uniqueness
 	}
@@ -363,9 +356,8 @@ func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context,
 	if state.GroupBy != nil {
 		var groupBy []datadogV2.RumMetricGroupBy
 		for _, groupByTFItem := range state.GroupBy {
-			groupByDDItem := datadogV2.NewRumMetricGroupBy()
+			groupByDDItem := datadogV2.NewRumMetricGroupBy(groupByTFItem.Path.ValueString())
 
-			groupByDDItem.SetPath(groupByTFItem.Path.ValueString())
 			if !groupByTFItem.TagName.IsNull() {
 				groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
 			}
