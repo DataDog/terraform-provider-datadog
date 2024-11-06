@@ -182,7 +182,7 @@ func (r *userRoleResource) Delete(ctx context.Context, request resource.DeleteRe
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *userRoleResource) buildUserRoleRequestBody(ctx context.Context, state *UserRoleModel) (*datadogV2.RelationshipToUser, diag.Diagnostics) {
+func (r *userRoleResource) buildUserRoleRequestBody(_ context.Context, state *UserRoleModel) (*datadogV2.RelationshipToUser, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
 	relationship := &datadogV2.RelationshipToUser{

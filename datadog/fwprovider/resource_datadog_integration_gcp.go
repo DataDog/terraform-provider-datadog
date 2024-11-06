@@ -327,9 +327,10 @@ func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*
 }
 
 func (r *integrationGcpResource) buildIntegrationGcpRequestBodyBase(state integrationGcpModel) *datadogV1.GCPAccount {
-	body := datadogV1.NewGCPAccountWithDefaults()
-	body.SetProjectId(state.ProjectID.ValueString())
-	body.SetClientEmail(state.ClientEmail.ValueString())
+	body := &datadogV1.GCPAccount{
+		ProjectId:   state.ProjectID.ValueStringPointer(),
+		ClientEmail: state.ClientEmail.ValueStringPointer(),
+	}
 
 	return body
 }

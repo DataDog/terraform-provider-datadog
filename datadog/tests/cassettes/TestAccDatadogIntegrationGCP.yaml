@@ -367,7 +367,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1728591727@awesome-project-id.iam.gserviceaccount.com","is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728591727"}
+            {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1728591727@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1728591727"}
         form: {}
         headers:
             Accept:
@@ -546,7 +546,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1728591727@awesome-project-id.iam.gserviceaccount.com","is_security_command_center_enabled":false,"project_id":"tf-TestAccDatadogIntegrationGCP-local-1728591727"}
+            {"client_email":"tf-TestAccDatadogIntegrationGCP-local-1728591727@awesome-project-id.iam.gserviceaccount.com","project_id":"tf-TestAccDatadogIntegrationGCP-local-1728591727"}
         form: {}
         headers:
             Accept:
