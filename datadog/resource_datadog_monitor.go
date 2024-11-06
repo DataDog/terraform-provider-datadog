@@ -796,19 +796,11 @@ func buildMonitorStruct(d utils.Resource, meta interface{}) (*datadogV1.Monitor,
 	// an empty list if it represents an intentional removal of existing
 	// restricted roles, rather than an unchanged empty value.
 	providerConf := meta.(*ProviderConfiguration)
-
-	// TMP TO CHECK THIS IS BEING SET
-	// _, ok := providerConf.Metadata[restrictedRolesClearedKey]
-	// if !ok {
-	// 	panic("metadata not being set")
-	// }
-
-	clearedVal := false
+	restrictedRolesCleared := false
 	_, ok := providerConf.Metadata[restrictedRolesClearedKey]
 	if ok {
-		clearedVal = providerConf.Metadata[restrictedRolesClearedKey].(bool)
+		restrictedRolesCleared = providerConf.Metadata[restrictedRolesClearedKey].(bool)
 	}
-	restrictedRolesCleared := len(roles) == 0 && clearedVal
 	if len(roles) > 0 || restrictedRolesCleared {
 		m.SetRestrictedRoles(roles)
 		u.SetRestrictedRoles(roles)
@@ -940,18 +932,16 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 }
 
 func detectChangesInRestrictedRoles(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-	// providerConf := meta.(*ProviderConfiguration)
+	providerConf := meta.(*ProviderConfiguration)
 	oldVal, newVal := diff.GetChange("restricted_roles")
 	oldRestrictedRoles := oldVal.(*schema.Set).List()
 	newRestrictedRoles := newVal.(*schema.Set).List()
-	panic(fmt.Sprintf("what are these? oldVal: %v, newVal: %v, oldRestrictedRoles: %v, newRestrictedRoles: %v",
-		oldVal, newVal, oldRestrictedRoles, newRestrictedRoles))
-	// if len(oldRestrictedRoles) > 0 && len(newRestrictedRoles) == 0 {
-	// 	providerConf.Metadata[restrictedRolesClearedKey] = true
-	// } else {
-	// 	providerConf.Metadata[restrictedRolesClearedKey] = false
-	// }
-	// return nil
+	if len(oldRestrictedRoles) > 0 && len(newRestrictedRoles) == 0 {
+		providerConf.Metadata[restrictedRolesClearedKey] = true
+	} else {
+		providerConf.Metadata[restrictedRolesClearedKey] = false
+	}
+	return nil
 }
 
 func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
