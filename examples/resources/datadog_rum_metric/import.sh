@@ -1,0 +1,1 @@
+terraform import datadog_rum_metric.new_list ""

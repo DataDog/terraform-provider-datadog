@@ -51,6 +51,7 @@ var Resources = []func() resource.Resource{
 	NewIpAllowListResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
+	NewRumMetricResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
