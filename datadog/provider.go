@@ -446,7 +446,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		Auth:                auth,
 
 		Metadata: make(map[string]interface{}),
-		Now: time.Now,
+		Now:      time.Now,
 	}
 	if v, ok := d.GetOk("default_tags"); ok && len(v.([]interface{})) > 0 && v.([]interface{})[0] != nil {
 		tagConfig := v.([]interface{})[0].(map[string]interface{})
