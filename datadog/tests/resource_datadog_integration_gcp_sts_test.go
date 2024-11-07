@@ -39,6 +39,14 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 						"datadog_integration_gcp_sts.foo", "resource_collection_enabled", "false"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:one"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo",
+						"metric_namespace_configs.0.id", "aiplatform",
+					),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo",
+						"metric_namespace_configs.0.disabled", "true",
+					),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_integration_gcp_sts.foo", "cloud_run_revision_filters.*", "tag:two"),
 					resource.TestCheckTypeSetElemAttr(
@@ -72,6 +80,8 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 					resource.TestCheckNoResourceAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters"),
 					resource.TestCheckNoResourceAttr(
+						"datadog_integration_gcp_sts.foo", "metric_namespace_configs"),
+					resource.TestCheckNoResourceAttr(
 						"datadog_integration_gcp_sts.foo", "cloud_run_revision_filters"),
 					resource.TestCheckNoResourceAttr(
 						"datadog_integration_gcp_sts.foo", "account_tags"),
@@ -103,6 +113,8 @@ func TestAccIntegrationGcpStsDefault(t *testing.T) {
 					resource.TestCheckNoResourceAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters"),
 					resource.TestCheckNoResourceAttr(
+						"datadog_integration_gcp_sts.foo", "metric_namespace_configs"),
+					resource.TestCheckNoResourceAttr(
 						"datadog_integration_gcp_sts.foo", "cloud_run_revision_filters"),
 				),
 			},
@@ -116,6 +128,11 @@ resource "datadog_integration_gcp_sts" "foo" {
     automute = "false"
     client_email = "%s@test-project.iam.gserviceaccount.com"
     host_filters = ["tag:one", "tag:two"]
+    metric_namespace_configs = [{
+      id      = "aiplatform"
+      disabled = true
+    }
+  ]
 	cloud_run_revision_filters = ["tag:one", "tag:two"]
     is_cspm_enabled = "false"
     resource_collection_enabled = "false"
