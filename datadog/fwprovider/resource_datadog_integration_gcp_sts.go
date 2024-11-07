@@ -30,16 +30,17 @@ type integrationGcpStsResource struct {
 }
 
 type integrationGcpStsModel struct {
-	ID                             types.String `tfsdk:"id"`
-	AccountTags                    types.Set    `tfsdk:"account_tags"`
-	Automute                       types.Bool   `tfsdk:"automute"`
-	ClientEmail                    types.String `tfsdk:"client_email"`
-	DelegateAccountEmail           types.String `tfsdk:"delegate_account_email"`
-	HostFilters                    types.Set    `tfsdk:"host_filters"`
-	CloudRunRevisionFilters        types.Set    `tfsdk:"cloud_run_revision_filters"`
-	IsCspmEnabled                  types.Bool   `tfsdk:"is_cspm_enabled"`
-	IsSecurityCommandCenterEnabled types.Bool   `tfsdk:"is_security_command_center_enabled"`
-	ResourceCollectionEnabled      types.Bool   `tfsdk:"resource_collection_enabled"`
+	ID                                types.String `tfsdk:"id"`
+	AccountTags                       types.Set    `tfsdk:"account_tags"`
+	Automute                          types.Bool   `tfsdk:"automute"`
+	ClientEmail                       types.String `tfsdk:"client_email"`
+	DelegateAccountEmail              types.String `tfsdk:"delegate_account_email"`
+	HostFilters                       types.Set    `tfsdk:"host_filters"`
+	CloudRunRevisionFilters           types.Set    `tfsdk:"cloud_run_revision_filters"`
+	IsCspmEnabled                     types.Bool   `tfsdk:"is_cspm_enabled"`
+	IsSecurityCommandCenterEnabled    types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	IsResourceChangeCollectionEnabled types.Bool   `tfsdk:"is_resource_change_collection_enabled"`
+	ResourceCollectionEnabled         types.Bool   `tfsdk:"resource_collection_enabled"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -101,6 +102,12 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 			},
 			"is_security_command_center_enabled": schema.BoolAttribute{
 				Description: "When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account.",
+				Optional:    true,
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+			},
+			"is_resource_change_collection_enabled": schema.BoolAttribute{
+				Description: "When enabled, Datadog scans for all resource change data in your Google Cloud environment.",
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
@@ -291,6 +298,9 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	if isSecurityCommandCenterEnabled, ok := attributes.GetIsSecurityCommandCenterEnabledOk(); ok {
 		state.IsSecurityCommandCenterEnabled = types.BoolValue(*isSecurityCommandCenterEnabled)
 	}
+	if isResourceChangeCollectionEnabled, ok := attributes.GetIsResourceChangeCollectionEnabledOk(); ok {
+		state.IsResourceChangeCollectionEnabled = types.BoolValue(*isResourceChangeCollectionEnabled)
+	}
 	if resourceCollectionEnabled, ok := attributes.GetResourceCollectionEnabledOk(); ok {
 		state.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
 	}
@@ -327,6 +337,9 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 
 	if !state.IsSecurityCommandCenterEnabled.IsUnknown() {
 		attributes.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
+	}
+	if !state.IsResourceChangeCollectionEnabled.IsUnknown() {
+		attributes.SetIsResourceChangeCollectionEnabled(state.IsResourceChangeCollectionEnabled.ValueBool())
 	}
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		attributes.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())

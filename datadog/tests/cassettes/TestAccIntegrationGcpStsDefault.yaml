@@ -31,26 +31,26 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"gcp_sts_delegate","attributes":{"delegate_account_email":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com"},"id":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com"}}
+            {"data":{"type":"gcp_sts_delegate","id":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com","attributes":{"delegate_account_email":"ddgci-45108e579fe252698007@datadog-gci-sts-us1-prod.iam.gserviceaccount.com"}}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 139.198375ms
+        duration: 116.552167ms
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 312
+        content_length: 358
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1728591804@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":[],"is_cspm_enabled":false,"is_security_command_center_enabled":false},"type":"gcp_service_account"}}
+            {"data":{"attributes":{"account_tags":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1730992687@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"host_filters":[],"is_cspm_enabled":false,"is_resource_change_collection_enabled":false,"is_security_command_center_enabled":false},"type":"gcp_service_account"}}
         form: {}
         headers:
             Accept:
@@ -69,13 +69,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"type":"gcp_service_account","attributes":{"resource_collection_enabled":true,"is_resource_change_collection_enabled":false,"host_filters":[],"is_cspm_enabled":false,"cloud_run_revision_filters":[],"is_security_command_center_enabled":false,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1728591804@test-project.iam.gserviceaccount.com","account_tags":[],"automute":true},"id":"c40d3491-20ac-49a0-bbb9-26d5ac51ebc1"}}
+            {"data":{"type":"gcp_service_account","attributes":{"host_filters":[],"is_cspm_enabled":false,"is_resource_change_collection_enabled":false,"cloud_run_revision_filters":[],"metric_namespace_configs":[],"account_tags":[],"resource_collection_enabled":true,"is_security_command_center_enabled":false,"automute":true,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1730992687@test-project.iam.gserviceaccount.com"},"id":"e40026d6-6257-4d6d-9ae0-184d34256dfa"}}
         headers:
             Content-Type:
                 - application/json
         status: 201 Created
         code: 201
-        duration: 482.491834ms
+        duration: 417.399875ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -104,13 +104,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"gcp_service_account","attributes":{"account_tags":[],"cloud_run_revision_filters":[],"host_filters":[],"client_email":"ui@google.com","is_security_command_center_enabled":false,"automute":false,"is_cspm_enabled":false,"is_resource_change_collection_enabled":false,"resource_collection_enabled":true},"meta":{"accessible_projects":[]},"id":"8f12ca8e-5b6e-4904-8853-4b49ee096fbe"},{"type":"gcp_service_account","attributes":{"account_tags":[],"cloud_run_revision_filters":[],"host_filters":[],"client_email":"bozo@google.com","is_security_command_center_enabled":false,"automute":false,"is_cspm_enabled":false,"is_resource_change_collection_enabled":false,"resource_collection_enabled":false},"meta":{"accessible_projects":[]},"id":"e06c6a63-983c-4858-9d43-c4f560c132d9"},{"type":"gcp_service_account","attributes":{"account_tags":[],"cloud_run_revision_filters":[],"host_filters":[],"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1728591804@test-project.iam.gserviceaccount.com","is_security_command_center_enabled":false,"automute":true,"is_cspm_enabled":false,"is_resource_change_collection_enabled":false,"resource_collection_enabled":true},"meta":{"accessible_projects":[]},"id":"c40d3491-20ac-49a0-bbb9-26d5ac51ebc1"},{"type":"gcp_service_account","attributes":{"account_tags":["team:gray"],"cloud_run_revision_filters":[],"host_filters":[],"client_email":"graytest@datadog-gcp-ints-test-b.iam.gserviceaccount.com","is_security_command_center_enabled":false,"automute":true,"is_cspm_enabled":false,"is_resource_change_collection_enabled":false,"resource_collection_enabled":true},"meta":{"accessible_projects":["datadog-gcp-ints-test-b","datadog-gcp-ints-test-c"]},"id":"0f2b1be3-6c1a-4570-8e97-db356fcc37a7"}]}
+            {"data":[{"type":"gcp_service_account","attributes":{"resource_collection_enabled":true,"is_cspm_enabled":false,"host_filters":[],"client_email":"graytest@datadog-gcp-ints-test-b.iam.gserviceaccount.com","cloud_run_revision_filters":[],"metric_namespace_configs":[],"is_resource_change_collection_enabled":false,"account_tags":["team:gray"],"automute":true,"is_security_command_center_enabled":false},"meta":{"accessible_projects":["datadog-gcp-ints-test-b","datadog-gcp-ints-test-c"]},"id":"0f2b1be3-6c1a-4570-8e97-db356fcc37a7"},{"type":"gcp_service_account","attributes":{"resource_collection_enabled":true,"is_cspm_enabled":false,"host_filters":[],"client_email":"ui@google.com","cloud_run_revision_filters":[],"metric_namespace_configs":[],"is_resource_change_collection_enabled":false,"account_tags":[],"automute":false,"is_security_command_center_enabled":false},"meta":{"accessible_projects":[]},"id":"8f12ca8e-5b6e-4904-8853-4b49ee096fbe"},{"type":"gcp_service_account","attributes":{"resource_collection_enabled":false,"is_cspm_enabled":false,"host_filters":[],"client_email":"bozo@google.com","cloud_run_revision_filters":[],"metric_namespace_configs":[],"is_resource_change_collection_enabled":false,"account_tags":[],"automute":false,"is_security_command_center_enabled":false},"meta":{"accessible_projects":[]},"id":"e06c6a63-983c-4858-9d43-c4f560c132d9"},{"type":"gcp_service_account","attributes":{"resource_collection_enabled":true,"is_cspm_enabled":false,"host_filters":[],"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1730992687@test-project.iam.gserviceaccount.com","cloud_run_revision_filters":[],"metric_namespace_configs":[],"is_resource_change_collection_enabled":false,"account_tags":[],"automute":true,"is_security_command_center_enabled":false},"meta":{"accessible_projects":[]},"id":"e40026d6-6257-4d6d-9ae0-184d34256dfa"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 106.647875ms
+        duration: 74.157917ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -139,13 +139,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":[{"type":"gcp_service_account","attributes":{"cloud_run_revision_filters":[],"automute":false,"client_email":"ui@google.com","is_resource_change_collection_enabled":false,"account_tags":[],"is_cspm_enabled":false,"host_filters":[],"is_security_command_center_enabled":false,"resource_collection_enabled":true},"meta":{"accessible_projects":[]},"id":"8f12ca8e-5b6e-4904-8853-4b49ee096fbe"},{"type":"gcp_service_account","attributes":{"cloud_run_revision_filters":[],"automute":false,"client_email":"bozo@google.com","is_resource_change_collection_enabled":false,"account_tags":[],"is_cspm_enabled":false,"host_filters":[],"is_security_command_center_enabled":false,"resource_collection_enabled":false},"meta":{"accessible_projects":[]},"id":"e06c6a63-983c-4858-9d43-c4f560c132d9"},{"type":"gcp_service_account","attributes":{"cloud_run_revision_filters":[],"automute":true,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1728591804@test-project.iam.gserviceaccount.com","is_resource_change_collection_enabled":false,"account_tags":[],"is_cspm_enabled":false,"host_filters":[],"is_security_command_center_enabled":false,"resource_collection_enabled":true},"meta":{"accessible_projects":[]},"id":"c40d3491-20ac-49a0-bbb9-26d5ac51ebc1"},{"type":"gcp_service_account","attributes":{"cloud_run_revision_filters":[],"automute":true,"client_email":"graytest@datadog-gcp-ints-test-b.iam.gserviceaccount.com","is_resource_change_collection_enabled":false,"account_tags":["team:gray"],"is_cspm_enabled":false,"host_filters":[],"is_security_command_center_enabled":false,"resource_collection_enabled":true},"meta":{"accessible_projects":["datadog-gcp-ints-test-b","datadog-gcp-ints-test-c"]},"id":"0f2b1be3-6c1a-4570-8e97-db356fcc37a7"}]}
+            {"data":[{"type":"gcp_service_account","id":"0f2b1be3-6c1a-4570-8e97-db356fcc37a7","attributes":{"automute":true,"host_filters":[],"is_resource_change_collection_enabled":false,"client_email":"graytest@datadog-gcp-ints-test-b.iam.gserviceaccount.com","resource_collection_enabled":true,"cloud_run_revision_filters":[],"metric_namespace_configs":[],"is_cspm_enabled":false,"is_security_command_center_enabled":false,"account_tags":["team:gray"]},"meta":{"accessible_projects":["datadog-gcp-ints-test-b","datadog-gcp-ints-test-c"]}},{"type":"gcp_service_account","id":"8f12ca8e-5b6e-4904-8853-4b49ee096fbe","attributes":{"automute":false,"host_filters":[],"is_resource_change_collection_enabled":false,"client_email":"ui@google.com","resource_collection_enabled":true,"cloud_run_revision_filters":[],"metric_namespace_configs":[],"is_cspm_enabled":false,"is_security_command_center_enabled":false,"account_tags":[]},"meta":{"accessible_projects":[]}},{"type":"gcp_service_account","id":"e06c6a63-983c-4858-9d43-c4f560c132d9","attributes":{"automute":false,"host_filters":[],"is_resource_change_collection_enabled":false,"client_email":"bozo@google.com","resource_collection_enabled":false,"cloud_run_revision_filters":[],"metric_namespace_configs":[],"is_cspm_enabled":false,"is_security_command_center_enabled":false,"account_tags":[]},"meta":{"accessible_projects":[]}},{"type":"gcp_service_account","id":"e40026d6-6257-4d6d-9ae0-184d34256dfa","attributes":{"automute":true,"host_filters":[],"is_resource_change_collection_enabled":false,"client_email":"tf-TestAccIntegrationGcpStsDefault-local-1730992687@test-project.iam.gserviceaccount.com","resource_collection_enabled":true,"cloud_run_revision_filters":[],"metric_namespace_configs":[],"is_cspm_enabled":false,"is_security_command_center_enabled":false,"account_tags":[]},"meta":{"accessible_projects":[]}}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 114.205709ms
+        duration: 63.242834ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -162,7 +162,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts/c40d3491-20ac-49a0-bbb9-26d5ac51ebc1
+        url: https://api.datadoghq.com/api/v2/integration/gcp/accounts/e40026d6-6257-4d6d-9ae0-184d34256dfa
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -178,4 +178,4 @@ interactions:
                 - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 125.098458ms
+        duration: 95.92125ms

@@ -34,6 +34,8 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp_sts.foo", "is_security_command_center_enabled", "false"),
 					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "is_resource_change_collection_enabled", "false"),
+					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp_sts.foo", "resource_collection_enabled", "false"),
 					resource.TestCheckTypeSetElemAttr(
 						"datadog_integration_gcp_sts.foo", "host_filters.*", "tag:one"),
@@ -63,6 +65,8 @@ func TestAccIntegrationGcpStsBasic(t *testing.T) {
 						"datadog_integration_gcp_sts.foo", "is_cspm_enabled", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp_sts.foo", "is_security_command_center_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_gcp_sts.foo", "is_resource_change_collection_enabled", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_gcp_sts.foo", "resource_collection_enabled", "true"),
 					resource.TestCheckNoResourceAttr(
@@ -116,6 +120,7 @@ resource "datadog_integration_gcp_sts" "foo" {
     is_cspm_enabled = "false"
     resource_collection_enabled = "false"
     is_security_command_center_enabled = "false"
+	is_resource_change_collection_enabled = "false"
     account_tags = ["a:tag", "another:one", "and:another"]
 }`, uniq)
 }
@@ -128,6 +133,7 @@ resource "datadog_integration_gcp_sts" "foo" {
     is_cspm_enabled = "true"
     resource_collection_enabled = "true"
     is_security_command_center_enabled = "true"
+	is_resource_change_collection_enabled = "true"
 }`, uniq)
 }
 
