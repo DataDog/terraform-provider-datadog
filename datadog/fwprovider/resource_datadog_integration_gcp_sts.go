@@ -66,6 +66,9 @@ func (r *integrationGcpStsResource) Metadata(_ context.Context, request resource
 
 func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
+		// Avoid using default values for bool settings to prevent breaking changes for existing customers.
+		// Customers who have previously modified these settings via the UI should not be impacted
+		// https://github.com/DataDog/terraform-provider-datadog/pull/2424#issuecomment-2150871460
 		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
 			"account_tags": schema.SetAttribute{
@@ -127,7 +130,6 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Description: "When enabled, Datadog scans for all resource change data in your Google Cloud environment.",
 				Optional:    true,
 				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"resource_collection_enabled": schema.BoolAttribute{
 				Description: "When enabled, Datadog scans for all resources in your GCP environment.",

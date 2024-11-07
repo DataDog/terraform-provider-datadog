@@ -70,6 +70,9 @@ func (r *integrationGcpResource) Metadata(_ context.Context, request resource.Me
 
 func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
+		// Avoid using default values for bool settings to prevent breaking changes for existing customers.
+		// Customers who have previously modified these settings via the UI should not be impacted
+		// https://github.com/DataDog/terraform-provider-datadog/pull/2424#issuecomment-2150871460
 		Description: "This resource is deprecated—use the `datadog_integration_gcp_sts` resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
 			"project_id": schema.StringAttribute{
@@ -146,7 +149,6 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Description: "When enabled, Datadog scans for all resource change data in your Google Cloud environment.",
 				Optional:    true,
 				Computed:    true,
-				Default:     booldefault.StaticBool(false),
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -362,7 +364,6 @@ func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, bo
 	body.SetAutomute(state.Automute.ValueBool())
 	body.SetIsCspmEnabled(state.CspmResourceCollectionEnabled.ValueBool())
 	body.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
-	body.SetIsResourceChangeCollectionEnabled(state.IsResourceChangeCollectionEnabled.ValueBool())
 	body.SetHostFilters(state.HostFilters.ValueString())
 
 	runFilters := make([]string, 0)
@@ -373,6 +374,10 @@ func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, bo
 
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		body.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
+	}
+
+	if !state.IsResourceChangeCollectionEnabled.IsUnknown() {
+		body.SetIsResourceChangeCollectionEnabled(state.IsResourceChangeCollectionEnabled.ValueBool())
 	}
 
 	return diags
