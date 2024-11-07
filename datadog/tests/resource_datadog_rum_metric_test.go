@@ -3,20 +3,43 @@ package test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
+func TestAccRumMetric_import(t *testing.T) {
+	t.Parallel()
+	resourceName := "datadog_rum_metric.testing_rum_metric"
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogRumMetric(uniq),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func TestAccRumMetricBasic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
+	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -27,7 +50,27 @@ func TestAccRumMetricBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_rum_metric.foo", "event_type", "session"),
+						"datadog_rum_metric.testing_rum_metric", "id", uniq),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "name", uniq),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "event_type", "session"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "compute.aggregation_type", "distribution"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "compute.include_percentiles", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "compute.path", "@duration"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "filter.query", "@service:web-ui"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.0.path", "@browser.name"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.0.tag_name", "browser_name"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "uniqueness.when", "match"),
 				),
 			},
 		},
@@ -35,25 +78,26 @@ func TestAccRumMetricBasic(t *testing.T) {
 }
 
 func testAccCheckDatadogRumMetric(uniq string) string {
-	// Update me to make use of the unique value
-	return fmt.Sprintf(`resource "datadog_rum_metric" "foo" {
-    compute {
-    aggregation_type = "distribution"
-    include_percentiles = True
-    path = "@duration"
-    }
-    event_type = "session"
-    filter {
-    query = "@service:web-ui: "
-    }
-    group_by {
-    path = "@browser.name"
-    tag_name = "browser_name"
-    }
-    uniqueness {
-    when = "match"
-    }
-}`, uniq)
+	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
+		name = %q
+	    event_type = "session"
+    	compute {
+    		aggregation_type = "distribution"
+    		include_percentiles = true
+    		path = "@duration"
+    	}
+    	filter {
+    		query = "@service:web-ui"
+    	}
+    	group_by {
+			path = "@browser.name"
+			tag_name = "browser_name"
+    	}
+		uniqueness {
+			when = "match"
+    	}
+	}
+	`, uniq)
 }
 
 func testAccCheckDatadogRumMetricDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

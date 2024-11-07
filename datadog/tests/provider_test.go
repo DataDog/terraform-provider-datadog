@@ -213,6 +213,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_restriction_policy_test":                         "restriction-policy",
 	"tests/resource_datadog_role_test":                                       "roles",
 	"tests/resource_datadog_rum_application_test":                            "rum-application",
+	"tests/resource_datadog_rum_metric_test":                                 "rum-metric",
 	"tests/resource_datadog_screenboard_test":                                "dashboards",
 	"tests/resource_datadog_security_monitoring_default_rule_test":           "security-monitoring",
 	"tests/resource_datadog_security_monitoring_filter_test":                 "security-monitoring",

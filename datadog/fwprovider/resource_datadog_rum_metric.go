@@ -8,6 +8,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -25,6 +27,7 @@ type rumMetricResource struct {
 
 type rumMetricModel struct {
 	ID         types.String              `tfsdk:"id"`
+	Name       types.String              `tfsdk:"name"`
 	EventType  types.String              `tfsdk:"event_type"`
 	GroupBy    []*rumMetricGroupByModel  `tfsdk:"group_by"`
 	Compute    *rumMetricComputeModel    `tfsdk:"compute"`
@@ -69,9 +72,19 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog RumMetric resource. This can be used to create and manage Datadog rum_metric.",
 		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Description: "The name of the rum-based metric. This field can't be updated after creation.",
+				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
 			"event_type": schema.StringAttribute{
 				Description: "The type of RUM events to filter on.",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -84,8 +97,8 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 							Optional:    true,
 						},
 						"tag_name": schema.StringAttribute{
-							Optional:    true,
 							Description: "Eventual name of the tag that gets created. By default, `path` is used as the tag name.",
+							Optional:    true,
 						},
 					},
 				},
@@ -93,32 +106,38 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"compute": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"aggregation_type": schema.StringAttribute{
-						Required:    true,
 						Description: "The type of aggregation to use.",
+						Required:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 					"include_percentiles": schema.BoolAttribute{
-						Optional:    true,
 						Description: "Toggle to include or exclude percentile aggregations for distribution metrics. Only present when `aggregation_type` is `distribution`.",
+						Optional:    true,
 					},
 					"path": schema.StringAttribute{
-						Optional:    true,
 						Description: "The path to the value the rum-based metric will aggregate on. Only present when `aggregation_type` is `distribution`.",
+						Optional:    true,
 					},
 				},
 			},
 			"filter": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"query": schema.StringAttribute{
-						Optional:    true,
 						Description: "The search query - following the RUM search syntax.",
+						Optional:    true,
 					},
 				},
 			},
 			"uniqueness": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"when": schema.StringAttribute{
-						Optional:    true,
 						Description: "When to count updatable events. `match` when the event is first seen, or `end` when the event is complete.",
+						Optional:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 				},
 			},
@@ -237,6 +256,7 @@ func (r *rumMetricResource) Delete(ctx context.Context, request resource.DeleteR
 
 func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricModel, resp *datadogV2.RumMetricResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
+	state.Name = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
 	attributes := data.GetAttributes()
@@ -269,7 +289,9 @@ func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricMod
 			computeTf.IncludePercentiles = types.BoolValue(*includePercentiles)
 		}
 		if path, ok := compute.GetPathOk(); ok {
-			computeTf.Path = types.StringValue(*path)
+			if *path != "" {
+				computeTf.Path = types.StringValue(*path)
+			}
 		}
 
 		state.Compute = &computeTf
@@ -310,6 +332,7 @@ func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state
 			if !groupByTFItem.TagName.IsNull() {
 				groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
 			}
+			groupBy = append(groupBy, *groupByDDItem)
 		}
 		attributes.SetGroupBy(groupBy)
 	}
@@ -344,6 +367,7 @@ func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state
 
 	req := datadogV2.NewRumMetricCreateRequestWithDefaults()
 	req.Data = *datadogV2.NewRumMetricCreateDataWithDefaults()
+	req.Data.SetId(state.Name.String())
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
@@ -385,6 +409,7 @@ func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context,
 
 	req := datadogV2.NewRumMetricUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewRumMetricUpdateDataWithDefaults()
+	req.Data.SetId(state.Name.String())
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
