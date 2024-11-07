@@ -52,13 +52,23 @@ resource "datadog_integration_gcp_sts" "foo" {
 - `cloud_run_revision_filters` (Set of String) Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.
 - `host_filters` (Set of String) Your Host Filters.
 - `is_cspm_enabled` (Boolean) Whether Datadog collects cloud security posture management resources from your GCP project. If enabled, requires `resource_collection_enabled` to also be enabled.
+- `is_resource_change_collection_enabled` (Boolean) When enabled, Datadog scans for all resource change data in your Google Cloud environment. Defaults to `false`.
 - `is_security_command_center_enabled` (Boolean) When enabled, Datadog will attempt to collect Security Command Center Findings. Note: This requires additional permissions on the service account. Defaults to `false`.
+- `metric_namespace_configs` (Set of Object) Configuration for a GCP metric namespace. (see [below for nested schema](#nestedatt--metric_namespace_configs))
 - `resource_collection_enabled` (Boolean) When enabled, Datadog scans for all resources in your GCP environment.
 
 ### Read-Only
 
 - `delegate_account_email` (String) Datadog's STS Delegate Email.
 - `id` (String) The ID of this resource.
+
+<a id="nestedatt--metric_namespace_configs"></a>
+### Nested Schema for `metric_namespace_configs`
+
+Optional:
+
+- `disabled` (Boolean)
+- `id` (String)
 
 ## Import
 
