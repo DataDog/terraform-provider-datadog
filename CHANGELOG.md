@@ -1,3 +1,24 @@
+## 3.47.0 (November 8, 2024)
+
+### BUGFIXES
+* [datadog_software_catalog] v3 terraform needs to hydrate the current state from raw content by @christinexlee in https://github.com/DataDog/terraform-provider-datadog/pull/2591
+* [datadog_user_role] lookup roles per user, rather than users per role by @pablito-perez in https://github.com/DataDog/terraform-provider-datadog/pull/2609
+* [cloud_configuration_rule] Make order of cloud configuration rule tags deterministic by @volnt in https://github.com/DataDog/terraform-provider-datadog/pull/2628
+* [datadog_synthetics_test] Handle secure `config_variables` on import by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2653
+### FEATURES
+* [datadog_dashboard] Add support for x and y axis controls on distribution widgets by @RobThomas02 in https://github.com/DataDog/terraform-provider-datadog/pull/2611
+* [datadog_security_monitoring_rule] Add reference_tables field to security monitoring rule resource by @paul-hf in https://github.com/DataDog/terraform-provider-datadog/pull/2610
+* [datadog_integration_gcp_sts] Add CloudRevisionRunFilters field to GCPStsServiceAccount Tf module by @tedkahwaji in https://github.com/DataDog/terraform-provider-datadog/pull/2612
+* [datadog_integration_gcp_sts] Add Support for MetricNamesapceConfig & IsResourceCollectionChangeEnabled for GCP Service Accounts by @tedkahwaji in https://github.com/DataDog/terraform-provider-datadog/pull/2650
+
+## New Contributors
+* @christinexlee made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2591
+* @pablito-perez made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2607
+* @RobThomas02 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2611
+* @tedkahwaji made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2612
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.46.0...v3.47.0
+
 ## 3.46.0 (October 3, 2024)
 
 
