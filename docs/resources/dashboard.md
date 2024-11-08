@@ -1452,6 +1452,8 @@ Optional:
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+- `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--xaxis))
+- `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--distribution_definition--yaxis))
 
 <a id="nestedblock--widget--distribution_definition--request"></a>
 ### Nested Schema for `widget.distribution_definition.request`
@@ -1775,6 +1777,29 @@ Optional:
 
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
+
+
+<a id="nestedblock--widget--distribution_definition--xaxis"></a>
+### Nested Schema for `widget.distribution_definition.xaxis`
+
+Optional:
+
+- `include_zero` (Boolean) Always include zero or fit the axis to the data range.
+- `max` (String) Specify the maximum value to show on the Y-axis.
+- `min` (String) Specify the minimum value to show on the Y-axis.
+- `scale` (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
+
+
+<a id="nestedblock--widget--distribution_definition--yaxis"></a>
+### Nested Schema for `widget.distribution_definition.yaxis`
+
+Optional:
+
+- `include_zero` (Boolean) Always include zero or fit the axis to the data range.
+- `label` (String) The label of the axis to display on the graph.
+- `max` (String) Specify the maximum value to show on the Y-axis.
+- `min` (String) Specify the minimum value to show on the Y-axis.
+- `scale` (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
 
 
 
@@ -2932,6 +2957,8 @@ Optional:
 - `title` (String) The title of the widget.
 - `title_align` (String) The alignment of the widget's title. Valid values are `center`, `left`, `right`.
 - `title_size` (String) The size of the widget's title (defaults to 16).
+- `xaxis` (Block List, Max: 1) A nested block describing the X-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--xaxis))
+- `yaxis` (Block List, Max: 1) A nested block describing the Y-Axis Controls. Exactly one nested block is allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--distribution_definition--yaxis))
 
 <a id="nestedblock--widget--group_definition--widget--distribution_definition--request"></a>
 ### Nested Schema for `widget.group_definition.widget.distribution_definition.request`
@@ -3255,6 +3282,29 @@ Optional:
 
 - `palette` (String) A color palette to apply to the widget. The available options are available at: https://docs.datadoghq.com/dashboards/widgets/timeseries/#appearance.
 
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--xaxis"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.xaxis`
+
+Optional:
+
+- `include_zero` (Boolean) Always include zero or fit the axis to the data range.
+- `max` (String) Specify the maximum value to show on the Y-axis.
+- `min` (String) Specify the minimum value to show on the Y-axis.
+- `scale` (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
+
+
+<a id="nestedblock--widget--group_definition--widget--distribution_definition--yaxis"></a>
+### Nested Schema for `widget.group_definition.widget.distribution_definition.yaxis`
+
+Optional:
+
+- `include_zero` (Boolean) Always include zero or fit the axis to the data range.
+- `label` (String) The label of the axis to display on the graph.
+- `max` (String) Specify the maximum value to show on the Y-axis.
+- `min` (String) Specify the minimum value to show on the Y-axis.
+- `scale` (String) Specify the scale type, options: `linear`, `log`, `pow`, `sqrt`.
 
 
 
@@ -4998,7 +5048,7 @@ Required:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
 
 Optional:
 
@@ -16820,7 +16870,7 @@ Required:
 
 Required:
 
-- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`.
+- `data_source` (String) Source from which to query items to display in the stream. Valid values are `logs_stream`, `audit_stream`, `ci_pipeline_stream`, `ci_test_stream`, `rum_issue_stream`, `apm_issue_stream`, `trace_stream`, `logs_issue_stream`, `logs_pattern_stream`, `logs_transaction_stream`, `event_stream`, `rum_stream`, `llm_observability_stream`.
 
 Optional:
 

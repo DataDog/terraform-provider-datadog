@@ -39,17 +39,19 @@ type integrationGcpResource struct {
 }
 
 type integrationGcpModel struct {
-	ID                             types.String `tfsdk:"id"`
-	ProjectID                      types.String `tfsdk:"project_id"`
-	PrivateKeyId                   types.String `tfsdk:"private_key_id"`
-	PrivateKey                     types.String `tfsdk:"private_key"`
-	ClientEmail                    types.String `tfsdk:"client_email"`
-	ClientId                       types.String `tfsdk:"client_id"`
-	Automute                       types.Bool   `tfsdk:"automute"`
-	HostFilters                    types.String `tfsdk:"host_filters"`
-	ResourceCollectionEnabled      types.Bool   `tfsdk:"resource_collection_enabled"`
-	CspmResourceCollectionEnabled  types.Bool   `tfsdk:"cspm_resource_collection_enabled"`
-	IsSecurityCommandCenterEnabled types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	ID                                types.String `tfsdk:"id"`
+	ProjectID                         types.String `tfsdk:"project_id"`
+	PrivateKeyId                      types.String `tfsdk:"private_key_id"`
+	PrivateKey                        types.String `tfsdk:"private_key"`
+	ClientEmail                       types.String `tfsdk:"client_email"`
+	ClientId                          types.String `tfsdk:"client_id"`
+	Automute                          types.Bool   `tfsdk:"automute"`
+	HostFilters                       types.String `tfsdk:"host_filters"`
+	CloudRunRevisionFilters           types.Set    `tfsdk:"cloud_run_revision_filters"`
+	ResourceCollectionEnabled         types.Bool   `tfsdk:"resource_collection_enabled"`
+	CspmResourceCollectionEnabled     types.Bool   `tfsdk:"cspm_resource_collection_enabled"`
+	IsSecurityCommandCenterEnabled    types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	IsResourceChangeCollectionEnabled types.Bool   `tfsdk:"is_resource_change_collection_enabled"`
 }
 
 func NewIntegrationGcpResource() resource.Resource {
@@ -68,6 +70,9 @@ func (r *integrationGcpResource) Metadata(_ context.Context, request resource.Me
 
 func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
+		// Avoid using default values for bool settings to prevent breaking changes for existing customers.
+		// Customers who have previously modified these settings via the UI should not be impacted
+		// https://github.com/DataDog/terraform-provider-datadog/pull/2424#issuecomment-2150871460
 		Description: "This resource is deprecated—use the `datadog_integration_gcp_sts` resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
 			"project_id": schema.StringAttribute{
@@ -112,6 +117,11 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Computed:    true,
 				Default:     stringdefault.StaticString(""),
 			},
+			"cloud_run_revision_filters": schema.SetAttribute{
+				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
 			"automute": schema.BoolAttribute{
 				Description: "Silence monitors for expected GCE instance shutdowns.",
 				Optional:    true,
@@ -134,6 +144,11 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
+			},
+			"is_resource_change_collection_enabled": schema.BoolAttribute{
+				Description: "When enabled, Datadog scans for all resource change data in your Google Cloud environment.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -178,11 +193,10 @@ func (r *integrationGcpResource) Create(ctx context.Context, request resource.Cr
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	diags := diag.Diagnostics{}
 	body := r.buildIntegrationGcpRequestBodyBase(state)
 	r.addDefaultsToBody(body, state)
 	r.addRequiredFieldsToBody(body, state)
-	r.addOptionalFieldsToBody(body, state)
+	diags := r.addOptionalFieldsToBody(ctx, body, state)
 
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -220,9 +234,8 @@ func (r *integrationGcpResource) Update(ctx context.Context, request resource.Up
 	integrationGcpMutex.Lock()
 	defer integrationGcpMutex.Unlock()
 
-	diags := diag.Diagnostics{}
 	body := r.buildIntegrationGcpRequestBodyBase(state)
-	r.addOptionalFieldsToBody(body, state)
+	diags := r.addOptionalFieldsToBody(ctx, body, state)
 
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -288,6 +301,7 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 	state.CspmResourceCollectionEnabled = types.BoolValue(resp.GetIsCspmEnabled())
 	state.ResourceCollectionEnabled = types.BoolValue(resp.GetResourceCollectionEnabled())
 	state.IsSecurityCommandCenterEnabled = types.BoolValue(resp.GetIsSecurityCommandCenterEnabled())
+	state.IsResourceChangeCollectionEnabled = types.BoolValue(resp.GetIsResourceChangeCollectionEnabled())
 
 	// Non-computed values
 	if clientId, ok := resp.GetClientIdOk(); ok {
@@ -298,6 +312,9 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 	}
 	if privateKeyId, ok := resp.GetPrivateKeyIdOk(); ok {
 		state.PrivateKeyId = types.StringValue(*privateKeyId)
+	}
+	if runFilters, ok := resp.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
+		state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, *runFilters)
 	}
 }
 
@@ -320,9 +337,10 @@ func (r *integrationGcpResource) getGCPIntegration(state integrationGcpModel) (*
 }
 
 func (r *integrationGcpResource) buildIntegrationGcpRequestBodyBase(state integrationGcpModel) *datadogV1.GCPAccount {
-	body := datadogV1.NewGCPAccountWithDefaults()
-	body.SetProjectId(state.ProjectID.ValueString())
-	body.SetClientEmail(state.ClientEmail.ValueString())
+	body := &datadogV1.GCPAccount{
+		ProjectId:   state.ProjectID.ValueStringPointer(),
+		ClientEmail: state.ClientEmail.ValueStringPointer(),
+	}
 
 	return body
 }
@@ -341,12 +359,26 @@ func (r *integrationGcpResource) addRequiredFieldsToBody(body *datadogV1.GCPAcco
 	body.SetPrivateKeyId(state.PrivateKeyId.ValueString())
 }
 
-func (r *integrationGcpResource) addOptionalFieldsToBody(body *datadogV1.GCPAccount, state integrationGcpModel) {
+func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, body *datadogV1.GCPAccount, state integrationGcpModel) diag.Diagnostics {
+	diags := diag.Diagnostics{}
 	body.SetAutomute(state.Automute.ValueBool())
 	body.SetIsCspmEnabled(state.CspmResourceCollectionEnabled.ValueBool())
 	body.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
 	body.SetHostFilters(state.HostFilters.ValueString())
+
+	runFilters := make([]string, 0)
+	if !state.CloudRunRevisionFilters.IsNull() {
+		diags.Append(state.CloudRunRevisionFilters.ElementsAs(ctx, &runFilters, false)...)
+	}
+	body.SetCloudRunRevisionFilters(runFilters)
+
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		body.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
 	}
+
+	if !state.IsResourceChangeCollectionEnabled.IsUnknown() {
+		body.SetIsResourceChangeCollectionEnabled(state.IsResourceChangeCollectionEnabled.ValueBool())
+	}
+
+	return diags
 }
