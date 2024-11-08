@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -29,17 +30,24 @@ type integrationGcpStsResource struct {
 	Auth context.Context
 }
 
+type MetricNamespaceConfigModel struct {
+	ID       types.String `tfsdk:"id"`
+	Disabled types.Bool   `tfsdk:"disabled"`
+}
+
 type integrationGcpStsModel struct {
-	ID                             types.String `tfsdk:"id"`
-	AccountTags                    types.Set    `tfsdk:"account_tags"`
-	Automute                       types.Bool   `tfsdk:"automute"`
-	ClientEmail                    types.String `tfsdk:"client_email"`
-	DelegateAccountEmail           types.String `tfsdk:"delegate_account_email"`
-	HostFilters                    types.Set    `tfsdk:"host_filters"`
-	CloudRunRevisionFilters        types.Set    `tfsdk:"cloud_run_revision_filters"`
-	IsCspmEnabled                  types.Bool   `tfsdk:"is_cspm_enabled"`
-	IsSecurityCommandCenterEnabled types.Bool   `tfsdk:"is_security_command_center_enabled"`
-	ResourceCollectionEnabled      types.Bool   `tfsdk:"resource_collection_enabled"`
+	ID                                types.String                  `tfsdk:"id"`
+	AccountTags                       types.Set                     `tfsdk:"account_tags"`
+	Automute                          types.Bool                    `tfsdk:"automute"`
+	ClientEmail                       types.String                  `tfsdk:"client_email"`
+	DelegateAccountEmail              types.String                  `tfsdk:"delegate_account_email"`
+	HostFilters                       types.Set                     `tfsdk:"host_filters"`
+	CloudRunRevisionFilters           types.Set                     `tfsdk:"cloud_run_revision_filters"`
+	MetricNamespaceConfigs            []*MetricNamespaceConfigModel `tfsdk:"metric_namespace_configs"`
+	IsCspmEnabled                     types.Bool                    `tfsdk:"is_cspm_enabled"`
+	IsSecurityCommandCenterEnabled    types.Bool                    `tfsdk:"is_security_command_center_enabled"`
+	IsResourceChangeCollectionEnabled types.Bool                    `tfsdk:"is_resource_change_collection_enabled"`
+	ResourceCollectionEnabled         types.Bool                    `tfsdk:"resource_collection_enabled"`
 }
 
 func NewIntegrationGcpStsResource() resource.Resource {
@@ -58,6 +66,9 @@ func (r *integrationGcpStsResource) Metadata(_ context.Context, request resource
 
 func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
+		// Avoid using default values for bool settings to prevent breaking changes for existing customers.
+		// Customers who have previously modified these settings via the UI should not be impacted
+		// https://github.com/DataDog/terraform-provider-datadog/pull/2424#issuecomment-2150871460
 		Description: "Provides a Datadog Integration GCP Sts resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
 			"account_tags": schema.SetAttribute{
@@ -94,6 +105,16 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Description: "Tags to filter which Cloud Run revisions are imported into Datadog. Only revisions that meet specified criteria are monitored.",
 				ElementType: types.StringType,
 			},
+			"metric_namespace_configs": schema.SetAttribute{
+				Optional:    true,
+				Description: "Configuration for a GCP metric namespace.",
+				ElementType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"id":       types.StringType,
+						"disabled": types.BoolType,
+					},
+				},
+			},
 			"is_cspm_enabled": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
@@ -104,6 +125,11 @@ func (r *integrationGcpStsResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
+			},
+			"is_resource_change_collection_enabled": schema.BoolAttribute{
+				Description: "When enabled, Datadog scans for all resource change data in your Google Cloud environment.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"resource_collection_enabled": schema.BoolAttribute{
 				Description: "When enabled, Datadog scans for all resources in your GCP environment.",
@@ -285,11 +311,23 @@ func (r *integrationGcpStsResource) updateState(ctx context.Context, state *inte
 	if runFilters, ok := attributes.GetCloudRunRevisionFiltersOk(); ok && len(*runFilters) > 0 {
 		state.CloudRunRevisionFilters, _ = types.SetValueFrom(ctx, types.StringType, *runFilters)
 	}
+	if namespaceConfigs, ok := attributes.GetMetricNamespaceConfigsOk(); ok && len(*namespaceConfigs) > 0 {
+		state.MetricNamespaceConfigs = make([]*MetricNamespaceConfigModel, len(*namespaceConfigs))
+		for i, namespaceConfig := range *namespaceConfigs {
+			state.MetricNamespaceConfigs[i] = &MetricNamespaceConfigModel{
+				ID:       types.StringValue(namespaceConfig.GetId()),
+				Disabled: types.BoolValue(namespaceConfig.GetDisabled()),
+			}
+		}
+	}
 	if isCspmEnabled, ok := attributes.GetIsCspmEnabledOk(); ok {
 		state.IsCspmEnabled = types.BoolValue(*isCspmEnabled)
 	}
 	if isSecurityCommandCenterEnabled, ok := attributes.GetIsSecurityCommandCenterEnabledOk(); ok {
 		state.IsSecurityCommandCenterEnabled = types.BoolValue(*isSecurityCommandCenterEnabled)
+	}
+	if isResourceChangeCollectionEnabled, ok := attributes.GetIsResourceChangeCollectionEnabledOk(); ok {
+		state.IsResourceChangeCollectionEnabled = types.BoolValue(*isResourceChangeCollectionEnabled)
 	}
 	if resourceCollectionEnabled, ok := attributes.GetResourceCollectionEnabledOk(); ok {
 		state.ResourceCollectionEnabled = types.BoolValue(*resourceCollectionEnabled)
@@ -325,8 +363,22 @@ func (r *integrationGcpStsResource) buildIntegrationGcpStsRequestBody(ctx contex
 	}
 	attributes.SetCloudRunRevisionFilters(runFilters)
 
+	namespaceConfigs := make([]datadogV2.GCPMetricNamespaceConfig, 0)
+	if len(state.MetricNamespaceConfigs) > 0 {
+		for _, namespaceConfig := range state.MetricNamespaceConfigs {
+			namespaceConfigs = append(namespaceConfigs, datadogV2.GCPMetricNamespaceConfig{
+				Id:       namespaceConfig.ID.ValueStringPointer(),
+				Disabled: namespaceConfig.Disabled.ValueBoolPointer(),
+			})
+		}
+	}
+	attributes.SetMetricNamespaceConfigs(namespaceConfigs)
+
 	if !state.IsSecurityCommandCenterEnabled.IsUnknown() {
 		attributes.SetIsSecurityCommandCenterEnabled(state.IsSecurityCommandCenterEnabled.ValueBool())
+	}
+	if !state.IsResourceChangeCollectionEnabled.IsUnknown() {
+		attributes.SetIsResourceChangeCollectionEnabled(state.IsResourceChangeCollectionEnabled.ValueBool())
 	}
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		attributes.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())

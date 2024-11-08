@@ -39,18 +39,19 @@ type integrationGcpResource struct {
 }
 
 type integrationGcpModel struct {
-	ID                             types.String `tfsdk:"id"`
-	ProjectID                      types.String `tfsdk:"project_id"`
-	PrivateKeyId                   types.String `tfsdk:"private_key_id"`
-	PrivateKey                     types.String `tfsdk:"private_key"`
-	ClientEmail                    types.String `tfsdk:"client_email"`
-	ClientId                       types.String `tfsdk:"client_id"`
-	Automute                       types.Bool   `tfsdk:"automute"`
-	HostFilters                    types.String `tfsdk:"host_filters"`
-	CloudRunRevisionFilters        types.Set    `tfsdk:"cloud_run_revision_filters"`
-	ResourceCollectionEnabled      types.Bool   `tfsdk:"resource_collection_enabled"`
-	CspmResourceCollectionEnabled  types.Bool   `tfsdk:"cspm_resource_collection_enabled"`
-	IsSecurityCommandCenterEnabled types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	ID                                types.String `tfsdk:"id"`
+	ProjectID                         types.String `tfsdk:"project_id"`
+	PrivateKeyId                      types.String `tfsdk:"private_key_id"`
+	PrivateKey                        types.String `tfsdk:"private_key"`
+	ClientEmail                       types.String `tfsdk:"client_email"`
+	ClientId                          types.String `tfsdk:"client_id"`
+	Automute                          types.Bool   `tfsdk:"automute"`
+	HostFilters                       types.String `tfsdk:"host_filters"`
+	CloudRunRevisionFilters           types.Set    `tfsdk:"cloud_run_revision_filters"`
+	ResourceCollectionEnabled         types.Bool   `tfsdk:"resource_collection_enabled"`
+	CspmResourceCollectionEnabled     types.Bool   `tfsdk:"cspm_resource_collection_enabled"`
+	IsSecurityCommandCenterEnabled    types.Bool   `tfsdk:"is_security_command_center_enabled"`
+	IsResourceChangeCollectionEnabled types.Bool   `tfsdk:"is_resource_change_collection_enabled"`
 }
 
 func NewIntegrationGcpResource() resource.Resource {
@@ -69,6 +70,9 @@ func (r *integrationGcpResource) Metadata(_ context.Context, request resource.Me
 
 func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
+		// Avoid using default values for bool settings to prevent breaking changes for existing customers.
+		// Customers who have previously modified these settings via the UI should not be impacted
+		// https://github.com/DataDog/terraform-provider-datadog/pull/2424#issuecomment-2150871460
 		Description: "This resource is deprecated—use the `datadog_integration_gcp_sts` resource instead. Provides a Datadog - Google Cloud Platform integration resource. This can be used to create and manage Datadog - Google Cloud Platform integration.",
 		Attributes: map[string]schema.Attribute{
 			"project_id": schema.StringAttribute{
@@ -140,6 +144,11 @@ func (r *integrationGcpResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(false),
+			},
+			"is_resource_change_collection_enabled": schema.BoolAttribute{
+				Description: "When enabled, Datadog scans for all resource change data in your Google Cloud environment.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -292,6 +301,7 @@ func (r *integrationGcpResource) updateState(ctx context.Context, state *integra
 	state.CspmResourceCollectionEnabled = types.BoolValue(resp.GetIsCspmEnabled())
 	state.ResourceCollectionEnabled = types.BoolValue(resp.GetResourceCollectionEnabled())
 	state.IsSecurityCommandCenterEnabled = types.BoolValue(resp.GetIsSecurityCommandCenterEnabled())
+	state.IsResourceChangeCollectionEnabled = types.BoolValue(resp.GetIsResourceChangeCollectionEnabled())
 
 	// Non-computed values
 	if clientId, ok := resp.GetClientIdOk(); ok {
@@ -364,6 +374,10 @@ func (r *integrationGcpResource) addOptionalFieldsToBody(ctx context.Context, bo
 
 	if !state.ResourceCollectionEnabled.IsUnknown() {
 		body.SetResourceCollectionEnabled(state.ResourceCollectionEnabled.ValueBool())
+	}
+
+	if !state.IsResourceChangeCollectionEnabled.IsUnknown() {
+		body.SetIsResourceChangeCollectionEnabled(state.IsResourceChangeCollectionEnabled.ValueBool())
 	}
 
 	return diags
