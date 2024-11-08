@@ -1,1 +1,1 @@
-terraform import datadog_rum_metric.new_list ""
+terraform import datadog_rum_metric.testing_rum_metric "testing.rum.metric"
