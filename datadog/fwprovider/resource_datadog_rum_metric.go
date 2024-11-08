@@ -89,20 +89,6 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"id": utils.ResourceIDAttribute(),
 		},
 		Blocks: map[string]schema.Block{
-			"group_by": schema.ListNestedBlock{
-				NestedObject: schema.NestedBlockObject{
-					Attributes: map[string]schema.Attribute{
-						"path": schema.StringAttribute{
-							Description: "The path to the value the rum-based metric will be aggregated over.",
-							Optional:    true,
-						},
-						"tag_name": schema.StringAttribute{
-							Description: "Eventual name of the tag that gets created. By default, `path` is used as the tag name.",
-							Optional:    true,
-						},
-					},
-				},
-			},
 			"compute": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"aggregation_type": schema.StringAttribute{
@@ -127,6 +113,20 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 					"query": schema.StringAttribute{
 						Description: "The search query - following the RUM search syntax.",
 						Optional:    true,
+					},
+				},
+			},
+			"group_by": schema.SetNestedBlock{
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"path": schema.StringAttribute{
+							Description: "The path to the value the rum-based metric will be aggregated over.",
+							Optional:    true,
+						},
+						"tag_name": schema.StringAttribute{
+							Description: "Eventual name of the tag that gets created. By default, `path` is used as the tag name.",
+							Optional:    true,
+						},
 					},
 				},
 			},
@@ -267,7 +267,6 @@ func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricMod
 		state.GroupBy = []*rumMetricGroupByModel{}
 		for _, groupByDdItem := range *groupBy {
 			groupByTfItem := rumMetricGroupByModel{}
-
 			if path, ok := groupByDdItem.GetPathOk(); ok {
 				groupByTfItem.Path = types.StringValue(*path)
 			}
@@ -385,6 +384,8 @@ func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context,
 			if !groupByTFItem.TagName.IsNull() {
 				groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
 			}
+
+			groupBy = append(groupBy, *groupByDDItem)
 		}
 		attributes.SetGroupBy(groupBy)
 	}
