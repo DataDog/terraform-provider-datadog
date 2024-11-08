@@ -263,21 +263,6 @@ func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricMod
 
 	state.EventType = types.StringValue(string(attributes.GetEventType()))
 
-	if groupBy, ok := attributes.GetGroupByOk(); ok && len(*groupBy) > 0 {
-		state.GroupBy = []*rumMetricGroupByModel{}
-		for _, groupByDdItem := range *groupBy {
-			groupByTfItem := rumMetricGroupByModel{}
-			if path, ok := groupByDdItem.GetPathOk(); ok {
-				groupByTfItem.Path = types.StringValue(*path)
-			}
-			if tagName, ok := groupByDdItem.GetTagNameOk(); ok {
-				groupByTfItem.TagName = types.StringValue(*tagName)
-			}
-
-			state.GroupBy = append(state.GroupBy, &groupByTfItem)
-		}
-	}
-
 	if compute, ok := attributes.GetComputeOk(); ok {
 
 		computeTf := rumMetricComputeModel{}
@@ -304,6 +289,21 @@ func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricMod
 		}
 
 		state.Filter = &filterTf
+	}
+
+	if groupBy, ok := attributes.GetGroupByOk(); ok && len(*groupBy) > 0 {
+		state.GroupBy = []*rumMetricGroupByModel{}
+		for _, groupByDdItem := range *groupBy {
+			groupByTfItem := rumMetricGroupByModel{}
+			if path, ok := groupByDdItem.GetPathOk(); ok {
+				groupByTfItem.Path = types.StringValue(*path)
+			}
+			if tagName, ok := groupByDdItem.GetTagNameOk(); ok {
+				groupByTfItem.TagName = types.StringValue(*tagName)
+			}
+
+			state.GroupBy = append(state.GroupBy, &groupByTfItem)
+		}
 	}
 
 	if uniqueness, ok := attributes.GetUniquenessOk(); ok {

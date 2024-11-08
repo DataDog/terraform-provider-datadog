@@ -47,7 +47,7 @@ resource "datadog_rum_metric" "foo" {
 
 - `compute` (Block, Optional) (see [below for nested schema](#nestedblock--compute))
 - `filter` (Block, Optional) (see [below for nested schema](#nestedblock--filter))
-- `group_by` (Block List) (see [below for nested schema](#nestedblock--group_by))
+- `group_by` (Block Set) (see [below for nested schema](#nestedblock--group_by))
 - `uniqueness` (Block, Optional) (see [below for nested schema](#nestedblock--uniqueness))
 
 ### Read-Only
