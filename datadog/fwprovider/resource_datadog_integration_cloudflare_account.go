@@ -4,10 +4,12 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -26,10 +28,11 @@ type integrationCloudflareAccountResource struct {
 }
 
 type integrationCloudflareAccountModel struct {
-	ID     types.String `tfsdk:"id"`
-	ApiKey types.String `tfsdk:"api_key"`
-	Email  types.String `tfsdk:"email"`
-	Name   types.String `tfsdk:"name"`
+	ID        types.String `tfsdk:"id"`
+	ApiKey    types.String `tfsdk:"api_key"`
+	Email     types.String `tfsdk:"email"`
+	Name      types.String `tfsdk:"name"`
+	Resources types.List   `tfsdk:"resources"`
 }
 
 func NewIntegrationCloudflareAccountResource() resource.Resource {
@@ -67,6 +70,13 @@ func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 				},
 			},
 			"id": utils.ResourceIDAttribute(),
+			"resources": schema.ListAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+				Computed:    true,
+				Description: "An allowlist of resources to restrict pulling metrics for including `web`, `dns`, `lb` (load balancer), `worker`)",
+				Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
+			},
 		},
 	}
 }
@@ -193,6 +203,10 @@ func (r *integrationCloudflareAccountResource) updateState(ctx context.Context, 
 	if name, ok := attributes.GetNameOk(); ok {
 		state.Name = types.StringValue(*name)
 	}
+
+	if resources, ok := attributes.GetResourcesOk(); ok {
+		state.Resources, _ = types.ListValueFrom(ctx, types.StringType, resources)
+	}
 }
 
 func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccountRequestBody(ctx context.Context, state *integrationCloudflareAccountModel) (*datadogV2.CloudflareAccountCreateRequest, diag.Diagnostics) {
@@ -204,6 +218,12 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 		attributes.SetEmail(state.Email.ValueString())
 	}
 	attributes.SetName(state.Name.ValueString())
+
+	if !state.Resources.IsNull() {
+		var resources []string
+		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
+		attributes.SetResources(resources)
+	}
 
 	req := datadogV2.NewCloudflareAccountCreateRequestWithDefaults()
 	req.Data = *datadogV2.NewCloudflareAccountCreateRequestDataWithDefaults()
@@ -219,6 +239,12 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 	attributes.SetApiKey(state.ApiKey.ValueString())
 	if !state.Email.IsNull() {
 		attributes.SetEmail(state.Email.ValueString())
+	}
+
+	if !state.Resources.IsNull() {
+		var resources []string
+		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
+		attributes.SetResources(resources)
 	}
 
 	req := datadogV2.NewCloudflareAccountUpdateRequestWithDefaults()
