@@ -14,8 +14,8 @@ Provides the Datadog Email Domain Allowlist resource. This can be used to manage
 
 ```terraform
 resource "datadog_ip_allowlist" "example" {
-  enabled = false
-  domains = ["@test.com", "@datadoghq.com"]
+  enabled = true
+  domains = ["@gmail.com"]
 }
 ```
 
