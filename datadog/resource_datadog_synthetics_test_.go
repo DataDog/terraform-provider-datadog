@@ -2936,8 +2936,11 @@ func buildTerraformConfigVariables(configVariables []datadogV1.SyntheticsConfigV
 			// If the variable is secure, the example and pattern are not returned by the API,
 			// so we need to keep the values from the terraform config.
 			if v, ok := localVariable["secure"].(bool); ok && v {
-				localVariable["example"] = oldConfigVariables[i].(map[string]interface{})["example"].(string)
-				localVariable["pattern"] = oldConfigVariables[i].(map[string]interface{})["pattern"].(string)
+				// There is no previous state to fallback on during import
+				if i < len(oldConfigVariables) && oldConfigVariables[i] != nil {
+					localVariable["example"] = oldConfigVariables[i].(map[string]interface{})["example"].(string)
+					localVariable["pattern"] = oldConfigVariables[i].(map[string]interface{})["pattern"].(string)
+				}
 			} else {
 				if v, ok := configVariable.GetExampleOk(); ok {
 					localVariable["example"] = *v
