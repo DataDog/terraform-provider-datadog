@@ -1,5 +1,7 @@
 ## 3.46.0 (October 3, 2024)
 
+### FEATURES
+[datadog_domain_allowlist] Support domain allowlist management in terraform by @diab42 in #2637
 
 **Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.45.0...v3.46.0
 
