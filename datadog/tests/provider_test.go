@@ -146,7 +146,6 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_dashboard_topology_map_test":                     "dashboards",
 	"tests/resource_datadog_dashboard_trace_service_test":                    "dashboards",
 	"tests/resource_datadog_dashboard_treemap_test":                          "dashboards",
-	"tests/resource_datadog_domain_allowlist_test":                           "domain-allowlist",
 	"tests/resource_datadog_openapi_api_test":                                "apimanagement",
 	"tests/resource_datadog_powerpack_test":                                  "powerpacks",
 	"tests/resource_datadog_powerpack_alert_graph_test":                      "powerpacks",
