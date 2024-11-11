@@ -357,7 +357,7 @@ func (i *ApiInstances) GetCSMThreatsApiV2() *datadogV2.CSMThreatsApi {
 	return i.csmThreatsApiV2
 }
 
-// GetDomainAllowlistApiV2 get instance of DowntimesApi
+// GetDomainAllowlistApiV2 get instance of DomainAllowlistAPI
 func (i *ApiInstances) GetDomainAllowlistApiV2() *datadogV2.DomainAllowlistApi {
 	if i.domainAllowlistApiV2 == nil {
 		i.domainAllowlistApiV2 = datadogV2.NewDomainAllowlistApi(i.HttpClient)
