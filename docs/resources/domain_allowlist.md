@@ -13,7 +13,7 @@ Provides the Datadog Email Domain Allowlist resource. This can be used to manage
 ## Example Usage
 
 ```terraform
-resource "datadog_ip_allowlist" "example" {
+resource "datadog_domain_allowlist" "example" {
   enabled = true
   domains = ["@gmail.com"]
 }
