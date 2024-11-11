@@ -35,17 +35,17 @@ func NewTenantBasedHandleResource() resource.Resource {
 	return &tenantBasedHandleResource{}
 }
 
-func (r *teamResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *tenantBasedHandleResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetMicrosoftTeamsIntegrationApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *teamResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+func (r *tenantBasedHandleResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "tenant_based_handle"
 }
 
-func (r *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *tenantBasedHandleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Resource for interacting with Datadog Microsoft Teams Integration tenant-based handles.",
 		Attributes: map[string]schema.Attribute{
@@ -70,12 +70,12 @@ func (r *teamResource) Schema(_ context.Context, _ resource.SchemaRequest, respo
 	}
 }
 
-func (r *teamResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *tenantBasedHandleResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *teamResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state teamModel
+func (r *tenantBasedHandleResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state tenantBasedHandleModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -102,14 +102,17 @@ func (r *teamResource) Read(ctx context.Context, request resource.ReadRequest, r
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *teamResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state teamModel
+func (r *tenantBasedHandleResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state tenantBasedHandleModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
 	body, diags := r.buildTenantBasedHandleRequestBody(ctx, &state)
+	if body == nil {
+		return
+	}
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -130,8 +133,8 @@ func (r *teamResource) Create(ctx context.Context, request resource.CreateReques
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *teamResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state teamModel
+func (r *tenantBasedHandleResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state tenantBasedHandleModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -140,12 +143,15 @@ func (r *teamResource) Update(ctx context.Context, request resource.UpdateReques
 	id := state.ID.ValueString()
 
 	body, diags := r.buildTenantBasedHandleUpdateRequestBody(ctx, &state)
+	if body == nil {
+		return
+	}
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	resp, _, err := r.Api.UpdateTeam(r.Auth, id, *body)
+	resp, _, err := r.Api.UpdateTenantBasedHandle(r.Auth, id, *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating tenant-based handle"))
 		return
@@ -160,8 +166,8 @@ func (r *teamResource) Update(ctx context.Context, request resource.UpdateReques
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *teamResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state teamModel
+func (r *tenantBasedHandleResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state tenantBasedHandleModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -179,11 +185,16 @@ func (r *teamResource) Delete(ctx context.Context, request resource.DeleteReques
 	}
 }
 
-func (r *teamResource) updateState(ctx context.Context, state *tenantBasedHandleModel, resp *datadogV2.TenantBasedHandleResponse) {
+func (r *tenantBasedHandleResource) updateState(ctx context.Context, state *tenantBasedHandleModel, resp *datadogV2.MicrosoftTeamsTenantBasedHandleResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
+	fullHandleDataList, _, _ := r.Api.ListTenantBasedHandles(ctx, datadogV2.ListTenantBasedHandlesOptionalParameters{Name: resp.Data.Attributes.Name})
+	var fullHandleData datadogV2.MicrosoftTeamsTenantBasedHandleInfoResponseData
+	if len(fullHandleDataList.Data) == 0 {
+		return
+	}
 
-	data := resp.GetData()
-	attributes := data.GetAttributes()
+	fullHandleData = fullHandleDataList.Data[0]
+	attributes := fullHandleData.GetAttributes()
 
 	if name, ok := attributes.GetNameOk(); ok && name != nil {
 		state.Name = types.StringValue(*name)
@@ -202,35 +213,43 @@ func (r *teamResource) updateState(ctx context.Context, state *tenantBasedHandle
 	}
 }
 
-func (r *teamResource) buildTenantBasedHandleRequestBody(ctx context.Context, state *tenantBasedHandleModel) (*datadogV2.TenantBasedHandleCreateRequest, diag.Diagnostics) {
+func (r *tenantBasedHandleResource) buildTenantBasedHandleRequestBody(ctx context.Context, state *tenantBasedHandleModel) (*datadogV2.MicrosoftTeamsCreateTenantBasedHandleRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewTenantBasedHandleCreateAttributesWithDefaults()
-
-	attributes.SetHandle(state.Handle.ValueString())
+	attributes := datadogV2.NewMicrosoftTeamsTenantBasedHandleRequestAttributesWithDefaults()
+	channelData, _, err := r.Api.GetChannelByName(ctx, state.TenantName.String(), state.TeamName.String(), state.ChannelName.String())
+	if err != nil {
+		utils.FrameworkErrorDiag(err, "channel information not found")
+		return nil, nil
+	}
 
 	attributes.SetName(state.Name.ValueString())
+	attributes.SetTenantId(*channelData.Data.Attributes.TenantId)
+	attributes.SetTeamId(*channelData.Data.Attributes.TeamId)
+	attributes.SetChannelId(*channelData.Data.Id)
 
-	req := datadogV2.NewTenantBasedHandleCreateRequestWithDefaults()
-	req.Data = *datadogV2.NewTenantBasedHandleCreateWithDefaults()
+	req := datadogV2.NewMicrosoftTeamsCreateTenantBasedHandleRequestWithDefaults()
+	req.Data = *datadogV2.NewMicrosoftTeamsTenantBasedHandleRequestDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
 }
 
-func (r *teamResource) buildTenantBasedHandleUpdateRequestBody(ctx context.Context, state *tenantBasedHandleModel) (*datadogV2.TenantBasedHandleUpdateRequest, diag.Diagnostics) {
+func (r *tenantBasedHandleResource) buildTenantBasedHandleUpdateRequestBody(ctx context.Context, state *tenantBasedHandleModel) (*datadogV2.MicrosoftTeamsUpdateTenantBasedHandleRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	attributes := datadogV2.NewTeamUpdateAttributesWithDefaults()
-
-	if !state.Description.IsNull() {
-		attributes.SetDescription(state.Description.ValueString())
+	attributes := datadogV2.NewMicrosoftTeamsTenantBasedHandleAttributesWithDefaults()
+	channelData, _, err := r.Api.GetChannelByName(ctx, state.TenantName.String(), state.TeamName.String(), state.ChannelName.String())
+	if err != nil {
+		utils.FrameworkErrorDiag(err, "channel information not found")
+		return nil, nil
 	}
 
-	attributes.SetHandle(state.Handle.ValueString())
-
 	attributes.SetName(state.Name.ValueString())
+	attributes.SetTenantId(*channelData.Data.Attributes.TenantId)
+	attributes.SetTeamId(*channelData.Data.Attributes.TeamId)
+	attributes.SetChannelId(*channelData.Data.Id)
 
-	req := datadogV2.NewTenantBasedHandleUpdateRequestWithDefaults()
-	req.Data = *datadogV2.NewTenantBasedHandleUpdateWithDefaults()
+	req := datadogV2.NewMicrosoftTeamsUpdateTenantBasedHandleRequestWithDefaults()
+	req.Data = *datadogV2.NewMicrosoftTeamsUpdateTenantBasedHandleRequestDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
