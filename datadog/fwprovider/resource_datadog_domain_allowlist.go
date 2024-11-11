@@ -134,7 +134,7 @@ func (r *domainAllowlistResource) Update(ctx context.Context, request resource.U
 	}
 	resp, httpResp, err := r.Api.PatchDomainAllowlist(r.Auth, *domainAllowlistReq)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, " error updating IP allowlist"), ""))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(utils.TranslateClientError(err, httpResp, " error updating domain allowlist"), ""))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
