@@ -1,3 +1,17 @@
+## 3.48.0 (November 12, 2024)
+
+### BUGFIXES
+* [datadog_cloudflare] Remove default and update doc by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2658
+* [synthetics_test] Handle `request_file` when state does not exist by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2659
+### FEATURES
+* [resource_datadog_domain_allowlist] Domain allowlist provider support by @diab42 in https://github.com/DataDog/terraform-provider-datadog/pull/2637
+* [datadog_dashboard][datadog_powerpack] Update go client to support `good_minutes` and `bad_minutes` for Time Slice SLOs by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2662
+
+## New Contributors
+* @diab42 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2637
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.47.0...v3.48.0
+
 ## 3.47.0 (November 8, 2024)
 
 ### BUGFIXES
