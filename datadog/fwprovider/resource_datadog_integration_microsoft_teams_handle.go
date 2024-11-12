@@ -2,6 +2,8 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -57,7 +59,7 @@ func (r *tenantBasedHandleResource) Schema(_ context.Context, _ resource.SchemaR
 				Required:    true,
 				Description: "Your tenant name.",
 			},
-			"team_name": schema.Int64Attribute{
+			"team_name": schema.StringAttribute{
 				Description: "Your team name.",
 				Required:    true,
 			},
@@ -82,6 +84,7 @@ func (r *tenantBasedHandleResource) Read(ctx context.Context, request resource.R
 	}
 
 	id := state.ID.ValueString()
+	// Check if handle exists
 	resp, httpResp, err := r.Api.GetTenantBasedHandle(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
@@ -96,7 +99,11 @@ func (r *tenantBasedHandleResource) Read(ctx context.Context, request resource.R
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
+	diags := r.updateState(ctx, &state, &resp)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -110,9 +117,6 @@ func (r *tenantBasedHandleResource) Create(ctx context.Context, request resource
 	}
 
 	body, diags := r.buildTenantBasedHandleRequestBody(ctx, &state)
-	if body == nil {
-		return
-	}
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -143,9 +147,7 @@ func (r *tenantBasedHandleResource) Update(ctx context.Context, request resource
 	id := state.ID.ValueString()
 
 	body, diags := r.buildTenantBasedHandleUpdateRequestBody(ctx, &state)
-	if body == nil {
-		return
-	}
+
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -185,12 +187,18 @@ func (r *tenantBasedHandleResource) Delete(ctx context.Context, request resource
 	}
 }
 
-func (r *tenantBasedHandleResource) updateState(ctx context.Context, state *tenantBasedHandleModel, resp *datadogV2.MicrosoftTeamsTenantBasedHandleResponse) {
+func (r *tenantBasedHandleResource) updateState(ctx context.Context, state *tenantBasedHandleModel, resp *datadogV2.MicrosoftTeamsTenantBasedHandleResponse) diag.Diagnostics {
+	diags := diag.Diagnostics{}
 	state.ID = types.StringValue(resp.Data.GetId())
-	fullHandleDataList, _, _ := r.Api.ListTenantBasedHandles(ctx, datadogV2.ListTenantBasedHandlesOptionalParameters{Name: resp.Data.Attributes.Name})
+	fullHandleDataList, _, err := r.Api.ListTenantBasedHandles(r.Auth, datadogV2.ListTenantBasedHandlesOptionalParameters{Name: resp.Data.Attributes.Name})
+	if err != nil {
+		diags.AddError("Could not get remote state: ", err.Error())
+		return diags
+	}
 	var fullHandleData datadogV2.MicrosoftTeamsTenantBasedHandleInfoResponseData
 	if len(fullHandleDataList.Data) == 0 {
-		return
+		diags.AddError("No matches for handle with name: "+*resp.Data.Attributes.Name, "")
+		return diags
 	}
 
 	fullHandleData = fullHandleDataList.Data[0]
@@ -211,15 +219,17 @@ func (r *tenantBasedHandleResource) updateState(ctx context.Context, state *tena
 	if channelName, ok := attributes.GetChannelNameOk(); ok && channelName != nil {
 		state.ChannelName = types.StringValue(*channelName)
 	}
+	return diags
 }
 
 func (r *tenantBasedHandleResource) buildTenantBasedHandleRequestBody(ctx context.Context, state *tenantBasedHandleModel) (*datadogV2.MicrosoftTeamsCreateTenantBasedHandleRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewMicrosoftTeamsTenantBasedHandleRequestAttributesWithDefaults()
-	channelData, _, err := r.Api.GetChannelByName(ctx, state.TenantName.String(), state.TeamName.String(), state.ChannelName.String())
+	channelData, _, err := r.Api.GetChannelByName(r.Auth, strings.ReplaceAll(state.TenantName.ValueString(), "\"", ""), state.TeamName.ValueString(), state.ChannelName.ValueString())
 	if err != nil {
-		utils.FrameworkErrorDiag(err, "channel information not found")
-		return nil, nil
+		channelInfo := fmt.Sprintf("Tenant Name: %s\nTeam Name: %s\nChannel Name: %s\n", state.TenantName.ValueString(), state.TeamName.ValueString(), state.ChannelName.ValueString())
+		diags.AddError("Channel data not found for: \n"+channelInfo, err.Error())
+		return nil, diags
 	}
 
 	attributes.SetName(state.Name.ValueString())
@@ -237,10 +247,11 @@ func (r *tenantBasedHandleResource) buildTenantBasedHandleRequestBody(ctx contex
 func (r *tenantBasedHandleResource) buildTenantBasedHandleUpdateRequestBody(ctx context.Context, state *tenantBasedHandleModel) (*datadogV2.MicrosoftTeamsUpdateTenantBasedHandleRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewMicrosoftTeamsTenantBasedHandleAttributesWithDefaults()
-	channelData, _, err := r.Api.GetChannelByName(ctx, state.TenantName.String(), state.TeamName.String(), state.ChannelName.String())
+	channelData, _, err := r.Api.GetChannelByName(r.Auth, strings.ReplaceAll(state.TenantName.ValueString(), "\"", ""), state.TeamName.ValueString(), state.ChannelName.ValueString())
 	if err != nil {
-		utils.FrameworkErrorDiag(err, "channel information not found")
-		return nil, nil
+		channelInfo := fmt.Sprintf("Tenant Name: %s\nTeam Name: %s\nChannel Name: %s\n", state.TenantName.ValueString(), state.TeamName.ValueString(), state.ChannelName.ValueString())
+		diags.AddError("Channel data not found for: \n"+channelInfo, err.Error())
+		return nil, diags
 	}
 
 	attributes.SetName(state.Name.ValueString())
