@@ -84,19 +84,11 @@ type tagFiltersModel struct {
 }
 
 type namespaceFiltersModel struct {
-	AwsNamespaceFiltersExcludeAll  *awsNamespaceFiltersExcludeAllModel  `tfsdk:"aws_namespace_filters_exclude_all"`
 	AwsNamespaceFiltersExcludeOnly *awsNamespaceFiltersExcludeOnlyModel `tfsdk:"aws_namespace_filters_exclude_only"`
-	AwsNamespaceFiltersIncludeAll  *awsNamespaceFiltersIncludeAllModel  `tfsdk:"aws_namespace_filters_include_all"`
 	AwsNamespaceFiltersIncludeOnly *awsNamespaceFiltersIncludeOnlyModel `tfsdk:"aws_namespace_filters_include_only"`
-}
-type awsNamespaceFiltersExcludeAllModel struct {
-	ExcludeAll types.Bool `tfsdk:"exclude_all"`
 }
 type awsNamespaceFiltersExcludeOnlyModel struct {
 	ExcludeOnly types.List `tfsdk:"exclude_only"`
-}
-type awsNamespaceFiltersIncludeAllModel struct {
-	IncludeAll types.Bool `tfsdk:"include_all"`
 }
 type awsNamespaceFiltersIncludeOnlyModel struct {
 	IncludeOnly types.List `tfsdk:"include_only"`
@@ -146,9 +138,7 @@ func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.
 			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_only"),
 		),
 		resourcevalidator.Conflicting(
-			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_include_all"),
 			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_include_only"),
-			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_exclude_all"),
 			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_exclude_only"),
 		),
 		resourcevalidator.Conflicting(
@@ -301,15 +291,6 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 					"namespace_filters": schema.SingleNestedBlock{
 						Attributes: map[string]schema.Attribute{},
 						Blocks: map[string]schema.Block{
-							"aws_namespace_filters_exclude_all": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{
-									"exclude_all": schema.BoolAttribute{
-										Optional:    true,
-										Computed:    true,
-										Description: "Exclude all namespaces",
-									},
-								},
-							},
 							"aws_namespace_filters_exclude_only": schema.SingleNestedBlock{
 								Attributes: map[string]schema.Attribute{
 									"exclude_only": schema.ListAttribute{
@@ -317,15 +298,6 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 										Computed:    true,
 										Description: "Exclude only these namespaces",
 										ElementType: types.StringType,
-									},
-								},
-							},
-							"aws_namespace_filters_include_all": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{
-									"include_all": schema.BoolAttribute{
-										Optional:    true,
-										Computed:    true,
-										Description: "Include all namespaces",
 									},
 								},
 							},
@@ -557,6 +529,8 @@ func buildStateAwsRegions(ctx context.Context, attributes datadogV2.AWSAccountRe
 func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) *metricsConfigModel {
 	metricsConfig := attributes.GetMetricsConfig()
 	metricsConfigTf := metricsConfigModel{}
+	metricsConfigTf.TagFilters = []*tagFiltersModel{}
+	metricsConfigTf.NamespaceFilters = &namespaceFiltersModel{}
 	if automuteEnabled, ok := metricsConfig.GetAutomuteEnabledOk(); ok {
 		metricsConfigTf.AutomuteEnabled = types.BoolValue(*automuteEnabled)
 	}
@@ -570,7 +544,6 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 		metricsConfigTf.Enabled = types.BoolValue(*enabled)
 	}
 	if tagFilters, ok := metricsConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
-		metricsConfigTf.TagFilters = []*tagFiltersModel{}
 		for _, tagFiltersDd := range *tagFilters {
 			tagFiltersTfItem := tagFiltersModel{}
 			if namespace, ok := tagFiltersDd.GetNamespaceOk(); ok {
@@ -583,6 +556,22 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 			}
 			metricsConfigTf.TagFilters = append(metricsConfigTf.TagFilters, &tagFiltersTfItem)
 		}
+	}
+
+	if namespaceFilters, ok := metricsConfig.GetNamespaceFiltersOk(); ok {
+		nsFiltersTf := namespaceFiltersModel{}
+		if namespaceFilters.AWSNamespaceFiltersExcludeOnly != nil {
+			nsFiltersTf.AwsNamespaceFiltersExcludeOnly = &awsNamespaceFiltersExcludeOnlyModel{}
+			excludeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersExcludeOnly.GetExcludeOnly())
+			nsFiltersTf.AwsNamespaceFiltersExcludeOnly.ExcludeOnly = excludeOnly
+
+		} else if namespaceFilters.AWSNamespaceFiltersIncludeOnly != nil {
+			nsFiltersTf.AwsNamespaceFiltersIncludeOnly = &awsNamespaceFiltersIncludeOnlyModel{}
+			includeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersIncludeOnly.GetIncludeOnly())
+			nsFiltersTf.AwsNamespaceFiltersIncludeOnly.IncludeOnly = includeOnly
+		}
+
+		metricsConfigTf.NamespaceFilters = &nsFiltersTf
 	}
 
 	return &metricsConfigTf
@@ -758,7 +747,7 @@ func buildRequestMetricsConfig(ctx context.Context, state *awsAccountV2Model, di
 
 	var tagFilters []datadogV2.AWSNamespaceTagFilter
 	for _, tagFiltersTFItem := range state.MetricsConfig.TagFilters {
-		tagFiltersDDItem := datadogV2.NewAWSNamespaceTagFilter()
+		tagFiltersDDItem := datadogV2.NewAWSNamespaceTagFilterWithDefaults()
 
 		if !tagFiltersTFItem.Namespace.IsNull() {
 			tagFiltersDDItem.SetNamespace(tagFiltersTFItem.Namespace.ValueString())
@@ -771,6 +760,21 @@ func buildRequestMetricsConfig(ctx context.Context, state *awsAccountV2Model, di
 		}
 	}
 	metricsConfig.SetTagFilters(tagFilters)
+
+	var namespaceFiltersDD datadogV2.AWSNamespaceFilters
+	nsFiltersTf := state.MetricsConfig.NamespaceFilters
+	if nsFiltersTf.AwsNamespaceFiltersExcludeOnly != nil {
+		var excludeOnly []string
+		namespaceFiltersDD.AWSNamespaceFiltersExcludeOnly = datadogV2.NewAWSNamespaceFiltersExcludeOnlyWithDefaults()
+		diags.Append(nsFiltersTf.AwsNamespaceFiltersExcludeOnly.ExcludeOnly.ElementsAs(ctx, &excludeOnly, false)...)
+		namespaceFiltersDD.AWSNamespaceFiltersExcludeOnly.SetExcludeOnly(excludeOnly)
+	} else if nsFiltersTf.AwsNamespaceFiltersIncludeOnly != nil {
+		var includeOnly []string
+		namespaceFiltersDD.AWSNamespaceFiltersIncludeOnly = datadogV2.NewAWSNamespaceFiltersIncludeOnlyWithDefaults()
+		diags.Append(nsFiltersTf.AwsNamespaceFiltersIncludeOnly.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
+		namespaceFiltersDD.AWSNamespaceFiltersIncludeOnly.SetIncludeOnly(includeOnly)
+	}
+	metricsConfig.SetNamespaceFilters(namespaceFiltersDD)
 
 	return metricsConfig
 }

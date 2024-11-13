@@ -64,6 +64,12 @@ resource "datadog_aws_account_v2" "foo" {
   	  collect_cloudwatch_alarms = true
   	  collect_custom_metrics = true
   	  enabled = true
+	  namespace_filters {
+		aws_namespace_filters_include_only {
+			include_only = ["AWS/EC2"]
+		}
+	  }
+
   	}
     resources_config {
 		cloud_security_posture_management_collection = false
