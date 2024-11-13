@@ -5246,7 +5246,9 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.default_step_timeout", "10"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.device_ids.#", "1"),
+				"datadog_synthetics_test.bar", "mobile_options_list.device_ids.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.device_ids.0", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.device_ids.0", "synthetics:mobile:device:apple_iphone_14_plus_ios_16"),
 			resource.TestCheckResourceAttr(
@@ -5446,7 +5448,7 @@ resource "datadog_synthetics_test" "bar" {
 			execution_rule = "blocking"
 		}
 		default_step_timeout = 10
-		device_ids = ["synthetics:mobile:device:apple_iphone_14_pro_ios_16", "synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+		device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
 		no_screenshot = true
 		allow_application_crash = false
 		disable_auto_accept_alert = true

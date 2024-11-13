@@ -1,0 +1,73 @@
+version: 2
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/org
+    method: GET
+    id: 0
+  response:
+    body: '{"orgs":[{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_import-local-1628254627","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: |
+      {"name":"ttings_import-local-1628254708"}
+    form: {}
+    headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: PUT
+    id: 1
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_import-local-1628254708","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: GET
+    id: 2
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_import-local-1628254708","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
+- request:
+    body: ""
+    form: {}
+    headers:
+      Accept:
+      - application/json
+    url: https://api.datadoghq.com/api/v1/org/8bc512dc-f4e7-11eb-b98d-da7ad0900002
+    method: GET
+    id: 3
+  response:
+    body: '{"org":{"public_id":"8bc512dc-f4e7-11eb-b98d-da7ad0900002","name":"ttings_import-local-1628254708","billing":{"type":"parent_billing"},"created":"2021-08-04 05:48:08","description":null,"settings":{"saml_idp_metadata_valid_until":null,"saml_autocreate_access_role":"st","private_widget_share":true,"saml_idp_endpoint":null,"saml_idp_metadata_uploaded":false,"saml_can_be_enabled":false,"saml":{"enabled":false},"saml_strict_mode":{"enabled":false},"saml_autocreate_users_domains":{"domains":["example.com","www.example.com"],"enabled":true},"saml_idp_initiated_login":{"enabled":false},"saml_login_url":null},"subscription":{"started":1628056089,"finished":null,"is_custom":false,"is_expired":true,"billing_plan_id":2,"is_trial":false,"expires":null,"type":"pro","id":785813}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: "0ms"
