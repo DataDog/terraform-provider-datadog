@@ -357,6 +357,149 @@ resource "datadog_synthetics_test" "test_browser" {
   }
 }
 
+# Example Usage (Synthetics Mobile test)
+# Create a new Datadog Synthetics Mobile test starting on https://www.example.org
+resource "datadog_synthetics_test" "test_mobile" {
+	type = "mobile"
+	config_variable {
+			example = "123"
+			name = "VARIABLE_NAME"
+			pattern = "{{numeric(3)}}"
+			type = "text"
+			secure = false
+		}
+	config_initial_application_arguments = {
+		test_process_argument = "test1"
+	}
+	device_ids = [ "synthetics:mobile:device:apple_iphone_14_plus_ios_16" ]
+	locations = [ "aws:eu-central-1" ]
+	mobile_options_list {
+		min_failure_duration = 0
+		retry {
+			count = 0
+			interval = 300
+		}
+		tick_every = 43200
+		scheduling {
+			timeframes {
+        day = 5
+        from = "07:00"
+        to = "16:00"
+      }
+      timeframes  {
+        day = 7
+        from = "07:00"
+        to = "16:00"
+      }
+			timezone = "UTC"
+		}
+		monitor_name = "%[1]s-monitor"
+		monitor_options {
+			renotify_interval = 10
+			escalation_message = "test escalation message"
+			renotify_occurrences = 3
+			notification_preset_name = "show_all"
+		}
+		monitor_priority = 5
+		restricted_roles = ["role1", "role2"]
+		bindings {
+      principal = [
+        "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091",
+        "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"
+      ]
+      relation = "editor"
+    }
+		ci {
+			execution_rule = "blocking"
+		}
+		default_step_timeout = 10
+		device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+		no_screenshot = true
+		allow_application_crash = false
+		disable_auto_accept_alert = true
+		mobile_application {
+			application_id = "5f055d15-0000-aaaa-zzzz-6739f83346aa"
+      reference_id = "434d4719-0000-aaaa-zzzz-31082b544718"
+      reference_type = "version"
+		}
+	}
+	name = "%[1]s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+	status = "paused"
+	// monitor_id 
+	mobile_step {
+    name = "Tap on StaticText \"Tap\""
+    params {
+      element {
+        context = "NATIVE_APP"
+        view_name = "StaticText"
+        context_type = "native"
+        text_content = "Tap"
+        multi_locator = {}
+        relative_position {
+          x = 0.07256155303030302
+          y = 0.41522381756756754
+        }
+        user_locator {
+          fail_test_on_cannot_locate = false
+          values {
+            type = "id"
+            value = "some_id"
+          }
+        }
+        element_description = "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"
+      }
+    }
+    # "position": 0, // TODO this is not in the schema which seems like an oversight cuz this is the order of the steps
+    timeout = 100
+    type = "tap"
+    public_id = "b9m-79b-idw" // TODO does need to be some unique id
+    allow_failure = false
+    is_critical = true
+    no_screenshot = false
+    # "exitIfSucceed": false // TODO this is not in the schema
+    has_new_step_element = false
+  }
+
+  mobile_step {
+    name = "Test View \"Tap\" content"
+    params {
+      check = "contains"
+      value = "Tap"
+      element {
+        context = "NATIVE_APP"
+        view_name = "View"
+        context_type = "native"
+        text_content = "Tap"
+        multi_locator = {}
+        relative_position {
+          x = 0.27660448306074764
+          y = 0.6841517857142857
+        }
+        user_locator {
+          fail_test_on_cannot_locate = false
+          values {
+            type = "id"
+            value = "some_id"
+          }
+        }
+        element_description = "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"
+      }
+    }
+    # "position": 1, // TODO this is not in the schema which seems like an oversight cuz this is the order of the steps
+    timeout = 100
+    type = "assertElementContent"
+    public_id = "uid-45h-9a6" // TODO does need to be some unique id
+    allow_failure = false
+    is_critical = true
+    no_screenshot = false
+    # exitIfSucceed = false  // TODO this is not in the schema
+    has_new_step_element = false
+  }
+}
+
+
 # Example Usage (GRPC API behavior check test)
 # Create a new Datadog GRPC API test calling host example.org on port 443
 # targeting service `greeter.Greeter` with the method `SayHello`
