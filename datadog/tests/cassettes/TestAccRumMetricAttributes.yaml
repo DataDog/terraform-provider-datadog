@@ -9,18 +9,18 @@ interactions:
         content_length: 166
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"event_type":"action"},"id":"\"tf_TestAccRumMetricAttributes_local_1731083681\"","type":"rum_metrics"}}
+            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"event_type":"action"},"id":"\"tf_TestAccRumMetricAttributes_local_1731506017\"","type":"rum_metrics"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/rum/config/metrics
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics
         method: POST
       response:
         proto: HTTP/2.0
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 212
+        content_length: 175
         uncompressed: false
-        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731083681","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count","include_percentiles":null,"path":""},"event_type":"action","group_by":[]}}}'
+        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731506017","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","group_by":[]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 760.036ms
+        duration: 815.741958ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -45,7 +45,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -53,7 +53,207 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731083681
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731506017
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 175
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731506017","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","group_by":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 109.067958ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731506017
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 117.488125ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 219
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"compute":{"aggregation_type":"distribution","include_percentiles":true,"path":"@duration"},"event_type":"action"},"id":"\"tf_TestAccRumMetricAttributes_local_1731506017\"","type":"rum_metrics"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 228
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731506017","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"distribution","include_percentiles":true,"path":"@duration"},"event_type":"action","group_by":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 1.02972725s
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731506017
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 228
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731506017","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"distribution","include_percentiles":true,"path":"@duration"},"event_type":"action","group_by":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 108.842709ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731506017
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 112.006667ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 203
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","filter":{"query":"@service:web-ui"}},"id":"\"tf_TestAccRumMetricAttributes_local_1731506017\"","type":"rum_metrics"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 212
+        uncompressed: false
+        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731506017","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","filter":{"query":"@service:web-ui"},"group_by":[]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 247.393ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731506017
         method: GET
       response:
         proto: HTTP/2.0
@@ -63,213 +263,13 @@ interactions:
         trailer: {}
         content_length: 212
         uncompressed: false
-        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731083681","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count","include_percentiles":null,"path":""},"event_type":"action","group_by":[]}}}'
+        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731506017","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","filter":{"query":"@service:web-ui"},"group_by":[]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 109.609959ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datad0g.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731083681
-        method: DELETE
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 108.3615ms
-    - id: 3
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 219
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"compute":{"aggregation_type":"distribution","include_percentiles":true,"path":"@duration"},"event_type":"action"},"id":"\"tf_TestAccRumMetricAttributes_local_1731083681\"","type":"rum_metrics"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datad0g.com/api/v2/rum/config/metrics
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 228
-        uncompressed: false
-        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731083681","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"distribution","include_percentiles":true,"path":"@duration"},"event_type":"action","group_by":[]}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 201 Created
-        code: 201
-        duration: 1.01709575s
-    - id: 4
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datad0g.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731083681
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 228
-        uncompressed: false
-        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731083681","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"distribution","include_percentiles":true,"path":"@duration"},"event_type":"action","group_by":[]}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 104.9915ms
-    - id: 5
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - '*/*'
-        url: https://api.datad0g.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731083681
-        method: DELETE
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 0
-        uncompressed: false
-        body: ""
-        headers: {}
-        status: 204 No Content
-        code: 204
-        duration: 112.969666ms
-    - id: 6
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 203
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","filter":{"query":"@service:web-ui"}},"id":"\"tf_TestAccRumMetricAttributes_local_1731083681\"","type":"rum_metrics"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datad0g.com/api/v2/rum/config/metrics
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 249
-        uncompressed: false
-        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731083681","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count","include_percentiles":null,"path":""},"event_type":"action","filter":{"query":"@service:web-ui"},"group_by":[]}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 201 Created
-        code: 201
-        duration: 853.209917ms
-    - id: 7
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datad0g.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datad0g.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731083681
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        transfer_encoding: []
-        trailer: {}
-        content_length: 249
-        uncompressed: false
-        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731083681","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count","include_percentiles":null,"path":""},"event_type":"action","filter":{"query":"@service:web-ui"},"group_by":[]}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 103.880667ms
+        duration: 107.427541ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -278,7 +278,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -286,7 +286,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731083681
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731506017
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -300,7 +300,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 104.034208ms
+        duration: 107.245458ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -309,18 +309,18 @@ interactions:
         content_length: 251
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","group_by":[{"path":"@os","tag_name":"os"},{"path":"@service","tag_name":"service"}]},"id":"\"tf_TestAccRumMetricAttributes_local_1731083681\"","type":"rum_metrics"}}
+            {"data":{"attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","group_by":[{"path":"@os","tag_name":"os"},{"path":"@service","tag_name":"service"}]},"id":"\"tf_TestAccRumMetricAttributes_local_1731506017\"","type":"rum_metrics"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/rum/config/metrics
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics
         method: POST
       response:
         proto: HTTP/2.0
@@ -328,15 +328,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 283
+        content_length: 246
         uncompressed: false
-        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731083681","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count","include_percentiles":null,"path":""},"event_type":"action","group_by":[{"path":"@os","tag_name":"os"},{"path":"@service","tag_name":"service"}]}}}'
+        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731506017","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","group_by":[{"path":"@os","tag_name":"os"},{"path":"@service","tag_name":"service"}]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 965.583375ms
+        duration: 550.922458ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -345,7 +345,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -353,7 +353,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731083681
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731506017
         method: GET
       response:
         proto: HTTP/2.0
@@ -361,15 +361,15 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 283
+        content_length: 246
         uncompressed: false
-        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731083681","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count","include_percentiles":null,"path":""},"event_type":"action","group_by":[{"path":"@os","tag_name":"os"},{"path":"@service","tag_name":"service"}]}}}'
+        body: '{"data":{"id":"tf_TestAccRumMetricAttributes_local_1731506017","type":"rum_metrics","attributes":{"compute":{"aggregation_type":"count"},"event_type":"action","group_by":[{"path":"@os","tag_name":"os"},{"path":"@service","tag_name":"service"}]}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 103.185083ms
+        duration: 107.373583ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -378,7 +378,7 @@ interactions:
         content_length: 0
         transfer_encoding: []
         trailer: {}
-        host: api.datad0g.com
+        host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: ""
@@ -386,7 +386,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731083681
+        url: https://api.datadoghq.com/api/v2/rum/config/metrics/tf_TestAccRumMetricAttributes_local_1731506017
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -400,4 +400,4 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 109.502792ms
+        duration: 108.528417ms
