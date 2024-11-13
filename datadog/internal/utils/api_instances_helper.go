@@ -17,7 +17,6 @@ type ApiInstances struct {
 	azureIntegrationApiV1                 *datadogV1.AzureIntegrationApi
 	dashboardListsApiV1                   *datadogV1.DashboardListsApi
 	dashboardsApiV1                       *datadogV1.DashboardsApi
-	domainAllowlistApiV2                  *datadogV2.DomainAllowlistApi
 	downtimesApiV1                        *datadogV1.DowntimesApi
 	eventsApiV1                           *datadogV1.EventsApi
 	gcpIntegrationApiV1                   *datadogV1.GCPIntegrationApi
@@ -53,6 +52,7 @@ type ApiInstances struct {
 	csmThreatsApiV2                *datadogV2.CSMThreatsApi
 	confluentCloudApiV2            *datadogV2.ConfluentCloudApi
 	dashboardListsApiV2            *datadogV2.DashboardListsApi
+	domainAllowlistApiV2           *datadogV2.DomainAllowlistApi
 	downtimesApiV2                 *datadogV2.DowntimesApi
 	eventsApiV2                    *datadogV2.EventsApi
 	fastlyIntegrationApiV2         *datadogV2.FastlyIntegrationApi
