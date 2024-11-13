@@ -27,21 +27,21 @@ datadog/*cloud_configuration*             @DataDog/api-clients @DataDog/k9-cloud
 datadog/*service_account*                 @DataDog/api-clients @DataDog/team-aaa
 
 # Framework resources/data-sources
-datadog/**/*datadog_api_key*                    @DataDog/api-clients @DataDog/team-aaa
-datadog/**/*datadog_apm_retention_filter*       @DataDog/api-clients @DataDog/apm-trace-intake
-datadog/**/*datadog_hosts*                      @DataDog/api-clients @DataDog/redapl-storage
-datadog/**/*datadog_ip_ranges*                  @DataDog/api-clients @DataDog/team-aaa
-datadog/**/*datadog_integration_aws*            @DataDog/api-clients @DataDog/cloud-integrations
-datadog/**/*datadog_integration_azure*          @DataDog/api-clients @DataDog/azure-integrations
-datadog/**/*datadog_integration_cloudflare*     @DataDog/api-clients @DataDog/saas-integrations
-datadog/**/*datadog_integration_confluent*      @DataDog/api-clients @DataDog/saas-integrations
-datadog/**/*datadog_integration_fastly*         @DataDog/api-clients @DataDog/saas-integrations
-datadog/**/*datadog_integration_gcp*            @DataDog/api-clients @DataDog/gcp-integrations
-datadog/**/*datadog_restriction_policy*         @DataDog/api-clients @DataDog/aaa-granular-access
-datadog/**/*datadog_sensitive_data_scanner*     @DataDog/api-clients @DataDog/logs-app @DataDog/sensitive-data-scanner
-datadog/**/*datadog_service_account*            @DataDog/api-clients @DataDog/team-aaa
-datadog/**/*datadog_spans_metric*               @DataDog/api-clients @DataDog/apm-trace-intake
-datadog/**/*datadog_synthetics_concurrency_cap* @DataDog/api-clients @DataDog/synthetics-app @DataDog/synthetics-ct
-datadog/**/*datadog_team*                       @DataDog/api-clients @DataDog/core-app
-datadog/**/*datadog_organization_settings*      @DataDog/api-clients @DataDog/core-app @DataDog/trust-and-safety
+datadog/**/*datadog_api_key*                     @DataDog/api-clients @DataDog/team-aaa
+datadog/**/*datadog_apm_retention_filter*        @DataDog/api-clients @DataDog/apm-trace-intake
+datadog/**/*datadog_hosts*                       @DataDog/api-clients @DataDog/redapl-storage
+datadog/**/*datadog_ip_ranges*                   @DataDog/api-clients @DataDog/team-aaa
+datadog/**/*datadog_integration_aws*             @DataDog/api-clients @DataDog/cloud-integrations
+datadog/**/*datadog_integration_azure*           @DataDog/api-clients @DataDog/azure-integrations
+datadog/**/*datadog_integration_cloudflare*      @DataDog/api-clients @DataDog/saas-integrations
+datadog/**/*datadog_integration_confluent*       @DataDog/api-clients @DataDog/saas-integrations
+datadog/**/*datadog_integration_fastly*          @DataDog/api-clients @DataDog/saas-integrations
+datadog/**/*datadog_integration_gcp*             @DataDog/api-clients @DataDog/gcp-integrations
+datadog/**/*datadog_restriction_policy*          @DataDog/api-clients @DataDog/aaa-granular-access
+datadog/**/*datadog_sensitive_data_scanner*      @DataDog/api-clients @DataDog/logs-app @DataDog/sensitive-data-scanner
+datadog/**/*datadog_service_account*             @DataDog/api-clients @DataDog/team-aaa
+datadog/**/*datadog_spans_metric*                @DataDog/api-clients @DataDog/apm-trace-intake
+datadog/**/*datadog_synthetics_concurrency_cap*  @DataDog/api-clients @DataDog/synthetics-app @DataDog/synthetics-ct
+datadog/**/*datadog_team*                        @DataDog/api-clients @DataDog/core-app
+datadog/**/*datadog_organization_settings*       @DataDog/api-clients @DataDog/core-app @DataDog/trust-and-safety
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/api-clients @DataDog/chat-integrations
