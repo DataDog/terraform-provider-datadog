@@ -193,7 +193,6 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_fastly_account_test":                 "integration-fastly-account",
 	"tests/resource_datadog_integration_gcp_sts_test":                        "integration-gcp",
 	"tests/resource_datadog_integration_gcp_test":                            "integration-gcp",
-	"tests/resource_datadog_integration_microsoft_teams_handle_test":         "integration-microsoft-teams",
 	"tests/resource_datadog_integration_opsgenie_service_object_test":        "integration-opsgenie-service",
 	"tests/resource_datadog_integration_pagerduty_service_object_test":       "integration-pagerduty",
 	"tests/resource_datadog_integration_pagerduty_test":                      "integration-pagerduty",
