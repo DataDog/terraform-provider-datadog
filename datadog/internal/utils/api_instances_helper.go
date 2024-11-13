@@ -17,6 +17,7 @@ type ApiInstances struct {
 	azureIntegrationApiV1                 *datadogV1.AzureIntegrationApi
 	dashboardListsApiV1                   *datadogV1.DashboardListsApi
 	dashboardsApiV1                       *datadogV1.DashboardsApi
+	domainAllowlistApiV2                  *datadogV2.DomainAllowlistApi
 	downtimesApiV1                        *datadogV1.DowntimesApi
 	eventsApiV1                           *datadogV1.EventsApi
 	gcpIntegrationApiV1                   *datadogV1.GCPIntegrationApi
