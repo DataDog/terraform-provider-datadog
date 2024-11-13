@@ -369,10 +369,10 @@ func testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider func() (*sch
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_sensitive_data_scanner_rule" {
 				resp, _, err := apiInstances.GetSensitiveDataScannerApiV2().ListScanningGroups(auth)
+				if err != nil {
+					return fmt.Errorf("received an error retrieving all scanning groups: %s", err)
+				}
 				if ruleFound := findSensitiveDataScannerRuleHelper(resource.Primary.ID, resp); ruleFound == nil {
-					if err != nil {
-						return fmt.Errorf("received an error retrieving all scanning groups: %s", err)
-					}
 					return nil
 				}
 				return fmt.Errorf("scanning rule still exists")
