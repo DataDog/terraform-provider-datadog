@@ -303,9 +303,11 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 
 	attributes.SetTextReplacement(textReplacement)
 
-	if _, ok := d.GetOk("included_keyword_configuration"); ok {
-		var includedKeywordConfiguration datadogV2.SensitiveDataScannerIncludedKeywordConfiguration
+	var includedKeywordConfiguration datadogV2.SensitiveDataScannerIncludedKeywordConfiguration
 
+	_, hasSp := d.GetOk("standard_pattern_id")
+	if _, ok := d.GetOk("included_keyword_configuration"); ok {
+		// The user is creating a rule with an included keyword configuration specified. Let's simply build that object
 		keywords := []string{}
 		for _, kw := range d.Get("included_keyword_configuration.0.keywords").([]interface{}) {
 			keywords = append(keywords, kw.(string))
@@ -315,6 +317,18 @@ func buildSensitiveDataScannerRuleAttributes(d *schema.ResourceData) *datadogV2.
 		if characterCount, ok := d.GetOk("included_keyword_configuration.0.character_count"); ok {
 			includedKeywordConfiguration.SetCharacterCount(int64(characterCount.(int)))
 		}
+		if hasSp {
+			// If the user creates a rule derived from a standard rule, let's add that the rule is not using the recommended keywords.
+			includedKeywordConfiguration.SetUseRecommendedKeywords(false)
+		}
+		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
+	} else if hasSp {
+		// The user is creating / updating a rule derived from a standard rule, without specifying an included keyword configuration.
+		// Let's use the recommended keywords here by default.
+		keywords := make([]string, 0)
+		includedKeywordConfiguration.SetKeywords(keywords)
+		includedKeywordConfiguration.SetCharacterCount(int64(30))
+		includedKeywordConfiguration.SetUseRecommendedKeywords(true)
 
 		attributes.SetIncludedKeywordConfiguration(includedKeywordConfiguration)
 	}
@@ -418,18 +432,24 @@ func updateSensitiveDataScannerRuleState(d *schema.ResourceData, ruleAttributes 
 	}
 
 	if incKw, ok := ruleAttributes.GetIncludedKeywordConfigurationOk(); ok && incKw != nil {
-		includedKeywordConfig := make(map[string]interface{})
-		includedKeywordConfigList := make([]map[string]interface{}, 0, 1)
+		if _, hasSp := d.GetOk("standard_pattern_id"); hasSp && incKw.GetUseRecommendedKeywords() {
+			// This situation occurs when the rule is derived from a standard pattern, and that uses the recommended keywords.
+			// In that case, we shouldn't do anything because it means the user has chosen the default option.
+		} else {
+			includedKeywordConfig := make(map[string]interface{})
+			includedKeywordConfigList := make([]map[string]interface{}, 0, 1)
 
-		if keywords, ok := incKw.GetKeywordsOk(); ok {
-			includedKeywordConfig["keywords"] = keywords
-		}
-		if characterCount, ok := incKw.GetCharacterCountOk(); ok {
-			includedKeywordConfig["character_count"] = characterCount
-		}
-		includedKeywordConfigList = append(includedKeywordConfigList, includedKeywordConfig)
-		if err := d.Set("included_keyword_configuration", includedKeywordConfigList); err != nil {
-			return diag.FromErr(err)
+			if keywords, ok := incKw.GetKeywordsOk(); ok {
+				includedKeywordConfig["keywords"] = keywords
+			}
+			if characterCount, ok := incKw.GetCharacterCountOk(); ok {
+				includedKeywordConfig["character_count"] = characterCount
+			}
+			includedKeywordConfigList = append(includedKeywordConfigList, includedKeywordConfig)
+			if err := d.Set("included_keyword_configuration", includedKeywordConfigList); err != nil {
+				return diag.FromErr(err)
+
+			}
 		}
 	}
 
