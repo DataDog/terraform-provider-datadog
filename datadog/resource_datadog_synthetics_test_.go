@@ -89,7 +89,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
-				"device_ids": { // AS
+				"device_ids": { // AS TODO is this also a string for broswer or just mobile
 					Description: "Required if `type = \"mobile\"`. Array with the different device IDs used to run the test.",
 					Type:        schema.TypeList,
 					Optional:    true,
@@ -1878,7 +1878,6 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		// return updateSyntheticsMobileTestLocalState(d, &createdSyntheticsTest)
 
 		return updateSyntheticsMobileTestLocalState(d, &getSyntheticsMobileTestResponse)
-
 	}
 
 	return diag.Errorf("unrecognized synthetics test type %v", testType)
