@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731576863","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"dns","tags":["foo:bar","baz"],"type":"api"}
+            {"config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731580371","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"dns","tags":["foo:bar","baz"],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"mx5-vaa-s5j","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731576863","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T09:34:26.329402+00:00","modified_at":"2024-11-14T09:34:26.329402+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":158213208,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"83i-3hz-jmv","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731580371","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T10:32:54.447560+00:00","modified_at":"2024-11-14T10:32:54.447560+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":158216141,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 594.059ms
+        duration: 412.748208ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/mx5-vaa-s5j
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/83i-3hz-jmv
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"mx5-vaa-s5j","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731576863","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T09:34:26.329402+00:00","modified_at":"2024-11-14T09:34:26.329402+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":158213208,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"83i-3hz-jmv","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731580371","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T10:32:54.447560+00:00","modified_at":"2024-11-14T10:32:54.447560+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":158216141,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 143.546875ms
+        duration: 267.36475ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/mx5-vaa-s5j
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/83i-3hz-jmv
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"mx5-vaa-s5j","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731576863","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T09:34:26.329402+00:00","modified_at":"2024-11-14T09:34:26.329402+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":158213208,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"83i-3hz-jmv","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731580371","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T10:32:54.447560+00:00","modified_at":"2024-11-14T10:32:54.447560+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":158216141,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 253.513416ms
+        duration: 173.377084ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/mx5-vaa-s5j
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/83i-3hz-jmv
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"mx5-vaa-s5j","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731576863","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T09:34:26.329402+00:00","modified_at":"2024-11-14T09:34:26.329402+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":158213208,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"83i-3hz-jmv","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731580371","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T10:32:54.447560+00:00","modified_at":"2024-11-14T10:32:54.447560+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":158216141,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 144.911208ms
+        duration: 296.76925ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/mx5-vaa-s5j
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/83i-3hz-jmv
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"mx5-vaa-s5j","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731576863","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T09:34:26.329402+00:00","modified_at":"2024-11-14T09:34:26.329402+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":158213208,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"83i-3hz-jmv","name":"tf-TestAccDatadogSyntheticsDNSTest_Basic-local-1731580371","status":"paused","type":"api","subtype":"dns","tags":["foo:bar","baz"],"created_at":"2024-11-14T10:32:54.447560+00:00","modified_at":"2024-11-14T10:32:54.447560+00:00","config":{"assertions":[{"operator":"is","property":"A","target":"0.0.0.0","type":"recordSome"}],"configVariables":[],"request":{"dnsServer":"8.8.8.8","dnsServerPort":"120","host":"https://www.datadoghq.com"}},"message":"Notify @datadog.user","options":{"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":158216141,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 148.587417ms
+        duration: 289.606333ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -191,7 +191,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["mx5-vaa-s5j"]}
+            {"public_ids":["83i-3hz-jmv"]}
         form: {}
         headers:
             Accept:
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"mx5-vaa-s5j","deleted_at":"2024-11-14T09:34:30.438392+00:00"}]}
+            {"deleted_tests":[{"public_id":"83i-3hz-jmv","deleted_at":"2024-11-14T10:32:59.052025+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 824.898167ms
+        duration: 656.679916ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/mx5-vaa-s5j
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/83i-3hz-jmv
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,4 +250,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 128.791834ms
+        duration: 137.241667ms
