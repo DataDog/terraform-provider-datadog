@@ -38,7 +38,7 @@ datadog/**/*datadog_integration_confluent*      @DataDog/api-clients @DataDog/sa
 datadog/**/*datadog_integration_fastly*         @DataDog/api-clients @DataDog/saas-integrations
 datadog/**/*datadog_integration_gcp*            @DataDog/api-clients @DataDog/gcp-integrations
 datadog/**/*datadog_restriction_policy*         @DataDog/api-clients @DataDog/aaa-granular-access
-datadog/**/*datadog_sensitive_data_scanner*     @DataDog/api-clients @DataDog/sensitive-data-scanner
+datadog/**/*datadog_sensitive_data_scanner*     @DataDog/api-clients @DataDog/logs-app @DataDog/sensitive-data-scanner
 datadog/**/*datadog_service_account*            @DataDog/api-clients @DataDog/team-aaa
 datadog/**/*datadog_spans_metric*               @DataDog/api-clients @DataDog/apm-trace-intake
 datadog/**/*datadog_synthetics_concurrency_cap* @DataDog/api-clients @DataDog/synthetics-app @DataDog/synthetics-ct
