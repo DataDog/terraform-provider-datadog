@@ -19,10 +19,9 @@ func TestAccRumMetricImport(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	// The API will currently silently remap - to _, which makes terraform unhappy. This will
-	// just make the tests pass but this is a real issue.
-	// Being addressed in https://datadoghq.atlassian.net/browse/RUM-7124. Note that this is
-	// also an issue for other existing APIs using the same backend (spans metrics and maybe
-	// logs metrics?).
+	// just make the tests pass but this is a real issue. It is discussed in
+	// https://datadoghq.atlassian.net/browse/RUM-7124. Note that this is also the case for
+	// other existing APIs using the same backend (spans metrics and maybe logs metrics?).
 	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
@@ -84,6 +83,14 @@ func TestAccRumMetricAttributes(t *testing.T) {
 						"datadog_rum_metric.testing_rum_metric", "compute.path", "@duration"),
 				),
 			},
+			{
+				Config: distributionDatadogRumMetricUpdate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogSpansMetricExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "compute.include_percentiles", "false"),
+				),
+			},
 		},
 	})
 
@@ -99,6 +106,14 @@ func TestAccRumMetricAttributes(t *testing.T) {
 						"datadog_rum_metric.testing_rum_metric", "filter.query", "@service:web-ui"),
 				),
 			},
+			{
+				Config: filterDatadogRumMetricUpdate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "filter.query", "@service:another-service"),
+				),
+			},
 		},
 	})
 
@@ -108,12 +123,39 @@ func TestAccRumMetricAttributes(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: groupByDatadogRumMetric(uniq),
-				Check:  testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
-				// resource.ComposeTestCheckFunc(
-
-				// 	resource.TestCheckResourceAttr(
-				// 		"datadog_rum_metric.testing_rum_metric", "group_by.#", "2"),
-				// ),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.0.path", "@os"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.0.tag_name", "os"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.1.path", "@service"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.1.tag_name", "service"),
+				),
+			},
+			{
+				Config: groupByDatadogRumMetricUpdate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.#", "3"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.0.path", "@os"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.0.tag_name", "os"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.1.path", "@os.version.major"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.1.tag_name", "os_version_major"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.2.path", "@os.version.minor"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.2.tag_name", "os_version_minor"),
+				),
 			},
 		},
 	})
@@ -143,12 +185,14 @@ func distributionDatadogRumMetric(uniq string) string {
 	`, uniq)
 }
 
-func countDatadogRumMetric(uniq string) string {
+func distributionDatadogRumMetricUpdate(uniq string) string {
 	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
 		name = %q
 	    event_type = "action"
     	compute {
-    		aggregation_type = "count"
+    		aggregation_type = "distribution"
+    		include_percentiles = false
+    		path = "@duration"
     	}
 	}
 	`, uniq)
@@ -163,6 +207,20 @@ func filterDatadogRumMetric(uniq string) string {
     	}
 		filter {
 			query = "@service:web-ui"
+		}
+	}
+	`, uniq)
+}
+
+func filterDatadogRumMetricUpdate(uniq string) string {
+	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
+		name = %q
+	    event_type = "action"
+    	compute {
+    		aggregation_type = "count"
+    	}
+		filter {
+			query = "@service:another-service"
 		}
 	}
 	`, uniq)
@@ -184,6 +242,29 @@ func groupByDatadogRumMetric(uniq string) string {
 		group_by {
 			path = "@os"
 			tag_name = "os"
+		}
+	}
+	`, uniq)
+}
+
+func groupByDatadogRumMetricUpdate(uniq string) string {
+	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
+		name = %q
+	    event_type = "action"
+    	compute {
+    		aggregation_type = "count"
+    	}
+		group_by {
+			path = "@os"
+			tag_name = "os"
+		}
+		group_by {
+			path = "@os.version.major"
+			tag_name = "os_version_major"
+		}
+		group_by {
+			path = "@os.version.minor"
+			tag_name = "os_version_minor"
 		}
 	}
 	`, uniq)

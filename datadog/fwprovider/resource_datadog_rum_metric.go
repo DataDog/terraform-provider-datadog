@@ -105,6 +105,9 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 					"path": schema.StringAttribute{
 						Description: "The path to the value the rum-based metric will aggregate on. Only present when `aggregation_type` is `distribution`.",
 						Optional:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
 					},
 				},
 			},
@@ -212,7 +215,7 @@ func (r *rumMetricResource) Update(ctx context.Context, request resource.UpdateR
 		return
 	}
 
-	id := state.ID.ValueString()
+	id := state.Name.ValueString()
 
 	body, diags := r.buildRumMetricUpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
@@ -273,9 +276,7 @@ func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricMod
 			computeTf.IncludePercentiles = types.BoolValue(*includePercentiles)
 		}
 		if path, ok := compute.GetPathOk(); ok {
-			if *path != "" {
-				computeTf.Path = types.StringValue(*path)
-			}
+			computeTf.Path = types.StringValue(*path)
 		}
 
 		state.Compute = &computeTf
@@ -366,7 +367,7 @@ func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state
 
 	req := datadogV2.NewRumMetricCreateRequestWithDefaults()
 	req.Data = *datadogV2.NewRumMetricCreateDataWithDefaults()
-	req.Data.SetId(state.Name.String())
+	req.Data.SetId(state.Name.ValueString())
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
@@ -410,7 +411,7 @@ func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context,
 
 	req := datadogV2.NewRumMetricUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewRumMetricUpdateDataWithDefaults()
-	req.Data.SetId(state.Name.String())
+	req.Data.SetId(state.Name.ValueString())
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
