@@ -2894,9 +2894,12 @@ func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequest
 func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
 	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
 	for i, file := range *actualBodyFiles {
-		// The file content is kept from the existing localFile from the state,
-		// as the response from the backend contains the bucket key rather than the content.
-		localFile := oldLocalBodyFiles[i]
+		localFile := make(map[string]interface{})
+		if i < len(oldLocalBodyFiles) && oldLocalBodyFiles[i] != nil {
+			// The file content is kept from the existing localFile from the state,
+			// as the response from the backend contains the bucket key rather than the content.
+			localFile = oldLocalBodyFiles[i]
+		}
 		localFile["name"] = file.GetName()
 		localFile["original_file_name"] = file.GetOriginalFileName()
 		localFile["type"] = file.GetType()
@@ -2953,8 +2956,11 @@ func buildTerraformConfigVariables(configVariables []datadogV1.SyntheticsConfigV
 			// If the variable is secure, the example and pattern are not returned by the API,
 			// so we need to keep the values from the terraform config.
 			if v, ok := localVariable["secure"].(bool); ok && v {
-				localVariable["example"] = oldConfigVariables[i].(map[string]interface{})["example"].(string)
-				localVariable["pattern"] = oldConfigVariables[i].(map[string]interface{})["pattern"].(string)
+				// There is no previous state to fallback on during import
+				if i < len(oldConfigVariables) && oldConfigVariables[i] != nil {
+					localVariable["example"] = oldConfigVariables[i].(map[string]interface{})["example"].(string)
+					localVariable["pattern"] = oldConfigVariables[i].(map[string]interface{})["pattern"].(string)
+				}
 			} else {
 				if v, ok := configVariable.GetExampleOk(); ok {
 					localVariable["example"] = *v
