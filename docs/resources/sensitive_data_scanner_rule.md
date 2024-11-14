@@ -54,7 +54,7 @@ data "datadog_sensitive_data_scanner_standard_pattern" "aws_sp" {
   filter = "AWS Access Key ID Scanner"
 }
 
-resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_custom_included_keywords" {
+resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
   name        = "My library rule"
   description = "A description"
   group_id    = datadog_sensitive_data_scanner_group.mygroup.id
@@ -63,26 +63,6 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_custom_includ
   excluded_namespaces = ["username"]
   is_enabled          = true
   tags                = ["sensitive_data:true"]
-
-  // SDS will set the recommended keywords by default. If the user doesn't want to use the recommended keywords,
-  // they have to create an empty included keyword configuration (with empty keywords)
-  included_keyword_configuration {
-    keywords        = ["cc", "credit card"]
-    character_count = 30
-  }
-}
-
-resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_recommended_keywords" {
-  name        = "My library rule"
-  description = "A description"
-  group_id    = datadog_sensitive_data_scanner_group.mygroup.id
-  // As standard_pattern_id is provided, the resource MUST NOT contain the "pattern" attribute
-  standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.aws_sp.id
-  excluded_namespaces = ["username"]
-  is_enabled          = true
-  tags                = ["sensitive_data:true"]
-
-  // SDS will set the recommended keywords by default.
 }
 ```
 
@@ -97,7 +77,7 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_recommended_k
 
 - `description` (String) Description of the rule.
 - `excluded_namespaces` (List of String) Attributes excluded from the scan. If namespaces is provided, it has to be a sub-path of the namespaces array.
-- `included_keyword_configuration` (Block List, Max: 1) Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. If the rule has the `standard_pattern_id` field, then discarding this field will apply the recommended keywords. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying this field to avoid unexpectedly disabling Sensitive Data Scanner groups. (see [below for nested schema](#nestedblock--included_keyword_configuration))
+- `included_keyword_configuration` (Block List, Max: 1) Object defining a set of keywords and a number of characters that help reduce noise. You can provide a list of keywords you would like to check within a defined proximity of the matching pattern. If any of the keywords are found within the proximity check then the match is kept. If none are found, the match is discarded. Setting the `create_before_destroy` lifecycle Meta-argument to `true` is highly recommended if modifying this field to avoid unexpectedly disabling Sensitive Data Scanner groups. (see [below for nested schema](#nestedblock--included_keyword_configuration))
 - `is_enabled` (Boolean) Whether or not the rule is enabled.
 - `name` (String) Name of the rule.
 - `namespaces` (List of String) Attributes included in the scan. If namespaces is empty or missing, all attributes except excluded_namespaces are scanned. If both are missing the whole event is scanned.

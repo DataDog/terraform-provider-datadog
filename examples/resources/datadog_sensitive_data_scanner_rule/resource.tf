@@ -39,7 +39,7 @@ data "datadog_sensitive_data_scanner_standard_pattern" "aws_sp" {
   filter = "AWS Access Key ID Scanner"
 }
 
-resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_custom_included_keywords" {
+resource "datadog_sensitive_data_scanner_rule" "mylibraryrule" {
   name        = "My library rule"
   description = "A description"
   group_id    = datadog_sensitive_data_scanner_group.mygroup.id
@@ -48,24 +48,4 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_custom_includ
   excluded_namespaces = ["username"]
   is_enabled          = true
   tags                = ["sensitive_data:true"]
-
-  // SDS will set the recommended keywords by default. If the user doesn't want to use the recommended keywords,
-  // they have to create an empty included keyword configuration (with empty keywords)
-  included_keyword_configuration {
-    keywords        = ["cc", "credit card"]
-    character_count = 30
-  }
-}
-
-resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_recommended_keywords" {
-  name        = "My library rule"
-  description = "A description"
-  group_id    = datadog_sensitive_data_scanner_group.mygroup.id
-  // As standard_pattern_id is provided, the resource MUST NOT contain the "pattern" attribute
-  standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.aws_sp.id
-  excluded_namespaces = ["username"]
-  is_enabled          = true
-  tags                = ["sensitive_data:true"]
-
-  // SDS will set the recommended keywords by default.
 }
