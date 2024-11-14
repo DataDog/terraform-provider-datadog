@@ -73,7 +73,7 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 		Description: "Provides a Datadog RumMetric resource. This can be used to create and manage Datadog rum_metric.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "The name of the rum-based metric. This field can't be updated after creation.",
+				Description: "The name of the RUM-based metric. This field can't be updated after creation.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -103,7 +103,7 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						Optional:    true,
 					},
 					"path": schema.StringAttribute{
-						Description: "The path to the value the rum-based metric will aggregate on. Only present when `aggregation_type` is `distribution`.",
+						Description: "The path to the value the RUM-based metric will aggregate on. Only present when `aggregation_type` is `distribution`.",
 						Optional:    true,
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
@@ -114,7 +114,7 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"filter": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"query": schema.StringAttribute{
-						Description: "The search query - following the RUM search syntax.",
+						Description: "The search query. Follows RUM search syntax.",
 						Optional:    true,
 					},
 				},
@@ -123,11 +123,11 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"path": schema.StringAttribute{
-							Description: "The path to the value the rum-based metric will be aggregated over.",
+							Description: "The path to the value the RUM-based metric will be aggregated over.",
 							Optional:    true,
 						},
 						"tag_name": schema.StringAttribute{
-							Description: "Eventual name of the tag that gets created. By default, `path` is used as the tag name.",
+							Description: "Name of the tag that gets created. By default, `path` is used as the tag name.",
 							Optional:    true,
 						},
 					},

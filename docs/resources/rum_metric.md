@@ -42,7 +42,7 @@ resource "datadog_rum_metric" "testing_rum_metric" {
 ### Required
 
 - `event_type` (String) The type of RUM events to filter on.
-- `name` (String) The name of the rum-based metric. This field can't be updated after creation.
+- `name` (String) The name of the RUM-based metric. This field can't be updated after creation.
 
 ### Optional
 
@@ -65,7 +65,7 @@ Required:
 Optional:
 
 - `include_percentiles` (Boolean) Toggle to include or exclude percentile aggregations for distribution metrics. Only present when `aggregation_type` is `distribution`.
-- `path` (String) The path to the value the rum-based metric will aggregate on. Only present when `aggregation_type` is `distribution`.
+- `path` (String) The path to the value the RUM-based metric will aggregate on. Only present when `aggregation_type` is `distribution`.
 
 
 <a id="nestedblock--filter"></a>
@@ -73,7 +73,7 @@ Optional:
 
 Optional:
 
-- `query` (String) The search query - following the RUM search syntax.
+- `query` (String) The search query. Follows RUM search syntax.
 
 
 <a id="nestedblock--group_by"></a>
@@ -81,8 +81,8 @@ Optional:
 
 Optional:
 
-- `path` (String) The path to the value the rum-based metric will be aggregated over.
-- `tag_name` (String) Eventual name of the tag that gets created. By default, `path` is used as the tag name.
+- `path` (String) The path to the value the RUM-based metric will be aggregated over.
+- `tag_name` (String) Name of the tag that gets created. By default, `path` is used as the tag name.
 
 
 <a id="nestedblock--uniqueness"></a>
