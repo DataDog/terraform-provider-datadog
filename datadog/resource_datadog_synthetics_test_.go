@@ -1002,6 +1002,16 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
+				"always_execute": {
+					Description: "Determines whether or not to always execute this step even if the previous step failed or was skipped.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"exit_if_succeed": {
+					Description: "Determines whether or not to exit the test if the step succeeds.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 				"is_critical": {
 					Description: "Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.",
 					Type:        schema.TypeBool,
@@ -1643,7 +1653,12 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		if allowFailure, ok := step.GetAllowFailureOk(); ok {
 			localStep["allow_failure"] = allowFailure
 		}
-
+		if alwaysExecute, ok := step.GetAlwaysExecuteOk(); ok {
+			localStep["always_execute"] = alwaysExecute
+		}
+		if exitIfSucceed, ok := step.GetExitIfSucceedOk(); ok {
+			localStep["exit_if_succeed"] = exitIfSucceed
+		}
 		if isCritical, ok := step.GetIsCriticalOk(); ok {
 			localStep["is_critical"] = isCritical
 		}
@@ -2312,6 +2327,8 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 			step.SetName(stepMap["name"].(string))
 			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetAlwaysExecute(stepMap["always_execute"].(bool))
+			step.SetExitIfSucceed(stepMap["exit_if_succeed"].(bool))
 			step.SetIsCritical(stepMap["is_critical"].(bool))
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
 			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))

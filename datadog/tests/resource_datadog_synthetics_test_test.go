@@ -3130,6 +3130,10 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.allow_failure", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.always_execute", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.exit_if_succeed", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.is_critical", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.no_screenshot", "true"),
@@ -3246,6 +3250,8 @@ resource "datadog_synthetics_test" "bar" {
 	    name = "first step"
 	    type = "assertCurrentUrl"
 	    allow_failure = true
+	    always_execute = true
+	    exit_if_succeed = true
 	    is_critical = true
 	    params {
 	        check = "contains"
