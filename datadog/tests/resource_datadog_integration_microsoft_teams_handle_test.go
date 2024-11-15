@@ -39,13 +39,13 @@ func TestAccMSTeamsTenantBasedHandlesBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMSTeamsTenantBasedHandlesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_tenant_based_handle.foo", "name", uniq),
+						"datadog_integration_ms_teams_tenant_based_handle.foo", "name", uniq),
 					resource.TestCheckResourceAttr(
-						"datadog_tenant_based_handle.foo", "tenant_name", tenantName),
+						"datadog_integration_ms_teams_tenant_based_handle.foo", "tenant_name", tenantName),
 					resource.TestCheckResourceAttr(
-						"datadog_tenant_based_handle.foo", "team_name", teamName),
+						"datadog_integration_ms_teams_tenant_based_handle.foo", "team_name", teamName),
 					resource.TestCheckResourceAttr(
-						"datadog_tenant_based_handle.foo", "channel_name", channelName),
+						"datadog_integration_ms_teams_tenant_based_handle.foo", "channel_name", channelName),
 				),
 			},
 			{
@@ -53,13 +53,13 @@ func TestAccMSTeamsTenantBasedHandlesBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMSTeamsTenantBasedHandlesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_tenant_based_handle.foo", "name", fmt.Sprintf("%s-updated", uniq)),
+						"datadog_integration_ms_teams_tenant_based_handle.foo", "name", fmt.Sprintf("%s-updated", uniq)),
 					resource.TestCheckResourceAttr(
-						"datadog_tenant_based_handle.foo", "tenant_name", tenantName),
+						"datadog_integration_ms_teams_tenant_based_handle.foo", "tenant_name", tenantName),
 					resource.TestCheckResourceAttr(
-						"datadog_tenant_based_handle.foo", "team_name", teamName),
+						"datadog_integration_ms_teams_tenant_based_handle.foo", "team_name", teamName),
 					resource.TestCheckResourceAttr(
-						"datadog_tenant_based_handle.foo", "channel_name", channelName),
+						"datadog_integration_ms_teams_tenant_based_handle.foo", "channel_name", channelName),
 				),
 			},
 		},
@@ -68,7 +68,7 @@ func TestAccMSTeamsTenantBasedHandlesBasic(t *testing.T) {
 
 func testAccCheckDatadogMSTeamsTenantBasedHandles(uniq string, tenantName string, teamName string, channelName string) string {
 	return fmt.Sprintf(`
-resource "datadog_tenant_based_handle" "foo" {
+resource "datadog_integration_ms_teams_tenant_based_handle" "foo" {
     name = "%s"
     tenant_name = "%s"
 	team_name = "%s"
@@ -78,7 +78,7 @@ resource "datadog_tenant_based_handle" "foo" {
 
 func testAccCheckDatadogMSTeamsTenantBasedHandlesUpdated(uniq string, tenantName string, teamName string, channelName string) string {
 	return fmt.Sprintf(`
-resource "datadog_tenant_based_handle" "foo" {
+resource "datadog_integration_ms_teams_tenant_based_handle" "foo" {
     name = "%s-updated"
     tenant_name = "%s"
 	team_name = "%s"
@@ -100,7 +100,7 @@ func testAccCheckDatadogMSTeamsTenantBasedHandlesDestroy(accProvider *fwprovider
 
 func MSTeamsTenantBasedHandlesDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type != "resource_datadog_tenant_based_handle" {
+		if r.Type != "resource_datadog_integration_ms_teams_tenant_based_handle" {
 			continue
 		}
 		id := r.Primary.ID
@@ -137,7 +137,7 @@ func testAccCheckDatadogMSTeamsTenantBasedHandlesExists(accProvider *fwprovider.
 
 func msTeamsTenantBasedHandlesExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type != "resource_datadog_tenant_based_handle" {
+		if r.Type != "resource_datadog_integration_ms_teams_tenant_based_handle" {
 			continue
 		}
 		id := r.Primary.ID
