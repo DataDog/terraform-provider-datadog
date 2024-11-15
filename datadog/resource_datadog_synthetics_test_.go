@@ -31,7 +31,6 @@ import (
  */
 
 func resourceDatadogSyntheticsTest() *schema.Resource {
-	fmt.Println("resourceDatadogSyntheticsTest")
 	return &schema.Resource{
 		Description:   "Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.",
 		CreateContext: resourceDatadogSyntheticsTestCreate,
@@ -89,8 +88,8 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
-				"device_ids": { // AS
-					Description: "Required if `type = \"mobile\"`. Array with the different device IDs used to run the test.",
+				"device_ids": {
+					Description: "Required if `type = \"browser\"`. Array with the different device IDs used to run the test.",
 					Type:        schema.TypeList,
 					Optional:    true,
 					Elem: &schema.Schema{
@@ -936,7 +935,8 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 					Type:     schema.TypeList,
 					Required: true,
 					Elem: &schema.Schema{
-						Type: schema.TypeString,
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 					},
 				},
 				"no_screenshot": { // AS
@@ -1838,6 +1838,8 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics mobile test")
 		}
 		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
+			fmt.Println("==================CheckForUnparsed resourceDatadogSyntheticsTestCreate 1", err)
+			panic(err)
 			return diag.FromErr(err)
 		}
 
@@ -1863,6 +1865,8 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 				return retry.NonRetryableError(err)
 			}
 			if err := utils.CheckForUnparsed(getSyntheticsMobileTestResponse); err != nil {
+				fmt.Println("==================CheckForUnparsed resourceDatadogSyntheticsTestCreate 2", err)
+				panic(err)
 				return retry.NonRetryableError(err)
 			}
 
@@ -1896,8 +1900,17 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	var err error
 	var httpresp *_nethttp.Response
 
+	fmt.Println("\nsyntheticsTest.GetType()", syntheticsTest.GetType())
+
 	// get the generic test to detect if it's an api or browser test
 	syntheticsTest, httpresp, err = apiInstances.GetSyntheticsApiV1().GetTest(auth, d.Id())
+	marshaledTest, err := json.Marshal(syntheticsTest) // TODO for some reason this is not returning the steps
+	if err != nil {
+		fmt.Println("Error marshaling getSyntheticsMobileTestResponse:", err)
+	} else {
+		fmt.Println("\nsyntheticsTest:", string(marshaledTest))
+	}
+	fmt.Println("\nhttpresp", httpresp)
 	if err != nil {
 		if httpresp != nil && httpresp.StatusCode == 404 {
 			// Delete the resource from the local state since it doesn't exist anymore in the actual state
@@ -1907,6 +1920,9 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 		return utils.TranslateClientErrorDiag(err, httpresp, "error getting synthetics test")
 	}
 	if err := utils.CheckForUnparsed(syntheticsTest); err != nil {
+		fmt.Println("\nerrrrrrr ", err)
+		fmt.Println("\n==================CheckForUnparsed HERE", err)
+		panic(err)
 		return diag.FromErr(err)
 	}
 
@@ -1936,12 +1952,16 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
 		if err := utils.CheckForUnparsed(syntheticsMobileTest); err != nil {
+			fmt.Println("==================CheckForUnparsed resourceDatadogSyntheticsTestRead", err)
+			panic(err)
 			return diag.FromErr(err)
 		}
 		return updateSyntheticsMobileTestLocalState(d, &syntheticsMobileTest)
 	}
 
 	if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
+		fmt.Println("==================CheckForUnparsed resourceDatadogSyntheticsTestRead", err)
+		panic(err)
 		return diag.FromErr(err)
 	}
 	return updateSyntheticsAPITestLocalState(d, &syntheticsAPITest)
@@ -1977,15 +1997,27 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		}
 		return updateSyntheticsBrowserTestLocalState(d, &updatedTest)
 	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
+		fmt.Println("resourceDatadogSyntheticsTestUpdate mobile")
 		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateMobileTest(auth, d.Id(), *syntheticsTest)
+		marshaledTest, err := json.Marshal(syntheticsTest) // TODO for some reason this is not returning the steps
+		if err != nil {
+			fmt.Println("Error marshaling getSyntheticsMobileTestResponse:", err)
+		} else {
+			fmt.Println("updateSyntheticsMobileTestResponse:", string(marshaledTest))
+		}
+		fmt.Println("\nhttpResponseGet", httpResponse)
 		if err != nil {
 			// If the Update callback returns with or without an error, the full state is saved.
 			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")
 		}
 		if err := utils.CheckForUnparsed(updatedTest); err != nil {
+			fmt.Println("==================CheckForUnparsed resourceDatadogSyntheticsTestRead", err)
+			panic(err)
 			return diag.FromErr(err)
 		}
+
+		fmt.Println("\n\n\nresourceDatadogSyntheticsTestUpdate mobile retry DONE", updatedTest)
 		return updateSyntheticsMobileTestLocalState(d, &updatedTest)
 	}
 
@@ -3204,10 +3236,10 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 		fmt.Println("message", attr)
 		syntheticsTest.SetMessage(attr.(string))
 	}
-	if attr, ok := d.GetOk("monitor_id"); ok {
-		fmt.Println("monitor_id")
-		syntheticsTest.SetMonitorId(attr.(int64))
-	}
+	// if attr, ok := d.GetOk("monitor_id"); ok { // TODO uncomment and find out why it's unexpected
+	// 	fmt.Println("monitor_id")
+	// 	syntheticsTest.SetMonitorId(int64(attr.(int)))
+	// }
 	if attr, ok := d.GetOk("name"); ok {
 		fmt.Println("name", attr)
 		syntheticsTest.SetName(attr.(string))
@@ -4256,9 +4288,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 		}
 
 		if attr, ok := d.GetOk("device_ids"); ok {
-			var deviceIds []datadogV1.SyntheticsDeviceID
+			var deviceIds []string
 			for _, s := range attr.([]interface{}) {
-				deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
+				deviceIds = append(deviceIds, s.(string))
 			}
 			options.DeviceIds = deviceIds
 		}
@@ -4380,7 +4412,7 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 			}
 			options.SetRestrictedRoles(roles)
 		}
-		// TODO check this again
+		// TODO check this again -> think it's good now
 		if bindings, ok := d.GetOk("mobile_options_list.0.bindings"); ok {
 			fmt.Println("bindings", bindings)
 			optionsBindings := []datadogV1.SyntheticsTestRestrictionPolicyBinding{}
@@ -4663,14 +4695,14 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 		}
 	}
 
-	if actualOptions.HasBindings() { // TODO check this again (i hate this object :|)
+	if actualOptions.HasBindings() { // TODO check this again (i hate this object :|) -> think it's good now
 		actualBindings := actualOptions.GetBindings()
 		optionsListBindings := make([]map[string]interface{}, 0, len(actualBindings))
 		for _, binding := range actualBindings {
 			optionsListBindingsItem := make(map[string]interface{})
 
 			if binding.HasPrincipals() {
-				actualBindingsItemsPrincipals := binding.GetPrincipals() // TODO this will be principals
+				actualBindingsItemsPrincipals := binding.GetPrincipals()
 				optionsListBindingsItemsPrincipals := make([]string, 0, len(actualBindingsItemsPrincipals))
 				for _, principals := range actualBindingsItemsPrincipals {
 					optionsListBindingsItemsPrincipals = append(optionsListBindingsItemsPrincipals, principals)

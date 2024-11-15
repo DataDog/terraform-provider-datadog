@@ -391,19 +391,19 @@ resource "datadog_synthetics_test" "test_mobile" {
         from = "07:00"
         to = "16:00"
       }
-			timezone = "UTC"
-		}
-		monitor_name = "%[1]s-monitor"
-		monitor_options {
-			renotify_interval = 10
-			escalation_message = "test escalation message"
-			renotify_occurrences = 3
-			notification_preset_name = "show_all"
-		}
-		monitor_priority = 5
-		restricted_roles = ["role1", "role2"]
-		bindings {
-      principal = [
+      timezone = "UTC"
+    }
+    monitor_name = "%[1]s-monitor"
+    monitor_options {
+      renotify_interval        = 10
+      escalation_message       = "test escalation message"
+      renotify_occurrences     = 3
+      notification_preset_name = "show_all"
+    }
+    monitor_priority = 5
+    restricted_roles = ["role1", "role2"]
+    bindings {
+      principals = [
         "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091",
         "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"
       ]
