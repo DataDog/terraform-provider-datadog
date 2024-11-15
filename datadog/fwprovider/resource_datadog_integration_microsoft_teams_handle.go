@@ -44,7 +44,7 @@ func (r *tenantBasedHandleResource) Configure(_ context.Context, request resourc
 }
 
 func (r *tenantBasedHandleResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "datadog_integration_ms_teams_tenant_based_handle"
+	response.TypeName = "integration_ms_teams_tenant_based_handle"
 }
 
 func (r *tenantBasedHandleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
