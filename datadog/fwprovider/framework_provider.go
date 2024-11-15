@@ -80,6 +80,8 @@ var Resources = []func() resource.Resource{
 	NewActionConnectionResource,
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
+	NewCSMThreatsPolicyResource,
+	NewCSMThreatsMultiPolicyAgentRuleResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -108,6 +110,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogSyntheticsGlobalVariableDataSource,
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
+	NewCSMThreatsPoliciesDataSource,
 }
 
 // FrameworkProvider struct
