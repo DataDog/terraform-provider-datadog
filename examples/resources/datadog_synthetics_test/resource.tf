@@ -403,7 +403,7 @@ resource "datadog_synthetics_test" "test_mobile" {
     monitor_priority = 5
     restricted_roles = ["role1", "role2"]
     bindings {
-      principal = [
+      principals = [
         "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091",
         "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"
       ]

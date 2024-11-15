@@ -71,7 +71,6 @@ func init() {
 
 // Provider returns the built datadog provider object
 func Provider() *schema.Provider {
-	fmt.Println("Provider() called")
 	utils.DatadogProvider = &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"api_key": {
