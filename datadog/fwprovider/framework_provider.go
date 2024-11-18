@@ -68,6 +68,7 @@ var Resources = []func() resource.Resource{
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
+	NewTenantBasedHandleResource,
 }
 
 var Datasources = []func() datasource.DataSource{

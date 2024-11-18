@@ -1,0 +1,469 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":[{"id":"5f002dba-7cd2-11ef-8717-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","channel_name":"General","name":"test","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","team_name":"incident-6252-is_this_a_new_title","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}},{"id":"9fc79cf6-7ffd-11ef-b391-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:iD_D2xy_sAa-JV851JJYwIa6mlW9F9Nxm3SLyZq68qY1@thread.tacv2","channel_name":"General-1","name":"TwA43H2NIrilngRZ6dOvNBVNFx4fZvPgdYaroSwcvoObDbJ8RRJtSyKCjkiV2AaVziZSfxNKrL7oV4XHAC0gDv4cuZwGzkv3hJyPGqCuUEHP89CyJMOrtkCRgCM5XeNqoK28J2todRY8ibd3S3xwIwmCK83F2bnBjVB6WEDbmO92F7B9XcIglNwPpy7KMeNRjzxy8Y3c0Ji6jYQIIMRDnawdBGWqCQmGtJ7mFPCHpYlZHKBT7uyV1gIAuGtwIr","team_id":"e5f50a58-c929-4fb3-8866-e2cd836de3c2","team_name":"Chat Integrations","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}},{"id":"73ffbd06-8002-11ef-af80-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:iD_D2xy_sAa-JV851JJYwIa6mlW9F9Nxm3SLyZq68qY1@thread.tacv2","channel_name":"General-1","name":"TwA43H2NIrilngRZ6dOvNBVNFx4fZvPgdYaroSwcvoObDbJ8RRJtSyKCjkiV2AaVziZSfxNKrL7oV4XHAC0gDv4cuZwGzkv3hJyPGqCuUEHP89CyJMOrtkCRgCM5XeNqoK28J2todRY8ibd3S3xwIwmCK83F2bnBjVB6WEDbmO92F7B9XcIglNwPpy7KMeNRjzxy8Y3c0Ji6jYQIIMRDnawdBGWqCQmGtJ7mFPCHpYlZHKBT7uyV1gIAuGtwI","team_id":"e5f50a58-c929-4fb3-8866-e2cd836de3c2","team_name":"Chat Integrations","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}},{"id":"793156a6-8032-11ef-940c-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:iD_D2xy_sAa-JV851JJYwIa6mlW9F9Nxm3SLyZq68qY1@thread.tacv2","channel_name":"General-1","name":"TwA43H2NIrilngRZ6dOvNBVNFx4fZvPgdYaroSwcvoObDbJ8RRJtSyKCjkiV2AaVziZSfxNKrL7oV4XHAC0gDv4cuZwGzkv3hJyPGqCuUEHP89CyJMOrtkCRgCM5XeNqoK28J2todRY8ibd3S3xwIwmCK83F2bnBjVB6WEDbmO92F7B9XcIglNwPpy7KMeNRjzxy8Y3c0Ji6jYQIIMRDnawdBGWqCQmGtJ7mFPCHpYlZHKBT7uyV1gIAuGowI","team_id":"e5f50a58-c929-4fb3-8866-e2cd836de3c2","team_name":"Chat Integrations","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}},{"id":"e67bac72-a13c-11ef-83e6-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:iD_D2xy_sAa-JV851JJYwIa6mlW9F9Nxm3SLyZq68qY1@thread.tacv2","channel_name":"General-1","name":"terraform-test-first-handle-3","team_id":"e5f50a58-c929-4fb3-8866-e2cd836de3c2","team_name":"Chat Integrations","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}},{"id":"e67dbed6-a13c-11ef-9575-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:ef852c755a5542518c5d2c84588e38e6@thread.tacv2","channel_name":"sample","name":"terraform-test-first-handle","team_id":"e5f50a58-c929-4fb3-8866-e2cd836de3c2","team_name":"Chat Integrations","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}},{"id":"e67eba66-a13c-11ef-ba20-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:36dd21273b174467b89ba9d5e4809f9c@thread.tacv2","channel_name":"Ops-1","name":"terraform-test-first-handle-2","team_id":"e5f50a58-c929-4fb3-8866-e2cd836de3c2","team_name":"Chat Integrations","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 126.453416ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/channel/Datadog%2C%20Inc./incident-6252-is_this_a_new_title/General
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 242
+        uncompressed: false
+        body: '{"data":{"id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","type":"ms-teams-channel-info","attributes":{"is_primary":true,"team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 84.880791ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 298
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97"},"type":"tenant-based-handle"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 341
+        uncompressed: false
+        body: '{"data":{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"tenant-based-handle","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 106.626417ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles?name=tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 460
+        uncompressed: false
+        body: '{"data":[{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","channel_name":"General","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","team_name":"incident-6252-is_this_a_new_title","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 80.5415ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles/54acc68c-a1f5-11ef-8bf7-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 341
+        uncompressed: false
+        body: '{"data":{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"tenant-based-handle","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 86.192791ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles?name=tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 460
+        uncompressed: false
+        body: '{"data":[{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","channel_name":"General","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","team_name":"incident-6252-is_this_a_new_title","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 76.270542ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles/54acc68c-a1f5-11ef-8bf7-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 341
+        uncompressed: false
+        body: '{"data":{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"tenant-based-handle","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 90.018208ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles?name=tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 460
+        uncompressed: false
+        body: '{"data":[{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","channel_name":"General","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","team_name":"incident-6252-is_this_a_new_title","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 102.64ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/channel/Datadog%2C%20Inc./incident-6252-is_this_a_new_title/General
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 242
+        uncompressed: false
+        body: '{"data":{"id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","type":"ms-teams-channel-info","attributes":{"is_primary":true,"team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 214.527375ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 306
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051-updated","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97"},"type":"tenant-based-handle"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles/54acc68c-a1f5-11ef-8bf7-da7ad0900002
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 349
+        uncompressed: false
+        body: '{"data":{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"tenant-based-handle","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051-updated","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 98.305208ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles?name=tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051-updated
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 468
+        uncompressed: false
+        body: '{"data":[{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","channel_name":"General","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051-updated","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","team_name":"incident-6252-is_this_a_new_title","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 94.274917ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles/54acc68c-a1f5-11ef-8bf7-da7ad0900002
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 349
+        uncompressed: false
+        body: '{"data":{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"tenant-based-handle","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051-updated","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 92.794333ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles?name=tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051-updated
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 468
+        uncompressed: false
+        body: '{"data":[{"id":"54acc68c-a1f5-11ef-8bf7-da7ad0900002","type":"ms-teams-tenant-based-handle-info","attributes":{"channel_id":"19:m2LnqTUOkhuzGCyeG_0xql4rbKc2ZSJ25JS6UZINc-01@thread.tacv2","channel_name":"General","name":"tf-testaccmsteamstenantbasedhandlesbasic-local-1731526051-updated","team_id":"008b01f1-4b68-4e81-b8a9-cfa27ba6c112","team_name":"incident-6252-is_this_a_new_title","tenant_id":"4d3bac44-0230-4732-9e70-cc00736f0a97","tenant_name":"Datadog, Inc."}}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 83.887667ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/integration/ms-teams/configuration/tenant-based-handles/54acc68c-a1f5-11ef-8bf7-da7ad0900002
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 58.396792ms
