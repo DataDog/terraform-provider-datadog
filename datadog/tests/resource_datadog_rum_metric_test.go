@@ -18,10 +18,9 @@ func TestAccRumMetricImport(t *testing.T) {
 	resourceName := "datadog_rum_metric.testing_rum_metric"
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	// The API will currently silently remap - to _, which makes terraform unhappy. This will
-	// just make the tests pass but this is a real issue. It is discussed in
-	// https://datadoghq.atlassian.net/browse/RUM-7124. Note that this is also the case for
-	// other existing APIs using the same backend (spans metrics and maybe logs metrics?).
+	// The ID needs to be a valid metric name, otherwise it will get rejected with a 400.
+	// uniqueEntityName() returns dash separated words, which is not valid, so we replace
+	// them with underscores.
 	uniq := strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_")
 
 	resource.Test(t, resource.TestCase{
