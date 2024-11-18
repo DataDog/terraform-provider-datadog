@@ -42,7 +42,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 		},
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
-				"type": { // AS
+				"type": {
 					Description:      "Synthetics test type.",
 					Type:             schema.TypeString,
 					Required:         true,
@@ -77,10 +77,10 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"request_file":               syntheticsTestRequestFile(),
 				"assertion":                  syntheticsAPIAssertion(),
 				"browser_variable":           syntheticsBrowserVariable(),
-				"config_variable":            syntheticsConfigVariable(), // AS
-				"config_initial_application_arguments": { // AS added
+				"config_variable":            syntheticsConfigVariable(),
+				"config_initial_application_arguments": {
 					Description: "Initial application arguments for the mobile test.",
-					Type:        schema.TypeMap, // TODO is this correct? -> it should be now
+					Type:        schema.TypeMap,
 					Optional:    true,
 				},
 				"variables_from_script": {
@@ -107,18 +107,18 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 				"options_list":        syntheticsTestOptionsList(),
 				"mobile_options_list": syntheticsMobileTestOptionsList(),
-				"name": { // AS
+				"name": {
 					Description: "Name of Datadog synthetics test.",
 					Type:        schema.TypeString,
 					Required:    true,
 				},
-				"message": { // AS
+				"message": {
 					Description: "A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					Default:     "",
 				},
-				"tags": { // AS
+				"tags": {
 					Description: "A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).",
 					Type:        schema.TypeList,
 					Optional:    true,
@@ -127,20 +127,20 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 					},
 				},
-				"status": { // AS
+				"status": {
 					Description:      "Define whether you want to start (`live`) or pause (`paused`) a Synthetic test.",
 					Type:             schema.TypeString,
 					Required:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestPauseStatusFromValue),
 				},
-				"monitor_id": { // AS
+				"monitor_id": {
 					Description: "ID of the monitor associated with the Datadog synthetics test.",
 					Type:        schema.TypeInt,
 					Computed:    true,
 				},
 				"browser_step": syntheticsTestBrowserStep(),
 				"api_step":     syntheticsTestAPIStep(),
-				"mobile_step":  syntheticsTestMobileStep(), // AS added
+				"mobile_step":  syntheticsTestMobileStep(),
 				"set_cookie": {
 					Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
 					Type:        schema.TypeString,
@@ -833,25 +833,25 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 		Optional: true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
-				"min_failure_duration": { // AS
+				"min_failure_duration": {
 					Description: "Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.",
 					Type:        schema.TypeInt,
 					Optional:    true,
 				},
-				"retry": syntheticsTestOptionsRetry(), // AS
-				"tick_every": { // AS
+				"retry": syntheticsTestOptionsRetry(),
+				"tick_every": {
 					Description:  "How often the test should run (in seconds).",
 					Type:         schema.TypeInt,
 					Required:     true,
 					ValidateFunc: validation.IntBetween(300, 604800),
 				},
 				"scheduling": syntheticsTestAdvancedScheduling(),
-				"monitor_name": { // AS
+				"monitor_name": {
 					Description: "The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
-				"monitor_options": { // AS
+				"monitor_options": {
 					Type:     schema.TypeList,
 					MaxItems: 1,
 					Optional: true,
@@ -879,19 +879,19 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 						},
 					},
 				},
-				"monitor_priority": { // AS
+				"monitor_priority": {
 					Type:         schema.TypeInt,
 					Optional:     true,
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
-				"restricted_roles": { // AS
+				"restricted_roles": {
 					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
 					Type:        schema.TypeSet,
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
-				"bindings": { // AS added :| bruh this object is awful
-					Type:     schema.TypeList, // TODO which type should be here -> yes this type
+				"bindings": {
+					Type:     schema.TypeList,
 					Optional: true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
@@ -910,7 +910,7 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 						},
 					},
 				},
-				"ci": { // AS
+				"ci": {
 					Description: "CI/CD options for a Synthetic test.",
 					Type:        schema.TypeList,
 					MaxItems:    1,
@@ -926,12 +926,12 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 						},
 					},
 				},
-				"default_step_timeout": { // AS added
+				"default_step_timeout": {
 					Type:         schema.TypeInt,
 					Optional:     true,
 					ValidateFunc: validation.IntBetween(1, 300),
 				},
-				"device_ids": { // AS added
+				"device_ids": {
 					Type:     schema.TypeList,
 					Required: true,
 					Elem: &schema.Schema{
@@ -939,26 +939,26 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 					},
 				},
-				"no_screenshot": { // AS
+				"no_screenshot": {
 					Description: "Prevents saving screenshots of the steps.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
-				"verbosity": { // AS added
+				"verbosity": {
 					Type:         schema.TypeInt,
 					Optional:     true,
 					ValidateFunc: validation.IntBetween(0, 5),
 				},
-				"allow_application_crash": { // AS added
+				"allow_application_crash": {
 					Type:     schema.TypeBool,
 					Optional: true,
 				},
-				"disable_auto_accept_alert": { // AS added
+				"disable_auto_accept_alert": {
 					Type:     schema.TypeBool,
 					Optional: true,
 				},
-				"mobile_application": { // AS added
-					Type:     schema.TypeList, // TODO which type should be here -> should be now
+				"mobile_application": {
+					Type:     schema.TypeList,
 					Required: true,
 					MaxItems: 1,
 					Elem: &schema.Resource{
@@ -1459,7 +1459,7 @@ func syntheticsMobileStepParams() schema.Schema {
 					Optional:         true,
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
 				},
-				"element": { // TODO this one probably need to change
+				"element": {
 					Description: "Element to use for the step, JSON encoded string.",
 					Type:        schema.TypeList,
 					MaxItems:    1,
@@ -1467,7 +1467,7 @@ func syntheticsMobileStepParams() schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"multi_locator": {
-								Type:     schema.TypeMap, // TODO i think this shoudld be TypeMap but worth checking
+								Type:     schema.TypeMap,
 								Optional: true,
 							},
 							"context": {
@@ -1477,7 +1477,7 @@ func syntheticsMobileStepParams() schema.Schema {
 							"context_type": {
 								Type:             schema.TypeString,
 								Optional:         true,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsElementContextTypeFromValue), // TODO put the correct validator after api-spec is merged
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsElementContextTypeFromValue),
 							},
 							"user_locator": {
 								Type:     schema.TypeList,
@@ -1499,7 +1499,7 @@ func syntheticsMobileStepParams() schema.Schema {
 													"type": {
 														Type:             schema.TypeString,
 														Optional:         true,
-														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsElementUserLocatorValuesItemsTypeFromValue), // TODO put the correct validator after api-spec is merged
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsElementUserLocatorValuesItemsTypeFromValue),
 													},
 													"value": {
 														Type:     schema.TypeString,
@@ -1553,14 +1553,14 @@ func syntheticsMobileStepParams() schema.Schema {
 							"name": {
 								Description: "Name of the extracted variable.",
 								Type:        schema.TypeString,
-								Required:    true, // TODO need to double check this
+								Required:    true,
 							},
 							"example": {
 								Description: "Example of the extracted variable.",
 								Default:     "",
 								Type:        schema.TypeString,
-								// Required:    true,
-								Optional: true, // TODO the test don't like this being required for some reason
+								// Required:    true, // TODO SYNTH-17172 - fix for steps, the tests don't like this being required for some reason
+								Optional: true,
 							},
 						},
 					},
@@ -1599,7 +1599,7 @@ func syntheticsMobileStepParams() schema.Schema {
 				"direction": {
 					Type:             schema.TypeString,
 					Optional:         true,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsDirectionFromValue), // TODO put the correct validator after api-spec is merged
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsDirectionFromValue),
 				},
 				"max_scrolls": {
 					Type:     schema.TypeInt,
@@ -1677,7 +1677,7 @@ func syntheticsConfigVariable() *schema.Schema {
 	return &schema.Schema{
 		Description: "Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below.",
 		Type:        schema.TypeList,
-		Optional:    true, // TODO this is required in the schema for mobile check if it's the same for the rest
+		Optional:    true,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"example": {
@@ -1700,7 +1700,7 @@ func syntheticsConfigVariable() *schema.Schema {
 					Description:      "Type of test configuration variable.",
 					Type:             schema.TypeString,
 					Required:         true,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue), // AS
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsConfigVariableTypeFromValue),
 				},
 				"id": {
 					Description: "When type = `global`, ID of the global variable to use.",
@@ -1850,7 +1850,7 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 			fmt.Println("resourceDatadogSyntheticsTestCreate mobile retry")
 			getSyntheticsMobileTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetMobileTest(auth, createdSyntheticsTest.GetPublicId())
 			// fmt.Println("resourceDatadogSyntheticsTestCreate mobile retry done", getSyntheticsMobileTestResponse)
-			marshaledTest, err := json.Marshal(getSyntheticsMobileTestResponse) // TODO for some reason this is not returning the steps
+			marshaledTest, err := json.Marshal(getSyntheticsMobileTestResponse)
 			if err != nil {
 				fmt.Println("Error marshaling getSyntheticsMobileTestResponse:", err)
 			} else {
@@ -1903,7 +1903,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 
 	// get the generic test to detect if it's an api or browser test
 	syntheticsTest, httpresp, err = apiInstances.GetSyntheticsApiV1().GetTest(auth, d.Id())
-	marshaledTest, err := json.Marshal(syntheticsTest) // TODO for some reason this is not returning the steps
+	marshaledTest, err := json.Marshal(syntheticsTest)
 	if err != nil {
 		fmt.Println("Error marshaling getSyntheticsMobileTestResponse:", err)
 	} else {
@@ -1999,7 +1999,7 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 		fmt.Println("resourceDatadogSyntheticsTestUpdate mobile")
 		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
 		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateMobileTest(auth, d.Id(), *syntheticsTest)
-		marshaledTest, err := json.Marshal(syntheticsTest) // TODO for some reason this is not returning the steps
+		marshaledTest, err := json.Marshal(syntheticsTest)
 		if err != nil {
 			fmt.Println("Error marshaling getSyntheticsMobileTestResponse:", err)
 		} else {
@@ -2460,15 +2460,12 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 		fmt.Println("syntheticsTest:", string(marshaledTest))
 	}
 
+	// There two fields that you might think should be here but are not:
+	// - `device_ids` at the root of the request can be set by the user, but is not part of the response
+	// - `locations` can not be set by the user as mobile tests only run on one location, but it's part of the response
 	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
 		return diag.FromErr(err)
 	}
-	// if err := d.Set("device_ids", syntheticsTest.GetDeviceIds()); err != nil { // TODO for some reason this is not part of the response even though it's part of the request
-	// 	return diag.FromErr(err)
-	// }
-	// if err := d.Set("locations", syntheticsTest.GetLocations()); err != nil { // TODO for some reason this IS in the response O.o
-	// 	return diag.FromErr(err)
-	// }
 	if err := d.Set("name", syntheticsTest.GetName()); err != nil {
 		return diag.FromErr(err)
 	}
@@ -2539,227 +2536,8 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 	}
 
 	steps := syntheticsTest.GetSteps()
-	fmt.Println("steps", steps)
-	var localSteps []map[string]interface{}
+	localSteps := buildTerraformMobileTestSteps(steps)
 
-	for _, step := range steps {
-		fmt.Println("step", step)
-
-		// AllowFailure *bool `json:"allowFailure,omitempty"`
-		// HasNewStepElement *bool `json:"hasNewStepElement,omitempty"`
-		// IsCritical *bool `json:"isCritical,omitempty"`
-		// Name string `json:"name"`
-		// NoScreenshot *bool `json:"noScreenshot,omitempty"`
-		// Params SyntheticsMobileStepParams `json:"params"`
-		// PublicId *string `json:"publicId,omitempty"`
-		// Timeout *int64 `json:"timeout,omitempty"`
-		// Type SyntheticsMobileStepType `json:"type"`
-
-		localStep := make(map[string]interface{})
-		localStep["name"] = step.GetName()
-		localStep["type"] = string(step.GetType())
-
-		if allowFailure, ok := step.GetAllowFailureOk(); ok {
-			localStep["allow_failure"] = allowFailure
-		}
-		if isCritical, ok := step.GetIsCriticalOk(); ok {
-			localStep["is_critical"] = isCritical
-		}
-		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
-			localStep["no_screenshot"] = hasNoScreenshot
-		}
-		if HasNewStepElement, ok := step.GetHasNewStepElementOk(); ok {
-			localStep["has_new_step_element"] = HasNewStepElement
-		}
-		if publicId, ok := step.GetPublicIdOk(); ok {
-			localStep["public_id"] = publicId
-		}
-		if timeout, ok := step.GetTimeoutOk(); ok {
-			localStep["timeout"] = timeout
-		}
-
-		localParams := make(map[string]interface{})
-		params := step.GetParams() // TODO fix params
-
-		// Check *SyntheticsCheckType `json:"check,omitempty"`
-		// Delay *int64 `json:"delay,omitempty"`
-		// Direction *SyntheticsMobileStepParamsDirection `json:"direction,omitempty"`
-		// Element *SyntheticsMobileStepParamsElement `json:"element,omitempty"`
-		// Enabled *bool `json:"enabled,omitempty"`
-		// MaxScrolls *int64 `json:"maxScrolls,omitempty"`
-		// Positions []SyntheticsMobileStepParamsPositionsItems `json:"positions,omitempty"`
-		// SubtestPublicId *string `json:"subtestPublicId,omitempty"`
-		// Value *SyntheticsMobileStepParamsValue `json:"value,omitempty"`
-		// Variable *SyntheticsMobileStepParamsVariable `json:"variable,omitempty"`
-		// WithEnter *bool `json:"withEnter,omitempty"`
-		// X *float64 `json:"x,omitempty"`
-		// Y *float64 `json:"y,omitempty"`
-
-		if params.HasCheck() {
-			localParams["check"] = params.GetCheck()
-		}
-		if params.HasDelay() {
-			localParams["delay"] = params.GetDelay()
-		}
-		if params.HasDirection() {
-			localParams["direction"] = params.GetDirection()
-		}
-		if params.HasElement() { // TODO fix element maybe
-			// Context *string `json:"context,omitempty"`
-			// ContextType *SyntheticsMobileStepParamsElementContextType `json:"contextType,omitempty"`
-			// ElementDescription *string `json:"elementDescription,omitempty"`
-			// MultiLocator interface{} `json:"multiLocator,omitempty"`
-			// RelativePosition *SyntheticsMobileStepParamsElementRelativePosition `json:"relativePosition,omitempty"`
-			// TextContent *string `json:"textContent,omitempty"`
-			// UserLocator *SyntheticsMobileStepParamsElementUserLocator `json:"userLocator,omitempty"`
-			// ViewName *string `json:"viewName,omitempty"`
-			element := params.GetElement()
-			fmt.Println("1")
-			localElement := make([]map[string]interface{}, 1)
-			localElement[0] = make(map[string]interface{})
-			if element.HasContext() {
-				fmt.Println("element.GetContext()", element.GetContext())
-				localElement[0]["context"] = element.GetContext()
-			}
-			fmt.Println("2")
-			if element.HasContextType() {
-				fmt.Println("element.GetContextType()", element.GetContextType())
-				localElement[0]["context_type"] = element.GetContextType()
-			}
-			fmt.Println("3")
-			if element.HasElementDescription() {
-				fmt.Println("element.GetElementDescription()", element.GetElementDescription())
-				localElement[0]["element_description"] = element.GetElementDescription()
-			}
-			fmt.Println("4")
-			if element.HasMultiLocator() { // TODO this probably needs to go deeper
-				fmt.Println("element.GetMultiLocator()", element.GetMultiLocator())
-				localElement[0]["multi_locator"] = element.GetMultiLocator()
-			}
-			fmt.Println("5")
-			if element.HasRelativePosition() {
-				relativePosition := element.GetRelativePosition()
-				localRelativePosition := make([]map[string]interface{}, 1)
-				localRelativePosition[0] = make(map[string]interface{})
-				fmt.Println("6")
-				if relativePosition.HasX() {
-					fmt.Println("relativePosition.GetX()", relativePosition.GetX())
-					localRelativePosition[0]["x"] = relativePosition.GetX()
-				}
-				fmt.Println("7")
-				if relativePosition.HasY() {
-					fmt.Println("relativePosition.GetY()", relativePosition.GetY())
-					localRelativePosition[0]["y"] = relativePosition.GetY()
-				}
-				fmt.Println("8")
-				localElement[0]["relative_position"] = localRelativePosition
-			}
-			fmt.Println("9")
-			if element.HasTextContent() {
-				fmt.Println("element.GetTextContent()", element.GetTextContent())
-				localElement[0]["text_content"] = element.GetTextContent()
-			}
-			fmt.Println("10")
-			if element.HasUserLocator() {
-				userLocator := element.GetUserLocator()
-				localUserLocator := make([]map[string]interface{}, 1)
-				localUserLocator[0] = make(map[string]interface{})
-				fmt.Println("11")
-				if userLocator.HasFailTestOnCannotLocate() {
-					fmt.Println("userLocator.GetFailTestOnCannotLocate()", userLocator.GetFailTestOnCannotLocate())
-					localUserLocator[0]["fail_test_on_cannot_locate"] = userLocator.GetFailTestOnCannotLocate()
-				}
-				fmt.Println("12")
-				if userLocator.HasValues() {
-					values := userLocator.GetValues()
-					localValues := make([]map[string]interface{}, len(values))
-					for i, valuesItem := range values {
-						localValuesItem := make(map[string]interface{})
-						fmt.Println("13")
-						if valuesItem.HasValue() {
-							fmt.Println("valuesItem.GetValue()", valuesItem.GetValue())
-							localValuesItem["value"] = valuesItem.GetValue()
-						}
-						fmt.Println("14")
-						if valuesItem.HasType() {
-							fmt.Println("valuesItem.GetType()", valuesItem.GetType())
-							localValuesItem["type"] = valuesItem.GetType()
-						}
-						localValues[i] = localValuesItem
-					}
-
-					localUserLocator[0]["values"] = localValues
-				}
-				localElement[0]["user_locator"] = localUserLocator
-			}
-			fmt.Println("15")
-			if element.HasViewName() {
-				fmt.Println("element.GetViewName()", element.GetViewName())
-				localElement[0]["view_name"] = element.GetViewName()
-			}
-			localParams["element"] = localElement
-		}
-		fmt.Println("16")
-		if params.HasEnabled() {
-			fmt.Println("params.GetEnabled()", params.GetEnabled())
-			localParams["enabled"] = params.GetEnabled()
-		}
-		fmt.Println("17")
-		if params.HasMaxScrolls() {
-			fmt.Println("params.GetMaxScrolls()", params.GetMaxScrolls())
-			localParams["maxScrolls"] = params.GetMaxScrolls()
-		}
-		fmt.Println("18")
-		if params.HasPositions() { // TODO fix positions maybe -> i think this should be good
-			positions := params.GetPositions()
-			for i, positionsItem := range positions {
-				localPositionsItem := make(map[string]interface{})
-				if positionsItem.HasX() {
-					fmt.Println("positionsItem.GetX()", positionsItem.GetX())
-					localPositionsItem["x"] = positionsItem.GetX()
-				}
-				fmt.Println("1")
-				if positionsItem.HasY() {
-					fmt.Println("positionsItem.GetY()", positionsItem.GetY())
-					localPositionsItem["y"] = positionsItem.GetY()
-				}
-				positions[i] = positionsItem
-			}
-			localParams["positions"] = positions
-		}
-		fmt.Println("19")
-		if params.HasSubtestPublicId() {
-			fmt.Println("params.GetSubtestPublicId()", params.GetSubtestPublicId())
-			localParams["subtestPublicId"] = params.GetSubtestPublicId()
-		}
-		if params.HasValue() {
-			fmt.Println("params.GetValue()", params.GetValue())
-			value := params.GetValue()
-			actualValue := value.GetActualInstance()
-			localParams["value"] = actualValue
-		}
-		if params.HasVariable() {
-			fmt.Println("params.GetVariable()", params.GetVariable())
-			localParams["variable"] = params.GetVariable()
-		}
-		if params.HasWithEnter() {
-			fmt.Println("params.GetWithEnter()", params.GetWithEnter())
-			localParams["withEnter"] = params.GetWithEnter()
-		}
-		if params.HasX() {
-			fmt.Println("params.GetX()", params.GetX())
-			localParams["x"] = params.GetX()
-		}
-		if params.HasY() {
-			fmt.Println("params.GetY()", params.GetY())
-			localParams["y"] = params.GetY()
-		}
-
-		localStep["params"] = []interface{}{localParams}
-
-		fmt.Println("localStep", localStep)
-		localSteps = append(localSteps, localStep)
-	}
 	fmt.Println("localSteps len", len(localSteps))
 	fmt.Println("localSteps", localSteps)
 
@@ -3262,7 +3040,7 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 
 	// fmt.Println("buildDatadogSyntheticsMobileTest 2")
 
-	if attr, ok := d.GetOk("config_initial_application_arguments"); ok { // TODO figure out what initialApplicationArguments exactly should be -> think this should be good
+	if attr, ok := d.GetOk("config_initial_application_arguments"); ok {
 		fmt.Println("config_initial_application_arguments", attr)
 		initialApplicationArguments := attr.(map[string]interface{})
 		if len(initialApplicationArguments) > 0 {
@@ -3276,7 +3054,7 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 
 	syntheticsTest.SetConfig(config)
 
-	// if attr, ok := d.GetOk("device_ids"); ok {
+	// if attr, ok := d.GetOk("device_ids"); ok { // TODO we don't want to build this because the response doesn't contain it and if you build it the local state goes all whack
 	// 	fmt.Println("device_ids", attr)
 
 	// 	deviceIds := make([]string, 0)
@@ -3286,18 +3064,6 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 	// 	}
 	// 	fmt.Println("deviceIds", deviceIds)
 	// 	syntheticsTest.SetDeviceIds(deviceIds)
-	// }
-
-	// if attr, ok := d.GetOk("locations"); ok { // TODO locations waaaatt this is not in the dogweb schema so i haven't put it in api-spec but it somehow manages to be part of the response O.o
-	// 	fmt.Println("locations", attr)
-
-	// 	locations := make([]string, 0)
-	// 	for _, s := range attr.([]interface{}) {
-	// 		fmt.Println("device_id", s)
-	// 		locations = append(locations, s.(string))
-	// 	}
-	// 	fmt.Println("locations", locations)
-	// 	syntheticsTest.SetLocations(locations)
 	// }
 
 	options := buildDatadogMobileTestOptions(d)
@@ -3341,7 +3107,7 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 				step.SetType(datadogV1.SyntheticsMobileStepType(stepMap["type"].(string)))
 			}
 
-			params := datadogV1.SyntheticsMobileStepParams{} // TODO fix params -> should be good now i think
+			params := datadogV1.SyntheticsMobileStepParams{}
 			stepParams := stepMap["params"].([]interface{})[0]
 			fmt.Println("stepParams", stepParams)
 			// fmt.Println("stepParams")
@@ -3943,34 +3709,6 @@ func buildDatadogConfigVariables(requestConfigVariables []interface{}) []datadog
 		configVariables = append(configVariables, variable)
 	}
 
-	// if attr, ok := d.GetOk("config_variable"); ok && attr != nil { // TODO check what was different
-	// 		fmt.Println("config_variable", attr)
-	// 		for _, variable := range attr.([]interface{}) {
-	// 			configVariableMap := variable.(map[string]interface{})
-	// 			if v, ok := configVariableMap["type"]; ok {
-	// 				variableType := datadogV1.SyntheticsConfigVariableType(v.(string))
-	// 				if v, ok := configVariableMap["name"]; ok {
-	// 					variableName := v.(string)
-	// 					newVariable := datadogV1.NewSyntheticsConfigVariable(variableName, variableType)
-	// 					if v, ok := configVariableMap["pattern"]; ok {
-	// 						newVariable.SetPattern(v.(string))
-	// 					}
-	// 					if v, ok := configVariableMap["example"]; ok {
-	// 						newVariable.SetExample(v.(string))
-	// 					}
-	// 					if v, ok := configVariableMap["id"]; ok {
-	// 						newVariable.SetId(v.(string))
-	// 					}
-	// 					if v, ok := configVariableMap["secure"]; ok {
-	// 						newVariable.SetSecure(v.(bool))
-	// 					}
-
-	// 					config.SetVariables(append(config.GetVariables(), *newVariable))
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-
 	return configVariables
 }
 
@@ -4309,7 +4047,7 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 		// fmt.Println("HERE", attr, ok)
 
 		// Verbosity is also part of the options but it can not be set by users so we're not setting it here
-		if attr, ok := d.GetOk("mobile_options_list.0.min_failure_duration"); ok { // TODO the value here is 0 so it doesn't pick it up
+		if attr, ok := d.GetOk("mobile_options_list.0.min_failure_duration"); ok {
 			fmt.Println("min_failure_duration", attr)
 			options.SetMinFailureDuration(int64(attr.(int)))
 		}
@@ -4397,7 +4135,7 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 				optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
 			}
 			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok {
-				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string))) // TODO from some reason it wants this to be a string but the function takes the type so ???
+				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
 			}
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}
@@ -4411,7 +4149,7 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 			}
 			options.SetRestrictedRoles(roles)
 		}
-		// TODO check this again -> think it's good now
+
 		if bindings, ok := d.GetOk("mobile_options_list.0.bindings"); ok {
 			fmt.Println("bindings", bindings)
 			optionsBindings := []datadogV1.SyntheticsTestRestrictionPolicyBinding{}
@@ -4475,7 +4213,7 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 				optionsMobileApplication.SetReferenceId(s.(string))
 			}
 			if s, ok := mobileApplication.(map[string]interface{})["reference_type"]; ok {
-				optionsMobileApplication.SetReferenceType(datadogV1.SyntheticsMobileTestsMobileApplicationReferenceType(s.(string))) // TODO from some reason it wants this to be a string but the function takes the type so ???
+				optionsMobileApplication.SetReferenceType(datadogV1.SyntheticsMobileTestsMobileApplicationReferenceType(s.(string)))
 			}
 			options.SetMobileApplication(optionsMobileApplication)
 		}
@@ -4677,7 +4415,7 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 
 		if actualMonitorOptions.HasRenotifyInterval() {
 			optionsListMonitorOptions["renotify_interval"] = actualMonitorOptions.GetRenotifyInterval()
-			shouldUpdate = true // TODO should i keep this? -> yes
+			shouldUpdate = true
 		}
 		if actualMonitorOptions.HasEscalationMessage() {
 			optionsListMonitorOptions["escalation_message"] = actualMonitorOptions.GetEscalationMessage()
@@ -4694,7 +4432,7 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 		}
 	}
 
-	if actualOptions.HasBindings() { // TODO check this again (i hate this object :|) -> think it's good now
+	if actualOptions.HasBindings() {
 		actualBindings := actualOptions.GetBindings()
 		optionsListBindings := make([]map[string]interface{}, 0, len(actualBindings))
 		for _, binding := range actualBindings {
@@ -4727,16 +4465,16 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 	}
 
 	if _, ok := actualOptions.GetDeviceIdsOk(); ok {
-		actualDevice_ids := actualOptions.GetDeviceIds()
-		fmt.Println("device_ids bruh", actualDevice_ids)
-		optionsListDevice_ids := make([]string, 0, len(actualDevice_ids))
-		for _, device_id := range actualDevice_ids {
+		actualDeviceIds := actualOptions.GetDeviceIds()
+		fmt.Println("device_ids bruh", actualDeviceIds)
+		optionsListDeviceIds := make([]string, 0, len(actualDeviceIds))
+		for _, device_id := range actualDeviceIds {
 			fmt.Println("device_id", device_id)
 			fmt.Printf("device_id: %T\n", device_id)
 			fmt.Println("device_id", string(device_id))
-			optionsListDevice_ids = append(optionsListDevice_ids, string(device_id))
+			optionsListDeviceIds = append(optionsListDeviceIds, string(device_id))
 		}
-		localOptionsList["device_ids"] = optionsListDevice_ids
+		localOptionsList["device_ids"] = optionsListDeviceIds
 		fmt.Println("localOptionsList[\"device_ids\"]", localOptionsList["device_ids"])
 	}
 
@@ -4763,6 +4501,205 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 	fmt.Println("\n\nlocalOptionsLists", localOptionsLists)
 
 	return localOptionsLists
+}
+
+func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map[string]interface{} { // TODO SYNTH-17172 make sure everything is working in this function
+	fmt.Println("steps", steps)
+	var localSteps []map[string]interface{}
+
+	for _, step := range steps {
+		fmt.Println("step", step)
+
+		localStep := make(map[string]interface{})
+
+		// These two and params are required fields
+		localStep["name"] = step.GetName()
+		localStep["type"] = string(step.GetType())
+
+		if allowFailure, ok := step.GetAllowFailureOk(); ok {
+			localStep["allow_failure"] = allowFailure
+		}
+		if isCritical, ok := step.GetIsCriticalOk(); ok {
+			localStep["is_critical"] = isCritical
+		}
+		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
+			localStep["no_screenshot"] = hasNoScreenshot
+		}
+		if HasNewStepElement, ok := step.GetHasNewStepElementOk(); ok {
+			localStep["has_new_step_element"] = HasNewStepElement
+		}
+		if publicId, ok := step.GetPublicIdOk(); ok {
+			localStep["public_id"] = publicId
+		}
+		if timeout, ok := step.GetTimeoutOk(); ok {
+			localStep["timeout"] = timeout
+		}
+
+		localParams := make(map[string]interface{})
+		params := step.GetParams()
+
+		if params.HasCheck() {
+			localParams["check"] = params.GetCheck()
+		}
+		if params.HasDelay() {
+			localParams["delay"] = params.GetDelay()
+		}
+		if params.HasDirection() {
+			localParams["direction"] = params.GetDirection()
+		}
+		if params.HasElement() {
+			element := params.GetElement()
+			fmt.Println("1")
+			localElement := make([]map[string]interface{}, 1)
+			localElement[0] = make(map[string]interface{})
+			if element.HasContext() {
+				fmt.Println("element.GetContext()", element.GetContext())
+				localElement[0]["context"] = element.GetContext()
+			}
+			fmt.Println("2")
+			if element.HasContextType() {
+				fmt.Println("element.GetContextType()", element.GetContextType())
+				localElement[0]["context_type"] = element.GetContextType()
+			}
+			fmt.Println("3")
+			if element.HasElementDescription() {
+				fmt.Println("element.GetElementDescription()", element.GetElementDescription())
+				localElement[0]["element_description"] = element.GetElementDescription()
+			}
+			fmt.Println("4")
+			if element.HasMultiLocator() {
+				fmt.Println("element.GetMultiLocator()", element.GetMultiLocator())
+				localElement[0]["multi_locator"] = element.GetMultiLocator()
+			}
+			fmt.Println("5")
+			if element.HasRelativePosition() {
+				relativePosition := element.GetRelativePosition()
+				localRelativePosition := make([]map[string]interface{}, 1)
+				localRelativePosition[0] = make(map[string]interface{})
+				fmt.Println("6")
+				if relativePosition.HasX() {
+					fmt.Println("relativePosition.GetX()", relativePosition.GetX())
+					localRelativePosition[0]["x"] = relativePosition.GetX()
+				}
+				fmt.Println("7")
+				if relativePosition.HasY() {
+					fmt.Println("relativePosition.GetY()", relativePosition.GetY())
+					localRelativePosition[0]["y"] = relativePosition.GetY()
+				}
+				fmt.Println("8")
+				localElement[0]["relative_position"] = localRelativePosition
+			}
+			fmt.Println("9")
+			if element.HasTextContent() {
+				fmt.Println("element.GetTextContent()", element.GetTextContent())
+				localElement[0]["text_content"] = element.GetTextContent()
+			}
+			fmt.Println("10")
+			if element.HasUserLocator() {
+				userLocator := element.GetUserLocator()
+				localUserLocator := make([]map[string]interface{}, 1)
+				localUserLocator[0] = make(map[string]interface{})
+				fmt.Println("11")
+				if userLocator.HasFailTestOnCannotLocate() {
+					fmt.Println("userLocator.GetFailTestOnCannotLocate()", userLocator.GetFailTestOnCannotLocate())
+					localUserLocator[0]["fail_test_on_cannot_locate"] = userLocator.GetFailTestOnCannotLocate()
+				}
+				fmt.Println("12")
+				if userLocator.HasValues() {
+					values := userLocator.GetValues()
+					localValues := make([]map[string]interface{}, len(values))
+					for i, valuesItem := range values {
+						localValuesItem := make(map[string]interface{})
+						fmt.Println("13")
+						if valuesItem.HasValue() {
+							fmt.Println("valuesItem.GetValue()", valuesItem.GetValue())
+							localValuesItem["value"] = valuesItem.GetValue()
+						}
+						fmt.Println("14")
+						if valuesItem.HasType() {
+							fmt.Println("valuesItem.GetType()", valuesItem.GetType())
+							localValuesItem["type"] = valuesItem.GetType()
+						}
+						localValues[i] = localValuesItem
+					}
+
+					localUserLocator[0]["values"] = localValues
+				}
+				localElement[0]["user_locator"] = localUserLocator
+			}
+			fmt.Println("15")
+			if element.HasViewName() {
+				fmt.Println("element.GetViewName()", element.GetViewName())
+				localElement[0]["view_name"] = element.GetViewName()
+			}
+			localParams["element"] = localElement
+		}
+		fmt.Println("16")
+		if params.HasEnabled() {
+			fmt.Println("params.GetEnabled()", params.GetEnabled())
+			localParams["enabled"] = params.GetEnabled()
+		}
+		fmt.Println("17")
+		if params.HasMaxScrolls() {
+			fmt.Println("params.GetMaxScrolls()", params.GetMaxScrolls())
+			localParams["maxScrolls"] = params.GetMaxScrolls()
+		}
+		fmt.Println("18")
+		if params.HasPositions() {
+			positions := params.GetPositions()
+			for i, positionsItem := range positions {
+				localPositionsItem := make(map[string]interface{})
+				if positionsItem.HasX() {
+					fmt.Println("positionsItem.GetX()", positionsItem.GetX())
+					localPositionsItem["x"] = positionsItem.GetX()
+				}
+				fmt.Println("1")
+				if positionsItem.HasY() {
+					fmt.Println("positionsItem.GetY()", positionsItem.GetY())
+					localPositionsItem["y"] = positionsItem.GetY()
+				}
+				positions[i] = datadogV1.SyntheticsMobileStepParamsPositionsItems{
+					X: localPositionsItem["x"].(*float64),
+					Y: localPositionsItem["y"].(*float64),
+				}
+			}
+			localParams["positions"] = positions
+		}
+		fmt.Println("19")
+		if params.HasSubtestPublicId() {
+			fmt.Println("params.GetSubtestPublicId()", params.GetSubtestPublicId())
+			localParams["subtestPublicId"] = params.GetSubtestPublicId()
+		}
+		if params.HasValue() {
+			fmt.Println("params.GetValue()", params.GetValue())
+			value := params.GetValue()
+			actualValue := value.GetActualInstance()
+			localParams["value"] = actualValue
+		}
+		if params.HasVariable() {
+			fmt.Println("params.GetVariable()", params.GetVariable())
+			localParams["variable"] = params.GetVariable()
+		}
+		if params.HasWithEnter() {
+			fmt.Println("params.GetWithEnter()", params.GetWithEnter())
+			localParams["withEnter"] = params.GetWithEnter()
+		}
+		if params.HasX() {
+			fmt.Println("params.GetX()", params.GetX())
+			localParams["x"] = params.GetX()
+		}
+		if params.HasY() {
+			fmt.Println("params.GetY()", params.GetY())
+			localParams["y"] = params.GetY()
+		}
+
+		localStep["params"] = []interface{}{localParams}
+
+		fmt.Println("localStep", localStep)
+		localSteps = append(localSteps, localStep)
+	}
+
+	return localSteps
 }
 
 func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestClientCertificates []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
@@ -5184,7 +5121,7 @@ func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType
 			stepParamsValue := stepParams["value"].(string)
 			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
 		}
-		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{}) // TODO check if this is correct -> should be now
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
 		if len(stepParam) != 0 {
 			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
 		}
@@ -5269,11 +5206,11 @@ func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PRESSBACK:
 		fmt.Println("PRESSBACK")
-		return params // TODO check if this is correct
+		return params
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_RESTARTAPPLICATION:
 		fmt.Println("RESTARTAPPLICATION")
-		return params // TODO check if this is correct
+		return params
 
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ROTATE:
 		fmt.Println("ROTATE")
@@ -5354,7 +5291,7 @@ func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType
 	case datadogV1.SYNTHETICSMOBILESTEPTYPE_WAIT:
 		if stepParams["value"] != "" {
 			stepParamsValue := stepParams["value"].(int64)
-			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueNumberAsSyntheticsMobileStepParamsValue(&stepParamsValue)) // TODO set to int after PR merge -> think it should be fine now
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueNumberAsSyntheticsMobileStepParamsValue(&stepParamsValue))
 		}
 		return params
 	}
