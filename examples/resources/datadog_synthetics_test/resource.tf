@@ -1,7 +1,7 @@
 # Example Usage (Synthetics API test)
 # Create a new Datadog Synthetics API/HTTP test on https://www.example.org
 resource "datadog_synthetics_test" "test_uptime" {
-  name      = "An Uptime test on example"
+  name      = "An Uptime test on example.org"
   type      = "api"
   subtype   = "http"
   status    = "live"
