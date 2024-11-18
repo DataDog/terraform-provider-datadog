@@ -3094,7 +3094,7 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_definition.0.certificate_domains.0", "https://datadoghq.com"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "request_headers.%", "2"), // TODO ummm what why is it %
+				"datadog_synthetics_test.bar", "request_headers.%", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_headers.Accept", "application/json"),
 			resource.TestCheckResourceAttr(
@@ -5250,7 +5250,7 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.principals.#", "2"),
-			// resource.TestCheckResourceAttr( TODO uncomment these two
+			// resource.TestCheckResourceAttr( // TODO create a new principal specifically to be used in tests
 			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.principals.0", "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091"),
 			// resource.TestCheckResourceAttr(
 			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.principals.1", "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"),
@@ -5459,6 +5459,8 @@ resource "datadog_synthetics_test" "bar" {
 			principals = [
 				"org:4dee724d-00cc-11ea-a77b-570c9d03c6c5",
 				"role:667cbd82-c7d1-11ec-aad8-da7ad0900002"
+				// "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091",
+				// "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"
 			]
 			relation = "editor"
 		}
