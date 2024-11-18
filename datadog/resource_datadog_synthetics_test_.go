@@ -140,7 +140,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 				"browser_step": syntheticsTestBrowserStep(),
 				"api_step":     syntheticsTestAPIStep(),
-				"mobile_step":  syntheticsTestMobileStep(),
+				// TODO SYNTH-17172 - add steps here
 				"set_cookie": {
 					Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
 					Type:        schema.TypeString,
@@ -1385,61 +1385,6 @@ func syntheticsBrowserStepParams() schema.Schema {
 	}
 }
 
-func syntheticsTestMobileStep() *schema.Schema {
-	paramsSchema := syntheticsMobileStepParams()
-	return &schema.Schema{
-		Description: "Steps for mobile tests",
-		Type:        schema.TypeList,
-		Optional:    true,
-		Elem: &schema.Resource{
-			Schema: map[string]*schema.Schema{
-				"allow_failure": {
-					Description: "A boolean set to allow this step to fail.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
-				"has_new_step_element": {
-					Description: "A boolean set to determine if the step has a new step element.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
-				"is_critical": {
-					Description: "A boolean to use in addition to `allowFailure` to determine if the test should be marked as failed when the step fails.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
-				"name": {
-					Description: "The name of the step.",
-					Type:        schema.TypeString,
-					Required:    true,
-				},
-				"no_screenshot": {
-					Description: "A boolean set to not take a screenshot for the step.",
-					Type:        schema.TypeBool,
-					Optional:    true,
-				},
-				"params": &paramsSchema,
-				"public_id": {
-					Description: "The public ID of the step.",
-					Type:        schema.TypeString,
-					Optional:    true,
-				},
-				"timeout": {
-					Description: "The time before declaring a step failed.",
-					Type:        schema.TypeInt,
-					Optional:    true,
-				},
-				"type": {
-					Description:      "The type of the step.",
-					Type:             schema.TypeString,
-					Required:         true,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepTypeFromValue),
-				},
-			},
-		},
-	}
-}
-
 func syntheticsMobileStepParams() schema.Schema {
 	return schema.Schema{
 		Description: "Parameters for the step.",
@@ -2473,12 +2418,7 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 		return diag.FromErr(err)
 	}
 
-	steps := syntheticsTest.GetSteps()
-	localSteps := buildTerraformMobileTestSteps(steps)
-
-	if err := d.Set("mobile_step", localSteps); err != nil {
-		return diag.FromErr(err)
-	}
+	// TODO SYNTH-17172 - add steps here
 
 	return nil
 }
@@ -2962,40 +2902,7 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 	options := buildDatadogMobileTestOptions(d)
 	syntheticsTest.SetOptions(*options)
 
-	if attr, ok := d.GetOk("mobile_step"); ok {
-		steps := []datadogV1.SyntheticsMobileStep{}
-
-		for _, s := range attr.([]interface{}) {
-			step := datadogV1.SyntheticsMobileStep{}
-			stepMap := s.(map[string]interface{})
-
-			step.SetAllowFailure(stepMap["allow_failure"].(bool))
-			step.SetHasNewStepElement(stepMap["has_new_step_element"].(bool))
-			step.SetIsCritical(stepMap["is_critical"].(bool))
-			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
-
-			if stepMap["name"] != "" {
-				step.SetName(stepMap["name"].(string))
-			}
-			if stepMap["public_id"] != "" {
-				step.SetPublicId(stepMap["public_id"].(string))
-			}
-			if stepMap["timeout"] != 0 {
-				step.SetTimeout(int64(stepMap["timeout"].(int)))
-			}
-			if stepMap["type"] != "" {
-				step.SetType(datadogV1.SyntheticsMobileStepType(stepMap["type"].(string)))
-			}
-
-			params := datadogV1.SyntheticsMobileStepParams{}
-			stepParams := stepMap["params"].([]interface{})[0]
-			params = buildDatadogParamsForMobileStep(step.GetType(), stepParams.(map[string]interface{}))
-			step.SetParams(params)
-			steps = append(steps, step)
-		}
-
-		syntheticsTest.SetSteps(steps)
-	}
+	// TODO SYNTH-17172 - add steps here
 	if attr, ok := d.GetOk("tags"); ok {
 		tags := make([]string, 0)
 		for _, s := range attr.([]interface{}) {
@@ -4315,161 +4222,6 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 	localOptionsLists[0] = localOptionsList
 
 	return localOptionsLists
-}
-
-func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map[string]interface{} { // TODO SYNTH-17172 make sure everything is working in this function
-	var localSteps []map[string]interface{}
-
-	for _, step := range steps {
-
-		localStep := make(map[string]interface{})
-
-		// These two and params are required fields
-		localStep["name"] = step.GetName()
-		localStep["type"] = string(step.GetType())
-
-		if allowFailure, ok := step.GetAllowFailureOk(); ok {
-			localStep["allow_failure"] = allowFailure
-		}
-		if isCritical, ok := step.GetIsCriticalOk(); ok {
-			localStep["is_critical"] = isCritical
-		}
-		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
-			localStep["no_screenshot"] = hasNoScreenshot
-		}
-		if HasNewStepElement, ok := step.GetHasNewStepElementOk(); ok {
-			localStep["has_new_step_element"] = HasNewStepElement
-		}
-		if publicId, ok := step.GetPublicIdOk(); ok {
-			localStep["public_id"] = publicId
-		}
-		if timeout, ok := step.GetTimeoutOk(); ok {
-			localStep["timeout"] = timeout
-		}
-
-		localParams := make(map[string]interface{})
-		params := step.GetParams()
-
-		if params.HasCheck() {
-			localParams["check"] = params.GetCheck()
-		}
-		if params.HasDelay() {
-			localParams["delay"] = params.GetDelay()
-		}
-		if params.HasDirection() {
-			localParams["direction"] = params.GetDirection()
-		}
-		if params.HasElement() {
-			element := params.GetElement()
-			localElement := make([]map[string]interface{}, 1)
-			localElement[0] = make(map[string]interface{})
-			if element.HasContext() {
-				localElement[0]["context"] = element.GetContext()
-			}
-			if element.HasContextType() {
-				localElement[0]["context_type"] = element.GetContextType()
-			}
-			if element.HasElementDescription() {
-				localElement[0]["element_description"] = element.GetElementDescription()
-			}
-			if element.HasMultiLocator() {
-				localElement[0]["multi_locator"] = element.GetMultiLocator()
-			}
-			if element.HasRelativePosition() {
-				relativePosition := element.GetRelativePosition()
-				localRelativePosition := make([]map[string]interface{}, 1)
-				localRelativePosition[0] = make(map[string]interface{})
-				if relativePosition.HasX() {
-					localRelativePosition[0]["x"] = relativePosition.GetX()
-				}
-				if relativePosition.HasY() {
-					localRelativePosition[0]["y"] = relativePosition.GetY()
-				}
-				localElement[0]["relative_position"] = localRelativePosition
-			}
-			if element.HasTextContent() {
-				localElement[0]["text_content"] = element.GetTextContent()
-			}
-			if element.HasUserLocator() {
-				userLocator := element.GetUserLocator()
-				localUserLocator := make([]map[string]interface{}, 1)
-				localUserLocator[0] = make(map[string]interface{})
-				if userLocator.HasFailTestOnCannotLocate() {
-					localUserLocator[0]["fail_test_on_cannot_locate"] = userLocator.GetFailTestOnCannotLocate()
-				}
-				if userLocator.HasValues() {
-					values := userLocator.GetValues()
-					localValues := make([]map[string]interface{}, len(values))
-					for i, valuesItem := range values {
-						localValuesItem := make(map[string]interface{})
-						if valuesItem.HasValue() {
-							localValuesItem["value"] = valuesItem.GetValue()
-						}
-						if valuesItem.HasType() {
-							localValuesItem["type"] = valuesItem.GetType()
-						}
-						localValues[i] = localValuesItem
-					}
-
-					localUserLocator[0]["values"] = localValues
-				}
-				localElement[0]["user_locator"] = localUserLocator
-			}
-			if element.HasViewName() {
-				localElement[0]["view_name"] = element.GetViewName()
-			}
-			localParams["element"] = localElement
-		}
-		if params.HasEnabled() {
-			localParams["enabled"] = params.GetEnabled()
-		}
-		if params.HasMaxScrolls() {
-			localParams["maxScrolls"] = params.GetMaxScrolls()
-		}
-		if params.HasPositions() {
-			positions := params.GetPositions()
-			for i, positionsItem := range positions {
-				localPositionsItem := make(map[string]interface{})
-				if positionsItem.HasX() {
-					localPositionsItem["x"] = positionsItem.GetX()
-				}
-				if positionsItem.HasY() {
-					localPositionsItem["y"] = positionsItem.GetY()
-				}
-				positions[i] = datadogV1.SyntheticsMobileStepParamsPositionsItems{
-					X: localPositionsItem["x"].(*float64),
-					Y: localPositionsItem["y"].(*float64),
-				}
-			}
-			localParams["positions"] = positions
-		}
-		if params.HasSubtestPublicId() {
-			localParams["subtestPublicId"] = params.GetSubtestPublicId()
-		}
-		if params.HasValue() {
-			value := params.GetValue()
-			actualValue := value.GetActualInstance()
-			localParams["value"] = actualValue
-		}
-		if params.HasVariable() {
-			localParams["variable"] = params.GetVariable()
-		}
-		if params.HasWithEnter() {
-			localParams["withEnter"] = params.GetWithEnter()
-		}
-		if params.HasX() {
-			localParams["x"] = params.GetX()
-		}
-		if params.HasY() {
-			localParams["y"] = params.GetY()
-		}
-
-		localStep["params"] = []interface{}{localParams}
-
-		localSteps = append(localSteps, localStep)
-	}
-
-	return localSteps
 }
 
 func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestClientCertificates []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
