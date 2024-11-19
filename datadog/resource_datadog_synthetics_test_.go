@@ -285,7 +285,7 @@ func syntheticsTestRequestHeaders() *schema.Schema {
 		Description:  "Header name and value map.",
 		Type:         schema.TypeMap,
 		Optional:     true,
-		ValidateFunc: validators.ValidateHttpRequestHeader, // TODO we might need one of these for initialApplicationArguments
+		ValidateFunc: validators.ValidateHttpRequestHeader,
 	}
 }
 
@@ -2858,12 +2858,14 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 
 func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.SyntheticsMobileTest {
 	syntheticsTest := datadogV1.NewSyntheticsMobileTestWithDefaults()
+
+	// There three fields that you might think should be here but are not:
+	// - `device_ids` at the root of the request can be set by the user, but is not part of the response, so we're not going to set it as not to mess with the local state of Terraform
+	// - `locations` can not be set by the user as mobile tests only run on one location, but it's part of the response
+	// - `monitor_id` is not set by the user, but returned by the response
 	if attr, ok := d.GetOk("message"); ok {
 		syntheticsTest.SetMessage(attr.(string))
 	}
-	// if attr, ok := d.GetOk("monitor_id"); ok { // TODO uncomment and find out why it's unexpected
-	// 	syntheticsTest.SetMonitorId(int64(attr.(int)))
-	// }
 	if attr, ok := d.GetOk("name"); ok {
 		syntheticsTest.SetName(attr.(string))
 	}
@@ -2891,18 +2893,11 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 
 	syntheticsTest.SetConfig(config)
 
-	// if attr, ok := d.GetOk("device_ids"); ok { // TODO we don't want to build this because the response doesn't contain it and if you build it the local state goes all whack
-	// 	deviceIds := make([]string, 0)
-	// 	for _, s := range attr.([]interface{}) {
-	// 		deviceIds = append(deviceIds, s.(string))
-	// 	}
-	// 	syntheticsTest.SetDeviceIds(deviceIds)
-	// }
-
 	options := buildDatadogMobileTestOptions(d)
 	syntheticsTest.SetOptions(*options)
 
 	// TODO SYNTH-17172 - add steps here
+
 	if attr, ok := d.GetOk("tags"); ok {
 		tags := make([]string, 0)
 		for _, s := range attr.([]interface{}) {

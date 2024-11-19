@@ -5160,7 +5160,6 @@ resource "datadog_synthetics_test" "file_upload" {
 
 func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
-	fmt.Println("here")
 
 	return resource.TestStep{
 		Config: createSyntheticsMobileTestConfig(testName),
@@ -5184,14 +5183,6 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "config_initial_application_arguments.test_process_argument", "test1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "config_initial_application_arguments.test_process_argument_too", "test2"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "device_ids.#", "1"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "device_ids.0", "synthetics:mobile:device:apple_iphone_14_plus_ios_16"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "locations.#", "1"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "locations.0", "aws:eu-central-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.%", "17"),
 			resource.TestCheckResourceAttr(
@@ -5247,16 +5238,6 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.1", "role2"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.principals.#", "2"),
-			// resource.TestCheckResourceAttr( // TODO create a new principal specifically to be used in tests
-			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.principals.0", "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.principals.1", "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.relation", "editor"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.0.execution_rule", "blocking"),
@@ -5276,10 +5257,10 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "mobile_options_list.0.disable_auto_accept_alert", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.%", "3"),
-			// resource.TestCheckResourceAttr( TODO uncomment these two
-			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.application_id", "5f055d15-0000-aaaa-zzzz-6739f83346aa"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_id", "434d4719-0000-aaaa-zzzz-31082b544718"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.application_id", "ab0e0aed-536d-411a-9a99-5428c27d8f8e"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_id", "6115922a-5f5d-455e-bc7e-7955a57f3815"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_type", "version"),
 			resource.TestCheckResourceAttr(
@@ -5345,15 +5326,6 @@ resource "datadog_synthetics_test" "bar" {
 		}
 		monitor_priority = 5
 		restricted_roles = ["role1", "role2"]
-		bindings {
-			principals = [
-				"org:4dee724d-00cc-11ea-a77b-570c9d03c6c5",
-				"role:667cbd82-c7d1-11ec-aad8-da7ad0900002"
-				// "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091",
-				// "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"
-			]
-			relation = "editor"
-		}
 		ci {
 			execution_rule = "blocking"
 		}
@@ -5383,12 +5355,8 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "type", "mobile"),
-			// resource.TestCheckResourceAttr( TODO for some reason this does not come back from the update endpoint
-			// 	"datadog_synthetics_test.bar", "config_variable.0.example", "321"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "config_variable.0.name", "NEW_VARIABLE_NAME"),
-			// resource.TestCheckResourceAttr( TODO also doesn't come back from the update endpoint
-			// 	"datadog_synthetics_test.bar", "config_variable.0.pattern", "{{numeric(4)}}"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
 			resource.TestCheckResourceAttr(
@@ -5397,14 +5365,6 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "config_initial_application_arguments.%", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "config_initial_application_arguments.test_process_argument", "test2"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "device_ids.#", "1"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "device_ids.0", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "locations.#", "1"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "locations.0", "aws:ap-northeast-1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.%", "17"),
 			resource.TestCheckResourceAttr(
@@ -5460,16 +5420,6 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.1", "role4"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.principals.#", "2"),
-			// resource.TestCheckResourceAttr( TODO uncomment these two
-			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.principals.0", "org:8dee7c38-0000-aaaa-zzzz-8b5a08d31111"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.principals.1", "team:3a0cdd74-0000-aaaa-zzzz-da7ad0902222"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.bindings.0.relation", "editor"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.0.execution_rule", "skipped"),
@@ -5481,18 +5431,16 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.0", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.no_screenshot", "false"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.verbosity", "2"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.allow_application_crash", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.disable_auto_accept_alert", "false"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.%", "3"),
-			// resource.TestCheckResourceAttr( TODO uncomment these two
-			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.application_id", "5f055d15-0000-aaaa-zzzz-6739f8331111"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_id", "434d4719-0000-aaaa-zzzz-31082b542222"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.application_id", "ab0e0aed-536d-411a-9a99-5428c27d8f8e"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_id", "6115922a-5f5d-455e-bc7e-7955a57f3815"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_type", "version"),
 			resource.TestCheckResourceAttr(
@@ -5518,9 +5466,7 @@ func updateSyntheticsMobileTestConfig(uniq string) string {
 resource "datadog_synthetics_test" "bar" {
 	type = "mobile"
 	config_variable {
-		// example = "321"
 		name = "NEW_VARIABLE_NAME"
-		// pattern = "{{numeric(4)}}"
 		type = "text"
 		secure = true
 	}
@@ -5557,13 +5503,6 @@ resource "datadog_synthetics_test" "bar" {
 		}
 		monitor_priority = 4
 		restricted_roles = ["role3", "role4"]
-		bindings {
-			principals = [
-				"org:4dee724d-00cc-11ea-a77b-570c9d03c6c5",
-				"role:667cbd82-c7d1-11ec-aad8-da7ad0900002"
-			]
-			relation = "editor"
-		}
 		ci {
 			execution_rule = "skipped"
 		}
