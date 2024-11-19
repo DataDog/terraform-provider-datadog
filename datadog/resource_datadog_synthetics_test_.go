@@ -449,10 +449,6 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 					StateFunc: func(val interface{}) string {
 						return utils.ConvertToSha256(val.(string))
 					},
-					// DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
-					// 	// Always suppress diffs for this field
-					// 	return true
-					// },
 				},
 				"filename": {
 					Description: "File name for the certificate.",
@@ -461,14 +457,6 @@ func syntheticsTestRequestClientCertificateItem() *schema.Schema {
 					Default:     "Provided in Terraform config",
 				},
 			},
-			// CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-			// // Access the configuration value
-			// if content, ok := diff.GetOk("content"); ok {
-			//     // Always pass the config value into the planned state
-			//     diff.SetNew("content", content)
-			// }
-			// return nil
-			// },
 		},
 	}
 }
