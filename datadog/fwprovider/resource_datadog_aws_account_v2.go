@@ -133,21 +133,17 @@ func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.
 			path.MatchRoot("auth_config").AtName("aws_auth_config_keys"),
 			path.MatchRoot("auth_config").AtName("aws_auth_config_role"),
 		),
-		resourcevalidator.Conflicting(
+		resourcevalidator.ExactlyOneOf(
 			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_all"),
 			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_only"),
 		),
-		resourcevalidator.Conflicting(
+		resourcevalidator.ExactlyOneOf(
 			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_include_only"),
 			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_exclude_only"),
 		),
-		resourcevalidator.Conflicting(
+		resourcevalidator.ExactlyOneOf(
 			path.MatchRoot("aws_regions").AtName("aws_regions_include_all"),
 			path.MatchRoot("aws_regions").AtName("aws_regions_include_only"),
-		),
-		resourcevalidator.Conflicting(
-			path.MatchRoot("auth_config").AtName("aws_auth_config_keys"),
-			path.MatchRoot("auth_config").AtName("aws_auth_config_role"),
 		),
 		resourcevalidator.RequiredTogether(
 			path.MatchRoot("auth_config").AtName("aws_auth_config_keys").AtName("access_key_id"),
@@ -543,13 +539,14 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 	if enabled, ok := metricsConfig.GetEnabledOk(); ok {
 		metricsConfigTf.Enabled = types.BoolValue(*enabled)
 	}
+
 	if tagFilters, ok := metricsConfig.GetTagFiltersOk(); ok && len(*tagFilters) > 0 {
 		for _, tagFiltersDd := range *tagFilters {
 			tagFiltersTfItem := tagFiltersModel{}
 			if namespace, ok := tagFiltersDd.GetNamespaceOk(); ok {
 				tagFiltersTfItem.Namespace = types.StringValue(*namespace)
 			}
-			if tags, ok := tagFiltersDd.GetTagsOk(); ok && len(*tags) > 0 {
+			if tags, ok := tagFiltersDd.GetTagsOk(); ok {
 				tagsTf, d := types.ListValueFrom(ctx, types.StringType, *tags)
 				tagFiltersTfItem.Tags = tagsTf
 				diags.Append(d...)
@@ -564,8 +561,8 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 			nsFiltersTf.AwsNamespaceFiltersExcludeOnly = &awsNamespaceFiltersExcludeOnlyModel{}
 			excludeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersExcludeOnly.GetExcludeOnly())
 			nsFiltersTf.AwsNamespaceFiltersExcludeOnly.ExcludeOnly = excludeOnly
-
-		} else if namespaceFilters.AWSNamespaceFiltersIncludeOnly != nil {
+		}
+		if namespaceFilters.AWSNamespaceFiltersIncludeOnly != nil {
 			nsFiltersTf.AwsNamespaceFiltersIncludeOnly = &awsNamespaceFiltersIncludeOnlyModel{}
 			includeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersIncludeOnly.GetIncludeOnly())
 			nsFiltersTf.AwsNamespaceFiltersIncludeOnly.IncludeOnly = includeOnly
@@ -608,6 +605,15 @@ func buildStateTracesConfig(ctx context.Context, attributes datadogV2.AWSAccount
 	return &tracesConfigTf
 }
 
+func buildStateAccountTags(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) types.List {
+	accountTagsDd := attributes.GetAccountTags()
+	if accountTagsDd == nil {
+		accountTagsDd = []string{}
+	}
+	accountTags, _ := types.ListValueFrom(ctx, types.StringType, accountTagsDd)
+	return accountTags
+}
+
 func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccountV2Model, resp *datadogV2.AWSAccountResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 	diags := diag.Diagnostics{}
@@ -617,15 +623,9 @@ func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccoun
 
 	state.AwsAccountId = types.StringValue(attributes.GetAwsAccountId())
 	state.AwsPartition = types.StringValue(string(attributes.GetAwsPartition()))
-
-	if accountTags, ok := attributes.GetAccountTagsOk(); ok {
-		tags, d := types.ListValueFrom(ctx, types.StringType, accountTags)
-		state.AccountTags = tags
-		diags.Append(d...)
-	}
-
-	state.AuthConfig = buildStateAuthConfig(attributes)
 	state.AwsRegions = buildStateAwsRegions(ctx, attributes, diags)
+	state.AuthConfig = buildStateAuthConfig(attributes)
+	state.AccountTags = buildStateAccountTags(ctx, attributes, diags)
 	state.LogsConfig = buildStateLogsConfig(ctx, attributes, diags)
 	state.MetricsConfig = buildStateMetricsConfig(ctx, attributes, diags)
 	state.ResourcesConfig = buildStateResourcesConfig(attributes)
@@ -700,31 +700,21 @@ func buildRequestAccountTags(ctx context.Context, state *awsAccountV2Model, diag
 }
 
 func buildRequestLogsConfig(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSLogsConfig {
-	var logsConfig datadogV2.AWSLogsConfig
-	var lambdaForwarder datadogV2.AWSLambdaForwarderConfig
+	logsConfig := datadogV2.AWSLogsConfig{}
+	lambdaForwarder := datadogV2.AWSLambdaForwarderConfig{}
+	lambdas := []string{}
+	sources := []string{}
 	if state.LogsConfig != nil && state.LogsConfig.LambdaForwarder != nil {
-
 		if !state.LogsConfig.LambdaForwarder.Lambdas.IsNull() {
-			var lambdas []string
 			diags.Append(state.LogsConfig.LambdaForwarder.Lambdas.ElementsAs(ctx, &lambdas, false)...)
-			lambdaForwarder.SetLambdas(lambdas)
-		} else {
-			lambdaForwarder.SetLambdas([]string{})
 		}
-
 		if !state.LogsConfig.LambdaForwarder.Sources.IsNull() {
-			var sources []string
 			diags.Append(state.LogsConfig.LambdaForwarder.Sources.ElementsAs(ctx, &sources, false)...)
-			lambdaForwarder.SetSources(sources)
-		} else {
-			lambdaForwarder.SetSources([]string{})
 		}
-
-	} else {
-		lambdaForwarder.SetLambdas([]string{})
-		lambdaForwarder.SetSources([]string{})
 	}
 
+	lambdaForwarder.SetLambdas(lambdas)
+	lambdaForwarder.SetSources(sources)
 	logsConfig.LambdaForwarder = &lambdaForwarder
 	return logsConfig
 }
@@ -745,7 +735,7 @@ func buildRequestMetricsConfig(ctx context.Context, state *awsAccountV2Model, di
 		metricsConfig.SetEnabled(state.MetricsConfig.Enabled.ValueBool())
 	}
 
-	var tagFilters []datadogV2.AWSNamespaceTagFilter
+	tagFilters := []datadogV2.AWSNamespaceTagFilter{}
 	for _, tagFiltersTFItem := range state.MetricsConfig.TagFilters {
 		tagFiltersDDItem := datadogV2.NewAWSNamespaceTagFilterWithDefaults()
 
@@ -758,10 +748,11 @@ func buildRequestMetricsConfig(ctx context.Context, state *awsAccountV2Model, di
 			diags.Append(tagFiltersTFItem.Tags.ElementsAs(ctx, &tags, false)...)
 			tagFiltersDDItem.SetTags(tags)
 		}
+		tagFilters = append(tagFilters, *tagFiltersDDItem)
 	}
 	metricsConfig.SetTagFilters(tagFilters)
 
-	var namespaceFiltersDD datadogV2.AWSNamespaceFilters
+	namespaceFiltersDD := datadogV2.AWSNamespaceFilters{}
 	nsFiltersTf := state.MetricsConfig.NamespaceFilters
 	if nsFiltersTf.AwsNamespaceFiltersExcludeOnly != nil {
 		var excludeOnly []string
