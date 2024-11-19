@@ -360,7 +360,11 @@ resource "datadog_synthetics_test" "test_browser" {
 # Example Usage (Synthetics Mobile test)
 # Create a new Datadog Synthetics Mobile test starting on https://www.example.org
 resource "datadog_synthetics_test" "test_mobile" {
-  type = "mobile"
+  type    = "mobile"
+  name    = "A Mobile test on example.org"
+  status  = "paused"
+  message = "Notify @datadog.user"
+  tags    = ["foo:bar", "baz"]
   config_variable {
     example = "123"
     name    = "VARIABLE_NAME"
@@ -393,7 +397,7 @@ resource "datadog_synthetics_test" "test_mobile" {
       }
       timezone = "UTC"
     }
-    monitor_name = "%[1]s-monitor"
+    monitor_name = "mobile-test-monitor"
     monitor_options {
       renotify_interval        = 10
       escalation_message       = "test escalation message"
@@ -423,11 +427,6 @@ resource "datadog_synthetics_test" "test_mobile" {
       reference_type = "version"
     }
   }
-  name    = "%[1]s"
-  message = "Notify @datadog.user"
-  tags    = ["foo:bar", "baz"]
-  status  = "paused"
-  // monitor_id 
   mobile_step {
     name = "Tap on StaticText \"Tap\""
     params {
@@ -451,14 +450,11 @@ resource "datadog_synthetics_test" "test_mobile" {
         element_description = "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"
       }
     }
-    # "position": 0, // TODO this is not in the schema which seems like an oversight cuz this is the order of the steps
-    timeout       = 100
-    type          = "tap"
-    public_id     = "b9m-79b-idw" // TODO does need to be some unique id
-    allow_failure = false
-    is_critical   = true
-    no_screenshot = false
-    # "exitIfSucceed": false // TODO this is not in the schema
+    timeout              = 100
+    type                 = "tap"
+    allow_failure        = false
+    is_critical          = true
+    no_screenshot        = false
     has_new_step_element = false
   }
 
@@ -487,14 +483,11 @@ resource "datadog_synthetics_test" "test_mobile" {
         element_description = "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"
       }
     }
-    # "position": 1, // TODO this is not in the schema which seems like an oversight cuz this is the order of the steps
-    timeout       = 100
-    type          = "assertElementContent"
-    public_id     = "uid-45h-9a6" // TODO does need to be some unique id
-    allow_failure = false
-    is_critical   = true
-    no_screenshot = false
-    # exitIfSucceed = false  // TODO this is not in the schema
+    timeout              = 100
+    type                 = "assertElementContent"
+    allow_failure        = false
+    is_critical          = true
+    no_screenshot        = false
     has_new_step_element = false
   }
 }
