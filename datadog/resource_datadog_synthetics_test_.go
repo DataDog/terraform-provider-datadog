@@ -3053,7 +3053,6 @@ func buildDatadogRequestCertificates(requestClientCertificate map[string]interfa
 	clientKey := clientKeys[0].(map[string]interface{})
 
 	if clientCert["content"] != "" {
-		log.Printf("[DEBUG] clientCert content: %s", clientCert["content"].(string))
 		// only set the certificate content if it is not an already hashed string
 		// this is needed for the update function that receives the data from the state
 		// and not from the config. So we get a hash of the certificate and not it's real
