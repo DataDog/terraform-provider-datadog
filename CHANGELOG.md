@@ -1,3 +1,11 @@
+## 3.48.1 (November 14, 2024)
+
+### BUGFIXES
+* [datadog_integration_aws_tag_filter] include `step_functions` as valid enum for v1 AWS tag filter  by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2671
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.48.0...v3.48.1
+
 ## 3.48.0 (November 12, 2024)
 
 ### BUGFIXES

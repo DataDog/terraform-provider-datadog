@@ -53,6 +53,7 @@ var Resources = []func() resource.Resource{
 	NewIpAllowListResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
+	NewRumMetricResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
@@ -68,6 +69,7 @@ var Resources = []func() resource.Resource{
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
+	NewTenantBasedHandleResource,
 }
 
 var Datasources = []func() datasource.DataSource{

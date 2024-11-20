@@ -71,6 +71,7 @@ func TestAccSensitiveDataScannerRuleBasic(t *testing.T) {
 						resource_name, "included_keyword_configuration.0.character_count", "20"),
 					resource.TestCheckResourceAttr(
 						resource_name, "priority", "1"),
+					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name, nil),
 				),
 			},
 			{
@@ -132,10 +133,15 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 	}
 
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
+	uniq1 := uniqueEntityName(ctx, t)
+	uniq2 := uniqueEntityName(ctx, t)
 	accProvider := testAccProvider(t, accProviders)
 
-	resource_name := "datadog_sensitive_data_scanner_rule.another_rule"
+	resource_name_1 := "datadog_sensitive_data_scanner_rule.sp_rule_1"
+	resource_name_2 := "datadog_sensitive_data_scanner_rule.sp_rule_2"
+
+	value_true := true
+	value_false := false
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
@@ -143,23 +149,37 @@ func TestAccSensitiveDataScannerRuleWithStandardPattern(t *testing.T) {
 		CheckDestroy:      testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(uniq),
+				Config: testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(uniq1, uniq2),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name),
+					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name_1),
 					resource.TestCheckResourceAttr(
-						resource_name, "description", "a description"),
+						resource_name_1, "description", "a description"),
 					resource.TestCheckResourceAttr(
-						resource_name, "is_enabled", "true"),
+						resource_name_1, "is_enabled", "true"),
 					resource.TestCheckResourceAttr(
-						resource_name, "name", uniq),
+						resource_name_1, "name", uniq1),
 					resource.TestCheckResourceAttr(
-						resource_name, "excluded_namespaces.0", "username"),
+						resource_name_1, "excluded_namespaces.0", "username"),
 					resource.TestCheckResourceAttr(
-						resource_name, "text_replacement.0.number_of_chars", "10"),
+						resource_name_1, "text_replacement.0.number_of_chars", "10"),
 					resource.TestCheckResourceAttr(
-						resource_name, "text_replacement.0.type", "partial_replacement_from_beginning"),
+						resource_name_1, "text_replacement.0.type", "partial_replacement_from_beginning"),
 					resource.TestCheckResourceAttr(
-						resource_name, "text_replacement.0.replacement_string", ""),
+						resource_name_1, "text_replacement.0.replacement_string", ""),
+					resource.TestCheckResourceAttr(
+						resource_name_1, "included_keyword_configuration.0.keywords.0", "credit"),
+					resource.TestCheckResourceAttr(
+						resource_name_1, "included_keyword_configuration.0.character_count", "20"),
+					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name_1, &value_false),
+					// assertions on resource 2
+					testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider, resource_name_2),
+					resource.TestCheckResourceAttr(
+						resource_name_2, "description", "a description"),
+					resource.TestCheckResourceAttr(
+						resource_name_2, "is_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						resource_name_2, "name", uniq2),
+					testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider, resource_name_2, &value_true),
 				),
 			},
 		}})
@@ -295,7 +315,7 @@ resource "datadog_sensitive_data_scanner_rule" "sample_rule" {
 `, name)
 }
 
-func testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(name string) string {
+func testAccCheckDatadogSensitiveDataScannerRuleWithStandardPattern(name1, name2 string) string {
 	return fmt.Sprintf(`
 resource "datadog_sensitive_data_scanner_group" "sample_group" {
 	name = "my group"
@@ -310,7 +330,7 @@ data "datadog_sensitive_data_scanner_standard_pattern" "sample_sp" {
 	filter = "AWS Access Key ID Scanner"
 }
 
-resource "datadog_sensitive_data_scanner_rule" "another_rule" {
+resource "datadog_sensitive_data_scanner_rule" "sp_rule_1" {
 	name = "%s"
 	description = "a description"
 	excluded_namespaces = ["username"]
@@ -322,8 +342,21 @@ resource "datadog_sensitive_data_scanner_rule" "another_rule" {
 		replacement_string = ""
 		type = "partial_replacement_from_beginning"
 	}
+	included_keyword_configuration {
+		keywords = ["credit"]
+		character_count = 20
+	}
 }
-`, name)
+
+resource "datadog_sensitive_data_scanner_rule" "sp_rule_2" {
+	name = "%s"
+	description = "a description"
+	excluded_namespaces = ["username"]
+	is_enabled = true
+	group_id = datadog_sensitive_data_scanner_group.sample_group.id
+	standard_pattern_id = data.datadog_sensitive_data_scanner_standard_pattern.sample_sp.id
+}
+`, name1, name2)
 }
 
 func testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
@@ -336,10 +369,10 @@ func testAccCheckDatadogSensitiveDataScannerRuleDestroy(accProvider func() (*sch
 		for _, resource := range s.RootModule().Resources {
 			if resource.Type == "datadog_sensitive_data_scanner_rule" {
 				resp, _, err := apiInstances.GetSensitiveDataScannerApiV2().ListScanningGroups(auth)
+				if err != nil {
+					return fmt.Errorf("received an error retrieving all scanning groups: %s", err)
+				}
 				if ruleFound := findSensitiveDataScannerRuleHelper(resource.Primary.ID, resp); ruleFound == nil {
-					if err != nil {
-						return fmt.Errorf("received an error retrieving all scanning groups: %s", err)
-					}
 					return nil
 				}
 				return fmt.Errorf("scanning rule still exists")
@@ -374,6 +407,36 @@ func testAccCheckDatadogSensitiveDataScannerRuleExists(accProvider func() (*sche
 
 		if ruleFound := findSensitiveDataScannerRuleHelper(ruleId, resp); ruleFound == nil {
 			return fmt.Errorf("received an error retrieving scanning group")
+		}
+
+		return nil
+	}
+}
+
+func testAccCheckDatadogSensitiveDataScannerRuleRecommendedKeywords(accProvider func() (*schema.Provider, error), name string, expectedUseRecommendedKeywords *bool) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		provider, _ := accProvider()
+		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
+		apiInstances := providerConf.DatadogApiInstances
+		auth := providerConf.Auth
+
+		ruleId := s.RootModule().Resources[name].Primary.ID
+		resp, _, err := apiInstances.GetSensitiveDataScannerApiV2().ListScanningGroups(auth)
+		if err != nil {
+			return fmt.Errorf("received an error retrieving the list of scanning groups, %s", err)
+		}
+
+		ruleFound := findSensitiveDataScannerRuleHelper(ruleId, resp)
+		if ruleFound == nil {
+			return fmt.Errorf("received an error retrieving scanning group")
+		}
+
+		actualUseRecommendedKeywords := ruleFound.Attributes.IncludedKeywordConfiguration.UseRecommendedKeywords
+		if expectedUseRecommendedKeywords == nil && actualUseRecommendedKeywords == nil {
+			return nil
+		}
+		if *actualUseRecommendedKeywords != *expectedUseRecommendedKeywords {
+			return fmt.Errorf("actual use_recommended_keywords: %v. expected: %v", actualUseRecommendedKeywords, expectedUseRecommendedKeywords)
 		}
 
 		return nil
