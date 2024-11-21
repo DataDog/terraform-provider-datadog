@@ -2215,12 +2215,12 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 			request.SetQuery(query)
 		}
 	}
-
 	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
 		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
 			basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
 			basicAuth.SetPassword(password.(string))
 			basicAuth.SetUsername(username.(string))
+			// Works for Web Basic Auth, NTLM and Digest as they all use `username` + `password`
 			request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
 		}
 	}
