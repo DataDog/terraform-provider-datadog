@@ -398,6 +398,142 @@ resource "datadog_synthetics_test" "test_browser" {
   }
 }
 
+# Example Usage (Synthetics Mobile test)
+# Create a new Datadog Synthetics Mobile test starting on https://www.example.org
+resource "datadog_synthetics_test" "test_mobile" {
+  type    = "mobile"
+  name    = "A Mobile test on example.org"
+  status  = "paused"
+  message = "Notify @datadog.user"
+  tags    = ["foo:bar", "baz"]
+  config_variable {
+    example = "123"
+    name    = "VARIABLE_NAME"
+    pattern = "{{numeric(3)}}"
+    type    = "text"
+    secure  = false
+  }
+  config_initial_application_arguments = {
+    test_process_argument = "test1"
+  }
+  device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+  locations  = ["aws:eu-central-1"]
+  mobile_options_list {
+    min_failure_duration = 0
+    retry {
+      count    = 0
+      interval = 300
+    }
+    tick_every = 43200
+    scheduling {
+      timeframes {
+        day  = 5
+        from = "07:00"
+        to   = "16:00"
+      }
+      timeframes {
+        day  = 7
+        from = "07:00"
+        to   = "16:00"
+      }
+      timezone = "UTC"
+    }
+    monitor_name = "mobile-test-monitor"
+    monitor_options {
+      renotify_interval        = 10
+      escalation_message       = "test escalation message"
+      renotify_occurrences     = 3
+      notification_preset_name = "show_all"
+    }
+    monitor_priority = 5
+    restricted_roles = ["role1", "role2"]
+    bindings {
+      principals = [
+        "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091",
+        "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"
+      ]
+      relation = "editor"
+    }
+    ci {
+      execution_rule = "blocking"
+    }
+    default_step_timeout      = 10
+    device_ids                = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    no_screenshot             = true
+    allow_application_crash   = false
+    disable_auto_accept_alert = true
+    mobile_application {
+      application_id = "5f055d15-0000-aaaa-zzzz-6739f83346aa"
+      reference_id   = "434d4719-0000-aaaa-zzzz-31082b544718"
+      reference_type = "version"
+    }
+  }
+  mobile_step {
+    name = "Tap on StaticText \"Tap\""
+    params {
+      element {
+        context       = "NATIVE_APP"
+        view_name     = "StaticText"
+        context_type  = "native"
+        text_content  = "Tap"
+        multi_locator = {}
+        relative_position {
+          x = 0.07256155303030302
+          y = 0.41522381756756754
+        }
+        user_locator {
+          fail_test_on_cannot_locate = false
+          values {
+            type  = "id"
+            value = "some_id"
+          }
+        }
+        element_description = "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"
+      }
+    }
+    timeout              = 100
+    type                 = "tap"
+    allow_failure        = false
+    is_critical          = true
+    no_screenshot        = false
+    has_new_step_element = false
+  }
+
+  mobile_step {
+    name = "Test View \"Tap\" content"
+    params {
+      check = "contains"
+      value = "Tap"
+      element {
+        context       = "NATIVE_APP"
+        view_name     = "View"
+        context_type  = "native"
+        text_content  = "Tap"
+        multi_locator = {}
+        relative_position {
+          x = 0.27660448306074764
+          y = 0.6841517857142857
+        }
+        user_locator {
+          fail_test_on_cannot_locate = false
+          values {
+            type  = "id"
+            value = "some_id"
+          }
+        }
+        element_description = "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"
+      }
+    }
+    timeout              = 100
+    type                 = "assertElementContent"
+    allow_failure        = false
+    is_critical          = true
+    no_screenshot        = false
+    has_new_step_element = false
+  }
+}
+
+
 # Example Usage (GRPC API behavior check test)
 # Create a new Datadog GRPC API test calling host example.org on port 443
 # targeting service `greeter.Greeter` with the method `SayHello`
@@ -527,10 +663,12 @@ resource "datadog_synthetics_test" "test_grpc_health" {
 - `assertion` (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
 - `browser_step` (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
 - `browser_variable` (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
+- `config_initial_application_arguments` (Map of String) Initial application arguments for the mobile test.
 - `config_variable` (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
-- `device_ids` (List of String) Required if `type = "browser"`. Array with the different device IDs used to run the test. Valid values are `laptop_large`, `tablet`, `mobile_small`, `chrome.laptop_large`, `chrome.tablet`, `chrome.mobile_small`, `firefox.laptop_large`, `firefox.tablet`, `firefox.mobile_small`, `edge.laptop_large`, `edge.tablet`, `edge.mobile_small`.
+- `device_ids` (List of String) Required if `type = "browser"`. Array with the different device IDs used to run the test.
 - `force_delete_dependencies` (Boolean) A boolean indicating whether this synthetics test can be deleted even if it's referenced by other resources (for example, SLOs and composite monitors).
 - `message` (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events. Defaults to `""`.
+- `mobile_options_list` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list))
 - `options_list` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
@@ -955,6 +1093,99 @@ Optional:
 - `id` (String) When type = `global`, ID of the global variable to use.
 - `pattern` (String) Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
 - `secure` (Boolean) Whether the value of this variable will be obfuscated in test results. Defaults to `false`.
+
+
+<a id="nestedblock--mobile_options_list"></a>
+### Nested Schema for `mobile_options_list`
+
+Required:
+
+- `device_ids` (List of String)
+- `mobile_application` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--mobile_application))
+- `tick_every` (Number) How often the test should run (in seconds).
+
+Optional:
+
+- `allow_application_crash` (Boolean)
+- `bindings` (Block List) (see [below for nested schema](#nestedblock--mobile_options_list--bindings))
+- `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--mobile_options_list--ci))
+- `default_step_timeout` (Number)
+- `disable_auto_accept_alert` (Boolean)
+- `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
+- `monitor_name` (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
+- `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--monitor_options))
+- `monitor_priority` (Number)
+- `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
+- `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
+- `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--retry))
+- `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--mobile_options_list--scheduling))
+- `verbosity` (Number)
+
+<a id="nestedblock--mobile_options_list--mobile_application"></a>
+### Nested Schema for `mobile_options_list.mobile_application`
+
+Required:
+
+- `application_id` (String)
+- `reference_id` (String)
+- `reference_type` (String) Valid values are `latest`, `version`.
+
+
+<a id="nestedblock--mobile_options_list--bindings"></a>
+### Nested Schema for `mobile_options_list.bindings`
+
+Optional:
+
+- `principals` (List of String)
+- `relation` (String) Valid values are `editor`, `viewer`.
+
+
+<a id="nestedblock--mobile_options_list--ci"></a>
+### Nested Schema for `mobile_options_list.ci`
+
+Required:
+
+- `execution_rule` (String) Execution rule for a Synthetics test. Valid values are `blocking`, `non_blocking`, `skipped`.
+
+
+<a id="nestedblock--mobile_options_list--monitor_options"></a>
+### Nested Schema for `mobile_options_list.monitor_options`
+
+Optional:
+
+- `escalation_message` (String)
+- `notification_preset_name` (String) Valid values are `show_all`, `hide_all`, `hide_query`, `hide_handles`.
+- `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
+- `renotify_occurrences` (Number)
+
+
+<a id="nestedblock--mobile_options_list--retry"></a>
+### Nested Schema for `mobile_options_list.retry`
+
+Optional:
+
+- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Defaults to `0`.
+- `interval` (Number) Interval between a failed test and the next retry in milliseconds. Defaults to `300`.
+
+
+<a id="nestedblock--mobile_options_list--scheduling"></a>
+### Nested Schema for `mobile_options_list.scheduling`
+
+Required:
+
+- `timeframes` (Block Set, Min: 1) Array containing objects describing the scheduling pattern to apply to each day. (see [below for nested schema](#nestedblock--mobile_options_list--scheduling--timeframes))
+- `timezone` (String) Timezone in which the timeframe is based.
+
+<a id="nestedblock--mobile_options_list--scheduling--timeframes"></a>
+### Nested Schema for `mobile_options_list.scheduling.timeframes`
+
+Required:
+
+- `day` (Number) Number representing the day of the week
+- `from` (String) The hour of the day on which scheduling starts.
+- `to` (String) The hour of the day on which scheduling ends.
+
+
 
 
 <a id="nestedblock--options_list"></a>
