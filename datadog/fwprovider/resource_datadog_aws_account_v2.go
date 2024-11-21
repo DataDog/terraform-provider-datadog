@@ -165,7 +165,8 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "AWS Account partition",
 			},
 			"account_tags": schema.ListAttribute{
-				Required:    true,
+				Optional:    true,
+				Computed:    true,
 				Description: "Tags to apply to all metrics in the account",
 				ElementType: types.StringType,
 			},
@@ -236,12 +237,14 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 					"lambda_forwarder": schema.SingleNestedBlock{
 						Attributes: map[string]schema.Attribute{
 							"lambdas": schema.ListAttribute{
-								Required:    true,
+								Optional:    true,
+								Computed:    true,
 								Description: "List of Datadog Lambda Log Forwarder ARNs",
 								ElementType: types.StringType,
 							},
 							"sources": schema.ListAttribute{
-								Required:    true,
+								Optional:    true,
+								Computed:    true,
 								Description: "List of AWS services that will send logs to the Datadog Lambda Log Forwarder",
 								ElementType: types.StringType,
 							},
@@ -277,7 +280,8 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 									Description: "The AWS Namespace to apply the tag filters against",
 								},
 								"tags": schema.ListAttribute{
-									Required:    true,
+									Optional:    true,
+									Computed:    true,
 									Description: "The tags to filter based on",
 									ElementType: types.StringType,
 								},
@@ -694,8 +698,11 @@ func buildRequestAuthConfig(state *awsAccountV2Model) datadogV2.AWSAuthConfig {
 }
 
 func buildRequestAccountTags(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) []string {
-	var accountTags []string
-	diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
+	accountTags := []string{}
+	if !state.AccountTags.IsNull() {
+		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
+	}
+
 	return accountTags
 }
 
