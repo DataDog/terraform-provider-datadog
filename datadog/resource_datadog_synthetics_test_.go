@@ -89,7 +89,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Optional:    true,
 					Elem: &schema.Schema{
 						Type:             schema.TypeString,
-						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 					},
 				},
 				"locations": {
@@ -3251,9 +3251,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 		}
 
 		if attr, ok := d.GetOk("device_ids"); ok {
-			var deviceIds []datadogV1.SyntheticsDeviceID
+			var deviceIds []string
 			for _, s := range attr.([]interface{}) {
-				deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
+				deviceIds = append(deviceIds, s.(string))
 			}
 			options.DeviceIds = deviceIds
 		}
