@@ -13,7 +13,7 @@ datadog/*datadog_downtime*                @DataDog/api-clients @DataDog/monitor-
 datadog/*datadog_integration_aws*         @DataDog/api-clients @DataDog/cloud-integrations
 datadog/*datadog_integration_pagerduty*   @DataDog/api-clients @DataDog/saas-integrations @DataDog/saas-integrations
 datadog/*datadog_integration_opsgenie*    @DataDog/api-clients @Datadog/collaboration-integrations
-datadog/*datadog_logs*                    @DataDog/api-clients @DataDog/logs-backend @DataDog/logs-app
+datadog/*datadog_logs*                    @DataDog/api-clients @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
 datadog/*datadog_metric*                  @DataDog/api-clients @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation
 datadog/*datadog_monitor*                 @DataDog/api-clients @DataDog/monitor-app
 datadog/*datadog_screenboard*             @DataDog/api-clients @DataDog/dashboards-backend
