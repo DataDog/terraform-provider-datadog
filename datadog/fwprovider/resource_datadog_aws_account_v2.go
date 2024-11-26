@@ -52,13 +52,7 @@ type awsAuthConfigRoleModel struct {
 }
 
 type awsRegionsModel struct {
-	AwsRegionsIncludeAll  *awsRegionsIncludeAllModel  `tfsdk:"aws_regions_include_all"`
-	AwsRegionsIncludeOnly *awsRegionsIncludeOnlyModel `tfsdk:"aws_regions_include_only"`
-}
-type awsRegionsIncludeAllModel struct {
-	IncludeAll types.Bool `tfsdk:"include_all"`
-}
-type awsRegionsIncludeOnlyModel struct {
+	IncludeAll  types.Bool `tfsdk:"include_all"`
 	IncludeOnly types.List `tfsdk:"include_only"`
 }
 
@@ -84,13 +78,7 @@ type tagFiltersModel struct {
 }
 
 type namespaceFiltersModel struct {
-	AwsNamespaceFiltersExcludeOnly *awsNamespaceFiltersExcludeOnlyModel `tfsdk:"aws_namespace_filters_exclude_only"`
-	AwsNamespaceFiltersIncludeOnly *awsNamespaceFiltersIncludeOnlyModel `tfsdk:"aws_namespace_filters_include_only"`
-}
-type awsNamespaceFiltersExcludeOnlyModel struct {
 	ExcludeOnly types.List `tfsdk:"exclude_only"`
-}
-type awsNamespaceFiltersIncludeOnlyModel struct {
 	IncludeOnly types.List `tfsdk:"include_only"`
 }
 
@@ -103,13 +91,7 @@ type tracesConfigModel struct {
 	XrayServices *xrayServicesModel `tfsdk:"xray_services"`
 }
 type xrayServicesModel struct {
-	XRayServicesIncludeAll  *xRayServicesIncludeAllModel  `tfsdk:"x_ray_services_include_all"`
-	XRayServicesIncludeOnly *xRayServicesIncludeOnlyModel `tfsdk:"x_ray_services_include_only"`
-}
-type xRayServicesIncludeAllModel struct {
-	IncludeAll types.Bool `tfsdk:"include_all"`
-}
-type xRayServicesIncludeOnlyModel struct {
+	IncludeAll  types.Bool `tfsdk:"include_all"`
 	IncludeOnly types.List `tfsdk:"include_only"`
 }
 
@@ -134,16 +116,16 @@ func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.
 			path.MatchRoot("auth_config").AtName("aws_auth_config_role"),
 		),
 		resourcevalidator.ExactlyOneOf(
-			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_all"),
-			path.MatchRoot("traces_config").AtName("xray_services").AtName("x_ray_services_include_only"),
+			path.MatchRoot("traces_config").AtName("xray_services").AtName("include_all"),
+			path.MatchRoot("traces_config").AtName("xray_services").AtName("nclude_only"),
 		),
 		resourcevalidator.ExactlyOneOf(
-			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_include_only"),
-			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("aws_namespace_filters_exclude_only"),
+			path.MatchRoot("metrics_config").AtName("include_only"),
+			path.MatchRoot("metrics_config").AtName("exclude_only"),
 		),
 		resourcevalidator.ExactlyOneOf(
-			path.MatchRoot("aws_regions").AtName("aws_regions_include_all"),
-			path.MatchRoot("aws_regions").AtName("aws_regions_include_only"),
+			path.MatchRoot("aws_regions").AtName("include_all"),
+			path.MatchRoot("aws_regions").AtName("include_only"),
 		),
 		resourcevalidator.RequiredTogether(
 			path.MatchRoot("auth_config").AtName("aws_auth_config_keys").AtName("access_key_id"),
@@ -208,26 +190,17 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"aws_regions": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{},
-				Blocks: map[string]schema.Block{
-					"aws_regions_include_all": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{
-							"include_all": schema.BoolAttribute{
-								Optional:    true,
-								Computed:    true,
-								Description: "Include all regions",
-							},
-						},
+				Attributes: map[string]schema.Attribute{
+					"include_all": schema.BoolAttribute{
+						Optional:    true,
+						Computed:    true,
+						Description: "Include all regions",
 					},
-					"aws_regions_include_only": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{
-							"include_only": schema.ListAttribute{
-								Optional:    true,
-								Computed:    true,
-								Description: "Include only these regions",
-								ElementType: types.StringType,
-							},
-						},
+					"include_only": schema.ListAttribute{
+						Optional:    true,
+						Computed:    true,
+						Description: "Include only these regions",
+						ElementType: types.StringType,
 					},
 				},
 			},
@@ -289,27 +262,18 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 						},
 					},
 					"namespace_filters": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{},
-						Blocks: map[string]schema.Block{
-							"aws_namespace_filters_exclude_only": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{
-									"exclude_only": schema.ListAttribute{
-										Optional:    true,
-										Computed:    true,
-										Description: "Exclude only these namespaces",
-										ElementType: types.StringType,
-									},
-								},
+						Attributes: map[string]schema.Attribute{
+							"exclude_only": schema.ListAttribute{
+								Optional:    true,
+								Computed:    true,
+								Description: "Exclude only these namespaces",
+								ElementType: types.StringType,
 							},
-							"aws_namespace_filters_include_only": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{
-									"include_only": schema.ListAttribute{
-										Optional:    true,
-										Computed:    true,
-										Description: "Include only these namespaces",
-										ElementType: types.StringType,
-									},
-								},
+							"include_only": schema.ListAttribute{
+								Optional:    true,
+								Computed:    true,
+								Description: "Include only these namespaces",
+								ElementType: types.StringType,
 							},
 						},
 					},
@@ -331,26 +295,17 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 				Attributes: map[string]schema.Attribute{},
 				Blocks: map[string]schema.Block{
 					"xray_services": schema.SingleNestedBlock{
-						Attributes: map[string]schema.Attribute{},
-						Blocks: map[string]schema.Block{
-							"x_ray_services_include_all": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{
-									"include_all": schema.BoolAttribute{
-										Optional:    true,
-										Computed:    true,
-										Description: "Include all services",
-									},
-								},
+						Attributes: map[string]schema.Attribute{
+							"include_all": schema.BoolAttribute{
+								Optional:    true,
+								Computed:    true,
+								Description: "Include all services",
 							},
-							"x_ray_services_include_only": schema.SingleNestedBlock{
-								Attributes: map[string]schema.Attribute{
-									"include_only": schema.ListAttribute{
-										Optional:    true,
-										Computed:    true,
-										Description: "Include only these services",
-										ElementType: types.StringType,
-									},
-								},
+							"include_only": schema.ListAttribute{
+								Optional:    true,
+								Computed:    true,
+								Description: "Include only these services",
+								ElementType: types.StringType,
 							},
 						},
 					},
@@ -512,14 +467,10 @@ func buildStateAwsRegions(ctx context.Context, attributes datadogV2.AWSAccountRe
 
 	awsRegionsTf := awsRegionsModel{}
 	if awsRegions.AWSRegionsIncludeAll != nil {
-		awsRegionsTf.AwsRegionsIncludeAll = &awsRegionsIncludeAllModel{
-			IncludeAll: types.BoolValue(awsRegions.AWSRegionsIncludeAll.GetIncludeAll()),
-		}
+		awsRegionsTf.IncludeAll = types.BoolValue(awsRegions.AWSRegionsIncludeAll.GetIncludeAll())
 	} else if awsRegions.AWSRegionsIncludeOnly != nil {
 		includeOnly, d := types.ListValueFrom(ctx, types.StringType, awsRegions.AWSRegionsIncludeOnly.GetIncludeOnly())
-		awsRegionsTf.AwsRegionsIncludeOnly = &awsRegionsIncludeOnlyModel{
-			IncludeOnly: includeOnly,
-		}
+		awsRegionsTf.IncludeOnly = includeOnly
 		diags.Append(d...)
 	}
 
@@ -562,14 +513,12 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 	if namespaceFilters, ok := metricsConfig.GetNamespaceFiltersOk(); ok {
 		nsFiltersTf := namespaceFiltersModel{}
 		if namespaceFilters.AWSNamespaceFiltersExcludeOnly != nil {
-			nsFiltersTf.AwsNamespaceFiltersExcludeOnly = &awsNamespaceFiltersExcludeOnlyModel{}
 			excludeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersExcludeOnly.GetExcludeOnly())
-			nsFiltersTf.AwsNamespaceFiltersExcludeOnly.ExcludeOnly = excludeOnly
+			nsFiltersTf.ExcludeOnly = excludeOnly
 		}
 		if namespaceFilters.AWSNamespaceFiltersIncludeOnly != nil {
-			nsFiltersTf.AwsNamespaceFiltersIncludeOnly = &awsNamespaceFiltersIncludeOnlyModel{}
 			includeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersIncludeOnly.GetIncludeOnly())
-			nsFiltersTf.AwsNamespaceFiltersIncludeOnly.IncludeOnly = includeOnly
+			nsFiltersTf.IncludeOnly = includeOnly
 		}
 
 		metricsConfigTf.NamespaceFilters = &nsFiltersTf
@@ -593,14 +542,10 @@ func buildStateTracesConfig(ctx context.Context, attributes datadogV2.AWSAccount
 	if xrayServices, ok := tracesConfig.GetXrayServicesOk(); ok {
 		xrayServicesTf := xrayServicesModel{}
 		if xrayServices.XRayServicesIncludeAll != nil {
-			xrayServicesTf.XRayServicesIncludeAll = &xRayServicesIncludeAllModel{
-				IncludeAll: types.BoolValue(xrayServices.XRayServicesIncludeAll.GetIncludeAll()),
-			}
+			xrayServicesTf.IncludeAll = types.BoolValue(xrayServices.XRayServicesIncludeAll.GetIncludeAll())
 		} else if xrayServices.XRayServicesIncludeOnly != nil {
 			includeOnly, d := types.ListValueFrom(ctx, types.StringType, xrayServices.XRayServicesIncludeOnly.GetIncludeOnly())
-			xrayServicesTf.XRayServicesIncludeOnly = &xRayServicesIncludeOnlyModel{
-				IncludeOnly: includeOnly,
-			}
+			xrayServicesTf.IncludeOnly = includeOnly
 			diags.Append(d...)
 		}
 		tracesConfigTf.XrayServices = &xrayServicesTf
@@ -659,14 +604,14 @@ func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context,
 
 func buildRequestAwsRegions(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSRegions {
 	regions := datadogV2.AWSRegions{}
-	if state.AwsRegions.AwsRegionsIncludeAll != nil {
+	if state.AwsRegions.IncludeAll.IsUnknown() {
 		regions.AWSRegionsIncludeAll = datadogV2.NewAWSRegionsIncludeAllWithDefaults()
-		regions.AWSRegionsIncludeAll.IncludeAll = state.AwsRegions.AwsRegionsIncludeAll.IncludeAll.ValueBool()
+		regions.AWSRegionsIncludeAll.IncludeAll = state.AwsRegions.IncludeAll.ValueBool()
 	}
-	if state.AwsRegions.AwsRegionsIncludeOnly != nil {
+	if state.AwsRegions.IncludeOnly.IsUnknown() {
 		regions.AWSRegionsIncludeOnly = datadogV2.NewAWSRegionsIncludeOnlyWithDefaults()
 		var includeOnly []string
-		diags.Append(state.AwsRegions.AwsRegionsIncludeOnly.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
+		diags.Append(state.AwsRegions.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
 		regions.AWSRegionsIncludeOnly.IncludeOnly = includeOnly
 	}
 	return regions
@@ -761,15 +706,15 @@ func buildRequestMetricsConfig(ctx context.Context, state *awsAccountV2Model, di
 
 	namespaceFiltersDD := datadogV2.AWSNamespaceFilters{}
 	nsFiltersTf := state.MetricsConfig.NamespaceFilters
-	if nsFiltersTf.AwsNamespaceFiltersExcludeOnly != nil {
+	if !nsFiltersTf.ExcludeOnly.IsUnknown() {
 		var excludeOnly []string
 		namespaceFiltersDD.AWSNamespaceFiltersExcludeOnly = datadogV2.NewAWSNamespaceFiltersExcludeOnlyWithDefaults()
-		diags.Append(nsFiltersTf.AwsNamespaceFiltersExcludeOnly.ExcludeOnly.ElementsAs(ctx, &excludeOnly, false)...)
+		diags.Append(nsFiltersTf.ExcludeOnly.ElementsAs(ctx, &excludeOnly, false)...)
 		namespaceFiltersDD.AWSNamespaceFiltersExcludeOnly.SetExcludeOnly(excludeOnly)
-	} else if nsFiltersTf.AwsNamespaceFiltersIncludeOnly != nil {
+	} else if !nsFiltersTf.ExcludeOnly.IsUnknown() {
 		var includeOnly []string
 		namespaceFiltersDD.AWSNamespaceFiltersIncludeOnly = datadogV2.NewAWSNamespaceFiltersIncludeOnlyWithDefaults()
-		diags.Append(nsFiltersTf.AwsNamespaceFiltersIncludeOnly.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
+		diags.Append(nsFiltersTf.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
 		namespaceFiltersDD.AWSNamespaceFiltersIncludeOnly.SetIncludeOnly(includeOnly)
 	}
 	metricsConfig.SetNamespaceFilters(namespaceFiltersDD)
@@ -797,11 +742,11 @@ func buildRequestTracesConfig(ctx context.Context, state *awsAccountV2Model, dia
 		if state.TracesConfig.XrayServices != nil {
 			var ddXRayServiceList datadogV2.XRayServicesList
 
-			if state.TracesConfig.XrayServices.XRayServicesIncludeAll != nil {
-				includeAll := state.TracesConfig.XrayServices.XRayServicesIncludeAll.IncludeAll.ValueBool()
+			if !state.TracesConfig.XrayServices.IncludeAll.IsUnknown() {
+				includeAll := state.TracesConfig.XrayServices.IncludeAll.ValueBool()
 				ddXRayServiceList = datadogV2.XRayServicesIncludeAllAsXRayServicesList(&datadogV2.XRayServicesIncludeAll{IncludeAll: includeAll})
-			} else if state.TracesConfig.XrayServices.XRayServicesIncludeOnly != nil {
-				includeOnlyTf := state.TracesConfig.XrayServices.XRayServicesIncludeOnly.IncludeOnly
+			} else if !state.TracesConfig.XrayServices.IncludeOnly.IsUnknown() {
+				includeOnlyTf := state.TracesConfig.XrayServices.IncludeOnly
 				var ddIncludeOnly []string
 				diags.Append(includeOnlyTf.ElementsAs(ctx, &ddIncludeOnly, false)...)
 				ddXRayServiceList = datadogV2.XRayServicesIncludeOnlyAsXRayServicesList(&datadogV2.XRayServicesIncludeOnly{IncludeOnly: ddIncludeOnly})
