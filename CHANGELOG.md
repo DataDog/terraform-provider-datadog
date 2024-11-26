@@ -1,3 +1,27 @@
+## 3.49.0 (November 26, 2024)
+
+### BUGFIXES
+* [resource_monitor_json] Avoid restricted role diffs with restriction_policy by @phillip-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2638
+* [datadog_webhook] Fix panic on missing encode_as field by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2689
+* [datadog_authn_mapping] Read team assignment when importing AuthN mappings by @chris-pinola-rf in https://github.com/DataDog/terraform-provider-datadog/pull/2686
+### IMPROVEMENTS
+* [provider] Bump Datadog Go SDK by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2697
+### FEATURES
+* [datadog_synthetics_test] Add `always_execute` and `exit_if_succeed` to browser steps by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2647
+* [datadog_integration_ms_teams_tenant_based_handle] Added Resource by @kblackdd in https://github.com/DataDog/terraform-provider-datadog/pull/2657
+* [datadog_rum_metric] Add support for the resource. by @hemeryar in https://github.com/DataDog/terraform-provider-datadog/pull/2643
+### NOTES
+* [datadog_sensitive_data_scanner_rule] make recommended keywords an opt-out option by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2674
+
+## New Contributors
+* @kblackdd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2657
+* @hemeryar made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2643
+* @AntoineDona made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2688
+* @chris-pinola-rf made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2686
+* @jegutierrez made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2692
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.48.1...v3.49.0
+
 ## 3.48.1 (November 14, 2024)
 
 ### BUGFIXES
