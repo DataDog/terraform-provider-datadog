@@ -117,11 +117,11 @@ func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.
 		),
 		resourcevalidator.ExactlyOneOf(
 			path.MatchRoot("traces_config").AtName("xray_services").AtName("include_all"),
-			path.MatchRoot("traces_config").AtName("xray_services").AtName("nclude_only"),
+			path.MatchRoot("traces_config").AtName("xray_services").AtName("include_only"),
 		),
 		resourcevalidator.ExactlyOneOf(
-			path.MatchRoot("metrics_config").AtName("include_only"),
-			path.MatchRoot("metrics_config").AtName("exclude_only"),
+			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("include_only"),
+			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("exclude_only"),
 		),
 		resourcevalidator.ExactlyOneOf(
 			path.MatchRoot("aws_regions").AtName("include_all"),
@@ -162,12 +162,10 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 						Attributes: map[string]schema.Attribute{
 							"access_key_id": schema.StringAttribute{
 								Optional:    true,
-								Computed:    true,
 								Description: "AWS Access Key ID",
 							},
 							"secret_access_key": schema.StringAttribute{
 								Optional:    true,
-								Computed:    true,
 								Sensitive:   true,
 								Description: "AWS Secret Access Key",
 							},
@@ -182,7 +180,6 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 							},
 							"role_name": schema.StringAttribute{
 								Optional:    true,
-								Computed:    true,
 								Description: "AWS IAM Role name",
 							},
 						},
@@ -604,11 +601,11 @@ func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context,
 
 func buildRequestAwsRegions(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSRegions {
 	regions := datadogV2.AWSRegions{}
-	if state.AwsRegions.IncludeAll.IsUnknown() {
+	if !state.AwsRegions.IncludeAll.IsUnknown() {
 		regions.AWSRegionsIncludeAll = datadogV2.NewAWSRegionsIncludeAllWithDefaults()
 		regions.AWSRegionsIncludeAll.IncludeAll = state.AwsRegions.IncludeAll.ValueBool()
 	}
-	if state.AwsRegions.IncludeOnly.IsUnknown() {
+	if !state.AwsRegions.IncludeOnly.IsUnknown() {
 		regions.AWSRegionsIncludeOnly = datadogV2.NewAWSRegionsIncludeOnlyWithDefaults()
 		var includeOnly []string
 		diags.Append(state.AwsRegions.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
