@@ -5,6 +5,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -20,6 +21,13 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &awsAccountV2Resource{}
 	_ resource.ResourceWithImportState = &awsAccountV2Resource{}
+)
+
+var (
+	namespaceFiltersPath = path.MatchRoot("metrics_config").AtName("namespace_filters")
+	awsRegionsPath       = path.MatchRoot("aws_regions")
+	authConfigPath       = path.MatchRoot("auth_config")
+	tracesConfigPath     = path.MatchRoot("traces_config")
 )
 
 type awsAccountV2Resource struct {
@@ -44,10 +52,12 @@ type authConfigModel struct {
 	AwsAuthConfigKeys *awsAuthConfigKeysModel `tfsdk:"aws_auth_config_keys"`
 	AwsAuthConfigRole *awsAuthConfigRoleModel `tfsdk:"aws_auth_config_role"`
 }
+
 type awsAuthConfigKeysModel struct {
 	AccessKeyId     types.String `tfsdk:"access_key_id"`
 	SecretAccessKey types.String `tfsdk:"secret_access_key"`
 }
+
 type awsAuthConfigRoleModel struct {
 	ExternalId types.String `tfsdk:"external_id"`
 	RoleName   types.String `tfsdk:"role_name"`
@@ -61,6 +71,7 @@ type awsRegionsModel struct {
 type logsConfigModel struct {
 	LambdaForwarder *lambdaForwarderModel `tfsdk:"lambda_forwarder"`
 }
+
 type lambdaForwarderModel struct {
 	Lambdas types.List `tfsdk:"lambdas"`
 	Sources types.List `tfsdk:"sources"`
@@ -74,6 +85,7 @@ type metricsConfigModel struct {
 	TagFilters              []*tagFiltersModel     `tfsdk:"tag_filters"`
 	NamespaceFilters        *namespaceFiltersModel `tfsdk:"namespace_filters"`
 }
+
 type tagFiltersModel struct {
 	Namespace types.String `tfsdk:"namespace"`
 	Tags      types.List   `tfsdk:"tags"`
@@ -92,6 +104,7 @@ type resourcesConfigModel struct {
 type tracesConfigModel struct {
 	XrayServices *xrayServicesModel `tfsdk:"xray_services"`
 }
+
 type xrayServicesModel struct {
 	IncludeAll  types.Bool `tfsdk:"include_all"`
 	IncludeOnly types.List `tfsdk:"include_only"`
@@ -114,26 +127,57 @@ func (r *awsAccountV2Resource) Metadata(_ context.Context, request resource.Meta
 func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
 	return []resource.ConfigValidator{
 		resourcevalidator.ExactlyOneOf(
-			path.MatchRoot("auth_config").AtName("aws_auth_config_keys"),
-			path.MatchRoot("auth_config").AtName("aws_auth_config_role"),
+			authConfigPath.AtName("aws_auth_config_keys"),
+			authConfigPath.AtName("aws_auth_config_role"),
 		),
-		resourcevalidator.ExactlyOneOf(
-			path.MatchRoot("traces_config").AtName("xray_services").AtName("include_all"),
-			path.MatchRoot("traces_config").AtName("xray_services").AtName("include_only"),
+		resourcevalidator.Conflicting(
+			tracesConfigPath.AtName("xray_services").AtName("include_all"),
+			tracesConfigPath.AtName("xray_services").AtName("include_only"),
 		),
-		resourcevalidator.ExactlyOneOf(
-			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("include_only"),
-			path.MatchRoot("metrics_config").AtName("namespace_filters").AtName("exclude_only"),
+		resourcevalidator.AtLeastOneOf(
+			namespaceFiltersPath,
 		),
-		resourcevalidator.ExactlyOneOf(
-			path.MatchRoot("aws_regions").AtName("include_all"),
-			path.MatchRoot("aws_regions").AtName("include_only"),
+		resourcevalidator.Conflicting(
+			namespaceFiltersPath.AtName("include_only"),
+			namespaceFiltersPath.AtName("exclude_only"),
+		),
+		resourcevalidator.AtLeastOneOf(
+			awsRegionsPath,
+		),
+		resourcevalidator.Conflicting(
+			awsRegionsPath.AtName("include_all"),
+			awsRegionsPath.AtName("include_only"),
 		),
 		resourcevalidator.RequiredTogether(
-			path.MatchRoot("auth_config").AtName("aws_auth_config_keys").AtName("access_key_id"),
-			path.MatchRoot("auth_config").AtName("aws_auth_config_keys").AtName("secret_access_key"),
+			authConfigPath.AtName("aws_auth_config_keys").AtName("access_key_id"),
+			authConfigPath.AtName("aws_auth_config_keys").AtName("secret_access_key"),
 		),
 	}
+}
+
+func (r *awsAccountV2Resource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+	// Add defaults to namespace_filters
+	excludeOnlyDefaultValue, _ := types.ListValueFrom(ctx, types.StringType, []string{"AWS/SQS", "AWS/ElasticMapReduce"})
+	r.defaultIfNotSet(
+		ctx,
+		request,
+		response,
+		namespaceFiltersPath.AtName("include_only"),
+		namespaceFiltersPath.AtName("exclude_only"),
+		namespaceFiltersPath.AtName("exclude_only"),
+		excludeOnlyDefaultValue,
+	)
+
+	// Add defaults to aws_regions
+	r.defaultIfNotSet(
+		ctx,
+		request,
+		response,
+		awsRegionsPath.AtName("include_all"),
+		awsRegionsPath.AtName("include_only"),
+		awsRegionsPath.AtName("include_all"),
+		types.BoolValue(true),
+	)
 }
 
 func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -195,6 +239,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 				Attributes: map[string]schema.Attribute{
 					"include_all": schema.BoolAttribute{
 						Optional:    true,
+						Computed:    true,
 						Description: "Include all regions",
 					},
 					"include_only": schema.ListAttribute{
@@ -262,6 +307,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 						Attributes: map[string]schema.Attribute{
 							"exclude_only": schema.ListAttribute{
 								Optional:    true,
+								Computed:    true,
 								Description: "Exclude only these namespaces",
 								ElementType: types.StringType,
 							},
@@ -606,15 +652,14 @@ func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context,
 
 func buildRequestAwsRegions(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSRegions {
 	regions := datadogV2.AWSRegions{}
-	if !state.AwsRegions.IncludeAll.IsNull() {
-		regions.AWSRegionsIncludeAll = datadogV2.NewAWSRegionsIncludeAllWithDefaults()
-		regions.AWSRegionsIncludeAll.IncludeAll = state.AwsRegions.IncludeAll.ValueBool()
-	}
 	if !state.AwsRegions.IncludeOnly.IsNull() {
 		regions.AWSRegionsIncludeOnly = datadogV2.NewAWSRegionsIncludeOnlyWithDefaults()
 		var includeOnly []string
 		diags.Append(state.AwsRegions.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
 		regions.AWSRegionsIncludeOnly.IncludeOnly = includeOnly
+	} else {
+		regions.AWSRegionsIncludeAll = datadogV2.NewAWSRegionsIncludeAllWithDefaults()
+		regions.AWSRegionsIncludeAll.IncludeAll = state.AwsRegions.IncludeAll.ValueBool()
 	}
 	return regions
 }
@@ -708,22 +753,21 @@ func buildRequestMetricsConfig(ctx context.Context, state *awsAccountV2Model, di
 
 	var namespaceFiltersDD *datadogV2.AWSNamespaceFilters
 	nsFiltersTf := state.MetricsConfig.NamespaceFilters
-	if !nsFiltersTf.ExcludeOnly.IsNull() {
-		var excludeOnly []string
-		namespaceFiltersDD = &datadogV2.AWSNamespaceFilters{}
-		namespaceFiltersDD.AWSNamespaceFiltersExcludeOnly = datadogV2.NewAWSNamespaceFiltersExcludeOnlyWithDefaults()
-		diags.Append(nsFiltersTf.ExcludeOnly.ElementsAs(ctx, &excludeOnly, false)...)
-		namespaceFiltersDD.AWSNamespaceFiltersExcludeOnly.SetExcludeOnly(excludeOnly)
-	} else if !nsFiltersTf.IncludeOnly.IsNull() {
+	if !nsFiltersTf.IncludeOnly.IsNull() {
 		var includeOnly []string
 		namespaceFiltersDD = &datadogV2.AWSNamespaceFilters{}
 		namespaceFiltersDD.AWSNamespaceFiltersIncludeOnly = datadogV2.NewAWSNamespaceFiltersIncludeOnlyWithDefaults()
 		diags.Append(nsFiltersTf.IncludeOnly.ElementsAs(ctx, &includeOnly, false)...)
 		namespaceFiltersDD.AWSNamespaceFiltersIncludeOnly.SetIncludeOnly(includeOnly)
+	} else {
+		var excludeOnly []string
+		namespaceFiltersDD = &datadogV2.AWSNamespaceFilters{}
+		namespaceFiltersDD.AWSNamespaceFiltersExcludeOnly = datadogV2.NewAWSNamespaceFiltersExcludeOnlyWithDefaults()
+		diags.Append(nsFiltersTf.ExcludeOnly.ElementsAs(ctx, &excludeOnly, false)...)
+		namespaceFiltersDD.AWSNamespaceFiltersExcludeOnly.SetExcludeOnly(excludeOnly)
 	}
-	if namespaceFiltersDD != nil {
-		metricsConfig.SetNamespaceFilters(*namespaceFiltersDD)
-	}
+
+	metricsConfig.SetNamespaceFilters(*namespaceFiltersDD)
 
 	return metricsConfig
 }
@@ -783,4 +827,29 @@ func (r *awsAccountV2Resource) buildAwsAccountV2UpdateRequestBody(ctx context.Co
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
+}
+
+func (r *awsAccountV2Resource) defaultIfNotSet(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse, firstPath path.Expression, secondPath path.Expression, defaultPath path.Expression, defaultVal interface{}) {
+	var firstValue attr.Value
+	var isFirstValueUnknownOrNull bool
+	var secondValue attr.Value
+	var isSecondValueUnknownOrNull bool
+
+	firstPathMatches, _ := request.Config.PathMatches(ctx, firstPath)
+	secondPathMatches, _ := request.Config.PathMatches(ctx, secondPath)
+
+	request.Config.GetAttribute(ctx, firstPathMatches[0], &firstValue)
+	request.Config.GetAttribute(ctx, secondPathMatches[0], &secondValue)
+
+	if firstValue.IsNull() || firstValue.IsUnknown() {
+		isFirstValueUnknownOrNull = true
+	}
+	if secondValue.IsNull() || secondValue.IsUnknown() {
+		isSecondValueUnknownOrNull = true
+	}
+
+	if isFirstValueUnknownOrNull && isSecondValueUnknownOrNull {
+		defaultPathMatches, _ := request.Config.PathMatches(ctx, defaultPath)
+		response.Plan.SetAttribute(ctx, defaultPathMatches[0], defaultVal)
+	}
 }
