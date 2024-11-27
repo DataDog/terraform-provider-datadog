@@ -11,11 +11,13 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -161,28 +163,10 @@ func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.
 }
 
 func (r *awsAccountV2Resource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
-	// Add defaults to namespace_filters
-	excludeOnlyDefaultValue, _ := types.ListValueFrom(ctx, types.StringType, []string{"AWS/SQS", "AWS/ElasticMapReduce"})
-	r.defaultIfNotSet(
-		ctx,
-		request,
-		response,
-		namespaceFiltersPath.AtName("include_only"),
-		namespaceFiltersPath.AtName("exclude_only"),
-		namespaceFiltersPath.AtName("exclude_only"),
-		excludeOnlyDefaultValue,
-	)
-
-	// Add defaults to aws_regions
-	r.defaultIfNotSet(
-		ctx,
-		request,
-		response,
-		awsRegionsPath.AtName("include_all"),
-		awsRegionsPath.AtName("include_only"),
-		awsRegionsPath.AtName("include_all"),
-		types.BoolValue(true),
-	)
+	// Remove exclude_only default if namespace_filters is set.
+	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, namespaceFiltersPath.AtName("exclude_only"), namespaceFiltersPath.AtName("include_only"))
+	// Remove aws_config default if `include_only` is set.
+	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, awsRegionsPath.AtName("include_all"), awsRegionsPath.AtName("include_only"))
 }
 
 func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -245,6 +229,7 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 					"include_all": schema.BoolAttribute{
 						Optional:    true,
 						Computed:    true,
+						Default:     booldefault.StaticBool(true),
 						Description: "Include all regions",
 					},
 					"include_only": schema.ListAttribute{
@@ -319,6 +304,12 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 								Computed:    true,
 								Description: "Exclude only these namespaces",
 								ElementType: types.StringType,
+								Default: listdefault.StaticValue(types.ListValueMust(
+									types.StringType, []attr.Value{
+										types.StringValue("AWS/SQS"),
+										types.StringValue("AWS/ElasticMapReduce"),
+									}),
+								),
 							},
 							"include_only": schema.ListAttribute{
 								Optional:    true,
@@ -569,8 +560,7 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 		if namespaceFilters.AWSNamespaceFiltersExcludeOnly != nil {
 			excludeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersExcludeOnly.GetExcludeOnly())
 			nsFiltersTf.ExcludeOnly = excludeOnly
-		}
-		if namespaceFilters.AWSNamespaceFiltersIncludeOnly != nil {
+		} else if namespaceFilters.AWSNamespaceFiltersIncludeOnly != nil {
 			includeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersIncludeOnly.GetIncludeOnly())
 			nsFiltersTf.IncludeOnly = includeOnly
 		}
@@ -836,29 +826,4 @@ func (r *awsAccountV2Resource) buildAwsAccountV2UpdateRequestBody(ctx context.Co
 	req.Data.SetAttributes(*attributes)
 
 	return req, diags
-}
-
-func (r *awsAccountV2Resource) defaultIfNotSet(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse, firstPath path.Expression, secondPath path.Expression, defaultPath path.Expression, defaultVal interface{}) {
-	var firstValue attr.Value
-	var isFirstValueUnknownOrNull bool
-	var secondValue attr.Value
-	var isSecondValueUnknownOrNull bool
-
-	firstPathMatches, _ := request.Config.PathMatches(ctx, firstPath)
-	secondPathMatches, _ := request.Config.PathMatches(ctx, secondPath)
-
-	request.Config.GetAttribute(ctx, firstPathMatches[0], &firstValue)
-	request.Config.GetAttribute(ctx, secondPathMatches[0], &secondValue)
-
-	if firstValue.IsNull() || firstValue.IsUnknown() {
-		isFirstValueUnknownOrNull = true
-	}
-	if secondValue.IsNull() || secondValue.IsUnknown() {
-		isSecondValueUnknownOrNull = true
-	}
-
-	if isFirstValueUnknownOrNull && isSecondValueUnknownOrNull {
-		defaultPathMatches, _ := request.Config.PathMatches(ctx, defaultPath)
-		response.Plan.SetAttribute(ctx, defaultPathMatches[0], defaultVal)
-	}
 }
