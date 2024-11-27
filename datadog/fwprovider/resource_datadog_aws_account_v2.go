@@ -11,6 +11,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -28,6 +29,7 @@ var (
 	awsRegionsPath       = path.MatchRoot("aws_regions")
 	authConfigPath       = path.MatchRoot("auth_config")
 	tracesConfigPath     = path.MatchRoot("traces_config")
+	logsConfigPath       = path.MatchRoot("logs_config")
 )
 
 type awsAccountV2Resource struct {
@@ -152,6 +154,9 @@ func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.
 			authConfigPath.AtName("aws_auth_config_keys").AtName("access_key_id"),
 			authConfigPath.AtName("aws_auth_config_keys").AtName("secret_access_key"),
 		),
+		resourcevalidator.AtLeastOneOf(
+			logsConfigPath.AtName("lambda_forwarder"),
+		),
 	}
 }
 
@@ -256,13 +261,17 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 						Attributes: map[string]schema.Attribute{
 							"lambdas": schema.ListAttribute{
 								Optional:    true,
+								Computed:    true,
 								Description: "List of Datadog Lambda Log Forwarder ARNs",
 								ElementType: types.StringType,
+								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							},
 							"sources": schema.ListAttribute{
 								Optional:    true,
+								Computed:    true,
 								Description: "List of AWS services that will send logs to the Datadog Lambda Log Forwarder",
 								ElementType: types.StringType,
+								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							},
 						},
 					},
