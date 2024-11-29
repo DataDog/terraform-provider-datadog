@@ -388,12 +388,12 @@ resource "datadog_synthetics_test" "test_mobile" {
       timeframes {
         day  = 5
         from = "07:00"
-        to = "16:00"
+        to   = "16:00"
       }
-      timeframes  {
-        day = 7
+      timeframes {
+        day  = 7
         from = "07:00"
-        to = "16:00"
+        to   = "16:00"
       }
       timezone = "UTC"
     }
@@ -413,17 +413,17 @@ resource "datadog_synthetics_test" "test_mobile" {
       ]
       relation = "editor"
     }
-		ci {
-			execution_rule = "blocking"
-		}
-		default_step_timeout = 10
-		device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
-		no_screenshot = true
-		allow_application_crash = false
-		disable_auto_accept_alert = true
-		mobile_application {
-			application_id = "5f055d15-0000-aaaa-zzzz-6739f83346aa"
-      reference_id = "434d4719-0000-aaaa-zzzz-31082b544718"
+    ci {
+      execution_rule = "blocking"
+    }
+    default_step_timeout      = 10
+    device_ids                = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+    no_screenshot             = true
+    allow_application_crash   = false
+    disable_auto_accept_alert = true
+    mobile_application {
+      application_id = "5f055d15-0000-aaaa-zzzz-6739f83346aa"
+      reference_id   = "434d4719-0000-aaaa-zzzz-31082b544718"
       reference_type = "version"
     }
   }
@@ -431,10 +431,10 @@ resource "datadog_synthetics_test" "test_mobile" {
     name = "Tap on StaticText \"Tap\""
     params {
       element {
-        context = "NATIVE_APP"
-        view_name = "StaticText"
-        context_type = "native"
-        text_content = "Tap"
+        context       = "NATIVE_APP"
+        view_name     = "StaticText"
+        context_type  = "native"
+        text_content  = "Tap"
         multi_locator = {}
         relative_position {
           x = 0.07256155303030302
@@ -443,7 +443,7 @@ resource "datadog_synthetics_test" "test_mobile" {
         user_locator {
           fail_test_on_cannot_locate = false
           values {
-            type = "id"
+            type  = "id"
             value = "some_id"
           }
         }
@@ -464,10 +464,10 @@ resource "datadog_synthetics_test" "test_mobile" {
       check = "contains"
       value = "Tap"
       element {
-        context = "NATIVE_APP"
-        view_name = "View"
-        context_type = "native"
-        text_content = "Tap"
+        context       = "NATIVE_APP"
+        view_name     = "View"
+        context_type  = "native"
+        text_content  = "Tap"
         multi_locator = {}
         relative_position {
           x = 0.27660448306074764
@@ -476,7 +476,7 @@ resource "datadog_synthetics_test" "test_mobile" {
         user_locator {
           fail_test_on_cannot_locate = false
           values {
-            type = "id"
+            type  = "id"
             value = "some_id"
           }
         }
