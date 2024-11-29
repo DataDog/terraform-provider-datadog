@@ -5330,7 +5330,7 @@ resource "datadog_synthetics_test" "bar" {
 			execution_rule = "blocking"
 		}
 		default_step_timeout = 10
-		device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16"]
+		device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"]
 		no_screenshot = true
 		allow_application_crash = false
 		disable_auto_accept_alert = true
