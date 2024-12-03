@@ -78,6 +78,11 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"assertion":                  syntheticsAPIAssertion(),
 				"browser_variable":           syntheticsBrowserVariable(),
 				"config_variable":            syntheticsConfigVariable(),
+				"config_initial_application_arguments": {
+					Description: "Initial application arguments for the mobile test.",
+					Type:        schema.TypeMap,
+					Optional:    true,
+				},
 				"variables_from_script": {
 					Description: "Variables defined from JavaScript code for API HTTP tests.",
 					Type:        schema.TypeString,
@@ -89,7 +94,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Optional:    true,
 					Elem: &schema.Schema{
 						Type:             schema.TypeString,
-						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 					},
 				},
 				"locations": {
@@ -100,7 +105,8 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 						Type: schema.TypeString,
 					},
 				},
-				"options_list": syntheticsTestOptionsList(),
+				"options_list":        syntheticsTestOptionsList(),
+				"mobile_options_list": syntheticsMobileTestOptionsList(),
 				"name": {
 					Description: "Name of Datadog synthetics test.",
 					Type:        schema.TypeString,
@@ -134,6 +140,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 				"browser_step": syntheticsTestBrowserStep(),
 				"api_step":     syntheticsTestAPIStep(),
+				// TODO SYNTH-17172 - add steps here
 				"set_cookie": {
 					Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
 					Type:        schema.TypeString,
@@ -819,6 +826,164 @@ func syntheticsTestOptionsList() *schema.Schema {
 	}
 }
 
+func syntheticsMobileTestOptionsList() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"min_failure_duration": {
+					Description: "Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"retry": syntheticsTestOptionsRetry(),
+				"tick_every": {
+					Description:  "How often the test should run (in seconds).",
+					Type:         schema.TypeInt,
+					Required:     true,
+					ValidateFunc: validation.IntBetween(300, 604800),
+				},
+				"scheduling": syntheticsTestAdvancedScheduling(),
+				"monitor_name": {
+					Description: "The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"monitor_options": {
+					Type:     schema.TypeList,
+					MaxItems: 1,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"renotify_interval": {
+								Description: "Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`.",
+								Type:        schema.TypeInt,
+								Default:     0,
+								Optional:    true,
+							},
+							"escalation_message": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"renotify_occurrences": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+							"notification_preset_name": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsMonitorOptionsNotificationPresetNameFromValue),
+							},
+						},
+					},
+				},
+				"monitor_priority": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					ValidateFunc: validation.IntBetween(1, 5),
+				},
+				"restricted_roles": {
+					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"bindings": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"principals": {
+								Type:     schema.TypeList,
+								Optional: true,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								},
+							},
+							"relation": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestRestrictionPolicyBindingRelationFromValue),
+							},
+						},
+					},
+				},
+				"ci": {
+					Description: "CI/CD options for a Synthetic test.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"execution_rule": {
+								Type:             schema.TypeString,
+								Description:      "Execution rule for a Synthetics test.",
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestExecutionRuleFromValue),
+							},
+						},
+					},
+				},
+				"default_step_timeout": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					ValidateFunc: validation.IntBetween(1, 300),
+				},
+				"device_ids": {
+					Type:     schema.TypeList,
+					Required: true,
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+					},
+				},
+				"no_screenshot": {
+					Description: "Prevents saving screenshots of the steps.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"verbosity": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					ValidateFunc: validation.IntBetween(0, 5),
+				},
+				"allow_application_crash": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"disable_auto_accept_alert": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"mobile_application": {
+					Type:     schema.TypeList,
+					Required: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"application_id": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"reference_id": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"reference_type": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileTestsMobileApplicationReferenceTypeFromValue),
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema := syntheticsTestRequest()
 	// In test `options_list` for single API tests, but in `api_step.request_definition` for API steps.
@@ -1422,6 +1587,42 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		d.SetId(getSyntheticsBrowserTestResponse.GetPublicId())
 
 		return updateSyntheticsBrowserTestLocalState(d, &getSyntheticsBrowserTestResponse)
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
+		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
+		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsMobileTest(auth, *syntheticsTest)
+		if err != nil {
+			// Note that Id won't be set, so no state will be saved.
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics mobile test")
+		}
+		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
+			return diag.FromErr(err)
+		}
+
+		var getSyntheticsMobileTestResponse datadogV1.SyntheticsMobileTest
+		var httpResponseGet *_nethttp.Response
+		err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
+			getSyntheticsMobileTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetMobileTest(auth, createdSyntheticsTest.GetPublicId())
+			if err != nil {
+				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+					return retry.RetryableError(fmt.Errorf("synthetics mobile test not created yet"))
+				}
+
+				return retry.NonRetryableError(err)
+			}
+			if err := utils.CheckForUnparsed(getSyntheticsMobileTestResponse); err != nil {
+				return retry.NonRetryableError(err)
+			}
+
+			return nil
+		})
+		if err != nil {
+			return diag.FromErr(err)
+		}
+
+		d.SetId(getSyntheticsMobileTestResponse.GetPublicId())
+
+		return updateSyntheticsMobileTestLocalState(d, &getSyntheticsMobileTestResponse)
+
 	}
 
 	return diag.Errorf("unrecognized synthetics test type %v", testType)
@@ -1435,6 +1636,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	var syntheticsTest datadogV1.SyntheticsTestDetails
 	var syntheticsAPITest datadogV1.SyntheticsAPITest
 	var syntheticsBrowserTest datadogV1.SyntheticsBrowserTest
+	var syntheticsMobileTest datadogV1.SyntheticsMobileTest
 	var err error
 	var httpresp *_nethttp.Response
 
@@ -1454,6 +1656,8 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsBrowserTest, _, err = apiInstances.GetSyntheticsApiV1().GetBrowserTest(auth, d.Id())
+	} else if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
+		syntheticsMobileTest, _, err = apiInstances.GetSyntheticsApiV1().GetMobileTest(auth, d.Id())
 	} else {
 		syntheticsAPITest, _, err = apiInstances.GetSyntheticsApiV1().GetAPITest(auth, d.Id())
 	}
@@ -1472,6 +1676,13 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 			return diag.FromErr(err)
 		}
 		return updateSyntheticsBrowserTestLocalState(d, &syntheticsBrowserTest)
+	}
+
+	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
+		if err := utils.CheckForUnparsed(syntheticsMobileTest); err != nil {
+			return diag.FromErr(err)
+		}
+		return updateSyntheticsMobileTestLocalState(d, &syntheticsMobileTest)
 	}
 
 	if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
@@ -1509,6 +1720,18 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 			return diag.FromErr(err)
 		}
 		return updateSyntheticsBrowserTestLocalState(d, &updatedTest)
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
+		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
+		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateMobileTest(auth, d.Id(), *syntheticsTest)
+		if err != nil {
+			// If the Update callback returns with or without an error, the full state is saved.
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")
+		}
+		if err := utils.CheckForUnparsed(updatedTest); err != nil {
+			return diag.FromErr(err)
+		}
+
+		return updateSyntheticsMobileTestLocalState(d, &updatedTest)
 	}
 
 	return diag.Errorf("unrecognized synthetics test type %v", testType)
@@ -1942,6 +2165,81 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	return nil
 }
 
+func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsMobileTest) diag.Diagnostics {
+	// There two fields that you might think should be here but are not:
+	// - `device_ids` at the root of the request can be set by the user, but is not part of the response
+	// - `locations` can not be set by the user as mobile tests only run on one location, but it's part of the response
+	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("name", syntheticsTest.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("message", syntheticsTest.GetMessage()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("status", syntheticsTest.GetStatus()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("tags", syntheticsTest.Tags); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("monitor_id", syntheticsTest.MonitorId); err != nil {
+		return diag.FromErr(err)
+	}
+
+	config := syntheticsTest.GetConfig()
+
+	actualVariables := config.GetVariables()
+	localMobileVariables := make([]map[string]interface{}, len(actualVariables))
+
+	for i, variable := range actualVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := variable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := variable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+		if v, ok := variable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
+		if v, ok := variable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
+		if v, ok := variable.GetExampleOk(); ok {
+			localVariable["example"] = *v
+		} else if v, ok := localVariable["secure"].(bool); ok && v {
+			localVariable["example"] = d.Get(fmt.Sprintf("mobile_variable.%d.example", i))
+		}
+		if v, ok := variable.GetPatternOk(); ok {
+			localVariable["pattern"] = *v
+		} else if v, ok := localVariable["secure"].(bool); ok && v {
+			localVariable["pattern"] = d.Get(fmt.Sprintf("mobile_variable.%d.pattern", i))
+		}
+		localMobileVariables[i] = localVariable
+	}
+	if err := d.Set("config_variable", localMobileVariables); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if config.HasInitialApplicationArguments() {
+		if err := d.Set("config_initial_application_arguments", config.GetInitialApplicationArguments()); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	localOptionsLists := buildTerraformMobileTestOptions(syntheticsTest.GetOptions())
+
+	if err := d.Set("mobile_options_list", localOptionsLists); err != nil {
+		return diag.FromErr(err)
+	}
+
+	// TODO SYNTH-17172 - add steps here
+
+	return nil
+}
+
 /*
  * transformer functions between datadog and terraform
  */
@@ -2370,6 +2668,61 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 		}
 
 		syntheticsTest.SetSteps(steps)
+	}
+
+	return syntheticsTest
+}
+
+func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.SyntheticsMobileTest {
+	syntheticsTest := datadogV1.NewSyntheticsMobileTestWithDefaults()
+
+	// There three fields that you might think should be here but are not:
+	// - `device_ids` at the root of the request can be set by the user, but is not part of the response, so we're not going to set it as not to mess with the local state of Terraform
+	// - `locations` can not be set by the user as mobile tests only run on one location, but it's part of the response
+	// - `monitor_id` is not set by the user, but returned by the response
+	if attr, ok := d.GetOk("message"); ok {
+		syntheticsTest.SetMessage(attr.(string))
+	}
+	if attr, ok := d.GetOk("name"); ok {
+		syntheticsTest.SetName(attr.(string))
+	}
+	if attr, ok := d.GetOk("status"); ok {
+		syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(attr.(string)))
+	}
+	if attr, ok := d.GetOk("type"); ok {
+		syntheticsTest.SetType(datadogV1.SyntheticsMobileTestType(attr.(string)))
+	}
+	config := datadogV1.SyntheticsMobileTestConfig{}
+	config.SetVariables([]datadogV1.SyntheticsConfigVariable{})
+
+	requestConfigVariables := d.Get("config_variable").([]interface{})
+	config.SetVariables(buildDatadogConfigVariables(requestConfigVariables))
+
+	if attr, ok := d.GetOk("config_initial_application_arguments"); ok {
+		initialApplicationArguments := attr.(map[string]interface{})
+		if len(initialApplicationArguments) > 0 {
+			config.SetInitialApplicationArguments(make(map[string]string))
+		}
+		for k, v := range initialApplicationArguments {
+			config.GetInitialApplicationArguments()[k] = v.(string)
+		}
+	}
+
+	syntheticsTest.SetConfig(config)
+
+	options := buildDatadogMobileTestOptions(d)
+	syntheticsTest.SetOptions(*options)
+
+	// TODO SYNTH-17172 - add steps here
+
+	if attr, ok := d.GetOk("tags"); ok {
+		tags := make([]string, 0)
+		for _, s := range attr.([]interface{}) {
+			if tag, ok := s.(string); ok {
+				tags = append(tags, tag)
+			}
+		}
+		syntheticsTest.SetTags(tags)
 	}
 
 	return syntheticsTest
@@ -3251,9 +3604,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 		}
 
 		if attr, ok := d.GetOk("device_ids"); ok {
-			var deviceIds []datadogV1.SyntheticsDeviceID
+			var deviceIds []string
 			for _, s := range attr.([]interface{}) {
-				deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
+				deviceIds = append(deviceIds, s.(string))
 			}
 			options.DeviceIds = deviceIds
 		}
@@ -3378,6 +3731,303 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	}
 	if actualOptions.HasInitialNavigationTimeout() {
 		localOptionsList["initial_navigation_timeout"] = actualOptions.GetInitialNavigationTimeout()
+	}
+
+	localOptionsLists := make([]map[string]interface{}, 1)
+	localOptionsLists[0] = localOptionsList
+
+	return localOptionsLists
+}
+
+func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsMobileTestOptions {
+	options := datadogV1.SyntheticsMobileTestOptions{}
+
+	if mobile_options_list_attr, ok := d.GetOk("mobile_options_list"); ok && mobile_options_list_attr != nil {
+		// Verbosity is also part of the options but it can not be set by users so we're not setting it here
+		if attr, ok := d.GetOk("mobile_options_list.0.min_failure_duration"); ok {
+			options.SetMinFailureDuration(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.tick_every"); ok {
+			options.SetTickEvery(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.monitor_name"); ok {
+			options.SetMonitorName(attr.(string))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.monitor_priority"); ok {
+			options.SetMonitorPriority(int32(attr.(int)))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.default_step_timeout"); ok {
+			options.SetDefaultStepTimeout(int32(attr.(int)))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.no_screenshot"); ok {
+			options.SetNoScreenshot(attr.(bool))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.allow_application_crash"); ok {
+			options.SetAllowApplicationCrash(attr.(bool))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.disable_auto_accept_alert"); ok {
+			options.SetDisableAutoAcceptAlert(attr.(bool))
+		}
+
+		if retryRaw, ok := d.GetOk("mobile_options_list.0.retry"); ok {
+			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry := retryRaw.([]interface{})[0]
+			if count, ok := retry.(map[string]interface{})["count"]; ok {
+				optionsRetry.SetCount(int64(count.(int)))
+			}
+			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+				optionsRetry.SetInterval(float64(interval.(int)))
+			}
+			options.SetRetry(optionsRetry)
+		}
+
+		if rawScheduling, ok := d.GetOk("mobile_options_list.0.scheduling"); ok {
+			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
+			scheduling := rawScheduling.([]interface{})[0]
+			if tfs, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
+				timeFrames := []datadogV1.SyntheticsTestOptionsSchedulingTimeframe{}
+				for _, tf := range tfs.(*schema.Set).List() {
+					timeframe := datadogV1.SyntheticsTestOptionsSchedulingTimeframe{}
+					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
+					timeframe.SetFrom(string(tf.(map[string]interface{})["from"].(string)))
+					timeframe.SetTo(string(tf.(map[string]interface{})["to"].(string)))
+					timeFrames = append(timeFrames, timeframe)
+				}
+				optionsScheduling.SetTimeframes(timeFrames)
+			}
+			if tz, ok := scheduling.(map[string]interface{})["timezone"]; ok {
+				optionsScheduling.SetTimezone(tz.(string))
+			}
+
+			options.SetScheduling(optionsScheduling)
+		}
+
+		if monitorOptionsRaw, ok := d.GetOk("mobile_options_list.0.monitor_options"); ok {
+
+			monitorOptions := monitorOptionsRaw.([]interface{})[0]
+
+			optionsMonitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
+			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
+				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
+			}
+			if escalationMessage, ok := monitorOptions.(map[string]interface{})["escalation_message"]; ok {
+				optionsMonitorOptions.SetEscalationMessage(escalationMessage.(string))
+			}
+			if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok {
+				optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
+			}
+			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok {
+				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
+			}
+			options.SetMonitorOptions(optionsMonitorOptions)
+		}
+
+		if restricted_roles, ok := d.GetOk("mobile_options_list.0.restricted_roles"); ok {
+
+			roles := []string{}
+			for _, role := range restricted_roles.(*schema.Set).List() {
+				roles = append(roles, role.(string))
+			}
+			options.SetRestrictedRoles(roles)
+		}
+
+		if bindings, ok := d.GetOk("mobile_options_list.0.bindings"); ok {
+			optionsBindings := []datadogV1.SyntheticsTestRestrictionPolicyBinding{}
+			for _, b := range bindings.([]interface{}) {
+				binding := datadogV1.NewSyntheticsTestRestrictionPolicyBinding()
+				if ps, ok := b.(map[string]interface{})["principals"]; ok {
+					principals := []string{}
+					for _, p := range ps.([]interface{}) {
+						principals = append(principals, p.(string))
+					}
+					binding.SetPrincipals(principals)
+				}
+				if r, ok := b.(map[string]interface{})["relation"]; ok {
+					binding.SetRelation(datadogV1.SyntheticsTestRestrictionPolicyBindingRelation(r.(string)))
+				}
+				optionsBindings = append(optionsBindings, *binding)
+			}
+			options.SetBindings(optionsBindings)
+		}
+
+		if rawCi, ok := d.GetOk("mobile_options_list.0.ci"); ok {
+			ci := rawCi.([]interface{})[0]
+			if testCiOptions, ok := ci.(map[string]interface{}); ok {
+				ciOptions := datadogV1.SyntheticsTestCiOptions{}
+				ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
+				options.SetCi(ciOptions)
+			}
+		}
+
+		if deviceIds, ok := d.GetOk("mobile_options_list.0.device_ids"); ok {
+			optionsDeviceIds := []string{}
+			for _, s := range deviceIds.([]interface{}) {
+				optionsDeviceIds = append(optionsDeviceIds, s.(string))
+			}
+			options.SetDeviceIds(optionsDeviceIds)
+		}
+
+		if rawMobileApplication, ok := d.GetOk("mobile_options_list.0.mobile_application"); ok {
+			mobileApplication := rawMobileApplication.([]interface{})[0]
+			optionsMobileApplication := datadogV1.SyntheticsMobileTestsMobileApplication{}
+
+			if s, ok := mobileApplication.(map[string]interface{})["application_id"]; ok {
+				optionsMobileApplication.SetApplicationId(s.(string))
+			}
+			if s, ok := mobileApplication.(map[string]interface{})["reference_id"]; ok {
+				optionsMobileApplication.SetReferenceId(s.(string))
+			}
+			if s, ok := mobileApplication.(map[string]interface{})["reference_type"]; ok {
+				optionsMobileApplication.SetReferenceType(datadogV1.SyntheticsMobileTestsMobileApplicationReferenceType(s.(string)))
+			}
+			options.SetMobileApplication(optionsMobileApplication)
+		}
+	}
+
+	return &options
+}
+
+func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTestOptions) []map[string]interface{} {
+	localOptionsList := make(map[string]interface{})
+
+	if actualOptions.HasMinFailureDuration() {
+		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
+	}
+	if attr, ok := actualOptions.GetTickEveryOk(); ok {
+		localOptionsList["tick_every"] = attr
+	}
+	if actualOptions.HasMonitorName() {
+		localOptionsList["monitor_name"] = actualOptions.GetMonitorName()
+	}
+	if actualOptions.HasMonitorPriority() {
+		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
+	}
+	if actualOptions.HasRestrictedRoles() {
+		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
+	}
+	if actualOptions.HasDefaultStepTimeout() {
+		localOptionsList["default_step_timeout"] = actualOptions.GetDefaultStepTimeout()
+	}
+	if actualOptions.HasNoScreenshot() {
+		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
+	}
+	if actualOptions.HasAllowApplicationCrash() {
+		localOptionsList["allow_application_crash"] = actualOptions.GetAllowApplicationCrash()
+	}
+	if actualOptions.HasDisableAutoAcceptAlert() {
+		localOptionsList["disable_auto_accept_alert"] = actualOptions.GetDisableAutoAcceptAlert()
+	}
+
+	if actualOptions.HasRetry() {
+		retry := actualOptions.GetRetry()
+		optionsListRetry := make(map[string]interface{})
+		optionsListRetry["count"] = retry.GetCount()
+
+		if interval, ok := retry.GetIntervalOk(); ok {
+			optionsListRetry["interval"] = interval
+		}
+
+		localOptionsList["retry"] = []map[string]interface{}{optionsListRetry}
+	}
+
+	if actualOptions.HasScheduling() {
+		scheduling := actualOptions.GetScheduling()
+		timeFrames := scheduling.GetTimeframes()
+		optionsListScheduling := make(map[string]interface{})
+		optionsListSchedulingTimeframes := make([]map[string]interface{}, 0, len(timeFrames))
+		for _, tf := range timeFrames {
+			timeframe := make(map[string]interface{})
+			timeframe["from"] = tf.GetFrom()
+			timeframe["day"] = tf.GetDay()
+			timeframe["to"] = tf.GetTo()
+			optionsListSchedulingTimeframes = append(optionsListSchedulingTimeframes, timeframe)
+		}
+		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
+		optionsListScheduling["timezone"] = scheduling.GetTimezone()
+		optionsListSchedulingList := []map[string]interface{}{optionsListScheduling}
+		localOptionsList["scheduling"] = optionsListSchedulingList
+	}
+
+	if actualOptions.HasMonitorOptions() {
+		actualMonitorOptions := actualOptions.GetMonitorOptions()
+		optionsListMonitorOptions := make(map[string]interface{})
+		shouldUpdate := false
+
+		if actualMonitorOptions.HasRenotifyInterval() {
+			optionsListMonitorOptions["renotify_interval"] = actualMonitorOptions.GetRenotifyInterval()
+			shouldUpdate = true
+		}
+		if actualMonitorOptions.HasEscalationMessage() {
+			optionsListMonitorOptions["escalation_message"] = actualMonitorOptions.GetEscalationMessage()
+		}
+		if actualMonitorOptions.HasRenotifyOccurrences() {
+			optionsListMonitorOptions["renotify_occurrences"] = actualMonitorOptions.GetRenotifyOccurrences()
+		}
+		if actualMonitorOptions.HasNotificationPresetName() {
+			optionsListMonitorOptions["notification_preset_name"] = actualMonitorOptions.GetNotificationPresetName()
+		}
+
+		if shouldUpdate {
+			localOptionsList["monitor_options"] = []map[string]interface{}{optionsListMonitorOptions}
+		}
+	}
+
+	if actualOptions.HasBindings() {
+		actualBindings := actualOptions.GetBindings()
+		optionsListBindings := make([]map[string]interface{}, 0, len(actualBindings))
+		for _, binding := range actualBindings {
+			optionsListBindingsItem := make(map[string]interface{})
+
+			if binding.HasPrincipals() {
+				actualBindingsItemsPrincipals := binding.GetPrincipals()
+				optionsListBindingsItemsPrincipals := make([]string, 0, len(actualBindingsItemsPrincipals))
+				for _, principals := range actualBindingsItemsPrincipals {
+					optionsListBindingsItemsPrincipals = append(optionsListBindingsItemsPrincipals, principals)
+				}
+				optionsListBindingsItem["principals"] = optionsListBindingsItemsPrincipals
+			}
+
+			if binding.HasRelation() {
+				optionsListBindingsItem["relation"] = binding.GetRelation()
+			}
+
+			optionsListBindings = append(optionsListBindings, optionsListBindingsItem)
+		}
+		localOptionsList["bindings"] = optionsListBindings
+	}
+
+	if actualOptions.HasCi() {
+		actualCi := actualOptions.GetCi()
+		ciOptions := make(map[string]interface{})
+		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
+
+		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
+	}
+
+	if _, ok := actualOptions.GetDeviceIdsOk(); ok {
+		actualDeviceIds := actualOptions.GetDeviceIds()
+		optionsListDeviceIds := make([]string, 0, len(actualDeviceIds))
+		for _, device_id := range actualDeviceIds {
+			optionsListDeviceIds = append(optionsListDeviceIds, string(device_id))
+		}
+		localOptionsList["device_ids"] = optionsListDeviceIds
+	}
+
+	if _, ok := actualOptions.GetMobileApplicationOk(); ok {
+		actualMobileApplication := actualOptions.GetMobileApplication()
+		optionsListMobileApplication := make(map[string]interface{})
+
+		if _, ok := actualMobileApplication.GetApplicationIdOk(); ok {
+			optionsListMobileApplication["application_id"] = actualMobileApplication.GetApplicationId()
+		}
+		if _, ok := actualMobileApplication.GetReferenceIdOk(); ok {
+			optionsListMobileApplication["reference_id"] = actualMobileApplication.GetReferenceId()
+		}
+		if _, ok := actualMobileApplication.GetReferenceTypeOk(); ok {
+			optionsListMobileApplication["reference_type"] = actualMobileApplication.GetReferenceType()
+		}
+
+		localOptionsList["mobile_application"] = []map[string]interface{}{optionsListMobileApplication}
 	}
 
 	localOptionsLists := make([]map[string]interface{}, 1)
@@ -3551,7 +4201,7 @@ func decompressAndDecodeValue(value string) string {
 	return string(compressedProtoFile)
 }
 
-func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key string, value interface{}) interface{} {
+func convertStepParamsValueForConfig(stepType interface{}, key string, value interface{}) interface{} {
 	switch key {
 	case "element", "email", "file", "files", "request":
 		var result interface{}
