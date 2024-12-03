@@ -597,13 +597,13 @@ func syntheticsTestOptionsRetry() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"count": {
-					Description: "Number of retries needed to consider a location as failed before sending a notification alert.",
+					Description: "Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `5`.",
 					Type:        schema.TypeInt,
 					Default:     0,
 					Optional:    true,
 				},
 				"interval": {
-					Description: "Interval between a failed test and the next retry in milliseconds.",
+					Description: "Interval between a failed test and the next retry in milliseconds. Maximum value: `5000`.",
 					Type:        schema.TypeInt,
 					Default:     300,
 					Optional:    true,
