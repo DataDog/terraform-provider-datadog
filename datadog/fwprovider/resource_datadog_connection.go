@@ -86,6 +86,15 @@ func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequ
 }
 
 func (r *connectionResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state connectionModel
+	diags := request.Plan.Get(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	diags = response.State.Set(ctx, &state)
+	response.Diagnostics.Append(diags...)
 }
 
 func (r *connectionResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
