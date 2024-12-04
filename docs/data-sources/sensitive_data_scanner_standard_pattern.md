@@ -21,8 +21,9 @@ Use this data source to retrieve information about an existing sensitive data sc
 
 ### Read-Only
 
+- `description` (String) Description of the standard pattern.
 - `id` (String) The ID of this resource.
 - `included_keywords` (List of String) List of recommended keywords to improve rule accuracy.
 - `name` (String) Name of the standard pattern.
-- `pattern` (String) Regex that the standard pattern applies.
+- `pattern` (String, Deprecated) Regex to match, optionally documented for older standard rules.  **Deprecated.** Refer to the description field to understand what the rule does.
 - `tags` (List of String) List of tags.
