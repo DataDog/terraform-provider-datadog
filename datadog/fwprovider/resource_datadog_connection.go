@@ -21,7 +21,7 @@ type connectionResource struct {
 	Auth context.Context
 }
 
-type connectionModel struct {
+type connectionResourceModel struct {
 	ID   types.String `tfsdk:"id"`
 	Name types.String `tfsdk:"name"`
 }
@@ -58,7 +58,7 @@ func (r *connectionResource) ImportState(ctx context.Context, request resource.I
 }
 
 func (r *connectionResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state connectionModel
+	var state connectionResourceModel
 	diags := request.Plan.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -72,7 +72,7 @@ func (r *connectionResource) Create(ctx context.Context, request resource.Create
 }
 
 func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state connectionModel
+	var state connectionResourceModel
 	diags := request.State.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -86,7 +86,7 @@ func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequ
 }
 
 func (r *connectionResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state connectionModel
+	var state connectionResourceModel
 	diags := request.Plan.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -98,7 +98,7 @@ func (r *connectionResource) Update(ctx context.Context, request resource.Update
 }
 
 func (r *connectionResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state connectionModel
+	var state connectionResourceModel
 	diags := request.State.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
