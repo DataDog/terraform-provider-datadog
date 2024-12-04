@@ -7,6 +7,8 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (
@@ -17,6 +19,11 @@ var (
 type connectionResource struct {
 	Api  *datadogV2.TeamsApi
 	Auth context.Context
+}
+
+type connectionModel struct {
+	ID   types.String `tfsdk:"id"`
+	Name types.String `tfsdk:"name"`
 }
 
 func NewConnectionResource() resource.Resource {
@@ -34,7 +41,16 @@ func (r *connectionResource) Metadata(_ context.Context, request resource.Metada
 }
 
 func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
-	response.Schema = schema.Schema{}
+	response.Schema = schema.Schema{
+		Description: "",
+		Attributes: map[string]schema.Attribute{
+			"id": utils.ResourceIDAttribute(),
+			"name": schema.StringAttribute{
+				Required:    true,
+				Description: "",
+			},
+		},
+	}
 }
 
 func (r *connectionResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
@@ -42,9 +58,31 @@ func (r *connectionResource) ImportState(ctx context.Context, request resource.I
 }
 
 func (r *connectionResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state connectionModel
+	diags := request.Plan.Get(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	state.ID = types.StringValue("created ID")
+
+	diags = response.State.Set(ctx, &state)
+	response.Diagnostics.Append(diags...)
 }
 
 func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state connectionModel
+	diags := request.State.Get(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	state.ID = types.StringValue("read ID")
+
+	diags = response.State.Set(ctx, &state)
+	response.Diagnostics.Append(diags...)
 }
 
 func (r *connectionResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
