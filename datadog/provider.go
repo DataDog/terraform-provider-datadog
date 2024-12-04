@@ -201,7 +201,7 @@ func Provider() *schema.Provider {
 			"datadog_logs_pipeline_order":                  resourceDatadogLogsPipelineOrder(),
 			"datadog_metric_metadata":                      resourceDatadogMetricMetadata(),
 			"datadog_metric_tag_configuration":             resourceDatadogMetricTagConfiguration(),
-			"datadog_monitor":                              resourceDatadogMonitor(),
+			// "datadog_monitor":                              resourceDatadogMonitor(),
 			"datadog_monitor_config_policy":                resourceDatadogMonitorConfigPolicy(),
 			"datadog_monitor_json":                         resourceDatadogMonitorJSON(),
 			"datadog_organization_settings":                resourceDatadogOrganizationSettings(),
