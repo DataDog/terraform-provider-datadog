@@ -10,33 +10,33 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-var _ datasource.DataSource = &datadogConnectionDatasource{}
+var _ datasource.DataSource = &connectionDatasource{}
 
-type datadogConnectionDatasource struct {
+type connectionDatasource struct {
 	Api  *datadogV2.TeamsApi
 	Auth context.Context
 }
 
 func NewDatadogConnectionDataSource() datasource.DataSource {
-	return &datadogConnectionDatasource{}
+	return &connectionDatasource{}
 }
 
 type datadogConnectionDatasourceModel struct {
 	ID   types.String `tfsdk:"id"`
-	name types.String `tfsdk:"name"`
+	Name types.String `tfsdk:"name"`
 }
 
-func (d *datadogConnectionDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *connectionDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *datadogConnectionDatasource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *connectionDatasource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "connection"
 }
 
-func (d *datadogConnectionDatasource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *connectionDatasource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing connection, for use in other resources.",
 		Attributes: map[string]schema.Attribute{
@@ -45,7 +45,7 @@ func (d *datadogConnectionDatasource) Schema(_ context.Context, request datasour
 	}
 }
 
-func (d *datadogConnectionDatasource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+func (d *connectionDatasource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
 	var state datadogConnectionDatasourceModel
 	diags := request.Config.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
