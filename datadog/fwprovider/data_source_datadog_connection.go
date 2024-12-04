@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var _ datasource.DataSource = &datadogConnectionDatasource{}
@@ -21,6 +22,7 @@ func NewDatadogConnectionDataSource() datasource.DataSource {
 }
 
 type datadogConnectionDatasourceModel struct {
+	ID   types.String `tfsdk:"id"`
 	name types.String `tfsdk:"name"`
 }
 
@@ -35,15 +37,23 @@ func (d *datadogConnectionDatasource) Metadata(_ context.Context, request dataso
 }
 
 func (d *datadogConnectionDatasource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
-	response.Schema = schema.Schema{}
+	response.Schema = schema.Schema{
+		Description: "Use this data source to retrieve information about an existing connection, for use in other resources.",
+		Attributes: map[string]schema.Attribute{
+			"id": utils.ResourceIDAttribute(),
+		},
+	}
 }
 
 func (d *datadogConnectionDatasource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
 	var state datadogConnectionDatasourceModel
-	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
+	diags := request.Config.Get(ctx, &state)
+	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	state.ID = types.StringValue("hi")
+	diags = response.State.Set(ctx, &state)
+	response.Diagnostics.Append(diags...)
 }
