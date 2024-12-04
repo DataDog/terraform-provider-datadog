@@ -89,4 +89,12 @@ func (r *connectionResource) Update(ctx context.Context, request resource.Update
 }
 
 func (r *connectionResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state connectionModel
+	diags := request.State.Get(ctx, &state)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	// noop
 }
