@@ -2,9 +2,11 @@ package fwprovider
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -14,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
@@ -30,9 +33,10 @@ var (
 	namespaceFiltersPath   = path.MatchRoot("metrics_config").AtName("namespace_filters")
 	awsRegionsPath         = path.MatchRoot("aws_regions")
 	authConfigPath         = path.MatchRoot("auth_config")
-	tracesConfigPath       = path.MatchRoot("traces_config")
-	xrayServicesConfigPath = tracesConfigPath.AtName("xray_services")
-	logsConfigPath         = path.MatchRoot("logs_config")
+	authConfigKeysPath     = authConfigPath.AtName("aws_auth_config_keys")
+	authConfigRolePath     = authConfigPath.AtName("aws_auth_config_role")
+	xrayServicesConfigPath = path.MatchRoot("traces_config").AtName("xray_services")
+	lambdaForwarderPath    = path.MatchRoot("logs_config").AtName("lambda_forwarder")
 )
 
 type integrationAwsAccountResource struct {
@@ -132,36 +136,45 @@ func (r *integrationAwsAccountResource) Metadata(_ context.Context, request reso
 func (r *integrationAwsAccountResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
 	return []resource.ConfigValidator{
 		resourcevalidator.ExactlyOneOf(
-			authConfigPath.AtName("aws_auth_config_keys"),
-			authConfigPath.AtName("aws_auth_config_role"),
-		),
-		resourcevalidator.Conflicting(
-			tracesConfigPath.AtName("xray_services").AtName("include_all"),
-			tracesConfigPath.AtName("xray_services").AtName("include_only"),
-		),
-		resourcevalidator.AtLeastOneOf(
-			namespaceFiltersPath,
-		),
-		resourcevalidator.Conflicting(
-			namespaceFiltersPath.AtName("include_only"),
-			namespaceFiltersPath.AtName("exclude_only"),
-		),
-		resourcevalidator.AtLeastOneOf(
 			awsRegionsPath,
 		),
 		resourcevalidator.Conflicting(
 			awsRegionsPath.AtName("include_all"),
 			awsRegionsPath.AtName("include_only"),
 		),
+		resourcevalidator.Conflicting(
+			authConfigKeysPath,
+			authConfigRolePath,
+		),
+		resourcevalidator.ExactlyOneOf(
+			authConfigKeysPath,
+			authConfigRolePath,
+		),
 		resourcevalidator.RequiredTogether(
-			authConfigPath.AtName("aws_auth_config_keys").AtName("access_key_id"),
-			authConfigPath.AtName("aws_auth_config_keys").AtName("secret_access_key"),
+			authConfigRolePath,
+			authConfigRolePath.AtName("role_name"),
 		),
-		resourcevalidator.AtLeastOneOf(
-			logsConfigPath.AtName("lambda_forwarder"),
+		resourcevalidator.RequiredTogether(
+			authConfigKeysPath,
+			authConfigKeysPath.AtName("access_key_id"),
+			authConfigKeysPath.AtName("secret_access_key"),
 		),
-		resourcevalidator.AtLeastOneOf(
+		resourcevalidator.ExactlyOneOf(
+			lambdaForwarderPath,
+		),
+		resourcevalidator.ExactlyOneOf(
+			namespaceFiltersPath,
+		),
+		resourcevalidator.Conflicting(
+			namespaceFiltersPath.AtName("include_only"),
+			namespaceFiltersPath.AtName("exclude_only"),
+		),
+		resourcevalidator.ExactlyOneOf(
 			xrayServicesConfigPath,
+		),
+		resourcevalidator.Conflicting(
+			xrayServicesConfigPath.AtName("include_all"),
+			xrayServicesConfigPath.AtName("include_only"),
 		),
 	}
 }
@@ -182,10 +195,16 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 			"aws_account_id": schema.StringAttribute{
 				Required:    true,
 				Description: "Your AWS Account ID without dashes.",
+				Validators: []validator.String{
+					stringvalidator.RegexMatches(regexp.MustCompile(`^[0-9]{12}$`), "invalid aws_account_id"),
+				},
 			},
 			"aws_partition": schema.StringAttribute{
 				Required:    true,
 				Description: "AWS Account partition",
+				Validators: []validator.String{
+					stringvalidator.OneOf("aws", "aws-cn", "aws-us-gov"),
+				},
 			},
 			"account_tags": schema.ListAttribute{
 				Optional:    true,
@@ -204,6 +223,9 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							"access_key_id": schema.StringAttribute{
 								Optional:    true,
 								Description: "AWS Access Key ID",
+								Validators: []validator.String{
+									stringvalidator.RegexMatches(regexp.MustCompile(`^((?:AKIA)([A-Z0-9]{12,124}))$`), "invalid access_key_id"),
+								},
 							},
 							"secret_access_key": schema.StringAttribute{
 								Optional:    true,
@@ -211,6 +233,9 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 								Description: "AWS Secret Access Key. This value is write-only; changes made outside of Terraform will not be drift-detected.",
 								PlanModifiers: []planmodifier.String{
 									stringplanmodifier.UseStateForUnknown(),
+								},
+								Validators: []validator.String{
+									stringvalidator.RegexMatches(regexp.MustCompile(`^\S+$`), "secret_access_key must be non-empty and not contain whitespace"),
 								},
 							},
 						},
