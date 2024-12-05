@@ -14,11 +14,12 @@ import (
 
 func resourceDatadogIntegrationAwsTagFilter() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters.",
-		CreateContext: resourceDatadogIntegrationAwsTagFilterCreate,
-		UpdateContext: resourceDatadogIntegrationAwsTagFilterUpdate,
-		ReadContext:   resourceDatadogIntegrationAwsTagFilterRead,
-		DeleteContext: resourceDatadogIntegrationAwsTagFilterDelete,
+		DeprecationMessage: "**This resource is deprecated - use the `datadog_integration_aws_account` resource instead**: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account",
+		Description:        "Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters.",
+		CreateContext:      resourceDatadogIntegrationAwsTagFilterCreate,
+		UpdateContext:      resourceDatadogIntegrationAwsTagFilterUpdate,
+		ReadContext:        resourceDatadogIntegrationAwsTagFilterRead,
+		DeleteContext:      resourceDatadogIntegrationAwsTagFilterDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},

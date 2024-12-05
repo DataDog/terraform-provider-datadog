@@ -681,7 +681,7 @@ func (r *integrationAwsAccountResource) updateState(ctx context.Context, state *
 
 	// Use secret_access_key value from state
 	var secretAccessKey basetypes.StringValue
-	if state.AuthConfig.AwsAuthConfigKeys != nil {
+	if state.AuthConfig != nil && state.AuthConfig.AwsAuthConfigKeys != nil {
 		secretAccessKey = state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey
 	}
 
