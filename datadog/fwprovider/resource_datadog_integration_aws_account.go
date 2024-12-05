@@ -22,8 +22,8 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &awsAccountV2Resource{}
-	_ resource.ResourceWithImportState = &awsAccountV2Resource{}
+	_ resource.ResourceWithConfigure   = &integrationAwsAccountResource{}
+	_ resource.ResourceWithImportState = &integrationAwsAccountResource{}
 )
 
 var (
@@ -34,12 +34,12 @@ var (
 	logsConfigPath       = path.MatchRoot("logs_config")
 )
 
-type awsAccountV2Resource struct {
+type integrationAwsAccountResource struct {
 	Api  *datadogV2.AWSIntegrationApi
 	Auth context.Context
 }
 
-type awsAccountV2Model struct {
+type integrationAwsAccountModel struct {
 	ID              types.String          `tfsdk:"id"`
 	AwsAccountId    types.String          `tfsdk:"aws_account_id"`
 	AwsPartition    types.String          `tfsdk:"aws_partition"`
@@ -114,21 +114,21 @@ type xrayServicesModel struct {
 	IncludeOnly types.List `tfsdk:"include_only"`
 }
 
-func NewAwsAccountV2Resource() resource.Resource {
-	return &awsAccountV2Resource{}
+func NewIntegrationAwsAccountResource() resource.Resource {
+	return &integrationAwsAccountResource{}
 }
 
-func (r *awsAccountV2Resource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *integrationAwsAccountResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetAWSIntegrationApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *awsAccountV2Resource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "aws_account_v2"
+func (r *integrationAwsAccountResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "integration_aws_account"
 }
 
-func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
+func (r *integrationAwsAccountResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
 	return []resource.ConfigValidator{
 		resourcevalidator.ExactlyOneOf(
 			authConfigPath.AtName("aws_auth_config_keys"),
@@ -162,16 +162,16 @@ func (r *awsAccountV2Resource) ConfigValidators(ctx context.Context) []resource.
 	}
 }
 
-func (r *awsAccountV2Resource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
+func (r *integrationAwsAccountResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
 	// Remove exclude_only default if namespace_filters is set.
 	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, namespaceFiltersPath.AtName("exclude_only"), namespaceFiltersPath.AtName("include_only"))
 	// Remove aws_config default if `include_only` is set.
 	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, awsRegionsPath.AtName("include_all"), awsRegionsPath.AtName("include_only"))
 }
 
-func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog AwsAccountV2 resource. This can be used to create and manage Datadog aws_account_v2.",
+		Description: "Provides a Datadog IntegrationAwsAccount resource. This can be used to create and manage Datadog integration_aws_account.",
 		Attributes: map[string]schema.Attribute{
 			"aws_account_id": schema.StringAttribute{
 				Required:    true,
@@ -354,12 +354,12 @@ func (r *awsAccountV2Resource) Schema(_ context.Context, _ resource.SchemaReques
 	}
 }
 
-func (r *awsAccountV2Resource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *integrationAwsAccountResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *awsAccountV2Resource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state awsAccountV2Model
+func (r *integrationAwsAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state integrationAwsAccountModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -372,7 +372,7 @@ func (r *awsAccountV2Resource) Read(ctx context.Context, request resource.ReadRe
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AwsAccountV2"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationAwsAccount"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -386,14 +386,14 @@ func (r *awsAccountV2Resource) Read(ctx context.Context, request resource.ReadRe
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *awsAccountV2Resource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state awsAccountV2Model
+func (r *integrationAwsAccountResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state integrationAwsAccountModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	body, diags := r.buildAwsAccountV2RequestBody(ctx, &state)
+	body, diags := r.buildIntegrationAwsAccountRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -401,7 +401,7 @@ func (r *awsAccountV2Resource) Create(ctx context.Context, request resource.Crea
 
 	resp, _, err := r.Api.CreateAWSAccount(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AwsAccountV2"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationAwsAccount"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -414,14 +414,14 @@ func (r *awsAccountV2Resource) Create(ctx context.Context, request resource.Crea
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *awsAccountV2Resource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state awsAccountV2Model
+func (r *integrationAwsAccountResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state integrationAwsAccountModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	body, diags := r.buildAwsAccountV2UpdateRequestBody(ctx, &state)
+	body, diags := r.buildIntegrationAwsAccountUpdateRequestBody(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
@@ -430,7 +430,7 @@ func (r *awsAccountV2Resource) Update(ctx context.Context, request resource.Upda
 	awsAccountConfigId := state.ID.String()
 	resp, _, err := r.Api.UpdateAWSAccount(r.Auth, awsAccountConfigId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AwsAccountV2"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationAwsAccount"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -443,8 +443,8 @@ func (r *awsAccountV2Resource) Update(ctx context.Context, request resource.Upda
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *awsAccountV2Resource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state awsAccountV2Model
+func (r *integrationAwsAccountResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state integrationAwsAccountModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -456,7 +456,7 @@ func (r *awsAccountV2Resource) Delete(ctx context.Context, request resource.Dele
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting aws_account_v2"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting integration_aws_account"))
 		return
 	}
 }
@@ -610,7 +610,7 @@ func buildStateAccountTags(ctx context.Context, attributes datadogV2.AWSAccountR
 	return accountTags
 }
 
-func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccountV2Model, resp *datadogV2.AWSAccountResponse) {
+func (r *integrationAwsAccountResource) updateState(ctx context.Context, state *integrationAwsAccountModel, resp *datadogV2.AWSAccountResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 	diags := diag.Diagnostics{}
 
@@ -628,7 +628,7 @@ func (r *awsAccountV2Resource) updateState(ctx context.Context, state *awsAccoun
 	state.TracesConfig = buildStateTracesConfig(ctx, attributes, diags)
 }
 
-func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context, state *awsAccountV2Model) (*datadogV2.AWSAccountCreateRequest, diag.Diagnostics) {
+func (r *integrationAwsAccountResource) buildIntegrationAwsAccountRequestBody(ctx context.Context, state *integrationAwsAccountModel) (*datadogV2.AWSAccountCreateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewAWSAccountCreateRequestAttributesWithDefaults()
 
@@ -649,7 +649,7 @@ func (r *awsAccountV2Resource) buildAwsAccountV2RequestBody(ctx context.Context,
 	return req, diags
 }
 
-func buildRequestAwsRegions(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSRegions {
+func buildRequestAwsRegions(ctx context.Context, state *integrationAwsAccountModel, diags diag.Diagnostics) datadogV2.AWSRegions {
 	regions := datadogV2.AWSRegions{}
 	if !state.AwsRegions.IncludeOnly.IsNull() {
 		regions.AWSRegionsIncludeOnly = datadogV2.NewAWSRegionsIncludeOnlyWithDefaults()
@@ -662,7 +662,7 @@ func buildRequestAwsRegions(ctx context.Context, state *awsAccountV2Model, diags
 	}
 	return regions
 }
-func buildRequestAuthConfig(state *awsAccountV2Model) datadogV2.AWSAuthConfig {
+func buildRequestAuthConfig(state *integrationAwsAccountModel) datadogV2.AWSAuthConfig {
 	authConfig := datadogV2.AWSAuthConfig{}
 
 	if state.AuthConfig.AwsAuthConfigKeys != nil {
@@ -688,7 +688,7 @@ func buildRequestAuthConfig(state *awsAccountV2Model) datadogV2.AWSAuthConfig {
 	return authConfig
 }
 
-func buildRequestAccountTags(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) []string {
+func buildRequestAccountTags(ctx context.Context, state *integrationAwsAccountModel, diags diag.Diagnostics) []string {
 	accountTags := []string{}
 	if !state.AccountTags.IsNull() {
 		diags.Append(state.AccountTags.ElementsAs(ctx, &accountTags, false)...)
@@ -697,7 +697,7 @@ func buildRequestAccountTags(ctx context.Context, state *awsAccountV2Model, diag
 	return accountTags
 }
 
-func buildRequestLogsConfig(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSLogsConfig {
+func buildRequestLogsConfig(ctx context.Context, state *integrationAwsAccountModel, diags diag.Diagnostics) datadogV2.AWSLogsConfig {
 	logsConfig := datadogV2.AWSLogsConfig{}
 	lambdaForwarder := datadogV2.AWSLambdaForwarderConfig{}
 	lambdas := []string{}
@@ -717,7 +717,7 @@ func buildRequestLogsConfig(ctx context.Context, state *awsAccountV2Model, diags
 	return logsConfig
 }
 
-func buildRequestMetricsConfig(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSMetricsConfig {
+func buildRequestMetricsConfig(ctx context.Context, state *integrationAwsAccountModel, diags diag.Diagnostics) datadogV2.AWSMetricsConfig {
 	var metricsConfig datadogV2.AWSMetricsConfig
 
 	if !state.MetricsConfig.AutomuteEnabled.IsNull() {
@@ -771,7 +771,7 @@ func buildRequestMetricsConfig(ctx context.Context, state *awsAccountV2Model, di
 	return metricsConfig
 }
 
-func buildRequestResourcesConfig(state *awsAccountV2Model) datadogV2.AWSResourcesConfig {
+func buildRequestResourcesConfig(state *integrationAwsAccountModel) datadogV2.AWSResourcesConfig {
 	var resourcesConfig datadogV2.AWSResourcesConfig
 
 	if !state.ResourcesConfig.CloudSecurityPostureManagementCollection.IsNull() {
@@ -784,7 +784,7 @@ func buildRequestResourcesConfig(state *awsAccountV2Model) datadogV2.AWSResource
 	return resourcesConfig
 }
 
-func buildRequestTracesConfig(ctx context.Context, state *awsAccountV2Model, diags diag.Diagnostics) datadogV2.AWSTracesConfig {
+func buildRequestTracesConfig(ctx context.Context, state *integrationAwsAccountModel, diags diag.Diagnostics) datadogV2.AWSTracesConfig {
 	tracesConfig := datadogV2.NewAWSTracesConfigWithDefaults()
 
 	if state.TracesConfig != nil {
@@ -807,7 +807,7 @@ func buildRequestTracesConfig(ctx context.Context, state *awsAccountV2Model, dia
 	return *tracesConfig
 }
 
-func (r *awsAccountV2Resource) buildAwsAccountV2UpdateRequestBody(ctx context.Context, state *awsAccountV2Model) (*datadogV2.AWSAccountUpdateRequest, diag.Diagnostics) {
+func (r *integrationAwsAccountResource) buildIntegrationAwsAccountUpdateRequestBody(ctx context.Context, state *integrationAwsAccountModel) (*datadogV2.AWSAccountUpdateRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewAWSAccountUpdateRequestAttributesWithDefaults()
 

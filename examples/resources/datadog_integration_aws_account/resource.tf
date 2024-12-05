@@ -1,6 +1,6 @@
-# Create new aws_account_v2 resource
+# Create new integration_aws_account resource
 
-resource "datadog_aws_account_v2" "foo" {
+resource "datadog_integration_aws_account" "foo" {
   account_tags   = ["env:prod"]
   aws_account_id = "123456789012"
   aws_partition  = "aws"
