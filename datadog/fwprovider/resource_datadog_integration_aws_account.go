@@ -8,7 +8,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
@@ -16,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -27,11 +27,12 @@ var (
 )
 
 var (
-	namespaceFiltersPath = path.MatchRoot("metrics_config").AtName("namespace_filters")
-	awsRegionsPath       = path.MatchRoot("aws_regions")
-	authConfigPath       = path.MatchRoot("auth_config")
-	tracesConfigPath     = path.MatchRoot("traces_config")
-	logsConfigPath       = path.MatchRoot("logs_config")
+	namespaceFiltersPath   = path.MatchRoot("metrics_config").AtName("namespace_filters")
+	awsRegionsPath         = path.MatchRoot("aws_regions")
+	authConfigPath         = path.MatchRoot("auth_config")
+	tracesConfigPath       = path.MatchRoot("traces_config")
+	xrayServicesConfigPath = tracesConfigPath.AtName("xray_services")
+	logsConfigPath         = path.MatchRoot("logs_config")
 )
 
 type integrationAwsAccountResource struct {
@@ -159,23 +160,28 @@ func (r *integrationAwsAccountResource) ConfigValidators(ctx context.Context) []
 		resourcevalidator.AtLeastOneOf(
 			logsConfigPath.AtName("lambda_forwarder"),
 		),
+		resourcevalidator.AtLeastOneOf(
+			xrayServicesConfigPath,
+		),
 	}
 }
 
 func (r *integrationAwsAccountResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
-	// Remove exclude_only default if namespace_filters is set.
+	// Remove `metrics_config.aws_namespace_filers.exclude_only` default if `include_only` is set.
 	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, namespaceFiltersPath.AtName("exclude_only"), namespaceFiltersPath.AtName("include_only"))
-	// Remove aws_config default if `include_only` is set.
+	// Remove `aws_regions.include_all` default if `include_only` is set.
 	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, awsRegionsPath.AtName("include_all"), awsRegionsPath.AtName("include_only"))
+	// Remove `traces_config.xray_services.include_only` default if `include_all` is set.
+	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, xrayServicesConfigPath.AtName("include_only"), xrayServicesConfigPath.AtName("include_all"))
 }
 
 func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog IntegrationAwsAccount resource. This can be used to create and manage Datadog integration_aws_account.",
+		Description: "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.",
 		Attributes: map[string]schema.Attribute{
 			"aws_account_id": schema.StringAttribute{
 				Required:    true,
-				Description: "AWS Account ID",
+				Description: "Your AWS Account ID without dashes.",
 			},
 			"aws_partition": schema.StringAttribute{
 				Required:    true,
@@ -202,7 +208,10 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							"secret_access_key": schema.StringAttribute{
 								Optional:    true,
 								Sensitive:   true,
-								Description: "AWS Secret Access Key",
+								Description: "AWS Secret Access Key. This value is write-only; changes made outside of Terraform will not be drift-detected.",
+								PlanModifiers: []planmodifier.String{
+									stringplanmodifier.UseStateForUnknown(),
+								},
 							},
 						},
 					},
@@ -225,16 +234,17 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 				},
 			},
 			"aws_regions": schema.SingleNestedBlock{
+				Description: "AWS Regions to collect data from.",
 				Attributes: map[string]schema.Attribute{
 					"include_all": schema.BoolAttribute{
 						Optional:    true,
 						Computed:    true,
 						Default:     booldefault.StaticBool(true),
-						Description: "Include all regions",
+						Description: "Include all regions.",
 					},
 					"include_only": schema.ListAttribute{
 						Optional:    true,
-						Description: "Include only these regions",
+						Description: "Include only these regions.",
 						ElementType: types.StringType,
 					},
 				},
@@ -247,14 +257,16 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							"lambdas": schema.ListAttribute{
 								Optional:    true,
 								Computed:    true,
-								Description: "List of Datadog Lambda Log Forwarder ARNs",
+								Description: "List of Datadog Lambda Log Forwarder ARNs in your AWS account.",
 								ElementType: types.StringType,
 								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							},
 							"sources": schema.ListAttribute{
-								Optional:    true,
-								Computed:    true,
-								Description: "List of AWS services that will send logs to the Datadog Lambda Log Forwarder",
+								Optional: true,
+								Computed: true,
+								Description: "List of service IDs set to enable automatic log collection. " +
+									"Discover the list of available services with the " +
+									"[Get list of AWS log ready services](https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services) endpoint.",
 								ElementType: types.StringType,
 								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							},
@@ -265,33 +277,48 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 			"metrics_config": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"automute_enabled": schema.BoolAttribute{
-						Required:    true,
+						Optional:    true,
+						Computed:    true,
 						Description: "Enable EC2 automute for AWS metrics",
+						Default:     booldefault.StaticBool(true),
 					},
 					"collect_cloudwatch_alarms": schema.BoolAttribute{
-						Required:    true,
+						Optional:    true,
+						Computed:    true,
 						Description: "Enable CloudWatch alarms collection",
+						Default:     booldefault.StaticBool(false),
 					},
 					"collect_custom_metrics": schema.BoolAttribute{
-						Required:    true,
+						Optional:    true,
+						Computed:    true,
 						Description: "Enable custom metrics collection",
+						Default:     booldefault.StaticBool(false),
 					},
 					"enabled": schema.BoolAttribute{
-						Required:    true,
+						Optional:    true,
+						Computed:    true,
 						Description: "Enable AWS metrics collection",
+						Default:     booldefault.StaticBool(true),
 					},
 				},
 				Blocks: map[string]schema.Block{
 					"tag_filters": schema.ListNestedBlock{
+						Description: "AWS Metrics Collection tag filters list. " +
+							"The array of custom AWS resource tags (in the form `key:value`) defines a filter that " +
+							"Datadog uses when collecting metrics from a specified service. Wildcards, such as `?` " +
+							"(match a single character) and `*` (match multiple characters), and exclusion using `!` " +
+							"before the tag are supported. For EC2, only hosts that match one of the defined tags will " +
+							"be imported into Datadog. The rest will be ignored. For example, `env:production,instance-type:c?.*,!region:us-east-1`.",
 						NestedObject: schema.NestedBlockObject{
 							Attributes: map[string]schema.Attribute{
 								"namespace": schema.StringAttribute{
 									Required:    true,
-									Description: "The AWS Namespace to apply the tag filters against",
+									Description: "The AWS service for which the tag filters defined in `tags` will be applied.",
 								},
 								"tags": schema.ListAttribute{
 									Optional:    true,
-									Description: "The tags to filter based on",
+									Computed:    true,
+									Description: "The AWS resource tags to filter on for the service specified by `namespace`.",
 									ElementType: types.StringType,
 								},
 							},
@@ -302,7 +329,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							"exclude_only": schema.ListAttribute{
 								Optional:    true,
 								Computed:    true,
-								Description: "Exclude only these namespaces",
+								Description: "Exclude only these namespaces from metrics collection. Defaults to `[\"AWS/SQS\", \"AWS/ElasticMapReduce\"]`. `AWS/SQS` and `AWS/ElasticMapReduce` are excluded by default to reduce your AWS CloudWatch costs from `GetMetricData` API calls.",
 								ElementType: types.StringType,
 								Default: listdefault.StaticValue(types.ListValueMust(
 									types.StringType, []attr.Value{
@@ -313,7 +340,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							},
 							"include_only": schema.ListAttribute{
 								Optional:    true,
-								Description: "Include only these namespaces",
+								Description: "Include only these namespaces for metrics collection.",
 								ElementType: types.StringType,
 							},
 						},
@@ -323,19 +350,28 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 			"resources_config": schema.SingleNestedBlock{
 				Attributes: map[string]schema.Attribute{
 					"cloud_security_posture_management_collection": schema.BoolAttribute{
-						Required:    true,
-						Description: "Whether Datadog collects cloud security posture management resources from your AWS account.",
+						Optional: true,
+						Computed: true,
+						Description: "Enable Cloud Security Management to scan AWS resources for vulnerabilities, " +
+							"misconfigurations, identity risks, and compliance violations. Requires `extended_collection` " +
+							"to be set to `true`.",
+						Default: booldefault.StaticBool(false),
 					},
 					"extended_collection": schema.BoolAttribute{
-						Required:    true,
-						Description: "Whether Datadog collects additional attributes and configuration information about the resources in your AWS account. Required for `cloud_security_posture_management_collection`.",
+						Optional: true,
+						Description: "Whether Datadog collects additional attributes and configuration information " +
+							"about the resources in your AWS account. Required for `cloud_security_posture_management_collection`.",
+						Computed: true,
+						Default:  booldefault.StaticBool(true),
 					},
 				},
 			},
 			"traces_config": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{},
+				Attributes:  map[string]schema.Attribute{},
+				Description: "AWS Traces Collection config.",
 				Blocks: map[string]schema.Block{
 					"xray_services": schema.SingleNestedBlock{
+						Description: "AWS X-Ray services to collect traces from.",
 						Attributes: map[string]schema.Attribute{
 							"include_all": schema.BoolAttribute{
 								Optional:    true,
@@ -343,8 +379,10 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							},
 							"include_only": schema.ListAttribute{
 								Optional:    true,
+								Computed:    true,
 								Description: "Include only these services",
 								ElementType: types.StringType,
+								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							},
 						},
 					},
@@ -355,7 +393,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 }
 
 func (r *integrationAwsAccountResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
 }
 
 func (r *integrationAwsAccountResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -408,6 +446,7 @@ func (r *integrationAwsAccountResource) Create(ctx context.Context, request reso
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
+
 	r.updateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
@@ -437,6 +476,7 @@ func (r *integrationAwsAccountResource) Update(ctx context.Context, request reso
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
+
 	r.updateState(ctx, &state, &resp)
 
 	// Save data into Terraform state
@@ -461,13 +501,13 @@ func (r *integrationAwsAccountResource) Delete(ctx context.Context, request reso
 	}
 }
 
-func buildStateAuthConfig(attributes datadogV2.AWSAccountResponseAttributes) *authConfigModel {
+func buildStateAuthConfig(attributes datadogV2.AWSAccountResponseAttributes, secretAccessKey basetypes.StringValue) *authConfigModel {
 	authConfigTf := authConfigModel{}
 	if authConfig, ok := attributes.GetAuthConfigOk(); ok {
 		if authConfig.AWSAuthConfigKeys != nil {
 			authConfigTf.AwsAuthConfigKeys = &awsAuthConfigKeysModel{}
 			authConfigTf.AwsAuthConfigKeys.AccessKeyId = types.StringValue(authConfig.AWSAuthConfigKeys.GetAccessKeyId())
-			authConfigTf.AwsAuthConfigKeys.SecretAccessKey = types.StringValue(authConfig.AWSAuthConfigKeys.GetSecretAccessKey())
+			authConfigTf.AwsAuthConfigKeys.SecretAccessKey = secretAccessKey
 		} else if authConfig.AWSAuthConfigRole != nil {
 			authConfigTf.AwsAuthConfigRole = &awsAuthConfigRoleModel{}
 			authConfigTf.AwsAuthConfigRole.RoleName = types.StringValue(authConfig.AWSAuthConfigRole.GetRoleName())
@@ -595,13 +635,13 @@ func buildStateTracesConfig(ctx context.Context, attributes datadogV2.AWSAccount
 			xrayServicesTf.IncludeOnly = includeOnly
 			diags.Append(d...)
 		}
-		tracesConfigTf.XrayServices = &xrayServicesTf
 	}
+	tracesConfigTf.XrayServices = &xrayServicesTf
 
 	return &tracesConfigTf
 }
 
-func buildStateAccountTags(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes, diags diag.Diagnostics) types.List {
+func buildStateAccountTags(ctx context.Context, attributes datadogV2.AWSAccountResponseAttributes) types.List {
 	accountTagsDd := attributes.GetAccountTags()
 	if accountTagsDd == nil {
 		accountTagsDd = []string{}
@@ -614,14 +654,20 @@ func (r *integrationAwsAccountResource) updateState(ctx context.Context, state *
 	state.ID = types.StringValue(resp.Data.GetId())
 	diags := diag.Diagnostics{}
 
+	// Use secret_access_key value from state
+	var secretAccessKey basetypes.StringValue
+	if state.AuthConfig.AwsAuthConfigKeys != nil {
+		secretAccessKey = state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey
+	}
+
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
 	state.AwsAccountId = types.StringValue(attributes.GetAwsAccountId())
 	state.AwsPartition = types.StringValue(string(attributes.GetAwsPartition()))
 	state.AwsRegions = buildStateAwsRegions(ctx, attributes, diags)
-	state.AuthConfig = buildStateAuthConfig(attributes)
-	state.AccountTags = buildStateAccountTags(ctx, attributes, diags)
+	state.AuthConfig = buildStateAuthConfig(attributes, secretAccessKey)
+	state.AccountTags = buildStateAccountTags(ctx, attributes)
 	state.LogsConfig = buildStateLogsConfig(ctx, attributes, diags)
 	state.MetricsConfig = buildStateMetricsConfig(ctx, attributes, diags)
 	state.ResourcesConfig = buildStateResourcesConfig(attributes)
@@ -670,7 +716,8 @@ func buildRequestAuthConfig(state *integrationAwsAccountModel) datadogV2.AWSAuth
 		if !state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.IsNull() {
 			authConfig.AWSAuthConfigKeys.SetAccessKeyId(state.AuthConfig.AwsAuthConfigKeys.AccessKeyId.ValueString())
 		}
-		if !state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.IsNull() {
+		if !state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.IsNull() &&
+			!state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.IsUnknown() {
 			authConfig.AWSAuthConfigKeys.SetSecretAccessKey(state.AuthConfig.AwsAuthConfigKeys.SecretAccessKey.ValueString())
 		}
 	}
