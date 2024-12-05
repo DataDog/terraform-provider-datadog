@@ -5,6 +5,7 @@
 # these separate resources:
 #    - datadog_integration_aws
 #    - datadog_integration_aws_lambda_arn
+#    - datadog_integration_aws_log_collection
 #    - datadog_integration_aws_tag_filter
 #
 # To migrate your account configuration from `datadog_integration_aws*` resources to `datadog_integration_aws_account`:
@@ -12,6 +13,7 @@
 # 2. Run `terraform state rm` to delete all resources of the following types from state:
 #    - datadog_integration_aws
 #    - datadog_integration_aws_lambda_arn
+#    - datadog_integration_aws_log_collection
 #    - datadog_integration_aws_tag_filter
 #
 
