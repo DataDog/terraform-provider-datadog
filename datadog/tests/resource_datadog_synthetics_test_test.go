@@ -158,6 +158,29 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 		},
 	})
 }
+func TestAccDatadogSyntheticsMobileTest_importBasic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: createSyntheticsMobileTestConfig(testName),
+			},
+			{
+				ResourceName:            "datadog_synthetics_test.bar",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"mobile_options_list", "config_variable", "mobile_step"},
+			},
+		},
+	})
+}
 
 func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 	t.Parallel()
@@ -458,6 +481,37 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
 			updateSyntheticsBrowserTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsMobileTest_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMobileTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMobileTestStep(ctx, accProvider, t),
+			updateSyntheticsMobileTestStep(ctx, accProvider, t),
 		},
 	})
 }
@@ -5102,6 +5156,372 @@ resource "datadog_synthetics_test" "file_upload" {
 	}
 }
 `, testName, bodyType, fileBlocks)
+}
+
+func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+
+	return resource.TestStep{
+		Config: createSyntheticsMobileTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "mobile"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.example", "123"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.name", "VARIABLE_NAME"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.pattern", "{{numeric(3)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.secure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.test_process_argument", "test1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.test_process_argument_too", "test2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.%", "17"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.count", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.interval", "300"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.tick_every", "43200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.day", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.from", "07:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.to", "16:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.day", "7"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.from", "07:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.to", "16:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timezone", "UTC"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.%", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.renotify_interval", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.escalation_message", "test escalation message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.renotify_occurrences", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.notification_preset_name", "show_all"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_priority", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.0", "role1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.1", "role2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.0.execution_rule", "blocking"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.default_step_timeout", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.0", "synthetics:mobile:device:apple_iphone_14_plus_ios_16"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.1", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.no_screenshot", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.allow_application_crash", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.disable_auto_accept_alert", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.application_id", "ab0e0aed-536d-411a-9a99-5428c27d8f8e"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_id", "6115922a-5f5d-455e-bc7e-7955a57f3815"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_type", "version"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+		),
+	}
+}
+
+func createSyntheticsMobileTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+	type = "mobile"
+	config_variable {
+		example = "123"
+		name = "VARIABLE_NAME"
+		pattern = "{{numeric(3)}}"
+		type = "text"
+		secure = false
+	}
+	config_initial_application_arguments = {
+		test_process_argument = "test1"
+		test_process_argument_too = "test2"
+	}
+	locations = []
+	mobile_options_list {
+		min_failure_duration = 0
+		retry {
+			count = 0
+			interval = 300
+		}
+		tick_every = 43200
+		scheduling {
+			timeframes {
+				day = 5
+				from = "07:00"
+				to = "16:00"
+			}
+			timeframes {
+				day = 7
+				from = "07:00"
+				to = "16:00"
+			}
+			timezone = "UTC"
+		}
+		monitor_name = "%[1]s-monitor"
+		monitor_options {
+			renotify_interval = 10
+			escalation_message = "test escalation message"
+			renotify_occurrences = 3
+			notification_preset_name = "show_all"
+		}
+		monitor_priority = 5
+		restricted_roles = ["role1", "role2"]
+		ci {
+			execution_rule = "blocking"
+		}
+		default_step_timeout = 10
+		device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"]
+		no_screenshot = true
+		allow_application_crash = false
+		disable_auto_accept_alert = true
+		mobile_application {
+			application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+			reference_id = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+			reference_type = "version"
+		}
+	}
+	name = "%[1]s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+	status = "paused"
+}`, uniq)
+}
+
+func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
+	return resource.TestStep{
+		Config: updateSyntheticsMobileTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "mobile"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.name", "NEW_VARIABLE_NAME"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.secure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.test_process_argument", "test2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.%", "17"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.min_failure_duration", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.count", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.interval", "400"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.tick_every", "45000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.day", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.from", "08:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.to", "18:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.day", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.from", "08:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.to", "18:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timezone", "Africa/Algiers"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_name", fmt.Sprintf(`%s-monitor-updated`, testName)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.%", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.renotify_interval", "20"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.escalation_message", "updated test escalation message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.renotify_occurrences", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.notification_preset_name", "hide_query"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_priority", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.0", "role3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.1", "role4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.0.execution_rule", "skipped"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.default_step_timeout", "20"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.0", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.no_screenshot", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.allow_application_crash", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.disable_auto_accept_alert", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.application_id", "ab0e0aed-536d-411a-9a99-5428c27d8f8e"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_id", "6115922a-5f5d-455e-bc7e-7955a57f3815"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_type", "version"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", fmt.Sprintf(`%s-updated`, testName)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "bar:foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "buz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "status", "live"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+		),
+	}
+}
+
+func updateSyntheticsMobileTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+	type = "mobile"
+	config_variable {
+		name = "NEW_VARIABLE_NAME"
+		type = "text"
+		secure = true
+	}
+	config_initial_application_arguments = {
+		test_process_argument = "test2"
+	}
+	locations = []
+	mobile_options_list {
+		min_failure_duration = 1
+		retry {
+			count = 2
+			interval = 400
+		}
+		tick_every = 45000
+		scheduling {
+			timeframes {
+				day = 3
+				from = "08:00"
+				to = "18:00"
+			}
+			timeframes {
+				day = 4
+				from = "08:00"
+				to = "18:00"
+			}
+			timezone = "Africa/Algiers"
+		}
+		monitor_name = "%[1]s-monitor-updated"
+		monitor_options {
+			renotify_interval = 20
+			escalation_message = "updated test escalation message"
+			renotify_occurrences = 4
+			notification_preset_name = "hide_query"
+		}
+		monitor_priority = 4
+		restricted_roles = ["role3", "role4"]
+		ci {
+			execution_rule = "skipped"
+		}
+		default_step_timeout = 20
+		device_ids = ["synthetics:mobile:device:apple_iphone_14_pro_ios_16"]
+		no_screenshot = false
+		allow_application_crash = true
+		disable_auto_accept_alert = false
+		mobile_application {
+			application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+			reference_id = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+			reference_type = "version"
+		}
+	}
+	name = "%[1]s-updated"
+	message = "Notify @pagerduty"
+	tags = ["bar:foo", "buz"]
+	status = "live"
+}`, uniq)
 }
 
 func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {

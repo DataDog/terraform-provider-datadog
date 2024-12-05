@@ -13,7 +13,10 @@ import (
 )
 
 func TestAccDatadogDomainAllowlist_CreateUpdate(t *testing.T) {
-
+	if !isReplaying() {
+		// Skip in non-replay mode due to backend replication delay issues.
+		t.Skip("This test only runs in replay mode")
+	}
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	// When generating the casette, it may be necessary to add sleep functions before the check
