@@ -1842,6 +1842,24 @@ func TestAccDatadogMonitor_DefaultTags(t *testing.T) {
 						"datadog_monitor.foo", "tags.*", "no_value"),
 				),
 			},
+			{ // Tags with colons in the value work correctly
+				Config: testAccCheckDatadogMonitorConfig(uniqueEntityName(ctx, t)),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"repo_url": "https://github.com/repo/path",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "baz"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "foo:bar"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_monitor.foo", "tags.*", "repo_url:https://github.com/repo/path"),
+				),
+			},
 			{ // Works with monitors without a tag attribute
 				Config: testAccCheckDatadogMonitorConfigNoTag(uniqueEntityName(ctx, t)),
 				ProviderFactories: map[string]func() (*schema.Provider, error){
