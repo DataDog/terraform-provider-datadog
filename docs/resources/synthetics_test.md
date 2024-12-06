@@ -1164,8 +1164,8 @@ Optional:
 
 Optional:
 
-- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Defaults to `0`.
-- `interval` (Number) Interval between a failed test and the next retry in milliseconds. Defaults to `300`.
+- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `5`. Defaults to `0`.
+- `interval` (Number) Interval between a failed test and the next retry in milliseconds. Maximum value: `5000`. Defaults to `300`.
 
 
 <a id="nestedblock--mobile_options_list--scheduling"></a>
