@@ -332,7 +332,7 @@ func resourceDatadogMonitor() *schema.Resource {
 				"enable_samples": {
 					Description: "Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.",
 					Type:        schema.TypeBool,
-					Computed:    true,
+					Optional:    true,
 				},
 				"force_delete": {
 					Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).",
