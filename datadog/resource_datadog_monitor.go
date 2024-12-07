@@ -23,6 +23,8 @@ import (
 
 const defaultNoDataTimeframeMinutes = 10
 
+const restrictedRolesClearedKey = "restricted_roles_cleared"
+
 var retryTimeout = time.Minute
 
 func resourceDatadogMonitor() *schema.Resource {
@@ -32,7 +34,7 @@ func resourceDatadogMonitor() *schema.Resource {
 		ReadContext:   resourceDatadogMonitorRead,
 		UpdateContext: resourceDatadogMonitorUpdate,
 		DeleteContext: resourceDatadogMonitorDelete,
-		CustomizeDiff: customdiff.All(resourceDatadogMonitorCustomizeDiff, tagDiff),
+		CustomizeDiff: customdiff.All(resourceDatadogMonitorCustomizeDiff, detectChangesInRestrictedRoles, tagDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -557,7 +559,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 	}
 }
 
-func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
+func buildMonitorStruct(d utils.Resource, meta interface{}) (*datadogV1.Monitor, *datadogV1.MonitorUpdateRequest) {
 	var thresholds datadogV1.MonitorThresholds
 
 	if r, ok := d.GetOk("monitor_thresholds.0.ok"); ok {
@@ -789,8 +791,20 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 		}
 		sort.Strings(roles)
 	}
-	m.SetRestrictedRoles(roles)
-	u.SetRestrictedRoles(roles)
+	// Setting an empty list for restricted roles will delete any associated
+	// restriction policy (if one exists). Therefore, we should only set
+	// an empty list if it represents an intentional removal of existing
+	// restricted roles, rather than an unchanged empty value.
+	providerConf := meta.(*ProviderConfiguration)
+	restrictedRolesCleared := false
+	_, ok := providerConf.Metadata[restrictedRolesClearedKey]
+	if ok {
+		restrictedRolesCleared = providerConf.Metadata[restrictedRolesClearedKey].(bool)
+	}
+	if len(roles) > 0 || restrictedRolesCleared {
+		m.SetRestrictedRoles(roles)
+		u.SetRestrictedRoles(roles)
+	}
 
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
@@ -889,7 +903,7 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 		// Explicitly skip validation
 		return nil
 	}
-	m, _ := buildMonitorStruct(diff)
+	m, _ := buildMonitorStruct(diff, meta)
 
 	hasID := false
 	id, err := strconv.ParseInt(diff.Id(), 10, 64)
@@ -917,12 +931,28 @@ func resourceDatadogMonitorCustomizeDiff(ctx context.Context, diff *schema.Resou
 	})
 }
 
+func detectChangesInRestrictedRoles(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	providerConf := meta.(*ProviderConfiguration)
+	if providerConf.Metadata == nil {
+		providerConf.Metadata = make(map[string]interface{})
+	}
+	oldVal, newVal := diff.GetChange("restricted_roles")
+	oldRestrictedRoles := oldVal.(*schema.Set).List()
+	newRestrictedRoles := newVal.(*schema.Set).List()
+	if len(oldRestrictedRoles) > 0 && len(newRestrictedRoles) == 0 {
+		providerConf.Metadata[restrictedRolesClearedKey] = true
+	} else {
+		providerConf.Metadata[restrictedRolesClearedKey] = false
+	}
+	return nil
+}
+
 func resourceDatadogMonitorCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	providerConf := meta.(*ProviderConfiguration)
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	m, _ := buildMonitorStruct(d)
+	m, _ := buildMonitorStruct(d, meta)
 	mCreated, httpResponse, err := apiInstances.GetMonitorsApiV1().CreateMonitor(auth, *m)
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error creating monitor")
@@ -1264,7 +1294,7 @@ func resourceDatadogMonitorUpdate(ctx context.Context, d *schema.ResourceData, m
 	apiInstances := providerConf.DatadogApiInstances
 	auth := providerConf.Auth
 
-	_, m := buildMonitorStruct(d)
+	_, m := buildMonitorStruct(d, meta)
 	i, err := strconv.ParseInt(d.Id(), 10, 64)
 	if err != nil {
 		return diag.FromErr(err)
