@@ -467,16 +467,7 @@ func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) erro
 	tags := make(map[string]interface{})
 	tagSet := resourceTags.(*schema.Set)
 	for _, tag := range tagSet.List() {
-		kv := strings.Split(tag.(string), ":")
-		var key, value string
-		switch len(kv) {
-		case 2:
-			key, value = kv[0], kv[1]
-		case 1:
-			key, value = kv[0], ""
-		default:
-			return fmt.Errorf("invalid tag: '%s'", tag)
-		}
+		key, value, _ := strings.Cut(tag.(string), ":")
 		tags[key] = value
 	}
 	for k, v := range providerConf.DefaultTags {
