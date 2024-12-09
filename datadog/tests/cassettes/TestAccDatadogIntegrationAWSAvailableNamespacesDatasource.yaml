@@ -1,0 +1,201 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/available_namespaces
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"namespaces","type":"namespaces","attributes":{"namespaces":["AWS/ApiGateway","AWS/AppRunner","AWS/AppStream","AWS/AppSync","AWS/ApplicationELB","AWS/Athena","AWS/AutoScaling","AWS/Backup","AWS/Bedrock","AWS/Billing","AWS/Budgeting","AWS/CertificateManager","AWS/ELB","AWS/CloudFront","AWS/CloudHSM","AWS/CloudSearch","AWS/Logs","AWS/CodeBuild","AWS/CodeWhisperer","AWS/Cognito","AWS/Config","AWS/Connect","AWS/DMS","AWS/DX","AWS/DocDB","AWS/DynamoDB","AWS/DAX","AWS/EC2","AWS/EC2/API","AWS/EC2/InfrastructurePerformance","AWS/EC2Spot","AWS/ElasticMapReduce","AWS/ElastiCache","AWS/ElasticBeanstalk","AWS/EBS","AWS/ECR","AWS/ECS","AWS/EFS","AWS/ElasticInference","AWS/ElasticTranscoder","AWS/MediaConnect","AWS/MediaConvert","AWS/MediaLive","AWS/MediaPackage","AWS/MediaStore","AWS/MediaTailor","AWS/Events","AWS/FSx","AWS/GameLift","AWS/GlobalAccelerator","Glue","AWS/Inspector","AWS/IoT","AWS/KMS","AWS/Cassandra","AWS/Kinesis","AWS/KinesisAnalytics","AWS/Firehose","AWS/Lambda","AWS/Lex","AWS/AmazonMQ","AWS/ML","AWS/Kafka","AmazonMWAA","AWS/MemoryDB","AWS/NATGateway","AWS/Neptune","AWS/NetworkFirewall","AWS/NetworkELB","AWS/Network Manager","AWS/NetworkMonitor","AWS/ES","AWS/AOSS","AWS/OpsWorks","AWS/PCS","AWS/Polly","AWS/PrivateLinkEndpoints","AWS/PrivateLinkServices","AWS/RDS","AWS/RDS/Proxy","AWS/Redshift","AWS/Rekognition","AWS/Route53","AWS/Route53Resolver","AWS/S3","AWS/S3/Storage-Lens","AWS/SageMaker","/aws/sagemaker/Endpoints","AWS/Sagemaker/LabelingJobs","AWS/Sagemaker/ModelBuildingPipeline","/aws/sagemaker/ProcessingJobs","/aws/sagemaker/TrainingJobs","/aws/sagemaker/TransformJobs","AWS/SageMaker/Workteam","AWS/ServiceQuotas","AWS/DDoSProtection","AWS/SES","AWS/SNS","AWS/SQS","AWS/SWF","AWS/States","AWS/StorageGateway","AWS/Textract","AWS/TransitGateway","AWS/Translate","AWS/TrustedAdvisor","AWS/Usage","AWS/VPN","WAF","AWS/WAFV2","AWS/WorkSpaces","AWS/X-Ray"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 146.656666ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/available_namespaces
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"namespaces","type":"namespaces","attributes":{"namespaces":["AWS/ApiGateway","AWS/AppRunner","AWS/AppStream","AWS/AppSync","AWS/ApplicationELB","AWS/Athena","AWS/AutoScaling","AWS/Backup","AWS/Bedrock","AWS/Billing","AWS/Budgeting","AWS/CertificateManager","AWS/ELB","AWS/CloudFront","AWS/CloudHSM","AWS/CloudSearch","AWS/Logs","AWS/CodeBuild","AWS/CodeWhisperer","AWS/Cognito","AWS/Config","AWS/Connect","AWS/DMS","AWS/DX","AWS/DocDB","AWS/DynamoDB","AWS/DAX","AWS/EC2","AWS/EC2/API","AWS/EC2/InfrastructurePerformance","AWS/EC2Spot","AWS/ElasticMapReduce","AWS/ElastiCache","AWS/ElasticBeanstalk","AWS/EBS","AWS/ECR","AWS/ECS","AWS/EFS","AWS/ElasticInference","AWS/ElasticTranscoder","AWS/MediaConnect","AWS/MediaConvert","AWS/MediaLive","AWS/MediaPackage","AWS/MediaStore","AWS/MediaTailor","AWS/Events","AWS/FSx","AWS/GameLift","AWS/GlobalAccelerator","Glue","AWS/Inspector","AWS/IoT","AWS/KMS","AWS/Cassandra","AWS/Kinesis","AWS/KinesisAnalytics","AWS/Firehose","AWS/Lambda","AWS/Lex","AWS/AmazonMQ","AWS/ML","AWS/Kafka","AmazonMWAA","AWS/MemoryDB","AWS/NATGateway","AWS/Neptune","AWS/NetworkFirewall","AWS/NetworkELB","AWS/Network Manager","AWS/NetworkMonitor","AWS/ES","AWS/AOSS","AWS/OpsWorks","AWS/PCS","AWS/Polly","AWS/PrivateLinkEndpoints","AWS/PrivateLinkServices","AWS/RDS","AWS/RDS/Proxy","AWS/Redshift","AWS/Rekognition","AWS/Route53","AWS/Route53Resolver","AWS/S3","AWS/S3/Storage-Lens","AWS/SageMaker","/aws/sagemaker/Endpoints","AWS/Sagemaker/LabelingJobs","AWS/Sagemaker/ModelBuildingPipeline","/aws/sagemaker/ProcessingJobs","/aws/sagemaker/TrainingJobs","/aws/sagemaker/TransformJobs","AWS/SageMaker/Workteam","AWS/ServiceQuotas","AWS/DDoSProtection","AWS/SES","AWS/SNS","AWS/SQS","AWS/SWF","AWS/States","AWS/StorageGateway","AWS/Textract","AWS/TransitGateway","AWS/Translate","AWS/TrustedAdvisor","AWS/Usage","AWS/VPN","WAF","AWS/WAFV2","AWS/WorkSpaces","AWS/X-Ray"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 77.663875ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/available_namespaces
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"namespaces","type":"namespaces","attributes":{"namespaces":["AWS/ApiGateway","AWS/AppRunner","AWS/AppStream","AWS/AppSync","AWS/ApplicationELB","AWS/Athena","AWS/AutoScaling","AWS/Backup","AWS/Bedrock","AWS/Billing","AWS/Budgeting","AWS/CertificateManager","AWS/ELB","AWS/CloudFront","AWS/CloudHSM","AWS/CloudSearch","AWS/Logs","AWS/CodeBuild","AWS/CodeWhisperer","AWS/Cognito","AWS/Config","AWS/Connect","AWS/DMS","AWS/DX","AWS/DocDB","AWS/DynamoDB","AWS/DAX","AWS/EC2","AWS/EC2/API","AWS/EC2/InfrastructurePerformance","AWS/EC2Spot","AWS/ElasticMapReduce","AWS/ElastiCache","AWS/ElasticBeanstalk","AWS/EBS","AWS/ECR","AWS/ECS","AWS/EFS","AWS/ElasticInference","AWS/ElasticTranscoder","AWS/MediaConnect","AWS/MediaConvert","AWS/MediaLive","AWS/MediaPackage","AWS/MediaStore","AWS/MediaTailor","AWS/Events","AWS/FSx","AWS/GameLift","AWS/GlobalAccelerator","Glue","AWS/Inspector","AWS/IoT","AWS/KMS","AWS/Cassandra","AWS/Kinesis","AWS/KinesisAnalytics","AWS/Firehose","AWS/Lambda","AWS/Lex","AWS/AmazonMQ","AWS/ML","AWS/Kafka","AmazonMWAA","AWS/MemoryDB","AWS/NATGateway","AWS/Neptune","AWS/NetworkFirewall","AWS/NetworkELB","AWS/Network Manager","AWS/NetworkMonitor","AWS/ES","AWS/AOSS","AWS/OpsWorks","AWS/PCS","AWS/Polly","AWS/PrivateLinkEndpoints","AWS/PrivateLinkServices","AWS/RDS","AWS/RDS/Proxy","AWS/Redshift","AWS/Rekognition","AWS/Route53","AWS/Route53Resolver","AWS/S3","AWS/S3/Storage-Lens","AWS/SageMaker","/aws/sagemaker/Endpoints","AWS/Sagemaker/LabelingJobs","AWS/Sagemaker/ModelBuildingPipeline","/aws/sagemaker/ProcessingJobs","/aws/sagemaker/TrainingJobs","/aws/sagemaker/TransformJobs","AWS/SageMaker/Workteam","AWS/ServiceQuotas","AWS/DDoSProtection","AWS/SES","AWS/SNS","AWS/SQS","AWS/SWF","AWS/States","AWS/StorageGateway","AWS/Textract","AWS/TransitGateway","AWS/Translate","AWS/TrustedAdvisor","AWS/Usage","AWS/VPN","WAF","AWS/WAFV2","AWS/WorkSpaces","AWS/X-Ray"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 70.8455ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/available_namespaces
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"namespaces","type":"namespaces","attributes":{"namespaces":["AWS/ApiGateway","AWS/AppRunner","AWS/AppStream","AWS/AppSync","AWS/ApplicationELB","AWS/Athena","AWS/AutoScaling","AWS/Backup","AWS/Bedrock","AWS/Billing","AWS/Budgeting","AWS/CertificateManager","AWS/ELB","AWS/CloudFront","AWS/CloudHSM","AWS/CloudSearch","AWS/Logs","AWS/CodeBuild","AWS/CodeWhisperer","AWS/Cognito","AWS/Config","AWS/Connect","AWS/DMS","AWS/DX","AWS/DocDB","AWS/DynamoDB","AWS/DAX","AWS/EC2","AWS/EC2/API","AWS/EC2/InfrastructurePerformance","AWS/EC2Spot","AWS/ElasticMapReduce","AWS/ElastiCache","AWS/ElasticBeanstalk","AWS/EBS","AWS/ECR","AWS/ECS","AWS/EFS","AWS/ElasticInference","AWS/ElasticTranscoder","AWS/MediaConnect","AWS/MediaConvert","AWS/MediaLive","AWS/MediaPackage","AWS/MediaStore","AWS/MediaTailor","AWS/Events","AWS/FSx","AWS/GameLift","AWS/GlobalAccelerator","Glue","AWS/Inspector","AWS/IoT","AWS/KMS","AWS/Cassandra","AWS/Kinesis","AWS/KinesisAnalytics","AWS/Firehose","AWS/Lambda","AWS/Lex","AWS/AmazonMQ","AWS/ML","AWS/Kafka","AmazonMWAA","AWS/MemoryDB","AWS/NATGateway","AWS/Neptune","AWS/NetworkFirewall","AWS/NetworkELB","AWS/Network Manager","AWS/NetworkMonitor","AWS/ES","AWS/AOSS","AWS/OpsWorks","AWS/PCS","AWS/Polly","AWS/PrivateLinkEndpoints","AWS/PrivateLinkServices","AWS/RDS","AWS/RDS/Proxy","AWS/Redshift","AWS/Rekognition","AWS/Route53","AWS/Route53Resolver","AWS/S3","AWS/S3/Storage-Lens","AWS/SageMaker","/aws/sagemaker/Endpoints","AWS/Sagemaker/LabelingJobs","AWS/Sagemaker/ModelBuildingPipeline","/aws/sagemaker/ProcessingJobs","/aws/sagemaker/TrainingJobs","/aws/sagemaker/TransformJobs","AWS/SageMaker/Workteam","AWS/ServiceQuotas","AWS/DDoSProtection","AWS/SES","AWS/SNS","AWS/SQS","AWS/SWF","AWS/States","AWS/StorageGateway","AWS/Textract","AWS/TransitGateway","AWS/Translate","AWS/TrustedAdvisor","AWS/Usage","AWS/VPN","WAF","AWS/WAFV2","AWS/WorkSpaces","AWS/X-Ray"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 42.45ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/available_namespaces
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"namespaces","type":"namespaces","attributes":{"namespaces":["AWS/ApiGateway","AWS/AppRunner","AWS/AppStream","AWS/AppSync","AWS/ApplicationELB","AWS/Athena","AWS/AutoScaling","AWS/Backup","AWS/Bedrock","AWS/Billing","AWS/Budgeting","AWS/CertificateManager","AWS/ELB","AWS/CloudFront","AWS/CloudHSM","AWS/CloudSearch","AWS/Logs","AWS/CodeBuild","AWS/CodeWhisperer","AWS/Cognito","AWS/Config","AWS/Connect","AWS/DMS","AWS/DX","AWS/DocDB","AWS/DynamoDB","AWS/DAX","AWS/EC2","AWS/EC2/API","AWS/EC2/InfrastructurePerformance","AWS/EC2Spot","AWS/ElasticMapReduce","AWS/ElastiCache","AWS/ElasticBeanstalk","AWS/EBS","AWS/ECR","AWS/ECS","AWS/EFS","AWS/ElasticInference","AWS/ElasticTranscoder","AWS/MediaConnect","AWS/MediaConvert","AWS/MediaLive","AWS/MediaPackage","AWS/MediaStore","AWS/MediaTailor","AWS/Events","AWS/FSx","AWS/GameLift","AWS/GlobalAccelerator","Glue","AWS/Inspector","AWS/IoT","AWS/KMS","AWS/Cassandra","AWS/Kinesis","AWS/KinesisAnalytics","AWS/Firehose","AWS/Lambda","AWS/Lex","AWS/AmazonMQ","AWS/ML","AWS/Kafka","AmazonMWAA","AWS/MemoryDB","AWS/NATGateway","AWS/Neptune","AWS/NetworkFirewall","AWS/NetworkELB","AWS/Network Manager","AWS/NetworkMonitor","AWS/ES","AWS/AOSS","AWS/OpsWorks","AWS/PCS","AWS/Polly","AWS/PrivateLinkEndpoints","AWS/PrivateLinkServices","AWS/RDS","AWS/RDS/Proxy","AWS/Redshift","AWS/Rekognition","AWS/Route53","AWS/Route53Resolver","AWS/S3","AWS/S3/Storage-Lens","AWS/SageMaker","/aws/sagemaker/Endpoints","AWS/Sagemaker/LabelingJobs","AWS/Sagemaker/ModelBuildingPipeline","/aws/sagemaker/ProcessingJobs","/aws/sagemaker/TrainingJobs","/aws/sagemaker/TransformJobs","AWS/SageMaker/Workteam","AWS/ServiceQuotas","AWS/DDoSProtection","AWS/SES","AWS/SNS","AWS/SQS","AWS/SWF","AWS/States","AWS/StorageGateway","AWS/Textract","AWS/TransitGateway","AWS/Translate","AWS/TrustedAdvisor","AWS/Usage","AWS/VPN","WAF","AWS/WAFV2","AWS/WorkSpaces","AWS/X-Ray"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 67.002083ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/integration/aws/available_namespaces
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"data":{"id":"namespaces","type":"namespaces","attributes":{"namespaces":["AWS/ApiGateway","AWS/AppRunner","AWS/AppStream","AWS/AppSync","AWS/ApplicationELB","AWS/Athena","AWS/AutoScaling","AWS/Backup","AWS/Bedrock","AWS/Billing","AWS/Budgeting","AWS/CertificateManager","AWS/ELB","AWS/CloudFront","AWS/CloudHSM","AWS/CloudSearch","AWS/Logs","AWS/CodeBuild","AWS/CodeWhisperer","AWS/Cognito","AWS/Config","AWS/Connect","AWS/DMS","AWS/DX","AWS/DocDB","AWS/DynamoDB","AWS/DAX","AWS/EC2","AWS/EC2/API","AWS/EC2/InfrastructurePerformance","AWS/EC2Spot","AWS/ElasticMapReduce","AWS/ElastiCache","AWS/ElasticBeanstalk","AWS/EBS","AWS/ECR","AWS/ECS","AWS/EFS","AWS/ElasticInference","AWS/ElasticTranscoder","AWS/MediaConnect","AWS/MediaConvert","AWS/MediaLive","AWS/MediaPackage","AWS/MediaStore","AWS/MediaTailor","AWS/Events","AWS/FSx","AWS/GameLift","AWS/GlobalAccelerator","Glue","AWS/Inspector","AWS/IoT","AWS/KMS","AWS/Cassandra","AWS/Kinesis","AWS/KinesisAnalytics","AWS/Firehose","AWS/Lambda","AWS/Lex","AWS/AmazonMQ","AWS/ML","AWS/Kafka","AmazonMWAA","AWS/MemoryDB","AWS/NATGateway","AWS/Neptune","AWS/NetworkFirewall","AWS/NetworkELB","AWS/Network Manager","AWS/NetworkMonitor","AWS/ES","AWS/AOSS","AWS/OpsWorks","AWS/PCS","AWS/Polly","AWS/PrivateLinkEndpoints","AWS/PrivateLinkServices","AWS/RDS","AWS/RDS/Proxy","AWS/Redshift","AWS/Rekognition","AWS/Route53","AWS/Route53Resolver","AWS/S3","AWS/S3/Storage-Lens","AWS/SageMaker","/aws/sagemaker/Endpoints","AWS/Sagemaker/LabelingJobs","AWS/Sagemaker/ModelBuildingPipeline","/aws/sagemaker/ProcessingJobs","/aws/sagemaker/TrainingJobs","/aws/sagemaker/TransformJobs","AWS/SageMaker/Workteam","AWS/ServiceQuotas","AWS/DDoSProtection","AWS/SES","AWS/SNS","AWS/SQS","AWS/SWF","AWS/States","AWS/StorageGateway","AWS/Textract","AWS/TransitGateway","AWS/Translate","AWS/TrustedAdvisor","AWS/Usage","AWS/VPN","WAF","AWS/WAFV2","AWS/WorkSpaces","AWS/X-Ray"]}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 60.665667ms
