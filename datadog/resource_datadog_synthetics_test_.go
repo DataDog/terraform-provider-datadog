@@ -1009,6 +1009,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Default:          "http",
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPITestStepSubtypeFromValue, datadogV1.NewSyntheticsAPIWaitStepSubtypeFromValue),
 				},
+				"exit_if_succeed": {
+					Description: "Determines whether or not to exit the test if the step succeeds.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 				"extracted_value": {
 					Description: "Values to parse and save as variables from the response.",
 					Type:        schema.TypeList,
@@ -2107,6 +2112,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 
 				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
+				localStep["exit_if_succeed"] = step.SyntheticsAPITestStep.GetExitIfSucceed()
 				localStep["is_critical"] = step.SyntheticsAPITestStep.GetIsCritical()
 
 				if retry, ok := step.SyntheticsAPITestStep.GetRetryOk(); ok {
@@ -2427,6 +2433,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 				step.SyntheticsAPITestStep.SetRequest(request)
 
 				step.SyntheticsAPITestStep.SetAllowFailure(stepMap["allow_failure"].(bool))
+				step.SyntheticsAPITestStep.SetExitIfSucceed(stepMap["exit_if_succeed"].(bool))
 				step.SyntheticsAPITestStep.SetIsCritical(stepMap["is_critical"].(bool))
 
 				optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
