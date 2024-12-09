@@ -36,6 +36,12 @@ func resourceDatadogRole() *schema.Resource {
 					Required:    true,
 					Description: "Name of the role.",
 				},
+				"default_permissions_opt_out": {
+					Type:        schema.TypeBool,
+					Optional:    true,
+					Default:     false,
+					Description: "If set to `true`, the role will not have default permissions unless they are explicitly set.",
+				},
 				"permission": {
 					Type:        schema.TypeSet,
 					Optional:    true,
@@ -302,6 +308,9 @@ func buildRoleCreateRequest(d *schema.ResourceData) *datadogV2.RoleCreateRequest
 
 	// Set attributes
 	roleCreateAttrs.SetName(d.Get("name").(string))
+	roleCreateAttrs.AdditionalProperties = map[string]any{
+		"default_permissions_opt_out": true,
+	}
 	roleCreateData.SetAttributes(*roleCreateAttrs)
 
 	// Set permission relationships
