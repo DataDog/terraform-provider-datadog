@@ -4555,6 +4555,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.exit_if_succeed", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "POST"),
@@ -4845,6 +4847,7 @@ resource "datadog_synthetics_test" "multi" {
 
   api_step {
     name = "First api step"
+	exit_if_succeed = true
     request_definition {
       method           = "POST"
       url              = "https://www.datadoghq.com"
