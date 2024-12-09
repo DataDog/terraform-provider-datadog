@@ -16,6 +16,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/hashicorp/go-cty/cty"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
@@ -2355,7 +2357,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 	if attr, ok := d.GetOk("api_step"); ok && syntheticsTest.GetSubtype() == "multi" {
 		steps := []datadogV1.SyntheticsAPIStep{}
 
-		for _, s := range attr.([]interface{}) {
+		for i, s := range attr.([]interface{}) {
 			step := datadogV1.SyntheticsAPIStep{}
 			stepMap := s.(map[string]interface{})
 
@@ -2420,6 +2422,12 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 							request.SetFiles(buildDatadogBodyFiles(attr.([]interface{})))
 						}
 					}
+				}
+				// Override the request client certificate with the one from the config
+				rawConfig := d.GetRawConfig()
+				configCert, configKey := getConfigCertificate(rawConfig, i)
+				if configCert != nil && configKey != nil {
+					overrideStateCertificate(stepMap["request_client_certificate"].([]interface{}), *configCert, *configKey)
 				}
 
 				request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
@@ -4432,4 +4440,72 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 		}
 	}
 	return
+}
+
+func getConfigCertificate(rawConfig cty.Value, stepIndex int) (*string, *string) {
+
+	basePath := cty.GetAttrPath("api_step").
+		Index(cty.NumberIntVal(int64(stepIndex))).
+		GetAttr("request_client_certificate").
+		Index(cty.NumberIntVal(0))
+
+	// Construct paths to the cert and key content
+	certPath := basePath.
+		GetAttr("cert").
+		Index(cty.NumberIntVal(0)).
+		GetAttr("content")
+
+	keyPath := basePath.
+		GetAttr("key").
+		Index(cty.NumberIntVal(0)).
+		GetAttr("content")
+
+	// Apply paths to retrieve the cert and key
+	certValue, err := certPath.Apply(rawConfig)
+	if err != nil || !certValue.IsKnown() || certValue.IsNull() {
+		return nil, nil
+	}
+
+	keyValue, err := keyPath.Apply(rawConfig)
+	if err != nil || !keyValue.IsKnown() || keyValue.IsNull() {
+		return nil, nil
+	}
+
+	// Convert certValue and keyValue to strings
+	certString := certValue.AsString()
+	keyString := keyValue.AsString()
+
+	return &certString, &keyString
+}
+
+func overrideStateCertificate(requestClientCertificates []interface{}, configCert, configKey string) error {
+
+	if len(requestClientCertificates) == 0 {
+		return fmt.Errorf("requestClientCertificates is empty")
+	}
+	requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("requestClientCertificates[0] is not a map")
+	}
+	certList, ok := requestClientCertificate["cert"].([]interface{})
+	if !ok || len(certList) == 0 {
+		return fmt.Errorf("cert is not a valid list or is empty")
+	}
+	cert, ok := certList[0].(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("cert[0] is not a map")
+	}
+	cert["content"] = configCert
+
+	keyList, ok := requestClientCertificate["key"].([]interface{})
+	if !ok || len(keyList) == 0 {
+		return fmt.Errorf("key is not a valid list or is empty")
+	}
+	key, ok := keyList[0].(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("key[0] is not a map")
+	}
+	key["content"] = configKey
+
+	return nil
 }
