@@ -15,8 +15,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
-// validPermissions is a map of all unrestricted permission IDs to their name
-var validPermissions map[string]string
+// unrestrictedPermissions is a map of all unrestricted permission IDs to their name
+var unrestrictedPermissions map[string]string
+
+// restrictedPermissions is a map of all restricted permission IDs to their name
+var restrictedPermissions map[string]string
 
 func resourceDatadogRole() *schema.Resource {
 	return &schema.Resource{
@@ -86,9 +89,34 @@ func GetRolePermissionSchema() *schema.Resource {
 	}
 }
 
+func getAllPermissions(ctx context.Context, apiInstances *utils.ApiInstances) (map[string]string, map[string]string, error) {
+	// Get a list of all restricted permissions
+	if unrestrictedPermissions == nil || restrictedPermissions == nil {
+		res, httpResponse, err := apiInstances.GetRolesApiV2().ListPermissions(ctx)
+		if err != nil {
+			return nil, nil, utils.TranslateClientError(err, httpResponse, "error listing permissions")
+		}
+		permsList := res.GetData()
+
+		newRestrictedPerms := map[string]string{}
+		newUnrestrictedPerms := map[string]string{}
+
+		for _, perm := range permsList {
+			if perm.Attributes.GetRestricted() {
+				newRestrictedPerms[perm.GetId()] = perm.Attributes.GetName()
+			} else {
+				newUnrestrictedPerms[perm.GetId()] = perm.Attributes.GetName()
+			}
+		}
+		unrestrictedPermissions = newUnrestrictedPerms
+		restrictedPermissions = newRestrictedPerms
+	}
+	return unrestrictedPermissions, restrictedPermissions, nil
+}
+
 func getValidPermissions(ctx context.Context, apiInstances *utils.ApiInstances) (map[string]string, error) {
-	// Get a list of all permissions, to ignore restricted perms
-	if validPermissions == nil {
+	// Get a list of all unrestricted permissions
+	if unrestrictedPermissions == nil {
 		res, httpResponse, err := apiInstances.GetRolesApiV2().ListPermissions(ctx)
 		if err != nil {
 			return nil, utils.TranslateClientError(err, httpResponse, "error listing permissions")
@@ -100,9 +128,9 @@ func getValidPermissions(ctx context.Context, apiInstances *utils.ApiInstances) 
 				permsNameToID[perm.GetId()] = perm.Attributes.GetName()
 			}
 		}
-		validPermissions = permsNameToID
+		unrestrictedPermissions = permsNameToID
 	}
-	return validPermissions, nil
+	return unrestrictedPermissions, nil
 }
 
 func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
@@ -116,11 +144,13 @@ func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.Resource
 		return nil
 	}
 
+	defaultPermissionsOptOut, ok := diff.GetOk("default_permissions_opt_out")
+
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
 	// Get a list of all valid permissions
-	validPerms, err := getValidPermissions(auth, apiInstances)
+	unrestrictedPerms, restrictedPerms, err := getAllPermissions(auth, apiInstances)
 	if err != nil {
 		return err
 	}
@@ -129,9 +159,20 @@ func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.Resource
 	for _, permI := range perms.List() {
 		perm := permI.(map[string]interface{})
 		permID := perm["id"].(string)
-		if _, ok := validPerms[permID]; !ok {
+
+		_, isRestrictedPerm := restrictedPerms[permID]
+		_, isUnrestrictedPerm := unrestrictedPerms[permID]
+
+		if isRestrictedPerm && !defaultPermissionsOptOut.(bool) {
 			return fmt.Errorf(
-				"permission with ID %s is restricted and cannot be managed by terraform or does not exist, remove it from your configuration",
+				"permission with ID %s is restricted and cannot be managed by terraform, set `default_permissions_opt_out` to `true` to manage permissions explicitly or remove it from your configuration",
+				permID,
+			)
+		}
+
+		if !(isRestrictedPerm || isUnrestrictedPerm) {
+			return fmt.Errorf(
+				"permission with ID %s does not exist, remove it from your configuration",
 				permID,
 			)
 		}
@@ -270,7 +311,7 @@ func resourceDatadogRoleUpdate(ctx context.Context, d *schema.ResourceData, meta
 	apiInstances := meta.(*ProviderConfiguration).DatadogApiInstances
 	auth := meta.(*ProviderConfiguration).Auth
 
-	if d.HasChange("name") || d.HasChange("permission") {
+	if d.HasChange("name") || d.HasChange("permission") || d.HasChange("default_permissions_opt_out") {
 		roleReq := buildRoleUpdateRequest(d)
 		resp, httpResponse, err := apiInstances.GetRolesApiV2().UpdateRole(auth, d.Id(), *roleReq)
 		if err != nil {
@@ -309,7 +350,7 @@ func buildRoleCreateRequest(d *schema.ResourceData) *datadogV2.RoleCreateRequest
 	// Set attributes
 	roleCreateAttrs.SetName(d.Get("name").(string))
 	roleCreateAttrs.AdditionalProperties = map[string]any{
-		"default_permissions_opt_out": true,
+		"default_permissions_opt_out": d.Get("default_permissions_opt_out"),
 	}
 	roleCreateData.SetAttributes(*roleCreateAttrs)
 
@@ -344,6 +385,10 @@ func buildRoleUpdateRequest(d *schema.ResourceData) *datadogV2.RoleUpdateRequest
 	}
 
 	roleUpdateData.SetId(d.Id())
+
+	roleUpdateAttributes.AdditionalProperties = map[string]any{
+		"default_permissions_opt_out": d.Get("default_permissions_opt_out"),
+	}
 	roleUpdateData.SetAttributes(*roleUpdateAttributes)
 
 	// Set permission relationships
