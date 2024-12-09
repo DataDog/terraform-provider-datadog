@@ -114,25 +114,6 @@ func getAllPermissions(ctx context.Context, apiInstances *utils.ApiInstances) (m
 	return unrestrictedPermissions, restrictedPermissions, nil
 }
 
-func getValidPermissions(ctx context.Context, apiInstances *utils.ApiInstances) (map[string]string, error) {
-	// Get a list of all unrestricted permissions
-	if unrestrictedPermissions == nil {
-		res, httpResponse, err := apiInstances.GetRolesApiV2().ListPermissions(ctx)
-		if err != nil {
-			return nil, utils.TranslateClientError(err, httpResponse, "error listing permissions")
-		}
-		permsList := res.GetData()
-		permsNameToID := make(map[string]string, len(permsList))
-		for _, perm := range permsList {
-			if !perm.Attributes.GetRestricted() {
-				permsNameToID[perm.GetId()] = perm.Attributes.GetName()
-			}
-		}
-		unrestrictedPermissions = permsNameToID
-	}
-	return unrestrictedPermissions, nil
-}
-
 func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
 	if validate, ok := diff.GetOkExists("validate"); ok && !validate.(bool) {
 		// Explicitly skip validation
@@ -165,7 +146,7 @@ func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.Resource
 
 		if isRestrictedPerm && !defaultPermissionsOptOut.(bool) {
 			return fmt.Errorf(
-				"permission with ID %s is restricted and cannot be managed by terraform, set `default_permissions_opt_out` to `true` to manage permissions explicitly or remove it from your configuration",
+				"permission with ID %s is a restricted (default) permission and cannot be managed by terraform, set `default_permissions_opt_out` to `true` to manage default permissions, or remove it from your configuration",
 				permID,
 			)
 		}
@@ -249,10 +230,18 @@ func updateRoleState(ctx context.Context, d *schema.ResourceData, roleAttrsI int
 
 func updateRolePermissionsState(ctx context.Context, d *schema.ResourceData, rolePermsI interface{}, apiInstances *utils.ApiInstances) diag.Diagnostics {
 
-	// Get a list of all valid permissions, to ignore restricted perms
-	permsIDToName, err := getValidPermissions(ctx, apiInstances)
+	// Get a list of all valid permissions
+	unrestrictedPerms, restrictedPerms, err := getAllPermissions(ctx, apiInstances)
 	if err != nil {
 		return diag.FromErr(err)
+	}
+
+	permsIDToName := make(map[string]string, len(unrestrictedPerms)+len(restrictedPerms))
+	for id, name := range unrestrictedPerms {
+		permsIDToName[id] = name
+	}
+	for id, name := range restrictedPerms {
+		permsIDToName[id] = name
 	}
 
 	var perms []map[string]string
