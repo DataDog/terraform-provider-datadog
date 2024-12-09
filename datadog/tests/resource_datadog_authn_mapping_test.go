@@ -56,7 +56,8 @@ func TestAccDatadogAuthNMapping_CreateUpdate(t *testing.T) {
 
 func TestAccDatadogAuthNMapping_import(t *testing.T) {
 	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := strings.ToLower(uniqueEntityName(ctx, t))
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -68,6 +69,14 @@ func TestAccDatadogAuthNMapping_import(t *testing.T) {
 			},
 			{
 				ResourceName:      "datadog_authn_mapping.foo",
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+			{
+				Config: testAccCheckDatadogAuthNMappingTeamConfig(uniq, "key_1", "value_1"),
+			},
+			{
+				ResourceName:      "datadog_authn_mapping.foo-team",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
