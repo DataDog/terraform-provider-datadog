@@ -36,7 +36,7 @@ func (r *awsLogsServicesDataSource) Configure(_ context.Context, request datasou
 }
 
 func (d *awsLogsServicesDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
-	resp.TypeName = "aws_logs_services"
+	resp.TypeName = "integration_aws_available_logs_services"
 }
 
 func (d *awsLogsServicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
@@ -67,7 +67,10 @@ func (d *awsLogsServicesDataSource) Read(ctx context.Context, req datasource.Rea
 		return
 	}
 
+	state.ID = types.StringValue("integration-aws-available-logs-services")
+
 	d.updateState(&state, &awsLogsServicesResp)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
 
