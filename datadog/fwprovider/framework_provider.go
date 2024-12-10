@@ -74,6 +74,8 @@ var Resources = []func() resource.Resource{
 var Datasources = []func() datasource.DataSource{
 	NewAPIKeyDataSource,
 	NewApplicationKeyDataSource,
+	NewAwsAvailableNamespacesDataSource,
+	NewAwsLogsServicesDataSource,
 	NewDatadogApmRetentionFiltersOrderDataSource,
 	NewDatadogDashboardListDataSource,
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
@@ -398,6 +400,8 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListAWSLogsServices", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListAWSNamespaces", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
