@@ -20,11 +20,12 @@ var accountAndRoleNameIDRegex = regexp.MustCompile("[\\d]+:.*")
 
 func resourceDatadogIntegrationAws() *schema.Resource {
 	return &schema.Resource{
-		Description:   "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.\n\n",
-		CreateContext: resourceDatadogIntegrationAwsCreate,
-		ReadContext:   resourceDatadogIntegrationAwsRead,
-		UpdateContext: resourceDatadogIntegrationAwsUpdate,
-		DeleteContext: resourceDatadogIntegrationAwsDelete,
+		DeprecationMessage: "**This resource is deprecated - use the `datadog_integration_aws_account` resource instead**: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account",
+		Description:        "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.\n\n",
+		CreateContext:      resourceDatadogIntegrationAwsCreate,
+		ReadContext:        resourceDatadogIntegrationAwsRead,
+		UpdateContext:      resourceDatadogIntegrationAwsUpdate,
+		DeleteContext:      resourceDatadogIntegrationAwsDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: resourceDatadogIntegrationAwsImport,
 		},
