@@ -1,0 +1,36 @@
+{%- import "utils/types_helper.j2" as typesHelper %}
+
+{%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = createOperationParams|tf_sort_params_by_type %}
+
+type {{ name|camel_case|untitle_case }}Resource struct {
+	Api  *datadog{{ version }}.{{ apiName }}
+	Auth context.Context
+}
+
+type {{ name|camel_case|untitle_case }}Model struct {
+	ID   types.String `tfsdk:"id"`
+
+    {%- for name, schema in primitiveAttr.items() %}
+    {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
+    {%- endfor %}
+
+    {%- for name, schema in primitiveArrAttr.items() %}
+    {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
+    {%- endfor %}
+
+    {%- for name, schema in nonPrimitiveListAttr.items() %}
+    {{- typesHelper.nonPrimitiveTypeProperty(name, array=True) }}
+    {%- endfor %}
+
+    {%- for name, schema in nonPrimitiveObjAttr.items() %}
+    {{- typesHelper.nonPrimitiveTypeProperty(name) }}
+    {%- endfor %}
+}
+
+{% for name, schema in nonPrimitiveListAttr.items() %}
+{{- typesHelper.basePropertyTypeBuilder(name, schema) }}
+{% endfor %}
+
+{% for name, schema in nonPrimitiveObjAttr.items() %}
+{{- typesHelper.basePropertyTypeBuilder(name, schema) }}
+{% endfor %}
