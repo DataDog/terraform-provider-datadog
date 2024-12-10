@@ -79,7 +79,7 @@ func TestAccDatadogRole_InvalidPerm(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config:      testAccCheckDatadogRoleConfigRestrictedPerm(rolename),
-				ExpectError: regexp.MustCompile("permission with ID .* is restricted .* or does not exist"),
+				ExpectError: regexp.MustCompile("permission with ID .* does not exist"),
 			},
 		},
 	})

@@ -325,8 +325,10 @@ func buildRoleCreateRequest(d *schema.ResourceData) *datadogV2.RoleCreateRequest
 
 	// Set attributes
 	roleCreateAttrs.SetName(d.Get("name").(string))
-	roleCreateAttrs.AdditionalProperties = map[string]any{
-		"default_permissions_opt_out": d.Get("default_permissions_opt_out"),
+	if d.Get("default_permissions_opt_out").(bool) {
+		roleCreateAttrs.AdditionalProperties = map[string]any{
+			"default_permissions_opt_out": true,
+		}
 	}
 	roleCreateData.SetAttributes(*roleCreateAttrs)
 
@@ -362,8 +364,10 @@ func buildRoleUpdateRequest(d *schema.ResourceData) *datadogV2.RoleUpdateRequest
 
 	roleUpdateData.SetId(d.Id())
 
-	roleUpdateAttributes.AdditionalProperties = map[string]any{
-		"default_permissions_opt_out": d.Get("default_permissions_opt_out"),
+	if d.Get("default_permissions_opt_out").(bool) {
+		roleUpdateAttributes.AdditionalProperties = map[string]any{
+			"default_permissions_opt_out": true,
+		}
 	}
 	roleUpdateData.SetAttributes(*roleUpdateAttributes)
 
