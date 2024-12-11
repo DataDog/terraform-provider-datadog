@@ -281,8 +281,8 @@ func buildDatadogIndexUpdateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 	if v, ok := d.GetOk("disable_daily_limit"); ok {
 		ddIndex.SetDisableDailyLimit(v.(bool))
 	}
-	if v, ok := d.GetOk("retention_days"); ok {
-		ddIndex.SetNumRetentionDays(int64(v.(int)))
+	if !d.GetRawConfig().GetAttr("retention_days").IsNull() {
+		ddIndex.SetNumRetentionDays(int64(d.Get("retention_days").(int)))
 	}
 	if v, ok := d.GetOk("flex_retention_days"); ok {
 		ddIndex.SetNumFlexLogsRetentionDays(int64(v.(int)))
@@ -309,8 +309,8 @@ func buildDatadogIndexCreateRequest(d *schema.ResourceData) *datadogV1.LogsIndex
 	if v, ok := d.GetOk("daily_limit_warning_threshold_percentage"); ok {
 		ddIndex.SetDailyLimitWarningThresholdPercentage(float64(v.(float64)))
 	}
-	if v, ok := d.GetOk("retention_days"); ok {
-		ddIndex.SetNumRetentionDays(int64(v.(int)))
+	if !d.GetRawConfig().GetAttr("retention_days").IsNull() {
+		ddIndex.SetNumRetentionDays(int64(d.Get("retention_days").(int)))
 	}
 	if v, ok := d.GetOk("flex_retention_days"); ok {
 		ddIndex.SetNumFlexLogsRetentionDays(int64(v.(int)))
