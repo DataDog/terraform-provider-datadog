@@ -37,7 +37,7 @@ resource "datadog_role" "foo" {
 
 ### Optional
 
-- `default_permissions_opt_out` (Boolean) If set to `true`, the role will not have default (restricted) permissions unless they are explicitly set. The `include_restricted` attribute for the datadog_permissions data source must be set to `true` to manage default permissions in Terraform
+- `default_permissions_opt_out` (Boolean) If set to `true`, the role does not have default (restricted) permissions unless they are explicitly set. The `include_restricted` attribute for the datadog_permissions data source must be set to `true` to manage default permissions in Terraform.
 - `permission` (Block Set) Set of objects containing the permission ID and the name of the permissions granted to this role. (see [below for nested schema](#nestedblock--permission))
 - `validate` (Boolean) If set to `false`, skip the validation call done during plan.
 

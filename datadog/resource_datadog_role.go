@@ -44,7 +44,7 @@ func resourceDatadogRole() *schema.Resource {
 				"default_permissions_opt_out": {
 					Type:        schema.TypeBool,
 					Optional:    true,
-					Description: "If set to `true`, the role will not have default (restricted) permissions unless they are explicitly set. The `include_restricted` attribute for the datadog_permissions data source must be set to `true` to manage default permissions in Terraform",
+					Description: "If set to `true`, the role does not have default (restricted) permissions unless they are explicitly set. The `include_restricted` attribute for the `datadog_permissions` data source must be set to `true` to manage default permissions in Terraform.",
 				},
 				"permission": {
 					Type:        schema.TypeSet,
