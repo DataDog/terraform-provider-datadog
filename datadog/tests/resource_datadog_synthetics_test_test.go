@@ -5625,7 +5625,7 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.%", "9"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.0.name", "Tap on StaticText \"Tap\""),
+				"datadog_synthetics_test.bar", "mobile_step.0.name", "Tap on StaticText \"Tap\"-Updated"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.%", "8"),
 			resource.TestCheckResourceAttr(
@@ -5638,10 +5638,10 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.text_content", "Tap"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.%", "2"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.x", "0.07256155303030303"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.y", "0.41522381756756753"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.x", "0.5114721433080808"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.y", "0.35631334459459457"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.%", "2"),
 			resource.TestCheckResourceAttr(
@@ -5671,7 +5671,7 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.1.%", "9"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_step.1.name", "Test View \"Tap\" content"),
+				"datadog_synthetics_test.bar", "mobile_step.1.name", "Test View \"Tap\" content-Updated"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.1.params.0.check", "contains"),
 			resource.TestCheckResourceAttr(
@@ -5688,10 +5688,10 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.text_content", "Tap"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.%", "2"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.x", "0.27660448306074763"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.y", "0.6841517857142856"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.x", "0.8940281723484849"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.y", "0.46516047297297297"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.%", "2"),
 			resource.TestCheckResourceAttr(
@@ -5716,8 +5716,6 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "mobile_step.1.is_critical", "false"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_step.1.no_screenshot", "true"),
-			// resource.TestCheckResourceAttr(
-			// 	"datadog_synthetics_test.bar", "mobile_step.1.has_new_step_element", "true"),
 		),
 	}
 }
@@ -5783,7 +5781,7 @@ resource "datadog_synthetics_test" "bar" {
 	tags = ["bar:foo", "buz"]
 	status = "live"
 	mobile_step {
-		name = "Tap on StaticText \"Tap\""
+		name = "Tap on StaticText \"Tap\"-Updated"
 		params {
 			element {
 				context       = "NATIVE_APP"
@@ -5792,8 +5790,8 @@ resource "datadog_synthetics_test" "bar" {
 				text_content  = "Tap"
 				multi_locator = {}
 				relative_position {
-					x = 0.07256155303030303
-					y = 0.41522381756756753
+					x = 0.5114721433080808
+					y = 0.35631334459459457
 				}
 				user_locator {
 					fail_test_on_cannot_locate = true
@@ -5810,12 +5808,10 @@ resource "datadog_synthetics_test" "bar" {
 		allow_failure        = true
 		is_critical          = false
 		no_screenshot        = true
-		// has_new_step_element = true
-		has_new_step_element = false
 		}
 
 	mobile_step {
-		name = "Test View \"Tap\" content"
+		name = "Test View \"Tap\" content-Updated"
 		params {
 			check = "contains"
 			value = "Tap"
@@ -5826,8 +5822,8 @@ resource "datadog_synthetics_test" "bar" {
 				text_content  = "Tap"
 				multi_locator = {}
 				relative_position {
-					x = 0.27660448306074763
-					y = 0.6841517857142856
+					x = 0.8940281723484849
+					y = 0.46516047297297297
 				}
 				user_locator {
 				fail_test_on_cannot_locate = true
@@ -5844,8 +5840,6 @@ resource "datadog_synthetics_test" "bar" {
 		allow_failure        = true
 		is_critical          = false
 		no_screenshot        = true
-		// has_new_step_element = true
-		has_new_step_element = false
 	}
 }`, uniq)
 }
