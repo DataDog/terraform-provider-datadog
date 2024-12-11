@@ -5280,6 +5280,106 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "status", "paused"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.%", "9"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.name", "Tap on StaticText \"Tap\""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.%", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.context", "NATIVE_APP"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.view_name", "StaticText"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.context_type", "native"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.text_content", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.x", "0.07256155303030302"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.y", "0.41522381756756754"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.type", "id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.value", "some_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.element_description", "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.timeout", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.type", "tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.allow_failure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.is_critical", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.no_screenshot", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.has_new_step_element", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.%", "9"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.name", "Test View \"Tap\" content"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.value", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.%", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.context", "NATIVE_APP"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.view_name", "View"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.context_type", "native"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.text_content", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.x", "0.27660448306074764"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.y", "0.6841517857142857"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.type", "id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.value", "some_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.element_description", "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.timeout", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.type", "assertElementContent"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.allow_failure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.is_critical", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.no_screenshot", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.has_new_step_element", "false"),
 		),
 	}
 }
@@ -5347,6 +5447,69 @@ resource "datadog_synthetics_test" "bar" {
 	message = "Notify @datadog.user"
 	tags = ["foo:bar", "baz"]
 	status = "paused"
+	mobile_step {
+		name = "Tap on StaticText \"Tap\""
+		params {
+			element {
+				context       = "NATIVE_APP"
+				view_name     = "StaticText"
+				context_type  = "native"
+				text_content  = "Tap"
+				multi_locator = {}
+				relative_position {
+					x = 0.07256155303030302
+					y = 0.41522381756756754
+				}
+				user_locator {
+					fail_test_on_cannot_locate = false
+					values {
+						type  = "id"
+						value = "some_id"
+					}
+				}
+				element_description = "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"
+			}
+		}
+		timeout              = 100
+		type                 = "tap"
+		allow_failure        = false
+		is_critical          = true
+		no_screenshot        = false
+		has_new_step_element = false
+	}
+
+	mobile_step {
+		name = "Test View \"Tap\" content"
+		params {
+			check = "contains"
+			value = "Tap"
+			element {
+				context       = "NATIVE_APP"
+				view_name     = "View"
+				context_type  = "native"
+				text_content  = "Tap"
+				multi_locator = {}
+				relative_position {
+					x = 0.27660448306074764
+					y = 0.6841517857142857
+				}
+				user_locator {
+				fail_test_on_cannot_locate = false
+					values {
+						type  = "id"
+						value = "some_id"
+					}
+				}
+				element_description = "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"
+			}
+		}
+		timeout              = 100
+		type                 = "assertElementContent"
+		allow_failure        = false
+		is_critical          = true
+		no_screenshot        = false
+		has_new_step_element = false
+	}
 }`, uniq)
 }
 
@@ -5460,6 +5623,102 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "status", "live"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.%", "9"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.name", "Tap on StaticText \"Tap\"-Updated"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.%", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.context", "NATIVE_APP"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.view_name", "StaticText"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.context_type", "native"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.text_content", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.x", "0.5114721433080808"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.y", "0.35631334459459457"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.type", "id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.value", "some_other_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.element_description", "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.timeout", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.type", "tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.allow_failure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.is_critical", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.no_screenshot", "true"),
+			// resource.TestCheckResourceAttr(
+			// 	"datadog_synthetics_test.bar", "mobile_step.0.has_new_step_element", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.%", "9"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.name", "Test View \"Tap\" content-Updated"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.value", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.%", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.context", "NATIVE_APP"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.view_name", "View"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.context_type", "native"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.text_content", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.x", "0.8940281723484849"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.y", "0.46516047297297297"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.type", "id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.value", "some_other_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.element_description", "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.timeout", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.type", "assertElementContent"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.allow_failure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.is_critical", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.no_screenshot", "true"),
 		),
 	}
 }
@@ -5524,6 +5783,67 @@ resource "datadog_synthetics_test" "bar" {
 	message = "Notify @pagerduty"
 	tags = ["bar:foo", "buz"]
 	status = "live"
+	mobile_step {
+		name = "Tap on StaticText \"Tap\"-Updated"
+		params {
+			element {
+				context       = "NATIVE_APP"
+				view_name     = "StaticText"
+				context_type  = "native"
+				text_content  = "Tap"
+				multi_locator = {}
+				relative_position {
+					x = 0.5114721433080808
+					y = 0.35631334459459457
+				}
+				user_locator {
+					fail_test_on_cannot_locate = true
+					values {
+						type  = "id"
+						value = "some_other_id"
+					}
+				}
+				element_description = "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"
+			}
+		}
+		timeout              = 200
+		type                 = "tap"
+		allow_failure        = true
+		is_critical          = false
+		no_screenshot        = true
+		}
+
+	mobile_step {
+		name = "Test View \"Tap\" content-Updated"
+		params {
+			check = "contains"
+			value = "Tap"
+			element {
+				context       = "NATIVE_APP"
+				view_name     = "View"
+				context_type  = "native"
+				text_content  = "Tap"
+				multi_locator = {}
+				relative_position {
+					x = 0.8940281723484849
+					y = 0.46516047297297297
+				}
+				user_locator {
+				fail_test_on_cannot_locate = true
+					values {
+						type  = "id"
+						value = "some_other_id"
+					}
+				}
+				element_description = "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"
+			}
+		}
+		timeout              = 200
+		type                 = "assertElementContent"
+		allow_failure        = true
+		is_critical          = false
+		no_screenshot        = true
+	}
 }`, uniq)
 }
 
