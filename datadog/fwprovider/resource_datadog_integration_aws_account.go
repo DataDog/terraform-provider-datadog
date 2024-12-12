@@ -345,6 +345,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 									Computed:    true,
 									Description: "The AWS resource tags to filter on for the service specified by `namespace`.",
 									ElementType: types.StringType,
+									Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 								},
 							},
 						},
