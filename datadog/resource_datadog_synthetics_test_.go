@@ -2035,7 +2035,16 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		request.SetCompressedProtoFile(compressAndEncodeValue(attr.(string)))
 	}
 
-	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
+	if attr, ok := d.GetOk("request_client_certificate"); ok {
+		if requestClientCertificates, ok := attr.([]interface{}); ok && len(requestClientCertificates) > 0 {
+			if requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{}); ok {
+				clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
+				request.SetCertificate(buildDatadogRequestCertificates(clientCert["content"].(string), clientCert["filename"].(string), clientKey["content"].(string), clientKey["filename"].(string)))
+			}
+		}
+	}
+
+	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
 
 	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
 
@@ -2126,13 +2135,19 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 					}
 				}
 				// Override the request client certificate with the one from the config
-				rawConfig := d.GetRawConfig()
-				configCert, configKey := getConfigCertificate(rawConfig, i)
-				if configCert != nil && configKey != nil {
-					overrideStateCertificate(stepMap["request_client_certificate"].([]interface{}), *configCert, *configKey)
+				configCertContent, configKeyContent := getConfigCertAndKeyContent(d, i)
+
+				if requestClientCertificates, ok := stepMap["request_client_certificate"].([]interface{}); ok && len(requestClientCertificates) > 0 {
+					if requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{}); ok {
+						clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
+						if configCertContent != nil || configKeyContent != nil {
+							request.SetCertificate(buildDatadogRequestCertificates(*configCertContent, clientCert["filename"].(string), *configKeyContent, clientKey["filename"].(string)))
+						}
+					}
 				}
 
-				request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
+
+				request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
 
 				step.SyntheticsAPITestStep.SetRequest(request)
 
@@ -2245,7 +2260,8 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 
 	if attr, ok := d.GetOk("request_client_certificate"); ok {
 		requestClientCertificate := attr.(map[string]interface{})
-		request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
+		clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
+		request.SetCertificate(buildDatadogRequestCertificates(clientCert["content"].(string), clientCert["filename"].(string), clientKey["content"].(string), clientKey["filename"].(string)))
 	}
 
 	if attr, ok := d.GetOk("request_proxy"); ok {
@@ -3042,37 +3058,31 @@ func buildTerraformExtractedValues(extractedValues []datadogV1.SyntheticsParsing
 	return localExtractedValues
 }
 
-func buildDatadogRequestCertificates(requestClientCertificate map[string]interface{}) datadogV1.SyntheticsTestRequestCertificate {
+func buildDatadogRequestCertificates(clientCertContent string, clientCertFilename string, clientKeyContent string, clientKeyFilename string) datadogV1.SyntheticsTestRequestCertificate {
 	cert := datadogV1.SyntheticsTestRequestCertificateItem{}
 	key := datadogV1.SyntheticsTestRequestCertificateItem{}
 
-	clientCerts := requestClientCertificate["cert"].([]interface{})
-	clientKeys := requestClientCertificate["key"].([]interface{})
-
-	clientCert := clientCerts[0].(map[string]interface{})
-	clientKey := clientKeys[0].(map[string]interface{})
-
-	if clientCert["content"] != "" {
+	if clientCertContent != "" {
 		// only set the certificate content if it is not an already hashed string
 		// this is needed for the update function that receives the data from the state
 		// and not from the config. So we get a hash of the certificate and not it's real
 		// value.
-		if isHash := isCertHash(clientCert["content"].(string)); !isHash {
-			cert.SetContent(clientCert["content"].(string))
+		if isHash := isCertHash(clientCertContent); !isHash {
+			cert.SetContent(clientCertContent)
 		}
 	}
-	if clientCert["filename"] != "" {
-		cert.SetFilename(clientCert["filename"].(string))
+	if clientCertFilename != "" {
+		cert.SetFilename(clientCertFilename)
 	}
 
-	if clientKey["content"] != "" {
+	if clientKeyContent != "" {
 		// only set the key content if it is not an already hashed string
-		if isHash := isCertHash(clientKey["content"].(string)); !isHash {
-			key.SetContent(clientKey["content"].(string))
+		if isHash := isCertHash(clientKeyContent); !isHash {
+			key.SetContent(clientKeyContent)
 		}
 	}
-	if clientKey["filename"] != "" {
-		key.SetFilename(clientKey["filename"].(string))
+	if clientKeyFilename != "" {
+		key.SetFilename(clientKeyFilename)
 	}
 
 	return datadogV1.SyntheticsTestRequestCertificate{
@@ -3394,7 +3404,7 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	return localOptionsLists
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestClientCertificates []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
 	if len(requestHeaders) > 0 {
 		headers := make(map[string]string, len(requestHeaders))
 
@@ -3415,11 +3425,6 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 		}
 	}
 
-	if len(requestClientCertificates) > 0 {
-		if requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{}); ok {
-			request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
-		}
-	}
 	if len(requestProxies) > 0 {
 		if requestProxy, ok := requestProxies[0].(map[string]interface{}); ok {
 			request.SetProxy(buildDatadogTestRequestProxy(requestProxy))
@@ -3792,70 +3797,47 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 	return
 }
 
-func getConfigCertificate(rawConfig cty.Value, stepIndex int) (*string, *string) {
+func getConfigCertAndKeyContent(d *schema.ResourceData, stepIndex int) (*string, *string) {
+	// For security reasons, the certificate and keys can't be stored in the terraform state. It needs to stay in clear only in the config. This function retrieve the certificate from the terraform config, rather than the state.
+	// To retrieve the certificate and key, we first need to build the paths to the cert and key content, and then apply these paths to the rawConfig.
 
+	rawConfig := d.GetRawConfig()
 	basePath := cty.GetAttrPath("api_step").
 		Index(cty.NumberIntVal(int64(stepIndex))).
 		GetAttr("request_client_certificate").
 		Index(cty.NumberIntVal(0))
 
-	// Construct paths to the cert and key content
-	certPath := basePath.
+	// Get the certificate
+	certContentPath := basePath.
 		GetAttr("cert").
 		Index(cty.NumberIntVal(0)).
 		GetAttr("content")
+	certContent, err := certContentPath.Apply(rawConfig)
+	if err != nil || !certContent.IsKnown() || certContent.IsNull() {
+		return nil, nil
+	}
+	certContentString := certContent.AsString()
 
-	keyPath := basePath.
+	// Get the key
+	keyContentPath := basePath.
 		GetAttr("key").
 		Index(cty.NumberIntVal(0)).
 		GetAttr("content")
-
-	// Apply paths to retrieve the cert and key
-	certValue, err := certPath.Apply(rawConfig)
-	if err != nil || !certValue.IsKnown() || certValue.IsNull() {
+	keyContent, err := keyContentPath.Apply(rawConfig)
+	if err != nil || !keyContent.IsKnown() || keyContent.IsNull() {
 		return nil, nil
 	}
+	keyContentString := keyContent.AsString()
 
-	keyValue, err := keyPath.Apply(rawConfig)
-	if err != nil || !keyValue.IsKnown() || keyValue.IsNull() {
-		return nil, nil
-	}
-
-	// Convert certValue and keyValue to strings
-	certString := certValue.AsString()
-	keyString := keyValue.AsString()
-
-	return &certString, &keyString
+	return &certContentString, &keyContentString
 }
 
-func overrideStateCertificate(requestClientCertificates []interface{}, configCert, configKey string) error {
+func getCertAndKeyFromMap(certAndKey map[string]interface{}) (map[string]interface{}, map[string]interface{}) {
 
-	if len(requestClientCertificates) == 0 {
-		return fmt.Errorf("requestClientCertificates is empty")
-	}
-	requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{})
-	if !ok {
-		return fmt.Errorf("requestClientCertificates[0] is not a map")
-	}
-	certList, ok := requestClientCertificate["cert"].([]interface{})
-	if !ok || len(certList) == 0 {
-		return fmt.Errorf("cert is not a valid list or is empty")
-	}
-	cert, ok := certList[0].(map[string]interface{})
-	if !ok {
-		return fmt.Errorf("cert[0] is not a map")
-	}
-	cert["content"] = configCert
+	clientCerts := certAndKey["cert"].([]interface{})
+	clientKeys := certAndKey["key"].([]interface{})
+	clientCert := clientCerts[0].(map[string]interface{})
+	clientKey := clientKeys[0].(map[string]interface{})
 
-	keyList, ok := requestClientCertificate["key"].([]interface{})
-	if !ok || len(keyList) == 0 {
-		return fmt.Errorf("key is not a valid list or is empty")
-	}
-	key, ok := keyList[0].(map[string]interface{})
-	if !ok {
-		return fmt.Errorf("key[0] is not a map")
-	}
-	key["content"] = configKey
-
-	return nil
+	return clientCert, clientKey
 }
