@@ -140,7 +140,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 				"browser_step": syntheticsTestBrowserStep(),
 				"api_step":     syntheticsTestAPIStep(),
-				// TODO SYNTH-17172 - add steps here
+				"mobile_step":  syntheticsTestMobileStep(),
 				"set_cookie": {
 					Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
 					Type:        schema.TypeString,
@@ -1009,6 +1009,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Default:          "http",
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPITestStepSubtypeFromValue, datadogV1.NewSyntheticsAPIWaitStepSubtypeFromValue),
 				},
+				"exit_if_succeed": {
+					Description: "Determines whether or not to exit the test if the step succeeds.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
 				"extracted_value": {
 					Description: "Values to parse and save as variables from the response.",
 					Type:        schema.TypeList,
@@ -1379,6 +1384,244 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Description: `Y coordinates for a "scroll step".`,
 					Type:        schema.TypeInt,
 					Optional:    true,
+				},
+			},
+		},
+	}
+}
+
+func syntheticsTestMobileStep() *schema.Schema {
+	paramsSchema := syntheticsMobileStepParams()
+	return &schema.Schema{
+		Description: "Steps for mobile tests",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"allow_failure": {
+					Description: "A boolean set to allow this step to fail.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"has_new_step_element": {
+					Description: "A boolean set to determine if the step has a new step element.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"is_critical": {
+					Description: "A boolean to use in addition to `allowFailure` to determine if the test should be marked as failed when the step fails.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"name": {
+					Description: "The name of the step.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"no_screenshot": {
+					Description: "A boolean set to not take a screenshot for the step.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"params": &paramsSchema,
+				"public_id": {
+					Description: "The public ID of the step.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"timeout": {
+					Description: "The time before declaring a step failed.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"type": {
+					Description:      "The type of the step.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepTypeFromValue),
+				},
+			},
+		},
+	}
+}
+
+func syntheticsMobileStepParams() schema.Schema {
+	return schema.Schema{
+		Description: "Parameters for the step.",
+		Type:        schema.TypeList,
+		MaxItems:    1,
+		Required:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"value": {
+					Description: "Value of the step.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"check": {
+					Description:      "Check type to use for an assertion step.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
+				},
+				"element": {
+					Description: "Element to use for the step, JSON encoded string.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"multi_locator": {
+								Type:     schema.TypeMap,
+								Optional: true,
+							},
+							"context": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"context_type": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsElementContextTypeFromValue),
+							},
+							"user_locator": {
+								Type:     schema.TypeList,
+								MaxItems: 1,
+								Optional: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"fail_test_on_cannot_locate": {
+											Type:     schema.TypeBool,
+											Optional: true,
+										},
+										"values": {
+											Type:     schema.TypeList,
+											Optional: true,
+											MinItems: 1,
+											MaxItems: 5,
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"type": {
+														Type:             schema.TypeString,
+														Optional:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsElementUserLocatorValuesItemsTypeFromValue),
+													},
+													"value": {
+														Type:     schema.TypeString,
+														Optional: true,
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"element_description": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"relative_position": {
+								Type:     schema.TypeList,
+								MaxItems: 1,
+								Optional: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"x": {
+											Type:     schema.TypeFloat,
+											Optional: true,
+										},
+										"y": {
+											Type:     schema.TypeFloat,
+											Optional: true,
+										},
+									},
+								},
+							},
+							"text_content": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"view_name": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"variable": {
+					Description: "Details of the variable to extract.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Description: "Name of the extracted variable.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"example": {
+								Description: "Example of the extracted variable.",
+								Default:     "",
+								Type:        schema.TypeString,
+								// Required:    true, // TODO SYNTH-17172 - fix for steps, the tests don't like this being required for some reason
+								Optional: true,
+							},
+						},
+					},
+				},
+				"positions": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"x": {
+								Type:     schema.TypeFloat,
+								Optional: true,
+							},
+							"y": {
+								Type:     schema.TypeFloat,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"subtest_public_id": {
+					Description: "ID of the Synthetics test to use as subtest.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"x": {
+					Description: `X coordinates for a "scroll step".`,
+					Type:        schema.TypeFloat,
+					Optional:    true,
+				},
+				"y": {
+					Description: `Y coordinates for a "scroll step".`,
+					Type:        schema.TypeFloat,
+					Optional:    true,
+				},
+				"direction": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsDirectionFromValue),
+				},
+				"max_scrolls": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"enable": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"delay": {
+					Description: `Delay between each key stroke for a "type test" step.`,
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"with_enter": {
+					Type:     schema.TypeBool,
+					Optional: true,
 				},
 			},
 		},
@@ -2107,6 +2350,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 
 				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
+				localStep["exit_if_succeed"] = step.SyntheticsAPITestStep.GetExitIfSucceed()
 				localStep["is_critical"] = step.SyntheticsAPITestStep.GetIsCritical()
 
 				if retry, ok := step.SyntheticsAPITestStep.GetRetryOk(); ok {
@@ -2235,7 +2479,12 @@ func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest
 		return diag.FromErr(err)
 	}
 
-	// TODO SYNTH-17172 - add steps here
+	steps := syntheticsTest.GetSteps()
+	localSteps := buildTerraformMobileTestSteps(steps)
+
+	if err := d.Set("mobile_step", localSteps); err != nil {
+		return diag.FromErr(err)
+	}
 
 	return nil
 }
@@ -2427,6 +2676,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 				step.SyntheticsAPITestStep.SetRequest(request)
 
 				step.SyntheticsAPITestStep.SetAllowFailure(stepMap["allow_failure"].(bool))
+				step.SyntheticsAPITestStep.SetExitIfSucceed(stepMap["exit_if_succeed"].(bool))
 				step.SyntheticsAPITestStep.SetIsCritical(stepMap["is_critical"].(bool))
 
 				optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
@@ -2713,7 +2963,40 @@ func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.Synthet
 	options := buildDatadogMobileTestOptions(d)
 	syntheticsTest.SetOptions(*options)
 
-	// TODO SYNTH-17172 - add steps here
+	if attr, ok := d.GetOk("mobile_step"); ok {
+		steps := []datadogV1.SyntheticsMobileStep{}
+
+		for _, s := range attr.([]interface{}) {
+			step := datadogV1.SyntheticsMobileStep{}
+			stepMap := s.(map[string]interface{})
+
+			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetHasNewStepElement(stepMap["has_new_step_element"].(bool))
+			step.SetIsCritical(stepMap["is_critical"].(bool))
+			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
+
+			if stepMap["name"] != "" {
+				step.SetName(stepMap["name"].(string))
+			}
+			if stepMap["public_id"] != "" {
+				step.SetPublicId(stepMap["public_id"].(string))
+			}
+			if stepMap["timeout"] != 0 {
+				step.SetTimeout(int64(stepMap["timeout"].(int)))
+			}
+			if stepMap["type"] != "" {
+				step.SetType(datadogV1.SyntheticsMobileStepType(stepMap["type"].(string)))
+			}
+
+			params := datadogV1.SyntheticsMobileStepParams{}
+			stepParams := stepMap["params"].([]interface{})[0]
+			params = buildDatadogParamsForMobileStep(step.GetType(), stepParams.(map[string]interface{}))
+			step.SetParams(params)
+			steps = append(steps, step)
+		}
+
+		syntheticsTest.SetSteps(steps)
+	}
 
 	if attr, ok := d.GetOk("tags"); ok {
 		tags := make([]string, 0)
@@ -4036,6 +4319,161 @@ func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTes
 	return localOptionsLists
 }
 
+func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map[string]interface{} { // TODO SYNTH-17172 make sure everything is working in this function
+	var localSteps []map[string]interface{}
+
+	for _, step := range steps {
+
+		localStep := make(map[string]interface{})
+
+		// These two and params are required fields
+		localStep["name"] = step.GetName()
+		localStep["type"] = string(step.GetType())
+
+		if allowFailure, ok := step.GetAllowFailureOk(); ok {
+			localStep["allow_failure"] = allowFailure
+		}
+		if isCritical, ok := step.GetIsCriticalOk(); ok {
+			localStep["is_critical"] = isCritical
+		}
+		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
+			localStep["no_screenshot"] = hasNoScreenshot
+		}
+		if HasNewStepElement, ok := step.GetHasNewStepElementOk(); ok {
+			localStep["has_new_step_element"] = HasNewStepElement
+		}
+		if publicId, ok := step.GetPublicIdOk(); ok {
+			localStep["public_id"] = publicId
+		}
+		if timeout, ok := step.GetTimeoutOk(); ok {
+			localStep["timeout"] = timeout
+		}
+
+		localParams := make(map[string]interface{})
+		params := step.GetParams()
+
+		if params.HasCheck() {
+			localParams["check"] = params.GetCheck()
+		}
+		if params.HasDelay() {
+			localParams["delay"] = params.GetDelay()
+		}
+		if params.HasDirection() {
+			localParams["direction"] = params.GetDirection()
+		}
+		if params.HasElement() {
+			element := params.GetElement()
+			localElement := make([]map[string]interface{}, 1)
+			localElement[0] = make(map[string]interface{})
+			if element.HasContext() {
+				localElement[0]["context"] = element.GetContext()
+			}
+			if element.HasContextType() {
+				localElement[0]["context_type"] = element.GetContextType()
+			}
+			if element.HasElementDescription() {
+				localElement[0]["element_description"] = element.GetElementDescription()
+			}
+			if element.HasMultiLocator() {
+				localElement[0]["multi_locator"] = element.GetMultiLocator()
+			}
+			if element.HasRelativePosition() {
+				relativePosition := element.GetRelativePosition()
+				localRelativePosition := make([]map[string]interface{}, 1)
+				localRelativePosition[0] = make(map[string]interface{})
+				if relativePosition.HasX() {
+					localRelativePosition[0]["x"] = relativePosition.GetX()
+				}
+				if relativePosition.HasY() {
+					localRelativePosition[0]["y"] = relativePosition.GetY()
+				}
+				localElement[0]["relative_position"] = localRelativePosition
+			}
+			if element.HasTextContent() {
+				localElement[0]["text_content"] = element.GetTextContent()
+			}
+			if element.HasUserLocator() {
+				userLocator := element.GetUserLocator()
+				localUserLocator := make([]map[string]interface{}, 1)
+				localUserLocator[0] = make(map[string]interface{})
+				if userLocator.HasFailTestOnCannotLocate() {
+					localUserLocator[0]["fail_test_on_cannot_locate"] = userLocator.GetFailTestOnCannotLocate()
+				}
+				if userLocator.HasValues() {
+					values := userLocator.GetValues()
+					localValues := make([]map[string]interface{}, len(values))
+					for i, valuesItem := range values {
+						localValuesItem := make(map[string]interface{})
+						if valuesItem.HasValue() {
+							localValuesItem["value"] = valuesItem.GetValue()
+						}
+						if valuesItem.HasType() {
+							localValuesItem["type"] = valuesItem.GetType()
+						}
+						localValues[i] = localValuesItem
+					}
+
+					localUserLocator[0]["values"] = localValues
+				}
+				localElement[0]["user_locator"] = localUserLocator
+			}
+			if element.HasViewName() {
+				localElement[0]["view_name"] = element.GetViewName()
+			}
+			localParams["element"] = localElement
+		}
+		if params.HasEnabled() {
+			localParams["enabled"] = params.GetEnabled()
+		}
+		if params.HasMaxScrolls() {
+			localParams["maxScrolls"] = params.GetMaxScrolls()
+		}
+		if params.HasPositions() {
+			positions := params.GetPositions()
+			for i, positionsItem := range positions {
+				localPositionsItem := make(map[string]interface{})
+				if positionsItem.HasX() {
+					localPositionsItem["x"] = positionsItem.GetX()
+				}
+				if positionsItem.HasY() {
+					localPositionsItem["y"] = positionsItem.GetY()
+				}
+				positions[i] = datadogV1.SyntheticsMobileStepParamsPositionsItems{
+					X: localPositionsItem["x"].(*float64),
+					Y: localPositionsItem["y"].(*float64),
+				}
+			}
+			localParams["positions"] = positions
+		}
+		if params.HasSubtestPublicId() {
+			localParams["subtestPublicId"] = params.GetSubtestPublicId()
+		}
+		if params.HasValue() {
+			value := params.GetValue()
+			actualValue := value.GetActualInstance()
+			localParams["value"] = actualValue
+		}
+		if params.HasVariable() {
+			localParams["variable"] = params.GetVariable()
+		}
+		if params.HasWithEnter() {
+			localParams["withEnter"] = params.GetWithEnter()
+		}
+		if params.HasX() {
+			localParams["x"] = params.GetX()
+		}
+		if params.HasY() {
+			localParams["y"] = params.GetY()
+		}
+
+		localStep["params"] = []interface{}{localParams}
+
+		localSteps = append(localSteps, localStep)
+	}
+
+	return localSteps
+}
+
 func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestClientCertificates []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
 	if len(requestHeaders) > 0 {
 		headers := make(map[string]string, len(requestHeaders))
@@ -4383,6 +4821,274 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 	}
 
 	return []string{}
+}
+
+func getParamsKeysForMobileStepType(stepType datadogV1.SyntheticsMobileStepType) []string {
+	switch stepType {
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTELEMENTCONTENT:
+		return []string{"check", "element", "value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENCONTAINS:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENLACKS:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_DOUBLETAP:
+		return []string{"element"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_EXTRACTVARIABLE:
+		return []string{"element", "variable"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_FLICK:
+		return []string{"position"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_OPENDEEPLINK:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PLAYSUBTEST:
+		return []string{"subtest_public_id"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PRESSBACK:
+		return []string{}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_RESTARTAPPLICATION:
+		return []string{}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ROTATE:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLL:
+		return []string{"element", "x", "y"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLLTOELEMENT:
+		return []string{"element", "direction", "max_scrolls"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP:
+		return []string{"element"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TOGGLEWIFI:
+		return []string{"enabled"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT:
+		return []string{"value", "element", "delay", "with_enter"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_WAIT:
+		return []string{"value"}
+	}
+
+	return []string{}
+}
+
+func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType, stepParams map[string]interface{}) datadogV1.SyntheticsMobileStepParams {
+	params := datadogV1.SyntheticsMobileStepParams{}
+	switch stepType {
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTELEMENTCONTENT:
+		if stepParams["check"] != "" {
+			params.SetCheck(datadogV1.SyntheticsCheckType(stepParams["check"].(string)))
+		}
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENCONTAINS:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENLACKS:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_DOUBLETAP:
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_EXTRACTVARIABLE:
+		if len(stepParams["variable"].(map[string]interface{})) != 0 {
+			paramsVarible := datadogV1.SyntheticsMobileStepParamsVariable{}
+			paramsVarible.SetName(stepParams["variable"].(map[string]interface{})["name"].(string))
+			paramsVarible.SetExample(stepParams["variable"].(map[string]interface{})["example"].(string))
+			params.SetVariable(paramsVarible)
+		}
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_FLICK:
+		if len(stepParams["position"].(map[string]interface{})) != 0 {
+			positions := []datadogV1.SyntheticsMobileStepParamsPositionsItems{}
+			for _, position := range stepParams["position"].([]interface{}) {
+				positionItem := datadogV1.SyntheticsMobileStepParamsPositionsItems{}
+				positionItem.SetX(position.(map[string]interface{})["x"].(float64))
+				positionItem.SetY(position.(map[string]interface{})["y"].(float64))
+
+				positions = append(positions, positionItem)
+			}
+
+			params.SetPositions(positions)
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_OPENDEEPLINK:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PLAYSUBTEST:
+		if stepParams["subtest_public_id"] != "" {
+			params.SetSubtestPublicId(stepParams["subtest_public_id"].(string))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PRESSBACK:
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_RESTARTAPPLICATION:
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ROTATE:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLL:
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		if stepParams["x"] != "" {
+			params.SetX(stepParams["x"].(float64))
+		}
+		if stepParams["y"] != "" {
+			params.SetY(stepParams["y"].(float64))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLLTOELEMENT:
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		if stepParams["direction"] != "" {
+			params.SetDirection(datadogV1.SyntheticsMobileStepParamsDirection(stepParams["direction"].(string)))
+		}
+		if stepParams["max_scrolls"] != "" {
+			params.SetMaxScrolls(stepParams["max_scrolls"].(int64))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP:
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TOGGLEWIFI:
+		if stepParams["enabled"] != "" {
+			params.SetEnabled(stepParams["enabled"].(bool))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		if stepParams["delay"] != "" {
+			params.SetDelay(stepParams["delay"].(int64))
+		}
+		if stepParams["with_enter"] != "" {
+			params.SetWithEnter(stepParams["with_enter"].(bool))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_WAIT:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(int64)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueNumberAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+	}
+
+	return params
+}
+
+func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interface{}) datadogV1.SyntheticsMobileStepParamsElement {
+	elements := datadogV1.SyntheticsMobileStepParamsElement{}
+
+	if len(stepParamsElements["multi_locator"].(map[string]interface{})) != 0 {
+		elements.SetMultiLocator(stepParamsElements["multi_locator"].(string))
+	}
+	if stepParamsElements["context"].(string) != "" {
+		elements.SetContext(stepParamsElements["context"].(string))
+	}
+	if stepParamsElements["context_type"].(string) != "" {
+		elements.SetContextType(datadogV1.SyntheticsMobileStepParamsElementContextType(stepParamsElements["context_type"].(string)))
+	}
+	stepParamsElement := stepParamsElements["user_locator"].([]interface{})[0].(map[string]interface{})
+	if len(stepParamsElement) != 0 {
+
+		userLocator := datadogV1.SyntheticsMobileStepParamsElementUserLocator{}
+		userLocatorValues := []datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItems{}
+
+		userLocator.SetFailTestOnCannotLocate(stepParamsElement["fail_test_on_cannot_locate"].(bool))
+
+		for _, value := range stepParamsElement["values"].([]interface{}) {
+			userLocatorValue := datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItems{}
+			userLocatorValue.SetType(datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItemsType(value.(map[string]interface{})["type"].(string)))
+			userLocatorValue.SetValue(value.(map[string]interface{})["value"].(string))
+
+			userLocatorValues = append(userLocatorValues, userLocatorValue)
+		}
+
+		userLocator.SetValues(userLocatorValues)
+		elements.SetUserLocator(userLocator)
+	}
+	if stepParamsElements["element_description"].(string) != "" {
+		elements.SetElementDescription(stepParamsElements["element_description"].(string))
+	}
+	elementRelativePosition := stepParamsElements["relative_position"].([]interface{})[0].(map[string]interface{})
+	if len(elementRelativePosition) != 0 {
+		relativePosition := datadogV1.SyntheticsMobileStepParamsElementRelativePosition{}
+		relativePosition.SetX(elementRelativePosition["x"].(float64))
+		relativePosition.SetY(elementRelativePosition["y"].(float64))
+
+		elements.SetRelativePosition(relativePosition)
+	}
+	if stepParamsElements["text_content"].(string) != "" {
+		elements.SetTextContent(stepParamsElements["text_content"].(string))
+	}
+	if stepParamsElements["view_name"].(string) != "" {
+		elements.SetViewName(stepParamsElements["view_name"].(string))
+	}
+
+	return elements
 }
 
 func getSyntheticsTestType(d *schema.ResourceData) *datadogV1.SyntheticsTestDetailsType {
