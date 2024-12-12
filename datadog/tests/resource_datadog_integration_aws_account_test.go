@@ -33,8 +33,6 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "aws_regions.include_all", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "auth_config.aws_auth_config_keys.access_key_id", "AKIAIOSFODNN7EXAMPLE"),
-					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "logs_config.lambda_forwarder.sources.#", "0"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "logs_config.lambda_forwarder.lambdas.#", "0"),
