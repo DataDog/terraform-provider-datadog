@@ -145,7 +145,9 @@ func updateAuthNMappingState(d *schema.ResourceData, authNMapping *datadogV2.Aut
 	authNMappingAttributes := authNMapping.GetAttributes()
 	authNMappingRelations := authNMapping.GetRelationships()
 	authNMappingRoleRelation := authNMappingRelations.GetRole()
+	authNMappingTeamRelation := authNMappingRelations.GetTeam()
 	authNRole := authNMappingRoleRelation.GetData()
+	authNTeam := authNMappingTeamRelation.GetData()
 
 	if err := d.Set("key", authNMappingAttributes.GetAttributeKey()); err != nil {
 		return diag.FromErr(err)
@@ -158,6 +160,11 @@ func updateAuthNMappingState(d *schema.ResourceData, authNMapping *datadogV2.Aut
 	if err := d.Set("role", authNRole.GetId()); err != nil {
 		return diag.FromErr(err)
 	}
+
+	if err := d.Set("team", authNTeam.GetId()); err != nil {
+		return diag.FromErr(err)
+	}
+
 	return nil
 }
 
