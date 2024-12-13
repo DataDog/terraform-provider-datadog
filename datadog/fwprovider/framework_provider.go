@@ -79,6 +79,7 @@ var Resources = []func() resource.Resource{
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
 	NewWorkflowAutomationResource,
+	NewAppResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -106,6 +107,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogActionConnectionDataSource,
 	NewDatadogSyntheticsGlobalVariableDataSource,
 	NewWorkflowAutomationDataSource,
+	NewDatadogAppDataSource,
 }
 
 // FrameworkProvider struct
