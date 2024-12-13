@@ -289,9 +289,9 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							"sources": schema.ListAttribute{
 								Optional: true,
 								Computed: true,
-								Description: "List of service IDs set to enable automatic log collection. " +
-									"Discover the list of available services with the " +
-									"[Get list of AWS log ready services](https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services) endpoint.",
+								Description: "(List of String) List of service IDs set to enable automatic log collection. Use " +
+									"[`datadog_integration_aws_available_logs_services` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_logs_services) " +
+									"to get allowed values.",
 								ElementType: types.StringType,
 								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							},
@@ -353,9 +353,13 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 					"namespace_filters": schema.SingleNestedBlock{
 						Attributes: map[string]schema.Attribute{
 							"exclude_only": schema.ListAttribute{
-								Optional:    true,
-								Computed:    true,
-								Description: "Exclude only these namespaces from metrics collection. Defaults to `[\"AWS/SQS\", \"AWS/ElasticMapReduce\"]`. `AWS/SQS` and `AWS/ElasticMapReduce` are excluded by default to reduce your AWS CloudWatch costs from `GetMetricData` API calls.",
+								Optional: true,
+								Computed: true,
+								Description: "Exclude only these namespaces from metrics collection. Use " +
+									"[`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) " +
+									"to get allowed values. Defaults to `[\"AWS/SQS\", \"AWS/ElasticMapReduce\"]`. " +
+									"`AWS/SQS` and `AWS/ElasticMapReduce` are excluded by default to reduce your AWS " +
+									"CloudWatch costs from `GetMetricData` API calls.",
 								ElementType: types.StringType,
 								Default: listdefault.StaticValue(types.ListValueMust(
 									types.StringType, []attr.Value{
@@ -365,8 +369,10 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 								),
 							},
 							"include_only": schema.ListAttribute{
-								Optional:    true,
-								Description: "Include only these namespaces for metrics collection.",
+								Optional: true,
+								Description: "Include only these namespaces for metrics collection. Use " +
+									"[`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) " +
+									"to get allowed values.",
 								ElementType: types.StringType,
 							},
 						},
