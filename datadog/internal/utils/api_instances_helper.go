@@ -46,6 +46,7 @@ type ApiInstances struct {
 	//V2 APIs
 	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
+	appsApiV2                      *datadogV2.AppsApi
 	auditApiV2                     *datadogV2.AuditApi
 	authNMappingsApiV2             *datadogV2.AuthNMappingsApi
 	awsIntegrationApiV2            *datadogV2.AWSIntegrationApi
@@ -679,4 +680,12 @@ func (i *ApiInstances) GetMicrosoftTeamsIntegrationApiV2() *datadogV2.MicrosoftT
 		i.microsoftTeamsIntegrationApiV2 = datadogV2.NewMicrosoftTeamsIntegrationApi(i.HttpClient)
 	}
 	return i.microsoftTeamsIntegrationApiV2
+}
+
+// GetAppsApiV2 get instance of AppsApi
+func (i *ApiInstances) GetAppsApiV2() *datadogV2.AppsApi {
+	if i.appsApiV2 == nil {
+		i.appsApiV2 = datadogV2.NewAppsApi(i.HttpClient)
+	}
+	return i.appsApiV2
 }
