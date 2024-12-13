@@ -289,7 +289,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							"sources": schema.ListAttribute{
 								Optional: true,
 								Computed: true,
-								Description: "(List of String) List of service IDs set to enable automatic log collection. Use " +
+								Description: "List of service IDs set to enable automatic log collection. Use " +
 									"[`datadog_integration_aws_available_logs_services` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_logs_services) " +
 									"to get allowed values.",
 								ElementType: types.StringType,
