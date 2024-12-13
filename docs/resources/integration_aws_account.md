@@ -66,11 +66,11 @@ resource "datadog_integration_aws_account" "foo" {
 
 - `aws_account_id` (String) Your AWS Account ID without dashes.
 - `aws_partition` (String) AWS Account partition
+- `auth_config` (Block) (see [below for nested schema](#nestedblock--auth_config))
 
 ### Optional
 
 - `account_tags` (List of String) Tags to apply to all metrics in the account
-- `auth_config` (Block, Optional) (see [below for nested schema](#nestedblock--auth_config))
 - `aws_regions` (Block, Optional) AWS Regions to collect data from. (see [below for nested schema](#nestedblock--aws_regions))
 - `logs_config` (Block, Optional) (see [below for nested schema](#nestedblock--logs_config))
 - `metrics_config` (Block, Optional) (see [below for nested schema](#nestedblock--metrics_config))

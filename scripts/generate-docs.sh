@@ -2,7 +2,9 @@
 # Generate the documentation using tfplugindocs and remove changes to files that shouldn't change
 
 # Add here the files to be excluded from the doc generation
-exclude_files=()
+exclude_files=(
+  "docs/resources/integration_aws_account.md"  # aws-integrations - Manually mark a block as required
+)
 
 # Check if manual changes were made to any excluded files and exit
 # otherwise these will be lost with `tfplugindocs`
