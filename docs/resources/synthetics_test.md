@@ -669,6 +669,7 @@ resource "datadog_synthetics_test" "test_grpc_health" {
 - `force_delete_dependencies` (Boolean) A boolean indicating whether this synthetics test can be deleted even if it's referenced by other resources (for example, SLOs and composite monitors).
 - `message` (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events. Defaults to `""`.
 - `mobile_options_list` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list))
+- `mobile_step` (Block List) Steps for mobile tests (see [below for nested schema](#nestedblock--mobile_step))
 - `options_list` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
@@ -699,6 +700,7 @@ Optional:
 
 - `allow_failure` (Boolean) Determines whether or not to continue with test if this step fails.
 - `assertion` (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion))
+- `exit_if_succeed` (Boolean) Determines whether or not to exit the test if the step succeeds.
 - `extracted_value` (Block List) Values to parse and save as variables from the response. (see [below for nested schema](#nestedblock--api_step--extracted_value))
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
@@ -1184,6 +1186,108 @@ Required:
 - `day` (Number) Number representing the day of the week
 - `from` (String) The hour of the day on which scheduling starts.
 - `to` (String) The hour of the day on which scheduling ends.
+
+
+
+
+<a id="nestedblock--mobile_step"></a>
+### Nested Schema for `mobile_step`
+
+Required:
+
+- `name` (String) The name of the step.
+- `params` (Block List, Min: 1, Max: 1) Parameters for the step. (see [below for nested schema](#nestedblock--mobile_step--params))
+- `type` (String) The type of the step. Valid values are `assertElementContent`, `assertScreenContains`, `assertScreenLacks`, `doubleTap`, `extractVariable`, `flick`, `openDeeplink`, `playSubTest`, `pressBack`, `restartApplication`, `rotate`, `scroll`, `scrollToElement`, `tap`, `toggleWiFi`, `typeText`, `wait`.
+
+Optional:
+
+- `allow_failure` (Boolean) A boolean set to allow this step to fail.
+- `has_new_step_element` (Boolean) A boolean set to determine if the step has a new step element.
+- `is_critical` (Boolean) A boolean to use in addition to `allowFailure` to determine if the test should be marked as failed when the step fails.
+- `no_screenshot` (Boolean) A boolean set to not take a screenshot for the step.
+- `public_id` (String) The public ID of the step.
+- `timeout` (Number) The time before declaring a step failed.
+
+<a id="nestedblock--mobile_step--params"></a>
+### Nested Schema for `mobile_step.params`
+
+Optional:
+
+- `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
+- `delay` (Number) Delay between each key stroke for a "type test" step.
+- `direction` (String) Valid values are `up`, `down`, `left`, `right`.
+- `element` (Block List, Max: 1) Element to use for the step, JSON encoded string. (see [below for nested schema](#nestedblock--mobile_step--params--element))
+- `enable` (Boolean)
+- `max_scrolls` (Number)
+- `positions` (Block List) (see [below for nested schema](#nestedblock--mobile_step--params--positions))
+- `subtest_public_id` (String) ID of the Synthetics test to use as subtest.
+- `value` (String) Value of the step.
+- `variable` (Block List, Max: 1) Details of the variable to extract. (see [below for nested schema](#nestedblock--mobile_step--params--variable))
+- `with_enter` (Boolean)
+- `x` (Number) X coordinates for a "scroll step".
+- `y` (Number) Y coordinates for a "scroll step".
+
+<a id="nestedblock--mobile_step--params--element"></a>
+### Nested Schema for `mobile_step.params.element`
+
+Optional:
+
+- `context` (String)
+- `context_type` (String) Valid values are `native`, `web`.
+- `element_description` (String)
+- `multi_locator` (Map of String)
+- `relative_position` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_step--params--element--relative_position))
+- `text_content` (String)
+- `user_locator` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_step--params--element--user_locator))
+- `view_name` (String)
+
+<a id="nestedblock--mobile_step--params--element--relative_position"></a>
+### Nested Schema for `mobile_step.params.element.relative_position`
+
+Optional:
+
+- `x` (Number)
+- `y` (Number)
+
+
+<a id="nestedblock--mobile_step--params--element--user_locator"></a>
+### Nested Schema for `mobile_step.params.element.user_locator`
+
+Optional:
+
+- `fail_test_on_cannot_locate` (Boolean)
+- `values` (Block List, Max: 5) (see [below for nested schema](#nestedblock--mobile_step--params--element--user_locator--values))
+
+<a id="nestedblock--mobile_step--params--element--user_locator--values"></a>
+### Nested Schema for `mobile_step.params.element.user_locator.values`
+
+Optional:
+
+- `type` (String) Valid values are `accessibility-id`, `id`, `ios-predicate-string`, `ios-class-chain`, `xpath`.
+- `value` (String)
+
+
+
+
+<a id="nestedblock--mobile_step--params--positions"></a>
+### Nested Schema for `mobile_step.params.positions`
+
+Optional:
+
+- `x` (Number)
+- `y` (Number)
+
+
+<a id="nestedblock--mobile_step--params--variable"></a>
+### Nested Schema for `mobile_step.params.variable`
+
+Required:
+
+- `name` (String) Name of the extracted variable.
+
+Optional:
+
+- `example` (String) Example of the extracted variable. Defaults to `""`.
 
 
 

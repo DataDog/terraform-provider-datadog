@@ -36,6 +36,7 @@ var Resources = []func() resource.Resource{
 	NewApplicationKeyResource,
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
+	NewIntegrationAwsAccountResource,
 	NewCatalogEntityResource,
 	NewDashboardListResource,
 	NewDomainAllowlistResource,
@@ -402,6 +403,10 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteOpenAPI", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListAWSLogsServices", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListAWSNamespaces", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateAWSAccount", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccount", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
