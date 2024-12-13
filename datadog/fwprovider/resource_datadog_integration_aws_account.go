@@ -190,7 +190,7 @@ func (r *integrationAwsAccountResource) ModifyPlan(ctx context.Context, request 
 
 func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.",
+		Description: "Provides a Datadog-Amazon Web Services integration resource. This can be used to create and manage Datadog-Amazon Web Services integration.",
 		Attributes: map[string]schema.Attribute{
 			"aws_account_id": schema.StringAttribute{
 				Required:    true,
