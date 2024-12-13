@@ -3,7 +3,7 @@
 
 # Add here the files to be excluded from the doc generation
 exclude_files=(
-  "docs/resources/integration_aws_account.md"  # aws-integrations - Manually mark a block as required
+  "docs/resources/integration_aws_account.md"
 )
 
 # Check if manual changes were made to any excluded files and exit
