@@ -22,8 +22,13 @@ type connectionResource struct {
 }
 
 type connectionResourceModel struct {
-	ID   types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
+	ID          types.String                  `tfsdk:"id"`
+	Name        types.String                  `tfsdk:"name"`
+	Integration connectionResourceIntegration `tfsdk:"integration"`
+}
+
+type connectionResourceIntegration struct {
+	Type types.String `tfsdk:"type"`
 }
 
 func NewConnectionResource() resource.Resource {
@@ -48,6 +53,112 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "",
+			},
+		},
+		Blocks: map[string]schema.Block{
+			"aws": schema.SingleNestedBlock{
+				Description: "",
+				Blocks: map[string]schema.Block{
+					"assume_role": schema.SingleNestedBlock{
+						Description: "",
+						Attributes: map[string]schema.Attribute{
+							"external_id": schema.StringAttribute{
+								Description: "",
+								Optional:    true,
+							},
+							"principal_id": schema.StringAttribute{
+								Description: "",
+								Optional:    true,
+							},
+							"account_id": schema.StringAttribute{
+								Description: "",
+								Optional:    true,
+							},
+							"role": schema.StringAttribute{
+								Description: "",
+								Optional:    true,
+							},
+						},
+					},
+				},
+			},
+			"http": schema.SingleNestedBlock{
+				Description: "",
+				Attributes: map[string]schema.Attribute{
+					"base_url": schema.StringAttribute{
+						Description: "",
+						Optional:    true,
+					},
+				},
+				Blocks: map[string]schema.Block{
+					"http_token_auth": schema.SingleNestedBlock{
+						Description: "",
+						Blocks: map[string]schema.Block{
+							"tokens": schema.ListNestedBlock{
+								Description: "",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"type": schema.StringAttribute{
+											Description: "",
+											Optional:    true,
+										},
+										"name": schema.StringAttribute{
+											Description: "",
+											Optional:    true,
+										},
+										"value": schema.StringAttribute{
+											Description: "",
+											Optional:    true,
+										},
+									},
+								},
+							},
+							"headers": schema.ListNestedBlock{
+								Description: "",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"name": schema.StringAttribute{
+											Description: "",
+											Optional:    true,
+										},
+										"value": schema.StringAttribute{
+											Description: "",
+											Optional:    true,
+										},
+									},
+								},
+							},
+							"url_parameters": schema.ListNestedBlock{
+								Description: "",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"name": schema.StringAttribute{
+											Description: "",
+											Optional:    true,
+										},
+										"value": schema.StringAttribute{
+											Description: "",
+											Optional:    true,
+										},
+									},
+								},
+							},
+							"body": schema.SingleNestedBlock{
+								Description: "",
+								Attributes: map[string]schema.Attribute{
+									"content_type": schema.StringAttribute{
+										Description: "",
+										Optional:    true,
+									},
+									"content": schema.StringAttribute{
+										Description: "",
+										Optional:    true,
+									},
+								},
+							},
+						},
+					},
+				},
 			},
 		},
 	}
