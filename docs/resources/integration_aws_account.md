@@ -8,7 +8,7 @@ description: |-
 
 # datadog_integration_aws_account (Resource)
 
-Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.
+Provides a Datadog—Amazon Web Services integration resource. This can be used to create and manage Datadog—Amazon Web Services integration.
 
 ## Example Usage
 
