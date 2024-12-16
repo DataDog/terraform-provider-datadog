@@ -1,7 +1,5 @@
 package datadog
 
-// a good comment
-
 import (
 	"context"
 	"errors"
