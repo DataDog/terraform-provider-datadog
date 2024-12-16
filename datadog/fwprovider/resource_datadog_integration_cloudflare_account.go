@@ -30,7 +30,7 @@ type integrationCloudflareAccountModel struct {
 	ApiKey    types.String `tfsdk:"api_key"`
 	Email     types.String `tfsdk:"email"`
 	Name      types.String `tfsdk:"name"`
-	Resources types.List   `tfsdk:"resources"`
+	Resources types.Set    `tfsdk:"resources"`
 }
 
 func NewIntegrationCloudflareAccountResource() resource.Resource {
@@ -72,7 +72,7 @@ func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 				ElementType: types.StringType,
 				Optional:    true,
 				Computed:    true,
-				Description: "An allowlist of resources to pull metrics for. Including, `web`, `dns`, `lb` (load balancer), and `worker`).",
+				Description: "An allowlist of resources to pull metrics for. Includes `web`, `dns`, `lb` (load balancer), and `worker`).",
 			},
 		},
 	}
@@ -202,7 +202,7 @@ func (r *integrationCloudflareAccountResource) updateState(ctx context.Context, 
 	}
 
 	if resources, ok := attributes.GetResourcesOk(); ok {
-		state.Resources, _ = types.ListValueFrom(ctx, types.StringType, resources)
+		state.Resources, _ = types.SetValueFrom(ctx, types.StringType, resources)
 	}
 }
 
