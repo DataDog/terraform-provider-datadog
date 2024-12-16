@@ -145,6 +145,6 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          [[ -z "${TESTARGS}" ]] && echo "Skipping tests" || make testall
+          [[ -z "${TESTARGS}" ]] && echo "Skipping tests" || make testacc
         env:
           RECORD: false
