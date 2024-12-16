@@ -16,8 +16,8 @@ import (
 )
 
 type PermAttributes struct {
-	Name         string
-	IsRestricted bool
+	Name                string
+	IsDefaultPermission bool
 }
 
 // allPermissions is a map of all permission IDs to its attributes (name, restricted)
@@ -143,7 +143,7 @@ func resourceDatadogRoleCustomizeDiff(ctx context.Context, diff *schema.Resource
 			)
 		}
 
-		if permAttributes.IsRestricted && !defaultPermissionsOptOut.(bool) {
+		if permAttributes.IsDefaultPermission && !defaultPermissionsOptOut.(bool) {
 			return fmt.Errorf(
 				"permission with ID %s is a restricted (default) permission and cannot be managed by terraform, set `default_permissions_opt_out` to `true` to manage default permissions, or remove it from your configuration",
 				permID,
@@ -256,7 +256,8 @@ func appendPerm(perms []map[string]string, permID string, permIDToAttributes map
 			"id":   permID,
 			"name": permAttributes.Name,
 		}
-		if isOptedOutOfDefaultPermissions || !permAttributes.IsRestricted {
+		// we include the permission if it's not a default (restricted) permission or if the config has opted out of automatically including default permissions
+		if isOptedOutOfDefaultPermissions || !permAttributes.IsDefaultPermission {
 			perms = append(perms, permR)
 		}
 	}
