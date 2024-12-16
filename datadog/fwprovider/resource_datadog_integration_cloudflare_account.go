@@ -216,7 +216,7 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 	}
 	attributes.SetName(state.Name.ValueString())
 
-	if !state.Resources.IsNull() {
+	if !state.Resources.IsNull() && !state.Resources.IsUnknown() {
 		var resources []string
 		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
 		attributes.SetResources(resources)
@@ -238,7 +238,7 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 		attributes.SetEmail(state.Email.ValueString())
 	}
 
-	if !state.Resources.IsNull() {
+	if !state.Resources.IsNull() && !state.Resources.IsUnknown() {
 		var resources []string
 		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
 		attributes.SetResources(resources)
