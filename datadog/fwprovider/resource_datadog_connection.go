@@ -64,11 +64,11 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 						Attributes: map[string]schema.Attribute{
 							"external_id": schema.StringAttribute{
 								Description: "",
-								Optional:    true,
+								Computed:    true,
 							},
 							"principal_id": schema.StringAttribute{
 								Description: "",
-								Optional:    true,
+								Computed:    true,
 							},
 							"account_id": schema.StringAttribute{
 								Description: "",
