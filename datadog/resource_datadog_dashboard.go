@@ -136,7 +136,7 @@ func resourceDatadogDashboard() *schema.Resource {
 					Default:       false,
 					ConflictsWith: []string{"restricted_roles"},
 					Description:   "Whether this dashboard is read-only.",
-					Deprecated:    "Prefer using `restricted_roles` to define which roles are required to edit the dashboard.",
+					Deprecated:    "This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard.",
 				},
 				"tags": {
 					Type:        schema.TypeList,
