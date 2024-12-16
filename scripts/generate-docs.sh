@@ -3,6 +3,7 @@
 
 # Add here the files to be excluded from the doc generation
 exclude_files=(
+  "docs/resources/integration_aws_account.md"
   "docs/resources/role.md"
 )
 
