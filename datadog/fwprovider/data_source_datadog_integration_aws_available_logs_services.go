@@ -41,7 +41,7 @@ func (d *awsLogsServicesDataSource) Metadata(_ context.Context, req datasource.M
 
 func (d *awsLogsServicesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve all AWS log ready services.",
+		Description: "Use this data source to retrieve all AWS log ready services. This is the list of allowed values for `logs_config.lambda_forwarder.sources` in [`datadog_integration_aws_account` resource](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account).",
 		Attributes: map[string]schema.Attribute{
 			// Datasource ID
 			"id": utils.ResourceIDAttribute(),

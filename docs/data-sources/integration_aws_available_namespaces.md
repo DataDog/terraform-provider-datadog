@@ -3,12 +3,12 @@
 page_title: "datadog_integration_aws_available_namespaces Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve all available AWS Namespaces.
+  Use this data source to retrieve all available AWS namespaces. This is the list of allowed values for metrics_config.namespace_filters include_only or exclude_only in datadog_integration_aws_account resource https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account.
 ---
 
 # datadog_integration_aws_available_namespaces (Data Source)
 
-Use this data source to retrieve all available AWS Namespaces.
+Use this data source to retrieve all available AWS namespaces. This is the list of allowed values for `metrics_config.namespace_filters` `include_only` or `exclude_only` in [`datadog_integration_aws_account` resource](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account).
 
 
 
@@ -17,5 +17,5 @@ Use this data source to retrieve all available AWS Namespaces.
 
 ### Read-Only
 
-- `aws_namespaces` (List of String) List of Available AWS Namespaces.
+- `aws_namespaces` (List of String) List of available AWS namespaces.
 - `id` (String) The ID of this resource.

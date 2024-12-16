@@ -41,13 +41,13 @@ func (d *awsAvailableNamespacesDataSource) Metadata(_ context.Context, req datas
 
 func (d *awsAvailableNamespacesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Use this data source to retrieve all available AWS Namespaces.",
+		Description: "Use this data source to retrieve all available AWS namespaces. This is the list of allowed values for `metrics_config.namespace_filters` `include_only` or `exclude_only` in [`datadog_integration_aws_account` resource](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account).",
 		Attributes: map[string]schema.Attribute{
 			// Datasource ID
 			"id": utils.ResourceIDAttribute(),
 			// Datasource Parameters
 			"aws_namespaces": schema.ListAttribute{
-				Description: "List of Available AWS Namespaces.",
+				Description: "List of available AWS namespaces.",
 				ElementType: types.StringType,
 				Computed:    true,
 			},

@@ -3,12 +3,12 @@
 page_title: "datadog_integration_aws_available_logs_services Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Use this data source to retrieve all AWS log ready services.
+  Use this data source to retrieve all AWS log ready services. This is the list of allowed values for logs_config.lambda_forwarder.sources in datadog_integration_aws_account resource https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account.
 ---
 
 # datadog_integration_aws_available_logs_services (Data Source)
 
-Use this data source to retrieve all AWS log ready services.
+Use this data source to retrieve all AWS log ready services. This is the list of allowed values for `logs_config.lambda_forwarder.sources` in [`datadog_integration_aws_account` resource](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account).
 
 
 
