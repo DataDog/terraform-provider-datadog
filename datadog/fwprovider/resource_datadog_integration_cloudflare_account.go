@@ -68,7 +68,7 @@ func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 				},
 			},
 			"id": utils.ResourceIDAttribute(),
-			"resources": schema.ListAttribute{
+			"resources": schema.SetAttribute{
 				ElementType: types.StringType,
 				Optional:    true,
 				Computed:    true,
@@ -193,7 +193,7 @@ func (r *integrationCloudflareAccountResource) updateState(ctx context.Context, 
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	if email, ok := attributes.GetEmailOk(); ok {
+	if email, ok := attributes.GetEmailOk(); ok && *email != "" {
 		state.Email = types.StringValue(*email)
 	}
 
