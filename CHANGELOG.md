@@ -1,3 +1,28 @@
+## 3.50.0 (December 17, 2024)
+
+### BUGFIXES
+* [datadog_monitor] Allow default_tags values to contain colons. by @Amaury-Behague in https://github.com/DataDog/terraform-provider-datadog/pull/2703
+* [datadog_synthetics_test] Fix multistep client certificate by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2683
+* [resource_datadog_logs_index] Fix having zero retention logs indexes with flex by @Prepager in https://github.com/DataDog/terraform-provider-datadog/pull/2716
+* [datadog_integration_cloudflare_account] Don't set email left empty and ignore resource order by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2724
+* [datadog_monitor] Change enable_samples to optional by @lexicalunit in https://github.com/DataDog/terraform-provider-datadog/pull/2680
+### FEATURES
+* [datadog_synthetics_test] Add mobile support by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/2701
+* [datadog_sensitive_data_standard_pattern] add description and deprecate pattern by @vinckama in https://github.com/DataDog/terraform-provider-datadog/pull/2704
+* [datadog_synthetics_test] Add `exitIfSucceed` to multistep API tests by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2708
+* [datadog_synthetics_test] Add support for mobile steps  by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/2717
+* [datadog_integration_aws_account] Add `datadog_integration_aws_account` resource  by @ktmq in https://github.com/DataDog/terraform-provider-datadog/pull/2682
+* [datadog_integration_aws_available_namespaces] Create AWS Integrations V2 datasources `datadog_integration_aws_available_logs_services/namespaces` by @ktmq in https://github.com/DataDog/terraform-provider-datadog/pull/2709
+### NOTES
+* [datadog_dashboard] Make the `is_read_only` deprecation warning wording stronger by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2720
+
+## New Contributors
+* @bthuilot made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2713
+* @ktmq made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2682
+* @lexicalunit made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2680
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.49.0...v3.50.0
+
 ## 3.49.0 (November 26, 2024)
 
 ### BUGFIXES
