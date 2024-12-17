@@ -22,13 +22,54 @@ type connectionResource struct {
 }
 
 type connectionResourceModel struct {
-	ID          types.String                  `tfsdk:"id"`
-	Name        types.String                  `tfsdk:"name"`
-	Integration connectionResourceIntegration `tfsdk:"integration"`
+	ID   types.String         `tfsdk:"id"`
+	Name types.String         `tfsdk:"name"`
+	AWS  *awsConnectionModel  `tfsdk:"aws"`
+	HTTP *httpConnectionModel `tfsdk:"http"`
 }
 
-type connectionResourceIntegration struct {
-	Type types.String `tfsdk:"type"`
+type awsConnectionModel struct {
+	AssumeRole *awsAssumeRoleModel `tfsdk:"assume_role"`
+}
+
+type awsAssumeRoleModel struct {
+	AccountID   types.String `tfsdk:"account_id"`
+	Role        types.String `tfsdk:"role"`
+	ExternalID  types.String `tfsdk:"external_id"`
+	PrincipalID types.String `tfsdk:"principal_id"`
+}
+
+type httpConnectionModel struct {
+	BaseURL       types.String        `tfsdk:"base_url"`
+	HttpTokenAuth *httpTokenAuthModel `tfsdk:"http_token_auth"`
+}
+
+type httpTokenAuthModel struct {
+	Tokens        []*tokenModel        `tfsdk:"tokens"`
+	Headers       []*headerModel       `tfsdk:"headers"`
+	URLParameters []*urlParameterModel `tfsdk:"url_parameters"`
+	Body          *bodyModel           `tfsdk:"body"`
+}
+
+type tokenModel struct {
+	Type  types.String `tfsdk:"type"`
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
+}
+
+type headerModel struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
+}
+
+type urlParameterModel struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
+}
+
+type bodyModel struct {
+	ContentType types.String `tfsdk:"content_type"`
+	Content     types.String `tfsdk:"content"`
 }
 
 func NewConnectionResource() resource.Resource {
@@ -177,6 +218,8 @@ func (r *connectionResource) Create(ctx context.Context, request resource.Create
 	}
 
 	state.ID = types.StringValue("created ID")
+	state.AWS.AssumeRole.ExternalID = types.StringValue("extid")
+	state.AWS.AssumeRole.PrincipalID = types.StringValue("princid")
 
 	diags = response.State.Set(ctx, &state)
 	response.Diagnostics.Append(diags...)
