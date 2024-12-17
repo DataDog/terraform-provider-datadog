@@ -139,8 +139,7 @@ Optional:
 Optional:
 
 - `lambdas` (List of String) List of Datadog Lambda Log Forwarder ARNs in your AWS account.
-- `sources` (List of String) List of service IDs set to enable automatic log collection. Discover the list of available services with the [Get list of AWS log ready services](https://docs.datadoghq.com/api/latest/aws-logs-integration/#get-list-of-aws-log-ready-services) endpoint.
-
+- `sources` (List of String) List of service IDs set to enable automatic log collection. Use [`datadog_integration_aws_available_logs_services` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_logs_services) to get allowed values.
 
 
 <a id="nestedblock--metrics_config"></a>
@@ -160,8 +159,8 @@ Optional:
 
 Optional:
 
-- `exclude_only` (List of String) Exclude only these namespaces from metrics collection. Defaults to `["AWS/SQS", "AWS/ElasticMapReduce"]`. `AWS/SQS` and `AWS/ElasticMapReduce` are excluded by default to reduce your AWS CloudWatch costs from `GetMetricData` API calls.
-- `include_only` (List of String) Include only these namespaces for metrics collection.
+- `exclude_only` (List of String) Exclude only these namespaces from metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values. Defaults to `["AWS/SQS", "AWS/ElasticMapReduce"]`. `AWS/SQS` and `AWS/ElasticMapReduce` are excluded by default to reduce your AWS CloudWatch costs from `GetMetricData` API calls.
+- `include_only` (List of String) Include only these namespaces for metrics collection. Use [`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) to get allowed values.
 
 
 <a id="nestedblock--metrics_config--tag_filters"></a>
