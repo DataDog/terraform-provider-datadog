@@ -1088,6 +1088,12 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 		}
 	}
 
+	if m.GetType() == datadogV1.MONITORTYPE_CI_PIPELINES_ALERT || m.GetType() == datadogV1.MONITORTYPE_CI_TESTS_ALERT {
+		if err := d.Set("enable_samples", m.Options.GetEnableSamples()); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
 	if err := d.Set("notify_by", m.Options.GetNotifyBy()); err != nil {
 		return diag.FromErr(err)
 	}
