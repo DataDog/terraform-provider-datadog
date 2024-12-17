@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -12,8 +14,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &connectionResource{}
-	_ resource.ResourceWithImportState = &connectionResource{}
+	_ resource.ResourceWithConfigure        = &connectionResource{}
+	_ resource.ResourceWithImportState      = &connectionResource{}
+	_ resource.ResourceWithConfigValidators = &connectionResource{}
 )
 
 type connectionResource struct {
@@ -80,6 +83,15 @@ func (r *connectionResource) Configure(_ context.Context, request resource.Confi
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
 	r.Auth = providerData.Auth
+}
+
+func (r *connectionResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
+	return []resource.ConfigValidator{
+		resourcevalidator.Conflicting(
+			path.MatchRoot("aws"),
+			path.MatchRoot("http"),
+		),
+	}
 }
 
 func (r *connectionResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
