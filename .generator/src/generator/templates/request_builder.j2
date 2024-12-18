@@ -1,0 +1,10 @@
+{%- import "utils/request_builder_helper.j2" as requestBuilderMacros %}
+{%- set useCreateBodyRequest = get_type_for_parameter(createOperationParams["body"]) == get_type_for_parameter(updateOperationParams["body"]) %}
+{%- set parameterCreateBodySchema = createOperationParams["body"]|parameter_schema %}
+{%- set parameterUpdateBodySchema = updateOperationParams["body"]|parameter_schema %}
+
+{{ requestBuilderMacros.requestBaseFunc(name, "build"~name|camel_case~"RequestBody", parameterCreateBodySchema) }}
+
+{% if not useCreateBodyRequest %}
+{{ requestBuilderMacros.requestBaseFunc(name, "build"~name|camel_case~"UpdateRequestBody", parameterUpdateBodySchema) }}
+{% endif %}
