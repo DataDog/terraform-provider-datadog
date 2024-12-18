@@ -2150,6 +2150,11 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 				// keep the element from the local state instead
 				element := d.Get(fmt.Sprintf("browser_step.%d.params.0.element", stepIndex))
 				localParams["element"] = element
+			} else if key == "files" {
+				// prevent overriding `files` in the local state with the one received from the backend, and
+				// keep the files from the local state instead
+				files := d.Get(fmt.Sprintf("browser_step.%d.params.0.files", stepIndex))
+				localParams["files"] = files
 			} else {
 				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
 			}
@@ -4651,6 +4656,7 @@ func decompressAndDecodeValue(value string) string {
 	return string(compressedProtoFile)
 }
 
+// TODO
 func convertStepParamsValueForConfig(stepType interface{}, key string, value interface{}) interface{} {
 	switch key {
 	case "element", "email", "file", "files", "request":
