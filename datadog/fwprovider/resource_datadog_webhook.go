@@ -96,7 +96,7 @@ func (r *webhookResource) Read(ctx context.Context, request resource.ReadRequest
 		return
 	}
 
-	id := state.Name.ValueString()
+	id := state.ID.ValueString()
 	resp, httpResp, err := r.Api.GetWebhooksIntegration(r.Auth, id)
 
 	if err != nil {
