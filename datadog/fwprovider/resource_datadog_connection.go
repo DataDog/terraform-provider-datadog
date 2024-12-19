@@ -325,6 +325,7 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 										"value": schema.StringAttribute{
 											Description: "Token value",
 											Optional:    true,
+											Sensitive:   true,
 										},
 									},
 								},
