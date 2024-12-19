@@ -1,4 +1,4 @@
-# AWS Account Config ID can be retrieved by using the List all AWS integrations endpoint and querying by AWS Account ID,
+# AWS Account Config ID can be retrieved by using the List all AWS integrations endpoint and querying by AWS Account ID:
 # https://docs.datadoghq.com/api/latest/aws-integration/#list-all-aws-integrations
 
 
