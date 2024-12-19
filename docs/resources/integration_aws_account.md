@@ -219,4 +219,4 @@ Import is supported using the following syntax:
 ```shell
 terraform import datadog_integration_aws_account.example "<datadog-aws-account-config-id>"
 ```
- AWS Account Config ID can be retrieved by using the [List all AWS integrations](https://docs.datadoghq.com/api/latest/aws-integration/#list-all-aws-integrations) endpoint and querying by AWS Account ID, or by accessing the `id` field of an existing `datadog_integration_aws` resource.
+ AWS Account Config ID can be retrieved by using the [List all AWS integrations](https://docs.datadoghq.com/api/latest/aws-integration/#list-all-aws-integrations) endpoint and querying by AWS Account ID.
