@@ -4656,7 +4656,6 @@ func decompressAndDecodeValue(value string) string {
 	return string(compressedProtoFile)
 }
 
-// TODO
 func convertStepParamsValueForConfig(stepType interface{}, key string, value interface{}) interface{} {
 	switch key {
 	case "element", "email", "file", "files", "request":
