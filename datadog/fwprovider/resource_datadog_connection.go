@@ -100,7 +100,7 @@ func (r *connectionResource) Metadata(_ context.Context, request resource.Metada
 
 func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "",
+		Description: "Name of the connection",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
@@ -110,25 +110,25 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 		},
 		Blocks: map[string]schema.Block{
 			"aws": schema.SingleNestedBlock{
-				Description: "",
+				Description: "Configuration for an AWS connection",
 				Blocks: map[string]schema.Block{
 					"assume_role": schema.SingleNestedBlock{
-						Description: "",
+						Description: "Configuration for an assume role AWS connection",
 						Attributes: map[string]schema.Attribute{
 							"external_id": schema.StringAttribute{
-								Description: "",
+								Description: "External ID used to scope which connection can be used to assume the role",
 								Computed:    true,
 							},
 							"principal_id": schema.StringAttribute{
-								Description: "",
+								Description: "AWS account that will assume the role",
 								Computed:    true,
 							},
 							"account_id": schema.StringAttribute{
-								Description: "",
+								Description: "AWS account the connection is created for",
 								Optional:    true,
 							},
 							"role": schema.StringAttribute{
-								Description: "",
+								Description: "Role to assume",
 								Optional:    true,
 							},
 						},
@@ -136,42 +136,42 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"http": schema.SingleNestedBlock{
-				Description: "",
+				Description: "Configuration for an HTTP connection",
 				Attributes: map[string]schema.Attribute{
 					"base_url": schema.StringAttribute{
-						Description: "",
+						Description: "Base HTTP url for the integration",
 						Optional:    true,
 					},
 				},
 				Blocks: map[string]schema.Block{
 					"http_token_auth": schema.SingleNestedBlock{
-						Description: "",
+						Description: "Configuration for an HTTP connection using token auth",
 						Blocks: map[string]schema.Block{
 							"tokens": schema.ListNestedBlock{
-								Description: "",
+								Description: "Tokens for HTTP authentication",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"type": schema.StringAttribute{
-											Description: "",
+											Description: "Type of the token. Currently only STRING is allowed.",
 											Optional:    true,
 										},
 										"name": schema.StringAttribute{
-											Description: "",
+											Description: "Token name",
 											Optional:    true,
 										},
 										"value": schema.StringAttribute{
-											Description: "",
+											Description: "Token value",
 											Optional:    true,
 										},
 									},
 								},
 							},
 							"headers": schema.ListNestedBlock{
-								Description: "",
+								Description: "Headers for HTTP authentication",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"name": schema.StringAttribute{
-											Description: "",
+											Description: "Header name",
 											Optional:    true,
 										},
 										"value": schema.StringAttribute{
@@ -182,29 +182,29 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 								},
 							},
 							"url_parameters": schema.ListNestedBlock{
-								Description: "",
+								Description: "URL parameters for HTTP authentication",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"name": schema.StringAttribute{
-											Description: "",
+											Description: "URL parameter name",
 											Optional:    true,
 										},
 										"value": schema.StringAttribute{
-											Description: "",
+											Description: "URL parameter value",
 											Optional:    true,
 										},
 									},
 								},
 							},
 							"body": schema.SingleNestedBlock{
-								Description: "",
+								Description: "Body for HTTP authentication",
 								Attributes: map[string]schema.Attribute{
 									"content_type": schema.StringAttribute{
-										Description: "",
+										Description: "Content type of the body",
 										Optional:    true,
 									},
 									"content": schema.StringAttribute{
-										Description: "",
+										Description: "Serialized body content",
 										Optional:    true,
 									},
 								},
