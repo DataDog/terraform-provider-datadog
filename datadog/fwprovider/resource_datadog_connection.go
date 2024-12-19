@@ -100,12 +100,12 @@ func (r *connectionResource) Metadata(_ context.Context, request resource.Metada
 
 func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Name of the connection",
+		Description: "A connection that can be used in Actions, including in the Workflow Automation and App Builder products.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
 				Required:    true,
-				Description: "",
+				Description: "Name of the connection",
 			},
 		},
 		Blocks: map[string]schema.Block{
