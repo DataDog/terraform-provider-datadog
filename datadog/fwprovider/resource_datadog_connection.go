@@ -6,7 +6,6 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -17,6 +16,7 @@ var (
 	_ resource.ResourceWithConfigure        = &connectionResource{}
 	_ resource.ResourceWithImportState      = &connectionResource{}
 	_ resource.ResourceWithConfigValidators = &connectionResource{}
+	_ resource.ResourceWithValidateConfig   = &connectionResource{}
 )
 
 type connectionResource struct {
@@ -43,14 +43,14 @@ type awsAssumeRoleModel struct {
 }
 
 type httpConnectionModel struct {
-	BaseURL       types.String        `tfsdk:"base_url"`
-	HttpTokenAuth *httpTokenAuthModel `tfsdk:"http_token_auth"`
+	BaseURL   types.String        `tfsdk:"base_url"`
+	TokenAuth *httpTokenAuthModel `tfsdk:"token_auth"`
 }
 
 type httpTokenAuthModel struct {
-	Tokens        []*tokenModel        `tfsdk:"tokens"`
-	Headers       []*headerModel       `tfsdk:"headers"`
-	URLParameters []*urlParameterModel `tfsdk:"url_parameters"`
+	Tokens        []*tokenModel        `tfsdk:"token"`
+	Headers       []*headerModel       `tfsdk:"header"`
+	URLParameters []*urlParameterModel `tfsdk:"url_parameter"`
 	Body          *bodyModel           `tfsdk:"body"`
 }
 
@@ -85,6 +85,7 @@ func (r *connectionResource) Configure(_ context.Context, request resource.Confi
 	r.Auth = providerData.Auth
 }
 
+// contains simple validations that can be done by the framework
 func (r *connectionResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
 	return []resource.ConfigValidator{
 		resourcevalidator.Conflicting(
@@ -92,6 +93,168 @@ func (r *connectionResource) ConfigValidators(ctx context.Context) []resource.Co
 			path.MatchRoot("http"),
 		),
 	}
+}
+
+// contains more complex validations that we need because the Schema definition isn't expressive enough for us
+func (r *connectionResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
+	var conn connectionResourceModel
+
+	diags := request.Config.Get(ctx, &conn)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if conn.AWS == nil && conn.HTTP == nil {
+		response.Diagnostics.AddAttributeError(
+			path.Root(""),
+			"Integration type required",
+			"You must specify an AWS or HTTP block.",
+		)
+		return
+	}
+
+	if conn.AWS != nil {
+		if conn.AWS.AssumeRole == nil {
+			response.Diagnostics.AddAttributeError(
+				path.Root("aws"),
+				"AWS credential type required",
+				"You must specify a credential type block.",
+			)
+			return
+		}
+
+		if isStringEmpty(conn.AWS.AssumeRole.AccountID) {
+			response.Diagnostics.AddAttributeError(
+				path.Root("aws").AtName("assume_role").AtName("account_id"),
+				"AWS account_id required",
+				"You must specify an AWS account ID.",
+			)
+		}
+
+		if isStringEmpty(conn.AWS.AssumeRole.Role) {
+			response.Diagnostics.AddAttributeError(
+				path.Root("aws").AtName("assume_role").AtName("role"),
+				"AWS role required",
+				"You must specify an AWS role.",
+			)
+		}
+	}
+
+	if conn.HTTP != nil {
+		if isStringEmpty(conn.HTTP.BaseURL) {
+			response.Diagnostics.AddAttributeError(
+				path.Root("http").AtName("base_url"),
+				"Base URL required",
+				"You must specify a base URL for this connection.",
+			)
+		}
+
+		if conn.HTTP.TokenAuth == nil {
+			response.Diagnostics.AddAttributeError(
+				path.Root("http"),
+				"HTTP credential type required",
+				"You must specify a credential type block.",
+			)
+			return
+		}
+
+		if len(conn.HTTP.TokenAuth.Tokens) == 0 &&
+			len(conn.HTTP.TokenAuth.Headers) == 0 &&
+			len(conn.HTTP.TokenAuth.URLParameters) == 0 &&
+			conn.HTTP.TokenAuth.Body == nil {
+			response.Diagnostics.AddAttributeError(
+				path.Root("http").AtName("token_auth"),
+				"Credential information required",
+				"You must specify at least one of: tokens, headers, URL parameters, body.",
+			)
+			return
+		}
+
+		for i, token := range conn.HTTP.TokenAuth.Tokens {
+			if isStringEmpty(token.Type) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("http").AtName("token_auth").AtName("token").AtListIndex(i).AtName("type"),
+					"Token type required",
+					"You must specify a token type",
+				)
+			}
+
+			if isStringEmpty(token.Name) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("http").AtName("token_auth").AtName("token").AtListIndex(i).AtName("name"),
+					"Token name required",
+					"You must specify a token name",
+				)
+			}
+
+			if isStringEmpty(token.Value) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("http").AtName("token_auth").AtName("token").AtListIndex(i).AtName("value"),
+					"Token value required",
+					"You must specify a token value",
+				)
+			}
+		}
+
+		for i, header := range conn.HTTP.TokenAuth.Headers {
+			if isStringEmpty(header.Name) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("http").AtName("token_auth").AtName("header").AtListIndex(i).AtName("name"),
+					"Header name required",
+					"You must specify a header name",
+				)
+			}
+
+			if isStringEmpty(header.Value) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("http").AtName("token_auth").AtName("header").AtListIndex(i).AtName("value"),
+					"Header value required",
+					"You must specify a header value",
+				)
+			}
+		}
+
+		for i, param := range conn.HTTP.TokenAuth.URLParameters {
+			if isStringEmpty(param.Name) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("http").AtName("token_auth").AtName("url_parameter").AtListIndex(i).AtName("name"),
+					"URL parameter name required",
+					"You must specify a URL parameter name",
+				)
+			}
+
+			if isStringEmpty(param.Value) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("http").AtName("token_auth").AtName("url_parameter").AtListIndex(i).AtName("value"),
+					"URL parameter value required",
+					"You must specify a URL parameter value",
+				)
+			}
+		}
+
+		if conn.HTTP.TokenAuth.Body != nil {
+			if isStringEmpty(conn.HTTP.TokenAuth.Body.ContentType) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("http").AtName("token_auth").AtName("body").AtName("content_type"),
+					"Body content type required",
+					"You must specify a body content type",
+				)
+			}
+
+			if isStringEmpty(conn.HTTP.TokenAuth.Body.Content) {
+				response.Diagnostics.AddAttributeError(
+					path.Root("http").AtName("token_auth").AtName("body").AtName("content"),
+					"Body content required",
+					"You must specify body content",
+				)
+			}
+		}
+	}
+}
+
+func isStringEmpty(str types.String) bool {
+	return str.IsNull() || str.ValueString() == ""
 }
 
 func (r *connectionResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -144,11 +307,11 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					},
 				},
 				Blocks: map[string]schema.Block{
-					"http_token_auth": schema.SingleNestedBlock{
+					"token_auth": schema.SingleNestedBlock{
 						Description: "Configuration for an HTTP connection using token auth",
 						Blocks: map[string]schema.Block{
-							"tokens": schema.ListNestedBlock{
-								Description: "Tokens for HTTP authentication",
+							"token": schema.ListNestedBlock{
+								Description: "Token for HTTP authentication",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"type": schema.StringAttribute{
@@ -166,8 +329,8 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 									},
 								},
 							},
-							"headers": schema.ListNestedBlock{
-								Description: "Headers for HTTP authentication",
+							"header": schema.ListNestedBlock{
+								Description: "Header for HTTP authentication",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"name": schema.StringAttribute{
@@ -181,8 +344,8 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 									},
 								},
 							},
-							"url_parameters": schema.ListNestedBlock{
-								Description: "URL parameters for HTTP authentication",
+							"url_parameter": schema.ListNestedBlock{
+								Description: "URL parameter for HTTP authentication",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"name": schema.StringAttribute{
@@ -218,7 +381,7 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 }
 
 func (r *connectionResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), request, response)
 }
 
 func (r *connectionResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
