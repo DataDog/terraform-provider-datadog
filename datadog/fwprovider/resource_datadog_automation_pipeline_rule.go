@@ -243,27 +243,35 @@ func (a *muteActionBlockModel) ValidateRequired() error {
 	return nil
 }
 
-type dueDateActionBlockModel struct {
-	DueTimePerSeverity *DueTimePerSeverity `tfsdk:"due_time_per_severity"`
-	NotifyBeforeDue    types.String        `tfsdk:"notify_before_due"`
-}
-
 type DueTimePerSeverity struct {
 	Severity types.String `tfsdk:"severity"`
 	Time     types.String `tfsdk:"time"`
 }
 
+type dueDateActionBlockModel struct {
+	DueTimePerSeverity []DueTimePerSeverity `tfsdk:"due_time_per_severity"`
+	NotifyBeforeDue    types.String         `tfsdk:"notify_before_due"`
+}
+
 func (a *dueDateActionBlockModel) IsNull() bool {
-	return a == nil || (a.DueTimePerSeverity == nil && a.NotifyBeforeDue.IsNull())
+	return a == nil || (len(a.DueTimePerSeverity) == 0 && a.NotifyBeforeDue.IsNull())
 }
 
 func (a *dueDateActionBlockModel) ToPayload() map[string]interface{} {
 	payload := map[string]interface{}{}
-	if a.DueTimePerSeverity != nil {
-		payload["due_time_per_severity"] = map[string]interface{}{
-			"severity": a.DueTimePerSeverity.Severity.ValueString(),
-			"time":     a.DueTimePerSeverity.Time.ValueString(),
+	if len(a.DueTimePerSeverity) > 0 {
+		var items []map[string]interface{}
+		for _, s := range a.DueTimePerSeverity {
+			item := map[string]interface{}{}
+			if !s.Severity.IsNull() {
+				item["severity"] = s.Severity.ValueString()
+			}
+			if !s.Time.IsNull() {
+				item["time"] = s.Time.ValueString()
+			}
+			items = append(items, item)
 		}
+		payload["due_time_per_severity"] = items
 	}
 	if !a.NotifyBeforeDue.IsNull() {
 		payload["notify_before_due"] = a.NotifyBeforeDue.ValueString()
@@ -272,14 +280,16 @@ func (a *dueDateActionBlockModel) ToPayload() map[string]interface{} {
 }
 
 func (a *dueDateActionBlockModel) ValidateRequired() error {
-	if a.DueTimePerSeverity == nil {
+	if len(a.DueTimePerSeverity) == 0 {
 		return fmt.Errorf("due_time_per_severity is required for due date action")
 	}
-	if a.DueTimePerSeverity.Severity.IsNull() {
-		return fmt.Errorf("severity is required for due_time_per_severity")
-	}
-	if a.DueTimePerSeverity.Time.IsNull() {
-		return fmt.Errorf("time is required for due_time_per_severity")
+	for i, d := range a.DueTimePerSeverity {
+		if d.Severity.IsNull() {
+			return fmt.Errorf("severity is required for due_time_per_severity at index %d", i)
+		}
+		if d.Time.IsNull() {
+			return fmt.Errorf("time is required for due_time_per_severity at index %d", i)
+		}
 	}
 	return nil
 }
@@ -350,7 +360,6 @@ func ValidateTerraform(plan automationPipelineRuleModel) error {
 	return nil
 }
 
-// Define action types
 type ActionType string
 
 const (
@@ -359,7 +368,6 @@ const (
 	DueDateActionType ActionType = "due_date_rules"
 )
 
-// BaseAction struct for common action methods
 type BaseAction struct {
 	actionType ActionType
 }
@@ -381,7 +389,6 @@ func (b BaseAction) GetSlug() string {
 	}
 }
 
-// Resource Schema
 func (r *automationPipelineRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Manages a Datadog Automation Pipeline Rule.",
@@ -605,21 +612,23 @@ func (r *automationPipelineRuleResource) dueDateActionSchema() schema.SingleNest
 			},
 		},
 		Blocks: map[string]schema.Block{
-			"due_time_per_severity": schema.SingleNestedBlock{
+			"due_time_per_severity": schema.ListNestedBlock{
 				Description: "The due time per severity.",
-				Attributes: map[string]schema.Attribute{
-					"severity": schema.StringAttribute{
-						Description: "The severity for the due time.",
-						Optional:    true,
-						Validators: []validator.String{
-							stringvalidator.OneOf("critical", "high", "medium", "low", "info", "unknown"),
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"severity": schema.StringAttribute{
+							Description: "The severity for the due time.",
+							Optional:    true,
+							Validators: []validator.String{
+								stringvalidator.OneOf("critical", "high", "medium", "low", "info", "unknown"),
+							},
 						},
-					},
-					"time": schema.StringAttribute{
-						Description: "The time for the due time.",
-						Optional:    true,
-						Validators: []validator.String{
-							ISODuration(),
+						"time": schema.StringAttribute{
+							Description: "The time for the due time.",
+							Optional:    true,
+							Validators: []validator.String{
+								ISODuration(),
+							},
 						},
 					},
 				},
@@ -653,7 +662,6 @@ func (v MicrosecondTimestampValidator) ValidateInt64(ctx context.Context, req va
 		)
 	}
 
-	// check that it's at most 10 years in the future
 	if req.ConfigValue.ValueInt64() > unixTime+1000*60*60*24*365*10 {
 		resp.Diagnostics.AddAttributeError(
 			req.Path,
@@ -667,8 +675,6 @@ func NewTimestampValidator() validator.Int64 {
 	return MicrosecondTimestampValidator{}
 }
 
-// ISODurationValidator validates that a string conforms to **ISO 8601 duration format.**
-// This validator only allows Weeks, Days, Hours, Minutes, and Seconds.
 type ISODurationValidator struct{}
 
 func (v ISODurationValidator) Description(_ context.Context) string {
@@ -679,22 +685,31 @@ func (v ISODurationValidator) MarkdownDescription(_ context.Context) string {
 	return v.Description(context.Background())
 }
 
+func isValidDuration(duration string) error {
+	pattern := `^\bP([1-9]\d*)D\b$`
+	re := regexp.MustCompile(pattern)
+
+	if !re.MatchString(duration) {
+		return fmt.Errorf(
+			`invalid duration '%s': %s`,
+			duration,
+			"does not respect the expected format 'P{integer}D' where {integer} is a positive number of days")
+	}
+
+	return nil
+}
+
 func (v ISODurationValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
 	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
+	err := isValidDuration(req.ConfigValue.ValueString())
 
-	// Regular expression to match **ISO 8601 duration** with Weeks, Days, Hours, Minutes, and Seconds
-	// https://stackoverflow.com/questions/32044846/regex-for-iso-8601-durations
-	regex := `^P(?!$)(\d+(?:\.\d+)?Y)?(\d+(?:\.\d+)?M)?(\d+(?:\.\d+)?W)?(\d+(?:\.\d+)?D)?(T(?=\d)(\d+(?:\.\d+)?H)?(\d+(?:\.\d+)?M)?(\d+(?:\.\d+)?S)?)?$`
-	re := regexp.MustCompile(regex)
-
-	if !re.MatchString(req.ConfigValue.ValueString()) {
+	if err != nil {
 		resp.Diagnostics.AddAttributeError(
 			req.Path,
-			"Invalid ISO 8601 Duration Format",
-			"Value must be an ISO 8601 duration format, only accepting Weeks, Days, Hours, Minutes, and Seconds (e.g. PT12H).",
-		)
+			"Invalid ISO 8601 Duration",
+			err.Error())
 	}
 }
 
@@ -702,7 +717,6 @@ func ISODuration() validator.String {
 	return ISODurationValidator{}
 }
 
-// API response structures updated based on new schema
 type apiResponse struct {
 	Data struct {
 		ID         string        `json:"id"`
@@ -746,8 +760,8 @@ type apiActionInbox struct {
 }
 
 type apiActionDueDate struct {
-	DueTimePerSeverity apiDueTimePerSeverity `json:"due_time_per_severity"`
-	NotifyBeforeDue    string                `json:"notify_before_due"`
+	DueTimePerSeverity []apiDueTimePerSeverity `json:"due_time_per_severity"`
+	NotifyBeforeDue    string                  `json:"notify_before_due"`
 }
 
 type apiDueTimePerSeverity struct {
@@ -761,7 +775,6 @@ func addHeaders(req *http.Request) {
 	req.Header.Set("source", "terraform-provider")
 }
 
-// Helper functions for HTTP operations
 func ReadHTTP(url string) (apiResponse, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -792,7 +805,6 @@ func ReadHTTP(url string) (apiResponse, error) {
 }
 
 func UpsertHTTP(url string, method string, payload []byte) (apiResponse, error) {
-	// write /tmp/terraform-provider-datadog.log the url and payload
 	f, err := os.OpenFile("/tmp/terraform-provider-datadog.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return apiResponse{}, err
@@ -855,7 +867,6 @@ func DeleteHTTP(url string) error {
 	return nil
 }
 
-// Helper function to expand a types.List to []interface{}
 func expandList(list types.List) []interface{} {
 	if list.IsNull() || list.IsUnknown() {
 		return nil
@@ -870,7 +881,6 @@ func expandList(list types.List) []interface{} {
 	return items
 }
 
-// Helper function to convert []string to []attr.Value
 func stringSliceToTerraformValues(slice []string) []attr.Value {
 	values := make([]attr.Value, len(slice))
 	for i, v := range slice {
@@ -880,7 +890,6 @@ func stringSliceToTerraformValues(slice []string) []attr.Value {
 	return values
 }
 
-// Implementing resource.Resource interface
 func NewAutomationPipelineRuleResource() resource.Resource {
 	return &automationPipelineRuleResource{}
 }
@@ -988,7 +997,6 @@ func (r *automationPipelineRuleResource) Read(ctx context.Context, req resource.
 	state.Name = types.StringValue(response.Data.Attributes.Name)
 	state.Enabled = types.BoolValue(response.Data.Attributes.Enabled)
 
-	// Convert slices to types.List
 	ruleTypes, diag1 := types.ListValue(
 		types.StringType,
 		stringSliceToTerraformValues(response.Data.Attributes.Rule.RuleTypes),
@@ -1052,12 +1060,16 @@ func (r *automationPipelineRuleResource) Read(ctx context.Context, req resource.
 		var actionData apiActionDueDate
 		actionBytes, _ := json.Marshal(response.Data.Attributes.Action)
 		json.Unmarshal(actionBytes, &actionData)
+		var dtps []DueTimePerSeverity
+		for _, s := range actionData.DueTimePerSeverity {
+			dtps = append(dtps, DueTimePerSeverity{
+				Severity: types.StringValue(s.Severity),
+				Time:     types.StringValue(s.Time),
+			})
+		}
 		state.DueDate.Action = &dueDateActionBlockModel{
-			NotifyBeforeDue: types.StringValue(actionData.NotifyBeforeDue),
-			DueTimePerSeverity: &DueTimePerSeverity{
-				Severity: types.StringValue(actionData.DueTimePerSeverity.Severity),
-				Time:     types.StringValue(actionData.DueTimePerSeverity.Time),
-			},
+			NotifyBeforeDue:    types.StringValue(actionData.NotifyBeforeDue),
+			DueTimePerSeverity: dtps,
 		}
 		state.DueDate.Rule = &dueDateRuleBlockModel{
 			IssueType:  types.StringValue(response.Data.Attributes.Rule.IssueType),
@@ -1165,7 +1177,6 @@ func (r *automationPipelineRuleResource) Update(ctx context.Context, req resourc
 		}
 		plan.ID = types.StringValue(response.Data.ID)
 	} else {
-		// Action type is the same; perform an update
 		url := fmt.Sprintf("%s/%s/%s", apiBaseURL, planBaseAction.GetSlug(), state.ID.ValueString())
 
 		payload := map[string]interface{}{
