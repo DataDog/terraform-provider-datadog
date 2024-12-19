@@ -76,7 +76,7 @@ func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 			"filter_type": schema.StringAttribute{
 				Description: "The type of the retention filter, currently only spans-processing-sampling is available.",
 				Required:    true,
-				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewRetentionFilterTypeFromValue)},
+				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewRetentionFilterAllTypeFromValue)},
 			},
 			"rate": schema.StringAttribute{
 				Description: "Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.",
