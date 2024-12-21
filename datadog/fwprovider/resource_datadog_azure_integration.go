@@ -8,6 +8,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
@@ -41,6 +42,10 @@ type integrationAzureModel struct {
 	CustomMetricsEnabled      types.Bool   `tfsdk:"custom_metrics_enabled"`
 	HostFilters               types.String `tfsdk:"host_filters"`
 	TenantName                types.String `tfsdk:"tenant_name"`
+	MetricsEnabled            types.Bool `tfsdk:"metrics_enabled"`
+	MetricsEnabledDefault     types.Bool `tfsdk:"metrics_enabled_default"`
+	UsageMetricsEnabled       types.Bool `tfsdk:"usage_metrics_enabled"`
+	ResourceProviderConfigs   types.List `tfsdk:"resource_provider_configs"`
 }
 
 func NewIntegrationAzureResource() resource.Resource {
@@ -114,6 +119,35 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Optional:    true,
 				Description: "This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags are imported into Datadog. The rest, including the apps and functions running on them, are ignored. This also filters the metrics for any App or Function running on the App Service Plan(s).",
 				Default:     stringdefault.StaticString(""),
+			},
+			"metrics_enabled": schema.BoolAttribute{
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+				Optional:    true,
+				Description: "Enable Azure metrics for your organization.",
+			},
+			"metrics_enabled_default": schema.BoolAttribute{
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+				Optional:    true,
+				Description: "Enable Azure metrics for your organization for resource providers where no resource provider config is specified.",
+			},
+			"usage_metrics_enabled": schema.BoolAttribute{
+				Computed:    true,
+				Default:     booldefault.StaticBool(false),
+				Optional:    true,
+				Description: "Enable azure.usage metrics for your organization.",
+			},
+			"resource_provider_configs": schema.ListAttribute{
+				Computed:    true,
+				Optional:    true,
+				Description: "Configuration settings applied to resources from the specified Azure resource providers.",
+				ElementType: types.ObjectType{
+					AttrTypes: map[string]attr.Type{
+						"namespace":          types.StringType,
+						"is_metrics_enabled": types.BoolType,
+					},
+				},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
