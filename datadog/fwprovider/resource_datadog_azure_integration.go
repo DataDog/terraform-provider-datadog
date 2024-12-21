@@ -42,10 +42,10 @@ type integrationAzureModel struct {
 	CustomMetricsEnabled      types.Bool   `tfsdk:"custom_metrics_enabled"`
 	HostFilters               types.String `tfsdk:"host_filters"`
 	TenantName                types.String `tfsdk:"tenant_name"`
-	MetricsEnabled            types.Bool `tfsdk:"metrics_enabled"`
-	MetricsEnabledDefault     types.Bool `tfsdk:"metrics_enabled_default"`
-	UsageMetricsEnabled       types.Bool `tfsdk:"usage_metrics_enabled"`
-	ResourceProviderConfigs   types.List `tfsdk:"resource_provider_configs"`
+	MetricsEnabled            types.Bool   `tfsdk:"metrics_enabled"`
+	MetricsEnabledDefault     types.Bool   `tfsdk:"metrics_enabled_default"`
+	UsageMetricsEnabled       types.Bool   `tfsdk:"usage_metrics_enabled"`
+	ResourceProviderConfigs   types.List   `tfsdk:"resource_provider_configs"`
 }
 
 func NewIntegrationAzureResource() resource.Resource {
