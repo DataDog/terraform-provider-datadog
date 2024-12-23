@@ -366,7 +366,6 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 		}
 	}
 	datadogDefinition.SetResourceProviderConfigs(resourceProviderConfigsPayload)
-}
 
 	if !state.ClientSecret.IsNull() {
 		datadogDefinition.SetClientSecret(state.ClientSecret.ValueString())
