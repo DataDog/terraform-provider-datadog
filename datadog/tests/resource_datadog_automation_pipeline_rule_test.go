@@ -20,13 +20,12 @@ resource "datadog_automation_pipeline_rule" "foo" {
 
 func TestAccDatadogAutomationPipelineRule(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	sloName := uniqueEntityName(ctx, t)
-	// accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
 		// CheckDestroy:      testAccCheckDatadogServiceLevelObjectiveDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
