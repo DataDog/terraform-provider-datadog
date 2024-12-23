@@ -291,6 +291,10 @@ func (r *integrationAzureResource) updateState(ctx context.Context, state *integ
 	state.ResourceCollectionEnabled = types.BoolValue(account.GetResourceCollectionEnabled())
 	state.CspmEnabled = types.BoolValue(account.GetCspmEnabled())
 	state.CustomMetricsEnabled = types.BoolValue(account.GetCustomMetricsEnabled())
+	state.MetricsEnabled = types.BoolValue(account.GetMetricsEnabled())
+	state.MetricsEnabledDefault = types.BoolValue(account.GetMetricsEnabledDefault())
+	state.UsageMetricsEnabled = types.BoolValue(account.GetUsageMetricsEnabled())
+	state.ResourceProviderConfigs, _ = types.ListValueFrom(ctx, types.StringType, account.GetResourceProviderConfigs())
 
 	hostFilters, exists := account.GetHostFiltersOk()
 	if exists {
@@ -350,6 +354,19 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	}
 	datadogDefinition.SetCspmEnabled(state.CspmEnabled.ValueBool())
 	datadogDefinition.SetCustomMetricsEnabled(state.CustomMetricsEnabled.ValueBool())
+	datadogDefinition.SetMetricsEnabled(state.MetricsEnabled.ValueBool())
+	datadogDefinition.SetMetricsEnabledDefault(state.MetricsEnabledDefault.ValueBool())
+	datadogDefinition.SetUsageMetricsEnabled(state.UsageMetricsEnabled.ValueBool())
+
+	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfig))
+	for i, resourceProviderConfig := range state.FilterIds {
+		resourceProviderConfigsPayload[i] = datadogV1.ResourceProviderConfig{
+			Namespace:   resourceProviderConfig.Namespace.ValueString(),
+			IsMetricsEnabled: resourceProviderConfig.IsMetricsEnabled.ValueString(),
+		}
+	}
+	datadogDefinition.SetResourceProviderConfigs(resourceProviderConfigsPayload)
+}
 
 	if !state.ClientSecret.IsNull() {
 		datadogDefinition.SetClientSecret(state.ClientSecret.ValueString())

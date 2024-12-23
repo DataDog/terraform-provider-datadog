@@ -68,7 +68,7 @@ func (d *datadogTeamMembershipsDataSource) Schema(_ context.Context, _ datasourc
 				Optional:    true,
 			},
 			// Computed values
-			"team_memberships": schema.ListAttribute{
+			"team_memberships": {
 				Computed:    true,
 				Description: "List of team memberships.",
 				ElementType: types.ObjectType{
