@@ -144,8 +144,8 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Description: "Configuration settings applied to resources from the specified Azure resource providers.",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
-						"namespace":          types.StringType,
-						"is_metrics_enabled": types.BoolType,
+						"namespace":       types.StringType,
+						"metrics_enabled": types.BoolType,
 					},
 				},
 			},
@@ -358,11 +358,11 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	datadogDefinition.SetMetricsEnabledDefault(state.MetricsEnabledDefault.ValueBool())
 	datadogDefinition.SetUsageMetricsEnabled(state.UsageMetricsEnabled.ValueBool())
 
-	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfigs))
+	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfigs.))
 	for i, resourceProviderConfig := range state.ResourceProviderConfigs {
 		resourceProviderConfigsPayload[i] = datadogV1.ResourceProviderConfig{
 			Namespace:   resourceProviderConfig.Namespace.ValueString(),
-			IsMetricsEnabled: resourceProviderConfig.IsMetricsEnabled.ValueString(),
+			MetricsEnabled: resourceProviderConfig.MetricsEnabled.ValueString(),
 		}
 	}
 	datadogDefinition.SetResourceProviderConfigs(resourceProviderConfigsPayload)
