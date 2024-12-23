@@ -358,7 +358,7 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	datadogDefinition.SetMetricsEnabledDefault(state.MetricsEnabledDefault.ValueBool())
 	datadogDefinition.SetUsageMetricsEnabled(state.UsageMetricsEnabled.ValueBool())
 
-	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfigs.))
+	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfigs))
 	for i, resourceProviderConfig := range state.ResourceProviderConfigs {
 		resourceProviderConfigsPayload[i] = datadogV1.ResourceProviderConfig{
 			Namespace:   resourceProviderConfig.Namespace.ValueString(),
