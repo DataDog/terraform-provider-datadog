@@ -6,9 +6,9 @@ import (
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
@@ -358,10 +358,10 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	datadogDefinition.SetMetricsEnabledDefault(state.MetricsEnabledDefault.ValueBool())
 	datadogDefinition.SetUsageMetricsEnabled(state.UsageMetricsEnabled.ValueBool())
 
-	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfigs))
-	for i, resourceProviderConfig := range state.ResourceProviderConfigs {
+	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfigs.Elements()))
+	for i, resourceProviderConfig := range state.ResourceProviderConfigs.Elements() {
 		resourceProviderConfigsPayload[i] = datadogV1.ResourceProviderConfig{
-			Namespace:   resourceProviderConfig.Namespace.ValueString(),
+			Namespace:      resourceProviderConfig.Namespace.ValueString(),
 			MetricsEnabled: resourceProviderConfig.MetricsEnabled.ValueString(),
 		}
 	}
