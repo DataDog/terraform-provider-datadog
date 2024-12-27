@@ -1163,7 +1163,7 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Required:    true,
 				},
 				"local_key": {
-					Description: "A unique identifier allowing to track steps after reordering.",
+					Description: "A unique identifier used to track steps after reordering.",
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
