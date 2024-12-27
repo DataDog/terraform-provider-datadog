@@ -1002,7 +1002,7 @@ Optional:
 - `exit_if_succeed` (Boolean) Determines whether or not to exit the test if the step succeeds.
 - `force_element_update` (Boolean) Force update of the "element" parameter for the step
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
-- `local_key` (String) A unique identifier allowing to track steps after reordering.
+- `local_key` (String) A unique identifier used to track steps after reordering.
 - `no_screenshot` (Boolean) Prevents saving screenshots of the step.
 - `timeout` (Number) Used to override the default timeout of a step.
 
