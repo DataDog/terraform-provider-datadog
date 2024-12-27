@@ -1163,6 +1163,11 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Type:        schema.TypeString,
 					Required:    true,
 				},
+				"public_id": {
+					Description: "The identifier of the step on the backend.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
 				"type": {
 					Description:      "Type of the step.",
 					Type:             schema.TypeString,
@@ -2115,6 +2120,7 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	for stepIndex, step := range steps {
 		localStep := make(map[string]interface{})
 		localStep["name"] = step.GetName()
+		localStep["public_id"] = step.GetPublicId()
 		localStep["type"] = string(step.GetType())
 		localStep["timeout"] = step.GetTimeout()
 
@@ -2139,6 +2145,11 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 		forceElementUpdate, ok := d.GetOk(fmt.Sprintf("browser_step.%d.force_element_update", stepIndex))
 		if ok {
 			localStep["force_element_update"] = forceElementUpdate
+		}
+
+		publicId, ok := d.GetOk(fmt.Sprintf("browser_step.%d.public_id", stepIndex))
+		if ok {
+			localStep["public_id"] = publicId
 		}
 
 		params := step.GetParams()
