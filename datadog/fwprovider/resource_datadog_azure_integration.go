@@ -30,22 +30,27 @@ type integrationAzureResource struct {
 	Auth context.Context
 }
 
+type ResourceProviderConfigModel struct {
+	Namespace      types.String `tfsdk:"namespace"`
+	MetricsEnabled types.Bool   `tfsdk:"metrics_enabled"`
+}
+
 type integrationAzureModel struct {
-	ID                        types.String `tfsdk:"id"`
-	AppServicePlanFilters     types.String `tfsdk:"app_service_plan_filters"`
-	Automute                  types.Bool   `tfsdk:"automute"`
-	ClientId                  types.String `tfsdk:"client_id"`
-	ClientSecret              types.String `tfsdk:"client_secret"`
-	ContainerAppFilters       types.String `tfsdk:"container_app_filters"`
-	ResourceCollectionEnabled types.Bool   `tfsdk:"resource_collection_enabled"`
-	CspmEnabled               types.Bool   `tfsdk:"cspm_enabled"`
-	CustomMetricsEnabled      types.Bool   `tfsdk:"custom_metrics_enabled"`
-	HostFilters               types.String `tfsdk:"host_filters"`
-	TenantName                types.String `tfsdk:"tenant_name"`
-	MetricsEnabled            types.Bool   `tfsdk:"metrics_enabled"`
-	MetricsEnabledDefault     types.Bool   `tfsdk:"metrics_enabled_default"`
-	UsageMetricsEnabled       types.Bool   `tfsdk:"usage_metrics_enabled"`
-	ResourceProviderConfigs   types.List   `tfsdk:"resource_provider_configs"`
+	ID                        types.String                   `tfsdk:"id"`
+	AppServicePlanFilters     types.String                   `tfsdk:"app_service_plan_filters"`
+	Automute                  types.Bool                     `tfsdk:"automute"`
+	ClientId                  types.String                   `tfsdk:"client_id"`
+	ClientSecret              types.String                   `tfsdk:"client_secret"`
+	ContainerAppFilters       types.String                   `tfsdk:"container_app_filters"`
+	ResourceCollectionEnabled types.Bool                     `tfsdk:"resource_collection_enabled"`
+	CspmEnabled               types.Bool                     `tfsdk:"cspm_enabled"`
+	CustomMetricsEnabled      types.Bool                     `tfsdk:"custom_metrics_enabled"`
+	HostFilters               types.String                   `tfsdk:"host_filters"`
+	TenantName                types.String                   `tfsdk:"tenant_name"`
+	MetricsEnabled            types.Bool                     `tfsdk:"metrics_enabled"`
+	MetricsEnabledDefault     types.Bool                     `tfsdk:"metrics_enabled_default"`
+	UsageMetricsEnabled       types.Bool                     `tfsdk:"usage_metrics_enabled"`
+	ResourceProviderConfigs   []*ResourceProviderConfigModel `tfsdk:"resource_provider_configs"`
 }
 
 func NewIntegrationAzureResource() resource.Resource {
@@ -294,7 +299,15 @@ func (r *integrationAzureResource) updateState(ctx context.Context, state *integ
 	state.MetricsEnabled = types.BoolValue(account.GetMetricsEnabled())
 	state.MetricsEnabledDefault = types.BoolValue(account.GetMetricsEnabledDefault())
 	state.UsageMetricsEnabled = types.BoolValue(account.GetUsageMetricsEnabled())
-	state.ResourceProviderConfigs, _ = types.ListValueFrom(ctx, types.StringType, account.GetResourceProviderConfigs())
+
+	resourceProviderConfigs := account.GetResourceProviderConfigs()
+	state.ResourceProviderConfigs = make([]*ResourceProviderConfigModel, len(*resourceProviderConfigs))
+	for i, resourceProviderConfig := range *resourceProviderConfigs {
+		state.ResourceProviderConfigs[i] = &ResourceProviderConfigModel{
+			Namespace:      types.StringValue(resourceProviderConfig.GetNamespace()),
+			MetricsEnabled: types.BoolValue(resourceProviderConfig.GetMetricsEnabled()),
+		}
+	}
 
 	hostFilters, exists := account.GetHostFiltersOk()
 	if exists {
@@ -358,12 +371,12 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	datadogDefinition.SetMetricsEnabledDefault(state.MetricsEnabledDefault.ValueBool())
 	datadogDefinition.SetUsageMetricsEnabled(state.UsageMetricsEnabled.ValueBool())
 
-	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfigs.Elements()))
-	for i, resourceProviderConfig := range state.ResourceProviderConfigs.Elements() {
-		resourceProviderConfigsPayload[i] = datadogV1.ResourceProviderConfig{
-			Namespace:      resourceProviderConfig.Namespace.ValueString(),
-			MetricsEnabled: resourceProviderConfig.MetricsEnabled.ValueString(),
-		}
+	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfigs))
+	for _, resourceProviderConfig := range state.ResourceProviderConfigs {
+		resourceProviderConfigsPayload = append(resourceProviderConfigsPayload, datadogV1.ResourceProviderConfig{
+			Namespace:      resourceProviderConfig.Namespace.ValueStringPointer(),
+			MetricsEnabled: resourceProviderConfig.MetricsEnabled.ValueBoolPointer(),
+		})
 	}
 	datadogDefinition.SetResourceProviderConfigs(resourceProviderConfigsPayload)
 
