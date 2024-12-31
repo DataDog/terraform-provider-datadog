@@ -23,14 +23,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-// const apiBaseURL = "http://localhost:8000/vulnerabilities/pipelines"
 const apiBaseURL = "https://dd.datad0g.com/api/v2/security/vulnerabilities/pipelines"
 const DDAPIKEY = ""
 const DDAPPKEY = ""
 
-type automationPipelineRuleResource struct{}
+type automationsPipelineRuleResource struct{}
 
-type automationPipelineRuleModel struct {
+type automationsPipelineRuleModel struct {
 	Name    types.String       `tfsdk:"name"`
 	Enabled types.Bool         `tfsdk:"enabled"`
 	Inbox   *inboxBlockModel   `tfsdk:"inbox"`
@@ -294,7 +293,7 @@ func (a *dueDateActionBlockModel) ValidateRequired() error {
 	return nil
 }
 
-func ValidatePlanRequired(plan automationPipelineRuleModel) error {
+func ValidatePlanRequired(plan automationsPipelineRuleModel) error {
 	var rule ruleBlock
 	var action actionBlock
 
@@ -327,7 +326,7 @@ func ValidatePlanRequired(plan automationPipelineRuleModel) error {
 
 	return nil
 }
-func ValidateOneRuleActionOnly(plan automationPipelineRuleModel) error {
+func ValidateOneRuleActionOnly(plan automationsPipelineRuleModel) error {
 	count := 0
 	if plan.Inbox != nil {
 		count++
@@ -349,7 +348,7 @@ func ValidateOneRuleActionOnly(plan automationPipelineRuleModel) error {
 	}
 }
 
-func ValidateTerraform(plan automationPipelineRuleModel) error {
+func ValidateTerraform(plan automationsPipelineRuleModel) error {
 	if err := ValidateOneRuleActionOnly(plan); err != nil {
 		return err
 	}
@@ -389,7 +388,7 @@ func (b BaseAction) GetSlug() string {
 	}
 }
 
-func (r *automationPipelineRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *automationsPipelineRuleResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Manages a Datadog Automation Pipeline Rule.",
 		Attributes: map[string]schema.Attribute{
@@ -399,7 +398,7 @@ func (r *automationPipelineRuleResource) Schema(ctx context.Context, req resourc
 			},
 			"enabled": schema.BoolAttribute{
 				Description: "Whether the rule is enabled.",
-				Optional:    true,
+				Required:    true,
 			},
 			"id": schema.StringAttribute{
 				Description: "The ID of the automation pipeline rule.",
@@ -432,7 +431,7 @@ func (r *automationPipelineRuleResource) Schema(ctx context.Context, req resourc
 	}
 }
 
-func (r *automationPipelineRuleResource) inboxRuleSchema() schema.SingleNestedBlock {
+func (r *automationsPipelineRuleResource) inboxRuleSchema() schema.SingleNestedBlock {
 	return schema.SingleNestedBlock{
 		Description: "Rule definition for the pipeline.",
 		Attributes: map[string]schema.Attribute{
@@ -476,7 +475,7 @@ func (r *automationPipelineRuleResource) inboxRuleSchema() schema.SingleNestedBl
 	}
 }
 
-func (r *automationPipelineRuleResource) inboxActionSchema() schema.SingleNestedBlock {
+func (r *automationsPipelineRuleResource) inboxActionSchema() schema.SingleNestedBlock {
 	return schema.SingleNestedBlock{
 		Description: "Action definition for the inbox configuration.",
 		Attributes: map[string]schema.Attribute{
@@ -488,7 +487,7 @@ func (r *automationPipelineRuleResource) inboxActionSchema() schema.SingleNested
 	}
 }
 
-func (r *automationPipelineRuleResource) muteRuleSchema() schema.SingleNestedBlock {
+func (r *automationsPipelineRuleResource) muteRuleSchema() schema.SingleNestedBlock {
 	return schema.SingleNestedBlock{
 		Description: "Rule definition for the pipeline.",
 		Attributes: map[string]schema.Attribute{
@@ -532,7 +531,7 @@ func (r *automationPipelineRuleResource) muteRuleSchema() schema.SingleNestedBlo
 	}
 }
 
-func (r *automationPipelineRuleResource) muteActionSchema() schema.SingleNestedBlock {
+func (r *automationsPipelineRuleResource) muteActionSchema() schema.SingleNestedBlock {
 	return schema.SingleNestedBlock{
 		Description: "Action definition for the mute configuration.",
 		Attributes: map[string]schema.Attribute{
@@ -555,7 +554,7 @@ func (r *automationPipelineRuleResource) muteActionSchema() schema.SingleNestedB
 	}
 }
 
-func (r *automationPipelineRuleResource) dueDateRuleSchema() schema.SingleNestedBlock {
+func (r *automationsPipelineRuleResource) dueDateRuleSchema() schema.SingleNestedBlock {
 	return schema.SingleNestedBlock{
 		Description: "Rule definition for the pipeline.",
 		Attributes: map[string]schema.Attribute{
@@ -599,7 +598,7 @@ func (r *automationPipelineRuleResource) dueDateRuleSchema() schema.SingleNested
 	}
 }
 
-func (r *automationPipelineRuleResource) dueDateActionSchema() schema.SingleNestedBlock {
+func (r *automationsPipelineRuleResource) dueDateActionSchema() schema.SingleNestedBlock {
 	return schema.SingleNestedBlock{
 		Description: "Action definition for the due date configuration.",
 		Attributes: map[string]schema.Attribute{
@@ -890,21 +889,21 @@ func stringSliceToTerraformValues(slice []string) []attr.Value {
 	return values
 }
 
-func NewAutomationPipelineRuleResource() resource.Resource {
-	return &automationPipelineRuleResource{}
+func NewAutomationsPipelineRuleResource() resource.Resource {
+	return &automationsPipelineRuleResource{}
 }
 
-func (r *automationPipelineRuleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "automation_pipeline_rule"
+func (r *automationsPipelineRuleResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = "automations_pipeline_rule"
 }
 
-func (r *automationPipelineRuleResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *automationsPipelineRuleResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// No-op
 }
 
 // Create function
-func (r *automationPipelineRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan automationPipelineRuleModel
+func (r *automationsPipelineRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan automationsPipelineRuleModel
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -969,8 +968,8 @@ func (r *automationPipelineRuleResource) Create(ctx context.Context, req resourc
 }
 
 // Read function
-func (r *automationPipelineRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state automationPipelineRuleModel
+func (r *automationsPipelineRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state automationsPipelineRuleModel
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -1087,9 +1086,9 @@ func (r *automationPipelineRuleResource) Read(ctx context.Context, req resource.
 }
 
 // Update function
-func (r *automationPipelineRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan automationPipelineRuleModel
-	var state automationPipelineRuleModel
+func (r *automationsPipelineRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan automationsPipelineRuleModel
+	var state automationsPipelineRuleModel
 
 	diags := req.Plan.Get(ctx, &plan)
 	resp.Diagnostics.Append(diags...)
@@ -1210,8 +1209,8 @@ func (r *automationPipelineRuleResource) Update(ctx context.Context, req resourc
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *automationPipelineRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state automationPipelineRuleModel
+func (r *automationsPipelineRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state automationsPipelineRuleModel
 	diags := req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
@@ -1239,6 +1238,6 @@ func (r *automationPipelineRuleResource) Delete(ctx context.Context, req resourc
 }
 
 // ImportState function
-func (r *automationPipelineRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (r *automationsPipelineRuleResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	resp.State.SetAttribute(ctx, path.Root("id"), req.ID)
 }

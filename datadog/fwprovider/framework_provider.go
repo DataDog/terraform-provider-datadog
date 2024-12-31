@@ -36,7 +36,7 @@ var Resources = []func() resource.Resource{
 	NewApplicationKeyResource,
 	NewApmRetentionFilterResource,
 	NewApmRetentionFiltersOrderResource,
-	NewAutomationPipelineRuleResource,
+	NewAutomationsPipelineRuleResource,
 	NewCatalogEntityResource,
 	NewDashboardListResource,
 	NewDomainAllowlistResource,
