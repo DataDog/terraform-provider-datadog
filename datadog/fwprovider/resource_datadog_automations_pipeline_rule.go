@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -23,9 +22,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-const apiBaseURL = "https://dd.datad0g.com/api/v2/security/vulnerabilities/pipelines"
-const DDAPIKEY = ""
-const DDAPPKEY = ""
+const apr_apiBaseURL = "https://dd.datad0g.com/api/v2/security/vulnerabilities/pipelines"
+const apr_DDAPIKEY = ""
+const apr_DDAPPKEY = ""
 
 type automationsPipelineRuleResource struct{}
 
@@ -769,8 +768,8 @@ type apiDueTimePerSeverity struct {
 }
 
 func addHeaders(req *http.Request) {
-	req.Header.Set("DD-API-KEY", DDAPIKEY)
-	req.Header.Set("DD-APPLICATION-KEY", DDAPPKEY)
+	req.Header.Set("DD-API-KEY", apr_DDAPIKEY)
+	req.Header.Set("DD-APPLICATION-KEY", apr_DDAPPKEY)
 	req.Header.Set("source", "terraform-provider")
 }
 
@@ -804,18 +803,6 @@ func ReadHTTP(url string) (apiResponse, error) {
 }
 
 func UpsertHTTP(url string, method string, payload []byte) (apiResponse, error) {
-	f, err := os.OpenFile("/tmp/terraform-provider-datadog.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return apiResponse{}, err
-	}
-	defer f.Close()
-	if _, err := f.WriteString(fmt.Sprintf("URL: %s\n", url)); err != nil {
-		return apiResponse{}, err
-	}
-	if _, err := f.WriteString(fmt.Sprintf("Payload: %s\n", string(payload))); err != nil {
-		return apiResponse{}, err
-	}
-
 	req, err := http.NewRequest(method, url, bytes.NewReader(payload))
 	if err != nil {
 		return apiResponse{}, err
@@ -933,7 +920,7 @@ func (r *automationsPipelineRuleResource) Create(ctx context.Context, req resour
 		baseAction = BaseAction{actionType: DueDateActionType}
 	}
 
-	url := fmt.Sprintf("%s/%s", apiBaseURL, baseAction.GetSlug())
+	url := fmt.Sprintf("%s/%s", apr_apiBaseURL, baseAction.GetSlug())
 
 	payload := map[string]interface{}{
 		"data": map[string]interface{}{
@@ -986,7 +973,7 @@ func (r *automationsPipelineRuleResource) Read(ctx context.Context, req resource
 		baseAction = BaseAction{actionType: DueDateActionType}
 	}
 
-	url := fmt.Sprintf("%s/%s/%s", apiBaseURL, baseAction.GetSlug(), state.ID.ValueString())
+	url := fmt.Sprintf("%s/%s/%s", apr_apiBaseURL, baseAction.GetSlug(), state.ID.ValueString())
 	response, err := ReadHTTP(url)
 	if err != nil {
 		resp.Diagnostics.AddError("Error reading action", err.Error())
@@ -1140,7 +1127,7 @@ func (r *automationsPipelineRuleResource) Update(ctx context.Context, req resour
 		// Action type has changed; delete the old action and create the new one
 		var url string
 
-		url = fmt.Sprintf("%s/%s/%s", apiBaseURL, BaseAction{actionType: stateActionType}.GetSlug(), state.ID.ValueString())
+		url = fmt.Sprintf("%s/%s/%s", apr_apiBaseURL, BaseAction{actionType: stateActionType}.GetSlug(), state.ID.ValueString())
 
 		// Delete old action
 		err := DeleteHTTP(url)
@@ -1150,7 +1137,7 @@ func (r *automationsPipelineRuleResource) Update(ctx context.Context, req resour
 		}
 
 		// Create new action
-		url = fmt.Sprintf("%s/%s", apiBaseURL, planBaseAction.GetSlug())
+		url = fmt.Sprintf("%s/%s", apr_apiBaseURL, planBaseAction.GetSlug())
 		payload := map[string]interface{}{
 			"data": map[string]interface{}{
 				"type": planBaseAction.String(),
@@ -1176,7 +1163,7 @@ func (r *automationsPipelineRuleResource) Update(ctx context.Context, req resour
 		}
 		plan.ID = types.StringValue(response.Data.ID)
 	} else {
-		url := fmt.Sprintf("%s/%s/%s", apiBaseURL, planBaseAction.GetSlug(), state.ID.ValueString())
+		url := fmt.Sprintf("%s/%s/%s", apr_apiBaseURL, planBaseAction.GetSlug(), state.ID.ValueString())
 
 		payload := map[string]interface{}{
 			"data": map[string]interface{}{
@@ -1228,7 +1215,7 @@ func (r *automationsPipelineRuleResource) Delete(ctx context.Context, req resour
 	}
 
 	if slug != "" {
-		url := fmt.Sprintf("%s/%s/%s", apiBaseURL, slug, state.ID.ValueString())
+		url := fmt.Sprintf("%s/%s/%s", apr_apiBaseURL, slug, state.ID.ValueString())
 		if err := DeleteHTTP(url); err != nil {
 			resp.Diagnostics.AddError("Error deleting action", err.Error())
 		}
