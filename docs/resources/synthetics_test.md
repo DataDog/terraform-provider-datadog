@@ -1005,6 +1005,10 @@ Optional:
 - `no_screenshot` (Boolean) Prevents saving screenshots of the step.
 - `timeout` (Number) Used to override the default timeout of a step.
 
+Read-Only:
+
+- `public_id` (String) The identifier of the step on the backend.
+
 <a id="nestedblock--browser_step--params"></a>
 ### Nested Schema for `browser_step.params`
 
