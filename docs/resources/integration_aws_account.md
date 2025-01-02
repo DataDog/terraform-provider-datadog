@@ -98,12 +98,12 @@ resource "datadog_integration_aws_account" "foo-defaults" {
 
 - `aws_account_id` (String) Your AWS Account ID without dashes.
 - `aws_partition` (String) AWS Account partition.
-- `auth_config` (Block) Configure how Datadog authenticates to your AWS Account. Either `aws_auth_config_keys` or `aws_auth_config_role` block is required within. (see [below for nested schema](#nestedblock--auth_config))
-- `aws_regions` (Block) AWS Regions to collect data from. Defaults to `include_all` if block is empty. (see [below for nested schema](#nestedblock--aws_regions))
+- `auth_config` (Block) Configure how Datadog authenticates to your AWS account. Either `aws_auth_config_keys` or `aws_auth_config_role` block is required within. (see [below for nested schema](#nestedblock--auth_config))
+- `aws_regions` (Block) AWS regions to collect data from. Defaults to `include_all` if block is empty. (see [below for nested schema](#nestedblock--aws_regions))
 - `logs_config` (Block) Configure log autosubscription for your Datadog Forwarder Lambda functions. The `lambda_fowarder` block is required within, but may be empty to use defaults. (see [below for nested schema](#nestedblock--logs_config))
 - `metrics_config` (Block) Configure metrics collection from AWS CloudWatch. The `namespace_filters` block is required within, but may be empty to use defaults. (see [below for nested schema](#nestedblock--metrics_config))
-- `resources_config` (Block) AWS Resources Collection config. May be empty to use defaults. (see [below for nested schema](#nestedblock--resources_config))
-- `traces_config` (Block) AWS Traces Collection config. The `xray_services` block is required within, but may be empty to use defaults. (see [below for nested schema](#nestedblock--traces_config))
+- `resources_config` (Block) AWS resources collection config. May be empty to use defaults. (see [below for nested schema](#nestedblock--resources_config))
+- `traces_config` (Block) AWS traces collection config. The `xray_services` block is required within, but may be empty to use defaults. (see [below for nested schema](#nestedblock--traces_config))
 
 ### Optional
 
@@ -135,11 +135,11 @@ Required:
 
 Required:
 
-- `role_name` (String) AWS IAM Role name.
+- `role_name` (String) AWS IAM role name.
 
 Optional:
 
-- `external_id` (String) AWS IAM External ID for associated role. If omitted, one will be generated.
+- `external_id` (String) AWS IAM external ID for associated role. If omitted, one is generated.
 
 <a id="nestedblock--aws_regions"></a>
 ### Nested Schema for `aws_regions`
@@ -170,7 +170,7 @@ Optional:
 
 Required:
 
-- `namespace_filters` (Block) AWS Metrics namespace filters. Defaults to a pre-set `exclude_only` list if block is empty. (see [below for nested schema](#nestedblock--metrics_config--namespace_filters))
+- `namespace_filters` (Block) AWS metrics namespace filters. Defaults to a pre-set `exclude_only` list if block is empty. (see [below for nested schema](#nestedblock--metrics_config--namespace_filters))
 
 Optional:
 
