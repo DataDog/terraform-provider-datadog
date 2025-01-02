@@ -201,7 +201,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 			},
 			"aws_partition": schema.StringAttribute{
 				Required:    true,
-				Description: "AWS Account partition",
+				Description: "AWS Account partition.",
 				Validators: []validator.String{
 					stringvalidator.OneOf("aws", "aws-cn", "aws-us-gov"),
 				},
@@ -209,16 +209,18 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 			"account_tags": schema.ListAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "Tags to apply to all metrics in the account",
+				Description: "Tags to apply to all metrics in the account.",
 				ElementType: types.StringType,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
 		Blocks: map[string]schema.Block{
 			"auth_config": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{},
+				Description: "Configure how Datadog authenticates to your AWS Account. Either `aws_auth_config_keys` or `aws_auth_config_role` block is required within.",
+				Attributes:  map[string]schema.Attribute{},
 				Blocks: map[string]schema.Block{
 					"aws_auth_config_keys": schema.SingleNestedBlock{
+						Description: "Datadog will use the provided AWS Access Key ID and Secret Access Key to authenticate to your account.",
 						Attributes: map[string]schema.Attribute{
 							"access_key_id": schema.StringAttribute{
 								Optional:    true,
@@ -245,21 +247,21 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 							"external_id": schema.StringAttribute{
 								Optional:    true,
 								Computed:    true,
-								Description: "AWS IAM External ID for associated role",
+								Description: "AWS IAM External ID for associated role. If omitted, one will be generated.",
 								PlanModifiers: []planmodifier.String{
 									stringplanmodifier.UseStateForUnknown(),
 								},
 							},
 							"role_name": schema.StringAttribute{
 								Optional:    true,
-								Description: "AWS IAM Role name",
+								Description: "AWS IAM Role name.",
 							},
 						},
 					},
 				},
 			},
 			"aws_regions": schema.SingleNestedBlock{
-				Description: "AWS Regions to collect data from.",
+				Description: "AWS Regions to collect data from. Defaults to `include_all` if block is empty.",
 				Attributes: map[string]schema.Attribute{
 					"include_all": schema.BoolAttribute{
 						Optional:    true,
@@ -275,14 +277,15 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 				},
 			},
 			"logs_config": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{},
+				Description: "Configure log autosubscription for your Datadog Forwarder Lambda functions. The `lambda_fowarder` block is required within, but may be empty to use defaults.",
+				Attributes:  map[string]schema.Attribute{},
 				Blocks: map[string]schema.Block{
 					"lambda_forwarder": schema.SingleNestedBlock{
 						Attributes: map[string]schema.Attribute{
 							"lambdas": schema.ListAttribute{
 								Optional:    true,
 								Computed:    true,
-								Description: "List of Datadog Lambda Log Forwarder ARNs in your AWS account.",
+								Description: "List of Datadog Lambda Log Forwarder ARNs in your AWS account. Defaults to `[]`.",
 								ElementType: types.StringType,
 								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							},
@@ -291,7 +294,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 								Computed: true,
 								Description: "List of service IDs set to enable automatic log collection. Use " +
 									"[`datadog_integration_aws_available_logs_services` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_logs_services) " +
-									"to get allowed values.",
+									"to get allowed values. Defaults to `[]`.",
 								ElementType: types.StringType,
 								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							},
@@ -300,6 +303,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 				},
 			},
 			"metrics_config": schema.SingleNestedBlock{
+				Description: "Configure metrics collection from AWS CloudWatch. The `namespace_filters` block is required within, but may be empty to use defaults.",
 				Attributes: map[string]schema.Attribute{
 					"automute_enabled": schema.BoolAttribute{
 						Optional:    true,
@@ -343,7 +347,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 								"tags": schema.ListAttribute{
 									Optional:    true,
 									Computed:    true,
-									Description: "The AWS resource tags to filter on for the service specified by `namespace`.",
+									Description: "The AWS resource tags to filter on for the service specified by `namespace`. Defaults to `[]`.",
 									ElementType: types.StringType,
 									Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 								},
@@ -351,6 +355,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 						},
 					},
 					"namespace_filters": schema.SingleNestedBlock{
+						Description: "AWS Metrics namespace filters. Defaults to a pre-set `exclude_only` list if block is empty.",
 						Attributes: map[string]schema.Attribute{
 							"exclude_only": schema.ListAttribute{
 								Optional: true,
@@ -380,6 +385,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 				},
 			},
 			"resources_config": schema.SingleNestedBlock{
+				Description: "AWS Resources Collection config. May be empty to use defaults.",
 				Attributes: map[string]schema.Attribute{
 					"cloud_security_posture_management_collection": schema.BoolAttribute{
 						Optional: true,
@@ -400,19 +406,19 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 			},
 			"traces_config": schema.SingleNestedBlock{
 				Attributes:  map[string]schema.Attribute{},
-				Description: "AWS Traces Collection config.",
+				Description: "AWS Traces Collection config. The `xray_services` block is required within, but may be empty to use defaults.",
 				Blocks: map[string]schema.Block{
 					"xray_services": schema.SingleNestedBlock{
-						Description: "AWS X-Ray services to collect traces from.",
+						Description: "AWS X-Ray services to collect traces from. Defaults to `include_only`.",
 						Attributes: map[string]schema.Attribute{
 							"include_all": schema.BoolAttribute{
 								Optional:    true,
-								Description: "Include all services",
+								Description: "Include all services.",
 							},
 							"include_only": schema.ListAttribute{
 								Optional:    true,
 								Computed:    true,
-								Description: "Include only these services",
+								Description: "Include only these services. Defaults to `[]`.",
 								ElementType: types.StringType,
 								Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 							},
