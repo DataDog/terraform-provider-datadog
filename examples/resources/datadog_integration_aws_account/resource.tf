@@ -45,7 +45,7 @@ resource "datadog_integration_aws_account" "foo" {
 
 # Create new integration_aws_account resource with all Datadog-provided defaults configured
 resource "datadog_integration_aws_account" "foo-defaults" {
-  aws_account_id = "123456789012"
+  aws_account_id = "234567890123"
   aws_partition  = "aws"
   aws_regions {}
 
