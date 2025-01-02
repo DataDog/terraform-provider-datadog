@@ -442,7 +442,7 @@ func (r *integrationAwsAccountResource) Read(ctx context.Context, request resour
 			response.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationAwsAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AWS Account Integration"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -471,7 +471,7 @@ func (r *integrationAwsAccountResource) Create(ctx context.Context, request reso
 
 	resp, _, err := r.Api.CreateAWSAccount(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationAwsAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating AWS Account Integration"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -501,7 +501,7 @@ func (r *integrationAwsAccountResource) Update(ctx context.Context, request reso
 	awsAccountConfigId := state.ID.String()
 	resp, _, err := r.Api.UpdateAWSAccount(r.Auth, awsAccountConfigId, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving IntegrationAwsAccount"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating AWS Account Integration"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -528,7 +528,7 @@ func (r *integrationAwsAccountResource) Delete(ctx context.Context, request reso
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting integration_aws_account"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting AWS Account Integration"))
 		return
 	}
 }
