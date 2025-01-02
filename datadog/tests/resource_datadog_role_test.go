@@ -111,8 +111,12 @@ func TestAccDatadogRole_InvalidPerm(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogRoleConfigInvalidPerm(rolename),
+				Config:      testAccCheckDatadogRoleConfigInvalidNonexistentPerm(rolename),
 				ExpectError: regexp.MustCompile("permission with ID .* does not exist"),
+			},
+			{
+				Config:      testAccCheckDatadogRoleConfigInvalidRestrictedPerm(rolename),
+				ExpectError: regexp.MustCompile("permission with ID .* is a restricted"),
 			},
 		},
 	})
@@ -241,12 +245,26 @@ resource "datadog_role" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogRoleConfigInvalidPerm(uniq string) string {
+func testAccCheckDatadogRoleConfigInvalidNonexistentPerm(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_role" "foo" {
   name      = "%sinvalid"
   permission {
     id = "invalid-id"
+  }
+}`, uniq)
+}
+
+func testAccCheckDatadogRoleConfigInvalidRestrictedPerm(uniq string) string {
+	return fmt.Sprintf(`
+data "datadog_permissions" foo {
+  include_restricted = true
+}
+
+resource "datadog_role" "foo" {
+  name      = "%s invalid restricted"
+  permission {
+    id = "${data.datadog_permissions.foo.permissions.dashboards_read}"
   }
 }`, uniq)
 }
