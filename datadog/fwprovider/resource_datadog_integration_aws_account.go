@@ -37,6 +37,7 @@ var (
 	authConfigRolePath     = authConfigPath.AtName("aws_auth_config_role")
 	xrayServicesConfigPath = path.MatchRoot("traces_config").AtName("xray_services")
 	lambdaForwarderPath    = path.MatchRoot("logs_config").AtName("lambda_forwarder")
+	resourcesConfigPath    = path.MatchRoot("resources_config")
 )
 
 type integrationAwsAccountResource struct {
@@ -175,6 +176,9 @@ func (r *integrationAwsAccountResource) ConfigValidators(ctx context.Context) []
 		resourcevalidator.Conflicting(
 			xrayServicesConfigPath.AtName("include_all"),
 			xrayServicesConfigPath.AtName("include_only"),
+		),
+		resourcevalidator.ExactlyOneOf(
+			resourcesConfigPath,
 		),
 	}
 }
@@ -859,11 +863,13 @@ func buildRequestMetricsConfig(ctx context.Context, state *integrationAwsAccount
 func buildRequestResourcesConfig(state *integrationAwsAccountModel) datadogV2.AWSResourcesConfig {
 	var resourcesConfig datadogV2.AWSResourcesConfig
 
-	if !state.ResourcesConfig.CloudSecurityPostureManagementCollection.IsNull() {
-		resourcesConfig.SetCloudSecurityPostureManagementCollection(state.ResourcesConfig.CloudSecurityPostureManagementCollection.ValueBool())
-	}
-	if !state.ResourcesConfig.ExtendedCollection.IsNull() {
-		resourcesConfig.SetExtendedCollection(state.ResourcesConfig.ExtendedCollection.ValueBool())
+	if state.ResourcesConfig != nil {
+		if !state.ResourcesConfig.CloudSecurityPostureManagementCollection.IsNull() {
+			resourcesConfig.SetCloudSecurityPostureManagementCollection(state.ResourcesConfig.CloudSecurityPostureManagementCollection.ValueBool())
+		}
+		if !state.ResourcesConfig.ExtendedCollection.IsNull() {
+			resourcesConfig.SetExtendedCollection(state.ResourcesConfig.ExtendedCollection.ValueBool())
+		}
 	}
 
 	return resourcesConfig
