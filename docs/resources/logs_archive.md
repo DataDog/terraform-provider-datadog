@@ -84,11 +84,11 @@ Required:
 - `account_id` (String) Your AWS account id.
 - `bucket` (String) Name of your s3 bucket.
 - `role_name` (String) Your AWS role name
-- `encryption_type` (String) The type of server-side encryption to use when uploading data to your s3 bucket. `NO_OVERRIDE`, `SSE_S3`, and `SSE_KMS` are the possible types. `NO_OVERRIDE` is used most commonly to leave data unencrypted or leave encryption to the default encryption set on s3 bucket settings.
 
 Optional:
 
 - `path` (String) Path where the archive is stored.
+- `encryption_type` (String) The type of server-side encryption to use when uploading data to your s3 bucket. `NO_OVERRIDE`, `SSE_S3`, and `SSE_KMS` are the possible types. `NO_OVERRIDE` is used most commonly to leave data unencrypted or leave encryption to the default encryption set on s3 bucket settings.
 - `encryption_key` (String) The key ARN used to identify your customer managed key for AWS KMS encryption. Only set this value if the `encryption_type` is set to `SSE_KMS`. 
 
 ## Import
