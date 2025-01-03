@@ -164,7 +164,7 @@ func (d *connectionDatasource) Read(ctx context.Context, request datasource.Read
 	// manually set values but we need to read this from API IRL
 	state.Name = types.StringValue("a name")
 	state.AWS = &awsConnectionModel{
-		AssumeRole: &awsAssumeRoleModel{
+		AssumeRole: &awsAssumeRoleConnectionModel{
 			AccountID:   types.StringValue("accid"),
 			Role:        types.StringValue("role"),
 			ExternalID:  types.StringValue("extid"),
