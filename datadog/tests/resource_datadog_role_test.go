@@ -60,7 +60,39 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 			// 	),
 			// },
 			{
-				Config: testAccCheckDatadogRoleConfigNoPerm(rolename),
+				Config: testAccCheckDatadogRoleConfigNoUnrestrictedPerm(rolename),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRoleExists(accProvider, "datadog_role.foo"),
+					resource.TestCheckResourceAttr("datadog_role.foo", "permission.#", "0"),
+				),
+			},
+		},
+	})
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogRoleDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogRoleWithRestrictedPermsConfig(rolename),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRoleExists(accProvider, "datadog_role.foo"),
+					resource.TestCheckResourceAttr("datadog_role.foo", "name", rolename),
+					testCheckRolePermission(
+						"datadog_role.foo",
+						"data.datadog_permissions.foo",
+						"permissions.dashboards_read",
+					),
+					testCheckRolePermission(
+						"datadog_role.foo",
+						"data.datadog_permissions.foo",
+						"permissions.monitors_read",
+					),
+				),
+			},
+			{
+				Config: testAccCheckDatadogRoleConfigNoRestrictedPerm(rolename),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRoleExists(accProvider, "datadog_role.foo"),
 					resource.TestCheckResourceAttr("datadog_role.foo", "permission.#", "0"),
@@ -69,6 +101,7 @@ func TestAccDatadogRole_CreateUpdate(t *testing.T) {
 		},
 	})
 }
+
 func TestAccDatadogRole_InvalidPerm(t *testing.T) {
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	rolename := strings.ToLower(uniqueEntityName(ctx, t))
@@ -78,8 +111,12 @@ func TestAccDatadogRole_InvalidPerm(t *testing.T) {
 		ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogRoleConfigRestrictedPerm(rolename),
-				ExpectError: regexp.MustCompile("permission with ID .* is restricted .* or does not exist"),
+				Config:      testAccCheckDatadogRoleConfigInvalidNonexistentPerm(rolename),
+				ExpectError: regexp.MustCompile("permission with ID .* does not exist"),
+			},
+			{
+				Config:      testAccCheckDatadogRoleConfigInvalidRestrictedPerm(rolename),
+				ExpectError: regexp.MustCompile("permission with ID .* is a restricted"),
 			},
 		},
 	})
@@ -156,6 +193,24 @@ resource "datadog_role" "foo" {
 }`, uniq)
 }
 
+func testAccCheckDatadogRoleWithRestrictedPermsConfig(uniq string) string {
+	return fmt.Sprintf(`
+data "datadog_permissions" foo {
+  include_restricted = true
+}
+
+resource "datadog_role" "foo" {
+  name      = "%s"
+  permission {
+    id = "${data.datadog_permissions.foo.permissions.dashboards_read}"
+  }
+  permission {
+    id = "${data.datadog_permissions.foo.permissions.monitors_read}"
+  }
+  default_permissions_opt_out = true
+}`, uniq)
+}
+
 func testAccCheckDatadogRoleConfigUpdated(uniq string) string {
 	return fmt.Sprintf(`
 data "datadog_permissions" foo {}
@@ -171,7 +226,7 @@ resource "datadog_role" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogRoleConfigNoPerm(uniq string) string {
+func testAccCheckDatadogRoleConfigNoUnrestrictedPerm(uniq string) string {
 	return fmt.Sprintf(`
 data "datadog_permissions" foo {}
 
@@ -180,12 +235,36 @@ resource "datadog_role" "foo" {
 }`, uniq)
 }
 
-func testAccCheckDatadogRoleConfigRestrictedPerm(uniq string) string {
+func testAccCheckDatadogRoleConfigNoRestrictedPerm(uniq string) string {
+	return fmt.Sprintf(`
+data "datadog_permissions" foo {}
+
+resource "datadog_role" "foo" {
+  name      = "%s"
+  default_permissions_opt_out = true
+}`, uniq)
+}
+
+func testAccCheckDatadogRoleConfigInvalidNonexistentPerm(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_role" "foo" {
   name      = "%sinvalid"
   permission {
     id = "invalid-id"
+  }
+}`, uniq)
+}
+
+func testAccCheckDatadogRoleConfigInvalidRestrictedPerm(uniq string) string {
+	return fmt.Sprintf(`
+data "datadog_permissions" foo {
+  include_restricted = true
+}
+
+resource "datadog_role" "foo" {
+  name      = "%s invalid restricted"
+  permission {
+    id = "${data.datadog_permissions.foo.permissions.dashboards_read}"
   }
 }`, uniq)
 }
