@@ -1,0 +1,460 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 152
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"filter":{"query":"project:sample"},"is_enabled":false,"name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1734562618-sample","processors":[]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"VxfwbMFDR3iyospifjNrbA","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1734562618-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 478.163667ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipeline-order
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 152.609666ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipeline-order
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 147.13375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/VxfwbMFDR3iyospifjNrbA
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"VxfwbMFDR3iyospifjNrbA","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1734562618-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 154.446959ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipeline-order
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 152.737125ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipeline-order
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 156.102541ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipeline-order
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 151.347917ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/VxfwbMFDR3iyospifjNrbA
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"VxfwbMFDR3iyospifjNrbA","type":"pipeline","name":"tf-testaccdatadoglogspipelinesorderdatasource-local-1734562618-sample","is_enabled":false,"is_read_only":false,"filter":{"query":"project:sample"},"processors":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 307.944417ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipeline-order
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw","VxfwbMFDR3iyospifjNrbA"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 252.539125ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v1/logs/config/pipelines/VxfwbMFDR3iyospifjNrbA
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 3
+        uncompressed: false
+        body: |
+            {}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 167.670667ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipeline-order
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 151.960459ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipeline-order
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 145.813708ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/logs/config/pipeline-order
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"pipeline_ids":["pMhyxnUeS6ugpnLdWckGIw","7YBUZ3J_RJGDRk6b5ayIIQ","UodPu7HbQ-Gcp2K1aZBRhw","K2HR3G6PSlC_KIhceFuxig","UBNUhCTxR_Goiw7w4wEOlw","cgS5obmTSi6NgGX05lf0tg","JW6WRX6zSYO6P27n-R85vw","4I6FNy5GToqi2fKVAqNZJw","vL--Mbs7SceY84ADEYu40w","dRPabp5dQLO24WxISJq4mg","RSbXaJxLS8WSZbAV6vJnYg","r-jB58U1TI6y_vJbBX2nzA","wLD85Kf3RiGkCu35OTl9KA","C3rLxhf7RrOMi4M9rrBv6g","GJYHVcVzT6uN_0crZdRpzQ","LWIrk9TLT3Kp9hnIbWBs2w","XCYdgKpPQFKyhKexiTkbcQ","TL1aouiMTNmpCCN1iZxoSA","rTxbr2MpQsSCEtn66XmwnQ","2QGdoZWESWi6WArjxl4cxg","0mc2Xh9XTOKHDRooX8oU7Q","htXFf5DCQ_ay1IhQ9Tr4uw"]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 146.133459ms
