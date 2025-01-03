@@ -44,6 +44,8 @@ func resourceDatadogLogsArchive() *schema.Resource {
 								ValidateDiagFunc: validators.ValidateAWSAccountID,
 							},
 							"role_name": {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
+							"encryption_type": {Description: "The type of encryption on your archive.", Type: schema.TypeString, Required: true},
+							"encryption_key": {Description: "The AWS KMS encryption key.", Type: schema.TypeString, Required: false},
 						},
 					},
 				},
@@ -253,10 +255,13 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]int
 func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]interface{} {
 	result := make(map[string]interface{})
 	integration := destination.GetIntegration()
+	encryption := destination.GetEncryption()
 	result["account_id"] = integration.GetAccountId()
 	result["role_name"] = integration.GetRoleName()
 	result["bucket"] = destination.GetBucket()
 	result["path"] = destination.GetPath()
+	result["encryption_type"] = encryption.GetType();
+	result["encryption_key"] = encryption.GetKey();
 	return result
 }
 
@@ -421,9 +426,28 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 	if !ok {
 		path = ""
 	}
+	encryptionType, ok := d["encryptionType"]
+	if !ok {
+		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("encryption type is not defined")
+	}
+	encryptionKey, ok := d["encryptionKey"]
+	var LogsArchiveEncryptionS3 encryption
+
+	if !ok {
+		encryption = datadogV2.NewLogsArchiveEncryptionS3(
+			encryptionType.(string),
+		)
+	} else {
+		encryption = datadogV2.NewLogsArchiveEncryptionS3(
+			encryptionType.(string),
+			encryptionKey.(string),
+		)
+	}
+	
 	destination := datadogV2.NewLogsArchiveDestinationS3(
 		bucket.(string),
 		*integration,
+		*encryption,
 		datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
 	)
 	destination.Path = datadog.PtrString(path.(string))
