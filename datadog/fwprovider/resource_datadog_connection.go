@@ -32,10 +32,10 @@ type connectionResourceModel struct {
 }
 
 type awsConnectionModel struct {
-	AssumeRole *awsAssumeRoleModel `tfsdk:"assume_role"`
+	AssumeRole *awsAssumeRoleConnectionModel `tfsdk:"assume_role"`
 }
 
-type awsAssumeRoleModel struct {
+type awsAssumeRoleConnectionModel struct {
 	AccountID   types.String `tfsdk:"account_id"`
 	Role        types.String `tfsdk:"role"`
 	ExternalID  types.String `tfsdk:"external_id"`
@@ -43,34 +43,34 @@ type awsAssumeRoleModel struct {
 }
 
 type httpConnectionModel struct {
-	BaseURL   types.String        `tfsdk:"base_url"`
-	TokenAuth *httpTokenAuthModel `tfsdk:"token_auth"`
+	BaseURL   types.String                  `tfsdk:"base_url"`
+	TokenAuth *httpTokenAuthConnectionModel `tfsdk:"token_auth"`
 }
 
-type httpTokenAuthModel struct {
-	Tokens        []*tokenModel        `tfsdk:"token"`
-	Headers       []*headerModel       `tfsdk:"header"`
-	URLParameters []*urlParameterModel `tfsdk:"url_parameter"`
-	Body          *bodyModel           `tfsdk:"body"`
+type httpTokenAuthConnectionModel struct {
+	Tokens        []*httpConnectionTokenModel        `tfsdk:"token"`
+	Headers       []*httpConnectionHeaderModel       `tfsdk:"header"`
+	URLParameters []*httpConnectionUrlParameterModel `tfsdk:"url_parameter"`
+	Body          *httpConnectionBodyModel           `tfsdk:"body"`
 }
 
-type tokenModel struct {
+type httpConnectionTokenModel struct {
 	Type  types.String `tfsdk:"type"`
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
 }
 
-type headerModel struct {
+type httpConnectionHeaderModel struct {
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
 }
 
-type urlParameterModel struct {
+type httpConnectionUrlParameterModel struct {
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
 }
 
-type bodyModel struct {
+type httpConnectionBodyModel struct {
 	ContentType types.String `tfsdk:"content_type"`
 	Content     types.String `tfsdk:"content"`
 }
