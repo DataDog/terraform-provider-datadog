@@ -411,8 +411,6 @@ func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequ
 		return
 	}
 
-	state.ID = types.StringValue("read ID")
-
 	diags = response.State.Set(ctx, &state)
 	response.Diagnostics.Append(diags...)
 }
