@@ -394,8 +394,10 @@ func (r *connectionResource) Create(ctx context.Context, request resource.Create
 	}
 
 	state.ID = types.StringValue("created ID")
-	state.AWS.AssumeRole.ExternalID = types.StringValue("extid")
-	state.AWS.AssumeRole.PrincipalID = types.StringValue("princid")
+	if state.AWS != nil {
+		state.AWS.AssumeRole.ExternalID = types.StringValue("extid")
+		state.AWS.AssumeRole.PrincipalID = types.StringValue("princid")
+	}
 
 	diags = response.State.Set(ctx, &state)
 	response.Diagnostics.Append(diags...)
