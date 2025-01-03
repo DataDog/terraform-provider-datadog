@@ -16,12 +16,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/go-cty/cty"
-
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -1163,6 +1162,11 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Type:        schema.TypeString,
 					Required:    true,
 				},
+				"local_key": {
+					Description: "A unique identifier used to track steps after reordering.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"public_id": {
 					Description: "The identifier of the step on the backend.",
 					Type:        schema.TypeString,
@@ -2147,6 +2151,10 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 			localStep["force_element_update"] = forceElementUpdate
 		}
 
+		localKey, ok := d.GetOk(fmt.Sprintf("browser_step.%d.local_key", stepIndex))
+		if ok {
+			localStep["local_key"] = localKey
+		}
 		publicId, ok := d.GetOk(fmt.Sprintf("browser_step.%d.public_id", stepIndex))
 		if ok {
 			localStep["public_id"] = publicId
@@ -2920,37 +2928,7 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
 			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
 
-			params := make(map[string]interface{})
-			stepParams := stepMap["params"].([]interface{})[0]
-			stepTypeParams := getParamsKeysForStepType(step.GetType())
-
-			for _, key := range stepTypeParams {
-				if stepMap, ok := stepParams.(map[string]interface{}); ok && stepMap[key] != "" {
-					convertedValue := convertStepParamsValueForConfig(step.GetType(), key, stepMap[key])
-					params[convertStepParamsKey(key)] = convertedValue
-				}
-			}
-
-			if stepParamsMap, ok := stepParams.(map[string]interface{}); ok && stepParamsMap["element_user_locator"] != "" {
-				userLocatorsParams := stepParamsMap["element_user_locator"].([]interface{})
-
-				if len(userLocatorsParams) != 0 {
-					userLocatorParams := userLocatorsParams[0].(map[string]interface{})
-					values := userLocatorParams["value"].([]interface{})
-					userLocator := map[string]interface{}{
-						"failTestOnCannotLocate": userLocatorParams["fail_test_on_cannot_locate"],
-						"values":                 []map[string]interface{}{values[0].(map[string]interface{})},
-					}
-
-					stepElement := make(map[string]interface{})
-					if stepParamsElement, ok := stepParamsMap["element"]; ok {
-						utils.GetMetadataFromJSON([]byte(stepParamsElement.(string)), &stepElement)
-					}
-					stepElement["userLocator"] = userLocator
-					params["element"] = stepElement
-				}
-			}
-
+			params := getStepParams(stepMap, d)
 			step.SetParams(params)
 
 			steps = append(steps, step)
@@ -4771,6 +4749,160 @@ func getCertificateStateValue(content string) string {
 	}
 
 	return utils.ConvertToSha256(content)
+}
+
+func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) map[string]interface{} {
+	stepType := datadogV1.SyntheticsStepType(stepMap["type"].(string))
+
+	params := make(map[string]interface{})
+	stepParams := stepMap["params"].([]interface{})[0]
+	stepTypeParams := getParamsKeysForStepType(stepType)
+
+	includeElement := false
+	for _, key := range stepTypeParams {
+		if stepMap, ok := stepParams.(map[string]interface{}); ok && stepMap[key] != "" {
+			convertedValue := convertStepParamsValueForConfig(stepType, key, stepMap[key])
+			params[convertStepParamsKey(key)] = convertedValue
+		}
+
+		if key == "element" {
+			includeElement = true
+		}
+	}
+
+	stepElement := make(map[string]interface{})
+	if stepParamsMap, ok := stepParams.(map[string]interface{}); ok {
+
+		// Initialize the element with the values from the state
+		if stepParamsElement, ok := stepParamsMap["element"]; ok {
+			utils.GetMetadataFromJSON([]byte(stepParamsElement.(string)), &stepElement)
+		}
+
+		// When conciliating the config and the state, the provider is not updating the ML in the state as
+		// a side effect of the diffSuppressFunc, but it nonetheless updates the other fields.
+		// So after reordering the steps in the config, the state contains steps with mixed up MLs.
+		// This propagates to the crafted request to update the test on the backend, and eventually mess up
+		// the remote test.
+		//
+		// To fix this issue, the user can provide a local key for each step to track steps when reordering.
+		// The provider can use the local key to reconcile the right ML into the right step.
+		// To retrieve the right ML, this function needs to look for the step which has the same localKey
+		// than the current step in the state, then in the config.
+		// The right ML could be in the state when the user didn't provide it in the config, but the provider
+		// keep it there anyway to keep track of it. Or it could be in the config when the user provided
+		// it directly.
+		//
+		// In the following,
+		// - GetRawState is used to retrieve the state of the resource before the reconciliation.
+		//   It contains the ML when the user didn't provide it in the config.
+		// - GetRawConfig is used to retrieve the config of the resource as written by the user.
+		//   It contains the ML when the user provided it in the config.
+
+		// Update the ML from the state, if found
+		rawState := d.GetRawState()
+		stateStepCount := 0
+		stateSteps := cty.ListValEmpty(cty.DynamicPseudoType)
+		if !rawState.IsNull() {
+			stateSteps = rawState.GetAttr("browser_step")
+			stateStepCount = stateSteps.LengthInt()
+		}
+
+		if stateStepCount > 0 {
+			for i := range stateStepCount {
+				stateStep := stateSteps.Index(cty.NumberIntVal(int64(i)))
+				localKeyValue := stateStep.GetAttr("local_key")
+				if localKeyValue.IsNull() {
+					continue
+				}
+
+				localKey := localKeyValue.AsString()
+				if localKey == stepMap["local_key"] {
+					stepParamsValue := stateStep.GetAttr("params")
+					if stepParamsValue.IsNull() {
+						continue
+					}
+
+					stepParams := stepParamsValue.Index(cty.NumberIntVal(0))
+					elementValue := stepParams.GetAttr("element")
+					if elementValue.IsNull() {
+						continue
+					}
+					element := elementValue.AsString()
+					stateStepElement := make(map[string]interface{})
+					utils.GetMetadataFromJSON([]byte(element), &stateStepElement)
+
+					for key, value := range stateStepElement {
+						stepElement[key] = value
+					}
+				}
+			}
+		}
+
+		// Update the ML from the config, if found
+		rawConfig := d.GetRawConfig()
+		configStepCount := 0
+		configSteps := cty.ListValEmpty(cty.DynamicPseudoType)
+		if !rawConfig.IsNull() {
+			configSteps = rawConfig.GetAttr("browser_step")
+			configStepCount = configSteps.LengthInt()
+		}
+
+		if configStepCount > 0 {
+			for i := range configStepCount {
+				configStep := configSteps.Index(cty.NumberIntVal(int64(i)))
+				localKeyValue := configStep.GetAttr("local_key")
+				if localKeyValue.IsNull() {
+					continue
+				}
+
+				localKey := localKeyValue.AsString()
+				if localKey == stepMap["local_key"] {
+					stepParamsValue := configStep.GetAttr("params")
+					if stepParamsValue.IsNull() {
+						continue
+					}
+
+					stepParams := stepParamsValue.Index(cty.NumberIntVal(0))
+					elementValue := stepParams.GetAttr("element")
+					if elementValue.IsNull() {
+						continue
+					}
+					element := elementValue.AsString()
+					configStepElement := make(map[string]interface{})
+					utils.GetMetadataFromJSON([]byte(element), &configStepElement)
+
+					for key, value := range configStepElement {
+						stepElement[key] = value
+					}
+				}
+			}
+		}
+
+		// If the step has a user locator in the config, set it in the stepElement as well
+		if stepParamsMap["element_user_locator"] != "" {
+			userLocatorsParams := stepParamsMap["element_user_locator"].([]interface{})
+
+			if len(userLocatorsParams) != 0 {
+				userLocatorParams := userLocatorsParams[0].(map[string]interface{})
+				values := userLocatorParams["value"].([]interface{})
+				userLocator := map[string]interface{}{
+					"failTestOnCannotLocate": userLocatorParams["fail_test_on_cannot_locate"],
+					"values":                 []map[string]interface{}{values[0].(map[string]interface{})},
+				}
+
+				stepElement["userLocator"] = userLocator
+			}
+		}
+
+	}
+
+	// If the step should contain an element, and it's not empty, add it to the params.
+	// This is to avoid sending an empty element to the backend, as some steps have an optional element.
+	if includeElement && len(stepElement) > 0 {
+		params["element"] = stepElement
+	}
+
+	return params
 }
 
 func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
