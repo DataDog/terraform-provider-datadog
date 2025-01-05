@@ -301,8 +301,8 @@ func (r *integrationAzureResource) updateState(ctx context.Context, state *integ
 	state.UsageMetricsEnabled = types.BoolValue(account.GetUsageMetricsEnabled())
 
 	resourceProviderConfigs := account.GetResourceProviderConfigs()
-	state.ResourceProviderConfigs = make([]*ResourceProviderConfigModel, len(*resourceProviderConfigs))
-	for i, resourceProviderConfig := range *resourceProviderConfigs {
+	state.ResourceProviderConfigs = make([]*ResourceProviderConfigModel, len(resourceProviderConfigs))
+	for i, resourceProviderConfig := range resourceProviderConfigs {
 		state.ResourceProviderConfigs[i] = &ResourceProviderConfigModel{
 			Namespace:      types.StringValue(resourceProviderConfig.GetNamespace()),
 			MetricsEnabled: types.BoolValue(resourceProviderConfig.GetMetricsEnabled()),
