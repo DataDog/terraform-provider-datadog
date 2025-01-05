@@ -92,6 +92,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
 	NewCSMThreatsAgentRulesDataSource,
+	NewLogsPipelinesOrderDataSource,
 }
 
 // FrameworkProvider struct
