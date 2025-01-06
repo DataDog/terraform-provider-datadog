@@ -127,19 +127,19 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 			},
 			"metrics_enabled": schema.BoolAttribute{
 				Computed:    true,
-				Default:     booldefault.StaticBool(false),
+				Default:     booldefault.StaticBool(true),
 				Optional:    true,
 				Description: "Enable Azure metrics for your organization.",
 			},
 			"metrics_enabled_default": schema.BoolAttribute{
 				Computed:    true,
-				Default:     booldefault.StaticBool(false),
+				Default:     booldefault.StaticBool(true),
 				Optional:    true,
 				Description: "Enable Azure metrics for your organization for resource providers where no resource provider config is specified.",
 			},
 			"usage_metrics_enabled": schema.BoolAttribute{
 				Computed:    true,
-				Default:     booldefault.StaticBool(false),
+				Default:     booldefault.StaticBool(true),
 				Optional:    true,
 				Description: "Enable azure.usage metrics for your organization.",
 			},
