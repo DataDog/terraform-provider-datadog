@@ -44,7 +44,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 								ValidateDiagFunc: validators.ValidateAWSAccountID,
 							},
 							"role_name": {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
-							"encryption_type": {Description: "The type of encryption on your archive.", Type: schema.TypeString, Required: true},
+							"encryption_type": {Description: "The type of encryption on your archive.", Type: schema.TypeString, Required: false},
 							"encryption_key": {Description: "The AWS KMS encryption key.", Type: schema.TypeString, Required: false},
 						},
 					},
@@ -426,24 +426,28 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 	if !ok {
 		path = ""
 	}
-	encryptionType, ok := d["encryptionType"]
-	if !ok {
-		return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("encryption type is not defined")
-	}
-	encryptionKey, ok := d["encryptionKey"]
-	var LogsArchiveEncryptionS3 encryption
 
+	var datadogV2.LogsArchiveEncryptionS3 encryption
+
+	encryptionType, ok := d["encryption_type"]
 	if !ok {
 		encryption = datadogV2.NewLogsArchiveEncryptionS3(
-			encryptionType.(string),
+			"NO_OVERRIDE",
 		)
 	} else {
-		encryption = datadogV2.NewLogsArchiveEncryptionS3(
-			encryptionType.(string),
-			encryptionKey.(string),
-		)
+		encryptionKey, ok := d["encryption_key"]
+		if !ok {
+			encryption = datadogV2.NewLogsArchiveEncryptionS3(
+				encryptionType.(string),
+			)
+		} else {
+			encryption = datadogV2.NewLogsArchiveEncryptionS3(
+				encryptionType.(string),
+				encryptionKey.(string),
+			)
+		}
 	}
-	
+
 	destination := datadogV2.NewLogsArchiveDestinationS3(
 		bucket.(string),
 		*integration,
