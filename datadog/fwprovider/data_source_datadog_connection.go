@@ -2,13 +2,11 @@ package fwprovider
 
 import (
 	"context"
-	"fmt"
 	"io"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var _ datasource.DataSource = &connectionDatasource{}
@@ -170,83 +168,12 @@ func (d *connectionDatasource) Read(ctx context.Context, request datasource.Read
 		return
 	}
 
-	attributes := conn.Data.Attributes
-	state.Name = types.StringValue(attributes.Name)
-
-	if attributes.Integration.AWSIntegration != nil {
-		awsAttr := attributes.Integration.AWSIntegration
-		if awsAttr.GetCredentials().AWSAssumeRole == nil {
-			response.Diagnostics.AddError("Unsupported connection type", "This provider only supports AWS connections of the assume role type.")
-			return
-		}
-
-		state.AWS = &awsConnectionModel{
-			AssumeRole: &awsAssumeRoleConnectionModel{
-				AccountID:   types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetAccountId()),
-				Role:        types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetRole()),
-				ExternalID:  types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetExternalId()),
-				PrincipalID: types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetPrincipalId()),
-			},
-		}
+	connModel, err := apiResponseToConnectionModel(conn)
+	if err != nil {
+		response.Diagnostics.AddError(err.Error(), "")
+		return
 	}
 
-	if attributes.Integration.HTTPIntegration != nil {
-		httpAttr := attributes.Integration.HTTPIntegration
-		// if httpAttr.GetCredentials().HTTPTokenAuth == nil {
-		// 	response.Diagnostics.AddError("Unsupported connection type", "This provider only supports HTTP connections of the token auth type.")
-		// 	return
-		// }
-
-		response.Diagnostics.AddWarning(fmt.Sprintf("%#v", httpAttr.GetCredentials()), "")
-
-		tokenAuth := &httpTokenAuthConnectionModel{}
-		tokens := []*httpConnectionTokenModel{}
-		for _, token := range httpAttr.Credentials.HTTPTokenAuth.GetTokens() {
-			tokens = append(tokens, &httpConnectionTokenModel{
-				Type: types.StringValue(string(token.GetType())),
-			})
-		}
-		if len(tokens) > 0 {
-			tokenAuth.Tokens = tokens
-		}
-
-		headers := []*httpConnectionHeaderModel{}
-		for _, header := range httpAttr.Credentials.HTTPTokenAuth.GetHeaders() {
-			headers = append(headers, &httpConnectionHeaderModel{
-				Name:  types.StringValue(header.Name),
-				Value: types.StringValue(header.Value),
-			})
-		}
-		if len(headers) > 0 {
-			tokenAuth.Headers = headers
-		}
-
-		urlParams := []*httpConnectionUrlParameterModel{}
-		for _, urlParam := range httpAttr.Credentials.HTTPTokenAuth.GetUrlParameters() {
-			urlParams = append(urlParams, &httpConnectionUrlParameterModel{
-				Name:  types.StringValue(urlParam.Name),
-				Value: types.StringValue(urlParam.Value),
-			})
-		}
-		if len(urlParams) > 0 {
-			tokenAuth.URLParameters = urlParams
-		}
-
-		body := httpAttr.Credentials.HTTPTokenAuth.GetBody()
-		tokenAuth.Body = &httpConnectionBodyModel{}
-		if body.Content != nil {
-			tokenAuth.Body.Content = types.StringValue(*body.Content)
-		}
-		if body.ContentType != nil {
-			tokenAuth.Body.ContentType = types.StringValue(*body.ContentType)
-		}
-
-		state.HTTP = &httpConnectionModel{
-			BaseURL:   types.StringValue(httpAttr.BaseUrl),
-			TokenAuth: tokenAuth,
-		}
-	}
-
-	diags = response.State.Set(ctx, &state)
+	diags = response.State.Set(ctx, connModel)
 	response.Diagnostics.Append(diags...)
 }
