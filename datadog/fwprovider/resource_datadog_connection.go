@@ -2,6 +2,8 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
+	"io"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
@@ -393,11 +395,24 @@ func (r *connectionResource) Create(ctx context.Context, request resource.Create
 		return
 	}
 
-	state.ID = types.StringValue("created ID")
-	if state.AWS != nil {
-		state.AWS.AssumeRole.ExternalID = types.StringValue("extid")
-		state.AWS.AssumeRole.PrincipalID = types.StringValue("princid")
+	createRequest, err := connectionModelToApiRequest(state)
+	if err != nil {
+		response.Diagnostics.AddError("Could not create connection", err.Error())
+		return
 	}
+
+	conn, httpResponse, err := r.Api.CreateActionConnection(r.Auth, *createRequest)
+	if err != nil {
+		if httpResponse != nil {
+			body, _ := io.ReadAll(httpResponse.Body)
+			response.Diagnostics.AddError("Could not create connection", string(body))
+		} else {
+			response.Diagnostics.AddError("Could not create connection", err.Error())
+		}
+		return
+	}
+
+	state.ID = types.StringValue(*conn.GetData().Id)
 
 	diags = response.State.Set(ctx, &state)
 	response.Diagnostics.Append(diags...)
@@ -411,7 +426,20 @@ func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequ
 		return
 	}
 
-	diags = response.State.Set(ctx, &state)
+	conn, httpResponse, err := r.Api.GetActionConnection(r.Auth, state.ID.ValueString())
+	if err != nil {
+		body, _ := io.ReadAll(httpResponse.Body)
+		response.Diagnostics.AddError("Could not get connection", string(body))
+		return
+	}
+
+	connModel, err := apiResponseToConnectionModel(conn)
+	if err != nil {
+		response.Diagnostics.AddError(err.Error(), "")
+		return
+	}
+
+	diags = response.State.Set(ctx, connModel)
 	response.Diagnostics.Append(diags...)
 }
 
@@ -436,4 +464,89 @@ func (r *connectionResource) Delete(ctx context.Context, request resource.Delete
 	}
 
 	// noop
+}
+
+func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionResponse) (*connectionResourceModel, error) {
+	connModel := &connectionResourceModel{}
+
+	attributes := connection.Data.Attributes
+	connModel.Name = types.StringValue(attributes.Name)
+
+	if attributes.Integration.AWSIntegration != nil {
+		awsAttr := attributes.Integration.AWSIntegration
+		if awsAttr.GetCredentials().AWSAssumeRole == nil {
+			err := fmt.Errorf("this provider only supports AWS connections of the assume role type")
+			return nil, err
+		}
+
+		connModel.AWS = &awsConnectionModel{
+			AssumeRole: &awsAssumeRoleConnectionModel{
+				AccountID:   types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetAccountId()),
+				Role:        types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetRole()),
+				ExternalID:  types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetExternalId()),
+				PrincipalID: types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetPrincipalId()),
+			},
+		}
+	}
+
+	if attributes.Integration.HTTPIntegration != nil {
+		httpAttr := attributes.Integration.HTTPIntegration
+		// if httpAttr.GetCredentials().HTTPTokenAuth == nil {
+		// 	err := errors.New("this provider only supports HTTP connections of the token auth type")
+		// 	return nil, err
+		// }
+
+		tokenAuth := &httpTokenAuthConnectionModel{}
+		tokens := []*httpConnectionTokenModel{}
+		for _, token := range httpAttr.Credentials.HTTPTokenAuth.GetTokens() {
+			tokens = append(tokens, &httpConnectionTokenModel{
+				Type: types.StringValue(string(token.GetType())),
+			})
+		}
+		if len(tokens) > 0 {
+			tokenAuth.Tokens = tokens
+		}
+
+		headers := []*httpConnectionHeaderModel{}
+		for _, header := range httpAttr.Credentials.HTTPTokenAuth.GetHeaders() {
+			headers = append(headers, &httpConnectionHeaderModel{
+				Name:  types.StringValue(header.Name),
+				Value: types.StringValue(header.Value),
+			})
+		}
+		if len(headers) > 0 {
+			tokenAuth.Headers = headers
+		}
+
+		urlParams := []*httpConnectionUrlParameterModel{}
+		for _, urlParam := range httpAttr.Credentials.HTTPTokenAuth.GetUrlParameters() {
+			urlParams = append(urlParams, &httpConnectionUrlParameterModel{
+				Name:  types.StringValue(urlParam.Name),
+				Value: types.StringValue(urlParam.Value),
+			})
+		}
+		if len(urlParams) > 0 {
+			tokenAuth.URLParameters = urlParams
+		}
+
+		body := httpAttr.Credentials.HTTPTokenAuth.GetBody()
+		tokenAuth.Body = &httpConnectionBodyModel{}
+		if body.Content != nil {
+			tokenAuth.Body.Content = types.StringValue(*body.Content)
+		}
+		if body.ContentType != nil {
+			tokenAuth.Body.ContentType = types.StringValue(*body.ContentType)
+		}
+
+		connModel.HTTP = &httpConnectionModel{
+			BaseURL:   types.StringValue(httpAttr.BaseUrl),
+			TokenAuth: tokenAuth,
+		}
+	}
+
+	return connModel, nil
+}
+
+func connectionModelToApiRequest(connectionModel connectionResourceModel) (*datadogV2.CreateActionConnectionRequest, error) {
+	return nil, fmt.Errorf("test")
 }
