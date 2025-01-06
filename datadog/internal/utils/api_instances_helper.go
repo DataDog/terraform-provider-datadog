@@ -44,6 +44,7 @@ type ApiInstances struct {
 	webhooksIntegrationApiV1              *datadogV1.WebhooksIntegrationApi
 
 	//V2 APIs
+	actionConnectionApiV2          *datadogV2.ActionConnectionApi
 	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
 	auditApiV2                     *datadogV2.AuditApi
@@ -679,4 +680,12 @@ func (i *ApiInstances) GetMicrosoftTeamsIntegrationApiV2() *datadogV2.MicrosoftT
 		i.microsoftTeamsIntegrationApiV2 = datadogV2.NewMicrosoftTeamsIntegrationApi(i.HttpClient)
 	}
 	return i.microsoftTeamsIntegrationApiV2
+}
+
+// GetActionConnectionApiV2 get instance of ActionConnectionApi
+func (i *ApiInstances) GetActionConnectionApiV2() *datadogV2.ActionConnectionApi {
+	if i.actionConnectionApiV2 == nil {
+		i.actionConnectionApiV2 = datadogV2.NewActionConnectionApi(i.HttpClient)
+	}
+	return i.actionConnectionApiV2
 }

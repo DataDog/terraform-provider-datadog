@@ -20,7 +20,7 @@ var (
 )
 
 type connectionResource struct {
-	Api  *datadogV2.TeamsApi
+	Api  *datadogV2.ActionConnectionApi
 	Auth context.Context
 }
 
@@ -81,7 +81,7 @@ func NewConnectionResource() resource.Resource {
 
 func (r *connectionResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
+	r.Api = providerData.DatadogApiInstances.GetActionConnectionApiV2()
 	r.Auth = providerData.Auth
 }
 
