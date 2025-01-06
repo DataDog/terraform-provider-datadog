@@ -12,7 +12,7 @@ import (
 var _ datasource.DataSource = &connectionDatasource{}
 
 type connectionDatasource struct {
-	Api  *datadogV2.TeamsApi
+	Api  *datadogV2.ActionConnectionApi
 	Auth context.Context
 }
 
@@ -22,7 +22,7 @@ func NewDatadogConnectionDataSource() datasource.DataSource {
 
 func (d *connectionDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
-	d.Api = providerData.DatadogApiInstances.GetTeamsApiV2()
+	d.Api = providerData.DatadogApiInstances.GetActionConnectionApiV2()
 	d.Auth = providerData.Auth
 }
 
