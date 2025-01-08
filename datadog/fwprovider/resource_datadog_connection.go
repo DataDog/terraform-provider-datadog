@@ -395,7 +395,7 @@ func (r *connectionResource) Create(ctx context.Context, request resource.Create
 		return
 	}
 
-	createRequest, err := connectionModelToApiRequest(state)
+	createRequest, err := connectionModelToCreateApiRequest(state)
 	if err != nil {
 		response.Diagnostics.AddError("Could not create connection", err.Error())
 		return
@@ -547,6 +547,39 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 	return connModel, nil
 }
 
-func connectionModelToApiRequest(connectionModel connectionResourceModel) (*datadogV2.CreateActionConnectionRequest, error) {
-	return nil, fmt.Errorf("test")
+func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) (*datadogV2.CreateActionConnectionRequest, error) {
+	var integration datadogV2.ActionConnectionIntegration
+
+	if connectionModel.AWS != nil {
+		assumeRoleParams := datadogV2.NewAWSAssumeRole(
+			connectionModel.AWS.AssumeRole.AccountID.String(),
+			connectionModel.AWS.AssumeRole.Role.String(),
+			datadogV2.AWSASSUMEROLETYPE_AWSASSUMEROLE,
+		)
+
+		awsIntegration := datadogV2.NewAWSIntegration(
+			datadogV2.AWSAssumeRoleAsAWSCredentials(assumeRoleParams),
+			datadogV2.AWSINTEGRATIONTYPE_AWS,
+		)
+		integration = datadogV2.AWSIntegrationAsActionConnectionIntegration(awsIntegration)
+	}
+
+	if connectionModel.HTTP != nil {
+		httpTokenAuth := datadogV2.NewHTTPTokenAuth(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
+		httpCredentials := datadogV2.HTTPTokenAuthAsHTTPCredentials(httpTokenAuth)
+		httpIntegration := datadogV2.NewHTTPIntegration(
+			connectionModel.HTTP.BaseURL.String(),
+			httpCredentials,
+			datadogV2.HTTPINTEGRATIONTYPE_HTTP,
+		)
+		integration = datadogV2.HTTPIntegrationAsActionConnectionIntegration(httpIntegration)
+	}
+
+	attributes := datadogV2.NewActionConnectionAttributes(integration, connectionModel.Name.String())
+	data := datadogV2.NewActionConnectionData(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION)
+	req := datadogV2.NewCreateActionConnectionRequest(*data)
+
+	//return nil, fmt.Errorf("%s", req.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.AccountId)
+
+	return req, nil
 }
