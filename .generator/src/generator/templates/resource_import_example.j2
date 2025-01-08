@@ -1,0 +1,2 @@
+{%- set primaryId = get_terraform_primary_id(operations) -%}
+terraform import datadog_{{ name }}.new_list "{{ primaryId["schema"].example }}"

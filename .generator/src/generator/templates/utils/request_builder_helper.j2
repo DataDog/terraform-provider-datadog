@@ -1,0 +1,103 @@
+{%- macro requestBuilder(schema, baseSetter, baseAccessor) %}
+    {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
+
+    {%- for attr, attrSchema in primitiveAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{- baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+    {%- for attr, attrSchema in primitiveArrAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{ baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+    {%- for attr, attrSchema in nonPrimitiveListAttr.items() %}
+    {%- set isRequired = attr in attrSchema.get("required", []) %}
+    {{ baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+    {%- for attr, attrSchema in nonPrimitiveObjAttr.items() %}
+    {%- set isRequired = attr in schema.get("required", []) %}
+    {{ baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
+    {%- endfor %}
+
+{%- endmacro %}
+
+{%- macro baseRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- if schema|is_primitive %}
+        {{- typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- elif schema.type == "object" %}
+        {{- typeObjectRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- elif schema.type == "array" %}
+        {{- typeArrayRequestBuilder(name, schema, baseSetter, baseAccessor, required=required) }}
+    {%- endif %}
+{%- endmacro %}
+
+
+{%- macro typePrimitiveRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- if not required %}
+    if !{{ baseAccessor }}.{{ name|camel_case }}.IsNull() {
+    {%- endif %}
+    {{ baseSetter }}.Set{{ name|camel_case }}({{ baseAccessor }}.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}())
+    {%- if not required %}
+    }
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro typeObjectRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- if not required %}
+    if {% if schema|is_primitive %}!{{ baseAccessor }}.{{ name|camel_case }}.IsNull(){% else %}{{ baseAccessor }}.{{ name|camel_case }} != nil {% endif %} {
+    {%- endif %}
+    var {{ name|variable_name }} datadog{{ version }}.{{ get_type(schema) }}
+
+    {{ requestBuilder(schema, name|variable_name, baseAccessor~"."~name|camel_case) }}
+
+    {{ baseSetter }}.{{ name|camel_case }} = {%- if not required %}&{% endif %}{{ name|variable_name }}
+    {%- if not required %}
+    }
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro typeArrayRequestBuilder(name, schema, baseSetter, baseAccessor, required=False) %}
+    {%- set itemSchema = schema.get("items") %}
+    {%- if not required %}
+    if {% if itemSchema|is_primitive %}!{{ baseAccessor }}.{{ name|camel_case }}.IsNull(){% else %}{{ baseAccessor }}.{{ name|camel_case }} != nil {% endif %} {
+    {%- endif %}
+        var {{ name|variable_name }} []{%- if not itemSchema|is_primitive or "enum" in itemSchema %}datadog{{ version }}.{% endif -%}{{ get_type(itemSchema) }}
+    {%- if itemSchema|is_primitive %}
+    	diags.Append({{ baseAccessor }}.{{ name|camel_case }}.ElementsAs(ctx, &{{ name|variable_name }}, false)...)
+    {%- else %}
+        for _, {{ name|variable_name }}TFItem := range {{ baseAccessor }}.{{ name|camel_case }} {
+            {{ name|variable_name }}DDItem := datadog{{ version }}.New{{ get_type(itemSchema) }}()
+            {{ requestBuilder(itemSchema, name|variable_name~"DDItem", name|variable_name~"TFItem") }}
+        }
+    {%- endif %}
+        {{ baseSetter }}.Set{{ name|camel_case }}({{ name|variable_name }})
+    {%- if not required %}
+    }
+    {%- endif %}
+{%- endmacro %}
+
+{%- macro requestBaseFunc(name, funcName, parameterBodySchema) %}
+func (r *{{ name|camel_case|untitle_case }}Resource) {{ funcName }}(ctx context.Context, state *{{ name|camel_case|untitle_case }}Model) (*datadog{{ version }}.{{ get_type(parameterBodySchema) }}, diag.Diagnostics) {
+    diags := diag.Diagnostics{}
+
+	{%- if parameterBodySchema|is_json_api %}
+	{%- set jsonAttributeSchema = json_api_attributes_schema(parameterBodySchema) %}
+    {%- set parameterBodyDataSchema = parameterBodySchema.properties.data %}
+    {%- set isDataRequired = "data" in parameterBodySchema.get("required", []) %}
+	attributes := datadog{{ version }}.New{{ get_type(jsonAttributeSchema) }}WithDefaults()
+
+    {{ requestBuilder(jsonAttributeSchema, "attributes", "state") }}
+
+    req := datadogV2.New{{ get_type(parameterBodySchema) }}WithDefaults()
+    req.Data = {% if isDataRequired %}*{% endif %}datadogV2.New{{ get_type(parameterBodyDataSchema) }}WithDefaults()
+    req.Data.SetAttributes(*attributes)
+
+    {%- else %}
+    {{ requestBuilder(parameterBodySchema, "req", "state") }}
+    {%- endif %}
+
+	return req, diags
+}
+{%- endmacro %}
