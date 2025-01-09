@@ -97,6 +97,11 @@ func (r *webhookResource) Read(ctx context.Context, request resource.ReadRequest
 	}
 
 	id := state.Name.ValueString()
+	// handle import case
+	if state.Name.IsNull() {
+		id = state.ID.ValueString()
+	}
+
 	resp, httpResp, err := r.Api.GetWebhooksIntegration(r.Auth, id)
 
 	if err != nil {
@@ -241,9 +246,8 @@ func (r *webhookResource) buildWebhookRequestBody(ctx context.Context, state *we
 	if !state.CustomHeaders.IsNull() {
 		attributes.SetCustomHeaders(state.CustomHeaders.ValueString())
 	}
-	if !state.EncodeAs.IsNull() {
+	if !state.EncodeAs.IsNull() && !state.EncodeAs.IsUnknown() {
 		encoding, _ := datadogV1.NewWebhooksIntegrationEncodingFromValue(state.EncodeAs.ValueString())
-
 		attributes.SetEncodeAs(*encoding)
 	}
 

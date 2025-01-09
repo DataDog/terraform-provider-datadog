@@ -1,0 +1,288 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2354
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3},"monitor_priority":5,"noScreenshot":true,"restricted_roles":["role2","role1"],"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"status":"paused","steps":[{"allowFailure":false,"hasNewStepElement":false,"isCritical":true,"name":"Tap on StaticText \"Tap\"","noScreenshot":false,"params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"\u003cXCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\"\u003e","relativePosition":{"x":0.07256155303030302,"y":0.41522381756756754},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"timeout":100,"type":"tap"},{"allowFailure":false,"hasNewStepElement":false,"isCritical":true,"name":"Test View \"Tap\" content","noScreenshot":false,"params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"\u003cXCUIElementTypeOther name=\"Tap\" label=\"Tap\"\u003e","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"timeout":100,"type":"assertElementContent"}],"tags":["foo:bar","baz"],"type":"mobile"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"egr-ekv-jvp","name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2024-12-11T14:35:34.958897+00:00","modified_at":"2024-12-11T14:35:34.958897+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"restricted_roles":["role2","role1"],"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":160074423,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.07256155303030302,"y":0.41522381756756754},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"timeout":100,"type":"tap","public_id":"h6c-732-2iu","allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"timeout":100,"type":"assertElementContent","public_id":"fba-e7k-dra","allowFailure":false,"isCritical":true,"noScreenshot":false}],"stepCount":{"assertions":1,"subtests":0,"total":2}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 846.544666ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/egr-ekv-jvp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"egr-ekv-jvp","name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2024-12-11T14:35:34.958897+00:00","modified_at":"2024-12-11T14:35:34.958897+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"restricted_roles":["role2","role1"],"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":160074423,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.07256155303030302,"y":0.41522381756756754},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"public_id":"h6c-732-2iu","timeout":100,"type":"tap","allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"public_id":"fba-e7k-dra","timeout":100,"type":"assertElementContent","allowFailure":false,"isCritical":true,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 170.19975ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/egr-ekv-jvp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"egr-ekv-jvp","name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2024-12-11T14:35:34.958897+00:00","modified_at":"2024-12-11T14:35:34.958897+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"restricted_roles":["role2","role1"],"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":160074423,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 179.230375ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/egr-ekv-jvp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"egr-ekv-jvp","name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2024-12-11T14:35:34.958897+00:00","modified_at":"2024-12-11T14:35:34.958897+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"restricted_roles":["role2","role1"],"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":160074423,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.07256155303030302,"y":0.41522381756756754},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"public_id":"h6c-732-2iu","timeout":100,"type":"tap","allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"public_id":"fba-e7k-dra","timeout":100,"type":"assertElementContent","allowFailure":false,"isCritical":true,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 162.5235ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/egr-ekv-jvp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"egr-ekv-jvp","name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2024-12-11T14:35:34.958897+00:00","modified_at":"2024-12-11T14:35:34.958897+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"restricted_roles":["role2","role1"],"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":160074423,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 165.246083ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/mobile/egr-ekv-jvp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"egr-ekv-jvp","name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732","status":"paused","type":"mobile","tags":["foo:bar","baz"],"created_at":"2024-12-11T14:35:34.958897+00:00","modified_at":"2024-12-11T14:35:34.958897+00:00","config":{"initialApplicationArguments":{"test_process_argument":"test1","test_process_argument_too":"test2"},"variables":[{"example":"123","name":"VARIABLE_NAME","pattern":"{{numeric(3)}}","secure":false,"type":"text"}]},"message":"Notify @datadog.user","options":{"ci":{"executionRule":"blocking"},"defaultStepTimeout":10,"device_ids":["synthetics:mobile:device:apple_iphone_14_plus_ios_16","synthetics:mobile:device:apple_iphone_14_pro_ios_16"],"disableAutoAcceptAlert":true,"mobileApplication":{"applicationId":"ab0e0aed-536d-411a-9a99-5428c27d8f8e","referenceId":"6115922a-5f5d-455e-bc7e-7955a57f3815","referenceType":"version"},"monitor_name":"tf-TestAccDatadogSyntheticsMobileTest_importBasic-local-1733927732-monitor","monitor_options":{"escalation_message":"test escalation message","notification_preset_name":"show_all","renotify_interval":10,"renotify_occurrences":3,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"monitor_priority":5,"noScreenshot":true,"restricted_roles":["role2","role1"],"retry":{"count":0,"interval":300},"scheduling":{"timeframes":[{"day":5,"from":"07:00","to":"16:00"},{"day":7,"from":"07:00","to":"16:00"}],"timezone":"UTC"},"tick_every":43200},"locations":["aws:us-west-2"],"monitor_id":160074423,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"Tap on StaticText \"Tap\"","params":{"element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.07256155303030302,"y":0.41522381756756754},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"StaticText"}},"public_id":"h6c-732-2iu","timeout":100,"type":"tap","allowFailure":false,"isCritical":true,"noScreenshot":false},{"name":"Test View \"Tap\" content","params":{"check":"contains","element":{"context":"NATIVE_APP","contextType":"native","elementDescription":"<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">","relativePosition":{"x":0.27660448306074764,"y":0.6841517857142857},"textContent":"Tap","userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"id","value":"some_id"}]},"viewName":"View"},"value":"Tap"},"public_id":"fba-e7k-dra","timeout":100,"type":"assertElementContent","allowFailure":false,"isCritical":true,"noScreenshot":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 176.863959ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["egr-ekv-jvp"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"egr-ekv-jvp","deleted_at":"2024-12-11T14:35:38.787519+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 942.47725ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/egr-ekv-jvp
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 155.158875ms

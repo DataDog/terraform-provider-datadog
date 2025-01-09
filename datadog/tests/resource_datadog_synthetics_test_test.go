@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
@@ -154,6 +155,29 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 				ImportState:             true,
 				ImportStateVerify:       true,
 				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "browser_step"},
+			},
+		},
+	})
+}
+func TestAccDatadogSyntheticsMobileTest_importBasic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	testName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: createSyntheticsMobileTestConfig(testName),
+			},
+			{
+				ResourceName:            "datadog_synthetics_test.bar",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"mobile_options_list", "config_variable", "mobile_step"},
 			},
 		},
 	})
@@ -462,6 +486,37 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSyntheticsMobileTest_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMobileTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMobileTestStep(ctx, accProvider, t),
+			updateSyntheticsMobileTestStep(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -602,37 +657,17 @@ func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
 	})
 }
 
-// When creating a browser test from the UI, the steps are not added yet, they are added afterward,
-// on the recorder page with the save_test_steps.
-// On test edit, because the UI client is not sending the steps, they are omitted from the edit.
-// On the recorder page, the client is sending the public id for all of the existing steps.
-
-// The terraform provider is sending the steps to the edit endpoint, and because none have any id,
-// the backend is creating new steps, and deleting the previous ones.
-// When conciliating the config and the state, the provider is not updating the ML (as expected)
-// but updates the other fields. So the request to edit the test contains steps with the ML being
-// all mixed up.
-
-// The following test is validating this hypothesis, and it's passing only because the steps contain
-// force_element_update.
-
-// [SYNTH-14958]
-// To fix this issue long-term, we could:
-// - provide a tracking id for each step to track steps between config and state
-// - keep track of the public id of the created steps in the state
-// - use the tracking id and the public id to conciliate the config, the state and the online steps.
-// It would imply doing a couple more requests in the provider to get the steps, and update them,
-// but nothing too complicated.
-
-// The state, containing both the tracking and the public id of the steps would allow to conciliate
-// between the config which doesn't have the public id, and the resource which needs it.
-// ┌─────────────────┐         ┌─────────────────┐         ┌──────────────────┐
-// │  config         ├────────►│  state          ├────────►│  resource        │
-// │  - tracking id  │         │  - tracking id  │         │  - public id     │
-// │                 │◄────────┤  - public id    │◄────────┤                  │
-// └─────────────────┘         └─────────────────┘         └──────────────────┘
-
-func TestAccDatadogSyntheticsBrowser_UpdateSteps(t *testing.T) {
+// When conciliating the config and the state, the provider is not updating the ML in the state as
+// a side effect of the diffSuppressFunc, but it nonetheless updates the other fields.
+// So after reordering the steps in the config, the state contains steps with mixed up MLs.
+// This propagates to the crafted request to update the test on the backend, and eventually mess up
+// the remote test.
+//
+// To fix this issue, the user can provide a local key for each step to track steps when reordering.
+// The provider can use the local key to reconcile the right ML into the right step.
+// The following two tests are validating this is working properly, by first creating a test, and
+// then reordering its steps.
+func TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
 	accProvider := testAccProvider(t, accProviders)
@@ -640,20 +675,20 @@ func TestAccDatadogSyntheticsBrowser_UpdateSteps(t *testing.T) {
 
 	stepsCreatedStr := ""
 	for _, step := range [4]string{
-		createSyntheticsBrowserStepsConfig(string("first")),
-		createSyntheticsBrowserStepsConfig(string("second")),
-		createSyntheticsBrowserStepsConfig(string("third")),
-		createSyntheticsBrowserStepsConfig(string("fourth")),
+		createSyntheticsBrowserStepsConfigWithLocalML(string("first")),
+		createSyntheticsBrowserStepsConfigWithLocalML(string("second")),
+		createSyntheticsBrowserStepsConfigWithLocalML(string("third")),
+		createSyntheticsBrowserStepsConfigWithLocalML(string("fourth")),
 	} {
 		stepsCreatedStr += step + "\n\n"
 	}
 
 	stepsUpdatedStr := ""
 	for _, step := range [4]string{
-		createSyntheticsBrowserStepsConfig(string("first")),
-		createSyntheticsBrowserStepsConfig(string("third")),
-		createSyntheticsBrowserStepsConfig(string("second")),
-		createSyntheticsBrowserStepsConfig(string("fourth")),
+		createSyntheticsBrowserStepsConfigWithLocalML(string("first")),
+		createSyntheticsBrowserStepsConfigWithLocalML(string("third")),
+		createSyntheticsBrowserStepsConfigWithLocalML(string("second")),
+		createSyntheticsBrowserStepsConfigWithLocalML(string("fourth")),
 	} {
 		stepsUpdatedStr += step + "\n\n"
 	}
@@ -663,8 +698,161 @@ func TestAccDatadogSyntheticsBrowser_UpdateSteps(t *testing.T) {
 		ProviderFactories: accProviders,
 		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsBrowserTestWithMultipleStepsStep(ctx, accProvider, t, testName, stepsCreatedStr),
-			updateSyntheticsBrowserTestWithMultipleStepsStep(ctx, accProvider, t, testName, stepsUpdatedStr),
+			createSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx, accProvider, t, testName, stepsCreatedStr),
+			updateSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx, accProvider, t, testName, stepsUpdatedStr),
+		},
+	})
+}
+
+func createSyntheticsBrowserTestWithMultipleStepsConfigWithLocalML(uniq string, steps string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "test" {
+	locations  = ["aws:eu-central-1"]
+	device_ids = ["chrome.laptop_large"]
+	name = "%[1]s"
+	status     = "paused"
+	type       = "browser"
+
+	%[2]s
+
+	options_list {
+		initial_navigation_timeout = 15
+		tick_every                 = 3600
+		retry {
+			count    = 0
+		}
+	}
+	request_definition {
+		method  = "GET"
+		timeout = 60
+		url     = "https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"
+	}
+}`, uniq, steps)
+}
+
+func createSyntheticsBrowserStepsConfigWithLocalML(uniq string) string {
+	return fmt.Sprintf(`
+	browser_step {
+		local_key    = "%[1]s"
+		is_critical = true
+		name        = "step name %[1]s"
+		timeout     = 5
+		type        = "assertElementContent"
+		params {
+			check     = "contains"
+			element   = jsonencode(%[2]s)
+			modifiers = []
+			value     = "step %[1]s value"
+		}
+	}`, uniq, createSyntethicsBrowserStepMLElement(uniq))
+}
+
+func createSyntethicsBrowserStepMLElement(uniq string) string {
+	return fmt.Sprintf(`{"multiLocator":{"ab":"ab %[1]s","at":"at %[1]s","cl":"cl %[1]s","clt":"clt %[1]s","co":"co %[1]s"},"targetOuterHTML":"targetOuterHTML %[1]s","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"}`, uniq)
+}
+
+func createSYntheticsBrowserStepULElement(uniq string) string {
+	return fmt.Sprintf(`{"userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"css","value":".%[1]s"}]}}`, uniq)
+}
+
+func mergeSyntheticsBrowserStepElements(elementA string, elementB string) string {
+	element := make(map[string]interface{})
+	for _, elementStr := range [2]string{elementA, elementB} {
+		elementMap := make(map[string]interface{})
+		utils.GetMetadataFromJSON([]byte(elementStr), &elementMap)
+		for key, value := range elementMap {
+			element[key] = value
+		}
+	}
+
+	jsonElement, _ := json.Marshal(element)
+	return string(jsonElement)
+}
+
+func createSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestWithMultipleStepsConfigWithLocalML(testName, steps),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSyntethicsBrowserStepMLElement("first")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.name", "step name second"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", createSyntethicsBrowserStepMLElement("second")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.name", "step name third"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", createSyntethicsBrowserStepMLElement("third")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", createSyntethicsBrowserStepMLElement("fourth")),
+		),
+	}
+}
+
+func updateSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestWithMultipleStepsConfigWithLocalML(testName, steps),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSyntethicsBrowserStepMLElement("first")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.name", "step name third"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", createSyntethicsBrowserStepMLElement("third")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.name", "step name second"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", createSyntethicsBrowserStepMLElement("second")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", createSyntethicsBrowserStepMLElement("fourth")),
+		),
+	}
+}
+
+func TestAccDatadogSyntheticsBrowser_UpdateStepsWithRemoteML(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+	testName := uniqueEntityName(ctx, t)
+
+	stepsCreatedStr := ""
+	for _, step := range [4]string{
+		createSyntheticsBrowserStepsConfigWithRemoteML(string("first")),
+		createSyntheticsBrowserStepsConfigWithRemoteML(string("second")),
+		createSyntheticsBrowserStepsConfigWithRemoteML(string("third")),
+		createSyntheticsBrowserStepsConfigWithRemoteML(string("fourth")),
+	} {
+		stepsCreatedStr += step + "\n\n"
+	}
+
+	stepsUpdatedStr := ""
+	for _, step := range [4]string{
+		createSyntheticsBrowserStepsConfigWithRemoteML(string("first")),
+		createSyntheticsBrowserStepsConfigWithRemoteML(string("third")),
+		createSyntheticsBrowserStepsConfigWithRemoteML(string("second")),
+		createSyntheticsBrowserStepsConfigWithRemoteML(string("fourth")),
+	} {
+		stepsUpdatedStr += step + "\n\n"
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx, accProvider, t, testName, stepsCreatedStr),
+			updateMLinSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx, accProvider, t, testName, stepsCreatedStr),
+			updateSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx, accProvider, t, testName, stepsUpdatedStr),
 		},
 	})
 }
@@ -695,24 +883,27 @@ resource "datadog_synthetics_test" "test" {
 }`, uniq, steps)
 }
 
-func createSyntheticsBrowserStepsConfig(uniq string) string {
+func createSyntheticsBrowserStepsConfigWithRemoteML(uniq string) string {
 	return fmt.Sprintf(`
 	browser_step {
-		is_critical = true
+		local_key    = "%[1]s"
 		name        = "step name %[1]s"
-		timeout     = 5
 		type        = "assertElementContent"
-		force_element_update = true
 		params {
 			check     = "contains"
-			element   = "{\"multiLocator\":{\"ab\":\"ab %[1]s\",\"at\":\"at %[1]s\",\"cl\":\"cl %[1]s\",\"clt\":\"clt %[1]s\",\"co\":\"co %[1]s\"},\"targetOuterHTML\":\"targetOuterHTML %[1]s\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"
 			modifiers = []
+			element_user_locator {
+				value {
+				type  = "css"
+				value = ".%[1]s"
+				}
+			}
 			value     = "step %[1]s value"
 		}
 	}`, uniq)
 }
 
-func createSyntheticsBrowserTestWithMultipleStepsStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+func createSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
 		Check: resource.ComposeTestCheckFunc(
@@ -720,24 +911,31 @@ func createSyntheticsBrowserTestWithMultipleStepsStep(ctx context.Context, accPr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.params.0.element", "{\"multiLocator\":{\"ab\":\"ab first\",\"at\":\"at first\",\"cl\":\"cl first\",\"clt\":\"clt first\",\"co\":\"co first\"},\"targetOuterHTML\":\"targetOuterHTML first\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSYntheticsBrowserStepULElement("first")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.1.name", "step name second"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.1.params.0.element", "{\"multiLocator\":{\"ab\":\"ab second\",\"at\":\"at second\",\"cl\":\"cl second\",\"clt\":\"clt second\",\"co\":\"co second\"},\"targetOuterHTML\":\"targetOuterHTML second\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", createSYntheticsBrowserStepULElement("second")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.2.name", "step name third"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.2.params.0.element", "{\"multiLocator\":{\"ab\":\"ab third\",\"at\":\"at third\",\"cl\":\"cl third\",\"clt\":\"clt third\",\"co\":\"co third\"},\"targetOuterHTML\":\"targetOuterHTML third\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", createSYntheticsBrowserStepULElement("third")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.3.params.0.element", "{\"multiLocator\":{\"ab\":\"ab fourth\",\"at\":\"at fourth\",\"cl\":\"cl fourth\",\"clt\":\"clt fourth\",\"co\":\"co fourth\"},\"targetOuterHTML\":\"targetOuterHTML fourth\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", createSYntheticsBrowserStepULElement("fourth")),
+			// Fill in the missing ML in the steps, to simulate the backend computing the ML.
+			editSyntheticsTestMML(accProvider, []string{
+				createSyntethicsBrowserStepMLElement("first"),
+				createSyntethicsBrowserStepMLElement("second"),
+				createSyntethicsBrowserStepMLElement("third"),
+				createSyntethicsBrowserStepMLElement("fourth"),
+			}),
 		),
 	}
 }
 
-func updateSyntheticsBrowserTestWithMultipleStepsStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+func updateMLinSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
 		Check: resource.ComposeTestCheckFunc(
@@ -745,19 +943,44 @@ func updateSyntheticsBrowserTestWithMultipleStepsStep(ctx context.Context, accPr
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.params.0.element", "{\"multiLocator\":{\"ab\":\"ab first\",\"at\":\"at first\",\"cl\":\"cl first\",\"clt\":\"clt first\",\"co\":\"co first\"},\"targetOuterHTML\":\"targetOuterHTML first\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("first"), createSyntethicsBrowserStepMLElement("first"))),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.1.name", "step name third"),
+				"datadog_synthetics_test.test", "browser_step.1.name", "step name second"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.1.params.0.element", "{\"multiLocator\":{\"ab\":\"ab third\",\"at\":\"at third\",\"cl\":\"cl third\",\"clt\":\"clt third\",\"co\":\"co third\"},\"targetOuterHTML\":\"targetOuterHTML third\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("second"), createSyntethicsBrowserStepMLElement("second"))),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.2.name", "step name second"),
+				"datadog_synthetics_test.test", "browser_step.2.name", "step name third"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.2.params.0.element", "{\"multiLocator\":{\"ab\":\"ab second\",\"at\":\"at second\",\"cl\":\"cl second\",\"clt\":\"clt second\",\"co\":\"co second\"},\"targetOuterHTML\":\"targetOuterHTML second\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("third"), createSyntethicsBrowserStepMLElement("third"))),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.3.params.0.element", "{\"multiLocator\":{\"ab\":\"ab fourth\",\"at\":\"at fourth\",\"cl\":\"cl fourth\",\"clt\":\"clt fourth\",\"co\":\"co fourth\"},\"targetOuterHTML\":\"targetOuterHTML fourth\",\"url\":\"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled\"}"),
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("fourth"), createSyntethicsBrowserStepMLElement("fourth"))),
+		),
+	}
+}
+
+func updateSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+	return resource.TestStep{
+		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("first"), createSyntethicsBrowserStepMLElement("first"))),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.name", "step name third"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("third"), createSyntethicsBrowserStepMLElement("third"))),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.name", "step name second"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("second"), createSyntethicsBrowserStepMLElement("second"))),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("fourth"), createSyntethicsBrowserStepMLElement("fourth"))),
 		),
 	}
 }
@@ -3130,6 +3353,10 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.allow_failure", "true"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.always_execute", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.0.exit_if_succeed", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.is_critical", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.no_screenshot", "true"),
@@ -3246,6 +3473,8 @@ resource "datadog_synthetics_test" "bar" {
 	    name = "first step"
 	    type = "assertCurrentUrl"
 	    allow_failure = true
+	    always_execute = true
+	    exit_if_succeed = true
 	    is_critical = true
 	    params {
 	        check = "contains"
@@ -4167,7 +4396,7 @@ func updateBrowserTestMML(ctx context.Context, accProvider func() (*schema.Provi
 		Config: createSyntheticsBrowserTestMMLConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
-			editSyntheticsTestMML(accProvider),
+			editSyntheticsTestMML(accProvider, []string{MMLManualUpdate}),
 		),
 	}
 }
@@ -4495,6 +4724,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.exit_if_succeed", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "POST"),
@@ -4785,6 +5016,7 @@ resource "datadog_synthetics_test" "multi" {
 
   api_step {
     name = "First api step"
+	exit_if_succeed = true
     request_definition {
       method           = "POST"
       url              = "https://www.datadoghq.com"
@@ -5098,6 +5330,692 @@ resource "datadog_synthetics_test" "file_upload" {
 `, testName, bodyType, fileBlocks)
 }
 
+func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+
+	return resource.TestStep{
+		Config: createSyntheticsMobileTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "mobile"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.example", "123"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.name", "VARIABLE_NAME"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.pattern", "{{numeric(3)}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.secure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.test_process_argument", "test1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.test_process_argument_too", "test2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.%", "17"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.count", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.interval", "300"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.tick_every", "43200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.day", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.from", "07:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.to", "16:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.day", "7"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.from", "07:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.to", "16:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timezone", "UTC"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.%", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.renotify_interval", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.escalation_message", "test escalation message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.renotify_occurrences", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.notification_preset_name", "show_all"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_priority", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.0", "role1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.1", "role2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.0.execution_rule", "blocking"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.default_step_timeout", "10"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.0", "synthetics:mobile:device:apple_iphone_14_plus_ios_16"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.1", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.no_screenshot", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.allow_application_crash", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.disable_auto_accept_alert", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.application_id", "ab0e0aed-536d-411a-9a99-5428c27d8f8e"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_id", "6115922a-5f5d-455e-bc7e-7955a57f3815"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_type", "version"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "foo:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "baz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "status", "paused"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.%", "9"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.name", "Tap on StaticText \"Tap\""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.%", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.context", "NATIVE_APP"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.view_name", "StaticText"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.context_type", "native"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.text_content", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.x", "0.07256155303030302"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.y", "0.41522381756756754"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.type", "id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.value", "some_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.element_description", "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.timeout", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.type", "tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.allow_failure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.is_critical", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.no_screenshot", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.has_new_step_element", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.%", "9"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.name", "Test View \"Tap\" content"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.value", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.%", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.context", "NATIVE_APP"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.view_name", "View"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.context_type", "native"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.text_content", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.x", "0.27660448306074764"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.y", "0.6841517857142857"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.type", "id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.value", "some_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.element_description", "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.timeout", "100"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.type", "assertElementContent"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.allow_failure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.is_critical", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.no_screenshot", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.has_new_step_element", "false"),
+		),
+	}
+}
+
+func createSyntheticsMobileTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+	type = "mobile"
+	config_variable {
+		example = "123"
+		name = "VARIABLE_NAME"
+		pattern = "{{numeric(3)}}"
+		type = "text"
+		secure = false
+	}
+	config_initial_application_arguments = {
+		test_process_argument = "test1"
+		test_process_argument_too = "test2"
+	}
+	locations = []
+	mobile_options_list {
+		min_failure_duration = 0
+		retry {
+			count = 0
+			interval = 300
+		}
+		tick_every = 43200
+		scheduling {
+			timeframes {
+				day = 5
+				from = "07:00"
+				to = "16:00"
+			}
+			timeframes {
+				day = 7
+				from = "07:00"
+				to = "16:00"
+			}
+			timezone = "UTC"
+		}
+		monitor_name = "%[1]s-monitor"
+		monitor_options {
+			renotify_interval = 10
+			escalation_message = "test escalation message"
+			renotify_occurrences = 3
+			notification_preset_name = "show_all"
+		}
+		monitor_priority = 5
+		restricted_roles = ["role1", "role2"]
+		ci {
+			execution_rule = "blocking"
+		}
+		default_step_timeout = 10
+		device_ids = ["synthetics:mobile:device:apple_iphone_14_plus_ios_16", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"]
+		no_screenshot = true
+		allow_application_crash = false
+		disable_auto_accept_alert = true
+		mobile_application {
+			application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+			reference_id = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+			reference_type = "version"
+		}
+	}
+	name = "%[1]s"
+	message = "Notify @datadog.user"
+	tags = ["foo:bar", "baz"]
+	status = "paused"
+	mobile_step {
+		name = "Tap on StaticText \"Tap\""
+		params {
+			element {
+				context       = "NATIVE_APP"
+				view_name     = "StaticText"
+				context_type  = "native"
+				text_content  = "Tap"
+				multi_locator = {}
+				relative_position {
+					x = 0.07256155303030302
+					y = 0.41522381756756754
+				}
+				user_locator {
+					fail_test_on_cannot_locate = false
+					values {
+						type  = "id"
+						value = "some_id"
+					}
+				}
+				element_description = "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"
+			}
+		}
+		timeout              = 100
+		type                 = "tap"
+		allow_failure        = false
+		is_critical          = true
+		no_screenshot        = false
+		has_new_step_element = false
+	}
+
+	mobile_step {
+		name = "Test View \"Tap\" content"
+		params {
+			check = "contains"
+			value = "Tap"
+			element {
+				context       = "NATIVE_APP"
+				view_name     = "View"
+				context_type  = "native"
+				text_content  = "Tap"
+				multi_locator = {}
+				relative_position {
+					x = 0.27660448306074764
+					y = 0.6841517857142857
+				}
+				user_locator {
+				fail_test_on_cannot_locate = false
+					values {
+						type  = "id"
+						value = "some_id"
+					}
+				}
+				element_description = "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"
+			}
+		}
+		timeout              = 100
+		type                 = "assertElementContent"
+		allow_failure        = false
+		is_critical          = true
+		no_screenshot        = false
+		has_new_step_element = false
+	}
+}`, uniq)
+}
+
+func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t) + "-updated"
+	return resource.TestStep{
+		Config: updateSyntheticsMobileTestConfig(testName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsTestExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "type", "mobile"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.name", "NEW_VARIABLE_NAME"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.type", "text"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_variable.0.secure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "config_initial_application_arguments.test_process_argument", "test2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.%", "17"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.min_failure_duration", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.count", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.retry.0.interval", "400"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.tick_every", "45000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.day", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.from", "08:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.0.to", "18:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.day", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.from", "08:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timeframes.1.to", "18:00"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.scheduling.0.timezone", "Africa/Algiers"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_name", fmt.Sprintf(`%s-monitor-updated`, testName)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.%", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.renotify_interval", "20"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.escalation_message", "updated test escalation message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.renotify_occurrences", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.notification_preset_name", "hide_query"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_priority", "4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.0", "role3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.1", "role4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.0.execution_rule", "skipped"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.default_step_timeout", "20"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.device_ids.0", "synthetics:mobile:device:apple_iphone_14_pro_ios_16"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.no_screenshot", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.allow_application_crash", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.disable_auto_accept_alert", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.%", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.application_id", "ab0e0aed-536d-411a-9a99-5428c27d8f8e"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_id", "6115922a-5f5d-455e-bc7e-7955a57f3815"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_options_list.0.mobile_application.0.reference_type", "version"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "name", fmt.Sprintf(`%s-updated`, testName)),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "message", "Notify @pagerduty"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.0", "bar:foo"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "tags.1", "buz"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "status", "live"),
+			resource.TestCheckResourceAttrSet(
+				"datadog_synthetics_test.bar", "monitor_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.%", "9"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.name", "Tap on StaticText \"Tap\"-Updated"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.%", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.context", "NATIVE_APP"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.view_name", "StaticText"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.context_type", "native"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.text_content", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.x", "0.5114721433080808"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.relative_position.0.y", "0.35631334459459457"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.type", "id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.user_locator.0.values.0.value", "some_other_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.params.0.element.0.element_description", "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.timeout", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.type", "tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.allow_failure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.is_critical", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.0.no_screenshot", "true"),
+			// resource.TestCheckResourceAttr(
+			// 	"datadog_synthetics_test.bar", "mobile_step.0.has_new_step_element", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.%", "9"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.name", "Test View \"Tap\" content-Updated"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.check", "contains"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.value", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.%", "8"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.context", "NATIVE_APP"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.view_name", "View"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.context_type", "native"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.text_content", "Tap"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.x", "0.8940281723484849"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.relative_position.0.y", "0.46516047297297297"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.fail_test_on_cannot_locate", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.type", "id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.user_locator.0.values.0.value", "some_other_id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.params.0.element.0.element_description", "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.timeout", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.type", "assertElementContent"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.allow_failure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.is_critical", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "mobile_step.1.no_screenshot", "true"),
+		),
+	}
+}
+
+func updateSyntheticsMobileTestConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_test" "bar" {
+	type = "mobile"
+	config_variable {
+		name = "NEW_VARIABLE_NAME"
+		type = "text"
+		secure = true
+	}
+	config_initial_application_arguments = {
+		test_process_argument = "test2"
+	}
+	locations = []
+	mobile_options_list {
+		min_failure_duration = 1
+		retry {
+			count = 2
+			interval = 400
+		}
+		tick_every = 45000
+		scheduling {
+			timeframes {
+				day = 3
+				from = "08:00"
+				to = "18:00"
+			}
+			timeframes {
+				day = 4
+				from = "08:00"
+				to = "18:00"
+			}
+			timezone = "Africa/Algiers"
+		}
+		monitor_name = "%[1]s-monitor-updated"
+		monitor_options {
+			renotify_interval = 20
+			escalation_message = "updated test escalation message"
+			renotify_occurrences = 4
+			notification_preset_name = "hide_query"
+		}
+		monitor_priority = 4
+		restricted_roles = ["role3", "role4"]
+		ci {
+			execution_rule = "skipped"
+		}
+		default_step_timeout = 20
+		device_ids = ["synthetics:mobile:device:apple_iphone_14_pro_ios_16"]
+		no_screenshot = false
+		allow_application_crash = true
+		disable_auto_accept_alert = false
+		mobile_application {
+			application_id = "ab0e0aed-536d-411a-9a99-5428c27d8f8e"
+			reference_id = "6115922a-5f5d-455e-bc7e-7955a57f3815"
+			reference_type = "version"
+		}
+	}
+	name = "%[1]s-updated"
+	message = "Notify @pagerduty"
+	tags = ["bar:foo", "buz"]
+	status = "live"
+	mobile_step {
+		name = "Tap on StaticText \"Tap\"-Updated"
+		params {
+			element {
+				context       = "NATIVE_APP"
+				view_name     = "StaticText"
+				context_type  = "native"
+				text_content  = "Tap"
+				multi_locator = {}
+				relative_position {
+					x = 0.5114721433080808
+					y = 0.35631334459459457
+				}
+				user_locator {
+					fail_test_on_cannot_locate = true
+					values {
+						type  = "id"
+						value = "some_other_id"
+					}
+				}
+				element_description = "<XCUIElementTypeStaticText value=\"Tap\" name=\"Tap\" label=\"Tap\">"
+			}
+		}
+		timeout              = 200
+		type                 = "tap"
+		allow_failure        = true
+		is_critical          = false
+		no_screenshot        = true
+		}
+
+	mobile_step {
+		name = "Test View \"Tap\" content-Updated"
+		params {
+			check = "contains"
+			value = "Tap"
+			element {
+				context       = "NATIVE_APP"
+				view_name     = "View"
+				context_type  = "native"
+				text_content  = "Tap"
+				multi_locator = {}
+				relative_position {
+					x = 0.8940281723484849
+					y = 0.46516047297297297
+				}
+				user_locator {
+				fail_test_on_cannot_locate = true
+					values {
+						type  = "id"
+						value = "some_other_id"
+					}
+				}
+				element_description = "<XCUIElementTypeOther name=\"Tap\" label=\"Tap\">"
+			}
+		}
+		timeout              = 200
+		type                 = "assertElementContent"
+		allow_failure        = true
+		is_critical          = false
+		no_screenshot        = true
+	}
+}`, uniq)
+}
+
 func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
@@ -5141,7 +6059,7 @@ func testSyntheticsTestIsDestroyed(accProvider func() (*schema.Provider, error))
 	}
 }
 
-func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func editSyntheticsTestMML(accProvider func() (*schema.Provider, error), stepElements []string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		for _, r := range s.RootModule().Resources {
 			provider, _ := accProvider()
@@ -5165,17 +6083,37 @@ func editSyntheticsTestMML(accProvider func() (*schema.Provider, error)) resourc
 			syntheticsTestUpdate.SetTags(syntheticsTest.GetTags())
 
 			// manually update the MML so the state is outdated
-			step := datadogV1.SyntheticsStep{}
-			step.SetName("click step")
-			step.SetType(datadogV1.SYNTHETICSSTEPTYPE_CLICK)
-			params := make(map[string]interface{})
-			elementParams := `{"element":` + MMLManualUpdate + "}"
-			utils.GetMetadataFromJSON([]byte(elementParams), &params)
-			step.SetParams(params)
-			steps := []datadogV1.SyntheticsStep{step}
-			syntheticsTestUpdate.SetSteps(steps)
+			steps := []datadogV1.SyntheticsStep{}
+			for i, remoteStep := range syntheticsTest.GetSteps() {
+				step := datadogV1.SyntheticsStep{}
+				step.SetName(remoteStep.GetName())
+				step.SetType(remoteStep.GetType())
+				remoteParams := remoteStep.GetParams().(map[string]interface{})
+				params := make(map[string]interface{})
+				if check, ok := remoteParams["check"].(string); ok && check != "" {
+					params["check"] = check
+				}
+				if element, ok := remoteParams["element"].(map[string]interface{}); ok {
+					params["element"] = element
+				}
+				if value, ok := remoteParams["value"].(string); ok && value != "" {
+					params["value"] = value
+				}
 
-			if _, _, err := apiInstances.GetSyntheticsApiV1().UpdateBrowserTest(auth, r.Primary.ID, *syntheticsTestUpdate); err != nil {
+				// update the element with the provided stepElements
+				elementMap := make(map[string]interface{})
+				utils.GetMetadataFromJSON([]byte(stepElements[i]), &elementMap)
+				for key, value := range elementMap {
+					params["element"].(map[string]interface{})[key] = value
+				}
+
+				step.SetParams(params)
+				steps = append(steps, step)
+			}
+
+			syntheticsTestUpdate.SetSteps(steps)
+			_, _, err = apiInstances.GetSyntheticsApiV1().UpdateBrowserTest(auth, r.Primary.ID, *syntheticsTestUpdate)
+			if err != nil {
 				return fmt.Errorf("failed to manually update synthetics test %s", err)
 			}
 		}

@@ -44,44 +44,49 @@ type ApiInstances struct {
 	webhooksIntegrationApiV1              *datadogV1.WebhooksIntegrationApi
 
 	//V2 APIs
-	apiManagementAPIV2          *datadogV2.APIManagementApi
-	apmRetentionFiltersApiV2    *datadogV2.APMRetentionFiltersApi
-	auditApiV2                  *datadogV2.AuditApi
-	authNMappingsApiV2          *datadogV2.AuthNMappingsApi
-	cloudflareIntegrationApiV2  *datadogV2.CloudflareIntegrationApi
-	csmThreatsApiV2             *datadogV2.CSMThreatsApi
-	confluentCloudApiV2         *datadogV2.ConfluentCloudApi
-	dashboardListsApiV2         *datadogV2.DashboardListsApi
-	downtimesApiV2              *datadogV2.DowntimesApi
-	eventsApiV2                 *datadogV2.EventsApi
-	fastlyIntegrationApiV2      *datadogV2.FastlyIntegrationApi
-	gcpStsIntegrationApiV2      *datadogV2.GCPIntegrationApi
-	incidentServicesApiV2       *datadogV2.IncidentServicesApi
-	incidentTeamsApiV2          *datadogV2.IncidentTeamsApi
-	incidentsApiV2              *datadogV2.IncidentsApi
-	ipAllowlistApiV2            *datadogV2.IPAllowlistApi
-	keyManagementApiV2          *datadogV2.KeyManagementApi
-	logsApiV2                   *datadogV2.LogsApi
-	logsArchivesApiV2           *datadogV2.LogsArchivesApi
-	logsCustomDestinationsApiV2 *datadogV2.LogsCustomDestinationsApi
-	logsMetricsApiV2            *datadogV2.LogsMetricsApi
-	metricsApiV2                *datadogV2.MetricsApi
-	monitorsApiV2               *datadogV2.MonitorsApi
-	opsgenieIntegrationApiV2    *datadogV2.OpsgenieIntegrationApi
-	organizationsApiV2          *datadogV2.OrganizationsApi
-	processesApiV2              *datadogV2.ProcessesApi
-	powerpackApiV2              *datadogV2.PowerpackApi
-	restrictionPolicyApiV2      *datadogV2.RestrictionPoliciesApi
-	rolesApiV2                  *datadogV2.RolesApi
-	rumApiV2                    *datadogV2.RUMApi
-	securityMonitoringApiV2     *datadogV2.SecurityMonitoringApi
-	sensitiveDataScannerApiV2   *datadogV2.SensitiveDataScannerApi
-	serviceAccountsApiV2        *datadogV2.ServiceAccountsApi
-	spansMetricsApiV2           *datadogV2.SpansMetricsApi
-	syntheticsApiV2             *datadogV2.SyntheticsApi
-	teamsApiV2                  *datadogV2.TeamsApi
-	usageMeteringApiV2          *datadogV2.UsageMeteringApi
-	usersApiV2                  *datadogV2.UsersApi
+	apiManagementAPIV2             *datadogV2.APIManagementApi
+	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
+	auditApiV2                     *datadogV2.AuditApi
+	authNMappingsApiV2             *datadogV2.AuthNMappingsApi
+	awsIntegrationApiV2            *datadogV2.AWSIntegrationApi
+	awsLogsIntegrationApiV2        *datadogV2.AWSLogsIntegrationApi
+	cloudflareIntegrationApiV2     *datadogV2.CloudflareIntegrationApi
+	csmThreatsApiV2                *datadogV2.CSMThreatsApi
+	confluentCloudApiV2            *datadogV2.ConfluentCloudApi
+	dashboardListsApiV2            *datadogV2.DashboardListsApi
+	domainAllowlistApiV2           *datadogV2.DomainAllowlistApi
+	downtimesApiV2                 *datadogV2.DowntimesApi
+	eventsApiV2                    *datadogV2.EventsApi
+	fastlyIntegrationApiV2         *datadogV2.FastlyIntegrationApi
+	gcpStsIntegrationApiV2         *datadogV2.GCPIntegrationApi
+	incidentServicesApiV2          *datadogV2.IncidentServicesApi
+	incidentTeamsApiV2             *datadogV2.IncidentTeamsApi
+	incidentsApiV2                 *datadogV2.IncidentsApi
+	ipAllowlistApiV2               *datadogV2.IPAllowlistApi
+	keyManagementApiV2             *datadogV2.KeyManagementApi
+	logsApiV2                      *datadogV2.LogsApi
+	logsArchivesApiV2              *datadogV2.LogsArchivesApi
+	logsCustomDestinationsApiV2    *datadogV2.LogsCustomDestinationsApi
+	logsMetricsApiV2               *datadogV2.LogsMetricsApi
+	metricsApiV2                   *datadogV2.MetricsApi
+	microsoftTeamsIntegrationApiV2 *datadogV2.MicrosoftTeamsIntegrationApi
+	monitorsApiV2                  *datadogV2.MonitorsApi
+	opsgenieIntegrationApiV2       *datadogV2.OpsgenieIntegrationApi
+	organizationsApiV2             *datadogV2.OrganizationsApi
+	processesApiV2                 *datadogV2.ProcessesApi
+	powerpackApiV2                 *datadogV2.PowerpackApi
+	restrictionPolicyApiV2         *datadogV2.RestrictionPoliciesApi
+	rolesApiV2                     *datadogV2.RolesApi
+	rumApiV2                       *datadogV2.RUMApi
+	rumMetricsApiV2                *datadogV2.RumMetricsApi
+	securityMonitoringApiV2        *datadogV2.SecurityMonitoringApi
+	sensitiveDataScannerApiV2      *datadogV2.SensitiveDataScannerApi
+	serviceAccountsApiV2           *datadogV2.ServiceAccountsApi
+	spansMetricsApiV2              *datadogV2.SpansMetricsApi
+	syntheticsApiV2                *datadogV2.SyntheticsApi
+	teamsApiV2                     *datadogV2.TeamsApi
+	usageMeteringApiV2             *datadogV2.UsageMeteringApi
+	usersApiV2                     *datadogV2.UsersApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -100,12 +105,28 @@ func (i *ApiInstances) GetAWSIntegrationApiV1() *datadogV1.AWSIntegrationApi {
 	return i.awsIntegrationApiV1
 }
 
+// GetAWSIntegrationApiV2 get instance of AWSIntegrationApi
+func (i *ApiInstances) GetAWSIntegrationApiV2() *datadogV2.AWSIntegrationApi {
+	if i.awsIntegrationApiV2 == nil {
+		i.awsIntegrationApiV2 = datadogV2.NewAWSIntegrationApi(i.HttpClient)
+	}
+	return i.awsIntegrationApiV2
+}
+
 // GetAWSLogsIntegrationApiV1 get instance of AwsLogsIntegrationApi
 func (i *ApiInstances) GetAWSLogsIntegrationApiV1() *datadogV1.AWSLogsIntegrationApi {
 	if i.awsLogsIntegrationApiV1 == nil {
 		i.awsLogsIntegrationApiV1 = datadogV1.NewAWSLogsIntegrationApi(i.HttpClient)
 	}
 	return i.awsLogsIntegrationApiV1
+}
+
+// GetAWSLogsIntegrationApiV2 get instance of AwsLogsIntegrationApi
+func (i *ApiInstances) GetAWSLogsIntegrationApiV2() *datadogV2.AWSLogsIntegrationApi {
+	if i.awsLogsIntegrationApiV2 == nil {
+		i.awsLogsIntegrationApiV2 = datadogV2.NewAWSLogsIntegrationApi(i.HttpClient)
+	}
+	return i.awsLogsIntegrationApiV2
 }
 
 // GetAzureIntegrationApiV1 get instance of AzureIntegrationApi
@@ -356,6 +377,14 @@ func (i *ApiInstances) GetCSMThreatsApiV2() *datadogV2.CSMThreatsApi {
 	return i.csmThreatsApiV2
 }
 
+// GetDomainAllowlistApiV2 get instance of DomainAllowlistAPI
+func (i *ApiInstances) GetDomainAllowlistApiV2() *datadogV2.DomainAllowlistApi {
+	if i.domainAllowlistApiV2 == nil {
+		i.domainAllowlistApiV2 = datadogV2.NewDomainAllowlistApi(i.HttpClient)
+	}
+	return i.domainAllowlistApiV2
+}
+
 // GetDowntimesApiV2 get instance of DowntimesApi
 func (i *ApiInstances) GetDowntimesApiV2() *datadogV2.DowntimesApi {
 	if i.downtimesApiV2 == nil {
@@ -523,6 +552,14 @@ func (i *ApiInstances) GetRumApiV2() *datadogV2.RUMApi {
 	return i.rumApiV2
 }
 
+// GetRumMetricsApiV2 get instance of RumMetricsApi
+func (i *ApiInstances) GetRumMetricsApiV2() *datadogV2.RumMetricsApi {
+	if i.rumMetricsApiV2 == nil {
+		i.rumMetricsApiV2 = datadogV2.NewRumMetricsApi(i.HttpClient)
+	}
+	return i.rumMetricsApiV2
+}
+
 // GetSecurityMonitoringApiV2 get instance of SecurityMonitoringApi
 func (i *ApiInstances) GetSecurityMonitoringApiV2() *datadogV2.SecurityMonitoringApi {
 	if i.securityMonitoringApiV2 == nil {
@@ -634,4 +671,12 @@ func (i *ApiInstances) GetAPIManagementApiV2() *datadogV2.APIManagementApi {
 		i.apiManagementAPIV2 = datadogV2.NewAPIManagementApi(i.HttpClient)
 	}
 	return i.apiManagementAPIV2
+}
+
+// GetMicrosoftTeamsIntegrationApiV2 get instance of APIMicrosoftTeamsIntegration
+func (i *ApiInstances) GetMicrosoftTeamsIntegrationApiV2() *datadogV2.MicrosoftTeamsIntegrationApi {
+	if i.microsoftTeamsIntegrationApiV2 == nil {
+		i.microsoftTeamsIntegrationApiV2 = datadogV2.NewMicrosoftTeamsIntegrationApi(i.HttpClient)
+	}
+	return i.microsoftTeamsIntegrationApiV2
 }

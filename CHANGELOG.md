@@ -1,3 +1,94 @@
+## 3.51.0 (January 8, 2025)
+
+### BUGFIXES
+* [provider] Prevent the experimental default_tags field from deduplicating tags by @Amaury-Behague in https://github.com/DataDog/terraform-provider-datadog/pull/2728
+* [datadog_synthetics_test] Prevent updating `files` with the backend response to keep the plan stable by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2731
+* [datadog_webhook] fix import  by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2742
+* [datadog_integration_aws_account] Fix panic when resources_config is omitted by @ktmq in https://github.com/DataDog/terraform-provider-datadog/pull/2749
+* [datadog_synthetics_test] update the step params when reordering steps by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2741
+### IMPROVEMENTS
+* [datadog_synthetics_test] Add step public id in the state by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2744
+* [resource_datadog_role] ACCESS-2867 - Support `default_permissions_opt_out` attribute in Terraform by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/2710
+### FEATURES
+* [datadog_logs_pipelines_order] Add datasource for Logs Pipelines Order by @LorisFriedel in https://github.com/DataDog/terraform-provider-datadog/pull/2732
+
+## New Contributors
+* @LorisFriedel made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2732
+* @gpalmz made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2738
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.50.0...v3.51.0
+
+## 3.50.0 (December 17, 2024)
+
+### BUGFIXES
+* [datadog_monitor] Allow default_tags values to contain colons. by @Amaury-Behague in https://github.com/DataDog/terraform-provider-datadog/pull/2703
+* [datadog_synthetics_test] Fix multistep client certificate by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2683
+* [resource_datadog_logs_index] Fix having zero retention logs indexes with flex by @Prepager in https://github.com/DataDog/terraform-provider-datadog/pull/2716
+* [datadog_integration_cloudflare_account] Don't set email left empty and ignore resource order by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2724
+* [datadog_monitor] Change enable_samples to optional by @lexicalunit in https://github.com/DataDog/terraform-provider-datadog/pull/2680
+### FEATURES
+* [datadog_synthetics_test] Add mobile support by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/2701
+* [datadog_sensitive_data_standard_pattern] add description and deprecate pattern by @vinckama in https://github.com/DataDog/terraform-provider-datadog/pull/2704
+* [datadog_synthetics_test] Add `exitIfSucceed` to multistep API tests by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2708
+* [datadog_synthetics_test] Add support for mobile steps  by @teodor2312 in https://github.com/DataDog/terraform-provider-datadog/pull/2717
+* [datadog_integration_aws_account] Add `datadog_integration_aws_account` resource  by @ktmq in https://github.com/DataDog/terraform-provider-datadog/pull/2682
+* [datadog_integration_aws_available_namespaces] Create AWS Integrations V2 datasources `datadog_integration_aws_available_logs_services/namespaces` by @ktmq in https://github.com/DataDog/terraform-provider-datadog/pull/2709
+### NOTES
+* [datadog_dashboard] Make the `is_read_only` deprecation warning wording stronger by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2720
+
+## New Contributors
+* @bthuilot made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2713
+* @ktmq made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2682
+* @lexicalunit made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2680
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.49.0...v3.50.0
+
+## 3.49.0 (November 26, 2024)
+
+### BUGFIXES
+* [resource_monitor_json] Avoid restricted role diffs with restriction_policy by @phillip-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2638
+* [datadog_webhook] Fix panic on missing encode_as field by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2689
+* [datadog_authn_mapping] Read team assignment when importing AuthN mappings by @chris-pinola-rf in https://github.com/DataDog/terraform-provider-datadog/pull/2686
+### IMPROVEMENTS
+* [provider] Bump Datadog Go SDK by @nkzou in https://github.com/DataDog/terraform-provider-datadog/pull/2697
+### FEATURES
+* [datadog_synthetics_test] Add `always_execute` and `exit_if_succeed` to browser steps by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2647
+* [datadog_integration_ms_teams_tenant_based_handle] Added Resource by @kblackdd in https://github.com/DataDog/terraform-provider-datadog/pull/2657
+* [datadog_rum_metric] Add support for the resource. by @hemeryar in https://github.com/DataDog/terraform-provider-datadog/pull/2643
+### NOTES
+* [datadog_sensitive_data_scanner_rule] make recommended keywords an opt-out option by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2674
+
+## New Contributors
+* @kblackdd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2657
+* @hemeryar made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2643
+* @AntoineDona made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2688
+* @chris-pinola-rf made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2686
+* @jegutierrez made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2692
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.48.1...v3.49.0
+
+## 3.48.1 (November 14, 2024)
+
+### BUGFIXES
+* [datadog_integration_aws_tag_filter] include `step_functions` as valid enum for v1 AWS tag filter  by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2671
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.48.0...v3.48.1
+
+## 3.48.0 (November 12, 2024)
+
+### BUGFIXES
+* [datadog_cloudflare] Remove default and update doc by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2658
+* [synthetics_test] Handle `request_file` when state does not exist by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2659
+### FEATURES
+* [resource_datadog_domain_allowlist] Domain allowlist provider support by @diab42 in https://github.com/DataDog/terraform-provider-datadog/pull/2637
+* [datadog_dashboard][datadog_powerpack] Update go client to support `good_minutes` and `bad_minutes` for Time Slice SLOs by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2662
+
+## New Contributors
+* @diab42 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2637
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.47.0...v3.48.0
+
 ## 3.47.0 (November 8, 2024)
 
 ### BUGFIXES

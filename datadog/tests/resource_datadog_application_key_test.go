@@ -21,7 +21,6 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 	applicationKeyName := uniqueEntityName(ctx, t)
 	applicationKeyNameUpdate := applicationKeyName + "-2"
 	resourceName := "datadog_application_key.foo"
-	var keyValue string
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -34,15 +33,6 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", applicationKeyName),
 					resource.TestCheckResourceAttrSet(resourceName, "key"),
-					func(s *terraform.State) error {
-						resource, ok := s.RootModule().Resources[resourceName]
-						if !ok {
-							return fmt.Errorf("Resource not found: %s", resourceName)
-						}
-						// Store the key value for later comparison after update
-						keyValue = resource.Primary.Attributes["key"]
-						return nil
-					},
 				),
 			},
 			{
@@ -52,48 +42,37 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "name", applicationKeyNameUpdate),
 					testAccCheckDatadogApplicationKeyNameMatches(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrSet(resourceName, "key"),
-					func(s *terraform.State) error {
-						resource, ok := s.RootModule().Resources[resourceName]
-						if !ok {
-							return fmt.Errorf("Resource not found: %s", resourceName)
-						}
-						stateKeyValue := resource.Primary.Attributes["key"]
-						if stateKeyValue != keyValue {
-							return fmt.Errorf("application key value %s does not match expected value %s", stateKeyValue, keyValue)
-						}
-						return nil
-					},
 				),
 			},
 		},
 	})
 }
 
-func TestDatadogApplicationKey_import(t *testing.T) {
-	if isRecording() || isReplaying() {
-		t.Skip("This test doesn't support recording or replaying")
-	}
-	t.Parallel()
-	resourceName := "datadog_application_key.foo"
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	applicationKeyName := uniqueEntityName(ctx, t)
+// func TestDatadogApplicationKey_import(t *testing.T) {
+// 	if isRecording() || isReplaying() {
+// 		t.Skip("This test doesn't support recording or replaying")
+// 	}
+// 	t.Parallel()
+// 	resourceName := "datadog_application_key.foo"
+// 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+// 	applicationKeyName := uniqueEntityName(ctx, t)
 
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccCheckDatadogApplicationKeyConfigRequired(applicationKeyName),
-			},
-			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
-			},
-		},
-	})
-}
+// 	resource.Test(t, resource.TestCase{
+// 		PreCheck:                 func() { testAccPreCheck(t) },
+// 		ProtoV5ProviderFactories: accProviders,
+// 		CheckDestroy:             testAccCheckDatadogApplicationKeyDestroy(providers.frameworkProvider),
+// 		Steps: []resource.TestStep{
+// 			{
+// 				Config: testAccCheckDatadogApplicationKeyConfigRequired(applicationKeyName),
+// 			},
+// 			{
+// 				ResourceName:      resourceName,
+// 				ImportState:       true,
+// 				ImportStateVerify: true,
+// 			},
+// 		},
+// 	})
+// }
 
 func testAccCheckDatadogApplicationKeyConfigRequired(uniq string) string {
 	return fmt.Sprintf(`

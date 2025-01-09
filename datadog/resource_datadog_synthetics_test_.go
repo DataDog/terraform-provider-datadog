@@ -20,6 +20,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -78,6 +79,11 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				"assertion":                  syntheticsAPIAssertion(),
 				"browser_variable":           syntheticsBrowserVariable(),
 				"config_variable":            syntheticsConfigVariable(),
+				"config_initial_application_arguments": {
+					Description: "Initial application arguments for the mobile test.",
+					Type:        schema.TypeMap,
+					Optional:    true,
+				},
 				"variables_from_script": {
 					Description: "Variables defined from JavaScript code for API HTTP tests.",
 					Type:        schema.TypeString,
@@ -89,7 +95,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 					Optional:    true,
 					Elem: &schema.Schema{
 						Type:             schema.TypeString,
-						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsDeviceIDFromValue),
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 					},
 				},
 				"locations": {
@@ -100,7 +106,8 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 						Type: schema.TypeString,
 					},
 				},
-				"options_list": syntheticsTestOptionsList(),
+				"options_list":        syntheticsTestOptionsList(),
+				"mobile_options_list": syntheticsMobileTestOptionsList(),
 				"name": {
 					Description: "Name of Datadog synthetics test.",
 					Type:        schema.TypeString,
@@ -134,6 +141,7 @@ func resourceDatadogSyntheticsTest() *schema.Resource {
 				},
 				"browser_step": syntheticsTestBrowserStep(),
 				"api_step":     syntheticsTestAPIStep(),
+				"mobile_step":  syntheticsTestMobileStep(),
 				"set_cookie": {
 					Description: "Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.",
 					Type:        schema.TypeString,
@@ -597,13 +605,13 @@ func syntheticsTestOptionsRetry() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"count": {
-					Description: "Number of retries needed to consider a location as failed before sending a notification alert.",
+					Description: "Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `5`.",
 					Type:        schema.TypeInt,
 					Default:     0,
 					Optional:    true,
 				},
 				"interval": {
-					Description: "Interval between a failed test and the next retry in milliseconds.",
+					Description: "Interval between a failed test and the next retry in milliseconds. Maximum value: `5000`.",
 					Type:        schema.TypeInt,
 					Default:     300,
 					Optional:    true,
@@ -819,6 +827,164 @@ func syntheticsTestOptionsList() *schema.Schema {
 	}
 }
 
+func syntheticsMobileTestOptionsList() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeList,
+		MaxItems: 1,
+		Optional: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"min_failure_duration": {
+					Description: "Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"retry": syntheticsTestOptionsRetry(),
+				"tick_every": {
+					Description:  "How often the test should run (in seconds).",
+					Type:         schema.TypeInt,
+					Required:     true,
+					ValidateFunc: validation.IntBetween(300, 604800),
+				},
+				"scheduling": syntheticsTestAdvancedScheduling(),
+				"monitor_name": {
+					Description: "The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"monitor_options": {
+					Type:     schema.TypeList,
+					MaxItems: 1,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"renotify_interval": {
+								Description: "Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`.",
+								Type:        schema.TypeInt,
+								Default:     0,
+								Optional:    true,
+							},
+							"escalation_message": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"renotify_occurrences": {
+								Type:     schema.TypeInt,
+								Optional: true,
+							},
+							"notification_preset_name": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestOptionsMonitorOptionsNotificationPresetNameFromValue),
+							},
+						},
+					},
+				},
+				"monitor_priority": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					ValidateFunc: validation.IntBetween(1, 5),
+				},
+				"restricted_roles": {
+					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
+					Type:        schema.TypeSet,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+				},
+				"bindings": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"principals": {
+								Type:     schema.TypeList,
+								Optional: true,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								},
+							},
+							"relation": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestRestrictionPolicyBindingRelationFromValue),
+							},
+						},
+					},
+				},
+				"ci": {
+					Description: "CI/CD options for a Synthetic test.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"execution_rule": {
+								Type:             schema.TypeString,
+								Description:      "Execution rule for a Synthetics test.",
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsTestExecutionRuleFromValue),
+							},
+						},
+					},
+				},
+				"default_step_timeout": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					ValidateFunc: validation.IntBetween(1, 300),
+				},
+				"device_ids": {
+					Type:     schema.TypeList,
+					Required: true,
+					Elem: &schema.Schema{
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateNonEmptyStrings,
+					},
+				},
+				"no_screenshot": {
+					Description: "Prevents saving screenshots of the steps.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"verbosity": {
+					Type:         schema.TypeInt,
+					Optional:     true,
+					ValidateFunc: validation.IntBetween(0, 5),
+				},
+				"allow_application_crash": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"disable_auto_accept_alert": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"mobile_application": {
+					Type:     schema.TypeList,
+					Required: true,
+					MaxItems: 1,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"application_id": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"reference_id": {
+								Type:     schema.TypeString,
+								Required: true,
+							},
+							"reference_type": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileTestsMobileApplicationReferenceTypeFromValue),
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 func syntheticsTestAPIStep() *schema.Schema {
 	requestElemSchema := syntheticsTestRequest()
 	// In test `options_list` for single API tests, but in `api_step.request_definition` for API steps.
@@ -843,6 +1009,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 					Optional:         true,
 					Default:          "http",
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsAPITestStepSubtypeFromValue, datadogV1.NewSyntheticsAPIWaitStepSubtypeFromValue),
+				},
+				"exit_if_succeed": {
+					Description: "Determines whether or not to exit the test if the step succeeds.",
+					Type:        schema.TypeBool,
+					Optional:    true,
 				},
 				"extracted_value": {
 					Description: "Values to parse and save as variables from the response.",
@@ -991,6 +1162,16 @@ func syntheticsTestBrowserStep() *schema.Schema {
 					Type:        schema.TypeString,
 					Required:    true,
 				},
+				"local_key": {
+					Description: "A unique identifier used to track steps after reordering.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"public_id": {
+					Description: "The identifier of the step on the backend.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
 				"type": {
 					Description:      "Type of the step.",
 					Type:             schema.TypeString,
@@ -999,6 +1180,16 @@ func syntheticsTestBrowserStep() *schema.Schema {
 				},
 				"allow_failure": {
 					Description: "Determines if the step should be allowed to fail.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"always_execute": {
+					Description: "Determines whether or not to always execute this step even if the previous step failed or was skipped.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"exit_if_succeed": {
+					Description: "Determines whether or not to exit the test if the step succeeds.",
 					Type:        schema.TypeBool,
 					Optional:    true,
 				},
@@ -1210,6 +1401,244 @@ func syntheticsBrowserStepParams() schema.Schema {
 	}
 }
 
+func syntheticsTestMobileStep() *schema.Schema {
+	paramsSchema := syntheticsMobileStepParams()
+	return &schema.Schema{
+		Description: "Steps for mobile tests",
+		Type:        schema.TypeList,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"allow_failure": {
+					Description: "A boolean set to allow this step to fail.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"has_new_step_element": {
+					Description: "A boolean set to determine if the step has a new step element.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"is_critical": {
+					Description: "A boolean to use in addition to `allowFailure` to determine if the test should be marked as failed when the step fails.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"name": {
+					Description: "The name of the step.",
+					Type:        schema.TypeString,
+					Required:    true,
+				},
+				"no_screenshot": {
+					Description: "A boolean set to not take a screenshot for the step.",
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"params": &paramsSchema,
+				"public_id": {
+					Description: "The public ID of the step.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"timeout": {
+					Description: "The time before declaring a step failed.",
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"type": {
+					Description:      "The type of the step.",
+					Type:             schema.TypeString,
+					Required:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepTypeFromValue),
+				},
+			},
+		},
+	}
+}
+
+func syntheticsMobileStepParams() schema.Schema {
+	return schema.Schema{
+		Description: "Parameters for the step.",
+		Type:        schema.TypeList,
+		MaxItems:    1,
+		Required:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"value": {
+					Description: "Value of the step.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"check": {
+					Description:      "Check type to use for an assertion step.",
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsCheckTypeFromValue),
+				},
+				"element": {
+					Description: "Element to use for the step, JSON encoded string.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"multi_locator": {
+								Type:     schema.TypeMap,
+								Optional: true,
+							},
+							"context": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"context_type": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsElementContextTypeFromValue),
+							},
+							"user_locator": {
+								Type:     schema.TypeList,
+								MaxItems: 1,
+								Optional: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"fail_test_on_cannot_locate": {
+											Type:     schema.TypeBool,
+											Optional: true,
+										},
+										"values": {
+											Type:     schema.TypeList,
+											Optional: true,
+											MinItems: 1,
+											MaxItems: 5,
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"type": {
+														Type:             schema.TypeString,
+														Optional:         true,
+														ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsElementUserLocatorValuesItemsTypeFromValue),
+													},
+													"value": {
+														Type:     schema.TypeString,
+														Optional: true,
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"element_description": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"relative_position": {
+								Type:     schema.TypeList,
+								MaxItems: 1,
+								Optional: true,
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"x": {
+											Type:     schema.TypeFloat,
+											Optional: true,
+										},
+										"y": {
+											Type:     schema.TypeFloat,
+											Optional: true,
+										},
+									},
+								},
+							},
+							"text_content": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+							"view_name": {
+								Type:     schema.TypeString,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"variable": {
+					Description: "Details of the variable to extract.",
+					Type:        schema.TypeList,
+					MaxItems:    1,
+					Optional:    true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"name": {
+								Description: "Name of the extracted variable.",
+								Type:        schema.TypeString,
+								Required:    true,
+							},
+							"example": {
+								Description: "Example of the extracted variable.",
+								Default:     "",
+								Type:        schema.TypeString,
+								// Required:    true, // TODO SYNTH-17172 - fix for steps, the tests don't like this being required for some reason
+								Optional: true,
+							},
+						},
+					},
+				},
+				"positions": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"x": {
+								Type:     schema.TypeFloat,
+								Optional: true,
+							},
+							"y": {
+								Type:     schema.TypeFloat,
+								Optional: true,
+							},
+						},
+					},
+				},
+				"subtest_public_id": {
+					Description: "ID of the Synthetics test to use as subtest.",
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
+				"x": {
+					Description: `X coordinates for a "scroll step".`,
+					Type:        schema.TypeFloat,
+					Optional:    true,
+				},
+				"y": {
+					Description: `Y coordinates for a "scroll step".`,
+					Type:        schema.TypeFloat,
+					Optional:    true,
+				},
+				"direction": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewSyntheticsMobileStepParamsDirectionFromValue),
+				},
+				"max_scrolls": {
+					Type:     schema.TypeInt,
+					Optional: true,
+				},
+				"enable": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+				"delay": {
+					Description: `Delay between each key stroke for a "type test" step.`,
+					Type:        schema.TypeInt,
+					Optional:    true,
+				},
+				"with_enter": {
+					Type:     schema.TypeBool,
+					Optional: true,
+				},
+			},
+		},
+	}
+}
+
 func syntheticsBrowserVariable() *schema.Schema {
 	return &schema.Schema{
 		Description: "Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below.",
@@ -1412,6 +1841,42 @@ func resourceDatadogSyntheticsTestCreate(ctx context.Context, d *schema.Resource
 		d.SetId(getSyntheticsBrowserTestResponse.GetPublicId())
 
 		return updateSyntheticsBrowserTestLocalState(d, &getSyntheticsBrowserTestResponse)
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
+		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
+		createdSyntheticsTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().CreateSyntheticsMobileTest(auth, *syntheticsTest)
+		if err != nil {
+			// Note that Id won't be set, so no state will be saved.
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error creating synthetics mobile test")
+		}
+		if err := utils.CheckForUnparsed(createdSyntheticsTest); err != nil {
+			return diag.FromErr(err)
+		}
+
+		var getSyntheticsMobileTestResponse datadogV1.SyntheticsMobileTest
+		var httpResponseGet *_nethttp.Response
+		err = retry.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *retry.RetryError {
+			getSyntheticsMobileTestResponse, httpResponseGet, err = apiInstances.GetSyntheticsApiV1().GetMobileTest(auth, createdSyntheticsTest.GetPublicId())
+			if err != nil {
+				if httpResponseGet != nil && httpResponseGet.StatusCode == 404 {
+					return retry.RetryableError(fmt.Errorf("synthetics mobile test not created yet"))
+				}
+
+				return retry.NonRetryableError(err)
+			}
+			if err := utils.CheckForUnparsed(getSyntheticsMobileTestResponse); err != nil {
+				return retry.NonRetryableError(err)
+			}
+
+			return nil
+		})
+		if err != nil {
+			return diag.FromErr(err)
+		}
+
+		d.SetId(getSyntheticsMobileTestResponse.GetPublicId())
+
+		return updateSyntheticsMobileTestLocalState(d, &getSyntheticsMobileTestResponse)
+
 	}
 
 	return diag.Errorf("unrecognized synthetics test type %v", testType)
@@ -1425,6 +1890,7 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 	var syntheticsTest datadogV1.SyntheticsTestDetails
 	var syntheticsAPITest datadogV1.SyntheticsAPITest
 	var syntheticsBrowserTest datadogV1.SyntheticsBrowserTest
+	var syntheticsMobileTest datadogV1.SyntheticsMobileTest
 	var err error
 	var httpresp *_nethttp.Response
 
@@ -1444,6 +1910,8 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 
 	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_BROWSER {
 		syntheticsBrowserTest, _, err = apiInstances.GetSyntheticsApiV1().GetBrowserTest(auth, d.Id())
+	} else if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
+		syntheticsMobileTest, _, err = apiInstances.GetSyntheticsApiV1().GetMobileTest(auth, d.Id())
 	} else {
 		syntheticsAPITest, _, err = apiInstances.GetSyntheticsApiV1().GetAPITest(auth, d.Id())
 	}
@@ -1462,6 +1930,13 @@ func resourceDatadogSyntheticsTestRead(ctx context.Context, d *schema.ResourceDa
 			return diag.FromErr(err)
 		}
 		return updateSyntheticsBrowserTestLocalState(d, &syntheticsBrowserTest)
+	}
+
+	if syntheticsTest.GetType() == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
+		if err := utils.CheckForUnparsed(syntheticsMobileTest); err != nil {
+			return diag.FromErr(err)
+		}
+		return updateSyntheticsMobileTestLocalState(d, &syntheticsMobileTest)
 	}
 
 	if err := utils.CheckForUnparsed(syntheticsAPITest); err != nil {
@@ -1499,6 +1974,18 @@ func resourceDatadogSyntheticsTestUpdate(ctx context.Context, d *schema.Resource
 			return diag.FromErr(err)
 		}
 		return updateSyntheticsBrowserTestLocalState(d, &updatedTest)
+	} else if *testType == datadogV1.SYNTHETICSTESTDETAILSTYPE_MOBILE {
+		syntheticsTest := buildDatadogSyntheticsMobileTest(d)
+		updatedTest, httpResponse, err := apiInstances.GetSyntheticsApiV1().UpdateMobileTest(auth, d.Id(), *syntheticsTest)
+		if err != nil {
+			// If the Update callback returns with or without an error, the full state is saved.
+			return utils.TranslateClientErrorDiag(err, httpResponse, "error updating synthetics browser test")
+		}
+		if err := utils.CheckForUnparsed(updatedTest); err != nil {
+			return diag.FromErr(err)
+		}
+
+		return updateSyntheticsMobileTestLocalState(d, &updatedTest)
 	}
 
 	return diag.Errorf("unrecognized synthetics test type %v", testType)
@@ -1637,13 +2124,19 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 	for stepIndex, step := range steps {
 		localStep := make(map[string]interface{})
 		localStep["name"] = step.GetName()
+		localStep["public_id"] = step.GetPublicId()
 		localStep["type"] = string(step.GetType())
 		localStep["timeout"] = step.GetTimeout()
 
 		if allowFailure, ok := step.GetAllowFailureOk(); ok {
 			localStep["allow_failure"] = allowFailure
 		}
-
+		if alwaysExecute, ok := step.GetAlwaysExecuteOk(); ok {
+			localStep["always_execute"] = alwaysExecute
+		}
+		if exitIfSucceed, ok := step.GetExitIfSucceedOk(); ok {
+			localStep["exit_if_succeed"] = exitIfSucceed
+		}
 		if isCritical, ok := step.GetIsCriticalOk(); ok {
 			localStep["is_critical"] = isCritical
 		}
@@ -1658,6 +2151,15 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 			localStep["force_element_update"] = forceElementUpdate
 		}
 
+		localKey, ok := d.GetOk(fmt.Sprintf("browser_step.%d.local_key", stepIndex))
+		if ok {
+			localStep["local_key"] = localKey
+		}
+		publicId, ok := d.GetOk(fmt.Sprintf("browser_step.%d.public_id", stepIndex))
+		if ok {
+			localStep["public_id"] = publicId
+		}
+
 		params := step.GetParams()
 		paramsMap := params.(map[string]interface{})
 
@@ -1667,6 +2169,11 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 				// keep the element from the local state instead
 				element := d.Get(fmt.Sprintf("browser_step.%d.params.0.element", stepIndex))
 				localParams["element"] = element
+			} else if key == "files" {
+				// prevent overriding `files` in the local state with the one received from the backend, and
+				// keep the files from the local state instead
+				files := d.Get(fmt.Sprintf("browser_step.%d.params.0.files", stepIndex))
+				localParams["files"] = files
 			} else {
 				localParams[convertStepParamsKey(key)] = convertStepParamsValueForState(convertStepParamsKey(key), value)
 			}
@@ -1869,6 +2376,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				}
 
 				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
+				localStep["exit_if_succeed"] = step.SyntheticsAPITestStep.GetExitIfSucceed()
 				localStep["is_critical"] = step.SyntheticsAPITestStep.GetIsCritical()
 
 				if retry, ok := step.SyntheticsAPITestStep.GetRetryOk(); ok {
@@ -1924,6 +2432,86 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 	if err := d.Set("monitor_id", syntheticsTest.MonitorId); err != nil {
 		return diag.FromErr(err)
 	}
+	return nil
+}
+
+func updateSyntheticsMobileTestLocalState(d *schema.ResourceData, syntheticsTest *datadogV1.SyntheticsMobileTest) diag.Diagnostics {
+	// There two fields that you might think should be here but are not:
+	// - `device_ids` at the root of the request can be set by the user, but is not part of the response
+	// - `locations` can not be set by the user as mobile tests only run on one location, but it's part of the response
+	if err := d.Set("type", syntheticsTest.GetType()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("name", syntheticsTest.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("message", syntheticsTest.GetMessage()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("status", syntheticsTest.GetStatus()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("tags", syntheticsTest.Tags); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("monitor_id", syntheticsTest.MonitorId); err != nil {
+		return diag.FromErr(err)
+	}
+
+	config := syntheticsTest.GetConfig()
+
+	actualVariables := config.GetVariables()
+	localMobileVariables := make([]map[string]interface{}, len(actualVariables))
+
+	for i, variable := range actualVariables {
+		localVariable := make(map[string]interface{})
+		if v, ok := variable.GetTypeOk(); ok {
+			localVariable["type"] = *v
+		}
+		if v, ok := variable.GetNameOk(); ok {
+			localVariable["name"] = *v
+		}
+		if v, ok := variable.GetIdOk(); ok {
+			localVariable["id"] = *v
+		}
+		if v, ok := variable.GetSecureOk(); ok {
+			localVariable["secure"] = *v
+		}
+		if v, ok := variable.GetExampleOk(); ok {
+			localVariable["example"] = *v
+		} else if v, ok := localVariable["secure"].(bool); ok && v {
+			localVariable["example"] = d.Get(fmt.Sprintf("mobile_variable.%d.example", i))
+		}
+		if v, ok := variable.GetPatternOk(); ok {
+			localVariable["pattern"] = *v
+		} else if v, ok := localVariable["secure"].(bool); ok && v {
+			localVariable["pattern"] = d.Get(fmt.Sprintf("mobile_variable.%d.pattern", i))
+		}
+		localMobileVariables[i] = localVariable
+	}
+	if err := d.Set("config_variable", localMobileVariables); err != nil {
+		return diag.FromErr(err)
+	}
+
+	if config.HasInitialApplicationArguments() {
+		if err := d.Set("config_initial_application_arguments", config.GetInitialApplicationArguments()); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
+	localOptionsLists := buildTerraformMobileTestOptions(syntheticsTest.GetOptions())
+
+	if err := d.Set("mobile_options_list", localOptionsLists); err != nil {
+		return diag.FromErr(err)
+	}
+
+	steps := syntheticsTest.GetSteps()
+	localSteps := buildTerraformMobileTestSteps(steps)
+
+	if err := d.Set("mobile_step", localSteps); err != nil {
+		return diag.FromErr(err)
+	}
+
 	return nil
 }
 
@@ -2018,7 +2606,16 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 		request.SetCompressedProtoFile(compressAndEncodeValue(attr.(string)))
 	}
 
-	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_client_certificate").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
+	if attr, ok := d.GetOk("request_client_certificate"); ok {
+		if requestClientCertificates, ok := attr.([]interface{}); ok && len(requestClientCertificates) > 0 {
+			if requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{}); ok {
+				clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
+				request.SetCertificate(buildDatadogRequestCertificates(clientCert["content"].(string), clientCert["filename"].(string), clientKey["content"].(string), clientKey["filename"].(string)))
+			}
+		}
+	}
+
+	request = *completeSyntheticsTestRequest(request, d.Get("request_headers").(map[string]interface{}), d.Get("request_query").(map[string]interface{}), d.Get("request_basicauth").([]interface{}), d.Get("request_proxy").([]interface{}), d.Get("request_metadata").(map[string]interface{}))
 
 	config := datadogV1.NewSyntheticsAPITestConfigWithDefaults()
 
@@ -2042,7 +2639,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 	if attr, ok := d.GetOk("api_step"); ok && syntheticsTest.GetSubtype() == "multi" {
 		steps := []datadogV1.SyntheticsAPIStep{}
 
-		for _, s := range attr.([]interface{}) {
+		for i, s := range attr.([]interface{}) {
 			step := datadogV1.SyntheticsAPIStep{}
 			stepMap := s.(map[string]interface{})
 
@@ -2108,12 +2705,24 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 						}
 					}
 				}
+				// Override the request client certificate with the one from the config
+				configCertContent, configKeyContent := getConfigCertAndKeyContent(d, i)
 
-				request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_client_certificate"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
+				if requestClientCertificates, ok := stepMap["request_client_certificate"].([]interface{}); ok && len(requestClientCertificates) > 0 {
+					if requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{}); ok {
+						clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
+						if configCertContent != nil || configKeyContent != nil {
+							request.SetCertificate(buildDatadogRequestCertificates(*configCertContent, clientCert["filename"].(string), *configKeyContent, clientKey["filename"].(string)))
+						}
+					}
+				}
+
+				request = *completeSyntheticsTestRequest(request, stepMap["request_headers"].(map[string]interface{}), stepMap["request_query"].(map[string]interface{}), stepMap["request_basicauth"].([]interface{}), stepMap["request_proxy"].([]interface{}), stepMap["request_metadata"].(map[string]interface{}))
 
 				step.SyntheticsAPITestStep.SetRequest(request)
 
 				step.SyntheticsAPITestStep.SetAllowFailure(stepMap["allow_failure"].(bool))
+				step.SyntheticsAPITestStep.SetExitIfSucceed(stepMap["exit_if_succeed"].(bool))
 				step.SyntheticsAPITestStep.SetIsCritical(stepMap["is_critical"].(bool))
 
 				optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
@@ -2200,12 +2809,12 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 			request.SetQuery(query)
 		}
 	}
-
 	if username, ok := d.GetOk("request_basicauth.0.username"); ok {
 		if password, ok := d.GetOk("request_basicauth.0.password"); ok {
 			basicAuth := datadogV1.NewSyntheticsBasicAuthWebWithDefaults()
 			basicAuth.SetPassword(password.(string))
 			basicAuth.SetUsername(username.(string))
+			// Works for Web Basic Auth, NTLM and Digest as they all use `username` + `password`
 			request.SetBasicAuth(datadogV1.SyntheticsBasicAuthWebAsSyntheticsBasicAuth(basicAuth))
 		}
 	}
@@ -2222,7 +2831,8 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 
 	if attr, ok := d.GetOk("request_client_certificate"); ok {
 		requestClientCertificate := attr.(map[string]interface{})
-		request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
+		clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
+		request.SetCertificate(buildDatadogRequestCertificates(clientCert["content"].(string), clientCert["filename"].(string), clientKey["content"].(string), clientKey["filename"].(string)))
 	}
 
 	if attr, ok := d.GetOk("request_proxy"); ok {
@@ -2312,47 +2922,107 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 			step.SetName(stepMap["name"].(string))
 			step.SetType(datadogV1.SyntheticsStepType(stepMap["type"].(string)))
 			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetAlwaysExecute(stepMap["always_execute"].(bool))
+			step.SetExitIfSucceed(stepMap["exit_if_succeed"].(bool))
 			step.SetIsCritical(stepMap["is_critical"].(bool))
 			step.SetTimeout(int64(stepMap["timeout"].(int)))
 			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
 
-			params := make(map[string]interface{})
-			stepParams := stepMap["params"].([]interface{})[0]
-			stepTypeParams := getParamsKeysForStepType(step.GetType())
-
-			for _, key := range stepTypeParams {
-				if stepMap, ok := stepParams.(map[string]interface{}); ok && stepMap[key] != "" {
-					convertedValue := convertStepParamsValueForConfig(step.GetType(), key, stepMap[key])
-					params[convertStepParamsKey(key)] = convertedValue
-				}
-			}
-
-			if stepParamsMap, ok := stepParams.(map[string]interface{}); ok && stepParamsMap["element_user_locator"] != "" {
-				userLocatorsParams := stepParamsMap["element_user_locator"].([]interface{})
-
-				if len(userLocatorsParams) != 0 {
-					userLocatorParams := userLocatorsParams[0].(map[string]interface{})
-					values := userLocatorParams["value"].([]interface{})
-					userLocator := map[string]interface{}{
-						"failTestOnCannotLocate": userLocatorParams["fail_test_on_cannot_locate"],
-						"values":                 []map[string]interface{}{values[0].(map[string]interface{})},
-					}
-
-					stepElement := make(map[string]interface{})
-					if stepParamsElement, ok := stepParamsMap["element"]; ok {
-						utils.GetMetadataFromJSON([]byte(stepParamsElement.(string)), &stepElement)
-					}
-					stepElement["userLocator"] = userLocator
-					params["element"] = stepElement
-				}
-			}
-
+			params := getStepParams(stepMap, d)
 			step.SetParams(params)
 
 			steps = append(steps, step)
 		}
 
 		syntheticsTest.SetSteps(steps)
+	}
+
+	return syntheticsTest
+}
+
+func buildDatadogSyntheticsMobileTest(d *schema.ResourceData) *datadogV1.SyntheticsMobileTest {
+	syntheticsTest := datadogV1.NewSyntheticsMobileTestWithDefaults()
+
+	// There three fields that you might think should be here but are not:
+	// - `device_ids` at the root of the request can be set by the user, but is not part of the response, so we're not going to set it as not to mess with the local state of Terraform
+	// - `locations` can not be set by the user as mobile tests only run on one location, but it's part of the response
+	// - `monitor_id` is not set by the user, but returned by the response
+	if attr, ok := d.GetOk("message"); ok {
+		syntheticsTest.SetMessage(attr.(string))
+	}
+	if attr, ok := d.GetOk("name"); ok {
+		syntheticsTest.SetName(attr.(string))
+	}
+	if attr, ok := d.GetOk("status"); ok {
+		syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(attr.(string)))
+	}
+	if attr, ok := d.GetOk("type"); ok {
+		syntheticsTest.SetType(datadogV1.SyntheticsMobileTestType(attr.(string)))
+	}
+	config := datadogV1.SyntheticsMobileTestConfig{}
+	config.SetVariables([]datadogV1.SyntheticsConfigVariable{})
+
+	requestConfigVariables := d.Get("config_variable").([]interface{})
+	config.SetVariables(buildDatadogConfigVariables(requestConfigVariables))
+
+	if attr, ok := d.GetOk("config_initial_application_arguments"); ok {
+		initialApplicationArguments := attr.(map[string]interface{})
+		if len(initialApplicationArguments) > 0 {
+			config.SetInitialApplicationArguments(make(map[string]string))
+		}
+		for k, v := range initialApplicationArguments {
+			config.GetInitialApplicationArguments()[k] = v.(string)
+		}
+	}
+
+	syntheticsTest.SetConfig(config)
+
+	options := buildDatadogMobileTestOptions(d)
+	syntheticsTest.SetOptions(*options)
+
+	if attr, ok := d.GetOk("mobile_step"); ok {
+		steps := []datadogV1.SyntheticsMobileStep{}
+
+		for _, s := range attr.([]interface{}) {
+			step := datadogV1.SyntheticsMobileStep{}
+			stepMap := s.(map[string]interface{})
+
+			step.SetAllowFailure(stepMap["allow_failure"].(bool))
+			step.SetHasNewStepElement(stepMap["has_new_step_element"].(bool))
+			step.SetIsCritical(stepMap["is_critical"].(bool))
+			step.SetNoScreenshot(stepMap["no_screenshot"].(bool))
+
+			if stepMap["name"] != "" {
+				step.SetName(stepMap["name"].(string))
+			}
+			if stepMap["public_id"] != "" {
+				step.SetPublicId(stepMap["public_id"].(string))
+			}
+			if stepMap["timeout"] != 0 {
+				step.SetTimeout(int64(stepMap["timeout"].(int)))
+			}
+			if stepMap["type"] != "" {
+				step.SetType(datadogV1.SyntheticsMobileStepType(stepMap["type"].(string)))
+			}
+
+			params := datadogV1.SyntheticsMobileStepParams{}
+			stepParams := stepMap["params"].([]interface{})[0]
+			params = buildDatadogParamsForMobileStep(step.GetType(), stepParams.(map[string]interface{}))
+			step.SetParams(params)
+			steps = append(steps, step)
+		}
+
+		syntheticsTest.SetSteps(steps)
+	}
+
+	if attr, ok := d.GetOk("tags"); ok {
+		tags := make([]string, 0)
+		for _, s := range attr.([]interface{}) {
+			if tag, ok := s.(string); ok {
+				tags = append(tags, tag)
+			}
+		}
+		syntheticsTest.SetTags(tags)
 	}
 
 	return syntheticsTest
@@ -2877,9 +3547,12 @@ func buildDatadogBodyFiles(attr []interface{}) []datadogV1.SyntheticsTestRequest
 func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestBodyFile, oldLocalBodyFiles []map[string]interface{}) (localBodyFiles []map[string]interface{}) {
 	localBodyFiles = make([]map[string]interface{}, len(*actualBodyFiles))
 	for i, file := range *actualBodyFiles {
-		// The file content is kept from the existing localFile from the state,
-		// as the response from the backend contains the bucket key rather than the content.
-		localFile := oldLocalBodyFiles[i]
+		localFile := make(map[string]interface{})
+		if i < len(oldLocalBodyFiles) && oldLocalBodyFiles[i] != nil {
+			// The file content is kept from the existing localFile from the state,
+			// as the response from the backend contains the bucket key rather than the content.
+			localFile = oldLocalBodyFiles[i]
+		}
 		localFile["name"] = file.GetName()
 		localFile["original_file_name"] = file.GetOriginalFileName()
 		localFile["type"] = file.GetType()
@@ -3014,37 +3687,31 @@ func buildTerraformExtractedValues(extractedValues []datadogV1.SyntheticsParsing
 	return localExtractedValues
 }
 
-func buildDatadogRequestCertificates(requestClientCertificate map[string]interface{}) datadogV1.SyntheticsTestRequestCertificate {
+func buildDatadogRequestCertificates(clientCertContent string, clientCertFilename string, clientKeyContent string, clientKeyFilename string) datadogV1.SyntheticsTestRequestCertificate {
 	cert := datadogV1.SyntheticsTestRequestCertificateItem{}
 	key := datadogV1.SyntheticsTestRequestCertificateItem{}
 
-	clientCerts := requestClientCertificate["cert"].([]interface{})
-	clientKeys := requestClientCertificate["key"].([]interface{})
-
-	clientCert := clientCerts[0].(map[string]interface{})
-	clientKey := clientKeys[0].(map[string]interface{})
-
-	if clientCert["content"] != "" {
+	if clientCertContent != "" {
 		// only set the certificate content if it is not an already hashed string
 		// this is needed for the update function that receives the data from the state
 		// and not from the config. So we get a hash of the certificate and not it's real
 		// value.
-		if isHash := isCertHash(clientCert["content"].(string)); !isHash {
-			cert.SetContent(clientCert["content"].(string))
+		if isHash := isCertHash(clientCertContent); !isHash {
+			cert.SetContent(clientCertContent)
 		}
 	}
-	if clientCert["filename"] != "" {
-		cert.SetFilename(clientCert["filename"].(string))
+	if clientCertFilename != "" {
+		cert.SetFilename(clientCertFilename)
 	}
 
-	if clientKey["content"] != "" {
+	if clientKeyContent != "" {
 		// only set the key content if it is not an already hashed string
-		if isHash := isCertHash(clientKey["content"].(string)); !isHash {
-			key.SetContent(clientKey["content"].(string))
+		if isHash := isCertHash(clientKeyContent); !isHash {
+			key.SetContent(clientKeyContent)
 		}
 	}
-	if clientKey["filename"] != "" {
-		key.SetFilename(clientKey["filename"].(string))
+	if clientKeyFilename != "" {
+		key.SetFilename(clientKeyFilename)
 	}
 
 	return datadogV1.SyntheticsTestRequestCertificate{
@@ -3231,9 +3898,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 		}
 
 		if attr, ok := d.GetOk("device_ids"); ok {
-			var deviceIds []datadogV1.SyntheticsDeviceID
+			var deviceIds []string
 			for _, s := range attr.([]interface{}) {
-				deviceIds = append(deviceIds, datadogV1.SyntheticsDeviceID(s.(string)))
+				deviceIds = append(deviceIds, s.(string))
 			}
 			options.DeviceIds = deviceIds
 		}
@@ -3366,7 +4033,459 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 	return localOptionsLists
 }
 
-func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestClientCertificates []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
+func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsMobileTestOptions {
+	options := datadogV1.SyntheticsMobileTestOptions{}
+
+	if mobile_options_list_attr, ok := d.GetOk("mobile_options_list"); ok && mobile_options_list_attr != nil {
+		// Verbosity is also part of the options but it can not be set by users so we're not setting it here
+		if attr, ok := d.GetOk("mobile_options_list.0.min_failure_duration"); ok {
+			options.SetMinFailureDuration(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.tick_every"); ok {
+			options.SetTickEvery(int64(attr.(int)))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.monitor_name"); ok {
+			options.SetMonitorName(attr.(string))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.monitor_priority"); ok {
+			options.SetMonitorPriority(int32(attr.(int)))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.default_step_timeout"); ok {
+			options.SetDefaultStepTimeout(int32(attr.(int)))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.no_screenshot"); ok {
+			options.SetNoScreenshot(attr.(bool))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.allow_application_crash"); ok {
+			options.SetAllowApplicationCrash(attr.(bool))
+		}
+		if attr, ok := d.GetOk("mobile_options_list.0.disable_auto_accept_alert"); ok {
+			options.SetDisableAutoAcceptAlert(attr.(bool))
+		}
+
+		if retryRaw, ok := d.GetOk("mobile_options_list.0.retry"); ok {
+			optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
+			retry := retryRaw.([]interface{})[0]
+			if count, ok := retry.(map[string]interface{})["count"]; ok {
+				optionsRetry.SetCount(int64(count.(int)))
+			}
+			if interval, ok := retry.(map[string]interface{})["interval"]; ok {
+				optionsRetry.SetInterval(float64(interval.(int)))
+			}
+			options.SetRetry(optionsRetry)
+		}
+
+		if rawScheduling, ok := d.GetOk("mobile_options_list.0.scheduling"); ok {
+			optionsScheduling := datadogV1.SyntheticsTestOptionsScheduling{}
+			scheduling := rawScheduling.([]interface{})[0]
+			if tfs, ok := scheduling.(map[string]interface{})["timeframes"]; ok {
+				timeFrames := []datadogV1.SyntheticsTestOptionsSchedulingTimeframe{}
+				for _, tf := range tfs.(*schema.Set).List() {
+					timeframe := datadogV1.SyntheticsTestOptionsSchedulingTimeframe{}
+					timeframe.SetDay(int32(tf.(map[string]interface{})["day"].(int)))
+					timeframe.SetFrom(string(tf.(map[string]interface{})["from"].(string)))
+					timeframe.SetTo(string(tf.(map[string]interface{})["to"].(string)))
+					timeFrames = append(timeFrames, timeframe)
+				}
+				optionsScheduling.SetTimeframes(timeFrames)
+			}
+			if tz, ok := scheduling.(map[string]interface{})["timezone"]; ok {
+				optionsScheduling.SetTimezone(tz.(string))
+			}
+
+			options.SetScheduling(optionsScheduling)
+		}
+
+		if monitorOptionsRaw, ok := d.GetOk("mobile_options_list.0.monitor_options"); ok {
+
+			monitorOptions := monitorOptionsRaw.([]interface{})[0]
+
+			optionsMonitorOptions := datadogV1.SyntheticsTestOptionsMonitorOptions{}
+			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
+				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
+			}
+			if escalationMessage, ok := monitorOptions.(map[string]interface{})["escalation_message"]; ok {
+				optionsMonitorOptions.SetEscalationMessage(escalationMessage.(string))
+			}
+			if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok {
+				optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
+			}
+			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok {
+				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
+			}
+			options.SetMonitorOptions(optionsMonitorOptions)
+		}
+
+		if restricted_roles, ok := d.GetOk("mobile_options_list.0.restricted_roles"); ok {
+
+			roles := []string{}
+			for _, role := range restricted_roles.(*schema.Set).List() {
+				roles = append(roles, role.(string))
+			}
+			options.SetRestrictedRoles(roles)
+		}
+
+		if bindings, ok := d.GetOk("mobile_options_list.0.bindings"); ok {
+			optionsBindings := []datadogV1.SyntheticsTestRestrictionPolicyBinding{}
+			for _, b := range bindings.([]interface{}) {
+				binding := datadogV1.NewSyntheticsTestRestrictionPolicyBinding()
+				if ps, ok := b.(map[string]interface{})["principals"]; ok {
+					principals := []string{}
+					for _, p := range ps.([]interface{}) {
+						principals = append(principals, p.(string))
+					}
+					binding.SetPrincipals(principals)
+				}
+				if r, ok := b.(map[string]interface{})["relation"]; ok {
+					binding.SetRelation(datadogV1.SyntheticsTestRestrictionPolicyBindingRelation(r.(string)))
+				}
+				optionsBindings = append(optionsBindings, *binding)
+			}
+			options.SetBindings(optionsBindings)
+		}
+
+		if rawCi, ok := d.GetOk("mobile_options_list.0.ci"); ok {
+			ci := rawCi.([]interface{})[0]
+			if testCiOptions, ok := ci.(map[string]interface{}); ok {
+				ciOptions := datadogV1.SyntheticsTestCiOptions{}
+				ciOptions.SetExecutionRule(datadogV1.SyntheticsTestExecutionRule(testCiOptions["execution_rule"].(string)))
+				options.SetCi(ciOptions)
+			}
+		}
+
+		if deviceIds, ok := d.GetOk("mobile_options_list.0.device_ids"); ok {
+			optionsDeviceIds := []string{}
+			for _, s := range deviceIds.([]interface{}) {
+				optionsDeviceIds = append(optionsDeviceIds, s.(string))
+			}
+			options.SetDeviceIds(optionsDeviceIds)
+		}
+
+		if rawMobileApplication, ok := d.GetOk("mobile_options_list.0.mobile_application"); ok {
+			mobileApplication := rawMobileApplication.([]interface{})[0]
+			optionsMobileApplication := datadogV1.SyntheticsMobileTestsMobileApplication{}
+
+			if s, ok := mobileApplication.(map[string]interface{})["application_id"]; ok {
+				optionsMobileApplication.SetApplicationId(s.(string))
+			}
+			if s, ok := mobileApplication.(map[string]interface{})["reference_id"]; ok {
+				optionsMobileApplication.SetReferenceId(s.(string))
+			}
+			if s, ok := mobileApplication.(map[string]interface{})["reference_type"]; ok {
+				optionsMobileApplication.SetReferenceType(datadogV1.SyntheticsMobileTestsMobileApplicationReferenceType(s.(string)))
+			}
+			options.SetMobileApplication(optionsMobileApplication)
+		}
+	}
+
+	return &options
+}
+
+func buildTerraformMobileTestOptions(actualOptions datadogV1.SyntheticsMobileTestOptions) []map[string]interface{} {
+	localOptionsList := make(map[string]interface{})
+
+	if actualOptions.HasMinFailureDuration() {
+		localOptionsList["min_failure_duration"] = actualOptions.GetMinFailureDuration()
+	}
+	if attr, ok := actualOptions.GetTickEveryOk(); ok {
+		localOptionsList["tick_every"] = attr
+	}
+	if actualOptions.HasMonitorName() {
+		localOptionsList["monitor_name"] = actualOptions.GetMonitorName()
+	}
+	if actualOptions.HasMonitorPriority() {
+		localOptionsList["monitor_priority"] = actualOptions.GetMonitorPriority()
+	}
+	if actualOptions.HasRestrictedRoles() {
+		localOptionsList["restricted_roles"] = actualOptions.GetRestrictedRoles()
+	}
+	if actualOptions.HasDefaultStepTimeout() {
+		localOptionsList["default_step_timeout"] = actualOptions.GetDefaultStepTimeout()
+	}
+	if actualOptions.HasNoScreenshot() {
+		localOptionsList["no_screenshot"] = actualOptions.GetNoScreenshot()
+	}
+	if actualOptions.HasAllowApplicationCrash() {
+		localOptionsList["allow_application_crash"] = actualOptions.GetAllowApplicationCrash()
+	}
+	if actualOptions.HasDisableAutoAcceptAlert() {
+		localOptionsList["disable_auto_accept_alert"] = actualOptions.GetDisableAutoAcceptAlert()
+	}
+
+	if actualOptions.HasRetry() {
+		retry := actualOptions.GetRetry()
+		optionsListRetry := make(map[string]interface{})
+		optionsListRetry["count"] = retry.GetCount()
+
+		if interval, ok := retry.GetIntervalOk(); ok {
+			optionsListRetry["interval"] = interval
+		}
+
+		localOptionsList["retry"] = []map[string]interface{}{optionsListRetry}
+	}
+
+	if actualOptions.HasScheduling() {
+		scheduling := actualOptions.GetScheduling()
+		timeFrames := scheduling.GetTimeframes()
+		optionsListScheduling := make(map[string]interface{})
+		optionsListSchedulingTimeframes := make([]map[string]interface{}, 0, len(timeFrames))
+		for _, tf := range timeFrames {
+			timeframe := make(map[string]interface{})
+			timeframe["from"] = tf.GetFrom()
+			timeframe["day"] = tf.GetDay()
+			timeframe["to"] = tf.GetTo()
+			optionsListSchedulingTimeframes = append(optionsListSchedulingTimeframes, timeframe)
+		}
+		optionsListScheduling["timeframes"] = optionsListSchedulingTimeframes
+		optionsListScheduling["timezone"] = scheduling.GetTimezone()
+		optionsListSchedulingList := []map[string]interface{}{optionsListScheduling}
+		localOptionsList["scheduling"] = optionsListSchedulingList
+	}
+
+	if actualOptions.HasMonitorOptions() {
+		actualMonitorOptions := actualOptions.GetMonitorOptions()
+		optionsListMonitorOptions := make(map[string]interface{})
+		shouldUpdate := false
+
+		if actualMonitorOptions.HasRenotifyInterval() {
+			optionsListMonitorOptions["renotify_interval"] = actualMonitorOptions.GetRenotifyInterval()
+			shouldUpdate = true
+		}
+		if actualMonitorOptions.HasEscalationMessage() {
+			optionsListMonitorOptions["escalation_message"] = actualMonitorOptions.GetEscalationMessage()
+		}
+		if actualMonitorOptions.HasRenotifyOccurrences() {
+			optionsListMonitorOptions["renotify_occurrences"] = actualMonitorOptions.GetRenotifyOccurrences()
+		}
+		if actualMonitorOptions.HasNotificationPresetName() {
+			optionsListMonitorOptions["notification_preset_name"] = actualMonitorOptions.GetNotificationPresetName()
+		}
+
+		if shouldUpdate {
+			localOptionsList["monitor_options"] = []map[string]interface{}{optionsListMonitorOptions}
+		}
+	}
+
+	if actualOptions.HasBindings() {
+		actualBindings := actualOptions.GetBindings()
+		optionsListBindings := make([]map[string]interface{}, 0, len(actualBindings))
+		for _, binding := range actualBindings {
+			optionsListBindingsItem := make(map[string]interface{})
+
+			if binding.HasPrincipals() {
+				actualBindingsItemsPrincipals := binding.GetPrincipals()
+				optionsListBindingsItemsPrincipals := make([]string, 0, len(actualBindingsItemsPrincipals))
+				for _, principals := range actualBindingsItemsPrincipals {
+					optionsListBindingsItemsPrincipals = append(optionsListBindingsItemsPrincipals, principals)
+				}
+				optionsListBindingsItem["principals"] = optionsListBindingsItemsPrincipals
+			}
+
+			if binding.HasRelation() {
+				optionsListBindingsItem["relation"] = binding.GetRelation()
+			}
+
+			optionsListBindings = append(optionsListBindings, optionsListBindingsItem)
+		}
+		localOptionsList["bindings"] = optionsListBindings
+	}
+
+	if actualOptions.HasCi() {
+		actualCi := actualOptions.GetCi()
+		ciOptions := make(map[string]interface{})
+		ciOptions["execution_rule"] = actualCi.GetExecutionRule()
+
+		localOptionsList["ci"] = []map[string]interface{}{ciOptions}
+	}
+
+	if _, ok := actualOptions.GetDeviceIdsOk(); ok {
+		actualDeviceIds := actualOptions.GetDeviceIds()
+		optionsListDeviceIds := make([]string, 0, len(actualDeviceIds))
+		for _, device_id := range actualDeviceIds {
+			optionsListDeviceIds = append(optionsListDeviceIds, string(device_id))
+		}
+		localOptionsList["device_ids"] = optionsListDeviceIds
+	}
+
+	if _, ok := actualOptions.GetMobileApplicationOk(); ok {
+		actualMobileApplication := actualOptions.GetMobileApplication()
+		optionsListMobileApplication := make(map[string]interface{})
+
+		if _, ok := actualMobileApplication.GetApplicationIdOk(); ok {
+			optionsListMobileApplication["application_id"] = actualMobileApplication.GetApplicationId()
+		}
+		if _, ok := actualMobileApplication.GetReferenceIdOk(); ok {
+			optionsListMobileApplication["reference_id"] = actualMobileApplication.GetReferenceId()
+		}
+		if _, ok := actualMobileApplication.GetReferenceTypeOk(); ok {
+			optionsListMobileApplication["reference_type"] = actualMobileApplication.GetReferenceType()
+		}
+
+		localOptionsList["mobile_application"] = []map[string]interface{}{optionsListMobileApplication}
+	}
+
+	localOptionsLists := make([]map[string]interface{}, 1)
+	localOptionsLists[0] = localOptionsList
+
+	return localOptionsLists
+}
+
+func buildTerraformMobileTestSteps(steps []datadogV1.SyntheticsMobileStep) []map[string]interface{} { // TODO SYNTH-17172 make sure everything is working in this function
+	var localSteps []map[string]interface{}
+
+	for _, step := range steps {
+
+		localStep := make(map[string]interface{})
+
+		// These two and params are required fields
+		localStep["name"] = step.GetName()
+		localStep["type"] = string(step.GetType())
+
+		if allowFailure, ok := step.GetAllowFailureOk(); ok {
+			localStep["allow_failure"] = allowFailure
+		}
+		if isCritical, ok := step.GetIsCriticalOk(); ok {
+			localStep["is_critical"] = isCritical
+		}
+		if hasNoScreenshot, ok := step.GetNoScreenshotOk(); ok {
+			localStep["no_screenshot"] = hasNoScreenshot
+		}
+		if HasNewStepElement, ok := step.GetHasNewStepElementOk(); ok {
+			localStep["has_new_step_element"] = HasNewStepElement
+		}
+		if publicId, ok := step.GetPublicIdOk(); ok {
+			localStep["public_id"] = publicId
+		}
+		if timeout, ok := step.GetTimeoutOk(); ok {
+			localStep["timeout"] = timeout
+		}
+
+		localParams := make(map[string]interface{})
+		params := step.GetParams()
+
+		if params.HasCheck() {
+			localParams["check"] = params.GetCheck()
+		}
+		if params.HasDelay() {
+			localParams["delay"] = params.GetDelay()
+		}
+		if params.HasDirection() {
+			localParams["direction"] = params.GetDirection()
+		}
+		if params.HasElement() {
+			element := params.GetElement()
+			localElement := make([]map[string]interface{}, 1)
+			localElement[0] = make(map[string]interface{})
+			if element.HasContext() {
+				localElement[0]["context"] = element.GetContext()
+			}
+			if element.HasContextType() {
+				localElement[0]["context_type"] = element.GetContextType()
+			}
+			if element.HasElementDescription() {
+				localElement[0]["element_description"] = element.GetElementDescription()
+			}
+			if element.HasMultiLocator() {
+				localElement[0]["multi_locator"] = element.GetMultiLocator()
+			}
+			if element.HasRelativePosition() {
+				relativePosition := element.GetRelativePosition()
+				localRelativePosition := make([]map[string]interface{}, 1)
+				localRelativePosition[0] = make(map[string]interface{})
+				if relativePosition.HasX() {
+					localRelativePosition[0]["x"] = relativePosition.GetX()
+				}
+				if relativePosition.HasY() {
+					localRelativePosition[0]["y"] = relativePosition.GetY()
+				}
+				localElement[0]["relative_position"] = localRelativePosition
+			}
+			if element.HasTextContent() {
+				localElement[0]["text_content"] = element.GetTextContent()
+			}
+			if element.HasUserLocator() {
+				userLocator := element.GetUserLocator()
+				localUserLocator := make([]map[string]interface{}, 1)
+				localUserLocator[0] = make(map[string]interface{})
+				if userLocator.HasFailTestOnCannotLocate() {
+					localUserLocator[0]["fail_test_on_cannot_locate"] = userLocator.GetFailTestOnCannotLocate()
+				}
+				if userLocator.HasValues() {
+					values := userLocator.GetValues()
+					localValues := make([]map[string]interface{}, len(values))
+					for i, valuesItem := range values {
+						localValuesItem := make(map[string]interface{})
+						if valuesItem.HasValue() {
+							localValuesItem["value"] = valuesItem.GetValue()
+						}
+						if valuesItem.HasType() {
+							localValuesItem["type"] = valuesItem.GetType()
+						}
+						localValues[i] = localValuesItem
+					}
+
+					localUserLocator[0]["values"] = localValues
+				}
+				localElement[0]["user_locator"] = localUserLocator
+			}
+			if element.HasViewName() {
+				localElement[0]["view_name"] = element.GetViewName()
+			}
+			localParams["element"] = localElement
+		}
+		if params.HasEnabled() {
+			localParams["enabled"] = params.GetEnabled()
+		}
+		if params.HasMaxScrolls() {
+			localParams["maxScrolls"] = params.GetMaxScrolls()
+		}
+		if params.HasPositions() {
+			positions := params.GetPositions()
+			for i, positionsItem := range positions {
+				localPositionsItem := make(map[string]interface{})
+				if positionsItem.HasX() {
+					localPositionsItem["x"] = positionsItem.GetX()
+				}
+				if positionsItem.HasY() {
+					localPositionsItem["y"] = positionsItem.GetY()
+				}
+				positions[i] = datadogV1.SyntheticsMobileStepParamsPositionsItems{
+					X: localPositionsItem["x"].(*float64),
+					Y: localPositionsItem["y"].(*float64),
+				}
+			}
+			localParams["positions"] = positions
+		}
+		if params.HasSubtestPublicId() {
+			localParams["subtestPublicId"] = params.GetSubtestPublicId()
+		}
+		if params.HasValue() {
+			value := params.GetValue()
+			actualValue := value.GetActualInstance()
+			localParams["value"] = actualValue
+		}
+		if params.HasVariable() {
+			localParams["variable"] = params.GetVariable()
+		}
+		if params.HasWithEnter() {
+			localParams["withEnter"] = params.GetWithEnter()
+		}
+		if params.HasX() {
+			localParams["x"] = params.GetX()
+		}
+		if params.HasY() {
+			localParams["y"] = params.GetY()
+		}
+
+		localStep["params"] = []interface{}{localParams}
+
+		localSteps = append(localSteps, localStep)
+	}
+
+	return localSteps
+}
+
+func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requestHeaders map[string]interface{}, requestQuery map[string]interface{}, requestBasicAuths []interface{}, requestProxies []interface{}, requestMetadata map[string]interface{}) *datadogV1.SyntheticsTestRequest {
 	if len(requestHeaders) > 0 {
 		headers := make(map[string]string, len(requestHeaders))
 
@@ -3387,11 +4506,6 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 		}
 	}
 
-	if len(requestClientCertificates) > 0 {
-		if requestClientCertificate, ok := requestClientCertificates[0].(map[string]interface{}); ok {
-			request.SetCertificate(buildDatadogRequestCertificates(requestClientCertificate))
-		}
-	}
 	if len(requestProxies) > 0 {
 		if requestProxy, ok := requestProxies[0].(map[string]interface{}); ok {
 			request.SetProxy(buildDatadogTestRequestProxy(requestProxy))
@@ -3531,7 +4645,7 @@ func decompressAndDecodeValue(value string) string {
 	return string(compressedProtoFile)
 }
 
-func convertStepParamsValueForConfig(stepType datadogV1.SyntheticsStepType, key string, value interface{}) interface{} {
+func convertStepParamsValueForConfig(stepType interface{}, key string, value interface{}) interface{} {
 	switch key {
 	case "element", "email", "file", "files", "request":
 		var result interface{}
@@ -3637,6 +4751,160 @@ func getCertificateStateValue(content string) string {
 	return utils.ConvertToSha256(content)
 }
 
+func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) map[string]interface{} {
+	stepType := datadogV1.SyntheticsStepType(stepMap["type"].(string))
+
+	params := make(map[string]interface{})
+	stepParams := stepMap["params"].([]interface{})[0]
+	stepTypeParams := getParamsKeysForStepType(stepType)
+
+	includeElement := false
+	for _, key := range stepTypeParams {
+		if stepMap, ok := stepParams.(map[string]interface{}); ok && stepMap[key] != "" {
+			convertedValue := convertStepParamsValueForConfig(stepType, key, stepMap[key])
+			params[convertStepParamsKey(key)] = convertedValue
+		}
+
+		if key == "element" {
+			includeElement = true
+		}
+	}
+
+	stepElement := make(map[string]interface{})
+	if stepParamsMap, ok := stepParams.(map[string]interface{}); ok {
+
+		// Initialize the element with the values from the state
+		if stepParamsElement, ok := stepParamsMap["element"]; ok {
+			utils.GetMetadataFromJSON([]byte(stepParamsElement.(string)), &stepElement)
+		}
+
+		// When conciliating the config and the state, the provider is not updating the ML in the state as
+		// a side effect of the diffSuppressFunc, but it nonetheless updates the other fields.
+		// So after reordering the steps in the config, the state contains steps with mixed up MLs.
+		// This propagates to the crafted request to update the test on the backend, and eventually mess up
+		// the remote test.
+		//
+		// To fix this issue, the user can provide a local key for each step to track steps when reordering.
+		// The provider can use the local key to reconcile the right ML into the right step.
+		// To retrieve the right ML, this function needs to look for the step which has the same localKey
+		// than the current step in the state, then in the config.
+		// The right ML could be in the state when the user didn't provide it in the config, but the provider
+		// keep it there anyway to keep track of it. Or it could be in the config when the user provided
+		// it directly.
+		//
+		// In the following,
+		// - GetRawState is used to retrieve the state of the resource before the reconciliation.
+		//   It contains the ML when the user didn't provide it in the config.
+		// - GetRawConfig is used to retrieve the config of the resource as written by the user.
+		//   It contains the ML when the user provided it in the config.
+
+		// Update the ML from the state, if found
+		rawState := d.GetRawState()
+		stateStepCount := 0
+		stateSteps := cty.ListValEmpty(cty.DynamicPseudoType)
+		if !rawState.IsNull() {
+			stateSteps = rawState.GetAttr("browser_step")
+			stateStepCount = stateSteps.LengthInt()
+		}
+
+		if stateStepCount > 0 {
+			for i := range stateStepCount {
+				stateStep := stateSteps.Index(cty.NumberIntVal(int64(i)))
+				localKeyValue := stateStep.GetAttr("local_key")
+				if localKeyValue.IsNull() {
+					continue
+				}
+
+				localKey := localKeyValue.AsString()
+				if localKey == stepMap["local_key"] {
+					stepParamsValue := stateStep.GetAttr("params")
+					if stepParamsValue.IsNull() {
+						continue
+					}
+
+					stepParams := stepParamsValue.Index(cty.NumberIntVal(0))
+					elementValue := stepParams.GetAttr("element")
+					if elementValue.IsNull() {
+						continue
+					}
+					element := elementValue.AsString()
+					stateStepElement := make(map[string]interface{})
+					utils.GetMetadataFromJSON([]byte(element), &stateStepElement)
+
+					for key, value := range stateStepElement {
+						stepElement[key] = value
+					}
+				}
+			}
+		}
+
+		// Update the ML from the config, if found
+		rawConfig := d.GetRawConfig()
+		configStepCount := 0
+		configSteps := cty.ListValEmpty(cty.DynamicPseudoType)
+		if !rawConfig.IsNull() {
+			configSteps = rawConfig.GetAttr("browser_step")
+			configStepCount = configSteps.LengthInt()
+		}
+
+		if configStepCount > 0 {
+			for i := range configStepCount {
+				configStep := configSteps.Index(cty.NumberIntVal(int64(i)))
+				localKeyValue := configStep.GetAttr("local_key")
+				if localKeyValue.IsNull() {
+					continue
+				}
+
+				localKey := localKeyValue.AsString()
+				if localKey == stepMap["local_key"] {
+					stepParamsValue := configStep.GetAttr("params")
+					if stepParamsValue.IsNull() {
+						continue
+					}
+
+					stepParams := stepParamsValue.Index(cty.NumberIntVal(0))
+					elementValue := stepParams.GetAttr("element")
+					if elementValue.IsNull() {
+						continue
+					}
+					element := elementValue.AsString()
+					configStepElement := make(map[string]interface{})
+					utils.GetMetadataFromJSON([]byte(element), &configStepElement)
+
+					for key, value := range configStepElement {
+						stepElement[key] = value
+					}
+				}
+			}
+		}
+
+		// If the step has a user locator in the config, set it in the stepElement as well
+		if stepParamsMap["element_user_locator"] != "" {
+			userLocatorsParams := stepParamsMap["element_user_locator"].([]interface{})
+
+			if len(userLocatorsParams) != 0 {
+				userLocatorParams := userLocatorsParams[0].(map[string]interface{})
+				values := userLocatorParams["value"].([]interface{})
+				userLocator := map[string]interface{}{
+					"failTestOnCannotLocate": userLocatorParams["fail_test_on_cannot_locate"],
+					"values":                 []map[string]interface{}{values[0].(map[string]interface{})},
+				}
+
+				stepElement["userLocator"] = userLocator
+			}
+		}
+
+	}
+
+	// If the step should contain an element, and it's not empty, add it to the params.
+	// This is to avoid sending an empty element to the backend, as some steps have an optional element.
+	if includeElement && len(stepElement) > 0 {
+		params["element"] = stepElement
+	}
+
+	return params
+}
+
 func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 	switch stepType {
 	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_CURRENT_URL:
@@ -3715,6 +4983,274 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 	return []string{}
 }
 
+func getParamsKeysForMobileStepType(stepType datadogV1.SyntheticsMobileStepType) []string {
+	switch stepType {
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTELEMENTCONTENT:
+		return []string{"check", "element", "value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENCONTAINS:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENLACKS:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_DOUBLETAP:
+		return []string{"element"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_EXTRACTVARIABLE:
+		return []string{"element", "variable"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_FLICK:
+		return []string{"position"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_OPENDEEPLINK:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PLAYSUBTEST:
+		return []string{"subtest_public_id"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PRESSBACK:
+		return []string{}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_RESTARTAPPLICATION:
+		return []string{}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ROTATE:
+		return []string{"value"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLL:
+		return []string{"element", "x", "y"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLLTOELEMENT:
+		return []string{"element", "direction", "max_scrolls"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP:
+		return []string{"element"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TOGGLEWIFI:
+		return []string{"enabled"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT:
+		return []string{"value", "element", "delay", "with_enter"}
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_WAIT:
+		return []string{"value"}
+	}
+
+	return []string{}
+}
+
+func buildDatadogParamsForMobileStep(stepType datadogV1.SyntheticsMobileStepType, stepParams map[string]interface{}) datadogV1.SyntheticsMobileStepParams {
+	params := datadogV1.SyntheticsMobileStepParams{}
+	switch stepType {
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTELEMENTCONTENT:
+		if stepParams["check"] != "" {
+			params.SetCheck(datadogV1.SyntheticsCheckType(stepParams["check"].(string)))
+		}
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENCONTAINS:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ASSERTSCREENLACKS:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_DOUBLETAP:
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_EXTRACTVARIABLE:
+		if len(stepParams["variable"].(map[string]interface{})) != 0 {
+			paramsVarible := datadogV1.SyntheticsMobileStepParamsVariable{}
+			paramsVarible.SetName(stepParams["variable"].(map[string]interface{})["name"].(string))
+			paramsVarible.SetExample(stepParams["variable"].(map[string]interface{})["example"].(string))
+			params.SetVariable(paramsVarible)
+		}
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_FLICK:
+		if len(stepParams["position"].(map[string]interface{})) != 0 {
+			positions := []datadogV1.SyntheticsMobileStepParamsPositionsItems{}
+			for _, position := range stepParams["position"].([]interface{}) {
+				positionItem := datadogV1.SyntheticsMobileStepParamsPositionsItems{}
+				positionItem.SetX(position.(map[string]interface{})["x"].(float64))
+				positionItem.SetY(position.(map[string]interface{})["y"].(float64))
+
+				positions = append(positions, positionItem)
+			}
+
+			params.SetPositions(positions)
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_OPENDEEPLINK:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PLAYSUBTEST:
+		if stepParams["subtest_public_id"] != "" {
+			params.SetSubtestPublicId(stepParams["subtest_public_id"].(string))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_PRESSBACK:
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_RESTARTAPPLICATION:
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_ROTATE:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLL:
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		if stepParams["x"] != "" {
+			params.SetX(stepParams["x"].(float64))
+		}
+		if stepParams["y"] != "" {
+			params.SetY(stepParams["y"].(float64))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_SCROLLTOELEMENT:
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		if stepParams["direction"] != "" {
+			params.SetDirection(datadogV1.SyntheticsMobileStepParamsDirection(stepParams["direction"].(string)))
+		}
+		if stepParams["max_scrolls"] != "" {
+			params.SetMaxScrolls(stepParams["max_scrolls"].(int64))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TAP:
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TOGGLEWIFI:
+		if stepParams["enabled"] != "" {
+			params.SetEnabled(stepParams["enabled"].(bool))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_TYPETEXT:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(string)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueStringAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		stepParam := stepParams["element"].([]interface{})[0].(map[string]interface{})
+		if len(stepParam) != 0 {
+			params.SetElement(buildDatadogParamsElementForMobileStep(stepParam))
+		}
+		if stepParams["delay"] != "" {
+			params.SetDelay(stepParams["delay"].(int64))
+		}
+		if stepParams["with_enter"] != "" {
+			params.SetWithEnter(stepParams["with_enter"].(bool))
+		}
+		return params
+
+	case datadogV1.SYNTHETICSMOBILESTEPTYPE_WAIT:
+		if stepParams["value"] != "" {
+			stepParamsValue := stepParams["value"].(int64)
+			params.SetValue(datadogV1.SyntheticsMobileStepParamsValueNumberAsSyntheticsMobileStepParamsValue(&stepParamsValue))
+		}
+		return params
+	}
+
+	return params
+}
+
+func buildDatadogParamsElementForMobileStep(stepParamsElements map[string]interface{}) datadogV1.SyntheticsMobileStepParamsElement {
+	elements := datadogV1.SyntheticsMobileStepParamsElement{}
+
+	if len(stepParamsElements["multi_locator"].(map[string]interface{})) != 0 {
+		elements.SetMultiLocator(stepParamsElements["multi_locator"].(string))
+	}
+	if stepParamsElements["context"].(string) != "" {
+		elements.SetContext(stepParamsElements["context"].(string))
+	}
+	if stepParamsElements["context_type"].(string) != "" {
+		elements.SetContextType(datadogV1.SyntheticsMobileStepParamsElementContextType(stepParamsElements["context_type"].(string)))
+	}
+	stepParamsElement := stepParamsElements["user_locator"].([]interface{})[0].(map[string]interface{})
+	if len(stepParamsElement) != 0 {
+
+		userLocator := datadogV1.SyntheticsMobileStepParamsElementUserLocator{}
+		userLocatorValues := []datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItems{}
+
+		userLocator.SetFailTestOnCannotLocate(stepParamsElement["fail_test_on_cannot_locate"].(bool))
+
+		for _, value := range stepParamsElement["values"].([]interface{}) {
+			userLocatorValue := datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItems{}
+			userLocatorValue.SetType(datadogV1.SyntheticsMobileStepParamsElementUserLocatorValuesItemsType(value.(map[string]interface{})["type"].(string)))
+			userLocatorValue.SetValue(value.(map[string]interface{})["value"].(string))
+
+			userLocatorValues = append(userLocatorValues, userLocatorValue)
+		}
+
+		userLocator.SetValues(userLocatorValues)
+		elements.SetUserLocator(userLocator)
+	}
+	if stepParamsElements["element_description"].(string) != "" {
+		elements.SetElementDescription(stepParamsElements["element_description"].(string))
+	}
+	elementRelativePosition := stepParamsElements["relative_position"].([]interface{})[0].(map[string]interface{})
+	if len(elementRelativePosition) != 0 {
+		relativePosition := datadogV1.SyntheticsMobileStepParamsElementRelativePosition{}
+		relativePosition.SetX(elementRelativePosition["x"].(float64))
+		relativePosition.SetY(elementRelativePosition["y"].(float64))
+
+		elements.SetRelativePosition(relativePosition)
+	}
+	if stepParamsElements["text_content"].(string) != "" {
+		elements.SetTextContent(stepParamsElements["text_content"].(string))
+	}
+	if stepParamsElements["view_name"].(string) != "" {
+		elements.SetViewName(stepParamsElements["view_name"].(string))
+	}
+
+	return elements
+}
+
 func getSyntheticsTestType(d *schema.ResourceData) *datadogV1.SyntheticsTestDetailsType {
 	v := datadogV1.SyntheticsTestDetailsType(d.Get("type").(string))
 	return &v
@@ -3762,4 +5298,49 @@ func validateSyntheticsAssertionOperator(val interface{}, key string) (warns []s
 		}
 	}
 	return
+}
+
+func getConfigCertAndKeyContent(d *schema.ResourceData, stepIndex int) (*string, *string) {
+	// For security reasons, the certificate and keys can't be stored in the terraform state. It needs to stay in clear only in the config. This function retrieve the certificate from the terraform config, rather than the state.
+	// To retrieve the certificate and key, we first need to build the paths to the cert and key content, and then apply these paths to the rawConfig.
+
+	rawConfig := d.GetRawConfig()
+	basePath := cty.GetAttrPath("api_step").
+		Index(cty.NumberIntVal(int64(stepIndex))).
+		GetAttr("request_client_certificate").
+		Index(cty.NumberIntVal(0))
+
+	// Get the certificate
+	certContentPath := basePath.
+		GetAttr("cert").
+		Index(cty.NumberIntVal(0)).
+		GetAttr("content")
+	certContent, err := certContentPath.Apply(rawConfig)
+	if err != nil || !certContent.IsKnown() || certContent.IsNull() {
+		return nil, nil
+	}
+	certContentString := certContent.AsString()
+
+	// Get the key
+	keyContentPath := basePath.
+		GetAttr("key").
+		Index(cty.NumberIntVal(0)).
+		GetAttr("content")
+	keyContent, err := keyContentPath.Apply(rawConfig)
+	if err != nil || !keyContent.IsKnown() || keyContent.IsNull() {
+		return nil, nil
+	}
+	keyContentString := keyContent.AsString()
+
+	return &certContentString, &keyContentString
+}
+
+func getCertAndKeyFromMap(certAndKey map[string]interface{}) (map[string]interface{}, map[string]interface{}) {
+
+	clientCerts := certAndKey["cert"].([]interface{})
+	clientKeys := certAndKey["key"].([]interface{})
+	clientCert := clientCerts[0].(map[string]interface{})
+	clientKey := clientKeys[0].(map[string]interface{})
+
+	return clientCert, clientKey
 }

@@ -35,10 +35,16 @@ func dataSourceDatadogSensitiveDataScannerStandardPattern() *schema.Resource {
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
-				"pattern": {
-					Description: "Regex that the standard pattern applies.",
+				"description": {
+					Description: "Description of the standard pattern.",
 					Type:        schema.TypeString,
 					Computed:    true,
+				},
+				"pattern": {
+					Description: "Regex to match, optionally documented for older standard rules. ",
+					Type:        schema.TypeString,
+					Computed:    true,
+					Deprecated:  "Refer to the description field to understand what the rule does.",
 				},
 				"tags": {
 					Description: "List of tags.",
@@ -88,6 +94,9 @@ func dataSourceSensitiveDataScannerStandardPatternUpdate(d *schema.ResourceData,
 		return diag.FromErr(err)
 	}
 	if err := d.Set("name", standardPattern.Attributes.GetName()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("description", standardPattern.Attributes.GetDescription()); err != nil {
 		return diag.FromErr(err)
 	}
 	if err := d.Set("pattern", standardPattern.Attributes.GetPattern()); err != nil {

@@ -4,11 +4,14 @@ page_title: "datadog_dashboard Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
   Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.
+  !> The is_read_only field is deprecated and non-functional. Use restricted_roles instead to define which roles are required to edit the dashboard.
 ---
 
 # datadog_dashboard (Resource)
 
 Provides a Datadog dashboard resource. This can be used to create and manage Datadog dashboards.
+
+!> The `is_read_only` field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard.
 
 ## Example Usage
 
@@ -738,7 +741,7 @@ resource "datadog_dashboard" "free_dashboard" {
 
 - `dashboard_lists` (Set of Number) A list of dashboard lists this dashboard belongs to. This attribute should not be set if managing the corresponding dashboard lists using Terraform as it causes inconsistent behavior.
 - `description` (String) The description of the dashboard.
-- `is_read_only` (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** Prefer using `restricted_roles` to define which roles are required to edit the dashboard. Defaults to `false`.
+- `is_read_only` (Boolean, Deprecated) Whether this dashboard is read-only. **Deprecated.** This field is deprecated and non-functional. Use `restricted_roles` instead to define which roles are required to edit the dashboard. Defaults to `false`.
 - `notify_list` (Set of String) The list of handles for the users to notify when changes are made to this dashboard.
 - `reflow_type` (String) The reflow type of a new dashboard layout. Set this only when layout type is `ordered`. If set to `fixed`, the dashboard expects all widgets to have a layout, and if it's set to `auto`, widgets should not have layouts. Valid values are `auto`, `fixed`.
 - `restricted_roles` (Set of String) UUIDs of roles whose associated users are authorized to edit the dashboard.
@@ -1278,7 +1281,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -2190,7 +2193,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -2783,7 +2786,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -3695,7 +3698,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -4208,7 +4211,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -5655,7 +5658,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -6342,7 +6345,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -6778,7 +6781,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -7922,7 +7925,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -8405,7 +8408,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -8960,7 +8963,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -9647,7 +9650,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -10046,7 +10049,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -11217,7 +11220,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -11955,7 +11958,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -12627,7 +12630,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -13040,7 +13043,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -13683,7 +13686,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -14421,7 +14424,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -15093,7 +15096,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -15573,7 +15576,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -16030,7 +16033,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -17477,7 +17480,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -18164,7 +18167,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -18600,7 +18603,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -19744,7 +19747,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -20227,7 +20230,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -20782,7 +20785,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -21469,7 +21472,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -21868,7 +21871,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -23039,7 +23042,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -23777,7 +23780,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -24449,7 +24452,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -24862,7 +24865,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -25505,7 +25508,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -26243,7 +26246,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -26915,7 +26918,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:
@@ -27395,7 +27398,7 @@ Optional:
 Required:
 
 - `data_source` (String) The data source for SLO queries. Valid values are `slo`.
-- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
+- `measure` (String) SLO measures queries. Valid values are `good_events`, `bad_events`, `good_minutes`, `bad_minutes`, `slo_status`, `error_budget_remaining`, `burn_rate`, `error_budget_burndown`.
 - `slo_id` (String) ID of an SLO to query.
 
 Optional:

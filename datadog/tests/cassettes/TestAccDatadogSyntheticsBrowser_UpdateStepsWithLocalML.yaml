@@ -1,0 +1,466 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2404
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"locations":["aws:eu-central-1"],"message":"","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"status":"paused","steps":[{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name first","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name second","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name third","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name fourth","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent"}],"tags":[],"type":"browser"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:57:59.196672+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":161232129,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"263-xwp-vkn","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"j3r-4bb-rr3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"5c6-3fs-p8g","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"ykx-cu4-zf4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}],"stepCount":{"assertions":4,"subtests":0,"total":4}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 809.782292ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:57:59.196672+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":161232129,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"263-xwp-vkn","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"j3r-4bb-rr3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"5c6-3fs-p8g","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"ykx-cu4-zf4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 166.164958ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:57:59.196672+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":161232129,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 160.659542ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:57:59.196672+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":161232129,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 160.28825ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:57:59.196672+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":161232129,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"263-xwp-vkn","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"j3r-4bb-rr3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"5c6-3fs-p8g","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"ykx-cu4-zf4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.678458ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:57:59.196672+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":161232129,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 166.443334ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:57:59.196672+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":161232129,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"263-xwp-vkn","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"j3r-4bb-rr3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"5c6-3fs-p8g","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"ykx-cu4-zf4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 161.383958ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2404
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"locations":["aws:eu-central-1"],"message":"","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"status":"paused","steps":[{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name first","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name third","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name second","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name fourth","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent"}],"tags":[],"type":"browser"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/dj2-car-7ue
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"org_id":321813,"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:58:02.404372+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"overall_state_modified":"2024-12-27T15:58:02.499211+00:00","monitor_id":161232129,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"n7r-vhe-ff2","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"dmw-jkj-mmj","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"y5y-u36-qub","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"k3n-vwm-bm4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}],"stepCount":{"assertions":4,"subtests":0,"total":4}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 600.020208ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:58:02.404372+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":161232129,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 174.259375ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:58:02.404372+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":161232129,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 162.230417ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"public_id":"dj2-car-7ue","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1735315077","status":"paused","type":"browser","tags":[],"created_at":"2024-12-27T15:57:59.196672+00:00","modified_at":"2024-12-27T15:58:02.404372+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":161232129,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"n7r-vhe-ff2","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"dmw-jkj-mmj","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"y5y-u36-qub","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"k3n-vwm-bm4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 173.698625ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 31
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"public_ids":["dj2-car-7ue"]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/delete
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_tests":[{"public_id":"dj2-car-7ue","deleted_at":"2024-12-27T15:58:05.009835+00:00"}]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 706.751666ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/dj2-car-7ue
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: '{"errors":["Synthetics test not found"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 142.7305ms

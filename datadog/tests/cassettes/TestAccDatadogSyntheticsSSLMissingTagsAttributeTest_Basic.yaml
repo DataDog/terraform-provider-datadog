@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1724351349","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"ssl","tags":[],"type":"api"}
+            {"config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1733745443","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"status":"paused","subtype":"ssl","tags":[],"type":"api"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"qdj-fdv-9pq","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1724351349","status":"paused","type":"api","tags":[],"created_at":"2024-08-22T18:29:12.006686+00:00","modified_at":"2024-08-22T18:29:12.006686+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"ssl","created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":152019608,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"f27-ta3-4tk","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1733745443","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2024-12-09T11:57:26.082825+00:00","modified_at":"2024-12-09T11:57:26.082825+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":159883334,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 356.722ms
+        duration: 470.533084ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/qdj-fdv-9pq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/f27-ta3-4tk
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"qdj-fdv-9pq","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1724351349","status":"paused","type":"api","tags":[],"created_at":"2024-08-22T18:29:12.006686+00:00","modified_at":"2024-08-22T18:29:12.006686+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"ssl","monitor_id":152019608,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"f27-ta3-4tk","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1733745443","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2024-12-09T11:57:26.082825+00:00","modified_at":"2024-12-09T11:57:26.082825+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":159883334,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 312.053625ms
+        duration: 283.146333ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/qdj-fdv-9pq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/f27-ta3-4tk
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"qdj-fdv-9pq","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1724351349","status":"paused","type":"api","tags":[],"created_at":"2024-08-22T18:29:12.006686+00:00","modified_at":"2024-08-22T18:29:12.006686+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"ssl","monitor_id":152019608,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"f27-ta3-4tk","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1733745443","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2024-12-09T11:57:26.082825+00:00","modified_at":"2024-12-09T11:57:26.082825+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":159883334,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.586916ms
+        duration: 155.144875ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/qdj-fdv-9pq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/f27-ta3-4tk
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"qdj-fdv-9pq","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1724351349","status":"paused","type":"api","tags":[],"created_at":"2024-08-22T18:29:12.006686+00:00","modified_at":"2024-08-22T18:29:12.006686+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"ssl","monitor_id":152019608,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"f27-ta3-4tk","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1733745443","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2024-12-09T11:57:26.082825+00:00","modified_at":"2024-12-09T11:57:26.082825+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":159883334,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 405.44425ms
+        duration: 150.90525ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/qdj-fdv-9pq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/api/f27-ta3-4tk
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"qdj-fdv-9pq","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1724351349","status":"paused","type":"api","tags":[],"created_at":"2024-08-22T18:29:12.006686+00:00","modified_at":"2024-08-22T18:29:12.006686+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"subtype":"ssl","monitor_id":152019608,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"f27-ta3-4tk","name":"tf-TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic-local-1733745443","status":"paused","type":"api","subtype":"ssl","tags":[],"created_at":"2024-12-09T11:57:26.082825+00:00","modified_at":"2024-12-09T11:57:26.082825+00:00","config":{"assertions":[{"operator":"isInMoreThan","target":30,"type":"certificate"}],"configVariables":[],"request":{"host":"datadoghq.com","port":"443"}},"message":"Notify @datadog.user","options":{"accept_self_signed":true,"httpVersion":"any","min_location_failed":1,"tick_every":60},"locations":["aws:eu-central-1"],"monitor_id":159883334,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 150.463583ms
+        duration: 254.929875ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -191,7 +191,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["qdj-fdv-9pq"]}
+            {"public_ids":["f27-ta3-4tk"]}
         form: {}
         headers:
             Accept:
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"qdj-fdv-9pq","deleted_at":"2024-08-22T18:29:15.632081+00:00"}]}
+            {"deleted_tests":[{"public_id":"f27-ta3-4tk","deleted_at":"2024-12-09T11:57:29.944167+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 736.524917ms
+        duration: 673.799625ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/qdj-fdv-9pq
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/f27-ta3-4tk
         method: GET
       response:
         proto: HTTP/1.1
@@ -250,4 +250,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 126.280916ms
+        duration: 125.139417ms
