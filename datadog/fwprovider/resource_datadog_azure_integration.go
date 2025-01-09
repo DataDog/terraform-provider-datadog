@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -65,6 +66,13 @@ func (r *integrationAzureResource) Configure(_ context.Context, request resource
 
 func (r *integrationAzureResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "integration_azure"
+}
+
+var ResourceProviderConfigSchemaType = types.ObjectType{
+	AttrTypes: map[string]attr.Type{
+		"namespace":       types.StringType,
+		"metrics_enabled": types.BoolType,
+	},
 }
 
 func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -146,13 +154,9 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 			"resource_provider_configs": schema.ListAttribute{
 				Computed:    true,
 				Optional:    true,
+				Default:     listdefault.StaticValue(types.ListNull(ResourceProviderConfigSchemaType)),
 				Description: "Configuration settings applied to resources from the specified Azure resource providers.",
-				ElementType: types.ObjectType{
-					AttrTypes: map[string]attr.Type{
-						"namespace":       types.StringType,
-						"metrics_enabled": types.BoolType,
-					},
-				},
+				ElementType: ResourceProviderConfigSchemaType,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
