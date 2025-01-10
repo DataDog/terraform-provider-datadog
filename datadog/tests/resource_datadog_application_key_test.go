@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"slices"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -21,6 +22,7 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 	applicationKeyName := uniqueEntityName(ctx, t)
 	applicationKeyNameUpdate := applicationKeyName + "-2"
 	resourceName := "datadog_application_key.foo"
+	scopes := []string{"dashboards_read", "dashboards_write"}
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -42,6 +44,18 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "name", applicationKeyNameUpdate),
 					testAccCheckDatadogApplicationKeyNameMatches(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					resource.TestCheckNoResourceAttr(resourceName, "scopes"),
+				),
+			},
+			{
+				Config: testAccCheckDatadogScopedApplicationKeyConfigRequired(applicationKeyNameUpdate, scopes),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApplicationKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", applicationKeyNameUpdate),
+					testAccCheckDatadogApplicationKeyNameMatches(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					testAccCheckDatadogApplicationKeyScopeMatches(providers.frameworkProvider, resourceName, scopes),
+					resource.TestCheckResourceAttrSet(resourceName, "scopes"),
 				),
 			},
 		},
@@ -79,6 +93,14 @@ func testAccCheckDatadogApplicationKeyConfigRequired(uniq string) string {
 resource "datadog_application_key" "foo" {
   name = "%s"
 }`, uniq)
+}
+
+func testAccCheckDatadogScopedApplicationKeyConfigRequired(uniq string, scopes []string) string {
+	return fmt.Sprintf(`
+resource "datadog_application_key" "foo" {
+  name = "%s"
+  scopes = %v
+}`, uniq, scopes)
 }
 
 func testAccCheckDatadogApplicationKeyExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
@@ -124,6 +146,37 @@ func datadogApplicationKeyNameMatches(ctx context.Context, s *terraform.State, a
 	if keyName != stateKeyName {
 		return fmt.Errorf("application key name %s in state does not match expected name %s from API", stateKeyName, keyName)
 	}
+	return nil
+}
+
+func testAccCheckDatadogApplicationKeyScopeMatches(accProvider *fwprovider.FrameworkProvider, n string, scopes []string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+		if err := datadogApplicationKeyScopeMatches(auth, s, apiInstances, n, scopes); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+func datadogApplicationKeyScopeMatches(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string, expectedScopes []string) error {
+	primaryResource := s.RootModule().Resources[name].Primary
+	id := primaryResource.ID
+	resp, _, err := apiInstances.GetKeyManagementApiV2().GetCurrentUserApplicationKey(ctx, id)
+	if err != nil {
+		return fmt.Errorf("received an error retrieving application key %s", err)
+	}
+	appKeyScopes := resp.Data.Attributes.GetScopes()
+	if len(appKeyScopes) != len(expectedScopes) {
+		return fmt.Errorf("application key scopes %s in state do not match expected scopes list %s from API", appKeyScopes, expectedScopes)
+	}
+	for _, scope := range appKeyScopes {
+		if !slices.Contains(expectedScopes, scope) {
+			return fmt.Errorf("application key scope %s in state not in expected scopes list %s from API", scope, expectedScopes)
+		}
+	}
+
 	return nil
 }
 
