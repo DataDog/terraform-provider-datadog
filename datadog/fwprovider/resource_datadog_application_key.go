@@ -188,10 +188,6 @@ func (r *applicationKeyResource) updateState(ctx context.Context, state *applica
 func getScopesFromStateAttribute(scopes types.Set) []string {
 	scopesList := []string{}
 
-	if scopes.IsNull() {
-		return scopesList
-	}
-
 	for _, scope := range scopes.Elements() {
 		scopesList = append(scopesList, scope.(types.String).ValueString())
 	}
