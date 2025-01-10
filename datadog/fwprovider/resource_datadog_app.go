@@ -2,14 +2,15 @@ package fwprovider
 
 import (
 	"context"
-	"time"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -25,17 +26,23 @@ type appResource struct {
 }
 
 // TODO: finalize model
+// type appResourceModel struct {
+// 	ID          types.String `tfsdk:"id"`
+// 	Name        types.String `tfsdk:"name"`
+// 	Description types.String `tfsdk:"description"`
+// 	// Favorite         types.Bool   `tfsdk:"favorite"`
+// 	Tags             types.List   `tfsdk:"tags"`
+// 	RootInstanceName types.String `tfsdk:"root_instance_name"`
+// 	Components       types.List   `tfsdk:"components"`
+// 	Queries          types.List   `tfsdk:"queries"`
+// 	Scripts          types.List   `tfsdk:"scripts"`
+// 	// InputSchema      types.String `tfsdk:"input_schema"`
+// }
+
+// try single property JSON input -> validation will be handled on the API side
 type appResourceModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	// Favorite         types.Bool   `tfsdk:"favorite"`
-	Tags             types.List   `tfsdk:"tags"`
-	RootInstanceName types.String `tfsdk:"root_instance_name"`
-	Components       types.List   `tfsdk:"components"`
-	Queries          types.List   `tfsdk:"queries"`
-	Scripts          types.List   `tfsdk:"scripts"`
-	// InputSchema      types.String `tfsdk:"input_schema"`
+	ID      types.String `tfsdk:"id"`
+	AppJson types.String `tfsdk:"app_json"`
 }
 
 func NewAppResource() resource.Resource {
@@ -53,53 +60,69 @@ func (r *appResource) Metadata(_ context.Context, request resource.MetadataReque
 }
 
 // TODO: figure out rest of Schema
+// func (r *appResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+// 	response.Schema = schema.Schema{
+// 		Description: "Provides a Datadog App resource. This can be used to create and manage a Datadog App",
+// 		Attributes: map[string]schema.Attribute{
+// 			"id": utils.ResourceIDAttribute(),
+// 			"name": schema.StringAttribute{
+// 				Optional:    true,
+// 				Computed:    true,
+// 				Default:     stringdefault.StaticString("New Terraform App " + time.Now().Format("Mon, Jan _2, 3:04:05 pm")),
+// 				Description: "The name of the App.",
+// 			},
+// 			"description": schema.StringAttribute{
+// 				Optional:    true,
+// 				Default:     stringdefault.StaticString(""),
+// 				Description: "The description of the App.",
+// 			},
+// 			// "favorite": schema.BoolAttribute{
+// 			// 	Optional:    true,
+// 			// 	Default:     booldefault.StaticBool(false),
+// 			// 	Description: "Whether or not the App is favorited.",
+// 			// },
+// 			"tags": schema.ListAttribute{
+// 				Optional:    true,
+// 				Description: "The tags of the App.",
+// 				ElementType: types.StringType,
+// 			},
+// 			"root_instance_name": schema.StringAttribute{
+// 				Computed:    true,
+// 				Default:     stringdefault.StaticString("grid0"),
+// 				Description: "The root instance name of the App.",
+// 			},
+// 			"components": schema.ListAttribute{
+// 				Description: "The components of the App.",
+// 				ElementType: types.StringType,
+// 			},
+// 			"queries": schema.ListAttribute{
+// 				Description: "The queries of the App.",
+// 				ElementType: types.StringType,
+// 			},
+// 			"scripts": schema.ListAttribute{
+// 				Description: "The scripts of the App.",
+// 				ElementType: types.StringType,
+// 			},
+// 			// "input_schema": schema.StringAttribute{
+// 			// 	Description: "The input schema of the App.",
+// 			// },
+
+// 		},
+// 	}
+// }
+
 func (r *appResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog App resource. This can be used to create and manage a Datadog App",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
-			"name": schema.StringAttribute{
-				Optional:    true,
-				Computed:    true,
-				Default:     stringdefault.StaticString("New Terraform App " + time.Now().Format("Mon, Jan _2, 3:04:05 pm")),
-				Description: "The name of the App.",
+			"app_json": schema.StringAttribute{
+				Required:    true,
+				Description: "The JSON representation of the App.",
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
 			},
-			"description": schema.StringAttribute{
-				Optional:    true,
-				Default:     stringdefault.StaticString(""),
-				Description: "The description of the App.",
-			},
-			// "favorite": schema.BoolAttribute{
-			// 	Optional:    true,
-			// 	Default:     booldefault.StaticBool(false),
-			// 	Description: "Whether or not the App is favorited.",
-			// },
-			"tags": schema.ListAttribute{
-				Optional:    true,
-				Description: "The tags of the App.",
-				ElementType: types.StringType,
-			},
-			"root_instance_name": schema.StringAttribute{
-				Computed:    true,
-				Default:     stringdefault.StaticString("grid0"),
-				Description: "The root instance name of the App.",
-			},
-			"components": schema.ListAttribute{
-				Description: "The components of the App.",
-				ElementType: types.StringType,
-			},
-			"queries": schema.ListAttribute{
-				Description: "The queries of the App.",
-				ElementType: types.StringType,
-			},
-			"scripts": schema.ListAttribute{
-				Description: "The scripts of the App.",
-				ElementType: types.StringType,
-			},
-			// "input_schema": schema.StringAttribute{
-			// 	Description: "The input schema of the App.",
-			// },
-
 		},
 	}
 }
@@ -158,7 +181,7 @@ func (r *appResource) Create(ctx context.Context, request resource.CreateRequest
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateStateForRead(ctx, &state, &resp)
+	state.ID = types.StringValue(resp.Data.GetId())
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -188,7 +211,7 @@ func (r *appResource) Update(ctx context.Context, request resource.UpdateRequest
 		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateStateForRead(ctx, &state, &resp)
+	r.updateStateForUpdate(ctx, &state, &resp)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -214,110 +237,153 @@ func (r *appResource) Delete(ctx context.Context, request resource.DeleteRequest
 }
 
 // TODO
+// func (r *appResource) updateStateForRead(ctx context.Context, state *appResourceModel, resp *datadogV2.GetAppResponse) {
+// 	state.ID = types.StringValue(resp.Data.GetId())
+
+// 	data := resp.GetData()
+// 	attributes := data.GetAttributes()
+
+// 	if name, ok := attributes.GetNameOk(); ok && name != nil {
+// 		state.Name = types.StringValue(*name)
+// 	}
+
+// 	if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
+// 		state.Description = types.StringValue(*description)
+// 	}
+
+// 	// if favorite, ok := attributes.GetFavoriteOk(); ok && favorite != nil {
+// 	// 	state.Favorite = types.BoolValue(*favorite)
+// 	// }
+
+// 	if tags, ok := attributes.GetTagsOk(); ok && tags != nil {
+// 		state.Tags, _ = types.ListValueFrom(ctx, types.StringType, tags)
+// 	}
+
+// 	if rootInstanceName, ok := attributes.GetRootInstanceNameOk(); ok && rootInstanceName != nil {
+// 		state.RootInstanceName = types.StringValue(*rootInstanceName)
+// 	}
+
+// 	if components, ok := attributes.GetComponentsOk(); ok && components != nil {
+// 		state.Components, _ = types.ListValueFrom(ctx, types.StringType, components)
+// 	}
+
+// 	if queries, ok := attributes.GetEmbeddedQueriesOk(); ok && queries != nil {
+// 		state.Queries, _ = types.ListValueFrom(ctx, types.StringType, queries)
+// 	}
+
+// 	if scripts, ok := attributes.GetScriptsOk(); ok && scripts != nil {
+// 		state.Scripts, _ = types.ListValueFrom(ctx, types.StringType, scripts)
+// 	}
+
+//		// if inputSchema, ok := attributes.GetInputSchemaOk(); ok && inputSchema != nil {
+//		// 	state.InputSchema = types.StringValue(*inputSchema)
+//		// }
+//	}
+
 func (r *appResource) updateStateForRead(ctx context.Context, state *appResourceModel, resp *datadogV2.GetAppResponse) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	if name, ok := attributes.GetNameOk(); ok && name != nil {
-		state.Name = types.StringValue(*name)
+	bytes, err := attributes.MarshalJSON()
+	if err != nil {
+		return
 	}
+	state.AppJson = types.StringValue(string(bytes))
+}
 
-	if description, ok := attributes.GetDescriptionOk(); ok && description != nil {
-		state.Description = types.StringValue(*description)
+func (r *appResource) updateStateForUpdate(ctx context.Context, state *appResourceModel, resp *datadogV2.UpdateAppResponse) {
+	state.ID = types.StringValue(resp.Data.GetId())
+
+	data := resp.GetData()
+	attributes := data.GetAttributes()
+
+	bytes, err := attributes.MarshalJSON()
+	if err != nil {
+		return
 	}
-
-	// if favorite, ok := attributes.GetFavoriteOk(); ok && favorite != nil {
-	// 	state.Favorite = types.BoolValue(*favorite)
-	// }
-
-	if tags, ok := attributes.GetTagsOk(); ok && tags != nil {
-		state.Tags, _ = types.ListValueFrom(ctx, types.StringType, tags)
-	}
-
-	if rootInstanceName, ok := attributes.GetRootInstanceNameOk(); ok && rootInstanceName != nil {
-		state.RootInstanceName = types.StringValue(*rootInstanceName)
-	}
-
-	if components, ok := attributes.GetComponentsOk(); ok && components != nil {
-		state.Components, _ = types.ListValueFrom(ctx, types.StringType, components)
-	}
-
-	if queries, ok := attributes.GetEmbeddedQueriesOk(); ok && queries != nil {
-		state.Queries, _ = types.ListValueFrom(ctx, types.StringType, queries)
-	}
-
-	if scripts, ok := attributes.GetScriptsOk(); ok && scripts != nil {
-		state.Scripts, _ = types.ListValueFrom(ctx, types.StringType, scripts)
-	}
-
-	// if inputSchema, ok := attributes.GetInputSchemaOk(); ok && inputSchema != nil {
-	// 	state.InputSchema = types.StringValue(*inputSchema)
-	// }
+	state.AppJson = types.StringValue(string(bytes))
 }
 
 // TODO
+// func (r *appResource) buildCreateAppRequestBody(ctx context.Context, state *appResourceModel) (*datadogV2.CreateAppRequest, diag.Diagnostics) {
+// 	diags := diag.Diagnostics{}
+// 	attributes := datadogV2.NewCreateAppRequestDataAttributesWithDefaults()
+
+// 	if !state.Name.IsNull() {
+// 		attributes.SetName(state.Name.ValueString())
+// 	}
+
+// 	if !state.Description.IsNull() {
+// 		attributes.SetDescription(state.Description.ValueString())
+// 	}
+
+// 	// if !state.Favorite.IsNull() {
+// 	// 	attributes.SetFavorite(state.Favorite.ValueBool())
+// 	// }
+
+// 	if !state.Tags.IsNull() {
+// 		tags := []string{}
+// 		diags.Append(state.Tags.ElementsAs(ctx, &tags, false)...)
+// 		attributes.SetTags(tags)
+// 	}
+
+// 	if !state.RootInstanceName.IsNull() {
+// 		attributes.SetRootInstanceName(state.RootInstanceName.ValueString())
+// 	}
+
+// 	if !state.Components.IsNull() {
+// 		components := []string{}
+// 		diags.Append(state.Tags.ElementsAs(ctx, &components, false)...)
+// 		attributes.SetTags(components)
+// 	}
+
+// 	// if !state.Components.IsNull() {
+// 	// 	components, err := state.Components.Value()
+// 	// 	if err != nil {
+// 	// 		diags = append(diags, diag.Diagnostic{
+// 	// 			Severity: diag.Error,
+// 	// 			Summary:  "Error converting components to list",
+// 	// 			Detail:   err.Error(),
+// 	// 		})
+// 	// 		return nil, diags
+// 	// 	}
+// 	// 	attributes.SetComponents(components.([]string))
+// 	// }
+
+// 	if !state.Queries.IsNull() {
+// 		queries := []string{}
+// 		diags.Append(state.Tags.ElementsAs(ctx, &queries, false)...)
+// 		attributes.SetTags(queries)
+// 	}
+
+// 	if !state.Scripts.IsNull() {
+// 		scripts := []string{}
+// 		diags.Append(state.Tags.ElementsAs(ctx, &scripts, false)...)
+// 		attributes.SetTags(scripts)
+// 	}
+
+// 	// if !state.InputSchema.IsNull() {
+// 	// 	attributes.SetInputSchema(state.InputSchema.Value())
+// 	// }
+
+// 	req := datadogV2.NewCreateAppRequestWithDefaults()
+// 	req.Data = datadogV2.NewCreateAppRequestDataWithDefaults()
+// 	req.Data.SetAttributes(*attributes)
+
+// 	return req, diags
+// }
+
 func (r *appResource) buildCreateAppRequestBody(ctx context.Context, state *appResourceModel) (*datadogV2.CreateAppRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewCreateAppRequestDataAttributesWithDefaults()
 
-	if !state.Name.IsNull() {
-		attributes.SetName(state.Name.ValueString())
+	err := attributes.UnmarshalJSON([]byte(state.AppJson.String()))
+	if err != nil {
+		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json: %s", err))
+		return nil, diags
 	}
-
-	if !state.Description.IsNull() {
-		attributes.SetDescription(state.Description.ValueString())
-	}
-
-	// if !state.Favorite.IsNull() {
-	// 	attributes.SetFavorite(state.Favorite.ValueBool())
-	// }
-
-	if !state.Tags.IsNull() {
-		tags := []string{}
-		diags.Append(state.Tags.ElementsAs(ctx, &tags, false)...)
-		attributes.SetTags(tags)
-	}
-
-	if !state.RootInstanceName.IsNull() {
-		attributes.SetRootInstanceName(state.RootInstanceName.ValueString())
-	}
-
-	if !state.Components.IsNull() {
-		components := []string{}
-		diags.Append(state.Tags.ElementsAs(ctx, &components, false)...)
-		attributes.SetTags(components)
-	}
-
-	// if !state.Components.IsNull() {
-	// 	components, err := state.Components.Value()
-	// 	if err != nil {
-	// 		diags = append(diags, diag.Diagnostic{
-	// 			Severity: diag.Error,
-	// 			Summary:  "Error converting components to list",
-	// 			Detail:   err.Error(),
-	// 		})
-	// 		return nil, diags
-	// 	}
-	// 	attributes.SetComponents(components.([]string))
-	// }
-
-	if !state.Queries.IsNull() {
-		queries := []string{}
-		diags.Append(state.Tags.ElementsAs(ctx, &queries, false)...)
-		attributes.SetTags(queries)
-	}
-
-	if !state.Scripts.IsNull() {
-		scripts := []string{}
-		diags.Append(state.Tags.ElementsAs(ctx, &scripts, false)...)
-		attributes.SetTags(scripts)
-	}
-
-	// if !state.InputSchema.IsNull() {
-	// 	attributes.SetInputSchema(state.InputSchema.Value())
-	// }
 
 	req := datadogV2.NewCreateAppRequestWithDefaults()
 	req.Data = datadogV2.NewCreateAppRequestDataWithDefaults()
@@ -327,16 +393,33 @@ func (r *appResource) buildCreateAppRequestBody(ctx context.Context, state *appR
 }
 
 // TODO: similar to buildCreateAppRequestBody
+// func (r *appResource) buildUpdateAppRequestBody(ctx context.Context, state *appResourceModel) (*datadogV2.UpdateAppRequest, diag.Diagnostics) {
+// 	diags := diag.Diagnostics{}
+// 	attributes := datadogV2.NewUpdateAppRequestDataAttributesWithDefaults()
+
+// 	if !state.Name.IsNull() {
+// 		attributes.SetName(state.Name.ValueString())
+// 	}
+
+// 	if !state.Description.IsNull() {
+// 		attributes.SetDescription(state.Description.ValueString())
+// 	}
+
+// 	req := datadogV2.NewUpdateAppRequestWithDefaults()
+// 	req.Data = datadogV2.NewUpdateAppRequestDataWithDefaults()
+// 	req.Data.SetAttributes(*attributes)
+
+// 	return req, diags
+// }
+
 func (r *appResource) buildUpdateAppRequestBody(ctx context.Context, state *appResourceModel) (*datadogV2.UpdateAppRequest, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewUpdateAppRequestDataAttributesWithDefaults()
 
-	if !state.Name.IsNull() {
-		attributes.SetName(state.Name.ValueString())
-	}
-
-	if !state.Description.IsNull() {
-		attributes.SetDescription(state.Description.ValueString())
+	err := attributes.UnmarshalJSON([]byte(state.AppJson.String()))
+	if err != nil {
+		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json: %s", err))
+		return nil, diags
 	}
 
 	req := datadogV2.NewUpdateAppRequestWithDefaults()
