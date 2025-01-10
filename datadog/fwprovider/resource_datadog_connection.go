@@ -318,7 +318,7 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"type": schema.StringAttribute{
-											Description: "Type of the token. Currently only STRING is allowed.",
+											Description: "Type of the token. Currently only SECRET is allowed.",
 											Optional:    true,
 										},
 										"name": schema.StringAttribute{
@@ -439,8 +439,16 @@ func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequ
 
 	conn, httpResponse, err := r.Api.GetActionConnection(r.Auth, state.ID.ValueString())
 	if err != nil {
-		body, _ := io.ReadAll(httpResponse.Body)
-		response.Diagnostics.AddError("Could not get connection", string(body))
+		if httpResponse != nil {
+			body, err := io.ReadAll(httpResponse.Body)
+			if err != nil {
+				response.Diagnostics.AddError("Could not read API error response", "")
+				return
+			}
+			response.Diagnostics.AddError("Could not get connection", string(body))
+		} else {
+			response.Diagnostics.AddError("Could not get connection", err.Error())
+		}
 		return
 	}
 
@@ -517,13 +525,14 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 
 	if attributes.Integration.HTTPIntegration != nil {
 		httpAttr := attributes.Integration.HTTPIntegration
-		return nil, fmt.Errorf("%+v", httpAttr)
 
 		tokenAuth := &httpTokenAuthConnectionModel{}
 		tokens := []*httpConnectionTokenModel{}
 		for _, token := range httpAttr.Credentials.HTTPTokenAuth.Tokens {
 			tokens = append(tokens, &httpConnectionTokenModel{
-				Type: types.StringValue(string(token.Type)),
+				Type:  types.StringValue(string(token.Type)),
+				Name:  types.StringValue(token.Name),
+				Value: types.StringValue(token.Value),
 			})
 		}
 		if len(tokens) > 0 {
