@@ -401,16 +401,28 @@ func (r *connectionResource) Create(ctx context.Context, request resource.Create
 		return
 	}
 
-	conn, _, err := r.Api.CreateActionConnection(r.Auth, *createRequest)
+	conn, httpResponse, err := r.Api.CreateActionConnection(r.Auth, *createRequest)
 	if err != nil {
-		response.Diagnostics.AddError("Could not create connection", err.Error())
+		if httpResponse != nil {
+			// error body may have useful info for the user
+			body, err := io.ReadAll(httpResponse.Body)
+			if err != nil {
+				response.Diagnostics.AddError("Could not read error response", err.Error())
+				return
+			}
+			response.Diagnostics.AddError("Could not create connection", string(body))
+		} else {
+			response.Diagnostics.AddError("Could not create connection", err.Error())
+		}
 		return
 	}
 
 	// set computed values
-	plan.ID = types.StringValue(*conn.GetData().Id)
-	plan.AWS.AssumeRole.ExternalID = types.StringPointerValue(conn.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.ExternalId)
-	plan.AWS.AssumeRole.PrincipalID = types.StringPointerValue(conn.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.PrincipalId)
+	plan.ID = types.StringPointerValue(conn.Data.Id)
+	if plan.AWS != nil {
+		plan.AWS.AssumeRole.ExternalID = types.StringPointerValue(conn.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.ExternalId)
+		plan.AWS.AssumeRole.PrincipalID = types.StringPointerValue(conn.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.PrincipalId)
+	}
 
 	diags = response.State.Set(ctx, &plan)
 	response.Diagnostics.Append(diags...)
@@ -465,7 +477,9 @@ func (r *connectionResource) Delete(ctx context.Context, request resource.Delete
 }
 
 func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionResponse) (*connectionResourceModel, error) {
-	connModel := &connectionResourceModel{}
+	connModel := &connectionResourceModel{
+		ID: types.StringPointerValue(connection.Data.Id),
+	}
 
 	attributes := connection.Data.Attributes
 	connModel.Name = types.StringValue(attributes.Name)
@@ -564,6 +578,43 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 
 	if connectionModel.HTTP != nil {
 		httpTokenAuth := datadogV2.NewHTTPTokenAuth(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
+
+		tokens := connectionModel.HTTP.TokenAuth.Tokens
+		for _, token := range tokens {
+			tokenType, err := datadogV2.NewTokenTypeFromValue(token.Type.ValueString())
+			if err != nil {
+				return nil, err
+			}
+
+			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *datadogV2.NewHTTPToken(
+				token.Name.ValueString(),
+				*tokenType,
+				token.Value.ValueString(),
+			))
+		}
+
+		headers := connectionModel.HTTP.TokenAuth.Headers
+		for _, header := range headers {
+			httpTokenAuth.Headers = append(httpTokenAuth.Headers, *datadogV2.NewHTTPHeader(
+				header.Name.ValueString(),
+				header.Value.ValueString(),
+			))
+		}
+
+		urlParams := connectionModel.HTTP.TokenAuth.URLParameters
+		for _, urlParam := range urlParams {
+			httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *datadogV2.NewUrlParam(
+				urlParam.Name.ValueString(),
+				urlParam.Value.ValueString(),
+			))
+		}
+
+		if connectionModel.HTTP.TokenAuth.Body != nil {
+			httpTokenAuth.Body = datadogV2.NewHTTPBody()
+			httpTokenAuth.Body.ContentType = connectionModel.HTTP.TokenAuth.Body.ContentType.ValueStringPointer()
+			httpTokenAuth.Body.Content = connectionModel.HTTP.TokenAuth.Body.Content.ValueStringPointer()
+		}
+
 		httpCredentials := datadogV2.HTTPTokenAuthAsHTTPCredentials(httpTokenAuth)
 		httpIntegration := datadogV2.NewHTTPIntegration(
 			connectionModel.HTTP.BaseURL.ValueString(),
