@@ -388,33 +388,31 @@ func (r *connectionResource) ImportState(ctx context.Context, request resource.I
 }
 
 func (r *connectionResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state connectionResourceModel
-	diags := request.Plan.Get(ctx, &state)
+	var plan connectionResourceModel
+	diags := request.Plan.Get(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	createRequest, err := connectionModelToCreateApiRequest(state)
+	createRequest, err := connectionModelToCreateApiRequest(plan)
+	if err != nil {
+		response.Diagnostics.AddError("Could not build create connection request", err.Error())
+		return
+	}
+
+	conn, _, err := r.Api.CreateActionConnection(r.Auth, *createRequest)
 	if err != nil {
 		response.Diagnostics.AddError("Could not create connection", err.Error())
 		return
 	}
 
-	conn, httpResponse, err := r.Api.CreateActionConnection(r.Auth, *createRequest)
-	if err != nil {
-		if httpResponse != nil {
-			body, _ := io.ReadAll(httpResponse.Body)
-			response.Diagnostics.AddError("Could not create connection", string(body))
-		} else {
-			response.Diagnostics.AddError("Could not create connection", err.Error())
-		}
-		return
-	}
+	// set computed values
+	plan.ID = types.StringValue(*conn.GetData().Id)
+	plan.AWS.AssumeRole.ExternalID = types.StringPointerValue(conn.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.ExternalId)
+	plan.AWS.AssumeRole.PrincipalID = types.StringPointerValue(conn.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.PrincipalId)
 
-	state.ID = types.StringValue(*conn.GetData().Id)
-
-	diags = response.State.Set(ctx, &state)
+	diags = response.State.Set(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 }
 
@@ -552,8 +550,8 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 
 	if connectionModel.AWS != nil {
 		assumeRoleParams := datadogV2.NewAWSAssumeRole(
-			connectionModel.AWS.AssumeRole.AccountID.String(),
-			connectionModel.AWS.AssumeRole.Role.String(),
+			connectionModel.AWS.AssumeRole.AccountID.ValueString(),
+			connectionModel.AWS.AssumeRole.Role.ValueString(),
 			datadogV2.AWSASSUMEROLETYPE_AWSASSUMEROLE,
 		)
 
@@ -568,18 +566,16 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 		httpTokenAuth := datadogV2.NewHTTPTokenAuth(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
 		httpCredentials := datadogV2.HTTPTokenAuthAsHTTPCredentials(httpTokenAuth)
 		httpIntegration := datadogV2.NewHTTPIntegration(
-			connectionModel.HTTP.BaseURL.String(),
+			connectionModel.HTTP.BaseURL.ValueString(),
 			httpCredentials,
 			datadogV2.HTTPINTEGRATIONTYPE_HTTP,
 		)
 		integration = datadogV2.HTTPIntegrationAsActionConnectionIntegration(httpIntegration)
 	}
 
-	attributes := datadogV2.NewActionConnectionAttributes(integration, connectionModel.Name.String())
+	attributes := datadogV2.NewActionConnectionAttributes(integration, connectionModel.Name.ValueString())
 	data := datadogV2.NewActionConnectionData(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION)
 	req := datadogV2.NewCreateActionConnectionRequest(*data)
-
-	//return nil, fmt.Errorf("%s", req.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.AccountId)
 
 	return req, nil
 }
