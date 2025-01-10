@@ -500,29 +500,30 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 
 	if attributes.Integration.AWSIntegration != nil {
 		awsAttr := attributes.Integration.AWSIntegration
-		if awsAttr.GetCredentials().AWSAssumeRole == nil {
+		if awsAttr.Credentials.AWSAssumeRole == nil {
 			err := fmt.Errorf("this provider only supports AWS connections of the assume role type")
 			return nil, err
 		}
 
 		connModel.AWS = &awsConnectionModel{
 			AssumeRole: &awsAssumeRoleConnectionModel{
-				AccountID:   types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetAccountId()),
-				Role:        types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetRole()),
-				ExternalID:  types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetExternalId()),
-				PrincipalID: types.StringValue(awsAttr.Credentials.AWSAssumeRole.GetPrincipalId()),
+				AccountID:   types.StringValue(awsAttr.Credentials.AWSAssumeRole.AccountId),
+				Role:        types.StringValue(awsAttr.Credentials.AWSAssumeRole.AccountId),
+				ExternalID:  types.StringPointerValue(awsAttr.Credentials.AWSAssumeRole.ExternalId),
+				PrincipalID: types.StringPointerValue(awsAttr.Credentials.AWSAssumeRole.PrincipalId),
 			},
 		}
 	}
 
 	if attributes.Integration.HTTPIntegration != nil {
 		httpAttr := attributes.Integration.HTTPIntegration
+		return nil, fmt.Errorf("%+v", httpAttr)
 
 		tokenAuth := &httpTokenAuthConnectionModel{}
 		tokens := []*httpConnectionTokenModel{}
-		for _, token := range httpAttr.Credentials.HTTPTokenAuth.GetTokens() {
+		for _, token := range httpAttr.Credentials.HTTPTokenAuth.Tokens {
 			tokens = append(tokens, &httpConnectionTokenModel{
-				Type: types.StringValue(string(token.GetType())),
+				Type: types.StringValue(string(token.Type)),
 			})
 		}
 		if len(tokens) > 0 {
@@ -530,7 +531,7 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 		}
 
 		headers := []*httpConnectionHeaderModel{}
-		for _, header := range httpAttr.Credentials.HTTPTokenAuth.GetHeaders() {
+		for _, header := range httpAttr.Credentials.HTTPTokenAuth.Headers {
 			headers = append(headers, &httpConnectionHeaderModel{
 				Name:  types.StringValue(header.Name),
 				Value: types.StringValue(header.Value),
@@ -541,7 +542,7 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 		}
 
 		urlParams := []*httpConnectionUrlParameterModel{}
-		for _, urlParam := range httpAttr.Credentials.HTTPTokenAuth.GetUrlParameters() {
+		for _, urlParam := range httpAttr.Credentials.HTTPTokenAuth.UrlParameters {
 			urlParams = append(urlParams, &httpConnectionUrlParameterModel{
 				Name:  types.StringValue(urlParam.Name),
 				Value: types.StringValue(urlParam.Value),
@@ -551,13 +552,15 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 			tokenAuth.URLParameters = urlParams
 		}
 
-		body := httpAttr.Credentials.HTTPTokenAuth.GetBody()
-		tokenAuth.Body = &httpConnectionBodyModel{}
-		if body.Content != nil {
-			tokenAuth.Body.Content = types.StringValue(*body.Content)
-		}
-		if body.ContentType != nil {
-			tokenAuth.Body.ContentType = types.StringValue(*body.ContentType)
+		body := httpAttr.Credentials.HTTPTokenAuth.Body
+		if body != nil {
+			tokenAuth.Body = &httpConnectionBodyModel{}
+			if body.Content != nil {
+				tokenAuth.Body.Content = types.StringPointerValue(body.Content)
+			}
+			if body.ContentType != nil {
+				tokenAuth.Body.ContentType = types.StringPointerValue(body.ContentType)
+			}
 		}
 
 		connModel.HTTP = &httpConnectionModel{
