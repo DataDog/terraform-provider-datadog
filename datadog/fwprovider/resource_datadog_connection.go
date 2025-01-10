@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
@@ -473,7 +474,20 @@ func (r *connectionResource) Delete(ctx context.Context, request resource.Delete
 		return
 	}
 
-	// noop
+	res, err := r.Api.DeleteActionConnection(r.Auth, state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError("Delete connection failed", err.Error())
+		return
+	}
+
+	if res.StatusCode != http.StatusNoContent {
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			response.Diagnostics.AddError("Delete connection failed", "Failed to read error")
+		} else {
+			response.Diagnostics.AddError("Delete connection failed", string(body))
+		}
+	}
 }
 
 func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionResponse) (*connectionResourceModel, error) {
@@ -503,10 +517,6 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 
 	if attributes.Integration.HTTPIntegration != nil {
 		httpAttr := attributes.Integration.HTTPIntegration
-		// if httpAttr.GetCredentials().HTTPTokenAuth == nil {
-		// 	err := errors.New("this provider only supports HTTP connections of the token auth type")
-		// 	return nil, err
-		// }
 
 		tokenAuth := &httpTokenAuthConnectionModel{}
 		tokens := []*httpConnectionTokenModel{}
