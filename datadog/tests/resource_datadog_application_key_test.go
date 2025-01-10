@@ -3,7 +3,9 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -55,8 +57,28 @@ func TestAccDatadogApplicationKey_Update(t *testing.T) {
 					testAccCheckDatadogApplicationKeyNameMatches(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrSet(resourceName, "key"),
 					testAccCheckDatadogApplicationKeyScopeMatches(providers.frameworkProvider, resourceName, scopes),
-					resource.TestCheckResourceAttrSet(resourceName, "scopes"),
 				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogApplicationKey_Error(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	applicationKeyName := uniqueEntityName(ctx, t)
+	applicationKeyNameUpdate := applicationKeyName + "-2"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogScopedApplicationKeyConfigRequired(applicationKeyNameUpdate, []string{}),
+				ExpectError: regexp.MustCompile(`Attribute scopes set must contain at least 1 elements`),
 			},
 		},
 	})
@@ -96,11 +118,18 @@ resource "datadog_application_key" "foo" {
 }
 
 func testAccCheckDatadogScopedApplicationKeyConfigRequired(uniq string, scopes []string) string {
+	formattedScopes := ""
+	if len(scopes) == 0 {
+		formattedScopes = "[]"
+	} else {
+		formattedScopes = fmt.Sprintf("[\"%s\"]", strings.Join(scopes, "\", \""))
+	}
+
 	return fmt.Sprintf(`
 resource "datadog_application_key" "foo" {
   name = "%s"
-  scopes = %v
-}`, uniq, scopes)
+  scopes = %s
+}`, uniq, formattedScopes)
 }
 
 func testAccCheckDatadogApplicationKeyExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
