@@ -56,6 +56,11 @@ func (d *applicationKeyDataSource) Schema(_ context.Context, req datasource.Sche
 				Computed:    true,
 				Sensitive:   true,
 			},
+			"scopes": schema.SetAttribute{
+				Description: "Authorization scopes for the Application Key.",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
 		},
 		DeprecationMessage: "The datadog_application_key data source is deprecated and will be removed in a future release with prior notice. Securely store your application key using a secret management system or use the datadog_application_key resource to manage application keys in your Datadog account.",
 	}
