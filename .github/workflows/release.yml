@@ -1,6 +1,10 @@
 # Copied from https://github.com/hashicorp/terraform-provider-scaffolding/blob/master/.github/workflows/release.yml
 name: release
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   pull_request:
     types: [closed]
