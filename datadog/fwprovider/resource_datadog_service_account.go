@@ -273,6 +273,7 @@ func extractRolesFromUser(userData datadogV2.User) []string {
 	for i, userRole := range userRoles {
 		roles[i] = userRole.GetId()
 	}
+	return roles
 }
 
 func updateServiceAccountStateV2(ctx context.Context, state *serviceAccountResourceModel, user *datadogV2.UserResponse) diag.Diagnostics {
