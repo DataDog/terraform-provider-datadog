@@ -283,7 +283,7 @@ func updateServiceAccountStateV2(ctx context.Context, state *serviceAccountResou
 	state.Name = types.StringValue(userAttributes.GetName())
 	state.Disabled = types.BoolValue(userAttributes.GetDisabled())
 	diags := diag.Diagnostics{}
-	state.Roles, diags = types.SetValueFrom(ctx, types.StringType, extractRoles(userData))
+	state.Roles, diags = types.SetValueFrom(ctx, types.StringType, extractRolesFromUser(userData))
 	return diags
 }
 
