@@ -265,6 +265,16 @@ func (r *serviceAccountResource) Delete(ctx context.Context, request resource.De
 	}
 }
 
+func extractRolesFromUser(userData datadogV2.User) []string {
+	userRelations := userData.GetRelationships()
+	userRolesRelations := userRelations.GetRoles()
+	userRoles := userRolesRelations.GetData()
+	roles := make([]string, len(userRoles))
+	for i, userRole := range userRoles {
+		roles[i] = userRole.GetId()
+	}
+}
+
 func updateServiceAccountStateV2(ctx context.Context, state *serviceAccountResourceModel, user *datadogV2.UserResponse) diag.Diagnostics {
 	userData := user.GetData()
 	userAttributes := userData.GetAttributes()
@@ -273,17 +283,7 @@ func updateServiceAccountStateV2(ctx context.Context, state *serviceAccountResou
 	state.Name = types.StringValue(userAttributes.GetName())
 	state.Disabled = types.BoolValue(userAttributes.GetDisabled())
 	diags := diag.Diagnostics{}
-	if !state.Roles.IsNull() {
-		userRelations := userData.GetRelationships()
-		userRolesRelations := userRelations.GetRoles()
-		userRoles := userRolesRelations.GetData()
-
-		roles := make([]string, len(userRoles))
-		for i, userRole := range userRoles {
-			roles[i] = userRole.GetId()
-		}
-		state.Roles, diags = types.SetValueFrom(ctx, types.StringType, roles)
-	}
+	state.Roles, diags = types.SetValueFrom(ctx, types.StringType, extractRoles(userData))
 	return diags
 }
 
