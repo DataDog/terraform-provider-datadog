@@ -33,4 +33,5 @@ Read-Only:
 - `id` (String)
 - `name` (String)
 - `rule_query` (String)
+- `start_date` (String)
 - `suppression_query` (String)

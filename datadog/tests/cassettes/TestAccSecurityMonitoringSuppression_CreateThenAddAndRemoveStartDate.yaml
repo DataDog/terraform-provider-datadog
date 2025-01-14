@@ -1,0 +1,709 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 297
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1736841400408,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 137.75425ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1736841400408,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 119.825916ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1736841400408,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 137.7115ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1736841400408,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 125.936ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 373
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"data_exclusion_query":"","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging","tags":[],"update_date":1736841402365,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 140.140917ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging","tags":[],"update_date":1736841402365,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 127.76025ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging","tags":[],"update_date":1736841402365,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 121.000084ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging","tags":[],"update_date":1736841402365,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 134.94825ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 373
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"data_exclusion_query":"","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging","tags":[],"update_date":1736841404146,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":3}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 141.464584ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging","tags":[],"update_date":1736841404146,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":3}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.046333ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging","tags":[],"update_date":1736841404146,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":3}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 126.563584ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072766400000,"suppression_query":"env:staging","tags":[],"update_date":1736841404146,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":3}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 117.188583ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 373
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"data_exclusion_query":"","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1736841405920,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":4}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 139.225208ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1736841405920,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":4}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 128.557708ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1736841405920,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":4}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 130.03875ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 576
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":4072775400000,"suppression_query":"env:staging","tags":[],"update_date":1736841405920,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":4}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 125.196208ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 364
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"data_exclusion_query":"","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","start_date":null,"suppression_query":"env:staging"},"type":"suppressions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1736841407708,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":5}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.481ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1736841407708,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":5}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 113.819667ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 549
+        uncompressed: false
+        body: '{"data":{"id":"1qp-l0h-pxz","type":"suppressions","attributes":{"creation_date":1736841400408,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateThenAddAndRemoveStartDate-local-1736841399","rule_query":"severity:low source:cloudtrail","suppression_query":"env:staging","tags":[],"update_date":1736841407708,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":5}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 122.658584ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 125.924667ms
+    - id: 20
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/1qp-l0h-pxz
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 67
+        uncompressed: false
+        body: '{"errors":["not_found(Suppression with ID 1qp-l0h-pxz not found)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 125.656167ms
