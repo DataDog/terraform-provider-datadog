@@ -1,3 +1,14 @@
+## 3.52.0 (January 14, 2025)
+
+### BUGFIXES
+* [datadog_application_key] use plan modifiers for app keys by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2763
+* [datadog_api_key] Use plan modifier for API keys. by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/2765
+### FEATURES
+* [datadog_application_key] Support scoped app key management by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/2760
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.51.0...v3.52.0
+
 ## 3.51.0 (January 8, 2025)
 
 ### BUGFIXES
