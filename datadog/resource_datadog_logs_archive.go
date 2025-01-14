@@ -44,6 +44,8 @@ func resourceDatadogLogsArchive() *schema.Resource {
 								ValidateDiagFunc: validators.ValidateAWSAccountID,
 							},
 							"role_name": {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
+							"encryption_type": {Description: "The type of encryption on your archive.", Type: schema.TypeString, Required: false},
+							"encryption_key": {Description: "The AWS KMS encryption key.", Type: schema.TypeString, Required: false},
 						},
 					},
 				},
@@ -253,10 +255,13 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]int
 func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]interface{} {
 	result := make(map[string]interface{})
 	integration := destination.GetIntegration()
+	encryption := destination.GetEncryption()
 	result["account_id"] = integration.GetAccountId()
 	result["role_name"] = integration.GetRoleName()
 	result["bucket"] = destination.GetBucket()
 	result["path"] = destination.GetPath()
+	result["encryption_type"] = encryption.GetType();
+	result["encryption_key"] = encryption.GetKey();
 	return result
 }
 
@@ -421,9 +426,32 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 	if !ok {
 		path = ""
 	}
+
+	var datadogV2.LogsArchiveEncryptionS3 encryption
+
+	encryptionType, ok := d["encryption_type"]
+	if !ok {
+		encryption = datadogV2.NewLogsArchiveEncryptionS3(
+			"NO_OVERRIDE",
+		)
+	} else {
+		encryptionKey, ok := d["encryption_key"]
+		if !ok {
+			encryption = datadogV2.NewLogsArchiveEncryptionS3(
+				encryptionType.(string),
+			)
+		} else {
+			encryption = datadogV2.NewLogsArchiveEncryptionS3(
+				encryptionType.(string),
+				encryptionKey.(string),
+			)
+		}
+	}
+
 	destination := datadogV2.NewLogsArchiveDestinationS3(
 		bucket.(string),
 		*integration,
+		*encryption,
 		datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
 	)
 	destination.Path = datadog.PtrString(path.(string))
