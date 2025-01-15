@@ -126,9 +126,12 @@ func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, m
 	monitor := d.Get("monitor").(string)
 	attrMap, _ := structure.ExpandJsonFromString(monitor)
 	queryAttrs := make([]string, 0)
-	if _, ok := attrMap["restricted_roles"]; ok {
-		queryAttrs = append(queryAttrs, "with_restricted_roles=true")
+	if _, ok := attrMap["restricted_roles"]; !ok {
+		queryAttrs = append(queryAttrs, "with_restricted_roles=false")
 	}
+	// Restriction policies are not returned in the API response by default
+	// In order to prevent some erroneous drift, we return it (and take in account in the state)
+	// if the user requests some restriction policy (behavior similar to Optional Computed)
 	if _, ok := attrMap["restriction_policy"]; ok {
 		queryAttrs = append(queryAttrs, "with_restriction_policy=true")
 	}
