@@ -103,6 +103,10 @@ func TestAccServiceAccountApplicationKey_Error(t *testing.T) {
 				Config:      testAccCheckDatadogScopedApplicationKeyConfigRequired(applicationKeyNameUpdate, []string{}),
 				ExpectError: regexp.MustCompile(`Attribute scopes set must contain at least 1 elements`),
 			},
+			{
+				Config:      testAccCheckDatadogScopedApplicationKeyConfigRequired(applicationKeyNameUpdate, []string{"invalid"}),
+				ExpectError: regexp.MustCompile(`Invalid scopes`),
+			},
 		},
 	})
 }
