@@ -100,11 +100,11 @@ func TestAccServiceAccountApplicationKey_Error(t *testing.T) {
 		ProtoV5ProviderFactories: accProviders,
 		Steps: []resource.TestStep{
 			{
-				Config:      testAccCheckDatadogScopedApplicationKeyConfigRequired(applicationKeyNameUpdate, []string{}),
+				Config:      testAccCheckDatadogServiceAccountScopedApplicationKey(applicationKeyNameUpdate, []string{}),
 				ExpectError: regexp.MustCompile(`Attribute scopes set must contain at least 1 elements`),
 			},
 			{
-				Config:      testAccCheckDatadogScopedApplicationKeyConfigRequired(applicationKeyNameUpdate, []string{"invalid"}),
+				Config:      testAccCheckDatadogServiceAccountScopedApplicationKey(applicationKeyNameUpdate, []string{"invalid"}),
 				ExpectError: regexp.MustCompile(`Invalid scopes`),
 			},
 		},
