@@ -391,7 +391,6 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		}
 		if len(localVariableOptions) != 0 {
 			d.Set("options", []map[string]interface{}{localVariableOptions})
-			panic(fmt.Sprintf("options: %v", localVariableOptions))
 		}
 	}
 
