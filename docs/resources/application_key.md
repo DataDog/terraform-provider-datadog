@@ -26,6 +26,10 @@ resource "datadog_application_key" "foo" {
 
 - `name` (String) Name for Application Key.
 
+### Optional
+
+- `scopes` (Set of String) Authorization scopes for the Application Key. Application Keys configured with no scopes have full access.
+
 ### Read-Only
 
 - `id` (String) The ID of this resource.
