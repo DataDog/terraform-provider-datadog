@@ -306,11 +306,11 @@ func (r *integrationAzureResource) updateState(ctx context.Context, state *integ
 
 	resourceProviderConfigs := account.GetResourceProviderConfigs()
 	state.ResourceProviderConfigs = make([]*ResourceProviderConfigModel, 0, len(resourceProviderConfigs))
-	for i, resourceProviderConfig := range resourceProviderConfigs {
+	for _, resourceProviderConfig := range resourceProviderConfigs {
 		state.ResourceProviderConfigs = append(state.ResourceProviderConfigs, &ResourceProviderConfigModel{
 			Namespace:      types.StringValue(resourceProviderConfig.GetNamespace()),
 			MetricsEnabled: types.BoolValue(resourceProviderConfig.GetMetricsEnabled()),
-		}
+		})
 	}
 
 	hostFilters, exists := account.GetHostFiltersOk()
@@ -375,7 +375,7 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	datadogDefinition.SetMetricsEnabledDefault(state.MetricsEnabledDefault.ValueBool())
 	datadogDefinition.SetUsageMetricsEnabled(state.UsageMetricsEnabled.ValueBool())
 
-	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, len(state.ResourceProviderConfigs))
+	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, 0, len(state.ResourceProviderConfigs))
 	for _, resourceProviderConfig := range state.ResourceProviderConfigs {
 		resourceProviderConfigsPayload = append(resourceProviderConfigsPayload, datadogV1.ResourceProviderConfig{
 			Namespace:      resourceProviderConfig.Namespace.ValueStringPointer(),
