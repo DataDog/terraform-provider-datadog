@@ -74,29 +74,3 @@ resource "datadog_monitor" "process_alert_example" {
   renotify_interval = 60
 }
 ```
-
-## Cost Monitors
-
-```terraform
-resource "datadog_monitor" "process_alert_example" {
-  name    = "Cost Alert Monitor"
-  type    = "cost alert"
-  message = "Cost Change increased more than 50$ in the last 30 days"
-  query   = "formula('query').last('30d').change('absolute') > 50"
-
-  monitor_thresholds {
-    critical = 50
-  }
-  
-  variables = [
-    {
-      name  = "query"
-      value = "sum:aws.cost.amortized{*} by {service}.rollup(sum, daily)"
-      aggregator = "sum"
-      data_source = "cloud_cost"
-    }
-  ]
-
-  renotify_interval = 60
-}
-```
