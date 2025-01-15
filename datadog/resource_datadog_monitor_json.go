@@ -125,8 +125,15 @@ func resourceDatadogMonitorJSONRead(_ context.Context, d *schema.ResourceData, m
 	// try to keep restricted_roles from mixing into it from API responses
 	monitor := d.Get("monitor").(string)
 	attrMap, _ := structure.ExpandJsonFromString(monitor)
-	if _, ok := attrMap["restricted_roles"]; !ok {
-		url += "?with_restricted_roles=false"
+	queryAttrs := make([]string, 0)
+	if _, ok := attrMap["restricted_roles"]; ok {
+		queryAttrs = append(queryAttrs, "with_restricted_roles=true")
+	}
+	if _, ok := attrMap["restriction_policy"]; ok {
+		queryAttrs = append(queryAttrs, "with_restriction_policy=true")
+	}
+	if len(queryAttrs) > 0 {
+		url = fmt.Sprintf("%s?%s", url, strings.Join(queryAttrs, "&"))
 	}
 
 	respByte, httpResp, err := utils.SendRequest(auth, apiInstances.HttpClient, "GET", url, nil)
