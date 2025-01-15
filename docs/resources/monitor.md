@@ -156,7 +156,22 @@ Optional:
 
 Optional:
 
+- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--variables--cloud_cost_query))
 - `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
+
+<a id="nestedblock--variables--cloud_cost_query"></a>
+### Nested Schema for `variables.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+
 
 <a id="nestedblock--variables--event_query"></a>
 ### Nested Schema for `variables.event_query`
@@ -164,7 +179,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `cost`.
 - `name` (String) The name of query for use in formulas.
 - `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--event_query--search))
 
