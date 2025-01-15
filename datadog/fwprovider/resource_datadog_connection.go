@@ -516,7 +516,7 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 		connModel.AWS = &awsConnectionModel{
 			AssumeRole: &awsAssumeRoleConnectionModel{
 				AccountID:   types.StringValue(awsAttr.Credentials.AWSAssumeRole.AccountId),
-				Role:        types.StringValue(awsAttr.Credentials.AWSAssumeRole.AccountId),
+				Role:        types.StringValue(awsAttr.Credentials.AWSAssumeRole.Role),
 				ExternalID:  types.StringPointerValue(awsAttr.Credentials.AWSAssumeRole.ExternalId),
 				PrincipalID: types.StringPointerValue(awsAttr.Credentials.AWSAssumeRole.PrincipalId),
 			},
@@ -530,9 +530,8 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 		tokens := []*httpConnectionTokenModel{}
 		for _, token := range httpAttr.Credentials.HTTPTokenAuth.Tokens {
 			tokens = append(tokens, &httpConnectionTokenModel{
-				Type:  types.StringValue(string(token.Type)),
-				Name:  types.StringValue(token.Name),
-				Value: types.StringValue(token.Value),
+				Type: types.StringValue(string(token.Type)),
+				Name: types.StringValue(token.Name),
 			})
 		}
 		if len(tokens) > 0 {
@@ -582,7 +581,8 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 }
 
 func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) (*datadogV2.CreateActionConnectionRequest, error) {
-	var integration datadogV2.ActionConnectionIntegration
+	attributes := datadogV2.NewActionConnectionAttributesWithDefaults()
+	attributes.SetName(connectionModel.Name.ValueString())
 
 	if connectionModel.AWS != nil {
 		assumeRoleParams := datadogV2.NewAWSAssumeRole(
@@ -595,7 +595,8 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 			datadogV2.AWSAssumeRoleAsAWSCredentials(assumeRoleParams),
 			datadogV2.AWSINTEGRATIONTYPE_AWS,
 		)
-		integration = datadogV2.AWSIntegrationAsActionConnectionIntegration(awsIntegration)
+		integration := datadogV2.AWSIntegrationAsActionConnectionIntegration(awsIntegration)
+		attributes.SetIntegration(integration)
 	}
 
 	if connectionModel.HTTP != nil {
@@ -608,11 +609,9 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 				return nil, err
 			}
 
-			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *datadogV2.NewHTTPToken(
-				token.Name.ValueString(),
-				*tokenType,
-				token.Value.ValueString(),
-			))
+			tokenModel := datadogV2.NewHTTPToken(token.Name.ValueString(), *tokenType)
+			tokenModel.SetValue(token.Value.ValueString())
+			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
 		}
 
 		headers := connectionModel.HTTP.TokenAuth.Headers
@@ -633,8 +632,12 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 
 		if connectionModel.HTTP.TokenAuth.Body != nil {
 			httpTokenAuth.Body = datadogV2.NewHTTPBody()
-			httpTokenAuth.Body.ContentType = connectionModel.HTTP.TokenAuth.Body.ContentType.ValueStringPointer()
-			httpTokenAuth.Body.Content = connectionModel.HTTP.TokenAuth.Body.Content.ValueStringPointer()
+			if !connectionModel.HTTP.TokenAuth.Body.ContentType.IsNull() {
+				httpTokenAuth.Body.SetContentType(connectionModel.HTTP.TokenAuth.Body.ContentType.ValueString())
+			}
+			if !connectionModel.HTTP.TokenAuth.Body.Content.IsNull() {
+				httpTokenAuth.Body.SetContent(connectionModel.HTTP.TokenAuth.Body.Content.ValueString())
+			}
 		}
 
 		httpCredentials := datadogV2.HTTPTokenAuthAsHTTPCredentials(httpTokenAuth)
@@ -643,10 +646,10 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 			httpCredentials,
 			datadogV2.HTTPINTEGRATIONTYPE_HTTP,
 		)
-		integration = datadogV2.HTTPIntegrationAsActionConnectionIntegration(httpIntegration)
+		integration := datadogV2.HTTPIntegrationAsActionConnectionIntegration(httpIntegration)
+		attributes.SetIntegration(integration)
 	}
 
-	attributes := datadogV2.NewActionConnectionAttributes(integration, connectionModel.Name.ValueString())
 	data := datadogV2.NewActionConnectionData(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION)
 	req := datadogV2.NewCreateActionConnectionRequest(*data)
 
