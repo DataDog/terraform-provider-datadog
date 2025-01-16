@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -379,9 +380,21 @@ func (r *appResource) buildCreateAppRequestBody(ctx context.Context, state *appR
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewCreateAppRequestDataAttributesWithDefaults()
 
-	err := attributes.UnmarshalJSON([]byte(state.AppJson.String()))
+	// tflog.Debug(ctx, "tflog app json", map[string]interface{}{"app json": state.AppJson.String()})
+
+	// decode encoded json into string and then decode that into the attributes struct
+	var appJsonString string
+	err := json.Unmarshal([]byte(state.AppJson.String()), &appJsonString)
 	if err != nil {
-		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json: %s", err))
+		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json to string: %s", err))
+		return nil, diags
+	}
+
+	// tflog.Debug(ctx, "tflog app json string", map[string]interface{}{"app json string": appJsonString})
+
+	err = attributes.UnmarshalJSON([]byte(appJsonString))
+	if err != nil {
+		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json string to attributes struct: %s", err))
 		return nil, diags
 	}
 
