@@ -704,14 +704,14 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 	return req, nil
 }
 
-func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel, oldState connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
+func connectionModelToUpdateApiRequest(plan, oldState connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
 	attributes := datadogV2.NewActionConnectionAttributesUpdate()
-	attributes.SetName(connectionModel.Name.ValueString())
+	attributes.SetName(plan.Name.ValueString())
 
-	if connectionModel.AWS != nil {
+	if plan.AWS != nil {
 		assumeRoleParams := datadogV2.NewAWSAssumeRoleUpdate(datadogV2.AWSASSUMEROLETYPE_AWSASSUMEROLE)
-		assumeRoleParams.SetAccountId(connectionModel.AWS.AssumeRole.AccountID.ValueString())
-		assumeRoleParams.SetRole(connectionModel.AWS.AssumeRole.Role.ValueString())
+		assumeRoleParams.SetAccountId(plan.AWS.AssumeRole.AccountID.ValueString())
+		assumeRoleParams.SetRole(plan.AWS.AssumeRole.Role.ValueString())
 
 		awsIntegration := datadogV2.NewAWSIntegrationUpdate(datadogV2.AWSINTEGRATIONTYPE_AWS)
 		awsIntegration.SetCredentials(datadogV2.AWSAssumeRoleUpdateAsAWSCredentialsUpdate(assumeRoleParams))
@@ -719,31 +719,12 @@ func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel, 
 		attributes.SetIntegration(integration)
 	}
 
-	if connectionModel.HTTP != nil {
+	if plan.HTTP != nil {
 		httpTokenAuth := datadogV2.NewHTTPTokenAuthUpdate(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
 
-		deletedTokens := []*httpConnectionTokenModel{}
-		for _, token := range oldState.HTTP.TokenAuth.Tokens {
-			foundToken := false
-			for _, planToken := range connectionModel.HTTP.TokenAuth.Tokens {
-				if planToken.Name.Equal(token.Name) {
-					foundToken = true
-					break
-				}
-			}
-			if !foundToken {
-				deletedTokens = append(deletedTokens, token)
-			}
-		}
+		buildHttpDeletions(plan, oldState, httpTokenAuth)
 
-		for _, deletedToken := range deletedTokens {
-			tokenUpdate := datadogV2.NewHTTPTokenUpdate(deletedToken.Name.ValueString(), datadogV2.TOKENTYPE_SECRET, deletedToken.Value.ValueString())
-			tokenUpdate.SetDeleted(true)
-			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenUpdate)
-		}
-
-		tokens := connectionModel.HTTP.TokenAuth.Tokens
-		for _, token := range tokens {
+		for _, token := range plan.HTTP.TokenAuth.Tokens {
 			tokenType, err := datadogV2.NewTokenTypeFromValue(token.Type.ValueString())
 			if err != nil {
 				return nil, err
@@ -753,72 +734,31 @@ func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel, 
 			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
 		}
 
-		deletedHeaders := []*httpConnectionHeaderModel{}
-		for _, header := range oldState.HTTP.TokenAuth.Headers {
-			foundHeader := false
-			for _, planHeader := range connectionModel.HTTP.TokenAuth.Headers {
-				if planHeader.Name.Equal(header.Name) {
-					foundHeader = true
-					break
-				}
-			}
-			if !foundHeader {
-				deletedHeaders = append(deletedHeaders, header)
-			}
-		}
-
-		for _, deletedHeader := range deletedHeaders {
-			headerUpdate := datadogV2.NewHTTPHeaderUpdate(deletedHeader.Name.ValueString())
-			headerUpdate.SetDeleted(true)
-			httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
-		}
-
-		for _, header := range connectionModel.HTTP.TokenAuth.Headers {
+		for _, header := range plan.HTTP.TokenAuth.Headers {
 			headerUpdate := datadogV2.NewHTTPHeaderUpdate(header.Name.ValueString())
 			headerUpdate.SetValue(header.Value.ValueString())
 			httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
 		}
 
-		deletedUrlParams := []*httpConnectionUrlParameterModel{}
-		for _, param := range oldState.HTTP.TokenAuth.URLParameters {
-			foundParam := false
-			for _, planParam := range connectionModel.HTTP.TokenAuth.URLParameters {
-				if planParam.Name.Equal(param.Name) {
-					foundParam = true
-					break
-				}
-			}
-			if !foundParam {
-				deletedUrlParams = append(deletedUrlParams, param)
-			}
-		}
-
-		for _, deletedParam := range deletedUrlParams {
-			paramUpdate := datadogV2.NewUrlParamUpdate(deletedParam.Name.ValueString())
-			paramUpdate.SetDeleted(true)
-			httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *paramUpdate)
-		}
-
-		urlParams := connectionModel.HTTP.TokenAuth.URLParameters
-		for _, urlParam := range urlParams {
+		for _, urlParam := range plan.HTTP.TokenAuth.URLParameters {
 			paramUpdate := datadogV2.NewUrlParamUpdate(urlParam.Name.ValueString())
 			paramUpdate.SetValue(urlParam.Value.ValueString())
 			httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *paramUpdate)
 		}
 
-		if connectionModel.HTTP.TokenAuth.Body != nil {
+		if plan.HTTP.TokenAuth.Body != nil {
 			httpTokenAuth.Body = datadogV2.NewHTTPBody()
-			if !connectionModel.HTTP.TokenAuth.Body.ContentType.IsNull() {
-				httpTokenAuth.Body.SetContentType(connectionModel.HTTP.TokenAuth.Body.ContentType.ValueString())
+			if !plan.HTTP.TokenAuth.Body.ContentType.IsNull() {
+				httpTokenAuth.Body.SetContentType(plan.HTTP.TokenAuth.Body.ContentType.ValueString())
 			}
-			if !connectionModel.HTTP.TokenAuth.Body.Content.IsNull() {
-				httpTokenAuth.Body.SetContent(connectionModel.HTTP.TokenAuth.Body.Content.ValueString())
+			if !plan.HTTP.TokenAuth.Body.Content.IsNull() {
+				httpTokenAuth.Body.SetContent(plan.HTTP.TokenAuth.Body.Content.ValueString())
 			}
 		}
 
 		httpCredentials := datadogV2.HTTPTokenAuthUpdateAsHTTPCredentialsUpdate(httpTokenAuth)
 		httpIntegration := datadogV2.NewHTTPIntegrationUpdate(datadogV2.HTTPINTEGRATIONTYPE_HTTP)
-		httpIntegration.SetBaseUrl(connectionModel.HTTP.BaseURL.ValueString())
+		httpIntegration.SetBaseUrl(plan.HTTP.BaseURL.ValueString())
 		httpIntegration.SetCredentials(httpCredentials)
 
 		integration := datadogV2.HTTPIntegrationUpdateAsActionConnectionIntegrationUpdate(httpIntegration)
@@ -829,4 +769,66 @@ func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel, 
 	req := datadogV2.NewUpdateActionConnectionRequest(*data)
 
 	return req, nil
+}
+
+func buildHttpDeletions(plan, oldState connectionResourceModel, updateModel *datadogV2.HTTPTokenAuthUpdate) {
+	deletedTokens := []*httpConnectionTokenModel{}
+	for _, token := range oldState.HTTP.TokenAuth.Tokens {
+		foundToken := false
+		for _, planToken := range plan.HTTP.TokenAuth.Tokens {
+			if planToken.Name.Equal(token.Name) {
+				foundToken = true
+				break
+			}
+		}
+		if !foundToken {
+			deletedTokens = append(deletedTokens, token)
+		}
+	}
+
+	for _, deletedToken := range deletedTokens {
+		tokenUpdate := datadogV2.NewHTTPTokenUpdate(deletedToken.Name.ValueString(), datadogV2.TOKENTYPE_SECRET, deletedToken.Value.ValueString())
+		tokenUpdate.SetDeleted(true)
+		updateModel.Tokens = append(updateModel.Tokens, *tokenUpdate)
+	}
+
+	deletedHeaders := []*httpConnectionHeaderModel{}
+	for _, header := range oldState.HTTP.TokenAuth.Headers {
+		foundHeader := false
+		for _, planHeader := range plan.HTTP.TokenAuth.Headers {
+			if planHeader.Name.Equal(header.Name) {
+				foundHeader = true
+				break
+			}
+		}
+		if !foundHeader {
+			deletedHeaders = append(deletedHeaders, header)
+		}
+	}
+
+	for _, deletedHeader := range deletedHeaders {
+		headerUpdate := datadogV2.NewHTTPHeaderUpdate(deletedHeader.Name.ValueString())
+		headerUpdate.SetDeleted(true)
+		updateModel.Headers = append(updateModel.Headers, *headerUpdate)
+	}
+
+	deletedUrlParams := []*httpConnectionUrlParameterModel{}
+	for _, param := range oldState.HTTP.TokenAuth.URLParameters {
+		foundParam := false
+		for _, planParam := range plan.HTTP.TokenAuth.URLParameters {
+			if planParam.Name.Equal(param.Name) {
+				foundParam = true
+				break
+			}
+		}
+		if !foundParam {
+			deletedUrlParams = append(deletedUrlParams, param)
+		}
+	}
+
+	for _, deletedParam := range deletedUrlParams {
+		paramUpdate := datadogV2.NewUrlParamUpdate(deletedParam.Name.ValueString())
+		paramUpdate.SetDeleted(true)
+		updateModel.UrlParameters = append(updateModel.UrlParameters, *paramUpdate)
+	}
 }
