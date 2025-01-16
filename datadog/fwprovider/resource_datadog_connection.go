@@ -458,6 +458,18 @@ func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequ
 		return
 	}
 
+	// The API response does not include the token value, so this code gets it from the state.
+	// This is used to determine whether the token value changed since the last update.
+	if state.HTTP != nil {
+		for _, stateToken := range state.HTTP.TokenAuth.Tokens {
+			for _, responseToken := range connModel.HTTP.TokenAuth.Tokens {
+				if stateToken.Name.Equal(responseToken.Name) {
+					responseToken.Value = stateToken.Value
+				}
+			}
+		}
+	}
+
 	diags = response.State.Set(ctx, connModel)
 	response.Diagnostics.Append(diags...)
 }
@@ -468,6 +480,34 @@ func (r *connectionResource) Update(ctx context.Context, request resource.Update
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
+	}
+
+	updateRequest, err := connectionModelToUpdateApiRequest(state)
+	if err != nil {
+		response.Diagnostics.AddError("Could not build update connection request", err.Error())
+		return
+	}
+
+	res, httpResponse, err := r.Api.UpdateActionConnection(r.Auth, state.ID.ValueString(), *updateRequest)
+	if err != nil {
+		if httpResponse != nil {
+			// error body may have useful info for the user
+			body, err := io.ReadAll(httpResponse.Body)
+			if err != nil {
+				response.Diagnostics.AddError("Could not read error response", err.Error())
+				return
+			}
+			response.Diagnostics.AddError("Could not update connection", string(body))
+		} else {
+			response.Diagnostics.AddError("Could not update connection", err.Error())
+		}
+		return
+	}
+
+	// set computed values
+	if state.AWS != nil {
+		state.AWS.AssumeRole.ExternalID = types.StringPointerValue(res.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.ExternalId)
+		state.AWS.AssumeRole.PrincipalID = types.StringPointerValue(res.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.PrincipalId)
 	}
 
 	diags = response.State.Set(ctx, &state)
@@ -652,6 +692,74 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 
 	data := datadogV2.NewActionConnectionData(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION)
 	req := datadogV2.NewCreateActionConnectionRequest(*data)
+
+	return req, nil
+}
+
+func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
+	attributes := datadogV2.NewActionConnectionAttributesUpdate()
+	attributes.SetName(connectionModel.Name.ValueString())
+
+	if connectionModel.AWS != nil {
+		assumeRoleParams := datadogV2.NewAWSAssumeRoleUpdate(datadogV2.AWSASSUMEROLETYPE_AWSASSUMEROLE)
+		assumeRoleParams.SetAccountId(connectionModel.AWS.AssumeRole.AccountID.ValueString())
+		assumeRoleParams.SetRole(connectionModel.AWS.AssumeRole.Role.ValueString())
+
+		awsIntegration := datadogV2.NewAWSIntegrationUpdate(datadogV2.AWSINTEGRATIONTYPE_AWS)
+		awsIntegration.SetCredentials(datadogV2.AWSAssumeRoleUpdateAsAWSCredentialsUpdate(assumeRoleParams))
+		integration := datadogV2.AWSIntegrationUpdateAsActionConnectionIntegrationUpdate(awsIntegration)
+		attributes.SetIntegration(integration)
+	}
+
+	if connectionModel.HTTP != nil {
+		httpTokenAuth := datadogV2.NewHTTPTokenAuthUpdate(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
+
+		tokens := connectionModel.HTTP.TokenAuth.Tokens
+		for _, token := range tokens {
+			tokenType, err := datadogV2.NewTokenTypeFromValue(token.Type.ValueString())
+			if err != nil {
+				return nil, err
+			}
+
+			tokenModel := datadogV2.NewHTTPTokenUpdate(token.Name.ValueString(), *tokenType, token.Value.ValueString())
+			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
+		}
+
+		headers := connectionModel.HTTP.TokenAuth.Headers
+		for _, header := range headers {
+			headerUpdate := datadogV2.NewHTTPHeaderUpdate(header.Name.ValueString())
+			headerUpdate.SetValue(header.Value.ValueString())
+			httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
+		}
+
+		urlParams := connectionModel.HTTP.TokenAuth.URLParameters
+		for _, urlParam := range urlParams {
+			paramUpdate := datadogV2.NewUrlParamUpdate(urlParam.Name.ValueString())
+			paramUpdate.SetValue(urlParam.Value.ValueString())
+			httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *paramUpdate)
+		}
+
+		if connectionModel.HTTP.TokenAuth.Body != nil {
+			httpTokenAuth.Body = datadogV2.NewHTTPBody()
+			if !connectionModel.HTTP.TokenAuth.Body.ContentType.IsNull() {
+				httpTokenAuth.Body.SetContentType(connectionModel.HTTP.TokenAuth.Body.ContentType.ValueString())
+			}
+			if !connectionModel.HTTP.TokenAuth.Body.Content.IsNull() {
+				httpTokenAuth.Body.SetContent(connectionModel.HTTP.TokenAuth.Body.Content.ValueString())
+			}
+		}
+
+		httpCredentials := datadogV2.HTTPTokenAuthUpdateAsHTTPCredentialsUpdate(httpTokenAuth)
+		httpIntegration := datadogV2.NewHTTPIntegrationUpdate(datadogV2.HTTPINTEGRATIONTYPE_HTTP)
+		httpIntegration.SetBaseUrl(connectionModel.HTTP.BaseURL.ValueString())
+		httpIntegration.SetCredentials(httpCredentials)
+
+		integration := datadogV2.HTTPIntegrationUpdateAsActionConnectionIntegrationUpdate(httpIntegration)
+		attributes.SetIntegration(integration)
+	}
+
+	data := datadogV2.NewActionConnectionDataUpdate(*attributes, datadogV2.ACTIONCONNECTIONDATATYPE_ACTION_CONNECTION)
+	req := datadogV2.NewUpdateActionConnectionRequest(*data)
 
 	return req, nil
 }
