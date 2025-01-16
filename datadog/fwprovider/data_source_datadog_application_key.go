@@ -82,7 +82,7 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 		}
 		appKeyData := ddResp.GetData()
 		if !d.checkAPIDeprecated(&appKeyData, resp) {
-			d.updateState(ctx, &state, &appKeyData)
+			d.updateState(&state, &appKeyData)
 		}
 	} else if !state.Name.IsNull() {
 		optionalParams := datadogV2.NewListCurrentUserApplicationKeysOptionalParameters()
