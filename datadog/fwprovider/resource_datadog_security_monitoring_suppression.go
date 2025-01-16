@@ -24,7 +24,6 @@ type securityMonitoringSuppressionModel struct {
 	Name               types.String `tfsdk:"name"`
 	Description        types.String `tfsdk:"description"`
 	Enabled            types.Bool   `tfsdk:"enabled"`
-	StartDate          types.String `tfsdk:"start_date"`
 	ExpirationDate     types.String `tfsdk:"expiration_date"`
 	RuleQuery          types.String `tfsdk:"rule_query"`
 	SuppressionQuery   types.String `tfsdk:"suppression_query"`
@@ -68,10 +67,6 @@ func (r *securityMonitoringSuppressionResource) Schema(_ context.Context, _ reso
 			"enabled": schema.BoolAttribute{
 				Required:    true,
 				Description: "Whether the suppression rule is enabled.",
-			},
-			"start_date": schema.StringAttribute{
-				Optional:    true,
-				Description: "A RFC3339 timestamp giving a start date for the suppression rule. Before this date, it doesn't suppress signals.",
 			},
 			"expiration_date": schema.StringAttribute{
 				Optional:    true,
@@ -209,7 +204,7 @@ func (r *securityMonitoringSuppressionResource) Delete(ctx context.Context, requ
 }
 
 func (r *securityMonitoringSuppressionResource) buildCreateSecurityMonitoringSuppressionPayload(state *securityMonitoringSuppressionModel) (*datadogV2.SecurityMonitoringSuppressionCreateRequest, error) {
-	name, description, enabled, startDate, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, err := r.extractSuppressionAttributesFromResource(state)
+	name, description, enabled, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, err := r.extractSuppressionAttributesFromResource(state)
 
 	if err != nil {
 		return nil, err
@@ -219,7 +214,6 @@ func (r *securityMonitoringSuppressionResource) buildCreateSecurityMonitoringSup
 	attributes.SuppressionQuery = suppressionQuery
 	attributes.DataExclusionQuery = dataExclusionQuery
 	attributes.Description = description
-	attributes.StartDate = startDate
 	attributes.ExpirationDate = expirationDate
 
 	data := datadogV2.NewSecurityMonitoringSuppressionCreateData(*attributes, datadogV2.SECURITYMONITORINGSUPPRESSIONTYPE_SUPPRESSIONS)
@@ -227,7 +221,7 @@ func (r *securityMonitoringSuppressionResource) buildCreateSecurityMonitoringSup
 }
 
 func (r *securityMonitoringSuppressionResource) buildUpdateSecurityMonitoringSuppressionPayload(state *securityMonitoringSuppressionModel) (*datadogV2.SecurityMonitoringSuppressionUpdateRequest, error) {
-	name, description, enabled, startDate, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, err := r.extractSuppressionAttributesFromResource(state)
+	name, description, enabled, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, err := r.extractSuppressionAttributesFromResource(state)
 
 	if err != nil {
 		return nil, err
@@ -237,11 +231,6 @@ func (r *securityMonitoringSuppressionResource) buildUpdateSecurityMonitoringSup
 	attributes.SetName(name)
 	attributes.Description = description
 	attributes.SetEnabled(enabled)
-	if startDate != nil {
-		attributes.SetStartDate(*startDate)
-	} else {
-		attributes.SetStartDateNil()
-	}
 	if expirationDate != nil {
 		attributes.SetExpirationDate(*expirationDate)
 	} else {
@@ -265,7 +254,7 @@ func (r *securityMonitoringSuppressionResource) buildUpdateSecurityMonitoringSup
 	return datadogV2.NewSecurityMonitoringSuppressionUpdateRequest(*data), nil
 }
 
-func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFromResource(state *securityMonitoringSuppressionModel) (string, *string, bool, *int64, *int64, string, *string, *string, error) {
+func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFromResource(state *securityMonitoringSuppressionModel) (string, *string, bool, *int64, string, *string, *string, error) {
 	// Mandatory fields
 
 	name := state.Name.ValueString()
@@ -277,28 +266,13 @@ func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFrom
 	description := state.Description.ValueStringPointer()
 	suppressionQuery := state.SuppressionQuery.ValueStringPointer()
 	dataExclusionQuery := state.DataExclusionQuery.ValueStringPointer()
-
-	var startDate *int64
-
-	if tfStartDate := state.StartDate.ValueStringPointer(); tfStartDate != nil {
-		startDateTime, err := time.Parse(time.RFC3339, *tfStartDate)
-
-		if err != nil {
-			return "", nil, false, nil, nil, "", nil, nil, err
-		}
-
-		startDateTimestamp := startDateTime.UnixMilli()
-		startDate = &startDateTimestamp
-
-	}
-
 	var expirationDate *int64
 
 	if tfExpirationDate := state.ExpirationDate.ValueStringPointer(); tfExpirationDate != nil {
 		expirationDateTime, err := time.Parse(time.RFC3339, *tfExpirationDate)
 
 		if err != nil {
-			return "", nil, false, nil, nil, "", nil, nil, err
+			return "", nil, false, nil, "", nil, nil, err
 		}
 
 		expirationDateTimestamp := expirationDateTime.UnixMilli()
@@ -306,7 +280,7 @@ func (r *securityMonitoringSuppressionResource) extractSuppressionAttributesFrom
 
 	}
 
-	return name, description, enabled, startDate, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, nil
+	return name, description, enabled, expirationDate, ruleQuery, suppressionQuery, dataExclusionQuery, nil
 }
 
 func (r *securityMonitoringSuppressionResource) updateStateFromResponse(ctx context.Context, state *securityMonitoringSuppressionModel, res *datadogV2.SecurityMonitoringSuppressionResponse) {
@@ -339,35 +313,21 @@ func (r *securityMonitoringSuppressionResource) updateStateFromResponse(ctx cont
 		state.DataExclusionQuery = types.StringNull()
 	}
 
-	// For the StartDate and the ExpirationDate
-	// The API only requires a millisecond timestamp, it does not care about timezones.
-	// If the timestamp string written by the user has the same millisecond value as the one returned by the API,
-	// we keep the user-defined one in the state.
-	if attributes.StartDate != nil {
-		responseStartDate := time.UnixMilli(*attributes.StartDate).UTC()
-		startDate := responseStartDate.Format(time.RFC3339)
-
-		if userStartDateStr := state.StartDate.ValueString(); userStartDateStr != "" {
-			if userStartDate, err := time.Parse(time.RFC3339, userStartDateStr); err == nil {
-				if userStartDate.UnixMilli() == responseStartDate.UnixMilli() {
-					startDate = userStartDateStr
-				}
-			}
-		}
-		state.StartDate = types.StringValue(startDate)
-	}
-
 	if attributes.ExpirationDate != nil {
 		responseExpirationDate := time.UnixMilli(*attributes.ExpirationDate).UTC()
 		expirationDate := responseExpirationDate.Format(time.RFC3339)
 
 		if userExpirationDateStr := state.ExpirationDate.ValueString(); userExpirationDateStr != "" {
 			if userExpirationDate, err := time.Parse(time.RFC3339, userExpirationDateStr); err == nil {
+				// The API only requires a millisecond timestamp, it does not care about timezones.
+				// If the timestamp string written by the user has the same millisecond value as the one returned by the API,
+				// we keep the user-defined one in the state.
 				if userExpirationDate.UnixMilli() == responseExpirationDate.UnixMilli() {
 					expirationDate = userExpirationDateStr
 				}
 			}
 		}
+
 		state.ExpirationDate = types.StringValue(expirationDate)
 	}
 }
