@@ -179,7 +179,7 @@ Optional:
 Required:
 
 - `compute` (Block List, Min: 1) The compute options. (see [below for nested schema](#nestedblock--variables--event_query--compute))
-- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`, `cost`.
+- `data_source` (String) The data source for event platform-based queries. Valid values are `rum`, `ci_pipelines`, `ci_tests`, `audit`, `events`, `logs`, `spans`, `database_queries`, `network`.
 - `name` (String) The name of query for use in formulas.
 - `search` (Block List, Min: 1, Max: 1) The search options. (see [below for nested schema](#nestedblock--variables--event_query--search))
 
