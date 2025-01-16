@@ -18,7 +18,6 @@ type applicationKeyDataSourceModel struct {
 	Name       types.String `tfsdk:"name"`
 	ExactMatch types.Bool   `tfsdk:"exact_match"`
 	Key        types.String `tfsdk:"key"`
-	Scopes     types.Set    `tfsdk:"scopes"`
 }
 
 type applicationKeyDataSource struct {
@@ -56,11 +55,6 @@ func (d *applicationKeyDataSource) Schema(_ context.Context, req datasource.Sche
 				Description: "The value of the Application Key.",
 				Computed:    true,
 				Sensitive:   true,
-			},
-			"scopes": schema.SetAttribute{
-				Description: "Authorization scopes for the Application Key.",
-				Optional:    true,
-				ElementType: types.StringType,
 			},
 		},
 		DeprecationMessage: "The datadog_application_key data source is deprecated and will be removed in a future release with prior notice. Securely store your application key using a secret management system or use the datadog_application_key resource to manage application keys in your Datadog account.",
@@ -132,7 +126,7 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 				return
 			}
 			if !d.checkAPIDeprecated(&applicationKeyData, resp) {
-				d.updateState(ctx, &state, &applicationKeyData)
+				d.updateState(&state, &applicationKeyData)
 			}
 		} else {
 			id := applicationKeysData[0].GetId()
@@ -143,7 +137,7 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 			}
 			applicationKeyFullData := applicationKeyResponse.GetData()
 			if !d.checkAPIDeprecated(&applicationKeyFullData, resp) {
-				d.updateState(ctx, &state, &applicationKeyFullData)
+				d.updateState(&state, &applicationKeyFullData)
 			}
 		}
 	} else {
@@ -154,15 +148,12 @@ func (d *applicationKeyDataSource) Read(ctx context.Context, req datasource.Read
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
-func (r *applicationKeyDataSource) updateState(ctx context.Context, state *applicationKeyDataSourceModel, applicationKeyData *datadogV2.FullApplicationKey) {
+func (r *applicationKeyDataSource) updateState(state *applicationKeyDataSourceModel, applicationKeyData *datadogV2.FullApplicationKey) {
 	applicationKeyAttributes := applicationKeyData.GetAttributes()
 
 	state.Id = types.StringValue(applicationKeyData.GetId())
 	state.Name = types.StringValue(applicationKeyAttributes.GetName())
 	state.Key = types.StringValue(applicationKeyAttributes.GetKey())
-	if applicationKeyAttributes.HasScopes() {
-		state.Scopes, _ = types.SetValueFrom(ctx, types.StringType, applicationKeyAttributes.GetScopes())
-	}
 }
 
 func (r *applicationKeyDataSource) checkAPIDeprecated(applicationKeyData *datadogV2.FullApplicationKey, resp *datasource.ReadResponse) bool {
