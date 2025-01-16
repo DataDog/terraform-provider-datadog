@@ -1,3 +1,14 @@
+## 3.52.1 (January 16, 2025)
+
+### BUGFIXES
+* [data_datadog_application_key] remove scopes from schema by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2774
+### FEATURES
+* [datadog_security_monitoring_suppression] Add Start to Suppressions by @clementgbcn in https://github.com/DataDog/terraform-provider-datadog/pull/2764
+* [datadog_azure_integration] Support metric filitering by @gpalmz in https://github.com/DataDog/terraform-provider-datadog/pull/2757
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.52.0...v3.52.1
+
 ## 3.52.0 (January 14, 2025)
 
 ### BUGFIXES
