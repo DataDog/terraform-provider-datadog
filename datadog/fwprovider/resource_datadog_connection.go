@@ -475,20 +475,28 @@ func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequ
 }
 
 func (r *connectionResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state connectionResourceModel
-	diags := request.Plan.Get(ctx, &state)
+	var plan connectionResourceModel
+	diags := request.Plan.Get(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	updateRequest, err := connectionModelToUpdateApiRequest(state)
+	// current state is required so we can detect what's been deleted
+	var oldState connectionResourceModel
+	diags = request.State.Get(ctx, &oldState)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	updateRequest, err := connectionModelToUpdateApiRequest(plan, oldState)
 	if err != nil {
 		response.Diagnostics.AddError("Could not build update connection request", err.Error())
 		return
 	}
 
-	res, httpResponse, err := r.Api.UpdateActionConnection(r.Auth, state.ID.ValueString(), *updateRequest)
+	res, httpResponse, err := r.Api.UpdateActionConnection(r.Auth, plan.ID.ValueString(), *updateRequest)
 	if err != nil {
 		if httpResponse != nil {
 			// error body may have useful info for the user
@@ -505,12 +513,12 @@ func (r *connectionResource) Update(ctx context.Context, request resource.Update
 	}
 
 	// set computed values
-	if state.AWS != nil {
-		state.AWS.AssumeRole.ExternalID = types.StringPointerValue(res.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.ExternalId)
-		state.AWS.AssumeRole.PrincipalID = types.StringPointerValue(res.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.PrincipalId)
+	if plan.AWS != nil {
+		plan.AWS.AssumeRole.ExternalID = types.StringPointerValue(res.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.ExternalId)
+		plan.AWS.AssumeRole.PrincipalID = types.StringPointerValue(res.Data.Attributes.Integration.AWSIntegration.Credentials.AWSAssumeRole.PrincipalId)
 	}
 
-	diags = response.State.Set(ctx, &state)
+	diags = response.State.Set(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 }
 
@@ -696,7 +704,7 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 	return req, nil
 }
 
-func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
+func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel, oldState connectionResourceModel) (*datadogV2.UpdateActionConnectionRequest, error) {
 	attributes := datadogV2.NewActionConnectionAttributesUpdate()
 	attributes.SetName(connectionModel.Name.ValueString())
 
@@ -725,8 +733,27 @@ func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel) 
 			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
 		}
 
-		headers := connectionModel.HTTP.TokenAuth.Headers
-		for _, header := range headers {
+		deletedHeaders := []*httpConnectionHeaderModel{}
+		for _, header := range oldState.HTTP.TokenAuth.Headers {
+			foundHeader := false
+			for _, planHeader := range connectionModel.HTTP.TokenAuth.Headers {
+				if planHeader.Name.Equal(header.Name) {
+					foundHeader = true
+					break
+				}
+			}
+			if !foundHeader {
+				deletedHeaders = append(deletedHeaders, header)
+			}
+		}
+
+		for _, deletedHeader := range deletedHeaders {
+			headerUpdate := datadogV2.NewHTTPHeaderUpdate(deletedHeader.Name.ValueString())
+			headerUpdate.SetDeleted(true)
+			httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
+		}
+
+		for _, header := range connectionModel.HTTP.TokenAuth.Headers {
 			headerUpdate := datadogV2.NewHTTPHeaderUpdate(header.Name.ValueString())
 			headerUpdate.SetValue(header.Value.ValueString())
 			httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
