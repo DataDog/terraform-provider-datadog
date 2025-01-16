@@ -722,6 +722,26 @@ func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel, 
 	if connectionModel.HTTP != nil {
 		httpTokenAuth := datadogV2.NewHTTPTokenAuthUpdate(datadogV2.HTTPTOKENAUTHTYPE_HTTPTOKENAUTH)
 
+		deletedTokens := []*httpConnectionTokenModel{}
+		for _, token := range oldState.HTTP.TokenAuth.Tokens {
+			foundToken := false
+			for _, planToken := range connectionModel.HTTP.TokenAuth.Tokens {
+				if planToken.Name.Equal(token.Name) {
+					foundToken = true
+					break
+				}
+			}
+			if !foundToken {
+				deletedTokens = append(deletedTokens, token)
+			}
+		}
+
+		for _, deletedToken := range deletedTokens {
+			tokenUpdate := datadogV2.NewHTTPTokenUpdate(deletedToken.Name.ValueString(), datadogV2.TOKENTYPE_SECRET, deletedToken.Value.ValueString())
+			tokenUpdate.SetDeleted(true)
+			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenUpdate)
+		}
+
 		tokens := connectionModel.HTTP.TokenAuth.Tokens
 		for _, token := range tokens {
 			tokenType, err := datadogV2.NewTokenTypeFromValue(token.Type.ValueString())
@@ -757,6 +777,26 @@ func connectionModelToUpdateApiRequest(connectionModel connectionResourceModel, 
 			headerUpdate := datadogV2.NewHTTPHeaderUpdate(header.Name.ValueString())
 			headerUpdate.SetValue(header.Value.ValueString())
 			httpTokenAuth.Headers = append(httpTokenAuth.Headers, *headerUpdate)
+		}
+
+		deletedUrlParams := []*httpConnectionUrlParameterModel{}
+		for _, param := range oldState.HTTP.TokenAuth.URLParameters {
+			foundParam := false
+			for _, planParam := range connectionModel.HTTP.TokenAuth.URLParameters {
+				if planParam.Name.Equal(param.Name) {
+					foundParam = true
+					break
+				}
+			}
+			if !foundParam {
+				deletedUrlParams = append(deletedUrlParams, param)
+			}
+		}
+
+		for _, deletedParam := range deletedUrlParams {
+			paramUpdate := datadogV2.NewUrlParamUpdate(deletedParam.Name.ValueString())
+			paramUpdate.SetDeleted(true)
+			httpTokenAuth.UrlParameters = append(httpTokenAuth.UrlParameters, *paramUpdate)
 		}
 
 		urlParams := connectionModel.HTTP.TokenAuth.URLParameters
