@@ -20,7 +20,6 @@ resource "datadog_security_monitoring_suppression" "my_suppression" {
   rule_query           = "severity:low source:cloudtrail"
   suppression_query    = "@usr.id:john.doe"
   data_exclusion_query = "env:test"
-  start_date           = "2024-12-01T16:00:00Z"
   expiration_date      = "2024-12-31T12:00:00Z"
 }
 ```
@@ -39,7 +38,6 @@ resource "datadog_security_monitoring_suppression" "my_suppression" {
 - `data_exclusion_query` (String) An exclusion query on the input data of the security rules, which could be logs, Agent events, or other types of data based on the security rule. Events matching this query are ignored by any detection rules referenced in the suppression rule.
 - `description` (String) A description for the suppression rule.
 - `expiration_date` (String) A RFC3339 timestamp giving an expiration date for the suppression rule. After this date, it won't suppress signals anymore.
-- `start_date` (String) A RFC3339 timestamp giving a start date for the suppression rule. Before this date, it doesn't suppress signals.
 - `suppression_query` (String) The suppression query of the suppression rule. If a signal matches this query, it is suppressed and is not triggered. It uses the same syntax as the queries to search signals in the Signals Explorer.
 
 ### Read-Only

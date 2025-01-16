@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing"},"type":"suppressions"}}
+            {"data":{"attributes":{"description":"suppression for terraform provider test","enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
@@ -26,17 +26,19 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 575
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841419797,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"","version":1,"creation_date":1712926525097,"update_date":1712926525097,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 130.072208ms
+        duration: 184.838833ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,23 +55,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 575
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841419797,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"","version":1,"creation_date":1712926525097,"update_date":1712926525097,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 122.36725ms
+        duration: 161.6975ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,23 +90,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 575
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841419797,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"","version":1,"creation_date":1712926525097,"update_date":1712926525097,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 121.825625ms
+        duration: 171.580375ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,59 +125,63 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 575
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841419797,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":1}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"","version":1,"creation_date":1712926525097,"update_date":1712926525097,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 131.089916ms
+        duration: 175.575792ms
     - id: 4
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 376
+        content_length: 358
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","start_date":null,"suppression_query":""},"type":"suppressions"}}
+            {"data":{"attributes":{"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","rule_query":"severity:low source:cloudtrail","suppression_query":""},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: PATCH
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 561
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"","tags":[],"update_date":1736841421698,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"","data_exclusion_query":"@account_name:staging","version":2,"creation_date":1712926525097,"update_date":1712926527109,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 132.734583ms
+        duration: 193.637083ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,23 +198,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 561
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"","tags":[],"update_date":1736841421698,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"","data_exclusion_query":"@account_name:staging","version":2,"creation_date":1712926525097,"update_date":1712926527109,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 127.313458ms
+        duration: 186.702334ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,23 +233,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 561
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"","tags":[],"update_date":1736841421698,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"","data_exclusion_query":"@account_name:staging","version":2,"creation_date":1712926525097,"update_date":1712926527109,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 121.782625ms
+        duration: 164.232083ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,59 +268,63 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 561
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"","tags":[],"update_date":1736841421698,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":2}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"","data_exclusion_query":"@account_name:staging","version":2,"creation_date":1712926525097,"update_date":1712926527109,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 118.654208ms
+        duration: 162.757042ms
     - id: 8
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 411
+        content_length: 393
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","start_date":null,"suppression_query":"@usr.team:internal-security-testing"},"type":"suppressions"}}
+            {"data":{"attributes":{"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: PATCH
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 596
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841423467,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":3}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"@account_name:staging","version":3,"creation_date":1712926525097,"update_date":1712926529141,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 141.722792ms
+        duration: 194.196209ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -323,23 +341,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 596
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841423467,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":3}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"@account_name:staging","version":3,"creation_date":1712926525097,"update_date":1712926529141,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 122.2055ms
+        duration: 156.924916ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -356,23 +376,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 596
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841423467,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":3}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"@account_name:staging","version":3,"creation_date":1712926525097,"update_date":1712926529141,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 130.541667ms
+        duration: 158.432917ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -389,59 +411,63 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 596
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"@account_name:staging","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841423467,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":3}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"@account_name:staging","version":3,"creation_date":1712926525097,"update_date":1712926529141,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 125.320083ms
+        duration: 171.605792ms
     - id: 12
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 390
+        content_length: 372
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"data_exclusion_query":"","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","start_date":null,"suppression_query":"@usr.team:internal-security-testing"},"type":"suppressions"}}
+            {"data":{"attributes":{"data_exclusion_query":"","description":"suppression for terraform provider test","enabled":true,"expiration_date":null,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing"},"type":"suppressions"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: PATCH
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 575
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841425256,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":4}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"","version":4,"creation_date":1712926525097,"update_date":1712926531107,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 149.533375ms
+        duration: 186.296084ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -458,23 +484,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 575
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841425256,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":4}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"","version":4,"creation_date":1712926525097,"update_date":1712926531107,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 141.552583ms
+        duration: 157.769583ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -491,23 +519,25 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 575
-        uncompressed: false
-        body: '{"data":{"id":"kmn-0qa-4lg","type":"suppressions","attributes":{"creation_date":1736841419797,"creator":{"handle":"frog@datadoghq.com","name":"frog"},"data_exclusion_query":"","description":"suppression for terraform provider test","editable":true,"enabled":true,"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1736841419","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","tags":[],"update_date":1736841425256,"updater":{"handle":"frog@datadoghq.com","name":"frog"},"version":4}}}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"data":{"id":"cie-qt2-bni","attributes":{"name":"tf-TestAccSecurityMonitoringSuppression_CreateAndUpdateDataExclusionQuery-local-1712926524","enabled":true,"description":"suppression for terraform provider test","rule_query":"severity:low source:cloudtrail","suppression_query":"@usr.team:internal-security-testing","data_exclusion_query":"","version":4,"creation_date":1712926525097,"update_date":1712926531107,"creator":{"name":null,"handle":"frog@datadoghq.com"},"updater":{"name":null,"handle":"frog@datadoghq.com"}},"type":"suppressions"}}
         headers:
             Content-Type:
-                - application/vnd.api+json
+                - application/json
         status: 200 OK
         code: 200
-        duration: 118.233042ms
+        duration: 164.158625ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -524,7 +554,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -535,10 +565,12 @@ interactions:
         content_length: 0
         uncompressed: false
         body: ""
-        headers: {}
+        headers:
+            Content-Type:
+                - text/html; charset=utf-8
         status: 204 No Content
         code: 204
-        duration: 131.505292ms
+        duration: 184.56825ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -555,20 +587,22 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/kmn-0qa-4lg
+        url: https://api.datadoghq.com/api/v2/security_monitoring/configuration/suppressions/cie-qt2-bni
         method: GET
       response:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding: []
+        transfer_encoding:
+            - chunked
         trailer: {}
-        content_length: 67
-        uncompressed: false
-        body: '{"errors":["not_found(Suppression with ID kmn-0qa-4lg not found)"]}'
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"errors":["not_found(Suppression with ID cie-qt2-bni not found)"]}
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 114.4555ms
+        duration: 154.33725ms

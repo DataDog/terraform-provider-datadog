@@ -72,12 +72,6 @@ func (r *securityMonitoringSuppressionDataSource) Read(ctx context.Context, requ
 		suppressionModel.RuleQuery = types.StringValue(attributes.GetRuleQuery())
 		suppressionModel.SuppressionQuery = types.StringValue(attributes.GetSuppressionQuery())
 
-		if attributes.StartDate == nil {
-			suppressionModel.StartDate = types.StringNull()
-		} else {
-			startDate := time.UnixMilli(*attributes.StartDate).Format(time.RFC3339)
-			suppressionModel.StartDate = types.StringValue(startDate)
-		}
 		if attributes.ExpirationDate == nil {
 			suppressionModel.ExpirationDate = types.StringNull()
 		} else {
@@ -118,7 +112,6 @@ func (*securityMonitoringSuppressionDataSource) Schema(_ context.Context, _ data
 						"name":                 types.StringType,
 						"description":          types.StringType,
 						"enabled":              types.BoolType,
-						"start_date":           types.StringType,
 						"expiration_date":      types.StringType,
 						"rule_query":           types.StringType,
 						"suppression_query":    types.StringType,
