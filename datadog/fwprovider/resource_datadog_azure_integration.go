@@ -6,13 +6,11 @@ import (
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
@@ -31,27 +29,18 @@ type integrationAzureResource struct {
 	Auth context.Context
 }
 
-type ResourceProviderConfigModel struct {
-	Namespace      types.String `tfsdk:"namespace"`
-	MetricsEnabled types.Bool   `tfsdk:"metrics_enabled"`
-}
-
 type integrationAzureModel struct {
-	ID                        types.String                   `tfsdk:"id"`
-	AppServicePlanFilters     types.String                   `tfsdk:"app_service_plan_filters"`
-	Automute                  types.Bool                     `tfsdk:"automute"`
-	ClientId                  types.String                   `tfsdk:"client_id"`
-	ClientSecret              types.String                   `tfsdk:"client_secret"`
-	ContainerAppFilters       types.String                   `tfsdk:"container_app_filters"`
-	ResourceCollectionEnabled types.Bool                     `tfsdk:"resource_collection_enabled"`
-	CspmEnabled               types.Bool                     `tfsdk:"cspm_enabled"`
-	CustomMetricsEnabled      types.Bool                     `tfsdk:"custom_metrics_enabled"`
-	HostFilters               types.String                   `tfsdk:"host_filters"`
-	TenantName                types.String                   `tfsdk:"tenant_name"`
-	MetricsEnabled            types.Bool                     `tfsdk:"metrics_enabled"`
-	MetricsEnabledDefault     types.Bool                     `tfsdk:"metrics_enabled_default"`
-	UsageMetricsEnabled       types.Bool                     `tfsdk:"usage_metrics_enabled"`
-	ResourceProviderConfigs   []*ResourceProviderConfigModel `tfsdk:"resource_provider_configs"`
+	ID                        types.String `tfsdk:"id"`
+	AppServicePlanFilters     types.String `tfsdk:"app_service_plan_filters"`
+	Automute                  types.Bool   `tfsdk:"automute"`
+	ClientId                  types.String `tfsdk:"client_id"`
+	ClientSecret              types.String `tfsdk:"client_secret"`
+	ContainerAppFilters       types.String `tfsdk:"container_app_filters"`
+	ResourceCollectionEnabled types.Bool   `tfsdk:"resource_collection_enabled"`
+	CspmEnabled               types.Bool   `tfsdk:"cspm_enabled"`
+	CustomMetricsEnabled      types.Bool   `tfsdk:"custom_metrics_enabled"`
+	HostFilters               types.String `tfsdk:"host_filters"`
+	TenantName                types.String `tfsdk:"tenant_name"`
 }
 
 func NewIntegrationAzureResource() resource.Resource {
@@ -66,13 +55,6 @@ func (r *integrationAzureResource) Configure(_ context.Context, request resource
 
 func (r *integrationAzureResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
 	response.TypeName = "integration_azure"
-}
-
-var ResourceProviderConfigSchemaType = types.ObjectType{
-	AttrTypes: map[string]attr.Type{
-		"namespace":       types.StringType,
-		"metrics_enabled": types.BoolType,
-	},
 }
 
 func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -132,31 +114,6 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Optional:    true,
 				Description: "This comma-separated list of tags (in the form `key:value,key:value`) defines a filter that Datadog uses when collecting metrics from Azure App Service Plans. Only App Service Plans that match one of the defined tags are imported into Datadog. The rest, including the apps and functions running on them, are ignored. This also filters the metrics for any App or Function running on the App Service Plan(s).",
 				Default:     stringdefault.StaticString(""),
-			},
-			"metrics_enabled": schema.BoolAttribute{
-				Computed:    true,
-				Default:     booldefault.StaticBool(true),
-				Optional:    true,
-				Description: "Enable Azure metrics for your organization.",
-			},
-			"metrics_enabled_default": schema.BoolAttribute{
-				Computed:    true,
-				Default:     booldefault.StaticBool(true),
-				Optional:    true,
-				Description: "Enable Azure metrics for your organization for resource providers where no resource provider config is specified.",
-			},
-			"usage_metrics_enabled": schema.BoolAttribute{
-				Computed:    true,
-				Default:     booldefault.StaticBool(true),
-				Optional:    true,
-				Description: "Enable azure.usage metrics for your organization.",
-			},
-			"resource_provider_configs": schema.ListAttribute{
-				Computed:    true,
-				Optional:    true,
-				Default:     listdefault.StaticValue(types.ListNull(ResourceProviderConfigSchemaType)),
-				Description: "Configuration settings applied to resources from the specified Azure resource providers.",
-				ElementType: ResourceProviderConfigSchemaType,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -300,18 +257,6 @@ func (r *integrationAzureResource) updateState(ctx context.Context, state *integ
 	state.ResourceCollectionEnabled = types.BoolValue(account.GetResourceCollectionEnabled())
 	state.CspmEnabled = types.BoolValue(account.GetCspmEnabled())
 	state.CustomMetricsEnabled = types.BoolValue(account.GetCustomMetricsEnabled())
-	state.MetricsEnabled = types.BoolValue(account.GetMetricsEnabled())
-	state.MetricsEnabledDefault = types.BoolValue(account.GetMetricsEnabledDefault())
-	state.UsageMetricsEnabled = types.BoolValue(account.GetUsageMetricsEnabled())
-
-	resourceProviderConfigs := account.GetResourceProviderConfigs()
-	state.ResourceProviderConfigs = make([]*ResourceProviderConfigModel, 0, len(resourceProviderConfigs))
-	for _, resourceProviderConfig := range resourceProviderConfigs {
-		state.ResourceProviderConfigs = append(state.ResourceProviderConfigs, &ResourceProviderConfigModel{
-			Namespace:      types.StringValue(resourceProviderConfig.GetNamespace()),
-			MetricsEnabled: types.BoolValue(resourceProviderConfig.GetMetricsEnabled()),
-		})
-	}
 
 	hostFilters, exists := account.GetHostFiltersOk()
 	if exists {
@@ -371,18 +316,6 @@ func (r *integrationAzureResource) buildIntegrationAzureRequestBody(ctx context.
 	}
 	datadogDefinition.SetCspmEnabled(state.CspmEnabled.ValueBool())
 	datadogDefinition.SetCustomMetricsEnabled(state.CustomMetricsEnabled.ValueBool())
-	datadogDefinition.SetMetricsEnabled(state.MetricsEnabled.ValueBool())
-	datadogDefinition.SetMetricsEnabledDefault(state.MetricsEnabledDefault.ValueBool())
-	datadogDefinition.SetUsageMetricsEnabled(state.UsageMetricsEnabled.ValueBool())
-
-	resourceProviderConfigsPayload := make([]datadogV1.ResourceProviderConfig, 0, len(state.ResourceProviderConfigs))
-	for _, resourceProviderConfig := range state.ResourceProviderConfigs {
-		resourceProviderConfigsPayload = append(resourceProviderConfigsPayload, datadogV1.ResourceProviderConfig{
-			Namespace:      resourceProviderConfig.Namespace.ValueStringPointer(),
-			MetricsEnabled: resourceProviderConfig.MetricsEnabled.ValueBoolPointer(),
-		})
-	}
-	datadogDefinition.SetResourceProviderConfigs(resourceProviderConfigsPayload)
 
 	if !state.ClientSecret.IsNull() {
 		datadogDefinition.SetClientSecret(state.ClientSecret.ValueString())
