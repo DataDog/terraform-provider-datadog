@@ -355,7 +355,7 @@ func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequ
 		return
 	}
 
-	connModel, err := readConnection(r.Api, r.Auth, state.ID.ValueString(), state)
+	connModel, err := readConnection(r.Auth, r.Api, state.ID.ValueString(), state)
 	if err != nil {
 		response.Diagnostics.AddError("Could not read connection", err.Error())
 		return
@@ -724,7 +724,7 @@ func buildHttpDeletions(plan, oldState connectionResourceModel, updateModel *dat
 }
 
 // Read logic is shared between data source and resource
-func readConnection(api *datadogV2.ActionConnectionApi, authCtx context.Context, id string, currentState connectionResourceModel) (*connectionResourceModel, error) {
+func readConnection(authCtx context.Context, api *datadogV2.ActionConnectionApi, id string, currentState connectionResourceModel) (*connectionResourceModel, error) {
 	conn, httpResponse, err := api.GetActionConnection(authCtx, id)
 	if err != nil {
 		if httpResponse != nil {
@@ -733,9 +733,8 @@ func readConnection(api *datadogV2.ActionConnectionApi, authCtx context.Context,
 				return nil, fmt.Errorf("could not read error response")
 			}
 			return nil, fmt.Errorf("%s", body)
-		} else {
-			return nil, fmt.Errorf("%s", err.Error())
 		}
+		return nil, err
 	}
 
 	connModel, err := apiResponseToConnectionModel(conn)

@@ -160,7 +160,7 @@ func (d *connectionDatasource) Read(ctx context.Context, request datasource.Read
 		return
 	}
 
-	connModel, err := readConnection(d.Api, d.Auth, state.ID.ValueString(), state)
+	connModel, err := readConnection(d.Auth, d.Api, state.ID.ValueString(), state)
 	if err != nil {
 		response.Diagnostics.AddError("Could not read connection", err.Error())
 		return
