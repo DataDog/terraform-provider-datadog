@@ -8,9 +8,11 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
@@ -91,7 +93,7 @@ func (r *connectionResource) Configure(_ context.Context, request resource.Confi
 // contains simple validations that can be done by the framework
 func (r *connectionResource) ConfigValidators(ctx context.Context) []resource.ConfigValidator {
 	return []resource.ConfigValidator{
-		resourcevalidator.Conflicting(
+		resourcevalidator.ExactlyOneOf(
 			path.MatchRoot("aws"),
 			path.MatchRoot("http"),
 		),
@@ -101,19 +103,9 @@ func (r *connectionResource) ConfigValidators(ctx context.Context) []resource.Co
 // contains more complex validations that we need because the Schema definition isn't expressive enough for us
 func (r *connectionResource) ValidateConfig(ctx context.Context, request resource.ValidateConfigRequest, response *resource.ValidateConfigResponse) {
 	var conn connectionResourceModel
-
 	diags := request.Config.Get(ctx, &conn)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
-		return
-	}
-
-	if conn.AWS == nil && conn.HTTP == nil {
-		response.Diagnostics.AddAttributeError(
-			path.Root(""),
-			"Integration type required",
-			"You must specify an AWS or HTTP block.",
-		)
 		return
 	}
 
@@ -126,33 +118,9 @@ func (r *connectionResource) ValidateConfig(ctx context.Context, request resourc
 			)
 			return
 		}
-
-		if isStringEmpty(conn.AWS.AssumeRole.AccountID) {
-			response.Diagnostics.AddAttributeError(
-				path.Root("aws").AtName("assume_role").AtName("account_id"),
-				"AWS account_id required",
-				"You must specify an AWS account ID.",
-			)
-		}
-
-		if isStringEmpty(conn.AWS.AssumeRole.Role) {
-			response.Diagnostics.AddAttributeError(
-				path.Root("aws").AtName("assume_role").AtName("role"),
-				"AWS role required",
-				"You must specify an AWS role.",
-			)
-		}
 	}
 
 	if conn.HTTP != nil {
-		if isStringEmpty(conn.HTTP.BaseURL) {
-			response.Diagnostics.AddAttributeError(
-				path.Root("http").AtName("base_url"),
-				"Base URL required",
-				"You must specify a base URL for this connection.",
-			)
-		}
-
 		if conn.HTTP.TokenAuth == nil {
 			response.Diagnostics.AddAttributeError(
 				path.Root("http"),
@@ -173,91 +141,7 @@ func (r *connectionResource) ValidateConfig(ctx context.Context, request resourc
 			)
 			return
 		}
-
-		for i, token := range conn.HTTP.TokenAuth.Tokens {
-			if isStringEmpty(token.Type) {
-				response.Diagnostics.AddAttributeError(
-					path.Root("http").AtName("token_auth").AtName("token").AtListIndex(i).AtName("type"),
-					"Token type required",
-					"You must specify a token type",
-				)
-			}
-
-			if isStringEmpty(token.Name) {
-				response.Diagnostics.AddAttributeError(
-					path.Root("http").AtName("token_auth").AtName("token").AtListIndex(i).AtName("name"),
-					"Token name required",
-					"You must specify a token name",
-				)
-			}
-
-			if isStringEmpty(token.Value) {
-				response.Diagnostics.AddAttributeError(
-					path.Root("http").AtName("token_auth").AtName("token").AtListIndex(i).AtName("value"),
-					"Token value required",
-					"You must specify a token value",
-				)
-			}
-		}
-
-		for i, header := range conn.HTTP.TokenAuth.Headers {
-			if isStringEmpty(header.Name) {
-				response.Diagnostics.AddAttributeError(
-					path.Root("http").AtName("token_auth").AtName("header").AtListIndex(i).AtName("name"),
-					"Header name required",
-					"You must specify a header name",
-				)
-			}
-
-			if isStringEmpty(header.Value) {
-				response.Diagnostics.AddAttributeError(
-					path.Root("http").AtName("token_auth").AtName("header").AtListIndex(i).AtName("value"),
-					"Header value required",
-					"You must specify a header value",
-				)
-			}
-		}
-
-		for i, param := range conn.HTTP.TokenAuth.URLParameters {
-			if isStringEmpty(param.Name) {
-				response.Diagnostics.AddAttributeError(
-					path.Root("http").AtName("token_auth").AtName("url_parameter").AtListIndex(i).AtName("name"),
-					"URL parameter name required",
-					"You must specify a URL parameter name",
-				)
-			}
-
-			if isStringEmpty(param.Value) {
-				response.Diagnostics.AddAttributeError(
-					path.Root("http").AtName("token_auth").AtName("url_parameter").AtListIndex(i).AtName("value"),
-					"URL parameter value required",
-					"You must specify a URL parameter value",
-				)
-			}
-		}
-
-		if conn.HTTP.TokenAuth.Body != nil {
-			if isStringEmpty(conn.HTTP.TokenAuth.Body.ContentType) {
-				response.Diagnostics.AddAttributeError(
-					path.Root("http").AtName("token_auth").AtName("body").AtName("content_type"),
-					"Body content type required",
-					"You must specify a body content type",
-				)
-			}
-
-			if isStringEmpty(conn.HTTP.TokenAuth.Body.Content) {
-				response.Diagnostics.AddAttributeError(
-					path.Root("http").AtName("token_auth").AtName("body").AtName("content"),
-					"Body content required",
-					"You must specify body content",
-				)
-			}
-		}
 	}
-}
-
-func isStringEmpty(str types.String) bool {
-	return str.IsNull() || str.ValueString() == ""
 }
 
 func (r *connectionResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
@@ -292,10 +176,16 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 							"account_id": schema.StringAttribute{
 								Description: "AWS account the connection is created for",
 								Optional:    true,
+								Validators: []validator.String{
+									stringvalidator.LengthAtLeast(1),
+								},
 							},
 							"role": schema.StringAttribute{
 								Description: "Role to assume",
 								Optional:    true,
+								Validators: []validator.String{
+									stringvalidator.LengthAtLeast(1),
+								},
 							},
 						},
 					},
@@ -307,6 +197,9 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					"base_url": schema.StringAttribute{
 						Description: "Base HTTP url for the integration",
 						Optional:    true,
+						Validators: []validator.String{
+							stringvalidator.LengthAtLeast(1),
+						},
 					},
 				},
 				Blocks: map[string]schema.Block{
@@ -318,17 +211,26 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"type": schema.StringAttribute{
-											Description: "Type of the token. Currently only SECRET is allowed.",
+											Description: "Type of the token",
 											Optional:    true,
+											Validators: []validator.String{
+												stringvalidator.OneOf("SECRET"),
+											},
 										},
 										"name": schema.StringAttribute{
 											Description: "Token name",
 											Optional:    true,
+											Validators: []validator.String{
+												stringvalidator.LengthAtLeast(1),
+											},
 										},
 										"value": schema.StringAttribute{
 											Description: "Token value",
 											Optional:    true,
 											Sensitive:   true,
+											Validators: []validator.String{
+												stringvalidator.LengthAtLeast(1),
+											},
 										},
 									},
 								},
@@ -340,10 +242,16 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 										"name": schema.StringAttribute{
 											Description: "Header name",
 											Optional:    true,
+											Validators: []validator.String{
+												stringvalidator.LengthAtLeast(1),
+											},
 										},
 										"value": schema.StringAttribute{
 											Description: "",
 											Optional:    true,
+											Validators: []validator.String{
+												stringvalidator.LengthAtLeast(1),
+											},
 										},
 									},
 								},
@@ -355,10 +263,16 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 										"name": schema.StringAttribute{
 											Description: "URL parameter name",
 											Optional:    true,
+											Validators: []validator.String{
+												stringvalidator.LengthAtLeast(1),
+											},
 										},
 										"value": schema.StringAttribute{
 											Description: "URL parameter value",
 											Optional:    true,
+											Validators: []validator.String{
+												stringvalidator.LengthAtLeast(1),
+											},
 										},
 									},
 								},
@@ -369,10 +283,16 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 									"content_type": schema.StringAttribute{
 										Description: "Content type of the body",
 										Optional:    true,
+										Validators: []validator.String{
+											stringvalidator.LengthAtLeast(1),
+										},
 									},
 									"content": schema.StringAttribute{
 										Description: "Serialized body content",
 										Optional:    true,
+										Validators: []validator.String{
+											stringvalidator.LengthAtLeast(1),
+										},
 									},
 								},
 							},
@@ -657,8 +577,7 @@ func connectionModelToCreateApiRequest(connectionModel connectionResourceModel) 
 				return nil, err
 			}
 
-			tokenModel := datadogV2.NewHTTPToken(token.Name.ValueString(), *tokenType)
-			tokenModel.SetValue(token.Value.ValueString())
+			tokenModel := datadogV2.NewHTTPToken(token.Name.ValueString(), *tokenType, token.Value.ValueString())
 			httpTokenAuth.Tokens = append(httpTokenAuth.Tokens, *tokenModel)
 		}
 
