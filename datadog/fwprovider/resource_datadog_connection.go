@@ -209,7 +209,7 @@ func (r *connectionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"type": schema.StringAttribute{
-											Description: "Type of the token",
+											Description: "Token type",
 											Optional:    true,
 											Validators: []validator.String{
 												stringvalidator.OneOf("SECRET"),

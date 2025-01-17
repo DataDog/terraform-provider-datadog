@@ -86,7 +86,7 @@ func (d *connectionDatasource) Schema(_ context.Context, request datasource.Sche
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"type": schema.StringAttribute{
-											Description: "Type of the token. Currently only STRING is allowed.",
+											Description: "Token type",
 											Computed:    true,
 										},
 										"name": schema.StringAttribute{
