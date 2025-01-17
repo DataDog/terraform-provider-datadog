@@ -413,6 +413,16 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
 
+	// Enable unstable operations for the Apps API
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateApp", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteApp", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteApps", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeployApp", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DisableApp", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetApp", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListApps", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateApp", true)
+
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
 		if parseErr != nil {
