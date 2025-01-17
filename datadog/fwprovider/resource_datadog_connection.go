@@ -771,6 +771,10 @@ func connectionModelToUpdateApiRequest(plan, oldState connectionResourceModel) (
 	return req, nil
 }
 
+// The connections API handles deletions of tokens, headers, and URL params with a "deleted" flag instead of
+// just exclusion from the request body as is common in a PUT request. So some more work is required to
+// build the API request to handle deletions. This function does that work, comparing the current state (oldState)
+// to the proposed state (plan) and detecting what to mark for deletion.
 func buildHttpDeletions(plan, oldState connectionResourceModel, updateModel *datadogV2.HTTPTokenAuthUpdate) {
 	deletedTokens := []*httpConnectionTokenModel{}
 	for _, token := range oldState.HTTP.TokenAuth.Tokens {
