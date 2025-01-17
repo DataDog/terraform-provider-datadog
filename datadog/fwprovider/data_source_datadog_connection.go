@@ -2,7 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"io"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -161,16 +160,9 @@ func (d *connectionDatasource) Read(ctx context.Context, request datasource.Read
 		return
 	}
 
-	conn, httpResponse, err := d.Api.GetActionConnection(d.Auth, state.ID.ValueString())
+	connModel, err := readConnection(d.Api, d.Auth, state.ID.ValueString(), state)
 	if err != nil {
-		body, _ := io.ReadAll(httpResponse.Body)
-		response.Diagnostics.AddError("Could not get connection", string(body))
-		return
-	}
-
-	connModel, err := apiResponseToConnectionModel(conn)
-	if err != nil {
-		response.Diagnostics.AddError(err.Error(), "")
+		response.Diagnostics.AddError("Could not read connection", err.Error())
 		return
 	}
 

@@ -355,37 +355,10 @@ func (r *connectionResource) Read(ctx context.Context, request resource.ReadRequ
 		return
 	}
 
-	conn, httpResponse, err := r.Api.GetActionConnection(r.Auth, state.ID.ValueString())
+	connModel, err := readConnection(r.Api, r.Auth, state.ID.ValueString(), state)
 	if err != nil {
-		if httpResponse != nil {
-			body, err := io.ReadAll(httpResponse.Body)
-			if err != nil {
-				response.Diagnostics.AddError("Could not read API error response", "")
-				return
-			}
-			response.Diagnostics.AddError("Could not get connection", string(body))
-		} else {
-			response.Diagnostics.AddError("Could not get connection", err.Error())
-		}
+		response.Diagnostics.AddError("Could not read connection", err.Error())
 		return
-	}
-
-	connModel, err := apiResponseToConnectionModel(conn)
-	if err != nil {
-		response.Diagnostics.AddError(err.Error(), "")
-		return
-	}
-
-	// The API response does not include the token value, so this code gets it from the state.
-	// This is used to determine whether the token value changed since the last update.
-	if state.HTTP != nil {
-		for _, stateToken := range state.HTTP.TokenAuth.Tokens {
-			for _, responseToken := range connModel.HTTP.TokenAuth.Tokens {
-				if stateToken.Name.Equal(responseToken.Name) {
-					responseToken.Value = stateToken.Value
-				}
-			}
-		}
 	}
 
 	diags = response.State.Set(ctx, connModel)
@@ -474,10 +447,6 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 
 	if attributes.Integration.AWSIntegration != nil {
 		awsAttr := attributes.Integration.AWSIntegration
-		if awsAttr.Credentials.AWSAssumeRole == nil {
-			err := fmt.Errorf("this provider only supports AWS connections of the assume role type")
-			return nil, err
-		}
 
 		connModel.AWS = &awsConnectionModel{
 			AssumeRole: &awsAssumeRoleConnectionModel{
@@ -752,4 +721,39 @@ func buildHttpDeletions(plan, oldState connectionResourceModel, updateModel *dat
 		paramUpdate.SetDeleted(true)
 		updateModel.UrlParameters = append(updateModel.UrlParameters, *paramUpdate)
 	}
+}
+
+// Read logic is shared between data source and resource
+func readConnection(api *datadogV2.ActionConnectionApi, authCtx context.Context, id string, currentState connectionResourceModel) (*connectionResourceModel, error) {
+	conn, httpResponse, err := api.GetActionConnection(authCtx, id)
+	if err != nil {
+		if httpResponse != nil {
+			body, err := io.ReadAll(httpResponse.Body)
+			if err != nil {
+				return nil, fmt.Errorf("could not read error response")
+			}
+			return nil, fmt.Errorf("%s", body)
+		} else {
+			return nil, fmt.Errorf("%s", err.Error())
+		}
+	}
+
+	connModel, err := apiResponseToConnectionModel(conn)
+	if err != nil {
+		return nil, err
+	}
+
+	// The API response does not include the token value, so this code gets it from the state.
+	// This is used to determine whether the token value changed since the last update.
+	if currentState.HTTP != nil {
+		for _, stateToken := range currentState.HTTP.TokenAuth.Tokens {
+			for _, responseToken := range connModel.HTTP.TokenAuth.Tokens {
+				if stateToken.Name.Equal(responseToken.Name) {
+					responseToken.Value = stateToken.Value
+				}
+			}
+		}
+	}
+
+	return connModel, nil
 }
