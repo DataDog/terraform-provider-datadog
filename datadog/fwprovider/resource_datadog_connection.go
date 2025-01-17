@@ -109,15 +109,13 @@ func (r *connectionResource) ValidateConfig(ctx context.Context, request resourc
 		return
 	}
 
-	if conn.AWS != nil {
-		if conn.AWS.AssumeRole == nil {
-			response.Diagnostics.AddAttributeError(
-				path.Root("aws"),
-				"AWS credential type required",
-				"You must specify a credential type block.",
-			)
-			return
-		}
+	if conn.AWS != nil && conn.AWS.AssumeRole == nil {
+		response.Diagnostics.AddAttributeError(
+			path.Root("aws"),
+			"AWS credential type required",
+			"You must specify a credential type block.",
+		)
+		return
 	}
 
 	if conn.HTTP != nil {
