@@ -152,9 +152,19 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 				Description: "Enable azure.usage metrics for your organization.",
 			},
 			"resource_provider_configs": schema.ListAttribute{
-				Computed:    true,
-				Optional:    true,
-				Default:     listdefault.StaticValue(types.ListNull(ResourceProviderConfigSchemaType)),
+				Computed: true,
+				Optional: true,
+				Default: listdefault.StaticValue(
+					types.ListValueMust(
+						types.ObjectType{
+							AttrTypes: map[string]attr.Type{
+								"namespace":       types.StringType,
+								"metrics_enabled": types.BoolType,
+							},
+						},
+						[]attr.Value{},
+					),
+				),
 				Description: "Configuration settings applied to resources from the specified Azure resource providers.",
 				ElementType: ResourceProviderConfigSchemaType,
 			},
