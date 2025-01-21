@@ -146,6 +146,7 @@ func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta
 	if err := utils.CheckForUnparsed(matchedUser); err != nil {
 		return diag.FromErr(err)
 	}
+	d.SetId(matchedUser.GetId())
 	mapAttrString := map[string]func() string{
 		"created_at":  func() string { return matchedUser.Attributes.GetCreatedAt().String() },
 		"email":       matchedUser.Attributes.GetEmail,
