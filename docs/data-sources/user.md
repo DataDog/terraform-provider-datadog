@@ -31,14 +31,14 @@ data "datadog_user" "test" {
 
 ### Read-Only
 
-- `created_at` (String) Creation time of the user.
+- `created_at` (String) Creation time of the user (RFC3339 format).
 - `disabled` (Boolean) Whether the user is disabled.
 - `email` (String) Email of the user.
 - `handle` (String) Handle of the user.
 - `icon` (String) URL of the user's icon.
 - `id` (String) The ID of this resource.
 - `mfa_enabled` (Boolean) If user has MFA enabled.
-- `modified_at` (String) Time that the user was last modified.
+- `modified_at` (String) Time that the user was last modified (RFC3339 format).
 - `name` (String) Name of the user.
 - `service_account` (Boolean) Whether the user is a service account.
 - `status` (String) Status of the user.

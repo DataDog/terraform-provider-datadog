@@ -2,6 +2,7 @@ package datadog
 
 import (
 	"context"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -30,7 +31,7 @@ func dataSourceDatadogUser() *schema.Resource {
 				},
 				// Computed values
 				"created_at": {
-					Description: "Creation time of the user.",
+					Description: "Creation time of the user (RFC3339 format).",
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
@@ -60,7 +61,7 @@ func dataSourceDatadogUser() *schema.Resource {
 					Computed:    true,
 				},
 				"modified_at": {
-					Description: "Time that the user was last modified.",
+					Description: "Time that the user was last modified (RFC3339 format).",
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
@@ -148,11 +149,11 @@ func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta
 	}
 	d.SetId(matchedUser.GetId())
 	mapAttrString := map[string]func() string{
-		"created_at":  func() string { return matchedUser.Attributes.GetCreatedAt().String() },
+		"created_at":  func() string { return matchedUser.Attributes.GetCreatedAt().Format(time.RFC3339) },
 		"email":       matchedUser.Attributes.GetEmail,
 		"handle":      matchedUser.Attributes.GetHandle,
 		"icon":        matchedUser.Attributes.GetIcon,
-		"modified_at": func() string { return matchedUser.Attributes.GetModifiedAt().String() },
+		"modified_at": func() string { return matchedUser.Attributes.GetModifiedAt().Format(time.RFC3339) },
 		"name":        matchedUser.Attributes.GetName,
 		"status":      matchedUser.Attributes.GetStatus,
 		"title":       matchedUser.Attributes.GetTitle,
