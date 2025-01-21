@@ -31,6 +31,16 @@ data "datadog_user" "test" {
 
 ### Read-Only
 
+- `created_at` (String) Creation time of the user.
+- `disabled` (Boolean) Whether the user is disabled.
 - `email` (String) Email of the user.
+- `handle` (String) Handle of the user.
+- `icon` (String) URL of the user's icon.
 - `id` (String) The ID of this resource.
+- `mfa_enabled` (Boolean) If user has MFA enabled.
+- `modified_at` (String) Time that the user was last modified.
 - `name` (String) Name of the user.
+- `service_account` (Boolean) Whether the user is a service account.
+- `status` (String) Status of the user.
+- `title` (String) Title of the user.
+- `verified` (Boolean) Whether the user is verified.

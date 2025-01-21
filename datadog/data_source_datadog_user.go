@@ -29,14 +29,64 @@ func dataSourceDatadogUser() *schema.Resource {
 					Optional:    true,
 				},
 				// Computed values
+				"created_at": {
+					Description: "Creation time of the user.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"disabled": {
+					Description: "Whether the user is disabled.",
+					Type:        schema.TypeBool,
+					Computed:    true,
+				},
 				"email": {
 					Description: "Email of the user.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"handle": {
+					Description: "Handle of the user.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"icon": {
+					Description: "URL of the user's icon.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"mfa_enabled": {
+					Description: "If user has MFA enabled.",
+					Type:        schema.TypeBool,
+					Computed:    true,
+				},
+				"modified_at": {
+					Description: "Time that the user was last modified.",
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
 				"name": {
 					Description: "Name of the user.",
 					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"service_account": {
+					Description: "Whether the user is a service account.",
+					Type:        schema.TypeBool,
+					Computed:    true,
+				},
+				"status": {
+					Description: "Status of the user.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"title": {
+					Description: "Title of the user.",
+					Type:        schema.TypeString,
+					Computed:    true,
+				},
+				"verified": {
+					Description: "Whether the user is verified.",
+					Type:        schema.TypeBool,
 					Computed:    true,
 				},
 			}
@@ -96,13 +146,30 @@ func dataSourceDatadogUserRead(ctx context.Context, d *schema.ResourceData, meta
 	if err := utils.CheckForUnparsed(matchedUser); err != nil {
 		return diag.FromErr(err)
 	}
-
-	d.SetId(matchedUser.GetId())
-	if err := d.Set("name", matchedUser.Attributes.GetName()); err != nil {
-		return diag.FromErr(err)
+	mapAttrString := map[string]func() string{
+		"created_at":  func() string { return matchedUser.Attributes.GetCreatedAt().String() },
+		"email":       matchedUser.Attributes.GetEmail,
+		"handle":      matchedUser.Attributes.GetHandle,
+		"icon":        matchedUser.Attributes.GetIcon,
+		"modified_at": func() string { return matchedUser.Attributes.GetModifiedAt().String() },
+		"name":        matchedUser.Attributes.GetName,
+		"status":      matchedUser.Attributes.GetStatus,
+		"title":       matchedUser.Attributes.GetTitle,
 	}
-	if err := d.Set("email", matchedUser.Attributes.GetEmail()); err != nil {
-		return diag.FromErr(err)
+	for key, value := range mapAttrString {
+		if err := d.Set(key, value()); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+	mapAttrBool := map[string]func() bool{
+		"disabled":        matchedUser.Attributes.GetDisabled,
+		"mfa_enabled":     matchedUser.Attributes.GetMfaEnabled,
+		"service_account": matchedUser.Attributes.GetServiceAccount,
+	}
+	for key, value := range mapAttrBool {
+		if err := d.Set(key, value()); err != nil {
+			return diag.FromErr(err)
+		}
 	}
 	return nil
 }
