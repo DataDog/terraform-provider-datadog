@@ -58,16 +58,16 @@ func (d *datadogTeamsDataSource) Metadata(_ context.Context, request datasource.
 
 func (d *datadogTeamsDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about existing users for use in other resources.",
+		Description: "Use this data source to retrieve information about existing teams for use in other resources.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
-			"filter": schema.StringAttribute{
+			"filter_keyword": schema.StringAttribute{
 				Optional:    true,
-				Description: "Filter all teams by the given string.",
+				Description: "Search query. Can be team name, team handle, or email of team member.",
 			},
-			"filter_status": schema.StringAttribute{
+			"filter_me": schema.BoolAttribute{
 				Optional:    true,
-				Description: "Filter on status attribute. Comma-separated list with possible values of Active, Pending and Disabled.",
+				Description: "When true, only returns teams the current user belongs to.",
 			},
 
 			// computed values
