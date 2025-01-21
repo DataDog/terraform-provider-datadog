@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -153,8 +154,8 @@ func (d *datadogUsersDataSource) updateState(state *datadogUsersDataSourceModel,
 			ServiceAccount: types.BoolValue(user.Attributes.GetServiceAccount()),
 			MfaEnabled:     types.BoolValue(user.Attributes.GetMfaEnabled()),
 			Status:         types.StringValue(user.Attributes.GetStatus()),
-			CreatedAt:      types.StringValue(user.Attributes.GetCreatedAt().String()),
-			ModifiedAt:     types.StringValue(user.Attributes.GetModifiedAt().String()),
+			CreatedAt:      types.StringValue(user.Attributes.GetCreatedAt().Format(time.RFC3339)),
+			ModifiedAt:     types.StringValue(user.Attributes.GetModifiedAt().Format(time.RFC3339)),
 			Title:          types.StringValue(user.Attributes.GetTitle()),
 			Handle:         types.StringValue(user.Attributes.GetHandle()),
 			Disabled:       types.BoolValue(user.Attributes.GetDisabled()),
