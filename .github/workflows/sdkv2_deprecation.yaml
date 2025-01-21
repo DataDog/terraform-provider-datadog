@@ -11,15 +11,15 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 2
       - name: Get changed files
         id: new-resources
-        uses: tj-actions/changed-files@v45
+        uses: tj-actions/changed-files@d6e91a2266cdb9d62096cebf1e8546899c6aa18f
         with:
           files: "datadog/*.go"
-      - uses: exercism/pr-commenter-action@v1.5.1
+      - uses: exercism/pr-commenter-action@085ef62d2a541a112c3ade1d24deea83665ea186
         if: steps.new-resources.outputs.added_files_count != '0'
         with:
           github-token: "${{ github.token }}"
