@@ -18,9 +18,19 @@ var (
 )
 
 type UserModel struct {
-	ID    types.String `tfsdk:"id"`
-	Name  types.String `tfsdk:"name"`
-	Email types.String `tfsdk:"email"`
+	ID             types.String `tfsdk:"id"`
+	Name           types.String `tfsdk:"name"`
+	Email          types.String `tfsdk:"email"`
+	ServiceAccount types.Bool   `tfsdk:"service_account"`
+	MfaEnabled     types.Bool   `tfsdk:"mfa_enabled"`
+	Status         types.String `tfsdk:"status"`
+	CreatedAt      types.String `tfsdk:"created_at"`
+	ModifiedAt     types.String `tfsdk:"modified_at"`
+	Title          types.String `tfsdk:"title"`
+	Handle         types.String `tfsdk:"handle"`
+	Disabled       types.Bool   `tfsdk:"disabled"`
+	Verified       types.Bool   `tfsdk:"verified"`
+	Icon           types.String `tfsdk:"icon"`
 }
 
 type datadogUsersDataSourceModel struct {
@@ -72,9 +82,19 @@ func (d *datadogUsersDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "List of users",
 				ElementType: types.ObjectType{
 					AttrTypes: map[string]attr.Type{
-						"id":    types.StringType,
-						"name":  types.StringType,
-						"email": types.StringType,
+						"id":              types.StringType,
+						"name":            types.StringType,
+						"email":           types.StringType,
+						"service_account": types.BoolType,
+						"mfa_enabled":     types.BoolType,
+						"status":          types.StringType,
+						"created_at":      types.StringType,
+						"modified_at":     types.StringType,
+						"title":           types.StringType,
+						"handle":          types.StringType,
+						"disabled":        types.BoolType,
+						"verified":        types.BoolType,
+						"icon":            types.StringType,
 					},
 				},
 			},
@@ -127,9 +147,19 @@ func (d *datadogUsersDataSource) updateState(state *datadogUsersDataSourceModel,
 	var users []*UserModel
 	for _, user := range *usersData {
 		u := UserModel{
-			ID:    types.StringValue(user.GetId()),
-			Email: types.StringValue(user.Attributes.GetEmail()),
-			Name:  types.StringValue(user.Attributes.GetName()),
+			ID:             types.StringValue(user.GetId()),
+			Name:           types.StringValue(user.Attributes.GetName()),
+			Email:          types.StringValue(user.Attributes.GetEmail()),
+			ServiceAccount: types.BoolValue(user.Attributes.GetServiceAccount()),
+			MfaEnabled:     types.BoolValue(user.Attributes.GetMfaEnabled()),
+			Status:         types.StringValue(user.Attributes.GetStatus()),
+			CreatedAt:      types.StringValue(user.Attributes.GetCreatedAt().String()),
+			ModifiedAt:     types.StringValue(user.Attributes.GetModifiedAt().String()),
+			Title:          types.StringValue(user.Attributes.GetTitle()),
+			Handle:         types.StringValue(user.Attributes.GetHandle()),
+			Disabled:       types.BoolValue(user.Attributes.GetDisabled()),
+			Verified:       types.BoolValue(user.Attributes.GetVerified()),
+			Icon:           types.StringValue(user.Attributes.GetIcon()),
 		}
 
 		users = append(users, &u)

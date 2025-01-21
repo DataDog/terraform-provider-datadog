@@ -7,8 +7,20 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
+func checkRessourceAttributeRegex(name string, key string, pattern string) func(*terraform.State) error {
+	return resource.TestCheckResourceAttrWith(name, key, func(attr string) error {
+		ok, _ := regexp.MatchString(pattern, attr)
+		if !ok {
+			return fmt.Errorf("expected %s to match %s", attr, pattern)
+		}
+		return nil
+	})
+}
 
 func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
 	t.Parallel()
@@ -23,7 +35,11 @@ func TestAccDatadogUserDatasourceExactMatch(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUserConfig(username),
-				Check:  resource.TestCheckResourceAttr("data.datadog_user.test", "email", username),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.datadog_user.test", "email", username),
+					resource.TestCheckResourceAttr("data.datadog_user.test", "status", "pending"),
+					checkRessourceAttributeRegex("data.datadog_user.test", "icon", "https://secure.gravatar.com/avatar/.*"),
+				),
 			},
 		},
 	})
@@ -58,7 +74,11 @@ func TestAccDatadogUserDatasourceWithExactMatch(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUserWithExactMatchConfig(email, "true"),
-				Check:  resource.TestCheckResourceAttr("data.datadog_user.test", "email", email),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.datadog_user.test", "email", email),
+					resource.TestCheckResourceAttr("data.datadog_user.test", "status", "pending"),
+					checkRessourceAttributeRegex("data.datadog_user.test", "icon", "https://secure.gravatar.com/avatar/.*"),
+				),
 			},
 		},
 	})
