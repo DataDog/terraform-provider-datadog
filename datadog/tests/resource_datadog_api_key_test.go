@@ -33,6 +33,7 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyName),
 					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					resource.TestCheckResourceAttr(resourceName, "remote_config", "true"),
 					func(s *terraform.State) error {
 						resource, ok := s.RootModule().Resources[resourceName]
 						if !ok {
@@ -97,6 +98,7 @@ func testAccCheckDatadogApiKeyConfigRequired(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_api_key" "foo" {
   name = "%s"
+  remote_config = true
 }`, uniq)
 }
 

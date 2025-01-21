@@ -26,6 +26,10 @@ resource "datadog_api_key" "foo" {
 
 - `name` (String) Name for API Key.
 
+### Optional
+
+- `remote_config` (Boolean) Remote Configuration attribute
+
 ### Read-Only
 
 - `id` (String) The ID of this resource.
