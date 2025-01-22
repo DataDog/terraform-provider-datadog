@@ -3,7 +3,6 @@ package fwprovider
 import (
 	"context"
 	"fmt"
-	"math/big"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -18,13 +17,13 @@ var (
 )
 
 type TeamModel struct {
-	Description types.String `tfdsk:"description"`
+	Description types.String `tfsdk:"description"`
 	Handle      types.String `tfsdk:"handle"`
 	ID          types.String `tfsdk:"id"`
-	LinkCount   types.Number `tfsdk:"link_count"`
+	LinkCount   types.Int64  `tfsdk:"link_count"`
 	Name        types.String `tfsdk:"name"`
 	Summary     types.String `tfsdk:"summary"`
-	UserCount   types.Number `tfsdk:"user_count"`
+	UserCount   types.Int64  `tfsdk:"user_count"`
 }
 
 type datadogTeamsDataSourceModel struct {
@@ -79,10 +78,10 @@ func (d *datadogTeamsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 						"description": types.StringType,
 						"handle":      types.StringType,
 						"id":          types.StringType,
-						"link_count":  types.NumberType,
+						"link_count":  types.Int64Type,
 						"name":        types.StringType,
 						"summary":     types.StringType,
-						"user_count":  types.NumberType,
+						"user_count":  types.Int64Type,
 					},
 				},
 			},
@@ -139,10 +138,10 @@ func (d *datadogTeamsDataSource) updateState(state *datadogTeamsDataSourceModel,
 			Description: types.StringValue(team.Attributes.GetDescription()),
 			Handle:      types.StringValue(team.Attributes.GetHandle()),
 			ID:          types.StringValue(team.GetId()),
-			LinkCount:   types.NumberValue(big.NewFloat(float64(team.Attributes.GetLinkCount()))),
+			LinkCount:   types.Int64Value(int64(team.Attributes.GetLinkCount())),
 			Name:        types.StringValue(team.Attributes.GetName()),
 			Summary:     types.StringValue(team.Attributes.GetSummary()),
-			UserCount:   types.NumberValue(big.NewFloat(float64(team.Attributes.GetUserCount()))),
+			UserCount:   types.Int64Value(int64(team.Attributes.GetUserCount())),
 		}
 
 		teams = append(teams, &t)
