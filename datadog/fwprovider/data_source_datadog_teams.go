@@ -132,7 +132,7 @@ func (d *datadogTeamsDataSource) Read(ctx context.Context, request datasource.Re
 
 func (d *datadogTeamsDataSource) updateState(state *datadogTeamsDataSourceModel, teamsData *[]datadogV2.Team) {
 
-	var teams []*TeamModel
+	teams := make([]*TeamModel, 0, len(*teamsData))
 	for _, team := range *teamsData {
 		t := TeamModel{
 			Description: types.StringValue(team.Attributes.GetDescription()),
