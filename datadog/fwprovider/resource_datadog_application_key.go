@@ -4,9 +4,13 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -22,9 +26,10 @@ func NewApplicationKeyResource() resource.Resource {
 }
 
 type applicationKeyResourceModel struct {
-	ID   types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-	Key  types.String `tfsdk:"key"`
+	ID     types.String `tfsdk:"id"`
+	Name   types.String `tfsdk:"name"`
+	Key    types.String `tfsdk:"key"`
+	Scopes types.Set    `tfsdk:"scopes"`
 }
 
 type applicationKeyResource struct {
@@ -52,6 +57,17 @@ func (r *applicationKeyResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Description: "The value of the Application Key.",
 				Computed:    true,
 				Sensitive:   true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"scopes": schema.SetAttribute{
+				Description: "Authorization scopes for the Application Key. Application Keys configured with no scopes have full access.",
+				Optional:    true,
+				ElementType: types.StringType,
+				Validators: []validator.Set{
+					setvalidator.SizeAtLeast(1),
+				},
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -82,7 +98,7 @@ func (r *applicationKeyResource) Create(ctx context.Context, request resource.Cr
 	}
 	applicationKeyData := resp.GetData()
 	state.ID = types.StringValue(applicationKeyData.GetId())
-	r.updateState(&state, &applicationKeyData)
+	r.updateState(ctx, &state, &applicationKeyData)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 
@@ -106,7 +122,7 @@ func (r *applicationKeyResource) Read(ctx context.Context, request resource.Read
 	}
 
 	applicationKeyData := resp.GetData()
-	r.updateState(&state, &applicationKeyData)
+	r.updateState(ctx, &state, &applicationKeyData)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -127,7 +143,7 @@ func (r *applicationKeyResource) Update(ctx context.Context, request resource.Up
 
 	applicationKeyData := resp.GetData()
 	state.ID = types.StringValue(applicationKeyData.GetId())
-	r.updateState(&state, &applicationKeyData)
+	r.updateState(ctx, &state, &applicationKeyData)
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -146,6 +162,7 @@ func (r *applicationKeyResource) Delete(ctx context.Context, request resource.De
 
 func (r *applicationKeyResource) buildDatadogApplicationKeyCreateV2Struct(state *applicationKeyResourceModel) *datadogV2.ApplicationKeyCreateRequest {
 	applicationKeyAttributes := datadogV2.NewApplicationKeyCreateAttributes(state.Name.ValueString())
+	applicationKeyAttributes.SetScopes(getScopesFromStateAttribute(state.Scopes))
 	applicationKeyData := datadogV2.NewApplicationKeyCreateData(*applicationKeyAttributes, datadogV2.APPLICATIONKEYSTYPE_APPLICATION_KEYS)
 	applicationKeyRequest := datadogV2.NewApplicationKeyCreateRequest(*applicationKeyData)
 
@@ -155,16 +172,29 @@ func (r *applicationKeyResource) buildDatadogApplicationKeyCreateV2Struct(state 
 func (r *applicationKeyResource) buildDatadogApplicationKeyUpdateV2Struct(state *applicationKeyResourceModel) *datadogV2.ApplicationKeyUpdateRequest {
 	applicationKeyAttributes := datadogV2.NewApplicationKeyUpdateAttributes()
 	applicationKeyAttributes.SetName(state.Name.ValueString())
+	applicationKeyAttributes.SetScopes(getScopesFromStateAttribute(state.Scopes))
 	applicationKeyData := datadogV2.NewApplicationKeyUpdateData(*applicationKeyAttributes, state.ID.ValueString(), datadogV2.APPLICATIONKEYSTYPE_APPLICATION_KEYS)
 	applicationKeyRequest := datadogV2.NewApplicationKeyUpdateRequest(*applicationKeyData)
 
 	return applicationKeyRequest
 }
 
-func (r *applicationKeyResource) updateState(state *applicationKeyResourceModel, applicationKeyData *datadogV2.FullApplicationKey) {
+func (r *applicationKeyResource) updateState(ctx context.Context, state *applicationKeyResourceModel, applicationKeyData *datadogV2.FullApplicationKey) {
 	applicationKeyAttributes := applicationKeyData.GetAttributes()
 	state.Name = types.StringValue(applicationKeyAttributes.GetName())
 	if applicationKeyAttributes.HasKey() {
 		state.Key = types.StringValue(applicationKeyAttributes.GetKey())
 	}
+	if applicationKeyAttributes.HasScopes() {
+		state.Scopes, _ = types.SetValueFrom(ctx, types.StringType, applicationKeyAttributes.GetScopes())
+	}
+}
+
+func getScopesFromStateAttribute(scopes types.Set) []string {
+	scopesList := []string{}
+
+	for _, scope := range scopes.Elements() {
+		scopesList = append(scopesList, scope.(types.String).ValueString())
+	}
+	return scopesList
 }
