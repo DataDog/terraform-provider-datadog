@@ -497,11 +497,11 @@ func apiResponseToConnectionModel(connection datadogV2.GetActionConnectionRespon
 
 		body := httpAttr.Credentials.HTTPTokenAuth.Body
 		if body != nil {
-			tokenAuth.Body = &httpConnectionBodyModel{}
-			if body.Content != nil {
+			if body.Content == nil && body.ContentType == nil {
+				tokenAuth.Body = nil
+			} else {
+				tokenAuth.Body = &httpConnectionBodyModel{}
 				tokenAuth.Body.Content = types.StringPointerValue(body.Content)
-			}
-			if body.ContentType != nil {
 				tokenAuth.Body.ContentType = types.StringPointerValue(body.ContentType)
 			}
 		}
