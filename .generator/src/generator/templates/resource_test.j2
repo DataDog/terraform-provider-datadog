@@ -1,0 +1,142 @@
+{%- import "utils/resource_test_helper.j2" as helperMacros %}
+
+{%- set apiName = operations[GET_OPERATION]["schema"]["tags"][0].replace(" ", "") + "Api" %}
+{%- set getOperationId = operations[GET_OPERATION]["schema"]["operationId"] %}
+{%- set deleteOperationId = operations[DELETE_OPERATION]["schema"]["operationId"] %}
+{%- set readOperationParams = operations[GET_OPERATION]["schema"]|parameters %}
+{%- set createOperationParams = operations[CREATE_OPERATION]["schema"]|parameters %}
+{%- set deleteOperationParams = operations[DELETE_OPERATION]["schema"]|parameters %}
+{%- set primaryId = get_terraform_primary_id(operations) %}
+package test
+
+import (
+	"context"
+	"fmt"
+	"testing"
+
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+func TestAcc{{ name|camel_case }}Basic(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	uniq := uniqueEntityName(ctx, t)
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:      		  testAccCheckDatadog{{ name|camel_case }}Destroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadog{{ name|camel_case }}(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadog{{ name|camel_case }}Exists(providers.frameworkProvider),
+                    {%- for paramName, parameter in createOperationParams.items() %}
+                        {%- if paramName != primaryId["name"] %}
+                            {%- set parameterSchema = parameter|parameter_schema %}
+                            {%- if parameterSchema|is_json_api %}
+                                {%- set jsonAttributeSchema = json_api_attributes_schema(parameterSchema) %}
+                                {%- for attr, schema in jsonAttributeSchema.properties.items() %}
+                                    {%- set isRequired = attr in jsonAttributeSchema.get("required", []) %}
+                                    {%- if schema|is_primitive %}
+                                    resource.TestCheckResourceAttr(
+                                        "datadog_{{ name }}.foo", "{{ attr }}", "{% if schema.example %}{{ schema.example }}{% else %}UPDATE ME{% endif%}"),
+                                    {%- elif schema.type == "object" %}
+                                    {%- elif schema.type == "array" %}
+                                    {%- endif %}
+                                {%- endfor %}
+                            {%- endif %}
+                        {% endif%}
+                    {%- endfor %}
+				),
+			},
+		},
+	})
+}
+
+func testAccCheckDatadog{{ name|camel_case }}(uniq string) string {
+// Update me to make use of the unique value
+	return fmt.Sprintf(`
+{{- helperMacros.resourceExample(name, primaryId, createOperationParams) }}`, uniq)
+}
+
+func testAccCheckDatadog{{ name|camel_case }}Destroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		if err := {{ name|camel_case }}DestroyHelper(auth, s, apiInstances); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+func {{ name|camel_case }}DestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	err := utils.Retry(2, 10, func() error {
+		for _, r := range s.RootModule().Resources {
+            if r.Type != "resource_datadog_{{ name }}" {
+                continue
+            }
+
+            {%- for name, param in readOperationParams.items() %}
+                {%- set paramSchema = get_type_for_parameter(param) %}
+                {%- if name == primaryId["name"] %}
+                id := r.Primary.ID
+                {%- else%}
+                {{ name|variable_name }} := r.Primary.Attributes["{{ name }}"]
+                {%- endif %}
+            {%- endfor %}
+
+	        _, httpResp, err := apiInstances.Get{{ apiName }}{{ version }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
+			if err != nil {
+				if httpResp != nil && httpResp.StatusCode == 404 {
+					return nil
+				}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving {{ name|camel_case }} %s", err)}
+			}
+			return &utils.RetryableError{Prob: "{{ name|camel_case }} still exists"}
+		}
+		return nil
+	})
+	return err
+}
+
+func testAccCheckDatadog{{ name|camel_case }}Exists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
+
+		if err := {{ name|camel_case|untitle_case }}ExistsHelper(auth, s, apiInstances); err != nil {
+			return err
+		}
+		return nil
+	}
+}
+
+func {{ name|camel_case|untitle_case }}ExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	for _, r := range s.RootModule().Resources {
+        if r.Type != "resource_datadog_{{ name }}" {
+            continue
+        }
+
+        {%- for name, param in readOperationParams.items() %}
+            {%- set paramSchema = get_type_for_parameter(param) %}
+            {%- if name == primaryId["name"] %}
+            id := r.Primary.ID
+            {%- else%}
+            {{ name|variable_name }} := r.Primary.Attributes["{{ name }}"]
+            {%- endif %}
+        {%- endfor %}
+
+        _, httpResp, err := apiInstances.Get{{ apiName }}{{ version }}().{{ getOperationId }}(auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
+		if err != nil {
+			return utils.TranslateClientError(err, httpResp, "error retrieving {{ name|camel_case }}")
+		}
+	}
+	return nil
+}

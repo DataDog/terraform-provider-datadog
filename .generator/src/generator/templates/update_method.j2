@@ -1,0 +1,38 @@
+{%- import "utils/state_helper.j2" as stateMacros %}
+{%- set useCreateBodyRequest = get_type_for_parameter(createOperationParams["body"]) == get_type_for_parameter(updateOperationParams["body"]) %}
+
+func (r *{{ name|camel_case|untitle_case }}Resource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+    var state {{ name|camel_case|untitle_case }}Model
+    response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
+    if response.Diagnostics.HasError() {
+        return
+    }
+
+	{%- for paramName, param in updateOperationParams.items() %}
+    {% if paramName == "body" %}
+    body, diags := r.build{{ name|camel_case }}{% if not useCreateBodyRequest %}Update{%- endif %}RequestBody(ctx, &state)
+    response.Diagnostics.Append(diags...)
+    if response.Diagnostics.HasError() {
+        return
+    }
+	{% elif paramName == primaryId["name"] %}
+	id := state.ID.Value{{ get_terraform_schema_type(param) }}()
+    {%- else %}
+    {{ paramName|variable_name }} := state.{{ paramName|camel_case }}.Value{{ get_terraform_schema_type(param) }}()
+    {%- endif %}
+	{%- endfor %}
+
+	resp, _, err := r.Api.{{ updateOperationId }}(r.Auth, {% for paramName, param in updateOperationParams.items() %}{% if paramName == primaryId["name"] %}id{% else %}{% if paramName == "body" %}*{% endif %}{{ paramName|variable_name }}{% endif %}, {% endfor%})
+	if err != nil {
+	    response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving {{ name|camel_case }}"))
+        return
+	}
+    if err := utils.CheckForUnparsed(resp); err != nil {
+        response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+        return
+    }
+	r.updateState(ctx, &state, &resp)
+
+    // Save data into Terraform state
+    response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
