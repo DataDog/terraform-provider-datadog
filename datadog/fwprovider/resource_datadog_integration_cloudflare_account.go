@@ -31,6 +31,7 @@ type integrationCloudflareAccountModel struct {
 	Email     types.String `tfsdk:"email"`
 	Name      types.String `tfsdk:"name"`
 	Resources types.Set    `tfsdk:"resources"`
+	Zones     types.Set    `tfsdk:"zones"`
 }
 
 func NewIntegrationCloudflareAccountResource() resource.Resource {
@@ -73,6 +74,11 @@ func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 				Optional:    true,
 				Computed:    true,
 				Description: "An allowlist of resources to pull metrics for. Includes `web`, `dns`, `lb` (load balancer), and `worker`).",
+			},
+			"zones": schema.SetAttribute{
+				ElementType: types.StringType,
+				Optional:    true,
+				Description: "An allowlist of zones to restrict pulling metrics for.",
 			},
 		},
 	}
@@ -204,6 +210,10 @@ func (r *integrationCloudflareAccountResource) updateState(ctx context.Context, 
 	if resources, ok := attributes.GetResourcesOk(); ok {
 		state.Resources, _ = types.SetValueFrom(ctx, types.StringType, resources)
 	}
+
+	if zones, ok := attributes.GetZonesOk(); ok {
+		state.Zones, _ = types.SetValueFrom(ctx, types.StringType, zones)
+	}
 }
 
 func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccountRequestBody(ctx context.Context, state *integrationCloudflareAccountModel) (*datadogV2.CloudflareAccountCreateRequest, diag.Diagnostics) {
@@ -220,6 +230,12 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 		var resources []string
 		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
 		attributes.SetResources(resources)
+	}
+
+	if !state.Zones.IsNull() && !state.Zones.IsUnknown() {
+		var zones []string
+		diags.Append(state.Zones.ElementsAs(ctx, &zones, false)...)
+		attributes.SetZones(zones)
 	}
 
 	req := datadogV2.NewCloudflareAccountCreateRequestWithDefaults()
@@ -242,6 +258,12 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 		var resources []string
 		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
 		attributes.SetResources(resources)
+	}
+
+	if !state.Zones.IsNull() && !state.Zones.IsUnknown() {
+		var zones []string
+		diags.Append(state.Zones.ElementsAs(ctx, &zones, false)...)
+		attributes.SetZones(zones)
 	}
 
 	req := datadogV2.NewCloudflareAccountUpdateRequestWithDefaults()
