@@ -36,8 +36,6 @@ type appResource struct {
 // 	RootInstanceName types.String `tfsdk:"root_instance_name"`
 // 	Components       types.List   `tfsdk:"components"`
 // 	Queries          types.List   `tfsdk:"queries"`
-// 	Scripts          types.List   `tfsdk:"scripts"`
-// 	// InputSchema      types.String `tfsdk:"input_schema"`
 // }
 
 // try single property JSON input -> validation will be handled on the API side
@@ -100,13 +98,6 @@ func (r *appResource) Metadata(_ context.Context, request resource.MetadataReque
 // 				Description: "The queries of the App.",
 // 				ElementType: types.StringType,
 // 			},
-// 			"scripts": schema.ListAttribute{
-// 				Description: "The scripts of the App.",
-// 				ElementType: types.StringType,
-// 			},
-// 			// "input_schema": schema.StringAttribute{
-// 			// 	Description: "The input schema of the App.",
-// 			// },
 
 // 		},
 // 	}
@@ -149,10 +140,10 @@ func (r *appResource) Read(ctx context.Context, request resource.ReadRequest, re
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving App"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
+	// if err := utils.CheckForUnparsed(resp); err != nil {
+	// 	response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+	// 	return
+	// }
 
 	r.updateStateForRead(ctx, &state, &resp)
 
@@ -208,10 +199,10 @@ func (r *appResource) Update(ctx context.Context, request resource.UpdateRequest
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating App"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
+	// if err := utils.CheckForUnparsed(resp); err != nil {
+	// 	response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+	// 	return
+	// }
 	r.updateStateForUpdate(ctx, &state, &resp)
 
 	// Save data into Terraform state
@@ -219,7 +210,7 @@ func (r *appResource) Update(ctx context.Context, request resource.UpdateRequest
 }
 
 func (r *appResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state teamModel
+	var state appResourceModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -272,13 +263,6 @@ func (r *appResource) Delete(ctx context.Context, request resource.DeleteRequest
 // 		state.Queries, _ = types.ListValueFrom(ctx, types.StringType, queries)
 // 	}
 
-// 	if scripts, ok := attributes.GetScriptsOk(); ok && scripts != nil {
-// 		state.Scripts, _ = types.ListValueFrom(ctx, types.StringType, scripts)
-// 	}
-
-//		// if inputSchema, ok := attributes.GetInputSchemaOk(); ok && inputSchema != nil {
-//		// 	state.InputSchema = types.StringValue(*inputSchema)
-//		// }
 //	}
 
 func (r *appResource) updateStateForRead(ctx context.Context, state *appResourceModel, resp *datadogV2.GetAppResponse) {
@@ -287,7 +271,9 @@ func (r *appResource) updateStateForRead(ctx context.Context, state *appResource
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	bytes, err := attributes.MarshalJSON()
+	// bytes, err := attributes.MarshalJSON()
+	// the provided function above is too strict for our public API
+	bytes, err := json.Marshal(attributes)
 	if err != nil {
 		return
 	}
@@ -300,7 +286,9 @@ func (r *appResource) updateStateForUpdate(ctx context.Context, state *appResour
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	bytes, err := attributes.MarshalJSON()
+	// bytes, err := attributes.MarshalJSON()
+	// the provided function above is too strict for our public API
+	bytes, err := json.Marshal(attributes)
 	if err != nil {
 		return
 	}
@@ -340,34 +328,20 @@ func (r *appResource) updateStateForUpdate(ctx context.Context, state *appResour
 // 		attributes.SetTags(components)
 // 	}
 
-// 	// if !state.Components.IsNull() {
-// 	// 	components, err := state.Components.Value()
-// 	// 	if err != nil {
-// 	// 		diags = append(diags, diag.Diagnostic{
-// 	// 			Severity: diag.Error,
-// 	// 			Summary:  "Error converting components to list",
-// 	// 			Detail:   err.Error(),
-// 	// 		})
-// 	// 		return nil, diags
-// 	// 	}
-// 	// 	attributes.SetComponents(components.([]string))
-// 	// }
+// if !state.Components.IsNull() {
+// 	components, err := state.Components.Value()
+// 	if err != nil {
+// 		diags.AddError("components", fmt.Sprintf("error converting components to list: %s", err))
+// 		return nil, diags
+// 	}
+// 	attributes.SetComponents(components.([]string))
+// }
 
 // 	if !state.Queries.IsNull() {
 // 		queries := []string{}
 // 		diags.Append(state.Tags.ElementsAs(ctx, &queries, false)...)
 // 		attributes.SetTags(queries)
 // 	}
-
-// 	if !state.Scripts.IsNull() {
-// 		scripts := []string{}
-// 		diags.Append(state.Tags.ElementsAs(ctx, &scripts, false)...)
-// 		attributes.SetTags(scripts)
-// 	}
-
-// 	// if !state.InputSchema.IsNull() {
-// 	// 	attributes.SetInputSchema(state.InputSchema.Value())
-// 	// }
 
 // 	req := datadogV2.NewCreateAppRequestWithDefaults()
 // 	req.Data = datadogV2.NewCreateAppRequestDataWithDefaults()
@@ -392,7 +366,9 @@ func (r *appResource) buildCreateAppRequestBody(ctx context.Context, state *appR
 
 	// tflog.Debug(ctx, "tflog app json string", map[string]interface{}{"app json string": appJsonString})
 
-	err = attributes.UnmarshalJSON([]byte(appJsonString))
+	// err = attributes.UnmarshalJSON([]byte(appJsonString))
+	// the provided function above is too strict for our public API
+	err = json.Unmarshal([]byte(appJsonString), attributes)
 	if err != nil {
 		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json string to attributes struct: %s", err))
 		return nil, diags
@@ -429,9 +405,17 @@ func (r *appResource) buildUpdateAppRequestBody(ctx context.Context, state *appR
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewUpdateAppRequestDataAttributesWithDefaults()
 
-	err := attributes.UnmarshalJSON([]byte(state.AppJson.String()))
+	// decode encoded json into string and then decode that into the attributes struct
+	var appJsonString string
+	err := json.Unmarshal([]byte(state.AppJson.String()), &appJsonString)
 	if err != nil {
-		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json: %s", err))
+		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json to string: %s", err))
+		return nil, diags
+	}
+
+	err = json.Unmarshal([]byte(appJsonString), attributes)
+	if err != nil {
+		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json string to attributes struct: %s", err))
 		return nil, diags
 	}
 
