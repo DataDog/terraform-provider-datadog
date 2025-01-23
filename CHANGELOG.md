@@ -1,3 +1,15 @@
+## 3.53.0 (January 23, 2025)
+
+### BUGFIXES
+* [datadog_azure_integration] change default value of `resource_provider_configs` and rerecord tests by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2783
+* [datadog_synthetics_test] Fix steps reordering without `local_key` by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2795
+### FEATURES
+* [datadog_security_monitoring_suppression] Add Start to Suppressions by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2780
+* [datadog_azure_integration] Support metric filtering by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2781
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.52.1...v3.53.0
+
 ## 3.52.1 (January 16, 2025)
 
 ### BUGFIXES
