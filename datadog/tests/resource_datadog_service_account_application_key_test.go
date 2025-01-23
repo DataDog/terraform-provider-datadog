@@ -3,6 +3,8 @@ package test
 import (
 	"context"
 	"fmt"
+	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -20,6 +22,7 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := uniqueEntityName(ctx, t)
 	uniqUpdated := uniq + "updated"
+	scopes := []string{"dashboards_read", "dashboards_write"}
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogServiceAccountApplicationKeyDestroy(providers.frameworkProvider),
@@ -54,7 +57,55 @@ func TestAccServiceAccountApplicationKeyBasic(t *testing.T) {
 						"datadog_service_account_application_key.foo", "last4"),
 					resource.TestCheckResourceAttrPair(
 						"datadog_service_account_application_key.foo", "service_account_id", "datadog_service_account.bar", "id"),
+					resource.TestCheckNoResourceAttr("datadog_service_account_application_key.foo", "scopes"),
 				),
+			},
+			{
+				Config: testAccCheckDatadogServiceAccountScopedApplicationKey(uniqUpdated, scopes),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogServiceAccountApplicationKeyExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_service_account_application_key.foo", "name", uniqUpdated),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "key"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "created_at"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "last4"),
+					resource.TestCheckResourceAttrPair(
+						"datadog_service_account_application_key.foo", "service_account_id", "datadog_service_account.bar", "id"),
+					resource.TestCheckResourceAttrSet(
+						"datadog_service_account_application_key.foo", "scopes.#"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_account_application_key.foo", "scopes.*", scopes[0]),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_service_account_application_key.foo", "scopes.*", scopes[1]),
+				),
+			},
+		},
+	})
+}
+
+func TestAccServiceAccountApplicationKey_Error(t *testing.T) {
+	if isRecording() || isReplaying() {
+		t.Skip("This test doesn't support recording or replaying")
+	}
+	t.Parallel()
+	ctx, _, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	applicationKeyName := uniqueEntityName(ctx, t)
+	applicationKeyNameUpdate := applicationKeyName + "-2"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config:      testAccCheckDatadogServiceAccountScopedApplicationKey(applicationKeyNameUpdate, []string{}),
+				ExpectError: regexp.MustCompile(`Attribute scopes set must contain at least 1 elements`),
+			},
+			{
+				Config:      testAccCheckDatadogServiceAccountScopedApplicationKey(applicationKeyNameUpdate, []string{"invalid"}),
+				ExpectError: regexp.MustCompile(`Invalid scopes`),
 			},
 		},
 	})
@@ -103,6 +154,27 @@ resource "datadog_service_account_application_key" "foo" {
     service_account_id = datadog_service_account.bar.id
     name = "%s"
 }`, uniq)
+}
+
+func testAccCheckDatadogServiceAccountScopedApplicationKey(uniq string, scopes []string) string {
+	formattedScopes := ""
+	if len(scopes) == 0 {
+		formattedScopes = "[]"
+	} else {
+		formattedScopes = fmt.Sprintf("[\"%s\"]", strings.Join(scopes, "\", \""))
+	}
+
+	return fmt.Sprintf(`
+resource "datadog_service_account" "bar" {
+	email = "new@example.com"
+	name  = "testTerraformServiceAccountApplicationKeys"
+}
+
+resource "datadog_service_account_application_key" "foo" {
+    service_account_id = datadog_service_account.bar.id
+    name = "%s"
+	scopes = %s
+}`, uniq, formattedScopes)
 }
 
 func testAccCheckDatadogServiceAccountApplicationKeyDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {

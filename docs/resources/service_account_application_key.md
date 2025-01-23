@@ -28,6 +28,10 @@ resource "datadog_service_account_application_key" "foo" {
 - `name` (String) Name of the application key.
 - `service_account_id` (String) ID of the service account that owns this key.
 
+### Optional
+
+- `scopes` (Set of String) Authorization scopes for the Application Key. Application Keys configured with no scopes have full access.
+
 ### Read-Only
 
 - `created_at` (String) Creation date of the application key.

@@ -6,12 +6,14 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -34,6 +36,7 @@ type serviceAccountApplicationKeyModel struct {
 	Key              types.String `tfsdk:"key"`
 	CreatedAt        types.String `tfsdk:"created_at"`
 	Last4            types.String `tfsdk:"last4"`
+	Scopes           types.Set    `tfsdk:"scopes"`
 }
 
 func NewServiceAccountApplicationKeyResource() resource.Resource {
@@ -64,6 +67,14 @@ func (r *serviceAccountApplicationKeyResource) Schema(_ context.Context, _ resou
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "Name of the application key.",
+			},
+			"scopes": schema.SetAttribute{
+				Description: "Authorization scopes for the Application Key. Application Keys configured with no scopes have full access.",
+				Optional:    true,
+				ElementType: types.StringType,
+				Validators: []validator.Set{
+					setvalidator.SizeAtLeast(1),
+				},
 			},
 			"key": schema.StringAttribute{
 				Computed:  true,
@@ -228,6 +239,10 @@ func (r *serviceAccountApplicationKeyResource) updateStatePartialKey(ctx context
 	if name, ok := attributes.GetNameOk(); ok {
 		state.Name = types.StringValue(*name)
 	}
+
+	if attributes.HasScopes() {
+		state.Scopes, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetScopes())
+	}
 }
 
 func (r *serviceAccountApplicationKeyResource) updateStateFullKey(ctx context.Context, state *serviceAccountApplicationKeyModel, resp *datadogV2.ApplicationKeyResponse) {
@@ -253,6 +268,10 @@ func (r *serviceAccountApplicationKeyResource) updateStateFullKey(ctx context.Co
 	if name, ok := attributes.GetNameOk(); ok {
 		state.Name = types.StringValue(*name)
 	}
+
+	if attributes.HasScopes() {
+		state.Scopes, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetScopes())
+	}
 }
 
 func (r *serviceAccountApplicationKeyResource) buildServiceAccountApplicationKeyRequestBody(ctx context.Context, state *serviceAccountApplicationKeyModel) (*datadogV2.ApplicationKeyCreateRequest, diag.Diagnostics) {
@@ -260,6 +279,7 @@ func (r *serviceAccountApplicationKeyResource) buildServiceAccountApplicationKey
 	attributes := datadogV2.NewApplicationKeyCreateAttributesWithDefaults()
 
 	attributes.SetName(state.Name.ValueString())
+	attributes.SetScopes(getScopesFromStateAttribute(state.Scopes))
 
 	req := datadogV2.NewApplicationKeyCreateRequestWithDefaults()
 	req.Data = *datadogV2.NewApplicationKeyCreateDataWithDefaults()
@@ -276,6 +296,7 @@ func (r *serviceAccountApplicationKeyResource) buildServiceAccountApplicationKey
 		attributes.SetName(state.Name.ValueString())
 	}
 
+	attributes.SetScopes(getScopesFromStateAttribute(state.Scopes))
 	req := datadogV2.NewApplicationKeyUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewApplicationKeyUpdateDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
