@@ -39,6 +39,7 @@ func resourceDatadogUser() *schema.Resource {
 					Description: "Name for user.",
 					Type:        schema.TypeString,
 					Optional:    true,
+					Computed:    true,
 				},
 				"roles": {
 					Description: "A list of role IDs to assign to the user.",
