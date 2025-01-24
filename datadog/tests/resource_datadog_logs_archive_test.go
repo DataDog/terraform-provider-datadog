@@ -141,8 +141,8 @@ func TestAccDatadogLogsArchiveGCS_basic(t *testing.T) {
 	})
 }
 
-// create with default encryption: Ok s3
-func archiveS3ConfigForCreation(uniq string) string {
+// create: Ok s3
+func archiveS3ConfigForCreation(uniq string, encryption string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
   account_id         = "%s"
@@ -158,12 +158,12 @@ resource "datadog_logs_archive" "my_s3_archive" {
     path 		 = "/path/foo"
     account_id   = "%s"
     role_name    = "testacc-datadog-integration-role"
-	encryption_type = "NO_OVERRIDE"
+	%s
   }
   rehydration_tags = ["team:intake", "team:app"]
   include_tags = true
 	rehydration_max_scan_size_in_gb = 123
-}`, uniq, uniq)
+}`, uniq, uniq, encryption)
 }
 
 func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
@@ -171,13 +171,15 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 
+	encryptionNoOverride := `encryption_type = "NO_OVERRIDE"`
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: archiveS3ConfigForCreation(accountID),
+				Config: archiveS3ConfigForCreation(accountID, encryptionNoOverride),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckArchiveExists(providers.frameworkProvider),
 					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3"),
@@ -209,75 +211,8 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 	})
 }
 
-// // create with no encryption: Ok s3
-// func archiveS3ConfigForCreationNoEncryption(uniq string) string {
-// 	return fmt.Sprintf(`
-// resource "datadog_integration_aws" "account" {
-//   account_id         = "%s"
-//   role_name          = "testacc-datadog-integration-role"
-// }
-
-// resource "datadog_logs_archive" "my_s3_archive" {
-//   depends_on = ["datadog_integration_aws.account"]
-//   name = "my first s3 archive"
-//   query = "service:tutu"
-//   s3_archive {
-//     bucket 		 = "my-bucket"
-//     path 		 = "/path/foo"
-//     account_id   = "%s"
-//     role_name    = "testacc-datadog-integration-role"
-//   }
-//   rehydration_tags = ["team:intake", "team:app"]
-//   include_tags = true
-// 	rehydration_max_scan_size_in_gb = 123
-// }`, uniq, uniq)
-// }
-
-// func TestAccDatadogLogsArchiveS3NoEncryption_basic(t *testing.T) {
-// 	fmt.Println("Test Logs Archive no encryption")
-// 	t.Parallel()
-// 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-// 	accountID := uniqueAWSAccountID(ctx, t)
-// 	// accountID := "601427279990"
-
-// 	resource.Test(t, resource.TestCase{
-// 		PreCheck:                 func() { testAccPreCheck(t) },
-// 		ProtoV5ProviderFactories: accProviders,
-// 		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
-// 		Steps: []resource.TestStep{
-// 			{
-// 				Config: archiveS3ConfigForCreationNoEncryption(accountID),
-// 				Check: resource.ComposeTestCheckFunc(
-// 					testAccCheckArchiveExists(providers.frameworkProvider),
-// 					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "query", "service:tutu"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.bucket", "my-bucket"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id", accountID),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.0", "team:intake"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.1", "team:app"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "include_tags", "true"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
-// 				),
-// 			},
-// 		},
-// 	})
-// }
-
-// update: OK
-func archiveS3ConfigForUpdate(uniq string) string {
+// update: Ok s3
+func archiveS3ConfigForUpdate(uniq string, encryption string) string {
 	return fmt.Sprintf(`
 resource "datadog_integration_aws" "account" {
   account_id = "%s"
@@ -293,12 +228,11 @@ resource "datadog_logs_archive" "my_s3_archive" {
 	path 		 = "/path/foo"
 	account_id   = "%s"
 	role_name    = "testacc-datadog-integration-role"
-	encryption_type = "SSE_KMS"
-	encryption_key = "arn:aws:kms:us-east-1:012345678901:key/DatadogIntegrationRoleKms"
+	%s
   }
   include_tags = false
 	rehydration_max_scan_size_in_gb = 345
-}`, uniq, uniq)
+}`, uniq, uniq, encryption)
 }
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
@@ -306,13 +240,20 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 
+	encryptionSseS3 := `encryption_type = "SSE_S3"`
+
+	encryptionSseKms := `
+		encryption_type = "SSE_KMS"
+		encryption_key = "arn:aws:kms:us-east-1:012345678901:key/DatadogIntegrationRoleKms"
+	`
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: archiveS3ConfigForCreation(accountID),
+				Config: archiveS3ConfigForCreation(accountID, ""),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckArchiveExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
@@ -326,13 +267,13 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "SSE_S3"),
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "NO_OVERRIDE"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
 				),
 			},
 			{
-				Config: archiveS3ConfigForUpdate(accountID),
+				Config: archiveS3ConfigForUpdate(accountID, encryptionSseKms),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive after update"),
@@ -356,94 +297,27 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "345"),
 				),
 			},
+			{
+				Config: archiveS3ConfigForUpdate(accountID, encryptionSseS3),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive after update"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.bucket", "my-bucket"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id", accountID),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "SSE_S3"),
+					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_key"),
+				),
+			},
 		},
 	})
 }
-
-// // update: OK
-// func archiveS3ConfigForUpdateSseKmsEncryption(uniq string) string {
-// 	return fmt.Sprintf(`
-// resource "datadog_integration_aws" "account" {
-//   account_id = "%s"
-//   role_name  = "testacc-datadog-integration-role"
-// }
-
-// resource "datadog_logs_archive" "my_s3_archive" {
-//   depends_on = ["datadog_integration_aws.account"]
-//   name       = "my first s3 archive after update"
-//   query      = "service:tutu"
-//   s3_archive {
-//   	bucket 		 = "my-bucket"
-// 	path 		 = "/path/foo"
-// 	account_id   = "%s"
-// 	role_name    = "testacc-datadog-integration-role"
-// 	encryption_type = "SSE_KMS"
-// 	encryption_key = "arn:aws:kms:us-east-1:012345678901:key/DatadogIntegrationRoleKms"
-//   }
-//   include_tags = false
-// 	rehydration_max_scan_size_in_gb = 345
-// }`, uniq, uniq)
-// }
-
-// func TestAccDatadogLogsArchiveS3UpdateSseKmsEncryption_basic(t *testing.T) {
-// 	fmt.Println("Test Logs Archive update sse kms")
-// 	t.Parallel()
-// 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-// 	accountID := uniqueAWSAccountID(ctx, t)
-
-// 	resource.Test(t, resource.TestCase{
-// 		PreCheck:                 func() { testAccPreCheck(t) },
-// 		ProtoV5ProviderFactories: accProviders,
-// 		CheckDestroy:             testAccCheckArchiveAndIntegrationAWSDestroy(providers.frameworkProvider),
-// 		Steps: []resource.TestStep{
-// 			{
-// 				Config: archiveS3ConfigForCreation(accountID),
-// 				Check: resource.ComposeTestCheckFunc(
-// 					testAccCheckArchiveExists(providers.frameworkProvider),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.bucket", "my-bucket"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id", accountID),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "NO_OVERRIDE"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
-// 				),
-// 			},
-// 			{
-// 				Config: archiveS3ConfigForUpdateSseKmsEncryption(accountID),
-// 				Check: resource.ComposeTestCheckFunc(
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "name", "my first s3 archive after update"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.#", "0"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "include_tags", "false"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.bucket", "my-bucket"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.account_id", accountID),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.role_name", "testacc-datadog-integration-role"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "SSE_KMS"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_key", "arn:aws:kms:us-east-1:012345678901:key/DatadogIntegrationRoleKms"),
-// 					resource.TestCheckResourceAttr(
-// 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "345"),
-// 				),
-// 			},
-// 		},
-// 	})
-// }
 
 func testAccCheckArchiveExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {

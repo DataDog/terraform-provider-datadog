@@ -44,7 +44,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 								ValidateDiagFunc: validators.ValidateAWSAccountID,
 							},
 							"role_name":       {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
-							"encryption_type": {Description: "The type of encryption on your archive.", Type: schema.TypeString, Optional: true},
+							"encryption_type": {Description: "The type of encryption on your archive.", Type: schema.TypeString, Optional: true, Default: "NO_OVERRIDE"},
 							"encryption_key":  {Description: "The AWS KMS encryption key.", Type: schema.TypeString, Optional: true},
 						},
 					},
@@ -258,15 +258,12 @@ func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]inter
 	encryption := destination.GetEncryption()
 	result["account_id"] = integration.GetAccountId()
 	result["role_name"] = integration.GetRoleName()
-
 	if encryptionType, ok := encryption.GetTypeOk(); ok {
 		result["encryption_type"] = encryptionType
 	}
-
 	if encryptionKey, ok := encryption.GetKeyOk(); ok {
 		result["encryption_key"] = encryptionKey
 	}
-
 	result["bucket"] = destination.GetBucket()
 	result["path"] = destination.GetPath()
 	return result
