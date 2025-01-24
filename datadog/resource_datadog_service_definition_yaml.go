@@ -121,6 +121,20 @@ func flattenYAMLToString(input map[string]interface{}) (string, error) {
 	return string(result), nil
 }
 
+func compareNullableStringArg(left map[string]interface{}, right map[string]interface{}, key string) *bool {
+	valueLVal, valueLOk := left[key]
+	valueRVal, valueROk := right[key]
+	if valueLVal != valueRVal && valueLOk && valueROk {
+		lv, lok := valueLVal.(string)
+		rv, rok := valueRVal.(string)
+		if lok && rok {
+			v := lv == rv
+			return &v
+		}
+	}
+	return nil
+}
+
 func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]interface{} {
 	if isBackstageSchema(attrMap) {
 		// Don't prepare 3rd party schemas
@@ -161,22 +175,13 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 			for _, contact := range contacts {
 				sortedContacts = append(sortedContacts, contact.(map[string]interface{}))
 			}
-
 			sort.SliceStable(sortedContacts, func(i, j int) bool {
-				typeLVal, typeLOk := sortedContacts[i]["type"]
-				typeRVal, typeROk := sortedContacts[j]["type"]
-				if typeLVal != typeRVal && typeLOk && typeROk {
-					return typeLVal.(string) < typeRVal.(string)
-				}
-				contactLVal, contactLOk := sortedContacts[i]["contact"]
-				contactRVal, contactROk := sortedContacts[j]["contact"]
-				if contactLVal != contactRVal && contactLOk && contactROk {
-					return contactLVal.(string) < contactRVal.(string)
-				}
-				nameLVal, nameLOk := sortedContacts[i]["name"]
-				nameRVal, nameROk := sortedContacts[j]["name"]
-				if nameLOk && nameROk {
-					return nameLVal.(string) < nameRVal.(string)
+				attrs := []string{"type", "contact", "name"}
+				for _, attr := range attrs {
+					v := compareNullableStringArg(sortedContacts[i], sortedContacts[j], attr)
+					if v != nil {
+						return *v
+					}
 				}
 				return false
 			})
@@ -232,7 +237,9 @@ func normalizeArrayField(attrMap map[string]interface{}, key string) {
 func getNameField(data interface{}) string {
 	if stringMap, ok := data.(map[string]interface{}); ok {
 		if name, ok := stringMap["name"]; ok {
-			return name.(string)
+			if v, ok := name.(string); ok {
+				return v
+			}
 		}
 	}
 	return ""
