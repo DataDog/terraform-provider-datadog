@@ -3,12 +3,12 @@
 page_title: "datadog_app Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog App resource. This can be used to create and manage a Datadog App
+  Provides a Datadog App resource. This can be used to create and manage a Datadog App from the App Builder product.
 ---
 
 # datadog_app (Resource)
 
-Provides a Datadog App resource. This can be used to create and manage a Datadog App
+Provides a Datadog App resource. This can be used to create and manage a Datadog App from the App Builder product.
 
 
 

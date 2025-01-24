@@ -4,16 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -49,7 +48,7 @@ func (r *appResource) Metadata(_ context.Context, request resource.MetadataReque
 
 func (r *appResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog App resource. This can be used to create and manage a Datadog App",
+		Description: "Provides a Datadog App resource. This can be used to create and manage a Datadog App from the App Builder product.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"app_json": schema.StringAttribute{
@@ -67,104 +66,106 @@ func (r *appResource) ImportState(ctx context.Context, request resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
+func (r *appResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var plan appResourceModel
+	diags := request.Plan.Get(ctx, &plan)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	createRequest, err := appModelToCreateApiRequest(plan)
+	if err != nil {
+		response.Diagnostics.AddError("Error building create app request", err.Error())
+		return
+	}
+
+	resp, httpResp, err := r.Api.CreateApp(r.Auth, *createRequest)
+	if err != nil {
+		if httpResp != nil {
+			// error body may have useful info for the user
+			body, err := io.ReadAll(httpResp.Body)
+			if err != nil {
+				response.Diagnostics.AddError("Error reading error response", err.Error())
+				return
+			}
+			response.Diagnostics.AddError("Error creating app", string(body))
+		} else {
+			response.Diagnostics.AddError("Error creating app", err.Error())
+		}
+		return
+	}
+
+	// set computed values
+	plan.ID = types.StringValue(resp.Data.GetId())
+
+	// Save data into Terraform state
+	diags = response.State.Set(ctx, &plan)
+	response.Diagnostics.Append(diags...)
+}
+
 func (r *appResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state appResourceModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	diags := request.State.Get(ctx, &state)
+	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
 	id := state.ID.ValueString()
-	resp, httpResp, err := r.Api.GetApp(r.Auth, id)
-	if err != nil {
-		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
-			return
-		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving App"))
-		return
-	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
 
-	diags := r.updateStateForRead(ctx, &state, &resp)
-	response.Diagnostics.Append(diags...)
-	if response.Diagnostics.HasError() {
+	appModel, err := readApp(r.Auth, r.Api, id)
+	if err != nil {
+		response.Diagnostics.AddError("Error reading app", err.Error())
 		return
 	}
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
-}
-
-func (r *appResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state appResourceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	body, diags := r.buildCreateAppRequestBody(ctx, &state)
+	diags = response.State.Set(ctx, appModel)
 	response.Diagnostics.Append(diags...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	resp, _, err := r.Api.CreateApp(r.Auth, *body)
-	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating App"))
-		return
-	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
-	state.ID = types.StringValue(resp.Data.GetId())
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
 func (r *appResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state appResourceModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	id := state.ID.ValueString()
-
-	body, diags := r.buildUpdateAppRequestBody(ctx, &state)
+	var plan appResourceModel
+	diags := request.Plan.Get(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	resp, _, err := r.Api.UpdateApp(r.Auth, id, *body)
+	id := plan.ID.ValueString()
+
+	updateRequest, err := appModelToUpdateApiRequest(plan)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating App"))
-		return
-	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		response.Diagnostics.AddError("Error building update app request", err.Error())
 		return
 	}
 
-	diags = r.updateStateForUpdate(ctx, &state, &resp)
-	response.Diagnostics.Append(diags...)
-	if response.Diagnostics.HasError() {
+	_, httpResp, err := r.Api.UpdateApp(r.Auth, id, *updateRequest)
+	if err != nil {
+		if httpResp != nil {
+			// error body may have useful info for the user
+			body, err := io.ReadAll(httpResp.Body)
+			if err != nil {
+				response.Diagnostics.AddError("Error reading error response", err.Error())
+				return
+			}
+			response.Diagnostics.AddError("Error updating app", string(body))
+		} else {
+			response.Diagnostics.AddError("Error updating app", err.Error())
+		}
 		return
 	}
 
 	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	diags = response.State.Set(ctx, &plan)
+	response.Diagnostics.Append(diags...)
 }
 
 func (r *appResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
 	var state appResourceModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
+	diags := request.State.Get(ctx, &state)
+	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
@@ -173,107 +174,105 @@ func (r *appResource) Delete(ctx context.Context, request resource.DeleteRequest
 
 	_, httpResp, err := r.Api.DeleteApp(r.Auth, id)
 	if err != nil {
-		if httpResp != nil && httpResp.StatusCode == 404 {
-			return
+		if httpResp != nil {
+			// error body may have useful info for the user
+			body, err := io.ReadAll(httpResp.Body)
+			if err != nil {
+				response.Diagnostics.AddError("Error reading error response", err.Error())
+				return
+			}
+			response.Diagnostics.AddError("Error deleting app", string(body))
+		} else {
+			response.Diagnostics.AddError("Error deleting app", err.Error())
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting App"))
 		return
 	}
 }
 
-func (r *appResource) updateStateForRead(ctx context.Context, state *appResourceModel, resp *datadogV2.GetAppResponse) diag.Diagnostics {
-	diags := diag.Diagnostics{}
-	state.ID = types.StringValue(resp.Data.GetId())
+func apiResponseToAppModel(resp datadogV2.GetAppResponse) (*appResourceModel, error) {
+	appModel := &appResourceModel{
+		ID: types.StringValue(resp.Data.GetId()),
+	}
 
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	// use indent to format the json string and match the input
-	bytes, err := json.MarshalIndent(attributes, "", "  ")
+	bytes, err := json.Marshal(attributes)
 	if err != nil {
-		diags.AddError("attributes", fmt.Sprintf("error marshaling attributes: %s", err))
-		return diags
+		err = fmt.Errorf("error marshaling attributes: %s", err)
+		return nil, err
 	}
-	state.AppJson = types.StringValue(string(bytes) + "\n") // add newline to match TF input (b/c it uses json encoder)
-	return nil
+	appModel.AppJson = types.StringValue(string(bytes))
+
+	return appModel, nil
 }
 
-func (r *appResource) updateStateForUpdate(ctx context.Context, state *appResourceModel, resp *datadogV2.UpdateAppResponse) diag.Diagnostics {
-	diags := diag.Diagnostics{}
-	state.ID = types.StringValue(resp.Data.GetId())
-
-	data := resp.GetData()
-	attributes := data.GetAttributes()
-
-	// use indent to format the json string and match the input
-	bytes, err := json.MarshalIndent(attributes, "", "  ")
-	if err != nil {
-		diags.AddError("attributes", fmt.Sprintf("error marshaling attributes: %s", err))
-		return diags
-	}
-	state.AppJson = types.StringValue(string(bytes) + "\n") // add newline to match TF input (b/c it uses json encoder)
-	return nil
-}
-
-func (r *appResource) buildCreateAppRequestBody(ctx context.Context, state *appResourceModel) (*datadogV2.CreateAppRequest, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
+func appModelToCreateApiRequest(appModel appResourceModel) (*datadogV2.CreateAppRequest, error) {
 	attributes := datadogV2.NewCreateAppRequestDataAttributesWithDefaults()
 
-	tflog.Debug(ctx, "tflog app json", map[string]interface{}{"app json": state.AppJson.String()})
-
-	// TODO: figure out why it's being encoded twice
 	// decode encoded json into string and then decode that into the attributes struct
 	var appJsonString string
-	err := json.Unmarshal([]byte(state.AppJson.String()), &appJsonString)
+	err := json.Unmarshal([]byte(appModel.AppJson.String()), &appJsonString)
 	if err != nil {
-		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json to string: %s", err))
-		return nil, diags
+		err = fmt.Errorf("error unmarshalling app json to string: %s", err)
+		return nil, err
 	}
-
-	tflog.Debug(ctx, "tflog app json string", map[string]interface{}{"app json string": appJsonString})
 
 	err = json.Unmarshal([]byte(appJsonString), attributes)
 	if err != nil {
-		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json string to attributes struct: %s", err))
-		return nil, diags
+		err = fmt.Errorf("error unmarshalling app json string to attributes struct: %s", err)
+		return nil, err
 	}
 
 	req := datadogV2.NewCreateAppRequestWithDefaults()
 	req.Data = datadogV2.NewCreateAppRequestDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
-	// keep state consistent after Create as well -> marshal attributes back to appJson string (gets rid of newlines/whitespace)
-	// bytes, err := json.Marshal(attributes)
-	// if err != nil {
-	// 	diags.AddError("app json", fmt.Sprintf("error marshalling attributes struct back to json: %s", err))
-	// 	return nil, diags
-	// }
-	// state.AppJson = types.StringValue(string(bytes))
-
-	return req, diags
+	return req, nil
 }
 
-func (r *appResource) buildUpdateAppRequestBody(ctx context.Context, state *appResourceModel) (*datadogV2.UpdateAppRequest, diag.Diagnostics) {
-	diags := diag.Diagnostics{}
+func appModelToUpdateApiRequest(plan appResourceModel) (*datadogV2.UpdateAppRequest, error) {
 	attributes := datadogV2.NewUpdateAppRequestDataAttributesWithDefaults()
 
 	// decode encoded json into string and then decode that into the attributes struct
 	var appJsonString string
-	err := json.Unmarshal([]byte(state.AppJson.String()), &appJsonString)
+	err := json.Unmarshal([]byte(plan.AppJson.String()), &appJsonString)
 	if err != nil {
-		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json to string: %s", err))
-		return nil, diags
+		err = fmt.Errorf("error unmarshalling app json to string: %s", err)
+		return nil, err
 	}
 
 	err = json.Unmarshal([]byte(appJsonString), attributes)
 	if err != nil {
-		diags.AddError("app json", fmt.Sprintf("error unmarshalling app json string to attributes struct: %s", err))
-		return nil, diags
+		err = fmt.Errorf("error unmarshalling app json string to attributes struct: %s", err)
+		return nil, err
 	}
 
 	req := datadogV2.NewUpdateAppRequestWithDefaults()
 	req.Data = datadogV2.NewUpdateAppRequestDataWithDefaults()
 	req.Data.SetAttributes(*attributes)
 
-	return req, diags
+	return req, nil
+}
+
+// Read logic is shared between data source and resource
+func readApp(ctx context.Context, api *datadogV2.AppsApi, id string) (*appResourceModel, error) {
+	resp, httpResp, err := api.GetApp(ctx, id)
+	if err != nil {
+		if httpResp != nil {
+			body, err := io.ReadAll(httpResp.Body)
+			if err != nil {
+				return nil, fmt.Errorf("could not read error response")
+			}
+			return nil, fmt.Errorf("%s", body)
+		}
+		return nil, err
+	}
+
+	appModel, err := apiResponseToAppModel(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return appModel, nil
 }
