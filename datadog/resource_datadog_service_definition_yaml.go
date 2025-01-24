@@ -178,7 +178,7 @@ func prepServiceDefinitionResource(attrMap map[string]interface{}) map[string]in
 			sort.SliceStable(sortedContacts, func(i, j int) bool {
 				attrs := []string{"type", "contact", "name"}
 				for _, attr := range attrs {
-					v := (sortedContacts[i], sortedContacts[j], attr)
+					v := compareNullableStringArg(sortedContacts[i], sortedContacts[j], attr)
 					if v != nil {
 						return *v
 					}
