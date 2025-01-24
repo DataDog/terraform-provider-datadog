@@ -27,8 +27,9 @@ datadog/*cloud_configuration*             @DataDog/api-clients @DataDog/k9-cloud
 datadog/*service_account*                 @DataDog/api-clients @DataDog/team-aaa
 
 # Framework resources/data-sources
-datadog/**/*datadog_api_key*                     @DataDog/api-clients @DataDog/team-aaa
+datadog/**/*datadog_api_key*                     @DataDog/api-clients @DataDog/credentials-management
 datadog/**/*datadog_apm_retention_filter*        @DataDog/api-clients @DataDog/apm-trace-intake
+datadog/**/*datadog_application_key*             @DataDog/api-clients @DataDog/credentials-management
 datadog/**/*datadog_hosts*                       @DataDog/api-clients @DataDog/redapl-storage
 datadog/**/*datadog_ip_ranges*                   @DataDog/api-clients @DataDog/team-aaa
 datadog/**/*datadog_integration_aws*             @DataDog/api-clients @DataDog/cloud-integrations

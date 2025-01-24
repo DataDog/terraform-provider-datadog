@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450-subtest","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120},"retry":{"count":2,"interval":300},"tick_every":900},"status":"paused","tags":[],"type":"browser"}
+            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588-subtest","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120},"retry":{"count":2,"interval":300},"tick_every":900},"status":"paused","tags":[],"type":"browser"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rf3-fgq-j6t","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450-subtest","status":"paused","type":"browser","tags":[],"created_at":"2024-12-09T11:57:33.349316+00:00","modified_at":"2024-12-09T11:57:33.349316+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":159883349,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"stepCount":{"assertions":0,"subtests":0,"total":0}}
+            {"public_id":"ria-taj-bh3","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588-subtest","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:50.691322+00:00","modified_at":"2025-01-23T12:49:50.691322+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":163275966,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"stepCount":{"assertions":0,"subtests":0,"total":0}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 418.619541ms
+        duration: 453.666667ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/rf3-fgq-j6t
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/ria-taj-bh3
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,26 +67,26 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rf3-fgq-j6t","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450-subtest","status":"paused","type":"browser","tags":[],"created_at":"2024-12-09T11:57:33.349316+00:00","modified_at":"2024-12-09T11:57:33.349316+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":159883349,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+            {"public_id":"ria-taj-bh3","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588-subtest","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:50.691322+00:00","modified_at":"2025-01-23T12:49:50.691322+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":163275966,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 168.213375ms
+        duration: 166.554416ms
     - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 2953
+        content_length: 3972
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120},"retry":{"count":2,"interval":300},"tick_every":900},"status":"paused","steps":[{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"first step","noScreenshot":false,"params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"scroll step","noScreenshot":false,"params":{"x":100,"y":200},"timeout":0,"type":"scroll"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"api step","noScreenshot":false,"params":{"request":{"config":{"assertions":[],"request":{"method":"GET","url":"https://example.com"}},"options":{},"subtype":"http"}},"timeout":0,"type":"runApiTest"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"subtest","noScreenshot":false,"params":{"playingTabId":0,"subtestPublicId":"rf3-fgq-j6t"},"timeout":0,"type":"playSubTest"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"wait step","noScreenshot":false,"params":{"value":100},"timeout":0,"type":"wait"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"extract variable step","noScreenshot":false,"params":{"code":"return 123","variable":{"example":"","name":"VAR_FROM_JS"}},"timeout":0,"type":"extractFromJavascript"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"click step","noScreenshot":false,"params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/"}},"timeout":0,"type":"click"}],"tags":["foo:bar","baz"],"type":"browser"}
+            {"config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"locations":["aws:eu-central-1"],"message":"Notify @datadog.user","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120},"retry":{"count":2,"interval":300},"tick_every":900},"status":"paused","steps":[{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"first step","noScreenshot":false,"params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"scroll step","noScreenshot":false,"params":{"x":100,"y":200},"timeout":0,"type":"scroll"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"api step","noScreenshot":false,"params":{"request":{"config":{"assertions":[],"request":{"method":"GET","url":"https://example.com"}},"options":{},"subtype":"http"}},"timeout":0,"type":"runApiTest"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"subtest","noScreenshot":false,"params":{"playingTabId":0,"subtestPublicId":"ria-taj-bh3"},"timeout":0,"type":"playSubTest"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"wait step","noScreenshot":false,"params":{"value":100},"timeout":0,"type":"wait"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"extract variable step","noScreenshot":false,"params":{"code":"return 123","variable":{"example":"","name":"VAR_FROM_JS"}},"timeout":0,"type":"extractFromJavascript"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"click step 1","noScreenshot":false,"params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/"}},"timeout":0,"type":"click"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":false,"name":"click step 2","noScreenshot":false,"params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"},"targetOuterHTML":"img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...","url":"https://www.datadoghq.com/other-page"}},"timeout":0,"type":"click"}],"tags":["foo:bar","baz"],"type":"browser"}
         form: {}
         headers:
             Accept:
@@ -105,13 +105,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"cuk-bjc-2y6","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-12-09T11:57:34.089677+00:00","modified_at":"2024-12-09T11:57:34.089677+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"created_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":159883351,"org_id":321813,"modified_by":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","public_id":"g39-b9m-q32","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"scroll step","params":{"x":100,"y":200},"timeout":0,"type":"scroll","public_id":"78u-42x-5qy","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"api step","params":{"request":{"config":{"assertions":[],"request":{"method":"GET","url":"https://example.com"}},"options":{},"subtype":"http"}},"timeout":0,"type":"runApiTest","public_id":"rrx-qy4-2fi","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"subtest","params":{"playingTabId":0,"subtestPublicId":"rf3-fgq-j6t"},"timeout":0,"type":"playSubTest","public_id":"tqs-7rt-5z8","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"wait step","params":{"value":100},"timeout":0,"type":"wait","public_id":"tbw-r36-jw3","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"extract variable step","params":{"code":"return 123","variable":{"example":"","name":"VAR_FROM_JS"}},"timeout":0,"type":"extractFromJavascript","public_id":"qsv-gmy-rqk","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"click step","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/"}},"timeout":0,"type":"click","public_id":"vib-kgz-dsc","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}],"stepCount":{"assertions":1,"subtests":1,"total":6}}
+            {"public_id":"8t4-ds7-4q7","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2025-01-23T12:49:51.520032+00:00","modified_at":"2025-01-23T12:49:51.520032+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":163275968,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","public_id":"z2z-b24-g8i","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"scroll step","params":{"x":100,"y":200},"timeout":0,"type":"scroll","public_id":"hjp-k46-ijn","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"api step","params":{"request":{"config":{"assertions":[],"request":{"method":"GET","url":"https://example.com"}},"options":{},"subtype":"http"}},"timeout":0,"type":"runApiTest","public_id":"p6m-hu9-8r6","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"subtest","params":{"playingTabId":0,"subtestPublicId":"ria-taj-bh3"},"timeout":0,"type":"playSubTest","public_id":"pqw-x73-7d9","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"wait step","params":{"value":100},"timeout":0,"type":"wait","public_id":"udf-p3m-ehd","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"extract variable step","params":{"code":"return 123","variable":{"example":"","name":"VAR_FROM_JS"}},"timeout":0,"type":"extractFromJavascript","public_id":"ecm-rx3-2i9","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"click step 1","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/"}},"timeout":0,"type":"click","public_id":"ris-ey9-t6w","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"click step 2","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"},"targetOuterHTML":"img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...","url":"https://www.datadoghq.com/other-page"}},"timeout":0,"type":"click","public_id":"vss-p3p-rhc","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}],"stepCount":{"assertions":1,"subtests":1,"total":7}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 546.507708ms
+        duration: 770.570125ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -128,7 +128,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/cuk-bjc-2y6
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/8t4-ds7-4q7
         method: GET
       response:
         proto: HTTP/1.1
@@ -140,13 +140,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"cuk-bjc-2y6","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-12-09T11:57:34.089677+00:00","modified_at":"2024-12-09T11:57:34.089677+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":159883351,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","public_id":"g39-b9m-q32","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"scroll step","params":{"x":100,"y":200},"timeout":0,"type":"scroll","public_id":"78u-42x-5qy","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"api step","params":{"request":{"config":{"assertions":[],"request":{"method":"GET","url":"https://example.com"}},"options":{},"subtype":"http"}},"timeout":0,"type":"runApiTest","public_id":"rrx-qy4-2fi","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"subtest","params":{"playingTabId":0,"subtestPublicId":"rf3-fgq-j6t"},"timeout":0,"type":"playSubTest","public_id":"tqs-7rt-5z8","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"wait step","params":{"value":100},"timeout":0,"type":"wait","public_id":"tbw-r36-jw3","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"extract variable step","params":{"code":"return 123","variable":{"example":"","name":"VAR_FROM_JS"}},"timeout":0,"type":"extractFromJavascript","public_id":"qsv-gmy-rqk","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"click step","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/"}},"timeout":0,"type":"click","public_id":"vib-kgz-dsc","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+            {"public_id":"8t4-ds7-4q7","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2025-01-23T12:49:51.520032+00:00","modified_at":"2025-01-23T12:49:51.520032+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":163275968,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","public_id":"z2z-b24-g8i","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"scroll step","params":{"x":100,"y":200},"timeout":0,"type":"scroll","public_id":"hjp-k46-ijn","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"api step","params":{"request":{"config":{"assertions":[],"request":{"method":"GET","url":"https://example.com"}},"options":{},"subtype":"http"}},"timeout":0,"type":"runApiTest","public_id":"p6m-hu9-8r6","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"subtest","params":{"playingTabId":0,"subtestPublicId":"ria-taj-bh3"},"timeout":0,"type":"playSubTest","public_id":"pqw-x73-7d9","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"wait step","params":{"value":100},"timeout":0,"type":"wait","public_id":"udf-p3m-ehd","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"extract variable step","params":{"code":"return 123","variable":{"example":"","name":"VAR_FROM_JS"}},"timeout":0,"type":"extractFromJavascript","public_id":"ecm-rx3-2i9","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"click step 1","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/"}},"timeout":0,"type":"click","public_id":"ris-ey9-t6w","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"click step 2","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"},"targetOuterHTML":"img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...","url":"https://www.datadoghq.com/other-page"}},"timeout":0,"type":"click","public_id":"vss-p3p-rhc","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 238.913584ms
+        duration: 158.399708ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -163,7 +163,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/cuk-bjc-2y6
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8t4-ds7-4q7
         method: GET
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"cuk-bjc-2y6","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-12-09T11:57:34.089677+00:00","modified_at":"2024-12-09T11:57:34.089677+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":159883351,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8t4-ds7-4q7","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2025-01-23T12:49:51.520032+00:00","modified_at":"2025-01-23T12:49:51.520032+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":163275968,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 165.682042ms
+        duration: 162.759208ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rf3-fgq-j6t
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ria-taj-bh3
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rf3-fgq-j6t","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450-subtest","status":"paused","type":"browser","tags":[],"created_at":"2024-12-09T11:57:33.349316+00:00","modified_at":"2024-12-09T11:57:33.349316+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":159883349,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"ria-taj-bh3","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588-subtest","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:50.691322+00:00","modified_at":"2025-01-23T12:49:50.691322+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":163275966,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 219.036125ms
+        duration: 164.511375ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rf3-fgq-j6t
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ria-taj-bh3
         method: GET
       response:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rf3-fgq-j6t","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450-subtest","status":"paused","type":"browser","tags":[],"created_at":"2024-12-09T11:57:33.349316+00:00","modified_at":"2024-12-09T11:57:33.349316+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":159883349,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"ria-taj-bh3","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588-subtest","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:50.691322+00:00","modified_at":"2025-01-23T12:49:50.691322+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":163275966,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 290.734583ms
+        duration: 149.432791ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/rf3-fgq-j6t
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/ria-taj-bh3
         method: GET
       response:
         proto: HTTP/1.1
@@ -280,13 +280,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"rf3-fgq-j6t","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450-subtest","status":"paused","type":"browser","tags":[],"created_at":"2024-12-09T11:57:33.349316+00:00","modified_at":"2024-12-09T11:57:33.349316+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":159883349,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
+            {"public_id":"ria-taj-bh3","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588-subtest","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:50.691322+00:00","modified_at":"2025-01-23T12:49:50.691322+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","url":"https://www.datadoghq.com"},"variables":[]},"message":"","options":{"device_ids":["laptop_large"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":163275966,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 216.418708ms
+        duration: 168.569083ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -303,7 +303,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/cuk-bjc-2y6
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8t4-ds7-4q7
         method: GET
       response:
         proto: HTTP/1.1
@@ -315,13 +315,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"cuk-bjc-2y6","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-12-09T11:57:34.089677+00:00","modified_at":"2024-12-09T11:57:34.089677+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":159883351,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"8t4-ds7-4q7","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2025-01-23T12:49:51.520032+00:00","modified_at":"2025-01-23T12:49:51.520032+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":163275968,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 147.786583ms
+        duration: 343.215041ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -338,7 +338,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/cuk-bjc-2y6
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/8t4-ds7-4q7
         method: GET
       response:
         proto: HTTP/1.1
@@ -350,13 +350,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"cuk-bjc-2y6","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1733745450","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2024-12-09T11:57:34.089677+00:00","modified_at":"2024-12-09T11:57:34.089677+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":159883351,"creator":{"name":null,"handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","public_id":"g39-b9m-q32","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"scroll step","params":{"x":100,"y":200},"timeout":0,"type":"scroll","public_id":"78u-42x-5qy","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"api step","params":{"request":{"config":{"assertions":[],"request":{"method":"GET","url":"https://example.com"}},"options":{},"subtype":"http"}},"timeout":0,"type":"runApiTest","public_id":"rrx-qy4-2fi","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"subtest","params":{"playingTabId":0,"subtestPublicId":"rf3-fgq-j6t"},"timeout":0,"type":"playSubTest","public_id":"tqs-7rt-5z8","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"wait step","params":{"value":100},"timeout":0,"type":"wait","public_id":"tbw-r36-jw3","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"extract variable step","params":{"code":"return 123","variable":{"example":"","name":"VAR_FROM_JS"}},"timeout":0,"type":"extractFromJavascript","public_id":"qsv-gmy-rqk","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"click step","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/"}},"timeout":0,"type":"click","public_id":"vib-kgz-dsc","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+            {"public_id":"8t4-ds7-4q7","name":"tf-TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic-local-1737636588","status":"paused","type":"browser","tags":["foo:bar","baz"],"created_at":"2025-01-23T12:49:51.520032+00:00","modified_at":"2025-01-23T12:49:51.520032+00:00","config":{"assertions":[],"configVariables":[],"request":{"headers":{"Accept":"application/json","X-Datadog-Trace-ID":"123456789"},"method":"GET","timeout":30,"url":"https://www.datadoghq.com"},"variables":[]},"message":"Notify @datadog.user","options":{"device_ids":["laptop_large","mobile_small"],"httpVersion":"any","min_location_failed":1,"monitor_options":{"renotify_interval":120,"on_missing_data":"show_no_data","notify_audit":false,"new_host_delay":300,"include_tags":true},"retry":{"count":2,"interval":300},"tick_every":900},"locations":["aws:eu-central-1"],"monitor_id":163275968,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"first step","params":{"check":"contains","value":"content"},"timeout":0,"type":"assertCurrentUrl","public_id":"z2z-b24-g8i","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"scroll step","params":{"x":100,"y":200},"timeout":0,"type":"scroll","public_id":"hjp-k46-ijn","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"api step","params":{"request":{"config":{"assertions":[],"request":{"method":"GET","url":"https://example.com"}},"options":{},"subtype":"http"}},"timeout":0,"type":"runApiTest","public_id":"p6m-hu9-8r6","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"subtest","params":{"playingTabId":0,"subtestPublicId":"ria-taj-bh3"},"timeout":0,"type":"playSubTest","public_id":"pqw-x73-7d9","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"wait step","params":{"value":100},"timeout":0,"type":"wait","public_id":"udf-p3m-ehd","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"extract variable step","params":{"code":"return 123","variable":{"example":"","name":"VAR_FROM_JS"}},"timeout":0,"type":"extractFromJavascript","public_id":"ecm-rx3-2i9","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"click step 1","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/"}},"timeout":0,"type":"click","public_id":"ris-ey9-t6w","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"click step 2","params":{"element":{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"},"targetOuterHTML":"img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...","url":"https://www.datadoghq.com/other-page"}},"timeout":0,"type":"click","public_id":"vss-p3p-rhc","allowFailure":false,"isCritical":false,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 166.027458ms
+        duration: 251.232125ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -369,7 +369,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["cuk-bjc-2y6"]}
+            {"public_ids":["8t4-ds7-4q7"]}
         form: {}
         headers:
             Accept:
@@ -388,13 +388,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"cuk-bjc-2y6","deleted_at":"2024-12-09T11:57:42.173636+00:00"}]}
+            {"deleted_tests":[{"public_id":"8t4-ds7-4q7","deleted_at":"2025-01-23T12:49:56.057756+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 695.61075ms
+        duration: 797.585875ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -407,7 +407,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["rf3-fgq-j6t"]}
+            {"public_ids":["ria-taj-bh3"]}
         form: {}
         headers:
             Accept:
@@ -426,13 +426,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"rf3-fgq-j6t","deleted_at":"2024-12-09T11:57:42.925238+00:00"}]}
+            {"deleted_tests":[{"public_id":"ria-taj-bh3","deleted_at":"2025-01-23T12:49:56.845932+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 765.986625ms
+        duration: 708.106708ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -449,7 +449,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/cuk-bjc-2y6
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/8t4-ds7-4q7
         method: GET
       response:
         proto: HTTP/1.1
@@ -466,7 +466,7 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 131.502084ms
+        duration: 128.675041ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -483,7 +483,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/rf3-fgq-j6t
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/ria-taj-bh3
         method: GET
       response:
         proto: HTTP/1.1
@@ -500,4 +500,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 141.325625ms
+        duration: 131.699166ms

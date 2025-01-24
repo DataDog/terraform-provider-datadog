@@ -42,3 +42,26 @@ resource "datadog_integration_aws_account" "foo" {
     }
   }
 }
+
+# Create new integration_aws_account resource with all Datadog-provided defaults configured
+resource "datadog_integration_aws_account" "foo-defaults" {
+  aws_account_id = "234567890123"
+  aws_partition  = "aws"
+  aws_regions {}
+
+  auth_config {
+    aws_auth_config_role {
+      role_name = "DatadogIntegrationRole"
+    }
+  }
+  logs_config {
+    lambda_forwarder {}
+  }
+  metrics_config {
+    namespace_filters {}
+  }
+  resources_config {}
+  traces_config {
+    xray_services {}
+  }
+}

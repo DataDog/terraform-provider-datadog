@@ -1,3 +1,54 @@
+## 3.53.0 (January 23, 2025)
+
+### BUGFIXES
+* [datadog_azure_integration] change default value of `resource_provider_configs` and rerecord tests by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2783
+* [datadog_synthetics_test] Fix steps reordering without `local_key` by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2795
+### FEATURES
+* [datadog_security_monitoring_suppression] Add Start to Suppressions by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2780
+* [datadog_azure_integration] Support metric filtering by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2781
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.52.1...v3.53.0
+
+## 3.52.1 (January 16, 2025)
+
+### BUGFIXES
+* [data_datadog_application_key] remove scopes from schema by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2774
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.52.0...v3.52.1
+
+## 3.52.0 (January 14, 2025)
+
+### BUGFIXES
+* [datadog_application_key] Use plan modifiers for app keys by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2763
+* [datadog_api_key] Use plan modifier for API keys. by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/2765
+### FEATURES
+* [datadog_application_key] Support scoped app key management by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/2760
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.51.0...v3.52.0
+
+## 3.51.0 (January 8, 2025)
+
+### BUGFIXES
+* [provider] Prevent the experimental default_tags field from deduplicating tags by @Amaury-Behague in https://github.com/DataDog/terraform-provider-datadog/pull/2728
+* [datadog_synthetics_test] Prevent updating `files` with the backend response to keep the plan stable by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2731
+* [datadog_webhook] fix import  by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2742
+* [datadog_integration_aws_account] Fix panic when resources_config is omitted by @ktmq in https://github.com/DataDog/terraform-provider-datadog/pull/2749
+* [datadog_synthetics_test] update the step params when reordering steps by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2741
+### IMPROVEMENTS
+* [datadog_synthetics_test] Add step public id in the state by @etnbrd in https://github.com/DataDog/terraform-provider-datadog/pull/2744
+* [resource_datadog_role] ACCESS-2867 - Support `default_permissions_opt_out` attribute in Terraform by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/2710
+### FEATURES
+* [datadog_logs_pipelines_order] Add datasource for Logs Pipelines Order by @LorisFriedel in https://github.com/DataDog/terraform-provider-datadog/pull/2732
+
+## New Contributors
+* @LorisFriedel made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2732
+* @gpalmz made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2738
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.50.0...v3.51.0
+
 ## 3.50.0 (December 17, 2024)
 
 ### BUGFIXES
