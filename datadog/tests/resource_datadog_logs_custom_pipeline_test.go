@@ -19,6 +19,8 @@ func pipelineConfigForCreation(uniq string) string {
 resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	name = "%s"
 	is_enabled = true
+	tags = ["key1:value1", "key2:value2"]
+	description = "Pipeline description"
 	filter {
 		query = "source:redis"
 	}
@@ -131,11 +133,32 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	}
 }`, uniq)
 }
+
+func pipelineConfigWithoutTagsAndDescriptionForCreation(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
+	name = "%s"
+	is_enabled = true
+	filter {
+		query = "source:redis"
+	}
+	processor {
+		date_remapper {
+			name = "Define date"
+			is_enabled = true
+			sources = ["verbose"]
+		}
+	}
+}`, uniq)
+}
+
 func pipelineConfigForUpdate(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	name = "%s"
 	is_enabled = false
+	tags = ["key1:value1", "key2:value2"]
+	description = "Pipeline description"
 	filter {
 		query = "source:kafka"
 	}
@@ -234,6 +257,24 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 	}
 }`, uniq)
 }
+
+func pipelineConfigWithoutTagsAndDescriptionForUpdate(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
+	name = "%s"
+	is_enabled = false
+	filter {
+		query = "source:kafka"
+	}
+	processor {
+		date_remapper {
+			name = "test date remapper"
+			is_enabled = true
+			sources = ["verbose"]
+		}
+	}
+}`, uniq)
+}
 func pipelineConfigWithEmptyFilterQuery(uniq string) string {
 	return fmt.Sprintf(`
 resource "datadog_logs_custom_pipeline" "empty_filter_query_pipeline" {
@@ -277,10 +318,11 @@ resource "datadog_logs_custom_pipeline" "empty_filter_query_pipeline" {
 }
 
 func TestAccDatadogLogsPipeline_basic(t *testing.T) {
-	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
-	pipelineName := uniqueEntityName(ctx, t)
-	pipelineName2 := pipelineName + "-updated"
+	pipelineCreatedName := uniqueEntityName(ctx, t)
+	pipelineUpdatedName := pipelineCreatedName + "-updated"
+	pipelineWithoutTagsAndDescriptionCreatedName := pipelineCreatedName + "-without-tags-and-description"
+	pipelineWithoutTagsAndDescriptionUpdatedName := pipelineUpdatedName + "-without-tags-and-description"
 	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
@@ -289,13 +331,21 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 		CheckDestroy:      testAccCheckPipelineDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: pipelineConfigForCreation(pipelineName),
+				Config: pipelineConfigForCreation(pipelineCreatedName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPipelineExists(accProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineName),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineCreatedName),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "is_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.0", "key1:value1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.1", "key2:value2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "description", "Pipeline description"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "filter.0.query", "source:redis"),
 					resource.TestCheckResourceAttr(
@@ -324,13 +374,21 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.8.reference_table_lookup_processor.0.lookup_enrichment_table", "test_reference_table_do_not_delete"),
 				),
 			}, {
-				Config: pipelineConfigForUpdate(pipelineName2),
+				Config: pipelineConfigForUpdate(pipelineUpdatedName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckPipelineExists(accProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineName2),
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineUpdatedName),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "is_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.#", "2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.0", "key1:value1"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.1", "key2:value2"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "description", "Pipeline description"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "filter.0.query", "source:kafka"),
 					resource.TestCheckResourceAttr(
@@ -351,6 +409,28 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.8.lookup_processor.0.lookup_table.#", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.9.reference_table_lookup_processor.0.lookup_enrichment_table", "test_reference_table_do_not_delete"),
+				),
+			}, { // for backward compatibility as tags and description were not always present and clients have Terraform files without them
+				Config: pipelineConfigWithoutTagsAndDescriptionForCreation(pipelineWithoutTagsAndDescriptionCreatedName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPipelineExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineWithoutTagsAndDescriptionCreatedName),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "is_enabled", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "filter.0.query", "source:redis"),
+				),
+			}, {
+				Config: pipelineConfigWithoutTagsAndDescriptionForUpdate(pipelineWithoutTagsAndDescriptionUpdatedName),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckPipelineExists(accProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineWithoutTagsAndDescriptionUpdatedName),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "is_enabled", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "filter.0.query", "source:kafka"),
 				),
 			},
 		},
