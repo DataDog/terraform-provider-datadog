@@ -21,7 +21,6 @@ resource "datadog_logs_archive" "my_s3_archive" {
     path       = "/path/foo"
     account_id = "001234567888"
     role_name  = "my-role-name"
-    encryption_type = "SSE_S3"
   }
 }
 ```
@@ -87,9 +86,9 @@ Required:
 
 Optional:
 
+- `encryption_key` (String) The AWS KMS encryption key.
+- `encryption_type` (String) The type of encryption on your archive. Defaults to `"NO_OVERRIDE"`.
 - `path` (String) Path where the archive is stored.
-- `encryption_type` (String) The type of server-side encryption to use when uploading data to your S3 bucket. `NO_OVERRIDE`, `SSE_S3`, and `SSE_KMS` are the possible types. `NO_OVERRIDE` is used most commonly, because users can rely on default encryption on their S3 buckets instead of specifically uploading objects with encryption information.
-- `encryption_key` (String) The key ARN used to identify your customer managed key for AWS KMS encryption. Only set this value if the `encryption_type` is set to `SSE_KMS`. 
 
 ## Import
 
