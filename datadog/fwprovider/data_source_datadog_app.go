@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 var _ datasource.DataSource = &appDataSource{}
@@ -21,12 +21,6 @@ func NewDatadogAppDataSource() datasource.DataSource {
 	return &appDataSource{}
 }
 
-// TODO: figure out rest of model
-type datadogAppDatasourceModel struct {
-	ID   types.String `tfsdk:"id"`
-	Name types.String `tfsdk:"name"`
-}
-
 func (d *appDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetAppsApiV2()
@@ -37,26 +31,41 @@ func (d *appDataSource) Metadata(_ context.Context, request datasource.MetadataR
 	response.TypeName = "app"
 }
 
-// TODO: figure out rest of schema
 func (d *appDataSource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing App, for use in other resources.",
+		Description: "Use this data source to retrieve information about an existing Datadog App from the App Builder product, for use in other resources.",
 		Attributes: map[string]schema.Attribute{
-			"id": utils.ResourceIDAttribute(),
+			"id": schema.StringAttribute{
+				Description: "ID for the App.",
+				Required:    true,
+			},
+			"app_json": schema.StringAttribute{
+				Computed:    true,
+				Description: "The JSON representation of the App.",
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+				},
+			},
 		},
 	}
 }
 
-// TODO
 func (d *appDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state datadogAppDatasourceModel
+	var state appResourceModel
 	diags := request.Config.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	state.ID = types.StringValue("hi")
-	diags = response.State.Set(ctx, &state)
+	id := state.ID.ValueString()
+
+	appModel, err := readApp(d.Auth, d.Api, id)
+	if err != nil {
+		response.Diagnostics.AddError("Error reading app", err.Error())
+		return
+	}
+
+	diags = response.State.Set(ctx, appModel)
 	response.Diagnostics.Append(diags...)
 }
