@@ -26,7 +26,6 @@ data "datadog_application_key" "foo" {
 - `exact_match` (Boolean) Whether to use exact match when searching by name.
 - `id` (String) Id for Application Key.
 - `name` (String) Name for Application Key.
-- `scopes` (Set of String) Authorization scopes for the Application Key.
 
 ### Read-Only
 

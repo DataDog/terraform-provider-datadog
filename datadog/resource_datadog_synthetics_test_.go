@@ -4816,7 +4816,7 @@ func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) map[s
 				}
 
 				localKey := localKeyValue.AsString()
-				if localKey == stepMap["local_key"] {
+				if localKey != "" && localKey == stepMap["local_key"] {
 					stepParamsValue := stateStep.GetAttr("params")
 					if stepParamsValue.IsNull() {
 						continue
@@ -4856,7 +4856,7 @@ func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) map[s
 				}
 
 				localKey := localKeyValue.AsString()
-				if localKey == stepMap["local_key"] {
+				if localKey != "" && localKey == stepMap["local_key"] {
 					stepParamsValue := configStep.GetAttr("params")
 					if stepParamsValue.IsNull() {
 						continue
