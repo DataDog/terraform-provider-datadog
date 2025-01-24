@@ -25,34 +25,34 @@ func TestAccDatadogConnectionDatasource_AWS_AssumeRole(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider),
+		CheckDestroy:             testAccCheckDatadogConnectionDestroy(providers.frameworkProvider, "datadog_connection.aws_assume_role_conn"),
 		Steps: []resource.TestStep{
 			{
-				Config: testConnectionDataSourceConfig(connectionName),
+				Config: testAWSAssumeRoleConnectionDataSourceConfig(connectionName),
 				Check: resource.ComposeTestCheckFunc(
-					resource.TestCheckResourceAttr("datadog_connection.conn", "name", connectionName),
-					resource.TestCheckResourceAttr("datadog_connection.conn", "aws.assume_role.account_id", testAWSAccountID),
-					resource.TestCheckResourceAttr("datadog_connection.conn", "aws.assume_role.role", testAWSRole),
-					resource.TestCheckResourceAttrSet("datadog_connection.conn", "aws.assume_role.principal_id"),
-					resource.TestCheckResourceAttrSet("datadog_connection.conn", "aws.assume_role.external_id"),
+					resource.TestCheckResourceAttr("data.datadog_connection.aws_assume_role_conn", "name", connectionName),
+					resource.TestCheckResourceAttr("data.datadog_connection.aws_assume_role_conn", "aws.assume_role.account_id", testAWSAccountID),
+					resource.TestCheckResourceAttr("data.datadog_connection.aws_assume_role_conn", "aws.assume_role.role", testAWSRole),
+					resource.TestCheckResourceAttrSet("data.datadog_connection.aws_assume_role_conn", "aws.assume_role.principal_id"),
+					resource.TestCheckResourceAttrSet("data.datadog_connection.aws_assume_role_conn", "aws.assume_role.external_id"),
 				),
 			},
 		},
 	})
 }
 
-func testConnectionDataSourceConfig(name string) string {
+func testAWSAssumeRoleConnectionDataSourceConfig(name string) string {
 	return fmt.Sprintf(`
 	%s
-	data "datadog_connection" "conn" {
-		id = datadog_connection.conn.id
-		depends_on = [datadog_connection.conn]
-	}`, testConnectionResourceConfig(name))
+	data "datadog_connection" "aws_assume_role_conn" {
+		id = datadog_connection.aws_assume_role_conn.id
+		depends_on = [datadog_connection.aws_assume_role_conn]
+	}`, testAWSAssumeRoleConnectionResourceConfig(name))
 }
 
-func testConnectionResourceConfig(name string) string {
+func testAWSAssumeRoleConnectionResourceConfig(name string) string {
 	return fmt.Sprintf(`
-	resource "datadog_connection" "conn" {
+	resource "datadog_connection" "aws_assume_role_conn" {
 		name = "%s"
 
 		aws {
@@ -64,12 +64,12 @@ func testConnectionResourceConfig(name string) string {
 	}`, name, testAWSAccountID, testAWSRole)
 }
 
-func testAccCheckDatadogConnectionDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
+func testAccCheckDatadogConnectionDestroy(accProvider *fwprovider.FrameworkProvider, resourceName string) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		resource := s.RootModule().Resources["datadog_connection.conn"]
+		resource := s.RootModule().Resources[resourceName]
 		_, httpRes, err := apiInstances.GetActionConnectionApiV2().GetActionConnection(auth, resource.Primary.ID)
 		if err != nil {
 			if httpRes.StatusCode == 404 {
