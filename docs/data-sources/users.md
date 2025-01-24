@@ -37,6 +37,16 @@ data "datadog_users" "test" {
 
 Read-Only:
 
+- `created_at` (String)
+- `disabled` (Boolean)
 - `email` (String)
+- `handle` (String)
+- `icon` (String)
 - `id` (String)
+- `mfa_enabled` (Boolean)
+- `modified_at` (String)
 - `name` (String)
+- `service_account` (Boolean)
+- `status` (String)
+- `title` (String)
+- `verified` (Boolean)
