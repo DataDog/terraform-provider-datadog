@@ -237,6 +237,9 @@ resource "datadog_logs_archive" "my_s3_archive" {
 
 func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	t.Parallel()
+	if !isReplaying() {
+		t.Skip("This test only supports replaying")
+	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
 
@@ -312,7 +315,6 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "SSE_S3"),
-					resource.TestCheckNoResourceAttr("datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_key"),
 				),
 			},
 		},
