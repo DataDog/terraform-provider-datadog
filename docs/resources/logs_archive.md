@@ -86,6 +86,8 @@ Required:
 
 Optional:
 
+- `encryption_key` (String) The AWS KMS encryption key.
+- `encryption_type` (String) The type of encryption on your archive. Defaults to `"NO_OVERRIDE"`.
 - `path` (String) Path where the archive is stored.
 
 ## Import
