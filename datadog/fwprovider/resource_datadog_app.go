@@ -7,6 +7,7 @@ import (
 	"io"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -22,7 +23,7 @@ var (
 )
 
 type appResource struct {
-	Api  *datadogV2.AppsApi
+	Api  *datadogV2.AppBuilderApi
 	Auth context.Context
 }
 
@@ -97,7 +98,7 @@ func (r *appResource) Create(ctx context.Context, request resource.CreateRequest
 	}
 
 	// set computed values
-	plan.ID = types.StringValue(resp.Data.GetId())
+	plan.ID = types.StringValue(resp.Data.GetId().String())
 
 	// Save data into Terraform state
 	diags = response.State.Set(ctx, &plan)
@@ -112,7 +113,11 @@ func (r *appResource) Read(ctx context.Context, request resource.ReadRequest, re
 		return
 	}
 
-	id := state.ID.ValueString()
+	id, err := uuid.Parse(state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError("Error parsing id as uuid", err.Error())
+		return
+	}
 
 	appModel, err := readApp(r.Auth, r.Api, id)
 	if err != nil {
@@ -133,7 +138,11 @@ func (r *appResource) Update(ctx context.Context, request resource.UpdateRequest
 		return
 	}
 
-	id := plan.ID.ValueString()
+	id, err := uuid.Parse(plan.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError("Error parsing id as uuid", err.Error())
+		return
+	}
 
 	updateRequest, err := appModelToUpdateApiRequest(plan)
 	if err != nil {
@@ -170,8 +179,11 @@ func (r *appResource) Delete(ctx context.Context, request resource.DeleteRequest
 		return
 	}
 
-	id := state.ID.ValueString()
-
+	id, err := uuid.Parse(state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError("Error parsing id as uuid", err.Error())
+		return
+	}
 	_, httpResp, err := r.Api.DeleteApp(r.Auth, id)
 	if err != nil {
 		if httpResp != nil {
@@ -191,7 +203,7 @@ func (r *appResource) Delete(ctx context.Context, request resource.DeleteRequest
 
 func apiResponseToAppModel(resp datadogV2.GetAppResponse) (*appResourceModel, error) {
 	appModel := &appResourceModel{
-		ID: types.StringValue(resp.Data.GetId()),
+		ID: types.StringValue(resp.Data.GetId().String()),
 	}
 
 	data := resp.GetData()
@@ -256,7 +268,7 @@ func appModelToUpdateApiRequest(plan appResourceModel) (*datadogV2.UpdateAppRequ
 }
 
 // Read logic is shared between data source and resource
-func readApp(ctx context.Context, api *datadogV2.AppsApi, id string) (*appResourceModel, error) {
+func readApp(ctx context.Context, api *datadogV2.AppBuilderApi, id uuid.UUID) (*appResourceModel, error) {
 	resp, httpResp, err := api.GetApp(ctx, id)
 	if err != nil {
 		if httpResp != nil {
