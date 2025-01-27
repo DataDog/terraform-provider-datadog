@@ -46,3 +46,4 @@ datadog/**/*datadog_synthetics_concurrency_cap*  @DataDog/api-clients @DataDog/s
 datadog/**/*datadog_team*                        @DataDog/api-clients @DataDog/core-app
 datadog/**/*datadog_organization_settings*       @DataDog/api-clients @DataDog/core-app @DataDog/trust-and-safety
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/api-clients @DataDog/chat-integrations
+datadog/**/*datadog_connection*                  @DataDog/api-clients @DataDog/action-platform
