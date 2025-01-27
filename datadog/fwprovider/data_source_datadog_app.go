@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -13,7 +14,7 @@ import (
 var _ datasource.DataSource = &appDataSource{}
 
 type appDataSource struct {
-	Api  *datadogV2.AppsApi
+	Api  *datadogV2.AppBuilderApi
 	Auth context.Context
 }
 
@@ -58,7 +59,11 @@ func (d *appDataSource) Read(ctx context.Context, request datasource.ReadRequest
 		return
 	}
 
-	id := state.ID.ValueString()
+	id, err := uuid.Parse(state.ID.ValueString())
+	if err != nil {
+		response.Diagnostics.AddError("Error parsing id as uuid", err.Error())
+		return
+	}
 
 	appModel, err := readApp(d.Auth, d.Api, id)
 	if err != nil {
