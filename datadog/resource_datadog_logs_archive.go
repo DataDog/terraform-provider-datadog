@@ -430,13 +430,11 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 	if !ok {
 		path = ""
 	}
-
 	destination := datadogV2.NewLogsArchiveDestinationS3(
 		bucket.(string),
 		*integration,
 		datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
 	)
-
 	encryptionType, ok := d["encryption_type"]
 	if ok && encryptionType != "" {
 		encryption := datadogV2.NewLogsArchiveEncryptionS3(
@@ -448,7 +446,6 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 		}
 		destination.SetEncryption(*encryption)
 	}
-
 	destination.Path = datadog.PtrString(path.(string))
 	return destination, nil
 }

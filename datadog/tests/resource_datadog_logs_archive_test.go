@@ -170,7 +170,6 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
-
 	encryptionNoOverride := `encryption_type = "NO_OVERRIDE"`
 
 	resource.Test(t, resource.TestCase{
@@ -242,14 +241,12 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 	}
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	accountID := uniqueAWSAccountID(ctx, t)
-
 	encryptionSseS3 := `encryption_type = "SSE_S3"`
-
 	encryptionSseKms := `
 		encryption_type = "SSE_KMS"
 		encryption_key = "arn:aws:kms:us-east-1:012345678901:key/DatadogIntegrationRoleKms"
 	`
-
+	
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
