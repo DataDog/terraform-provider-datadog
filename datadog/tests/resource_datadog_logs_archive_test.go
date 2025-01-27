@@ -246,7 +246,7 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 		encryption_type = "SSE_KMS"
 		encryption_key = "arn:aws:kms:us-east-1:012345678901:key/DatadogIntegrationRoleKms"
 	`
-	
+
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
