@@ -5,15 +5,21 @@ Terraform provides helpful [Extending Terraform][1] documentation for best pract
 ## Prerequisites:
 
 -   [Terraform][2] 0.12.x and higher.
-    -   The [`tfenv`](https://github.com/tfutils/tfenv) project lets you easily install and switch between terraform versions
--   [Go][3] 1.15 (to build the provider plugin)
+    - The [`tfenv`](https://github.com/tfutils/tfenv) project lets you easily install and switch between terraform versions
+-   [Go][3] 1.23 (to build the provider plugin)
 -   A clone of this repository and the [\$GOPATH environment variable][7] set
 -   [tfplugindocs][8]
 -   [gotestsum][9] (to run project tests) `gotestsum` executable binary is installed into `$GOPATH/bin` when running `make get-test-deps`. Add the `$GOPATH/bin` directory to your `$PATH`
 
 ## Adding new resources
 
-All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework. **NOTE**: We currently support [Protocol Version 5][13].
+- All new resources should be written using [Terraform Plugin Framework][11]. See [here][12] for examples of current resources implemented using Terraform Plugin Framework. **NOTE**: We currently support [Protocol Version 5][13]. (the objective is to keep the compatibility with Terraform 0.x)
+- The documentation is generated using the `tfplugindocs` CLI.
+  - Ensure each Schema attribute in the code contains a `Description` field.
+  - For nested attributes, please don't use the [Nested Attributes Types][14] but [Blocks][15]. Also don't use [ObjectType][16] as it doesn't allow to add field description
+- When developing a datasource, plan to write 2 data-sources :
+  - One that will have a singular name (ex: `datadog_user`) which returns exactly one objects (and fails if there is 0 or more than 0)
+  - One that will have a plural name (ex: `datadog_users`) which returns a list of objects and succeed in all cases (0, 1 or more than 1 objects)
 
 ## Makefile
 
@@ -131,3 +137,6 @@ It needs one changelog label (among `improvement`, `feature`, `bugfix`, `note` a
 [11]: https://developer.hashicorp.com/terraform/plugin/framework
 [12]: https://github.com/DataDog/terraform-provider-datadog/tree/master/datadog/fwprovider
 [13]: https://developer.hashicorp.com/terraform/plugin/terraform-plugin-protocol#protocol-version-5
+[14]: https://developer.hashicorp.com/terraform/plugin/framework/handling-data/attributes#nested-attribute-types
+[15]: https://developer.hashicorp.com/terraform/plugin/framework/handling-data/blocks
+[16]: https://developer.hashicorp.com/terraform/plugin/framework/handling-data/attributes/object
