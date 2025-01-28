@@ -816,6 +816,32 @@ func TestAccDatadogMonitor_FormulaFunction(t *testing.T) {
 	})
 }
 
+func TestAccDatadogMonitor_FormulaFunction_Cost(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	monitorName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogMonitorDestroy(accProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogCostMonitorFormulaFunction(monitorName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "name", monitorName),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.#", "1"),
+					resource.TestCheckResourceAttr(
+						"datadog_monitor.foo", "variables.0.cloud_cost_query.#", "2"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckDatadogMonitorDestroy(accProvider func() (*schema.Provider, error)) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()
@@ -1661,6 +1687,31 @@ resource "datadog_monitor" "bar" {
   	message = "test"
 	query = "${datadog_monitor.foo.id} || ${datadog_synthetics_test.foo.monitor_id}"
 }`, uniq, uniq, uniq)
+}
+
+func testAccCheckDatadogCostMonitorFormulaFunction(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_monitor" "foo" {
+  name = "%s"
+  type = "cost alert"
+  message = "test"
+
+  query = "formula(query1).last("30d").anomaly(direction="both") > 6"
+
+  variables {
+  	cloud_cost_query {
+		data_source = "cloud_cost"
+		name        = "query1"
+		query 	    = "sum:aws.cost.amortized{servicename: ec2} by {account} > 100"
+		aggregator  = "sum"
+	}
+  }
+
+  monitor_thresholds {
+      critical = 100
+  }
+}
+`, uniq)
 }
 
 func testAccCheckDatadogMonitorFormulaFunction(uniq string) string {
