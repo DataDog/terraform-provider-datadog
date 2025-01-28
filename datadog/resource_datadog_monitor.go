@@ -758,7 +758,7 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 					}
 					o.SetVariables(monitorVariables)
 				}
-				if query, ok := m["cloud_cost"]; ok {
+				if query, ok := m["cloud_cost_query"]; ok {
 					queries := query.([]interface{})
 					monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
 					for i, q := range queries {
@@ -1131,9 +1131,16 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 
 	if variables, ok := m.Options.GetVariablesOk(); ok && len(*variables) > 0 {
 		log.Printf("[INFO] variables: %d, %+v", len(*variables), *variables)
-		terraformVariables := buildTerraformMonitorVariables(*variables)
-		if err := d.Set("variables", terraformVariables); err != nil {
-			return diag.FromErr(err)
+		if m.GetType() == datadogV1.MONITORTYPE_COST_ALERT {
+			terraformVariables := buildTerraformCostMonitorVariables(*variables)
+			if err := d.Set("variables", terraformVariables); err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			terraformVariables := buildTerraformMonitorVariables(*variables)
+			if err := d.Set("variables", terraformVariables); err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 
@@ -1275,8 +1282,36 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 			queries[i] = terraformQuery
 		}
 	}
-	terraformVariables := make([]map[string]interface{}, 1) // only event_queries are supported for now
+	terraformVariables := make([]map[string]interface{}, 1)
 	terraformVariables[0] = map[string]interface{}{"event_query": queries}
+
+	log.Printf("[INFO] queries: %+v", terraformVariables)
+	return terraformVariables
+}
+
+func buildTerraformCostMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
+	queries := make([]map[string]interface{}, len(datadogVariables))
+	for i, query := range datadogVariables {
+		terraformQuery := map[string]interface{}{}
+		terraformCostQueryDefinition := query.MonitorFormulaAndFunctionCostQueryDefinition
+		if terraformCostQueryDefinition != nil {
+			if dataSource, ok := terraformCostQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if name, ok := terraformCostQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if queryStr, ok := terraformCostQueryDefinition.GetQueryOk(); ok {
+				terraformQuery["query"] = queryStr
+			}
+			if aggregator, ok := terraformCostQueryDefinition.GetAggregatorOk(); ok {
+				terraformQuery["aggregator"] = aggregator
+			}
+			queries[i] = terraformQuery
+		}
+	}
+	terraformVariables := make([]map[string]interface{}, 1)
+	terraformVariables[0] = map[string]interface{}{"cloud_cost_query": queries}
 
 	log.Printf("[INFO] queries: %+v", terraformVariables)
 	return terraformVariables
