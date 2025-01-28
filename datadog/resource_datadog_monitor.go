@@ -743,18 +743,29 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	if attr, ok := d.GetOk("locked"); ok {
 		o.SetLocked(attr.(bool))
 	}
+
 	if v, ok := d.GetOk("variables"); ok {
 		variables := v.([]interface{})
 		if len(variables) > 0 {
 			// we always have either zero or one
 			for _, v := range variables {
 				m := v.(map[string]interface{})
-				queries := m["event_query"].([]interface{})
-				monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
-				for i, q := range queries {
-					monitorVariables[i] = *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
+				if query, ok := m["event_query"]; ok {
+					queries := query.([]interface{})
+					monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
+					for i, q := range queries {
+						monitorVariables[i] = *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
+					}
+					o.SetVariables(monitorVariables)
 				}
-				o.SetVariables(monitorVariables)
+				if query, ok := m["cloud_cost"]; ok {
+					queries := query.([]interface{})
+					monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
+					for i, q := range queries {
+						monitorVariables[i] = *buildMonitorFormulaAndFunctionCloudCostQuery(q.(map[string]interface{}))
+					}
+					o.SetVariables(monitorVariables)
+				}
 			}
 		}
 	}
@@ -904,6 +915,21 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 	}
 
 	definition := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(eventQuery)
+	return &definition
+}
+
+func buildMonitorFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string))
+
+	cloudCostQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
+
+	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
+		cloudCostQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(v))
+	}
+
+	datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
+
+	definition := datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
 	return &definition
 }
 
