@@ -385,9 +385,13 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 			if syntheticsGlobalVariableTOTPParameters.HasRefreshInterval() {
 				localTotpParameters["refresh_interval"] = syntheticsGlobalVariableTOTPParameters.GetRefreshInterval()
 			}
-			localVariableOptions["totp_parameters"] = []map[string]interface{}{localTotpParameters}
+			if len(localTotpParameters) > 0 {
+				localVariableOptions["totp_parameters"] = []map[string]interface{}{localTotpParameters}
+			}
 		}
-		d.Set("options", []map[string]interface{}{localVariableOptions})
+		if len(localVariableOptions) != 0 {
+			d.Set("options", []map[string]interface{}{localVariableOptions})
+		}
 	}
 
 	if syntheticsGlobalVariable.HasAttributes() {
