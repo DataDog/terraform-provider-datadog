@@ -6,7 +6,8 @@ exclude_files=(
   "docs/resources/integration_aws_account.md"
   "docs/resources/role.md"
 )
-
+# Generate the documentation with proto v6 as it is more complete
+export USE_PROTO_V6=1
 # Check if manual changes were made to any excluded files and exit
 # otherwise these will be lost with `tfplugindocs`
 if [ "${#exclude_files[@]}" -ne 0 ] && [ "$(git status --porcelain "${exclude_files[@]}")" ]; then
