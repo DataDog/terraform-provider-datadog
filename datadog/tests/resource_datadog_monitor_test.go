@@ -1696,7 +1696,7 @@ resource "datadog_monitor" "foo" {
   type = "cost alert"
   message = "test"
 
-  query = "formula(query1).last("30d").anomaly(direction="both") > 6"
+  query = "formula(query1).last(\"30d\").anomaly(direction=\"both\") > 6"
 
   variables {
   	cloud_cost_query {
