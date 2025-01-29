@@ -156,7 +156,7 @@ Optional:
 
 Optional:
 
-- `cloud_cost_query` (Block List, Max: 1) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--variables--cloud_cost_query))
+- `cloud_cost_query` (Block List, Max: 5) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--variables--cloud_cost_query))
 - `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
 
 <a id="nestedblock--variables--cloud_cost_query"></a>
@@ -164,13 +164,13 @@ Optional:
 
 Required:
 
-- `data_source` (String) The data source for cloud cost queries. Valid values are `cloud_cost`.
+- `data_source` (String) The data source for cloud cost queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
 - `name` (String) The name of the query for use in formulas.
 - `query` (String) The cloud cost query definition.
 
 Optional:
 
-- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `last`, `max`, `min`, `sum`, `percentile`.
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `sum`, `max`, `min`, `last`, `area`, `l2norm`, `percentile`, `stddev`.
 
 
 <a id="nestedblock--variables--event_query"></a>
