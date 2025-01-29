@@ -23,6 +23,7 @@ func TestAccDatadogUsersDatasourceFilter(t *testing.T) {
 				Config: testAccDatasourceUsersFilterConfig(uniq, email),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.email", email),
+					checkRessourceAttributeRegex("data.datadog_users.all_users", "users.0.icon", "https://secure.gravatar.com/avatar/.*"),
 					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.#", "1"),
 				),
 			},
@@ -47,7 +48,10 @@ func TestAccDatadogUsersDatasourceFilterStatus(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccDatasourceUsersFilterStatusConfig(uniq, expectedUserName, status),
-				Check:  resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.name", expectedUserName),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("data.datadog_users.all_users", "users.0.name", expectedUserName),
+					checkRessourceAttributeRegex("data.datadog_users.all_users", "users.0.icon", "https://secure.gravatar.com/avatar/.*"),
+				),
 			},
 		},
 	})
