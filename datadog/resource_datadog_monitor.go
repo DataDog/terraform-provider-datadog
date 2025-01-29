@@ -555,14 +555,14 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 				"cloud_cost_query": {
 					Type:        schema.TypeList,
 					Optional:    true,
-					MaxItems:    1,
+					MaxItems:    5,
 					Description: "The Cloud Cost query using formulas and functions.",
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"data_source": {
 								Type:             schema.TypeString,
 								Required:         true,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewFormulaAndFunctionCloudCostDataSourceFromValue),
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostDataSourceFromValue),
 								Description:      "The data source for cloud cost queries.",
 							},
 							"query": {
@@ -573,7 +573,7 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 							"aggregator": {
 								Type:             schema.TypeString,
 								Optional:         true,
-								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetAggregatorFromValue),
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostAggregatorFromValue),
 								Description:      "The aggregation methods available for cloud cost queries.",
 							},
 							"name": {
