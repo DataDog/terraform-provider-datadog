@@ -1702,7 +1702,7 @@ resource "datadog_monitor" "foo" {
   	cloud_cost_query {
 		data_source = "cloud_cost"
 		name        = "query1"
-		query 	    = "sum:aws.cost.amortized{servicename: ec2} by {account} > 100"
+		query 	    = "sum:aws.cost.amortized{servicename: ec2} by {account}"
 		aggregator  = "sum"
 	}
   }
