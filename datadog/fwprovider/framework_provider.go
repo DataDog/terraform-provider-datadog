@@ -91,6 +91,7 @@ var Resources = []func() resource.Resource{
 	NewSecurityMonitoringRuleJSONResource,
 	NewComplianceCustomFrameworkResource,
 	NewCostBudgetResource,
+	NewCSMThreatsPoliciesListResource,
 	NewCSMThreatsPolicyResource,
 	NewCSMThreatsMultiPolicyAgentRuleResource,
 }
