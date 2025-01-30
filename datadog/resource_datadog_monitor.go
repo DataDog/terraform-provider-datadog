@@ -750,22 +750,20 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 			// we always have either zero or one
 			for _, v := range variables {
 				m := v.(map[string]interface{})
+				var monitorVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition
 				if query, ok := m["event_query"]; ok {
 					queries := query.([]interface{})
-					monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
-					for i, q := range queries {
-						monitorVariables[i] = *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
+					for _, q := range queries {
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{})))
 					}
-					o.SetVariables(monitorVariables)
 				}
 				if query, ok := m["cloud_cost_query"]; ok {
 					queries := query.([]interface{})
-					monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
-					for i, q := range queries {
-						monitorVariables[i] = *buildMonitorFormulaAndFunctionCloudCostQuery(q.(map[string]interface{}))
+					for _, q := range queries {
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(q.(map[string]interface{})))
 					}
-					o.SetVariables(monitorVariables)
 				}
+				o.SetVariables(monitorVariables)
 			}
 		}
 	}
