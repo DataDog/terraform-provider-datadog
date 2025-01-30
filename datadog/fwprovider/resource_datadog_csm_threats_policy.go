@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	mathrand "math/rand"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -47,7 +48,7 @@ func (r *csmThreatsPolicyResource) Schema(_ context.Context, _ resource.SchemaRe
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
-				Required:    true,
+				Computed:    true,
 				Description: "The name of the policy.",
 			},
 			"description": schema.StringAttribute{
@@ -182,13 +183,13 @@ func (r *csmThreatsPolicyResource) Delete(ctx context.Context, request resource.
 }
 
 func (r *csmThreatsPolicyResource) buildCreateCSMThreatsPolicyPayload(state *csmThreatsPolicyModel) (*datadogV2.CloudWorkloadSecurityAgentPolicyCreateRequest, error) {
-	_, name, description, enabled, tags, err := r.extractPolicyAttributesFromResource(state)
+	_, description, enabled, tags, err := r.extractPolicyAttributesFromResource(state)
 	if err != nil {
 		return nil, err
 	}
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentPolicyCreateAttributes{}
-	attributes.Name = name
+	attributes.Name = fmt.Sprintf("policy-%d", mathrand.Intn(1000))
 	attributes.Description = description
 	attributes.Enabled = enabled
 	attributes.HostTags = tags
@@ -198,12 +199,11 @@ func (r *csmThreatsPolicyResource) buildCreateCSMThreatsPolicyPayload(state *csm
 }
 
 func (r *csmThreatsPolicyResource) buildUpdateCSMThreatsPolicyPayload(state *csmThreatsPolicyModel) (*datadogV2.CloudWorkloadSecurityAgentPolicyUpdateRequest, error) {
-	policyId, name, description, enabled, tags, err := r.extractPolicyAttributesFromResource(state)
+	policyId, description, enabled, tags, err := r.extractPolicyAttributesFromResource(state)
 	if err != nil {
 		return nil, err
 	}
 	attributes := datadogV2.CloudWorkloadSecurityAgentPolicyUpdateAttributes{}
-	attributes.Name = &name
 	attributes.Description = description
 	attributes.Enabled = enabled
 	attributes.HostTags = tags
@@ -213,10 +213,9 @@ func (r *csmThreatsPolicyResource) buildUpdateCSMThreatsPolicyPayload(state *csm
 	return datadogV2.NewCloudWorkloadSecurityAgentPolicyUpdateRequest(*data), nil
 }
 
-func (r *csmThreatsPolicyResource) extractPolicyAttributesFromResource(state *csmThreatsPolicyModel) (string, string, *string, *bool, []string, error) {
+func (r *csmThreatsPolicyResource) extractPolicyAttributesFromResource(state *csmThreatsPolicyModel) (string, *string, *bool, []string, error) {
 	// Mandatory fields
 	id := state.Id.ValueString()
-	name := state.Name.ValueString()
 	enabled := state.Enabled.ValueBoolPointer()
 	description := state.Description.ValueStringPointer()
 	var tags []string
@@ -224,13 +223,13 @@ func (r *csmThreatsPolicyResource) extractPolicyAttributesFromResource(state *cs
 		for _, tag := range state.Tags.Elements() {
 			tagStr, ok := tag.(types.String)
 			if !ok {
-				return "", "", nil, nil, nil, fmt.Errorf("expected item to be of type types.String, got %T", tag)
+				return "", nil, nil, nil, fmt.Errorf("expected item to be of type types.String, got %T", tag)
 			}
 			tags = append(tags, tagStr.ValueString())
 		}
 	}
 
-	return id, name, description, enabled, tags, nil
+	return id, description, enabled, tags, nil
 }
 
 func (r *csmThreatsPolicyResource) updateStateFromResponse(ctx context.Context, state *csmThreatsPolicyModel, res *datadogV2.CloudWorkloadSecurityAgentPolicyResponse) {

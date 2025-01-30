@@ -80,6 +80,7 @@ var Resources = []func() resource.Resource{
 	NewActionConnectionResource,
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
+	NewCSMThreatsPoliciesListResource,
 	NewCSMThreatsPolicyResource,
 	NewCSMThreatsMultiPolicyAgentRuleResource,
 }
