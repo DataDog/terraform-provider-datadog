@@ -835,7 +835,7 @@ func TestAccDatadogMonitor_FormulaFunction_Cost(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_monitor.foo", "variables.#", "1"),
 					resource.TestCheckResourceAttr(
-						"datadog_monitor.foo", "variables.0.cloud_cost_query.#", "2"),
+						"datadog_monitor.foo", "variables.0.cloud_cost_query.#", "1"),
 				),
 			},
 		},
