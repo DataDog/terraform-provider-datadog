@@ -85,6 +85,7 @@ var Resources = []func() resource.Resource{
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
 	NewSecurityMonitoringRuleJSONResource,
+	NewCSMThreatsPoliciesListResource,
 	NewCSMThreatsPolicyResource,
 	NewCSMThreatsMultiPolicyAgentRuleResource,
 }
