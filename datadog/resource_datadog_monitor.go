@@ -552,6 +552,38 @@ func getMonitorFormulaQuerySchema() *schema.Schema {
 						},
 					},
 				},
+				"cloud_cost_query": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					MaxItems:    5,
+					Description: "The Cloud Cost query using formulas and functions.",
+					Elem: &schema.Resource{
+						Schema: map[string]*schema.Schema{
+							"data_source": {
+								Type:             schema.TypeString,
+								Required:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostDataSourceFromValue),
+								Description:      "The data source for cloud cost queries.",
+							},
+							"query": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The cloud cost query definition.",
+							},
+							"aggregator": {
+								Type:             schema.TypeString,
+								Optional:         true,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorFormulaAndFunctionCostAggregatorFromValue),
+								Description:      "The aggregation methods available for cloud cost queries.",
+							},
+							"name": {
+								Type:        schema.TypeString,
+								Required:    true,
+								Description: "The name of the query for use in formulas.",
+							},
+						},
+					},
+				},
 			},
 		},
 	}
@@ -711,16 +743,25 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	if attr, ok := d.GetOk("locked"); ok {
 		o.SetLocked(attr.(bool))
 	}
+
 	if v, ok := d.GetOk("variables"); ok {
 		variables := v.([]interface{})
 		if len(variables) > 0 {
 			// we always have either zero or one
 			for _, v := range variables {
 				m := v.(map[string]interface{})
-				queries := m["event_query"].([]interface{})
-				monitorVariables := make([]datadogV1.MonitorFormulaAndFunctionQueryDefinition, len(queries))
-				for i, q := range queries {
-					monitorVariables[i] = *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{}))
+				var monitorVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition
+				if query, ok := m["event_query"]; ok {
+					queries := query.([]interface{})
+					for _, q := range queries {
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionEventQuery(q.(map[string]interface{})))
+					}
+				}
+				if query, ok := m["cloud_cost_query"]; ok {
+					queries := query.([]interface{})
+					for _, q := range queries {
+						monitorVariables = append(monitorVariables, *buildMonitorFormulaAndFunctionCloudCostQuery(q.(map[string]interface{})))
+					}
 				}
 				o.SetVariables(monitorVariables)
 			}
@@ -872,6 +913,21 @@ func buildMonitorFormulaAndFunctionEventQuery(data map[string]interface{}) *data
 	}
 
 	definition := datadogV1.MonitorFormulaAndFunctionEventQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(eventQuery)
+	return &definition
+}
+
+func buildMonitorFormulaAndFunctionCloudCostQuery(data map[string]interface{}) *datadogV1.MonitorFormulaAndFunctionQueryDefinition {
+	dataSource := datadogV1.MonitorFormulaAndFunctionCostDataSource(data["data_source"].(string))
+
+	cloudCostQuery := datadogV1.NewMonitorFormulaAndFunctionCostQueryDefinition(dataSource, data["name"].(string), data["query"].(string))
+
+	if v, ok := data["aggregator"].(string); ok && len(v) != 0 {
+		cloudCostQuery.SetAggregator(datadogV1.MonitorFormulaAndFunctionCostAggregator(v))
+	}
+
+	datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
+
+	definition := datadogV1.MonitorFormulaAndFunctionCostQueryDefinitionAsMonitorFormulaAndFunctionQueryDefinition(cloudCostQuery)
 	return &definition
 }
 
@@ -1073,9 +1129,16 @@ func updateMonitorState(d *schema.ResourceData, meta interface{}, m *datadogV1.M
 
 	if variables, ok := m.Options.GetVariablesOk(); ok && len(*variables) > 0 {
 		log.Printf("[INFO] variables: %d, %+v", len(*variables), *variables)
-		terraformVariables := buildTerraformMonitorVariables(*variables)
-		if err := d.Set("variables", terraformVariables); err != nil {
-			return diag.FromErr(err)
+		if m.GetType() == datadogV1.MONITORTYPE_COST_ALERT {
+			terraformVariables := buildTerraformCostMonitorVariables(*variables)
+			if err := d.Set("variables", terraformVariables); err != nil {
+				return diag.FromErr(err)
+			}
+		} else {
+			terraformVariables := buildTerraformMonitorVariables(*variables)
+			if err := d.Set("variables", terraformVariables); err != nil {
+				return diag.FromErr(err)
+			}
 		}
 	}
 
@@ -1217,8 +1280,36 @@ func buildTerraformMonitorVariables(datadogVariables []datadogV1.MonitorFormulaA
 			queries[i] = terraformQuery
 		}
 	}
-	terraformVariables := make([]map[string]interface{}, 1) // only event_queries are supported for now
+	terraformVariables := make([]map[string]interface{}, 1)
 	terraformVariables[0] = map[string]interface{}{"event_query": queries}
+
+	log.Printf("[INFO] queries: %+v", terraformVariables)
+	return terraformVariables
+}
+
+func buildTerraformCostMonitorVariables(datadogVariables []datadogV1.MonitorFormulaAndFunctionQueryDefinition) []map[string]interface{} {
+	queries := make([]map[string]interface{}, len(datadogVariables))
+	for i, query := range datadogVariables {
+		terraformQuery := map[string]interface{}{}
+		terraformCostQueryDefinition := query.MonitorFormulaAndFunctionCostQueryDefinition
+		if terraformCostQueryDefinition != nil {
+			if dataSource, ok := terraformCostQueryDefinition.GetDataSourceOk(); ok {
+				terraformQuery["data_source"] = dataSource
+			}
+			if name, ok := terraformCostQueryDefinition.GetNameOk(); ok {
+				terraformQuery["name"] = name
+			}
+			if queryStr, ok := terraformCostQueryDefinition.GetQueryOk(); ok {
+				terraformQuery["query"] = queryStr
+			}
+			if aggregator, ok := terraformCostQueryDefinition.GetAggregatorOk(); ok {
+				terraformQuery["aggregator"] = aggregator
+			}
+			queries[i] = terraformQuery
+		}
+	}
+	terraformVariables := make([]map[string]interface{}, 1)
+	terraformVariables[0] = map[string]interface{}{"cloud_cost_query": queries}
 
 	log.Printf("[INFO] queries: %+v", terraformVariables)
 	return terraformVariables
