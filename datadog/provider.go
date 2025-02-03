@@ -467,30 +467,27 @@ func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) erro
 	tags := make(map[string]interface{})
 	tagSet := resourceTags.(*schema.Set)
 	for _, tag := range tagSet.List() {
-		kv := strings.Split(tag.(string), ":")
-		var key, value string
-		switch len(kv) {
-		case 2:
-			key, value = kv[0], kv[1]
-		case 1:
-			key, value = kv[0], ""
-		default:
-			return fmt.Errorf("invalid tag: '%s'", tag)
+		key, value, _ := strings.Cut(tag.(string), ":")
+		old_val, ok := tags[key]
+		if !ok {
+			old_val = []string{}
 		}
-		tags[key] = value
+		tags[key] = append(old_val.([]string), value)
 	}
 	for k, v := range providerConf.DefaultTags {
 		if _, alreadyDefined := tags[k]; !alreadyDefined {
-			tags[k] = v
+			tags[k] = []string{v.(string)}
 		}
 	}
 	tagSlice := make([]interface{}, 0, len(tags))
-	for k, v := range tags {
-		tag := fmt.Sprintf("%s:%v", k, v)
-		if v == "" {
-			tag = k
+	for k, vals := range tags {
+		for _, v := range vals.([]string) {
+			tag := fmt.Sprintf("%s:%v", k, v)
+			if v == "" {
+				tag = k
+			}
+			tagSlice = append(tagSlice, tag)
 		}
-		tagSlice = append(tagSlice, tag)
 	}
 	tagsToSet := schema.NewSet(tagSet.F, tagSlice)
 	if err := d.SetNew("tags", tagsToSet); err != nil {

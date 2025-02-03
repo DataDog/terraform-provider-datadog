@@ -30,7 +30,7 @@ type integrationCloudflareAccountModel struct {
 	ApiKey    types.String `tfsdk:"api_key"`
 	Email     types.String `tfsdk:"email"`
 	Name      types.String `tfsdk:"name"`
-	Resources types.List   `tfsdk:"resources"`
+	Resources types.Set    `tfsdk:"resources"`
 }
 
 func NewIntegrationCloudflareAccountResource() resource.Resource {
@@ -68,11 +68,11 @@ func (r *integrationCloudflareAccountResource) Schema(_ context.Context, _ resou
 				},
 			},
 			"id": utils.ResourceIDAttribute(),
-			"resources": schema.ListAttribute{
+			"resources": schema.SetAttribute{
 				ElementType: types.StringType,
 				Optional:    true,
 				Computed:    true,
-				Description: "An allowlist of resources to pull metrics for. Including, `web`, `dns`, `lb` (load balancer), and `worker`).",
+				Description: "An allowlist of resources to pull metrics for. Includes `web`, `dns`, `lb` (load balancer), and `worker`).",
 			},
 		},
 	}
@@ -193,7 +193,7 @@ func (r *integrationCloudflareAccountResource) updateState(ctx context.Context, 
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	if email, ok := attributes.GetEmailOk(); ok {
+	if email, ok := attributes.GetEmailOk(); ok && *email != "" {
 		state.Email = types.StringValue(*email)
 	}
 
@@ -202,7 +202,7 @@ func (r *integrationCloudflareAccountResource) updateState(ctx context.Context, 
 	}
 
 	if resources, ok := attributes.GetResourcesOk(); ok {
-		state.Resources, _ = types.ListValueFrom(ctx, types.StringType, resources)
+		state.Resources, _ = types.SetValueFrom(ctx, types.StringType, resources)
 	}
 }
 
@@ -216,7 +216,7 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 	}
 	attributes.SetName(state.Name.ValueString())
 
-	if !state.Resources.IsNull() {
+	if !state.Resources.IsNull() && !state.Resources.IsUnknown() {
 		var resources []string
 		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
 		attributes.SetResources(resources)
@@ -238,7 +238,7 @@ func (r *integrationCloudflareAccountResource) buildIntegrationCloudflareAccount
 		attributes.SetEmail(state.Email.ValueString())
 	}
 
-	if !state.Resources.IsNull() {
+	if !state.Resources.IsNull() && !state.Resources.IsUnknown() {
 		var resources []string
 		diags.Append(state.Resources.ElementsAs(ctx, &resources, false)...)
 		attributes.SetResources(resources)

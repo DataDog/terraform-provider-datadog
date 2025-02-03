@@ -21,13 +21,13 @@ jobs:
           exit 1;
       - name: Get GitHub App token
         id: get_token
-        uses: tibdex/github-app-token@v1
+        uses: actions/create-github-app-token@c1a285145b9d317df6ced56c09f525b5c2b6f755
         with:
-          app_id: ${{ secrets.PIPELINE_GITHUB_APP_ID }}
-          private_key: ${{ secrets.PIPELINE_GITHUB_APP_PRIVATE_KEY }}
+          app-id: ${{ secrets.PIPELINE_GITHUB_APP_ID }}
+          private-key: ${{ secrets.PIPELINE_GITHUB_APP_PRIVATE_KEY }}
       - name: Check PR title
         if: github.event.pull_request.draft == false && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/note') && false == contains(join(github.event.pull_request.labels.*.name, ','), 'changelog/no-changelog')
-        uses: actions/github-script@v6
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
         with:
           github-token: ${{ steps.get_token.outputs.token }}
           script: |
