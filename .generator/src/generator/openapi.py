@@ -1,11 +1,7 @@
-import hashlib
 import json
 import pathlib
-import random
-import uuid
 import warnings
 import yaml
-import re
 from copy import deepcopy
 
 from jsonref import JsonRef
@@ -13,7 +9,13 @@ from urllib.parse import urlparse
 from yaml import CSafeLoader
 
 from . import formatter
-from .utils import GET_OPERATION, CREATE_OPERATION, UPDATE_OPERATION, DELETE_OPERATION, is_primitive
+from .utils import (
+    GET_OPERATION,
+    CREATE_OPERATION,
+    UPDATE_OPERATION,
+    DELETE_OPERATION,
+    is_primitive,
+)
 
 
 def load(filename):
@@ -42,7 +44,9 @@ def type_to_go(schema, alternative_name=None, render_nullable=False, render_new=
         return "interface{}"
 
     if "enum" not in schema:
-        name = formatter.simple_type(schema, render_nullable=render_nullable, render_new=render_new)
+        name = formatter.simple_type(
+            schema, render_nullable=render_nullable, render_new=render_new
+        )
         if name is not None:
             return name
 
@@ -50,7 +54,10 @@ def type_to_go(schema, alternative_name=None, render_nullable=False, render_new=
     if name:
         if "enum" in schema:
             return prefix + name
-        if not (schema.get("additionalProperties") and not schema.get("properties")) and schema.get("type", "object") == "object":
+        if (
+            not (schema.get("additionalProperties") and not schema.get("properties"))
+            and schema.get("type", "object") == "object"
+        ):
             return prefix + name
 
     type_ = schema.get("type")
@@ -61,7 +68,9 @@ def type_to_go(schema, alternative_name=None, render_nullable=False, render_new=
             type_ = "object"
         else:
             type_ = "object"
-            warnings.warn(f"Unknown type for schema: {schema} ({name or alternative_name})")
+            warnings.warn(
+                f"Unknown type for schema: {schema} ({name or alternative_name})"
+            )
 
     if type_ == "array":
         if name and schema.get("x-generate-alias-as-model", False):
@@ -79,7 +88,12 @@ def type_to_go(schema, alternative_name=None, render_nullable=False, render_new=
         return (
             prefix + alternative_name
             if alternative_name
-            and ("properties" in schema or "oneOf" in schema or "anyOf" in schema or "allOf" in schema)
+            and (
+                "properties" in schema
+                or "oneOf" in schema
+                or "anyOf" in schema
+                or "allOf" in schema
+            )
             else "interface{}"
         )
 
@@ -109,7 +123,7 @@ def operations_to_generate(spec):
         "resourceName": {
             "getOperation": {
                 "path": "endpoint/path",
-                "schema": {...}    
+                "schema": {...}
             },
             ...
         }
@@ -121,26 +135,31 @@ def operations_to_generate(spec):
             operation = spec["paths"][path][method]
             if "x-terraform-resource" in operation:
                 if method == "get":
-                    operations.setdefault(operation["x-terraform-resource"], {})[GET_OPERATION] = {"schema": operation, "path": path}
+                    operations.setdefault(operation["x-terraform-resource"], {})[
+                        GET_OPERATION
+                    ] = {"schema": operation, "path": path}
                 elif method == "post":
-                    operations.setdefault(operation["x-terraform-resource"], {})[CREATE_OPERATION] = {"schema": operation, "path": path}
+                    operations.setdefault(operation["x-terraform-resource"], {})[
+                        CREATE_OPERATION
+                    ] = {"schema": operation, "path": path}
                 elif method == "patch" or method == "put":
-                    operations.setdefault(operation["x-terraform-resource"], {})[UPDATE_OPERATION] = {"schema": operation, "path": path}
+                    operations.setdefault(operation["x-terraform-resource"], {})[
+                        UPDATE_OPERATION
+                    ] = {"schema": operation, "path": path}
                 elif method == "delete":
-                    operations.setdefault(operation["x-terraform-resource"], {})[DELETE_OPERATION] = {"schema": operation, "path": path}
+                    operations.setdefault(operation["x-terraform-resource"], {})[
+                        DELETE_OPERATION
+                    ] = {"schema": operation, "path": path}
 
     return operations
-    
+
 
 def get_terraform_primary_id(operations):
     update_params = parameters(operations[UPDATE_OPERATION]["schema"])
     primary_id = operations[UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
     primary_id_param = update_params.pop(primary_id)
 
-    return {
-        "schema": parameter_schema(primary_id_param),
-        "name": primary_id
-    }
+    return {"schema": parameter_schema(primary_id_param), "name": primary_id}
 
 
 def parameters(operation):
@@ -151,7 +170,9 @@ def parameters(operation):
 
     if "requestBody" in operation:
         if "multipart/form-data" in operation["requestBody"]["content"]:
-            parent = operation["requestBody"]["content"]["multipart/form-data"]["schema"]
+            parent = operation["requestBody"]["content"]["multipart/form-data"][
+                "schema"
+            ]
             for name, schema in parent["properties"].items():
                 parametersDict[name] = {
                     "in": "form",
@@ -282,7 +303,12 @@ def is_json_api(schema):
 
 
 def json_api_attributes_schema(schema):
-    return schema.get("properties", {}).get("data", {}).get("properties", {}).get("attributes", {})
+    return (
+        schema.get("properties", {})
+        .get("data", {})
+        .get("properties", {})
+        .get("attributes", {})
+    )
 
 
 class Schema:
@@ -315,9 +341,13 @@ class Schema:
                                 )
                             except KeyError:
                                 pass
-            raise KeyError(f"{key} not found in {self.spec.get('properties', {}).keys()}: {self.spec}")
+            raise KeyError(
+                f"{key} not found in {self.spec.get('properties', {}).keys()}: {self.spec}"
+            )
         if type_ == "array":
-            return self.__class__(self.spec["items"], value=self.value, keys=self.keys + (key,))
+            return self.__class__(
+                self.spec["items"], value=self.value, keys=self.keys + (key,)
+            )
 
         raise KeyError(f"{key} not found in {self.spec}")
 
@@ -359,4 +389,6 @@ class Operation:
         return format_server(server, self.path), self.method
 
     def request(self):
-        return Schema(next(iter(self.spec["requestBody"]["content"].values()))["schema"])
+        return Schema(
+            next(iter(self.spec["requestBody"]["content"].values()))["schema"]
+        )
