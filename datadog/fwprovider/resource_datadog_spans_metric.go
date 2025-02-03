@@ -320,7 +320,7 @@ func (r *spansMetricResource) buildSpansMetricRequestBody(ctx context.Context, s
 	var compute datadogV2.SpansMetricCompute
 
 	compute.SetAggregationType(datadogV2.SpansMetricComputeAggregationType(state.Compute.AggregationType.ValueString()))
-	if !state.Compute.IncludePercentiles.IsNull() {
+	if !state.Compute.IncludePercentiles.IsUnknown() {
 		compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
 	}
 	if !state.Compute.Path.IsNull() {
