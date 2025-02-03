@@ -1,4 +1,3 @@
-import os
 import pathlib
 
 import click
@@ -13,7 +12,9 @@ from . import utils
 @click.argument(
     "spec_path",
     # nargs=-1,
-    type=click.Path(exists=True, file_okay=True, dir_okay=False, path_type=pathlib.Path),
+    type=click.Path(
+        exists=True, file_okay=True, dir_okay=False, path_type=pathlib.Path
+    ),
 )
 @click.option(
     "-o",
@@ -25,7 +26,9 @@ def cli(spec_path, output):
     """
     Generate a terraform code snippet from OpenAPI specification.
     """
-    env = Environment(loader=FileSystemLoader(str(pathlib.Path(__file__).parent / "templates")))
+    env = Environment(
+        loader=FileSystemLoader(str(pathlib.Path(__file__).parent / "templates"))
+    )
 
     env.filters["attribute_name"] = formatter.attribute_name
     env.filters["camel_case"] = formatter.camel_case

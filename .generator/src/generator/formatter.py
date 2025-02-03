@@ -1,10 +1,5 @@
 """Data formatter."""
 
-import warnings
-import re
-
-import dateutil.parser
-
 from .utils import snake_case, camel_case, untitle_case, schema_name
 
 PRIMITIVE_TYPES = ["string", "number", "boolean", "integer"]

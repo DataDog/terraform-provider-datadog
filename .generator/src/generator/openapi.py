@@ -2,11 +2,8 @@ import json
 import pathlib
 import warnings
 import yaml
-from copy import deepcopy
 
 from jsonref import JsonRef
-from urllib.parse import urlparse
-from yaml import CSafeLoader
 
 from . import formatter
 from .utils import (
