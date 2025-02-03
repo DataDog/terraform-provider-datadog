@@ -1,4 +1,5 @@
 """Data formatter."""
+
 import warnings
 import re
 
@@ -71,8 +72,8 @@ SUFFIXES = {
 
 
 def sanitize_description(description):
-    description = description.replace('"', '\\"')
-    return ' '.join(description.splitlines())
+    escaped_description = description.replace('"', '\\"')
+    return " ".join(escaped_description.splitlines())
 
 
 def escape_reserved_keyword(word):
