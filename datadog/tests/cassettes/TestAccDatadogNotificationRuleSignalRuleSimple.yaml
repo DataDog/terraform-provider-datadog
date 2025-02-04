@@ -1,0 +1,202 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 332
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738676195","selectors":{"query":"simple:query","rule_types":["misconfiguration"],"severities":["critical"],"trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0},"type":"notification_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 492
+        uncompressed: false
+        body: '{"data":{"id":"sxe-jlc-krs","type":"notification_rules","attributes":{"created_at":1738676198065,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738676198065,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738676195","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 156.396667ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/sxe-jlc-krs
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 492
+        uncompressed: false
+        body: '{"data":{"id":"sxe-jlc-krs","type":"notification_rules","attributes":{"created_at":1738676198065,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738676198065,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738676195","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 305.5185ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/sxe-jlc-krs
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 492
+        uncompressed: false
+        body: '{"data":{"id":"sxe-jlc-krs","type":"notification_rules","attributes":{"created_at":1738676198065,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738676198065,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738676195","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 130.841333ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/sxe-jlc-krs
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 143.147167ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/sxe-jlc-krs
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 75
+        uncompressed: false
+        body: '{"errors":["not_found(Notification rule with id ''sxe-jlc-krs'' not found)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 133.40725ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/sxe-jlc-krs
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 75
+        uncompressed: false
+        body: '{"errors":["not_found(Notification rule with id ''sxe-jlc-krs'' not found)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 333.2285ms
