@@ -65,7 +65,7 @@ func dataSourceDatadogLogsPipelines() *schema.Resource {
 							},
 							"tags": {
 								Description: "Tags of the pipeline",
-								Type:        schema.TypeList,
+								Type:        schema.TypeSet,
 								Computed:    true,
 								Optional:    true,
 								Elem: &schema.Schema{
