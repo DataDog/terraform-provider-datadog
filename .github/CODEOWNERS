@@ -5,6 +5,8 @@
 # All your base
 *                                         @DataDog/api-clients @DataDog/web-frameworks
 
+/.generator                               @DataDog/api-reliability
+
 /docs/                                    @DataDog/api-clients @DataDog/web-frameworks @DataDog/documentation
 
 # Terraform plugin sdk resources/data-sources
