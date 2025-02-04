@@ -763,10 +763,10 @@ func buildDatadogPipeline(d *schema.ResourceData) (*datadogV1.LogsPipeline, erro
 	var ddPipeline datadogV1.LogsPipeline
 	ddPipeline.SetName(d.Get("name").(string))
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
-	tagsInterface := d.Get("tags").([]interface{})
-	tags := make([]string, len(tagsInterface))
-	for i, v := range tagsInterface {
-		tags[i] = v.(string)
+	tagsSet := d.Get("tags").(*schema.Set).List()
+	tags := []string{}
+	for _, tag := range tagsSet {
+		tags = append(tags, tag.(string))
 	}
 	ddPipeline.SetTags(tags)
 	ddPipeline.SetDescription(d.Get("description").(string))
