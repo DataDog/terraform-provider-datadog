@@ -48,7 +48,7 @@ Read-Only:
 - `is_enabled` (Boolean)
 - `is_read_only` (Boolean)
 - `name` (String)
-- `tags` (List of String)
+- `tags` (Set of String)
 - `type` (String)
 
 <a id="nestedobjatt--logs_pipelines--filter"></a>

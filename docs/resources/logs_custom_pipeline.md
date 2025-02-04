@@ -176,7 +176,7 @@ resource "datadog_logs_custom_pipeline" "sample_pipeline" {
 - `description` (String)
 - `is_enabled` (Boolean)
 - `processor` (Block List) (see [below for nested schema](#nestedblock--processor))
-- `tags` (List of String)
+- `tags` (Set of String)
 
 ### Read-Only
 
@@ -370,7 +370,7 @@ Optional:
 - `description` (String)
 - `is_enabled` (Boolean)
 - `processor` (Block List) (see [below for nested schema](#nestedblock--processor--pipeline--processor))
-- `tags` (List of String)
+- `tags` (Set of String)
 
 <a id="nestedblock--processor--pipeline--filter"></a>
 ### Nested Schema for `processor.pipeline.filter`
