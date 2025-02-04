@@ -23,7 +23,7 @@ var (
 )
 
 func simpleSignalResourceConfig(name string) string {
-	return resourceConfig(signalResourceName, name, "security_signals", []string{"misconfiguration"}, []string{"critical"}, "simple:query", 0, false, []string{"email@datad0g.com"})
+	return resourceConfig(signalResourceName, name, "security_signals", []string{"attack_path", "misconfiguration"}, []string{"critical"}, "simple:query", 0, false, []string{"email@datad0g.com"})
 }
 
 func updatedSignalResourceConfig(name string) string {
@@ -195,8 +195,9 @@ func checkSimpleSignalNotificationRuleContent(name string) resource.TestCheckFun
 		resource.TestCheckResourceAttr(signalResourcePath, "name", name),
 		resource.TestCheckResourceAttr(signalResourcePath, "enabled", "false"),
 		resource.TestCheckResourceAttr(signalResourcePath, "selectors.trigger_source", "security_signals"),
-		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.#", "1"),
-		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.0", "misconfiguration"),
+		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.#", "2"),
+		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.0", "attack_path"),
+		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.1", "misconfiguration"),
 		resource.TestCheckResourceAttr(signalResourcePath, "selectors.severities.#", "1"),
 		resource.TestCheckResourceAttr(signalResourcePath, "selectors.severities.0", "critical"),
 		resource.TestCheckResourceAttr(signalResourcePath, "selectors.query", "simple:query"),

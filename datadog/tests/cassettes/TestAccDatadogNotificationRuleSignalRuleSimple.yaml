@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 332
+        content_length: 346
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738676195","selectors":{"query":"simple:query","rule_types":["misconfiguration"],"severities":["critical"],"trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0},"type":"notification_rules"}}
+            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738684654","selectors":{"query":"simple:query","rule_types":["attack_path","misconfiguration"],"severities":["critical"],"trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0},"type":"notification_rules"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 492
+        content_length: 506
         uncompressed: false
-        body: '{"data":{"id":"sxe-jlc-krs","type":"notification_rules","attributes":{"created_at":1738676198065,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738676198065,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738676195","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"a6p-kef-gs0","type":"notification_rules","attributes":{"created_at":1738684657588,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657588,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738684654","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 156.396667ms
+        duration: 296.342208ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/sxe-jlc-krs
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/a6p-kef-gs0
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 492
+        content_length: 506
         uncompressed: false
-        body: '{"data":{"id":"sxe-jlc-krs","type":"notification_rules","attributes":{"created_at":1738676198065,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738676198065,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738676195","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"a6p-kef-gs0","type":"notification_rules","attributes":{"created_at":1738684657588,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657588,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738684654","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 305.5185ms
+        duration: 133.647583ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/sxe-jlc-krs
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/a6p-kef-gs0
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 492
+        content_length: 506
         uncompressed: false
-        body: '{"data":{"id":"sxe-jlc-krs","type":"notification_rules","attributes":{"created_at":1738676198065,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738676198065,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738676195","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"a6p-kef-gs0","type":"notification_rules","attributes":{"created_at":1738684657588,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657588,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1738684654","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 130.841333ms
+        duration: 237.549292ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/sxe-jlc-krs
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/a6p-kef-gs0
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -133,7 +133,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 143.147167ms
+        duration: 256.13175ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/sxe-jlc-krs
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/a6p-kef-gs0
         method: GET
       response:
         proto: HTTP/1.1
@@ -160,13 +160,13 @@ interactions:
         trailer: {}
         content_length: 75
         uncompressed: false
-        body: '{"errors":["not_found(Notification rule with id ''sxe-jlc-krs'' not found)"]}'
+        body: '{"errors":["not_found(Notification rule with id ''a6p-kef-gs0'' not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 133.40725ms
+        duration: 146.606333ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -183,7 +183,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/sxe-jlc-krs
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/a6p-kef-gs0
         method: GET
       response:
         proto: HTTP/1.1
@@ -193,10 +193,10 @@ interactions:
         trailer: {}
         content_length: 75
         uncompressed: false
-        body: '{"errors":["not_found(Notification rule with id ''sxe-jlc-krs'' not found)"]}'
+        body: '{"errors":["not_found(Notification rule with id ''a6p-kef-gs0'' not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 333.2285ms
+        duration: 139.304292ms
