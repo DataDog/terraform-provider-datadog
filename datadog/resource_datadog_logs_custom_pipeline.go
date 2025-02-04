@@ -417,6 +417,12 @@ func updateLogsCustomPipelineState(d *schema.ResourceData, pipeline *datadogV1.L
 	if err := d.Set("is_enabled", pipeline.GetIsEnabled()); err != nil {
 		return diag.FromErr(err)
 	}
+	if err := d.Set("tags", pipeline.GetTags()); err != nil {
+		return diag.FromErr(err)
+	}
+	if err := d.Set("description", pipeline.GetDescription()); err != nil {
+		return diag.FromErr(err)
+	}
 	if err := d.Set("filter", buildTerraformFilter(pipeline.Filter)); err != nil {
 		return diag.FromErr(err)
 	}
@@ -757,6 +763,13 @@ func buildDatadogPipeline(d *schema.ResourceData) (*datadogV1.LogsPipeline, erro
 	var ddPipeline datadogV1.LogsPipeline
 	ddPipeline.SetName(d.Get("name").(string))
 	ddPipeline.SetIsEnabled(d.Get("is_enabled").(bool))
+	tagsSet := d.Get("tags").(*schema.Set).List()
+	tags := []string{}
+	for _, tag := range tagsSet {
+		tags = append(tags, tag.(string))
+	}
+	ddPipeline.SetTags(tags)
+	ddPipeline.SetDescription(d.Get("description").(string))
 	if tfFilter := d.Get("filter").([]interface{}); len(tfFilter) > 0 {
 		filter, ok := tfFilter[0].(map[string]interface{})
 		if !ok {
@@ -1205,8 +1218,10 @@ func buildDatadogFilter(tfFilter map[string]interface{}) *datadogV1.LogsFilter {
 
 func getPipelineSchema(isNested bool) map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"name":       {Type: schema.TypeString, Required: true},
-		"is_enabled": {Type: schema.TypeBool, Optional: true},
+		"name":        {Type: schema.TypeString, Required: true},
+		"is_enabled":  {Type: schema.TypeBool, Optional: true},
+		"tags":        {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+		"description": {Type: schema.TypeString, Optional: true},
 		"filter": {
 			Type:     schema.TypeList,
 			Required: true,
