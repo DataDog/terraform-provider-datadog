@@ -411,7 +411,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
 
-	// Enable unstable operations for the Apps API
+	// Enable unstable operations for the App Builder API
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateApp", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteApp", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteApps", true)

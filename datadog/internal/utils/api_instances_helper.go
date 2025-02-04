@@ -682,8 +682,8 @@ func (i *ApiInstances) GetMicrosoftTeamsIntegrationApiV2() *datadogV2.MicrosoftT
 	return i.microsoftTeamsIntegrationApiV2
 }
 
-// GetAppsApiV2 get instance of AppsApi
-func (i *ApiInstances) GetAppsApiV2() *datadogV2.AppBuilderApi {
+// GetAppsApiV2 get instance of AppBuilderApi
+func (i *ApiInstances) GetAppBuilderApiV2() *datadogV2.AppBuilderApi {
 	if i.appBuilderApiV2 == nil {
 		i.appBuilderApiV2 = datadogV2.NewAppBuilderApi(i.HttpClient)
 	}
