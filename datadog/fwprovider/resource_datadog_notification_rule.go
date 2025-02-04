@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -76,20 +77,23 @@ func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
-				Description: "Name of the rule.",
+				Description: "Name of the rule (must be unique).",
 				Required:    true,
 			},
 			"targets": schema.ListAttribute{
-				Description: "List of handle targets.",
+				Description: "List of handle targets for the notifications.",
 				Required:    true,
 				ElementType: types.StringType,
+				Validators: []validator.List{
+					listvalidator.AtLeastOneOf(),
+				},
 			},
 			"time_aggregation": schema.Int64Attribute{
-				Description: "Time aggregation parameter.",
+				Description: "Time period (in seconds) used to aggregate the notification.",
 				Optional:    true,
 			},
 			"version": schema.Int64Attribute{
-				Description: "Rule version.",
+				Description: "Rule version (incremented at each update).",
 				Computed:    true,
 			},
 			"enabled": schema.BoolAttribute{
@@ -123,24 +127,27 @@ func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 		},
 		Blocks: map[string]schema.Block{
 			"selectors": schema.SingleNestedBlock{
-				Description: "Selectors used to filter security issues for which notifications should be generated.",
+				Description: "Selectors used to filter security issues for which notifications are generated.",
 				Attributes: map[string]schema.Attribute{
 					"trigger_source": schema.StringAttribute{
-						Description: "Trigger source.",
+						Description: "The type of security issues on which the rule applies. Rules based on security signals must use the trigger source security_signals, while rules based on vulnerabilities must use security_findings.",
 						Required:    true,
 					},
 					"rule_types": schema.ListAttribute{
-						Description: "Rule types selectors.",
+						Description: "Security rule types used to filter signals and vulnerabilities generating notifications.",
 						Required:    true,
 						ElementType: types.StringType,
+						Validators: []validator.List{
+							listvalidator.AtLeastOneOf(),
+						},
 					},
 					"severities": schema.ListAttribute{
-						Description: "Severities selectors.",
+						Description: "The security rules severities to consider.",
 						Optional:    true,
 						ElementType: types.StringType,
 					},
 					"query": schema.StringAttribute{
-						Description: "Query selector.",
+						Description: "The query is composed of one or several key:value pairs, which can be used to filter security issues on tags and attributes.",
 						Optional:    true,
 					},
 				},
