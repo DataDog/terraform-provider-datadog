@@ -24,7 +24,7 @@ func NewDatadogAppDataSource() datasource.DataSource {
 
 func (d *appDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
-	d.Api = providerData.DatadogApiInstances.GetAppsApiV2()
+	d.Api = providerData.DatadogApiInstances.GetAppBuilderApiV2()
 	d.Auth = providerData.Auth
 }
 

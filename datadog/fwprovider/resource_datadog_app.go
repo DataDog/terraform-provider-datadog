@@ -39,7 +39,7 @@ func NewAppResource() resource.Resource {
 
 func (r *appResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.GetAppsApiV2()
+	r.Api = providerData.DatadogApiInstances.GetAppBuilderApiV2()
 	r.Auth = providerData.Auth
 }
 

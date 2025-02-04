@@ -67,3 +67,4 @@ datadog/**/*datadog_powerpack*                   @DataDog/web-frameworks @DataDo
 datadog/**/*datadog_role_users*                  @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_rum*                         @DataDog/web-frameworks @DataDog/api-reliability @DataDog/rum-backend
 datadog/**/*datadog_security*                    @DataDog/web-frameworks @DataDog/api-reliability @DataDog/k9-cloud-security-platform
+datadog/**/*datadog_app*                         @DataDog/web-frameworks @DataDog/api-reliability @DataDog/app-builder-backend
