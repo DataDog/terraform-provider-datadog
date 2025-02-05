@@ -63,6 +63,21 @@ func dataSourceDatadogLogsPipelines() *schema.Resource {
 								Type:        schema.TypeBool,
 								Computed:    true,
 							},
+							"tags": {
+								Description: "Tags of the pipeline",
+								Type:        schema.TypeSet,
+								Computed:    true,
+								Optional:    true,
+								Elem: &schema.Schema{
+									Type: schema.TypeString,
+								},
+							},
+							"description": {
+								Description: "Description of the pipeline",
+								Type:        schema.TypeString,
+								Computed:    true,
+								Optional:    true,
+							},
 							"is_read_only": {
 								Description: "Whether or not the pipeline can be edited.",
 								Type:        schema.TypeBool,
@@ -119,6 +134,8 @@ func dataSourceDatadogLogsPipelinesRead(ctx context.Context, d *schema.ResourceD
 				"is_enabled":   pipeline.GetIsEnabled(),
 				"is_read_only": pipeline.GetIsReadOnly(),
 				"type":         pipeline.GetType(),
+				"tags":         pipeline.GetTags(),
+				"description":  pipeline.GetDescription(),
 			})
 		}
 	}
