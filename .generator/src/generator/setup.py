@@ -21,7 +21,7 @@ def load_environment(version: str) -> Environment:
     env.filters["simple_type"] = formatter.simple_type
     env.filters["snake_case"] = formatter.snake_case
     env.filters["untitle_case"] = formatter.untitle_case
-    env.filters["upperfirst"] = utils.upperfirst
+    env.filters["capitalize"] = utils.capitalize
     env.filters["variable_name"] = formatter.variable_name
     env.filters["is_primitive"] = utils.is_primitive
     env.filters["is_json_api"] = openapi.is_json_api
@@ -41,7 +41,7 @@ def load_environment(version: str) -> Environment:
     env.globals["UPDATE_OPERATION"] = utils.UPDATE_OPERATION
     env.globals["DELETE_OPERATION"] = utils.DELETE_OPERATION
 
-    env.globals["version"] = utils.upperfirst(version)
+    env.globals["version"] = utils.capitalize(version)
 
     return env
 
