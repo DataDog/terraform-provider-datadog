@@ -324,8 +324,6 @@ func isAPPKeySet() bool {
 }
 
 func isTestOrg() bool {
-	return true // TODO: remove after done testing
-
 	if isTestOrgC != nil {
 		return *isTestOrgC
 	}
