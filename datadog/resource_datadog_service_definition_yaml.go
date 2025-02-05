@@ -128,7 +128,7 @@ func compareNullableStringArg(left map[string]interface{}, right map[string]inte
 		lv, lok := valueLVal.(string)
 		rv, rok := valueRVal.(string)
 		if lok && rok {
-			v := lv == rv
+			v := lv < rv
 			return &v
 		}
 	}
