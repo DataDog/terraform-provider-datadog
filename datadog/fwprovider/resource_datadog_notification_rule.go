@@ -70,18 +70,18 @@ func (r *NotificationRuleResource) Metadata(_ context.Context, _ resource.Metada
 
 func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Provides a Datadog Security Monitoring Notification Rule API resource. It can be used to create and manage Datadog security notification rules.",
+		Description: "Provides a Datadog Security Monitoring Notification Rule API resource for creating and managing Datadog security notification rules.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "The ID of the notification rule.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
-				Description: "Name of the rule (must be unique).",
+				Description: "The name of the rule (must be unique).",
 				Required:    true,
 			},
 			"targets": schema.ListAttribute{
-				Description: "List of handle targets for the notifications.",
+				Description: "The list of handle targets for the notifications.",
 				Required:    true,
 				ElementType: types.StringType,
 				Validators: []validator.List{
@@ -89,52 +89,52 @@ func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 				},
 			},
 			"time_aggregation": schema.Int64Attribute{
-				Description: "Time period (in seconds) used to aggregate the notification.",
+				Description: "Specifies the time period, in seconds, used to aggregate the notification.",
 				Optional:    true,
 			},
 			"version": schema.Int64Attribute{
-				Description: "Rule version (incremented at each update).",
+				Description: "The rule version (incremented at each update).",
 				Computed:    true,
 			},
 			"enabled": schema.BoolAttribute{
-				Description: "Whether the rule is enabled.",
+				Description: "Indicates whether the rule is enabled.",
 				Optional:    true,
 			},
 			"created_at": schema.Int64Attribute{
-				Description: "When this rule was created.",
+				Description: "Indicates when this rule was created.",
 				Computed:    true,
 			},
 			"modified_at": schema.Int64Attribute{
-				Description: "When this rule was last modified.",
+				Description: "Indicates when this rule was last modified.",
 				Computed:    true,
 			},
 			"created_by_name": schema.StringAttribute{
-				Description: "Name of the rule creator.",
+				Description: "The name of the rule creator.",
 				Computed:    true,
 			},
 			"modified_by_name": schema.StringAttribute{
-				Description: "Name of the rule last modifier.",
+				Description: "The name of the rule last modifier.",
 				Computed:    true,
 			},
 			"created_by_handle": schema.StringAttribute{
-				Description: "Handle of the rule creator.",
+				Description: "The handle of the rule creator.",
 				Computed:    true,
 			},
 			"modified_by_handle": schema.StringAttribute{
-				Description: "Handle of the rule last modifier.",
+				Description: "The handle of the rule last modifier.",
 				Computed:    true,
 			},
 		},
 		Blocks: map[string]schema.Block{
 			"selectors": schema.SingleNestedBlock{
-				Description: "Selectors used to filter security issues for which notifications are generated.",
+				Description: "Defines selectors to filter security issues that generate notifications.",
 				Attributes: map[string]schema.Attribute{
 					"trigger_source": schema.StringAttribute{
-						Description: "The type of security issues on which the rule applies. Rules based on security signals must use the trigger source security_signals, while rules based on vulnerabilities must use security_findings.",
+						Description: "The type of security issues the rule applies to. Use `security_signals` for rules based on security signals and `security_findings` for those based on vulnerabilities.",
 						Required:    true,
 					},
 					"rule_types": schema.ListAttribute{
-						Description: "Security rule types used to filter signals and vulnerabilities generating notifications.",
+						Description: "Specifies security rule types for filtering signals and vulnerabilities that generate notifications.",
 						Required:    true,
 						ElementType: types.StringType,
 						Validators: []validator.List{
@@ -147,7 +147,7 @@ func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 						ElementType: types.StringType,
 					},
 					"query": schema.StringAttribute{
-						Description: "The query is composed of one or several key:value pairs, which can be used to filter security issues on tags and attributes.",
+						Description: "Comprises one or several key:value pairs for filtering security issues based on tags and attributes.",
 						Optional:    true,
 					},
 				},

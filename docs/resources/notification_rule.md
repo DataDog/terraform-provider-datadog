@@ -3,12 +3,12 @@
 page_title: "datadog_notification_rule Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Security Monitoring Notification Rule API resource. It can be used to create and manage Datadog security notification rules.
+  Provides a Datadog Security Monitoring Notification Rule API resource for creating and managing Datadog security notification rules.
 ---
 
 # datadog_notification_rule (Resource)
 
-Provides a Datadog Security Monitoring Notification Rule API resource. It can be used to create and manage Datadog security notification rules.
+Provides a Datadog Security Monitoring Notification Rule API resource for creating and managing Datadog security notification rules.
 
 
 
@@ -17,35 +17,35 @@ Provides a Datadog Security Monitoring Notification Rule API resource. It can be
 
 ### Required
 
-- `name` (String) Name of the rule (must be unique).
-- `targets` (List of String) List of handle targets for the notifications.
+- `name` (String) The name of the rule (must be unique).
+- `targets` (List of String) The list of handle targets for the notifications.
 
 ### Optional
 
-- `enabled` (Boolean) Whether the rule is enabled.
-- `selectors` (Block, Optional) Selectors used to filter security issues for which notifications are generated. (see [below for nested schema](#nestedblock--selectors))
-- `time_aggregation` (Number) Time period (in seconds) used to aggregate the notification.
+- `enabled` (Boolean) Indicates whether the rule is enabled.
+- `selectors` (Block, Optional) Defines selectors to filter security issues that generate notifications. (see [below for nested schema](#nestedblock--selectors))
+- `time_aggregation` (Number) Specifies the time period, in seconds, used to aggregate the notification.
 
 ### Read-Only
 
-- `created_at` (Number) When this rule was created.
-- `created_by_handle` (String) Handle of the rule creator.
-- `created_by_name` (String) Name of the rule creator.
+- `created_at` (Number) Indicates when this rule was created.
+- `created_by_handle` (String) The handle of the rule creator.
+- `created_by_name` (String) The name of the rule creator.
 - `id` (String) The ID of the notification rule.
-- `modified_at` (Number) When this rule was last modified.
-- `modified_by_handle` (String) Handle of the rule last modifier.
-- `modified_by_name` (String) Name of the rule last modifier.
-- `version` (Number) Rule version (incremented at each update).
+- `modified_at` (Number) Indicates when this rule was last modified.
+- `modified_by_handle` (String) The handle of the rule last modifier.
+- `modified_by_name` (String) The name of the rule last modifier.
+- `version` (Number) The rule version (incremented at each update).
 
 <a id="nestedblock--selectors"></a>
 ### Nested Schema for `selectors`
 
 Required:
 
-- `rule_types` (List of String) Security rule types used to filter signals and vulnerabilities generating notifications.
-- `trigger_source` (String) The type of security issues on which the rule applies. Rules based on security signals must use the trigger source security_signals, while rules based on vulnerabilities must use security_findings.
+- `rule_types` (List of String) Specifies security rule types for filtering signals and vulnerabilities that generate notifications.
+- `trigger_source` (String) The type of security issues the rule applies to. Use `security_signals` for rules based on security signals and `security_findings` for those based on vulnerabilities.
 
 Optional:
 
-- `query` (String) The query is composed of one or several key:value pairs, which can be used to filter security issues on tags and attributes.
+- `query` (String) Comprises one or several key:value pairs for filtering security issues based on tags and attributes.
 - `severities` (List of String) The security rules severities to consider.
