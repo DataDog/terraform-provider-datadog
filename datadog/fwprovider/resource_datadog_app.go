@@ -8,6 +8,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes" // v0.1.0, else breaking
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -29,8 +30,8 @@ type appResource struct {
 
 // try single property JSON input -> validation will be handled on the API side
 type appResourceModel struct {
-	ID      types.String `tfsdk:"id"`
-	AppJson types.String `tfsdk:"app_json"`
+	ID      types.String         `tfsdk:"id"`
+	AppJson jsontypes.Normalized `tfsdk:"app_json"`
 }
 
 func NewAppResource() resource.Resource {
@@ -58,6 +59,7 @@ func (r *appResource) Schema(_ context.Context, _ resource.SchemaRequest, respon
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
+				CustomType: jsontypes.NormalizedType{},
 			},
 		},
 	}
@@ -209,12 +211,12 @@ func apiResponseToAppModel(resp datadogV2.GetAppResponse) (*appResourceModel, er
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	bytes, err := json.Marshal(attributes)
+	marshalledBytes, err := json.Marshal(attributes)
 	if err != nil {
 		err = fmt.Errorf("error marshaling attributes: %s", err)
 		return nil, err
 	}
-	appModel.AppJson = types.StringValue(string(bytes))
+	appModel.AppJson = jsontypes.NewNormalizedValue(string(marshalledBytes))
 
 	return appModel, nil
 }

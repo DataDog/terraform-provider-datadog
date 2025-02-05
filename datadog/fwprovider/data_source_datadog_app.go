@@ -5,6 +5,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -46,6 +47,7 @@ func (d *appDataSource) Schema(_ context.Context, request datasource.SchemaReque
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
+				CustomType: jsontypes.NormalizedType{},
 			},
 		},
 	}
