@@ -2,6 +2,8 @@ package test
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"regexp"
@@ -73,18 +75,6 @@ func TestAccDatadogAppResource_FromFile_Complex(t *testing.T) {
 	appName := uniqueEntityName(ctx, t)
 	resourceName := "datadog_app.test_app_from_file"
 
-	// buf := &bytes.Buffer{}
-	// if err := json.Compact(buf, []byte(testComplexAppJSON(appName))); err != nil {
-	// 	panic(fmt.Errorf("Error compacting json: %s", err))
-	// }
-	// appJSONString := buf.String()
-
-	// // marshal json to byte slice
-	// appJSON, err := json.MarshalIndent(testComplexAppJSON(appName), "", "  ")
-	// if err != nil {
-	// 	panic(fmt.Errorf("Error marshalling json: %s", err))
-	// }
-
 	// create temporary file to hold large app json & avoid ${} interpolation by TF
 	file, err := os.CreateTemp("", "test_app_json.*.json")
 	if err != nil {
@@ -94,10 +84,8 @@ func TestAccDatadogAppResource_FromFile_Complex(t *testing.T) {
 	// delete temp file after test
 	defer os.Remove(file.Name())
 
-	// write json to file
-	// _, err = file.Write(appJSON)
+	// write app json to file
 	_, err = file.WriteString(testComplexAppJSON(appName))
-	// _, err = file.WriteString(appJSONString)
 	if err != nil {
 		panic(fmt.Errorf("Error writing to file: %s", err))
 	}
@@ -113,7 +101,7 @@ func TestAccDatadogAppResource_FromFile_Complex(t *testing.T) {
 					testAccCheckDatadogAppExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "app_json"),
-					resource.TestMatchResourceAttr(resourceName, "app_json", regexp.MustCompile(`\"name\":\"`+appName+`\"`)),
+					resource.TestCheckResourceAttr(resourceName, "app_json", testComplexAppJSON(appName)),
 				),
 			},
 		},
@@ -128,18 +116,6 @@ func TestAccDatadogAppResource_FromFile_Complex_Import(t *testing.T) {
 	appName := uniqueEntityName(ctx, t)
 	resourceName := "datadog_app.test_app_from_file"
 
-	// buf := &bytes.Buffer{}
-	// if err := json.Compact(buf, []byte(testComplexAppJSON(appName))); err != nil {
-	// 	panic(fmt.Errorf("Error compacting json: %s", err))
-	// }
-	// appJSONString := buf.String()
-
-	// // marshal json to byte slice
-	// appJSON, err := json.MarshalIndent(testComplexAppJSON(appName), "", "  ")
-	// if err != nil {
-	// 	panic(fmt.Errorf("Error marshalling json: %s", err))
-	// }
-
 	// create temporary file to hold large app json & avoid ${} interpolation by TF
 	file, err := os.CreateTemp("", "test_app_json.*.json")
 	if err != nil {
@@ -149,10 +125,8 @@ func TestAccDatadogAppResource_FromFile_Complex_Import(t *testing.T) {
 	// delete temp file after test
 	defer os.Remove(file.Name())
 
-	// write json to file
-	// _, err = file.Write(appJSON)
+	// write app json to file
 	_, err = file.WriteString(testComplexAppJSON(appName))
-	// _, err = file.WriteString(appJSONString)
 	if err != nil {
 		panic(fmt.Errorf("Error writing to file: %s", err))
 	}
@@ -166,9 +140,27 @@ func TestAccDatadogAppResource_FromFile_Complex_Import(t *testing.T) {
 				Config: testLoadFromFileComplexAppResourceConfig(file.Name()),
 			},
 			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName: resourceName,
+				ImportState:  true,
+				ImportStateCheck: func(s []*terraform.InstanceState) (err error) {
+					// make sure new state has valid json and expected values
+					if len(s) != 1 {
+						return errors.New("Failed to import resource into state")
+					}
+
+					id := s[0].Attributes["id"]
+					if err := uuid.Validate(id); err != nil {
+						return fmt.Errorf("Imported resource id %s is not a uuid: %s", id, err)
+					}
+
+					appJSON := s[0].Attributes["app_json"]
+					var js json.RawMessage
+					if err := json.Unmarshal([]byte(appJSON), &js); err != nil {
+						return fmt.Errorf("Imported resource attribute app_json not valid json: %s", err)
+					}
+
+					return
+				},
 			},
 		},
 	})
