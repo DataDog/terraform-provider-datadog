@@ -36,7 +36,7 @@ func resourceDatadogUser() *schema.Resource {
 					Required:    true,
 				},
 				"name": {
-					Description: "Name for user. Should be set only in case of password authentication as it is overriden from Google or SAML authentication.",
+					Description: "User's name. Should be set only for password authentication, as it is overridden by Google or SAML authentication.",
 					Type:        schema.TypeString,
 					Optional:    true,
 					Computed:    true,

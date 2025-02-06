@@ -36,7 +36,7 @@ resource "datadog_user" "foo" {
 ### Optional
 
 - `disabled` (Boolean) Whether the user is disabled. Defaults to `false`.
-- `name` (String) Name for user. Should be set only in case of password authentication as it is overriden from Google or SAML authentication.
+- `name` (String) User's name. Should be set only for password authentication, as it is overridden by Google or SAML authentication.
 - `roles` (Set of String) A list of role IDs to assign to the user.
 - `send_user_invitation` (Boolean) Whether an invitation email should be sent when the user is created. Defaults to `true`.
 
