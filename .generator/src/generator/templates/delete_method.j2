@@ -16,7 +16,7 @@ func (r *{{ name|camel_case|untitle_case }}Resource) Delete(ctx context.Context,
     {{ name|variable_name }} := state.{{ name|camel_case }}.Value{{ get_terraform_schema_type(paramSchema) }}()
 	{%- else %}
 	{%- set paramType = get_type_for_parameter(param) %}
-	{{ name|variable_name }} := datadog{{ version|upperfirst }}.New{{ paramType }}WithDefaults()
+	{{ name|variable_name }} := datadog{{ version|capitalize }}.New{{ paramType }}WithDefaults()
     {%- endif %}
     {%- endfor %}
 
