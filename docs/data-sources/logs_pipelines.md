@@ -42,11 +42,13 @@ resource "datadog_logs_pipeline_order" "lpo" {
 
 Read-Only:
 
+- `description` (String)
 - `filter` (List of Object) (see [below for nested schema](#nestedobjatt--logs_pipelines--filter))
 - `id` (String)
 - `is_enabled` (Boolean)
 - `is_read_only` (Boolean)
 - `name` (String)
+- `tags` (Set of String)
 - `type` (String)
 
 <a id="nestedobjatt--logs_pipelines--filter"></a>

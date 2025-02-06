@@ -1,0 +1,64 @@
+{%- set apiName = operations[GET_OPERATION]["schema"]["tags"][0].replace(" ", "") + "Api" %}
+{%- set getOperationId = operations[GET_OPERATION]["schema"]["operationId"] %}
+{%- set updateOperationId = operations[UPDATE_OPERATION]["schema"]["operationId"] %}
+{%- set createOperationId = operations[CREATE_OPERATION]["schema"]["operationId"] %}
+{%- set deleteOperationId = operations[DELETE_OPERATION]["schema"]["operationId"] %}
+{%- set readOperationParams = operations[GET_OPERATION]["schema"]|parameters %}
+{%- set createOperationParams = operations[CREATE_OPERATION]["schema"]|parameters %}
+{%- set updateOperationParams = operations[UPDATE_OPERATION]["schema"]|parameters %}
+{%- set deleteOperationParams = operations[DELETE_OPERATION]["schema"]|parameters %}
+{%- set primaryId = get_terraform_primary_id(operations) %}
+package fwprovider
+
+import (
+	"context"
+
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog{{ version }}"
+    "github.com/hashicorp/terraform-plugin-framework/diag"
+	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+var (
+	_ resource.ResourceWithConfigure   = &{{ name|camel_case|untitle_case }}Resource{}
+	_ resource.ResourceWithImportState = &{{ name|camel_case|untitle_case }}Resource{}
+)
+
+{% include "types.j2" %}
+
+func New{{ name|camel_case }}Resource() resource.Resource {
+	return &{{ name|camel_case|untitle_case }}Resource{}
+}
+
+func (r *{{ name|camel_case|untitle_case }}Resource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+	providerData, _ := request.ProviderData.(*FrameworkProvider)
+	r.Api = providerData.DatadogApiInstances.Get{{ apiName }}{{ version }}()
+	r.Auth = providerData.Auth
+}
+
+func (r *{{ name|camel_case|untitle_case }}Resource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "{{ name|snake_case }}"
+}
+
+{% include "schema.j2" %}
+
+func (r *{{ name|camel_case|untitle_case }}Resource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+}
+
+{% include "read_method.j2" %}
+
+{% include "create_method.j2" %}
+
+{% include "update_method.j2" %}
+
+{% include "delete_method.j2" %}
+
+{% include "update_state_method.j2" %}
+
+{% include "request_builder.j2" %}

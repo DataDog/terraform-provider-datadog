@@ -106,6 +106,7 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 					},
 					"include_percentiles": schema.BoolAttribute{
 						Optional:    true,
+						Computed:    true,
 						Description: "Toggle to include or exclude percentile aggregations for distribution metrics. Only present when the `aggregation_type` is `distribution`.",
 					},
 					"path": schema.StringAttribute{
@@ -319,7 +320,7 @@ func (r *spansMetricResource) buildSpansMetricRequestBody(ctx context.Context, s
 	var compute datadogV2.SpansMetricCompute
 
 	compute.SetAggregationType(datadogV2.SpansMetricComputeAggregationType(state.Compute.AggregationType.ValueString()))
-	if !state.Compute.IncludePercentiles.IsNull() {
+	if !state.Compute.IncludePercentiles.IsUnknown() {
 		compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
 	}
 	if !state.Compute.Path.IsNull() {

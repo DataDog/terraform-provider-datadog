@@ -44,7 +44,7 @@ Email notifications can be sent to specific users by using the same `@username` 
 - `query` (String) The monitor query to notify on. Note this is not the same query you see in the UI and the syntax is different depending on the monitor type, please see the [API Reference](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor) for details. `terraform plan` will validate query contents unless `validate` is set to `false`.
 
 **Note:** APM latency data is now available as Distribution Metrics. Existing monitors have been migrated automatically but all terraformed monitors can still use the existing metrics. We strongly recommend updating monitor definitions to query the new metrics. To learn more, or to see examples of how to update your terraform definitions to utilize the new distribution metrics, see the [detailed doc](https://docs.datadoghq.com/tracing/guide/ddsketch_trace_metrics/).
-- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`.
+- `type` (String) The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created. Valid values are `composite`, `event alert`, `log alert`, `metric alert`, `process alert`, `query alert`, `rum alert`, `service check`, `synthetics alert`, `trace-analytics alert`, `slo alert`, `event-v2 alert`, `audit alert`, `ci-pipelines alert`, `ci-tests alert`, `error-tracking alert`, `database-monitoring alert`, `network-performance alert`, `cost alert`.
 
 ### Optional
 
@@ -156,7 +156,22 @@ Optional:
 
 Optional:
 
+- `cloud_cost_query` (Block List, Max: 5) The Cloud Cost query using formulas and functions. (see [below for nested schema](#nestedblock--variables--cloud_cost_query))
 - `event_query` (Block List) A timeseries formula and functions events query. (see [below for nested schema](#nestedblock--variables--event_query))
+
+<a id="nestedblock--variables--cloud_cost_query"></a>
+### Nested Schema for `variables.cloud_cost_query`
+
+Required:
+
+- `data_source` (String) The data source for cloud cost queries. Valid values are `metrics`, `cloud_cost`, `datadog_usage`.
+- `name` (String) The name of the query for use in formulas.
+- `query` (String) The cloud cost query definition.
+
+Optional:
+
+- `aggregator` (String) The aggregation methods available for cloud cost queries. Valid values are `avg`, `sum`, `max`, `min`, `last`, `area`, `l2norm`, `percentile`, `stddev`.
+
 
 <a id="nestedblock--variables--event_query"></a>
 ### Nested Schema for `variables.event_query`
