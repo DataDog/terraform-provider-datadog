@@ -1,0 +1,671 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 340
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"query":"simple:query","rule_types":["attack_path","misconfiguration"],"severities":["critical"],"trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0},"type":"notification_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 500
+        uncompressed: false
+        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684656958,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 497.954959ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 337
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"query":"simple:query","rule_types":["misconfiguration"],"severities":["critical"],"trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600},"type":"notification_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 497
+        uncompressed: false
+        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657141,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 157.114667ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 500
+        uncompressed: false
+        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684656958,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 187.492ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 497
+        uncompressed: false
+        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657141,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 297.608959ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 500
+        uncompressed: false
+        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684656958,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 142.103167ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 497
+        uncompressed: false
+        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657141,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 239.723959ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 500
+        uncompressed: false
+        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684656958,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 147.792291ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 497
+        uncompressed: false
+        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657141,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 258.37425ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 369
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"query":"updated:query","rule_types":["misconfiguration","attack_path"],"severities":[],"trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":1},"id":"j1q-fqv-73y","type":"notification_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 498
+        uncompressed: false
+        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659650,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 139.419916ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 377
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"query":"updated:query","rule_types":["misconfiguration","attack_path"],"severities":[],"trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":1},"id":"tpg-yw2-fjo","type":"notification_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 506
+        uncompressed: false
+        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659784,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 135.006542ms
+    - id: 10
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 498
+        uncompressed: false
+        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659650,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.616333ms
+    - id: 11
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 506
+        uncompressed: false
+        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659784,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 127.839791ms
+    - id: 12
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 498
+        uncompressed: false
+        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659650,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 128.601584ms
+    - id: 13
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 506
+        uncompressed: false
+        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659784,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 138.40575ms
+    - id: 14
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 149.704333ms
+    - id: 15
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 144.743334ms
+    - id: 16
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 75
+        uncompressed: false
+        body: '{"errors":["not_found(Notification rule with id ''j1q-fqv-73y'' not found)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 151.381042ms
+    - id: 17
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/j1q-fqv-73y
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 75
+        uncompressed: false
+        body: '{"errors":["not_found(Notification rule with id ''j1q-fqv-73y'' not found)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 248.563833ms
+    - id: 18
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/tpg-yw2-fjo
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 75
+        uncompressed: false
+        body: '{"errors":["not_found(Notification rule with id ''tpg-yw2-fjo'' not found)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 146.365125ms
+    - id: 19
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 75
+        uncompressed: false
+        body: '{"errors":["not_found(Notification rule with id ''tpg-yw2-fjo'' not found)"]}'
+        headers:
+            Content-Type:
+                - application/json
+        status: 404 Not Found
+        code: 404
+        duration: 135.166125ms
