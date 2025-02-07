@@ -52,27 +52,25 @@ func (r *RestrictionPolicyResource) Metadata(_ context.Context, request resource
 
 func getSupportedResourcesInMarkdown() string {
 	return `
-		The supported resources are described [here](https://docs.datadoghq.com/account_management/rbac/granular_access)
-		
-		[!WARNING]
-		The support of Dashboard and Monitors are currently in private beta. Reach out to your Datadog contact or support to enable this.
-	
-        The resource type used in resource_id is one of the following: 
-		| Resource Name | Resource Type |
-		|---------------|---------------|
-        | Case Management Project | case-management-project |
-        | Dashboard     | dashboard     |
-		| Monitor       | monitor       |
-		| Notebook      | notebook      |
-		| Powerpack     | powerpack     |
-        | Security Rule | security-rule |
-        | Security Suppression | suppression-rule |
-        | Service Level Objective | slo |
-		| Synthetics Test | synthetics-test |
-		| Synthetics Global Variable          | synthetics-global-variable     |
-        | Synthetics Private Location         | synthetics-private-location     |
+The supported resources are described [here](https://docs.datadoghq.com/account_management/rbac/granular_access)
 
+> [!WARNING]
+> The support of Dashboard and Monitors are currently in private beta. Reach out to your Datadog contact or support to enable this.
 
+The resource type used in resource_id is one of the following: 
+| Resource Name | Resource Type |
+|---------------|---------------|
+| Case Management Project | case-management-project |
+| Dashboard     | dashboard     |
+| Monitor       | monitor       |
+| Notebook      | notebook      |
+| Powerpack     | powerpack     |
+| Security Rule | security-rule |
+| Security Suppression | suppression-rule |
+| Service Level Objective | slo |
+| Synthetics Test | synthetics-test |
+| Synthetics Global Variable          | synthetics-global-variable     |
+| Synthetics Private Location         | synthetics-private-location     |
 `
 }
 
