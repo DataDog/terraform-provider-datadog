@@ -2,6 +2,10 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -11,52 +15,72 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func NewMonitorResource() resource.Resource {
-	return &monitorResource{}
-}
+var (
+	_ resource.ResourceWithConfigure   = &monitorResource{}
+	_ resource.ResourceWithImportState = &monitorResource{}
+	_ resource.ResourceWithModifyPlan  = &monitorResource{}
+)
 
 type monitorResourceModel struct {
-	ID                     types.String `tfsdk:"id"`
-	Name                   types.String `tfsdk:"name"`
-	Message                types.String `tfsdk:"message"`
-	EscalationMessage      types.String `tfsdk:"escalation_message"`
-	Type                   types.String `tfsdk:"type"`
-	Query                  types.String `tfsdk:"query"`
-	Priority               types.Int64  `tfsdk:"priority"`
-	NotifyNoData           types.Bool   `tfsdk:"notify_no_data"`
-	OnMissingData          types.String `tfsdk:"on_missing_data"`
-	GroupRetentionDuration types.String `tfsdk:"group_retention_duration"`
-	NewGroupDelay          types.Int64  `tfsdk:"new_group_delay"`
-	NewHostDelay           types.Int64  `tfsdk:"new_host_delay"`
-	EvaluationDelay        types.Int64  `tfsdk:"evaluation_delay"`
-	NoDataTimeframe        types.Int64  `tfsdk:"no_data_timeframe"`
-	RenotifyInterval       types.Int64  `tfsdk:"renotify_interval"`
-	RenotifyOccurrences    types.Int64  `tfsdk:"renotify_occurrences"`
-	RenotifyStatuses       types.Set    `tfsdk:"renotify_statuses"`
-	NotifyAudit            types.Bool   `tfsdk:"notify_audit"`
-	TimeoutH               types.Int64  `tfsdk:"timeout_h"`
-	RequireFullWindow      types.Bool   `tfsdk:"require_full_window"`
-	Locked                 types.Bool   `tfsdk:"locked"`
-	RestrictedRoles        types.Set    `tfsdk:"restricted_roles"`
-	IncludeTags            types.Bool   `tfsdk:"include_tags"`
-	Tags                   types.Set    `tfsdk:"tags"`
-	GroupbySimpleMonitor   types.Bool   `tfsdk:"groupby_simple_monitor"`
-	NotifyBy               types.Set    `tfsdk:"notify_by"`
-	EnableLogsSample       types.Bool   `tfsdk:"enable_logs_sample"`
-	EnableSamples          types.Bool   `tfsdk:"enable_samples"`
-	ForceDelete            types.Bool   `tfsdk:"force_delete"`
-	Validate               types.Bool   `tfsdk:"validate"`
-	NotificationPresetName types.String `tfsdk:"notification_preset_name"`
+	ID                      types.String              `tfsdk:"id"`
+	Name                    types.String              `tfsdk:"name"`
+	Message                 types.String              `tfsdk:"message"`
+	EscalationMessage       types.String              `tfsdk:"escalation_message"`
+	Type                    types.String              `tfsdk:"type"`
+	Query                   types.String              `tfsdk:"query"`
+	Priority                types.Int64               `tfsdk:"priority"`
+	NotifyNoData            types.Bool                `tfsdk:"notify_no_data"`
+	OnMissingData           types.String              `tfsdk:"on_missing_data"`
+	GroupRetentionDuration  types.String              `tfsdk:"group_retention_duration"`
+	NewGroupDelay           types.Int64               `tfsdk:"new_group_delay"`
+	NewHostDelay            types.Int64               `tfsdk:"new_host_delay"`
+	EvaluationDelay         types.Int64               `tfsdk:"evaluation_delay"`
+	NoDataTimeframe         types.Int64               `tfsdk:"no_data_timeframe"`
+	RenotifyInterval        types.Int64               `tfsdk:"renotify_interval"`
+	RenotifyOccurrences     types.Int64               `tfsdk:"renotify_occurrences"`
+	RenotifyStatuses        types.Set                 `tfsdk:"renotify_statuses"`
+	NotifyAudit             types.Bool                `tfsdk:"notify_audit"`
+	TimeoutH                types.Int64               `tfsdk:"timeout_h"`
+	RequireFullWindow       types.Bool                `tfsdk:"require_full_window"`
+	Locked                  types.Bool                `tfsdk:"locked"`
+	RestrictedRoles         types.Set                 `tfsdk:"restricted_roles"`
+	IncludeTags             types.Bool                `tfsdk:"include_tags"`
+	Tags                    types.Set                 `tfsdk:"tags"`
+	GroupbySimpleMonitor    types.Bool                `tfsdk:"groupby_simple_monitor"`
+	NotifyBy                types.Set                 `tfsdk:"notify_by"`
+	EnableLogsSample        types.Bool                `tfsdk:"enable_logs_sample"`
+	EnableSamples           types.Bool                `tfsdk:"enable_samples"`
+	ForceDelete             types.Bool                `tfsdk:"force_delete"`
+	Validate                types.Bool                `tfsdk:"validate"`
+	NotificationPresetName  types.String              `tfsdk:"notification_preset_name"`
+	SchedulingOptions       *MonitorSchedulingOptions `tfsdk:"scheduling_options"`
+	MonitorThresholds       *MonitorThresholds        `tfsdk:"monitor_thresholds"`
+	MonitorThresholdWindows *MonitorThresholdWindows  `tfsdk:"monitor_threshold_windows"`
+}
+
+type MonitorSchedulingOptions struct {
+}
+
+type MonitorThresholds struct {
+}
+
+type MonitorThresholdWindows struct {
 }
 
 type monitorResource struct {
 	Api  *datadogV1.MonitorsApi
 	Auth context.Context
+}
+
+func NewMonitorResource() resource.Resource {
+	return &monitorResource{}
 }
 
 func (r *monitorResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
@@ -103,7 +127,9 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"type": schema.StringAttribute{
 				Description: "The type of the monitor. The mapping from these types to the types found in the Datadog Web UI can be found in the Datadog API [documentation page](https://docs.datadoghq.com/api/v1/monitors/#create-a-monitor). Note: The monitor type cannot be changed after a monitor is created.",
 				Required:    true,
-				// ForceNew:         true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 				// ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewMonitorTypeFromValue),
 				// // Datadog API quirk, see https://github.com/hashicorp/terraform/issues/13784
 				// DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
@@ -123,7 +149,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"notify_no_data": schema.BoolAttribute{
 				Description: "A boolean indicating whether this monitor will notify when data stops reporting.",
 				Optional:    true,
-				Default:     booldefault.StaticBool(false),
+				// Default:     booldefault.StaticBool(false), // TODO change from sdkv2, this is just reflecing the API, should be able to remove this
 				// ConflictsWith: []string{"on_missing_data"},
 			},
 			"on_missing_data": schema.StringAttribute{
@@ -149,19 +175,20 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"new_host_delay": schema.Int64Attribute{
 				// Removing the default requires removing the default in the API as well (possibly only for
 				// terraform user agents)
-				Description: "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host.",
-				Optional:    true,
-				Default:     int64default.StaticInt64(300),
-				// Deprecated:  "Use `new_group_delay` except when setting `new_host_delay` to zero.",
+				Description:        "**Deprecated**. See `new_group_delay`. Time (in seconds) to allow a host to boot and applications to fully start before starting the evaluation of monitor results. Should be a non-negative integer. This value is ignored for simple monitors and monitors not grouped by host. The only case when this should be used is to override the default and set `new_host_delay` to zero for monitors grouped by host.",
+				Optional:           true,
+				Computed:           true, // TODO change from sdk v2 required to use default
+				Default:            int64default.StaticInt64(300),
+				DeprecationMessage: "Use `new_group_delay` except when setting `new_host_delay` to zero.",
 			},
 			"evaluation_delay": schema.Int64Attribute{
 				Description: "(Only applies to metric alert) Time (in seconds) to delay evaluation, as a non-negative integer.\n\nFor example, if the value is set to `300` (5min), the `timeframe` is set to `last_5m` and the time is 7:00, the monitor will evaluate data from 6:50 to 6:55. This is useful for AWS CloudWatch and other backfilled metrics to ensure the monitor will always have data during evaluation.",
-				Computed:    true,
 				Optional:    true,
 			},
 			"no_data_timeframe": schema.Int64Attribute{
 				Description: "The number of minutes before a monitor will notify when data stops reporting.\n\nWe recommend at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.",
 				Optional:    true,
+				Computed:    true, // TODO change from sdk v2 required to use default
 				Default:     int64default.StaticInt64(10),
 				// DiffSuppressFunc: func(k, oldVal, newVal string, d *schema.ResourceData) bool {
 				// 	if !d.Get("notify_no_data").(bool) {
@@ -199,7 +226,8 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"require_full_window": schema.BoolAttribute{
 				Description: "A boolean indicating whether this monitor needs a full window of data before it's evaluated. Datadog strongly recommends you set this to `false` for sparse metrics, otherwise some evaluations may be skipped. If there's a custom_schedule set, `require_full_window` must be false and will be ignored.",
 				Optional:    true,
-				Default:     booldefault.StaticBool(true),
+				Computed:    true,                         // TODO change from sdk v2 required to use default
+				Default:     booldefault.StaticBool(true), // TODO update this so that is true only if its not set for backward compatibility?
 				// DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 				// 	if attr, ok := d.GetOk("scheduling_options"); ok {
 				// 		scheduling_options_list := attr.([]interface{})
@@ -214,9 +242,9 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				// },
 			},
 			"locked": schema.BoolAttribute{
-				Description: "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
-				Optional:    true,
-				// Deprecated:    "Use `restricted_roles`.",
+				Description:        "A boolean indicating whether changes to this monitor should be restricted to the creator or admins. Defaults to `false`.",
+				Optional:           true,
+				DeprecationMessage: "Use `restricted_roles`.",
 				// ConflictsWith: []string{"restricted_roles"},
 				// DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 				// 	// if restricted_roles is defined, ignore locked
@@ -235,6 +263,7 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"include_tags": schema.BoolAttribute{
 				Description: "A boolean indicating whether notifications from this monitor automatically insert its triggering tags into the title.",
 				Optional:    true,
+				Computed:    true, // TODO change from sdk v2 required to use default
 				Default:     booldefault.StaticBool(true),
 			},
 			"tags": schema.SetAttribute{
@@ -242,8 +271,8 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				// we use TypeSet to represent tags, paradoxically to be able to maintain them ordered;
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
-				Optional:    true,
-				Computed:    true,
+				Optional: true,
+				// Computed:    true, // diff from sdkv2
 				ElementType: types.StringType,
 			},
 			"groupby_simple_monitor": schema.BoolAttribute{
@@ -264,7 +293,8 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			},
 			"enable_samples": schema.BoolAttribute{
 				Description: "Whether or not a list of samples which triggered the alert is included. This is only used by CI Test and Pipeline monitors.",
-				Computed:    true,
+				Optional:    true, // diff from sdkv2
+				// Computed:    true,
 			},
 			"force_delete": schema.BoolAttribute{
 				Description: "A boolean indicating whether this monitor can be deleted even if it’s referenced by other resources (e.g. SLO, composite monitor).",
@@ -368,11 +398,12 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 						Blocks: map[string]schema.Block{
 							"recurrence": schema.SingleNestedBlock{
 								Description: "A list of recurrence definitions. Length must be 1.",
-								// Required:    true,
+								// todo Required:    true,
 								Attributes: map[string]schema.Attribute{
 									"rrule": schema.StringAttribute{
 										Description: "Must be a valid `rrule`. See API docs for supported fields",
-										Required:    true,
+										// TODO Required:    true,
+										Optional: true,
 									},
 									"start": schema.StringAttribute{
 										Description: "Time to start recurrence cycle. Similar to DTSTART. Expected format 'YYYY-MM-DDThh:mm:ss'",
@@ -380,7 +411,8 @@ func (r *monitorResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 									},
 									"timezone": schema.StringAttribute{
 										Description: "'tz database' format. Example: `America/New_York` or `UTC`",
-										Required:    true,
+										// TODO Required:    true,
+										Optional: true,
 									},
 								},
 							},
@@ -512,6 +544,81 @@ func (r *monitorResource) ImportState(ctx context.Context, request resource.Impo
 	// resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
+func (r *monitorResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// Check if the resource is being destroyed.
+    if req.Plan.Raw.IsNull() {
+        return
+    }
+
+    var state, config, plan monitorResourceModel
+	var isCreation bool
+
+	if req.State.Raw.IsNull() {
+		isCreation = true
+	} else {
+		resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	}
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+
+	var httpresp *http.Response
+	var err error
+
+	params := datadogV1.NewValidateMonitorOptionalParameters()
+	params.WithQuality("true")
+
+	if !isCreation {
+		m, diags := r.buildMonitorCreateRequestBody(&plan)
+		resp.Diagnostics.Append(diags...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		var id int64
+		stateId := state.ID.ValueString()
+		id, err = strconv.ParseInt(stateId, 10, 64)
+		if err != nil {
+			resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error on monitor id"))
+			return
+		}
+
+		_, httpresp, err = r.Api.ValidateExistingMonitor(r.Auth, id, *m, *params)
+	} else {
+		m, diags := r.buildMonitorCreateRequestBody(&plan)
+		resp.Diagnostics.Append(diags...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		log.Printf("[DEBUG] monitor/validate m=%+v", m)
+		_, httpresp, err = r.Api.ValidateMonitor(r.Auth, *m, *params)
+	}
+	if err != nil {
+		if httpresp != nil && (httpresp.StatusCode == 502 || httpresp.StatusCode == 504) {
+			 resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error validating monitor, retrying"))
+		}
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error validating monitor"))
+		return
+	}
+
+	j := make(map[string]interface{})
+	// err = utils.GetMetadataFromJSON([]byte(stepParamsElement.(string)), &validation)
+	err = json.NewDecoder(httpresp.Body).Decode(&j)
+    if err != nil {
+    	resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error on validation decode"))
+    	return
+    }
+	if meta, ok := j["meta"].(map[string]interface{}); ok {
+		log.Printf("[DEBUG] monitor/validate meta=%+v", meta)
+		if quality_issues, ok := meta["quality_issues"].([]interface{}); ok && len(quality_issues) > 0 {
+			resp.Diagnostics.AddWarning(
+				"Monitor Quality Issue",
+				"Found the following quality issues: " + fmt.Sprintf("%v", quality_issues),
+			)
+		}
+	}
+}
+
 func (r *monitorResource) buildMonitorCreateRequestBody(state *monitorResourceModel) (*datadogV1.Monitor, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
@@ -555,10 +662,6 @@ func (r *monitorResource) updateState(state *monitorResourceModel, m *datadogV1.
 		state.Message = types.StringValue(*message)
 	}
 
-	if escalationMessage, ok := m.Options.GetEscalationMessageOk(); ok && escalationMessage != nil {
-		state.EscalationMessage = types.StringValue(*escalationMessage)
-	}
-
 	if mType, ok := m.GetTypeOk(); ok && mType != nil {
 		state.Type = types.StringValue(string(*mType))
 	}
@@ -571,12 +674,29 @@ func (r *monitorResource) updateState(state *monitorResourceModel, m *datadogV1.
 		state.Priority = types.Int64Value(*priority)
 	}
 
+	if escalationMessage, ok := m.Options.GetEscalationMessageOk(); ok && escalationMessage != nil {
+		state.EscalationMessage = types.StringValue(*escalationMessage)
+	}
+
+	if onMissingData, ok := m.Options.GetOnMissingDataOk(); ok && onMissingData != nil {
+		state.OnMissingData = types.StringValue(string(*onMissingData))
+	}
+
+	if groupRetentionDuration, ok := m.Options.GetGroupRetentionDurationOk(); ok && groupRetentionDuration != nil {
+		state.GroupRetentionDuration = types.StringValue(*groupRetentionDuration)
+	}
+
+	if notificationPresetName, ok := m.Options.GetNotificationPresetNameOk(); ok && notificationPresetName != nil {
+		state.NotificationPresetName = types.StringValue(string(*notificationPresetName))
+	}
+
+	if evaluationDelay, ok := m.Options.GetEvaluationDelayOk(); ok && evaluationDelay != nil {
+		state.EvaluationDelay = types.Int64Value(*evaluationDelay)
+	}
+
 	// NotifyNoData           types.Bool   `tfsdk:"notify_no_data"`
-	// OnMissingData          types.String `tfsdk:"on_missing_data"`
-	// GroupRetentionDuration types.String `tfsdk:"group_retention_duration"`
 	// NewGroupDelay          types.Int64  `tfsdk:"new_group_delay"`
 	// NewHostDelay           types.Int64  `tfsdk:"new_host_delay"`
-	// EvaluationDelay        types.Int64  `tfsdk:"evaluation_delay"`
 	// NoDataTimeframe        types.Int64  `tfsdk:"no_data_timeframe"`
 	// RenotifyInterval       types.Int64  `tfsdk:"renotify_interval"`
 	// RenotifyOccurrences    types.Int64  `tfsdk:"renotify_occurrences"`
@@ -594,7 +714,6 @@ func (r *monitorResource) updateState(state *monitorResourceModel, m *datadogV1.
 	// EnableSamples          types.Bool   `tfsdk:"enable_samples"`
 	// ForceDelete            types.Bool   `tfsdk:"force_delete"`
 	// Validate               types.Bool   `tfsdk:"validate"`
-	// NotificationPresetName types.String `tfsdk:"notification_preset_name"`
 
 	return diags
 }
