@@ -5,8 +5,7 @@ subcategory: ""
 description: |-
   Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies.
   The supported resources are described here https://docs.datadoghq.com/account_management/rbac/granular_access
-  [!WARNING]
-  The support of Dashboard and Monitors are currently in private beta. Reach out to your Datadog contact or support to enable this.
+  ~> The support of Dashboard and Monitors are currently in private beta. Reach out to your Datadog contact or support to enable this.
   The resource type used in resource_id is one of the following:
   | Resource Name | Resource Type |
   |---------------|---------------|
@@ -28,8 +27,7 @@ description: |-
 Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies.
 The supported resources are described [here](https://docs.datadoghq.com/account_management/rbac/granular_access)
 
-> [!WARNING]
-> The support of Dashboard and Monitors are currently in private beta. Reach out to your Datadog contact or support to enable this.
+~> The support of Dashboard and Monitors are currently in private beta. Reach out to your Datadog contact or support to enable this.
 
 The resource type used in resource_id is one of the following: 
 | Resource Name | Resource Type |
