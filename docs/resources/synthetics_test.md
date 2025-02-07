@@ -1066,6 +1066,7 @@ Optional:
 
 - `example` (String) Example of the extracted variable. Defaults to `""`.
 - `name` (String) Name of the extracted variable.
+- `secure` (Boolean) Whether the value of this variable will be obfuscated in test results. Defaults to `false`.
 
 
 
