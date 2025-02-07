@@ -9,6 +9,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
@@ -213,8 +214,8 @@ func checkUpdatedSignalNotificationRuleContent(name string) resource.TestCheckFu
 		resource.TestCheckResourceAttr(signalResourcePath, "enabled", "true"),
 		resource.TestCheckResourceAttr(signalResourcePath, "selectors.trigger_source", "security_signals"),
 		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.#", "2"),
-		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.0", "misconfiguration"),
-		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.1", "attack_path"),
+		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.0", "attack_path"),
+		resource.TestCheckResourceAttr(signalResourcePath, "selectors.rule_types.1", "misconfiguration"),
 		resource.TestCheckResourceAttr(signalResourcePath, "selectors.severities.#", "0"),
 		resource.TestCheckResourceAttr(signalResourcePath, "selectors.query", "updated:query"),
 		resource.TestCheckResourceAttr(signalResourcePath, "targets.#", "1"),
@@ -246,8 +247,8 @@ func checkUpdatedVulnerabilityNotificationRuleContent(name string) resource.Test
 		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "enabled", "true"),
 		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "selectors.trigger_source", "security_findings"),
 		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "selectors.rule_types.#", "2"),
-		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "selectors.rule_types.0", "misconfiguration"),
-		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "selectors.rule_types.1", "attack_path"),
+		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "selectors.rule_types.0", "attack_path"),
+		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "selectors.rule_types.1", "misconfiguration"),
 		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "selectors.severities.#", "0"),
 		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "selectors.query", "updated:query"),
 		resource.TestCheckResourceAttr(vulnerabilityResourcePath, "time_aggregation", "0"),

@@ -2,16 +2,23 @@ package fwprovider
 
 import (
 	"context"
+	"net/http"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -28,25 +35,25 @@ type NotificationRuleResource struct {
 var writeMutex = sync.Mutex{}
 
 type notificationRuleModel struct {
-	ID               types.String   `tfsdk:"id"`
-	Name             types.String   `tfsdk:"name"`
-	Selectors        selectorsModel `tfsdk:"selectors"`
-	Targets          types.List     `tfsdk:"targets"`
-	TimeAggregation  types.Int64    `tfsdk:"time_aggregation"`
-	Version          types.Int64    `tfsdk:"version"`
-	Enabled          types.Bool     `tfsdk:"enabled"`
-	CreatedAt        types.Int64    `tfsdk:"created_at"`
-	ModifiedAt       types.Int64    `tfsdk:"modified_at"`
-	CreatedByName    types.String   `tfsdk:"created_by_name"`
-	CreatedByHandle  types.String   `tfsdk:"created_by_handle"`
-	ModifiedByName   types.String   `tfsdk:"modified_by_name"`
-	ModifiedByHandle types.String   `tfsdk:"modified_by_handle"`
+	ID               types.String    `tfsdk:"id"`
+	Name             types.String    `tfsdk:"name"`
+	Selectors        *selectorsModel `tfsdk:"selectors"`
+	Targets          types.Set       `tfsdk:"targets"`
+	TimeAggregation  types.Int64     `tfsdk:"time_aggregation"`
+	Version          types.Int64     `tfsdk:"version"`
+	Enabled          types.Bool      `tfsdk:"enabled"`
+	CreatedAt        types.Int64     `tfsdk:"created_at"`
+	ModifiedAt       types.Int64     `tfsdk:"modified_at"`
+	CreatedByName    types.String    `tfsdk:"created_by_name"`
+	CreatedByHandle  types.String    `tfsdk:"created_by_handle"`
+	ModifiedByName   types.String    `tfsdk:"modified_by_name"`
+	ModifiedByHandle types.String    `tfsdk:"modified_by_handle"`
 }
 
 type selectorsModel struct {
 	TriggerSource types.String `tfsdk:"trigger_source"`
-	RuleTypes     types.List   `tfsdk:"rule_types"`
-	Severities    types.List   `tfsdk:"severities"`
+	RuleTypes     types.Set    `tfsdk:"rule_types"`
+	Severities    types.Set    `tfsdk:"severities"`
 	Query         types.String `tfsdk:"query"`
 }
 
@@ -80,17 +87,19 @@ func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 				Description: "The name of the rule (must be unique).",
 				Required:    true,
 			},
-			"targets": schema.ListAttribute{
+			"targets": schema.SetAttribute{
 				Description: "The list of handle targets for the notifications.",
 				Required:    true,
 				ElementType: types.StringType,
-				Validators: []validator.List{
-					listvalidator.AtLeastOneOf(),
+				Validators: []validator.Set{
+					setvalidator.AtLeastOneOf(),
 				},
 			},
 			"time_aggregation": schema.Int64Attribute{
 				Description: "Specifies the time period, in seconds, used to aggregate the notification.",
 				Optional:    true,
+				Computed:    true,
+				Default:     int64default.StaticInt64(int64(0)),
 			},
 			"version": schema.Int64Attribute{
 				Description: "The rule version (incremented at each update).",
@@ -99,6 +108,8 @@ func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 			"enabled": schema.BoolAttribute{
 				Description: "Indicates whether the rule is enabled.",
 				Optional:    true,
+				Computed:    true,
+				Default:     booldefault.StaticBool(true),
 			},
 			"created_at": schema.Int64Attribute{
 				Description: "Indicates when this rule was created.",
@@ -133,22 +144,26 @@ func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 						Description: "The type of security issues the rule applies to. Use `security_signals` for rules based on security signals and `security_findings` for those based on vulnerabilities.",
 						Required:    true,
 					},
-					"rule_types": schema.ListAttribute{
+					"rule_types": schema.SetAttribute{
 						Description: "Specifies security rule types for filtering signals and vulnerabilities that generate notifications.",
 						Required:    true,
 						ElementType: types.StringType,
-						Validators: []validator.List{
-							listvalidator.AtLeastOneOf(),
+						Validators: []validator.Set{
+							setvalidator.AtLeastOneOf(),
 						},
 					},
-					"severities": schema.ListAttribute{
+					"severities": schema.SetAttribute{
 						Description: "The security rules severities to consider.",
 						Optional:    true,
+						Computed:    true,
 						ElementType: types.StringType,
+						Default:     setdefault.StaticValue(types.SetValueMust(types.StringType, []attr.Value{})),
 					},
 					"query": schema.StringAttribute{
 						Description: "Comprises one or several key:value pairs for filtering security issues based on tags and attributes.",
 						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
 					},
 				},
 				Validators: []validator.Object{
@@ -232,21 +247,39 @@ func (r *NotificationRuleResource) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
-	triggerSource, err := datadogV2.NewTriggerSourceFromValue(state.Selectors.TriggerSource.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError("Invalid trigger source", err.Error())
-		return
-	}
-
 	var response datadogV2.NotificationRuleResponse
-	if *triggerSource == datadogV2.TRIGGERSOURCE_SECURITY_SIGNALS {
-		response, _, err = r.api.GetSignalNotificationRule(r.auth, state.ID.ValueString())
+
+	// Selectors can be null when terraform import is performed
+	if state.Selectors != nil {
+		triggerSource, err := datadogV2.NewTriggerSourceFromValue((*state.Selectors).TriggerSource.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Invalid trigger source", err.Error())
+			return
+		}
+
+		if *triggerSource == datadogV2.TRIGGERSOURCE_SECURITY_SIGNALS {
+			response, _, err = r.api.GetSignalNotificationRule(r.auth, state.ID.ValueString())
+		} else {
+			response, _, err = r.api.GetVulnerabilityNotificationRule(r.auth, state.ID.ValueString())
+		}
+		if err != nil {
+			resp.Diagnostics.AddError("Error reading notification rule", err.Error())
+			return
+		}
 	} else {
-		response, _, err = r.api.GetVulnerabilityNotificationRule(r.auth, state.ID.ValueString())
-	}
-	if err != nil {
-		resp.Diagnostics.AddError("Error reading notification rule", err.Error())
-		return
+		// This path is reached when terraform import is performed
+		// In this case we don't know the trigger source, so we try all of them
+		var httpResponse *http.Response
+		var err error
+
+		response, httpResponse, err = r.api.GetSignalNotificationRule(r.auth, state.ID.ValueString())
+		if httpResponse != nil && httpResponse.StatusCode == 404 {
+			response, _, err = r.api.GetVulnerabilityNotificationRule(r.auth, state.ID.ValueString())
+		}
+		if err != nil {
+			resp.Diagnostics.AddError("Error reading notification rule", err.Error())
+			return
+		}
 	}
 
 	r.updateStateFromResponse(ctx, &state, &response)
@@ -357,37 +390,47 @@ func (r *NotificationRuleResource) Delete(ctx context.Context, req resource.Dele
 func (r *NotificationRuleResource) updateStateFromResponse(ctx context.Context, state *notificationRuleModel, response *datadogV2.NotificationRuleResponse) {
 	state.ID = types.StringValue(response.Data.Id)
 
-	// Only update the state if the description is not empty, or if it's not null in the plan
-	// If the description is null in the TF config, it is omitted from the API call
-	// The API returns an empty string, which, if put in the state, would result in a mismatch between state and config
 	attributes := response.Data.Attributes
+
+	if state.Name.IsNull() {
+		// Empty state mean that we are in the terraform import flow
+		// Let's initialize the state accordingly
+		emptySet, _ := types.SetValue(types.StringType, []attr.Value{})
+		state.Selectors = &selectorsModel{
+			TriggerSource: types.StringValue(""),
+			RuleTypes:     emptySet,
+			Severities:    emptySet,
+			Query:         types.StringValue(""),
+		}
+	}
+
 	state.Name = types.StringValue(attributes.GetName())
 
 	selectors := attributes.Selectors
 	state.Selectors.TriggerSource = types.StringValue(string(selectors.GetTriggerSource()))
-	if ruleTypes, ok := selectors.GetRuleTypesOk(); ok || !state.Selectors.RuleTypes.IsNull() {
-		state.Selectors.RuleTypes.ElementsAs(ctx, &ruleTypes, false)
+	if ruleTypes, ok := selectors.GetRuleTypesOk(); ok {
+		state.Selectors.RuleTypes, _ = types.SetValueFrom(ctx, types.StringType, ruleTypes)
 	} else {
-		state.Selectors.RuleTypes = types.ListNull(types.StringType)
+		state.Selectors.RuleTypes = types.SetNull(types.StringType)
 	}
-	if severities, ok := selectors.GetSeveritiesOk(); ok || !state.Selectors.Severities.IsNull() {
-		state.Selectors.Severities.ElementsAs(ctx, &severities, false)
+	if severities, ok := selectors.GetSeveritiesOk(); ok {
+		state.Selectors.Severities, _ = types.SetValueFrom(ctx, types.StringType, severities)
 	} else {
-		state.Selectors.Severities = types.ListNull(types.StringType)
+		state.Selectors.Severities, _ = types.SetValue(types.StringType, []attr.Value{})
 	}
-	if query, ok := selectors.GetQueryOk(); ok || !state.Selectors.Query.IsNull() {
+	if query, ok := selectors.GetQueryOk(); ok {
 		state.Selectors.Query = types.StringValue(*query)
 	} else {
-		state.Selectors.Query = types.StringNull()
+		state.Selectors.Query = types.StringValue("")
 	}
 
-	if targets, ok := attributes.GetTargetsOk(); ok || !state.Targets.IsNull() {
-		state.Targets.ElementsAs(ctx, &targets, false)
+	if targets, ok := attributes.GetTargetsOk(); ok {
+		state.Targets, _ = types.SetValueFrom(ctx, types.StringType, targets)
 	}
 	if field, ok := attributes.GetTimeAggregationOk(); ok {
 		state.TimeAggregation = types.Int64Value(*field)
 	} else {
-		state.TimeAggregation = types.Int64Null()
+		state.TimeAggregation = types.Int64Value(int64(0))
 	}
 
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
