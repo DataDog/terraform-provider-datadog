@@ -50,13 +50,41 @@ func (r *RestrictionPolicyResource) Metadata(_ context.Context, request resource
 	response.TypeName = "restriction_policy"
 }
 
+func getSupportedResourcesInMarkdown() string {
+	return `
+		The supported resources are described [here](https://docs.datadoghq.com/account_management/rbac/granular_access)
+		
+		[!WARNING]
+		The support of Dashboard and Monitors are currently in private beta. Reach out to your Datadog contact or support to enable this.
+	
+        The resource type used in resource_id is one of the following: 
+		| Resource Name | Resource Type |
+		|---------------|---------------|
+        | Case Management Project | case-management-project |
+        | Dashboard     | dashboard     |
+		| Monitor       | monitor       |
+		| Notebook      | notebook      |
+		| Powerpack     | powerpack     |
+        | Security Rule | security-rule |
+        | Security Suppression | suppression-rule |
+        | Service Level Objective | slo |
+		| Synthetics Test | synthetics-test |
+		| Synthetics Global Variable          | synthetics-global-variable     |
+        | Synthetics Private Location         | synthetics-private-location     |
+
+
+`
+}
+
 func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+	description := "Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies."
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies.",
+		Description:         description,
+		MarkdownDescription: description + getSupportedResourcesInMarkdown(),
 		Attributes: map[string]schema.Attribute{
 			"resource_id": schema.StringAttribute{
 				Required:    true,
-				Description: "Identifier for the resource, formatted as resource_type:resource_id.\n\nNote: Dashboards support is in private beta. Reach out to your Datadog contact or support to enable this.",
+				Description: "Identifier for the resource, formatted as resource_type:resource_id.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
