@@ -4106,6 +4106,14 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.5.params.0.code", "return 123"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.params.0.variable.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.params.0.variable.0.name", "VAR_FROM_JS"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.params.0.variable.0.example", "super_secret"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.params.0.variable.0.secure", "true"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.6.name", "click step 1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.6.type", "click"),
@@ -4257,6 +4265,8 @@ resource "datadog_synthetics_test" "bar" {
 			code = "return 123"
 			variable {
 				name = "VAR_FROM_JS"
+				example = "super_secret"
+				secure = true
 			}
 		}
 	}
