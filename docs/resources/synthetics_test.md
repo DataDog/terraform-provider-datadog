@@ -1163,7 +1163,7 @@ Optional:
 - `escalation_message` (String)
 - `notification_preset_name` (String) Valid values are `show_all`, `hide_all`, `hide_query`, `hide_handles`.
 - `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
-- `renotify_occurrences` (Number)
+- `renotify_occurrences` (Number) The number of times a monitor re-notifies. It can only be set if renotify_interval is set.
 
 
 <a id="nestedblock--mobile_options_list--retry"></a>
@@ -1341,7 +1341,7 @@ Optional:
 Optional:
 
 - `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
-- `renotify_occurrences` (Number) Specify a limit to the number of renotification messages. (Can't be used if `renotify_interval` is not set)
+- `renotify_occurrences` (Number) The number of times a monitor re-notifies. It can only be set if renotify_interval is set.
 
 
 <a id="nestedblock--options_list--retry"></a>
