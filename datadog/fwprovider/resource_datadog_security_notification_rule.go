@@ -79,10 +79,7 @@ func (r *SecurityNotificationRuleResource) Schema(_ context.Context, _ resource.
 	resp.Schema = schema.Schema{
 		Description: "Provides a Datadog Security Monitoring Notification Rule API resource for creating and managing Datadog security notification rules.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Description: "The ID of the notification rule.",
-				Computed:    true,
-			},
+			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
 				Description: "The name of the rule (must be unique).",
 				Required:    true,

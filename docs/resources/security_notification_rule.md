@@ -55,7 +55,7 @@ resource "datadog_security_notification_rule" "vulnerability_rule" {
 - `created_at` (Number) Indicates when this rule was created.
 - `created_by_handle` (String) The handle of the rule creator.
 - `created_by_name` (String) The name of the rule creator.
-- `id` (String) The ID of the notification rule.
+- `id` (String) The ID of this resource.
 - `modified_at` (Number) Indicates when this rule was last modified.
 - `modified_by_handle` (String) The handle of the rule last modifier.
 - `modified_by_name` (String) The name of the rule last modifier.
