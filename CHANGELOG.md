@@ -1,3 +1,28 @@
+## 3.54.0 (February 6, 2025)
+
+### BUGFIXES
+* [datadog_spans_metric] Mark `include_percentiles` property as computed by @VenelinMartinov in https://github.com/DataDog/terraform-provider-datadog/pull/2707
+* [datadog_service_account] Fix : `roles` attribute is now always updated by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2761
+* [datadog_service_definition_yaml] Fix panic when contact attributes exists but are empty (nil) by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2802
+* [datadog_synthetics_global_variable] Remove drift on `option` argument by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2768
+### IMPROVEMENTS
+* [datadog_logs_archives] Handle encryption field for S3 destinations for Logs Archives by @michelledeng30 in https://github.com/DataDog/terraform-provider-datadog/pull/2740
+### FEATURES
+* [datadog_application_key] Support scoped app key management for service accounts by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/2770
+* [datadog_monitor] Add cost alert monitors by @klara-kr in https://github.com/DataDog/terraform-provider-datadog/pull/2769
+* [datadog_logs_custom_pipeline] Add tags and description to logs pipelines by @joboccara in https://github.com/DataDog/terraform-provider-datadog/pull/2773
+### NOTES
+* Bump datadog-api-client to v2.35.0 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2810
+
+## New Contributors
+* @klara-kr made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2769
+* @joboccara made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2773
+* @michelledeng30 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2740
+* @VenelinMartinov made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2707
+* @ecdatadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2761
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.53.0...v3.54.0
+
 ## 3.53.0 (January 23, 2025)
 
 ### BUGFIXES

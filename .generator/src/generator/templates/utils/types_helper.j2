@@ -1,0 +1,52 @@
+{%- macro primitiveTypeProperty(name, type) %}
+{%- set varName = name|camel_case %}
+{{ varName }} types.{{ type }} `tfsdk:"{{ name }}"`
+{%- endmacro %}
+
+{%- macro nonPrimitiveTypeProperty(name, array=False) %}
+{%- set varName = name|camel_case %}
+{{ varName }} {% if array %}[]{% endif %}*{{ varName|untitle_case }}Model `tfsdk:"{{ name }}"`
+{%- endmacro %}
+
+{%- macro basePropertyTypeBuilder(name, schema) %}
+{%- if schema.get("type") == "array" %}
+{{- basePropertyTypeBuilderHelper(name, schema.get("items")) }}
+{% else %}
+{{- basePropertyTypeBuilderHelper(name, schema) }}
+{%- endif %}
+{%- endmacro %}
+
+{%- macro basePropertyTypeBuilderHelper(name, schema) %}
+{%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
+{%- set varName = name|camel_case %}
+type {{ name|camel_case|untitle_case }}Model struct {
+    {%- for name, schema in primitiveAttr.items() %}
+    {{- primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
+    {%- endfor %}
+
+    {%- for name, schema in primitiveArrAttr.items() %}
+    {{- primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
+    {%- endfor %}
+
+    {%- for name, schema in nonPrimitiveListAttr.items() %}
+    {{- nonPrimitiveTypeProperty(name, array=True) }}
+    {%- endfor %}
+
+    {%- for name, schema in nonPrimitiveObjAttr.items() %}
+    {{- nonPrimitiveTypeProperty(name) }}
+    {%- endfor %}
+}
+
+{%- if nonPrimitiveListAttr %}
+{%- for name, schema in nonPrimitiveListAttr.items() %}
+{{- basePropertyTypeBuilder(name, schema) }}
+{%- endfor %}
+{%- endif %}
+
+{%- if nonPrimitiveObjAttr %}
+{%- for name, schema in nonPrimitiveObjAttr.items() %}
+{{- basePropertyTypeBuilder(name, schema) }}
+{%- endfor %}
+{%- endif %}
+
+{%- endmacro %}
