@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"query":"simple:query","rule_types":["attack_path","misconfiguration"],"severities":["critical"],"trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0},"type":"notification_rules"}}
+            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805signal","selectors":{"query":"simple:query","rule_types":["attack_path","misconfiguration"],"severities":["critical"],"trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0},"type":"notification_rules"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 500
         uncompressed: false
-        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684656958,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"xki-c8s-2sq","type":"notification_rules","attributes":{"created_at":1739193807978,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193807978,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 497.954959ms
+        duration: 144.852792ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -49,7 +49,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"query":"simple:query","rule_types":["misconfiguration"],"severities":["critical"],"trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600},"type":"notification_rules"}}
+            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805vulnerability","selectors":{"query":"simple:query","rule_types":["misconfiguration"],"severities":["critical"],"trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600},"type":"notification_rules"}}
         form: {}
         headers:
             Accept:
@@ -66,13 +66,13 @@ interactions:
         trailer: {}
         content_length: 497
         uncompressed: false
-        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657141,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
+        body: '{"data":{"id":"dr5-j39-jad","type":"notification_rules","attributes":{"created_at":1739193808316,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193808316,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 157.114667ms
+        duration: 337.304042ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -89,7 +89,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/xki-c8s-2sq
         method: GET
       response:
         proto: HTTP/1.1
@@ -99,13 +99,13 @@ interactions:
         trailer: {}
         content_length: 500
         uncompressed: false
-        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684656958,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"xki-c8s-2sq","type":"notification_rules","attributes":{"created_at":1739193807978,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193807978,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 187.492ms
+        duration: 142.850709ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -122,7 +122,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/dr5-j39-jad
         method: GET
       response:
         proto: HTTP/1.1
@@ -132,13 +132,13 @@ interactions:
         trailer: {}
         content_length: 497
         uncompressed: false
-        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657141,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
+        body: '{"data":{"id":"dr5-j39-jad","type":"notification_rules","attributes":{"created_at":1739193808316,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193808316,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 297.608959ms
+        duration: 169.061458ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -155,7 +155,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/dr5-j39-jad
         method: GET
       response:
         proto: HTTP/1.1
@@ -163,15 +163,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 500
+        content_length: 497
         uncompressed: false
-        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684656958,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"dr5-j39-jad","type":"notification_rules","attributes":{"created_at":1739193808316,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193808316,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 142.103167ms
+        duration: 144.94325ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/xki-c8s-2sq
         method: GET
       response:
         proto: HTTP/1.1
@@ -196,15 +196,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 497
+        content_length: 500
         uncompressed: false
-        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657141,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
+        body: '{"data":{"id":"xki-c8s-2sq","type":"notification_rules","attributes":{"created_at":1739193807978,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193807978,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 239.723959ms
+        duration: 143.18525ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/dr5-j39-jad
         method: GET
       response:
         proto: HTTP/1.1
@@ -229,15 +229,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 500
+        content_length: 497
         uncompressed: false
-        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684656958,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"dr5-j39-jad","type":"notification_rules","attributes":{"created_at":1739193808316,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193808316,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 147.792291ms
+        duration: 265.659042ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/xki-c8s-2sq
         method: GET
       response:
         proto: HTTP/1.1
@@ -262,52 +262,16 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 497
+        content_length: 500
         uncompressed: false
-        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1738684657141,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":["critical"],"rule_types":["misconfiguration"],"query":"simple:query","trigger_source":"security_findings"},"targets":["email@datad0g.com"],"time_aggregation":3600,"version":1}}}'
+        body: '{"data":{"id":"xki-c8s-2sq","type":"notification_rules","attributes":{"created_at":1739193807978,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193807978,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805signal","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 258.37425ms
+        duration: 265.80725ms
     - id: 8
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 369
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":{"attributes":{"enabled":true,"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"query":"updated:query","rule_types":["misconfiguration","attack_path"],"severities":[],"trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":1},"id":"j1q-fqv-73y","type":"notification_rules"}}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
-        method: PATCH
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 498
-        uncompressed: false
-        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659650,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 139.419916ms
-    - id: 9
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -319,14 +283,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"query":"updated:query","rule_types":["misconfiguration","attack_path"],"severities":[],"trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":1},"id":"tpg-yw2-fjo","type":"notification_rules"}}
+            {"data":{"attributes":{"enabled":true,"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805vulnerability","selectors":{"query":"updated:query","rule_types":["attack_path","misconfiguration"],"severities":[],"trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":1},"id":"dr5-j39-jad","type":"notification_rules"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/dr5-j39-jad
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -336,13 +300,49 @@ interactions:
         trailer: {}
         content_length: 506
         uncompressed: false
-        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659784,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        body: '{"data":{"id":"dr5-j39-jad","type":"notification_rules","attributes":{"created_at":1739193808316,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1739193810615,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805vulnerability","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 135.006542ms
+        duration: 144.216125ms
+    - id: 9
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 369
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"enabled":true,"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805signal","selectors":{"query":"updated:query","rule_types":["attack_path","misconfiguration"],"severities":[],"trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":1},"id":"xki-c8s-2sq","type":"notification_rules"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/xki-c8s-2sq
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 498
+        uncompressed: false
+        body: '{"data":{"id":"xki-c8s-2sq","type":"notification_rules","attributes":{"created_at":1739193807978,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1739193810756,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805signal","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 140.475417ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -359,7 +359,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/xki-c8s-2sq
         method: GET
       response:
         proto: HTTP/1.1
@@ -369,13 +369,13 @@ interactions:
         trailer: {}
         content_length: 498
         uncompressed: false
-        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659650,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        body: '{"data":{"id":"xki-c8s-2sq","type":"notification_rules","attributes":{"created_at":1739193807978,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1739193810756,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805signal","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 138.616333ms
+        duration: 139.722625ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -392,7 +392,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/dr5-j39-jad
         method: GET
       response:
         proto: HTTP/1.1
@@ -402,13 +402,13 @@ interactions:
         trailer: {}
         content_length: 506
         uncompressed: false
-        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659784,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        body: '{"data":{"id":"dr5-j39-jad","type":"notification_rules","attributes":{"created_at":1739193808316,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1739193810615,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805vulnerability","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 127.839791ms
+        duration: 150.558375ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -425,7 +425,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/dr5-j39-jad
         method: GET
       response:
         proto: HTTP/1.1
@@ -433,15 +433,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 498
+        content_length: 506
         uncompressed: false
-        body: '{"data":{"id":"j1q-fqv-73y","type":"notification_rules","attributes":{"created_at":1738684656958,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659650,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654signal","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        body: '{"data":{"id":"dr5-j39-jad","type":"notification_rules","attributes":{"created_at":1739193808316,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1739193810615,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805vulnerability","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 128.601584ms
+        duration: 132.947625ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -458,7 +458,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/xki-c8s-2sq
         method: GET
       response:
         proto: HTTP/1.1
@@ -466,15 +466,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 506
+        content_length: 498
         uncompressed: false
-        body: '{"data":{"id":"tpg-yw2-fjo","type":"notification_rules","attributes":{"created_at":1738684657141,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1738684659784,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1738684654vulnerability","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_findings"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
+        body: '{"data":{"id":"xki-c8s-2sq","type":"notification_rules","attributes":{"created_at":1739193807978,"created_by":{"name":"","handle":""},"enabled":true,"modified_at":1739193810756,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleFull-local-1739193805signal","selectors":{"severities":[],"rule_types":["misconfiguration","attack_path"],"query":"updated:query","trigger_source":"security_signals"},"targets":["updated_email@datad0g.com"],"time_aggregation":0,"version":2}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 138.40575ms
+        duration: 135.534708ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -491,7 +491,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/dr5-j39-jad
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -505,7 +505,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 149.704333ms
+        duration: 147.835334ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -522,7 +522,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/xki-c8s-2sq
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -536,7 +536,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 144.743334ms
+        duration: 132.406417ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -553,7 +553,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/j1q-fqv-73y
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/xki-c8s-2sq
         method: GET
       response:
         proto: HTTP/1.1
@@ -563,13 +563,13 @@ interactions:
         trailer: {}
         content_length: 75
         uncompressed: false
-        body: '{"errors":["not_found(Notification rule with id ''j1q-fqv-73y'' not found)"]}'
+        body: '{"errors":["not_found(Notification rule with id ''xki-c8s-2sq'' not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 151.381042ms
+        duration: 143.60575ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -586,7 +586,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/j1q-fqv-73y
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/xki-c8s-2sq
         method: GET
       response:
         proto: HTTP/1.1
@@ -596,13 +596,13 @@ interactions:
         trailer: {}
         content_length: 75
         uncompressed: false
-        body: '{"errors":["not_found(Notification rule with id ''j1q-fqv-73y'' not found)"]}'
+        body: '{"errors":["not_found(Notification rule with id ''xki-c8s-2sq'' not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 248.563833ms
+        duration: 136.74575ms
     - id: 18
       request:
         proto: HTTP/1.1
@@ -619,7 +619,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/tpg-yw2-fjo
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/dr5-j39-jad
         method: GET
       response:
         proto: HTTP/1.1
@@ -629,13 +629,13 @@ interactions:
         trailer: {}
         content_length: 75
         uncompressed: false
-        body: '{"errors":["not_found(Notification rule with id ''tpg-yw2-fjo'' not found)"]}'
+        body: '{"errors":["not_found(Notification rule with id ''dr5-j39-jad'' not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 146.365125ms
+        duration: 144.998708ms
     - id: 19
       request:
         proto: HTTP/1.1
@@ -652,7 +652,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/tpg-yw2-fjo
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/dr5-j39-jad
         method: GET
       response:
         proto: HTTP/1.1
@@ -662,10 +662,10 @@ interactions:
         trailer: {}
         content_length: 75
         uncompressed: false
-        body: '{"errors":["not_found(Notification rule with id ''tpg-yw2-fjo'' not found)"]}'
+        body: '{"errors":["not_found(Notification rule with id ''dr5-j39-jad'' not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 135.166125ms
+        duration: 133.442125ms
