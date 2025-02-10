@@ -3829,11 +3829,6 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok {
 				optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
 			}
-
-			if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok {
-				optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
-			}
-
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}
 
@@ -3992,12 +3987,6 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 			optionsListMonitorOptions["renotify_occurrences"] = actualMonitorOptions.GetRenotifyOccurrences()
 			shouldUpdate = true
 		}
-
-		if actualMonitorOptions.HasRenotifyOccurrences() {
-			optionsListMonitorOptions["renotify_occurrences"] = actualMonitorOptions.GetRenotifyOccurrences()
-			shouldUpdate = true
-		}
-
 		if shouldUpdate {
 			localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
 		}
