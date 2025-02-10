@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 346
+        content_length: 354
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1739193805","selectors":{"query":"simple:query","rule_types":["attack_path","misconfiguration"],"severities":["critical"],"trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0},"type":"notification_rules"}}
+            {"data":{"attributes":{"enabled":false,"name":"tf-TestAccDatadogSecurityNotificationRuleSignalRuleSimple-local-1739201426","selectors":{"query":"simple:query","rule_types":["attack_path","misconfiguration"],"severities":["critical"],"trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0},"type":"notification_rules"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 506
+        content_length: 558
         uncompressed: false
-        body: '{"data":{"id":"8i2-kyq-dby","type":"notification_rules","attributes":{"created_at":1739193807637,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193807637,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1739193805","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"r3p-yul-vnd","type":"notification_rules","attributes":{"created_at":1739201428598,"created_by":{"name":"frog","handle":"frog@datadoghq.com"},"enabled":false,"modified_at":1739201428598,"modified_by":{"name":"frog","handle":"frog@datadoghq.com"},"name":"tf-TestAccDatadogSecurityNotificationRuleSignalRuleSimple-local-1739201426","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 468.494292ms
+        duration: 213.2915ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/8i2-kyq-dby
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/r3p-yul-vnd
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 506
+        content_length: 558
         uncompressed: false
-        body: '{"data":{"id":"8i2-kyq-dby","type":"notification_rules","attributes":{"created_at":1739193807637,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193807637,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1739193805","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"r3p-yul-vnd","type":"notification_rules","attributes":{"created_at":1739201428598,"created_by":{"name":"frog","handle":"frog@datadoghq.com"},"enabled":false,"modified_at":1739201428598,"modified_by":{"name":"frog","handle":"frog@datadoghq.com"},"name":"tf-TestAccDatadogSecurityNotificationRuleSignalRuleSimple-local-1739201426","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 272.66325ms
+        duration: 283.743875ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/8i2-kyq-dby
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/r3p-yul-vnd
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 506
+        content_length: 558
         uncompressed: false
-        body: '{"data":{"id":"8i2-kyq-dby","type":"notification_rules","attributes":{"created_at":1739193807637,"created_by":{"name":"","handle":""},"enabled":false,"modified_at":1739193807637,"modified_by":{"name":"","handle":""},"name":"tf-TestAccDatadogNotificationRuleSignalRuleSimple-local-1739193805","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
+        body: '{"data":{"id":"r3p-yul-vnd","type":"notification_rules","attributes":{"created_at":1739201428598,"created_by":{"name":"frog","handle":"frog@datadoghq.com"},"enabled":false,"modified_at":1739201428598,"modified_by":{"name":"frog","handle":"frog@datadoghq.com"},"name":"tf-TestAccDatadogSecurityNotificationRuleSignalRuleSimple-local-1739201426","selectors":{"severities":["critical"],"rule_types":["misconfiguration","attack_path"],"query":"simple:query","trigger_source":"security_signals"},"targets":["email@datad0g.com"],"time_aggregation":0,"version":1}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 219.984417ms
+        duration: 172.585ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/8i2-kyq-dby
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/r3p-yul-vnd
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -133,7 +133,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 153.976167ms
+        duration: 290.082083ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/8i2-kyq-dby
+        url: https://api.datadoghq.com/api/v2/security/signals/notification_rules/r3p-yul-vnd
         method: GET
       response:
         proto: HTTP/1.1
@@ -160,13 +160,13 @@ interactions:
         trailer: {}
         content_length: 75
         uncompressed: false
-        body: '{"errors":["not_found(Notification rule with id ''8i2-kyq-dby'' not found)"]}'
+        body: '{"errors":["not_found(Notification rule with id ''r3p-yul-vnd'' not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 144.077667ms
+        duration: 266.802875ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -183,7 +183,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/8i2-kyq-dby
+        url: https://api.datadoghq.com/api/v2/security/vulnerabilities/notification_rules/r3p-yul-vnd
         method: GET
       response:
         proto: HTTP/1.1
@@ -193,10 +193,10 @@ interactions:
         trailer: {}
         content_length: 75
         uncompressed: false
-        body: '{"errors":["not_found(Notification rule with id ''8i2-kyq-dby'' not found)"]}'
+        body: '{"errors":["not_found(Notification rule with id ''r3p-yul-vnd'' not found)"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 142.386542ms
+        duration: 249.080666ms

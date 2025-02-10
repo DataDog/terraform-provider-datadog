@@ -1,4 +1,4 @@
-resource "datadog_notification_rule" "signal_rule" {
+resource "datadog_security_notification_rule" "signal_rule" {
   name = "My signal notification rule"
   selectors {
     trigger_source = "security_signals"
@@ -9,7 +9,7 @@ resource "datadog_notification_rule" "signal_rule" {
   targets = ["bob@email.com", "alice@email.com"]
 }
 
-resource "datadog_notification_rule" "vulnerability_rule" {
+resource "datadog_security_notification_rule" "vulnerability_rule" {
   name = "My vulnerability notification rule"
   selectors {
     trigger_source = "security_findings"

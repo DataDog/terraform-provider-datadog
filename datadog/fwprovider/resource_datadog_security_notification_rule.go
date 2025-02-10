@@ -23,18 +23,18 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &NotificationRuleResource{}
-	_ resource.ResourceWithImportState = &NotificationRuleResource{}
+	_ resource.ResourceWithConfigure   = &SecurityNotificationRuleResource{}
+	_ resource.ResourceWithImportState = &SecurityNotificationRuleResource{}
 )
 
-type NotificationRuleResource struct {
+type SecurityNotificationRuleResource struct {
 	api  *datadogV2.SecurityMonitoringApi
 	auth context.Context
 }
 
 var writeMutex = sync.Mutex{}
 
-type notificationRuleModel struct {
+type securityNotificationRuleModel struct {
 	ID               types.String    `tfsdk:"id"`
 	Name             types.String    `tfsdk:"name"`
 	Selectors        *selectorsModel `tfsdk:"selectors"`
@@ -57,25 +57,25 @@ type selectorsModel struct {
 	Query         types.String `tfsdk:"query"`
 }
 
-func (r *NotificationRuleResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *SecurityNotificationRuleResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *NotificationRuleResource) Configure(_ context.Context, request resource.ConfigureRequest, _ *resource.ConfigureResponse) {
+func (r *SecurityNotificationRuleResource) Configure(_ context.Context, request resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.api = providerData.DatadogApiInstances.GetSecurityMonitoringApiV2()
 	r.auth = providerData.Auth
 }
 
-func NewNotificationRuleResource() resource.Resource {
-	return &NotificationRuleResource{}
+func NewSecurityNotificationRuleResource() resource.Resource {
+	return &SecurityNotificationRuleResource{}
 }
 
-func (r *NotificationRuleResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = "notification_rule"
+func (r *SecurityNotificationRuleResource) Metadata(_ context.Context, _ resource.MetadataRequest, resp *resource.MetadataResponse) {
+	resp.TypeName = "security_notification_rule"
 }
 
-func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *SecurityNotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Provides a Datadog Security Monitoring Notification Rule API resource for creating and managing Datadog security notification rules.",
 		Attributes: map[string]schema.Attribute{
@@ -174,8 +174,8 @@ func (r *NotificationRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 	}
 }
 
-func (r *NotificationRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	var plan notificationRuleModel
+func (r *SecurityNotificationRuleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+	var plan securityNotificationRuleModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -240,8 +240,8 @@ func (r *NotificationRuleResource) Create(ctx context.Context, req resource.Crea
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
-func (r *NotificationRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	var state notificationRuleModel
+func (r *SecurityNotificationRuleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state securityNotificationRuleModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -286,10 +286,10 @@ func (r *NotificationRuleResource) Read(ctx context.Context, req resource.ReadRe
 	resp.Diagnostics.Append(resp.State.Set(ctx, state)...)
 }
 
-func (r *NotificationRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan notificationRuleModel
+func (r *SecurityNotificationRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var plan securityNotificationRuleModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-	var previousState notificationRuleModel
+	var previousState securityNotificationRuleModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &previousState)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -359,8 +359,8 @@ func (r *NotificationRuleResource) Update(ctx context.Context, req resource.Upda
 	resp.Diagnostics.Append(resp.State.Set(ctx, plan)...)
 }
 
-func (r *NotificationRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	var state notificationRuleModel
+func (r *SecurityNotificationRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state securityNotificationRuleModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -387,7 +387,7 @@ func (r *NotificationRuleResource) Delete(ctx context.Context, req resource.Dele
 	}
 }
 
-func (r *NotificationRuleResource) updateStateFromResponse(ctx context.Context, state *notificationRuleModel, response *datadogV2.NotificationRuleResponse) {
+func (r *SecurityNotificationRuleResource) updateStateFromResponse(ctx context.Context, state *securityNotificationRuleModel, response *datadogV2.NotificationRuleResponse) {
 	state.ID = types.StringValue(response.Data.Id)
 
 	attributes := response.Data.Attributes

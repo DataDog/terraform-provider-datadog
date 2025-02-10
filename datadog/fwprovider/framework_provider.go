@@ -51,7 +51,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewIpAllowListResource,
-	NewNotificationRuleResource,
+	NewSecurityNotificationRuleResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
 	NewRumMetricResource,

@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	notificationRuleResourceType = "datadog_notification_rule"
+	notificationRuleResourceType = "datadog_security_notification_rule"
 
 	signalResourceName = "signal"
 	signalResourcePath = fmt.Sprintf("%s.%s", notificationRuleResourceType, signalResourceName)
@@ -56,7 +56,7 @@ func resourceConfig(resourceName, name, triggerSource string, ruleTypes, severit
 	`, notificationRuleResourceType, resourceName, name, triggerSource, formatSlice(ruleTypes), formatSlice(severities), query, timeAggregation, enabled, formatSlice(targets))
 }
 
-func TestAccDatadogNotificationRuleSignalRuleSimple(t *testing.T) {
+func TestAccDatadogSecurityNotificationRuleSignalRuleSimple(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
@@ -77,7 +77,7 @@ func TestAccDatadogNotificationRuleSignalRuleSimple(t *testing.T) {
 	})
 }
 
-func TestAccDatadogNotificationRuleVulnerabilityRuleSimple(t *testing.T) {
+func TestAccDatadogSecurityNotificationRuleVulnerabilityRuleSimple(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	name := uniqueEntityName(ctx, t)
@@ -98,7 +98,7 @@ func TestAccDatadogNotificationRuleVulnerabilityRuleSimple(t *testing.T) {
 	})
 }
 
-func TestAccDatadogNotificationRuleFull(t *testing.T) {
+func TestAccDatadogSecurityNotificationRuleFull(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	signalRuleName := uniqueEntityName(ctx, t) + "signal"
