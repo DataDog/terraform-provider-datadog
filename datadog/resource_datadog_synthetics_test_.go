@@ -538,7 +538,7 @@ func syntheticsAPIAssertion() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"elementsoperator": {
-								Description: "The element from the list of results to assert on. Select from `firstElementMatches` (the first element in the list), `everyElementMatches` (every element in the list), `atLeastOneElementMatches` (at least one element in the list), or `serializationMatches` (the serialized value of the list). Defaults to `firstElementMatches`.",
+								Description: "The element from the list of results to assert on. Select from `firstElementMatches` (the first element in the list), `everyElementMatches` (every element in the list), `atLeastOneElementMatches` (at least one element in the list), or `serializationMatches` (the serialized value of the list).",
 								Type:        schema.TypeString,
 								Optional:    true,
 								Default:     "firstElementMatches",
@@ -4816,7 +4816,7 @@ func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) map[s
 				}
 
 				localKey := localKeyValue.AsString()
-				if localKey == stepMap["local_key"] {
+				if localKey != "" && localKey == stepMap["local_key"] {
 					stepParamsValue := stateStep.GetAttr("params")
 					if stepParamsValue.IsNull() {
 						continue
@@ -4856,7 +4856,7 @@ func getStepParams(stepMap map[string]interface{}, d *schema.ResourceData) map[s
 				}
 
 				localKey := localKeyValue.AsString()
-				if localKey == stepMap["local_key"] {
+				if localKey != "" && localKey == stepMap["local_key"] {
 					stepParamsValue := configStep.GetAttr("params")
 					if stepParamsValue.IsNull() {
 						continue

@@ -1,3 +1,59 @@
+## 3.54.0 (February 6, 2025)
+
+### BUGFIXES
+* [datadog_spans_metric] Mark `include_percentiles` property as computed by @VenelinMartinov in https://github.com/DataDog/terraform-provider-datadog/pull/2707
+* [datadog_service_account] Fix : `roles` attribute is now always updated by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2761
+* [datadog_service_definition_yaml] Fix panic when contact attributes exists but are empty (nil) by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2802
+* [datadog_synthetics_global_variable] Remove drift on `option` argument by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2768
+### IMPROVEMENTS
+* [datadog_logs_archives] Handle encryption field for S3 destinations for Logs Archives by @michelledeng30 in https://github.com/DataDog/terraform-provider-datadog/pull/2740
+### FEATURES
+* [datadog_application_key] Support scoped app key management for service accounts by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/2770
+* [datadog_monitor] Add cost alert monitors by @klara-kr in https://github.com/DataDog/terraform-provider-datadog/pull/2769
+* [datadog_logs_custom_pipeline] Add tags and description to logs pipelines by @joboccara in https://github.com/DataDog/terraform-provider-datadog/pull/2773
+### NOTES
+* Bump datadog-api-client to v2.35.0 by @skarimo in https://github.com/DataDog/terraform-provider-datadog/pull/2810
+
+## New Contributors
+* @klara-kr made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2769
+* @joboccara made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2773
+* @michelledeng30 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2740
+* @VenelinMartinov made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2707
+* @ecdatadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2761
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.53.0...v3.54.0
+
+## 3.53.0 (January 23, 2025)
+
+### BUGFIXES
+* [datadog_azure_integration] change default value of `resource_provider_configs` and rerecord tests by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2783
+* [datadog_synthetics_test] Fix steps reordering without `local_key` by @Drarig29 in https://github.com/DataDog/terraform-provider-datadog/pull/2795
+### FEATURES
+* [datadog_security_monitoring_suppression] Add Start to Suppressions by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2780
+* [datadog_azure_integration] Support metric filtering by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2781
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.52.1...v3.53.0
+
+## 3.52.1 (January 16, 2025)
+
+### BUGFIXES
+* [data_datadog_application_key] remove scopes from schema by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2774
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.52.0...v3.52.1
+
+## 3.52.0 (January 14, 2025)
+
+### BUGFIXES
+* [datadog_application_key] Use plan modifiers for app keys by @amaskara-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2763
+* [datadog_api_key] Use plan modifier for API keys. by @tyjet in https://github.com/DataDog/terraform-provider-datadog/pull/2765
+### FEATURES
+* [datadog_application_key] Support scoped app key management by @wangwillson1 in https://github.com/DataDog/terraform-provider-datadog/pull/2760
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.51.0...v3.52.0
+
 ## 3.51.0 (January 8, 2025)
 
 ### BUGFIXES
