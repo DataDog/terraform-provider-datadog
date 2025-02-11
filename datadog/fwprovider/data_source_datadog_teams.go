@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -68,20 +67,40 @@ func (d *datadogTeamsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Optional:    true,
 				Description: "When true, only returns teams the current user belongs to.",
 			},
-
-			// computed values
-			"teams": schema.ListAttribute{
-				Computed:    true,
+		},
+		Blocks: map[string]schema.Block{
+			"teams": schema.ListNestedBlock{
 				Description: "List of teams",
-				ElementType: types.ObjectType{
-					AttrTypes: map[string]attr.Type{
-						"description": types.StringType,
-						"handle":      types.StringType,
-						"id":          types.StringType,
-						"link_count":  types.Int64Type,
-						"name":        types.StringType,
-						"summary":     types.StringType,
-						"user_count":  types.Int64Type,
+				NestedObject: schema.NestedBlockObject{
+					Attributes: map[string]schema.Attribute{
+						"description": schema.StringAttribute{
+							Computed:    true,
+							Description: "Free-form markdown description/content for the team's homepage.",
+						},
+						"handle": schema.StringAttribute{
+							Computed:    true,
+							Description: "The team's handle.",
+						},
+						"id": schema.StringAttribute{
+							Computed:    true,
+							Description: "The team's identifier.",
+						},
+						"link_count": schema.Int64Attribute{
+							Computed:    true,
+							Description: "The number of links belonging to the team.",
+						},
+						"name": schema.StringAttribute{
+							Computed:    true,
+							Description: "The name of the team.",
+						},
+						"summary": schema.StringAttribute{
+							Computed:    true,
+							Description: "A brief summary of the team, derived from the `description`.",
+						},
+						"user_count": schema.Int64Attribute{
+							Computed:    true,
+							Description: "The number of users belonging to the team.",
+						},
 					},
 				},
 			},

@@ -30,17 +30,17 @@ data "datadog_teams" "example" {
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `teams` (List of Object) List of teams (see [below for nested schema](#nestedatt--teams))
+- `teams` (Block List) List of teams (see [below for nested schema](#nestedblock--teams))
 
-<a id="nestedatt--teams"></a>
+<a id="nestedblock--teams"></a>
 ### Nested Schema for `teams`
 
 Read-Only:
 
-- `description` (String)
-- `handle` (String)
-- `id` (String)
-- `link_count` (Number)
-- `name` (String)
-- `summary` (String)
-- `user_count` (Number)
+- `description` (String) Free-form markdown description/content for the team's homepage.
+- `handle` (String) The team's handle.
+- `id` (String) The team's identifier.
+- `link_count` (Number) The number of links belonging to the team.
+- `name` (String) The name of the team.
+- `summary` (String) A brief summary of the team, derived from the `description`.
+- `user_count` (Number) The number of users belonging to the team.
