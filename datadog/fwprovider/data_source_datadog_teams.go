@@ -108,6 +108,7 @@ func (d *datadogTeamsDataSource) Read(ctx context.Context, request datasource.Re
 	pageSize := 100
 	pageNumber := int64(0)
 	optionalParams.WithPageSize(int64(pageSize))
+	optionalParams.WithSort(datadogV2.LISTTEAMSSORT_NAME)
 
 	var teams []datadogV2.Team
 	for {
