@@ -46,5 +46,6 @@ datadog/**/*datadog_service_account*             @DataDog/web-frameworks @DataDo
 datadog/**/*datadog_spans_metric*                @DataDog/web-frameworks @DataDog/apm-trace-intake
 datadog/**/*datadog_synthetics_concurrency_cap*  @DataDog/web-frameworks @DataDog/synthetics-app @DataDog/synthetics-ct
 datadog/**/*datadog_team*                        @DataDog/web-frameworks @DataDog/core-app
+datadog/**/*datadog_user*                        @DataDog/web-frameworks @DataDog/team-aaa
 datadog/**/*datadog_organization_settings*       @DataDog/web-frameworks @DataDog/core-app @DataDog/trust-and-safety
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/web-frameworks @DataDog/chat-integrations

@@ -1383,6 +1383,12 @@ func syntheticsBrowserStepParams() schema.Schema {
 								Type:        schema.TypeString,
 								Optional:    true,
 							},
+							"secure": {
+								Description: "Whether the value of this variable will be obfuscated in test results.",
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Default:     false,
+							},
 						},
 					},
 					Optional: true,
