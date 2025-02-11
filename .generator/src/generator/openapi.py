@@ -1,20 +1,9 @@
-import pathlib
-import yaml
-
-from jsonref import JsonRef
-
 from .utils import (
     GET_OPERATION,
     CREATE_OPERATION,
     UPDATE_OPERATION,
     DELETE_OPERATION,
 )
-
-
-def load(filename):
-    path = pathlib.Path(filename)
-    with path.open() as fp:
-        return JsonRef.replace_refs(yaml.safe_load(fp))
 
 
 def get_name(schema):

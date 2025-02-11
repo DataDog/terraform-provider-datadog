@@ -1,5 +1,8 @@
 from jinja2 import Environment, FileSystemLoader, Template
 import pathlib
+import yaml
+
+from jsonref import JsonRef
 
 from . import openapi
 from . import formatter
@@ -55,3 +58,9 @@ def load_templates(env: Environment) -> dict[str, Template]:
         "import": env.get_template("resource_import_example.j2"),
     }
     return templates
+
+
+def load(filename):
+    path = pathlib.Path(filename)
+    with path.open() as fp:
+        return JsonRef.replace_refs(yaml.safe_load(fp))

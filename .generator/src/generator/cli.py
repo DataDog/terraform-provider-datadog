@@ -28,7 +28,7 @@ def cli(spec_path, output):
 
     templates = setup.load_templates(env=env)
 
-    spec = openapi.load(spec_path)
+    spec = setup.load(spec_path)
 
     operations = openapi.operations_to_generate(spec)
 
