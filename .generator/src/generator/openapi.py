@@ -1,17 +1,13 @@
-import json
 import pathlib
-import warnings
 import yaml
 
 from jsonref import JsonRef
 
-from . import formatter
 from .utils import (
     GET_OPERATION,
     CREATE_OPERATION,
     UPDATE_OPERATION,
     DELETE_OPERATION,
-    is_primitive,
 )
 
 
@@ -27,91 +23,6 @@ def get_name(schema):
         name = schema.__reference__["$ref"].split("/")[-1]
 
     return name
-
-
-def type_to_go(schema, alternative_name=None, render_nullable=False, render_new=False):
-    """Return Go type name for the type."""
-    if render_nullable and schema.get("nullable", False):
-        prefix = "Nullable"
-    else:
-        prefix = ""
-
-    # special case for additionalProperties: true
-    if schema is True:
-        return "interface{}"
-
-    if "enum" not in schema:
-        name = formatter.simple_type(
-            schema, render_nullable=render_nullable, render_new=render_new
-        )
-        if name is not None:
-            return name
-
-    name = get_name(schema)
-    if name:
-        if "enum" in schema:
-            return prefix + name
-        if (
-            not (schema.get("additionalProperties") and not schema.get("properties"))
-            and schema.get("type", "object") == "object"
-        ):
-            return prefix + name
-
-    type_ = schema.get("type")
-    if type_ is None:
-        if "items" in schema:
-            type_ = "array"
-        elif "properties" in schema:
-            type_ = "object"
-        else:
-            type_ = "object"
-            warnings.warn(
-                f"Unknown type for schema: {schema} ({name or alternative_name})"
-            )
-
-    if type_ == "array":
-        if name and schema.get("x-generate-alias-as-model", False):
-            return prefix + name
-        if name or alternative_name:
-            alternative_name = (name or alternative_name) + "Item"
-        name = type_to_go(schema["items"], alternative_name=alternative_name)
-        # handle nullable arrays
-        if formatter.simple_type(schema["items"]) and schema["items"].get("nullable"):
-            name = "*" + name
-        return "[]{}".format(name)
-    elif type_ == "object":
-        if "additionalProperties" in schema:
-            return "map[string]{}".format(type_to_go(schema["additionalProperties"]))
-        return (
-            prefix + alternative_name
-            if alternative_name
-            and (
-                "properties" in schema
-                or "oneOf" in schema
-                or "anyOf" in schema
-                or "allOf" in schema
-            )
-            else "interface{}"
-        )
-
-    raise ValueError(f"Unknown type {type_}")
-
-
-def get_type_for_parameter(parameter):
-    """Return Go type name for the parameter."""
-    if "content" in parameter:
-        assert "in" not in parameter
-        for content in parameter["content"].values():
-            return type_to_go(content["schema"])
-    return type_to_go(parameter.get("schema"))
-
-
-def get_type_for_response(response):
-    """Return Go type name for the response."""
-    if "content" in response:
-        for content in response["content"].values():
-            if "schema" in content:
-                return type_to_go(content["schema"])
 
 
 def operations_to_generate(spec):
@@ -193,101 +104,6 @@ def parameter_schema(parameter):
             if "schema" in content:
                 return content["schema"]
     raise ValueError(f"Unknown schema for parameter {parameter}")
-
-
-def tf_sort_params_by_type(parameters):
-    """
-    Sort parameters by primitive and non primitive types since
-    we use Blocks in terraform instead of NestedAttributes for
-    non primitives
-    """
-    primitive = {}
-    primitive_array = {}
-    non_primitive_array = {}
-    non_primitive_obj = {}
-    for name, p in parameters.items():
-        schema = parameter_schema(p)
-        if is_json_api(schema):
-            json_attr_schema = json_api_attributes_schema(schema)
-            for attr, s in json_attr_schema["properties"].items():
-                required = attr in json_attr_schema.get("required", [])
-                s["_tf_required"] = required
-                if is_primitive(s):
-                    primitive[attr] = s
-                elif s.get("type") == "array":
-                    if is_primitive(s.get("items")):
-                        primitive_array[attr] = s
-                    else:
-                        non_primitive_array[attr] = s
-                else:
-                    non_primitive_obj[attr] = s
-        else:
-            for attr, s in schema["properties"].items():
-                required = attr in schema.get("required", [])
-                s["_tf_required"] = required
-                if is_primitive(s):
-                    primitive[attr] = s
-                elif s.get("type") == "array":
-                    if is_primitive(s.get("items")):
-                        primitive_array[attr] = s
-                    else:
-                        non_primitive_array[attr] = s
-                else:
-                    non_primitive_obj[attr] = s
-
-    return primitive, primitive_array, non_primitive_array, non_primitive_obj
-
-
-def tf_sort_properties_by_type(schema):
-    """
-    Sort schema properties by primitive and non primitive types since
-    we use Blocks in terraform instead of NestedAttributes for
-    non primitives
-    """
-    primitive = {}
-    primitive_array = {}
-    non_primitive_array = {}
-    non_primitive_obj = {}
-    for name, cSchema in schema.get("properties", {}).items():
-        if is_json_api(cSchema):
-            json_attr_schema = json_api_attributes_schema(cSchema)
-            for attr, s in json_attr_schema["properties"].items():
-                required = attr in json_attr_schema.get("required", [])
-                s["_tf_required"] = required
-                if is_primitive(s):
-                    primitive[attr] = s
-                elif s.get("type") == "array":
-                    if is_primitive(s.get("items")):
-                        primitive_array[attr] = s
-                    else:
-                        non_primitive_array[attr] = s
-                else:
-                    non_primitive_obj[attr] = s
-        else:
-            if is_primitive(cSchema):
-                primitive[name] = cSchema
-            elif cSchema.get("type") == "array":
-                if is_primitive(cSchema.get("items")):
-                    primitive_array[name] = cSchema
-                else:
-                    non_primitive_array[name] = cSchema
-            else:
-                non_primitive_obj[name] = cSchema
-
-    if "oneOf" in schema:
-        for oneOf in schema.get("oneOf"):
-            schemaName = formatter.snake_case(get_name(oneOf))
-            non_primitive_obj[schemaName] = oneOf
-
-    return primitive, primitive_array, non_primitive_array, non_primitive_obj
-
-
-def return_type(operation):
-    for response in operation.get("responses", {}).values():
-        for content in response.get("content", {}).values():
-            if "schema" in content:
-                return type_to_go(content["schema"]), content["schema"]
-        return
 
 
 def is_json_api(schema):
