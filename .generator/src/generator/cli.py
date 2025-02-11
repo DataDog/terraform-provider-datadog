@@ -37,19 +37,19 @@ def cli(spec_path, config_path, output):
     spec = setup.load(spec_path)
     config = setup.load(config_path)
 
-    operations = openapi.operations_to_generate(spec)
+    resources_to_generate = openapi.get_resources(spec, config)
 
-    for name, operations in operations.items():
+    for name, resource in resources_to_generate.items():
         generate_resource(
             name=name,
-            operations=operations,
+            resource=resource,
             output=output,
             templates=templates,
         )
 
 
 def generate_resource(
-    name: str, operations: dict, output: pathlib.Path, templates: dict[str, Template]
+    name: str, resource: dict, output: pathlib.Path, templates: dict[str, Template]
 ) -> None:
     """
     Generates files related to a resource.
@@ -62,19 +62,19 @@ def generate_resource(
     # TF resource file
     filename = output / f"fwprovider/resource_datadog_{name}.go"
     with filename.open("w") as fp:
-        fp.write(templates["base"].render(name=name, operations=operations))
+        fp.write(templates["base"].render(name=name, operations=resource))
 
     # TF test file
     filename = output / "tests" / f"resource_datadog_{name}_test.go"
     with filename.open("w") as fp:
-        fp.write(templates["test"].render(name=name, operations=operations))
+        fp.write(templates["test"].render(name=name, operations=resource))
 
     # TF resource example
     filename = output.parent / f"examples/resources/datadog_{name}/resource.tf"
     with filename.open("w") as fp:
-        fp.write(templates["example"].render(name=name, operations=operations))
+        fp.write(templates["example"].render(name=name, operations=resource))
 
     # TF import example
     filename = output.parent / f"examples/resources/datadog_{name}/import.sh"
     with filename.open("w") as fp:
-        fp.write(templates["import"].render(name=name, operations=operations))
+        fp.write(templates["import"].render(name=name, operations=resource))

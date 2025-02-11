@@ -14,41 +14,52 @@ def get_name(schema):
     return name
 
 
-def operations_to_generate(spec):
+def get_resources(spec: dict, config: dict) -> dict:
     """
-    {
-        "resourceName": {
-            "getOperation": {
-                "path": "endpoint/path",
-                "schema": {...}
-            },
-            ...
-        }
-    }
-    """
-    operations = {}
-    for path in spec["paths"]:
-        for method in spec["paths"][path]:
-            operation = spec["paths"][path][method]
-            if "x-terraform-resource" in operation:
-                if method == "get":
-                    operations.setdefault(operation["x-terraform-resource"], {})[
-                        GET_OPERATION
-                    ] = {"schema": operation, "path": path}
-                elif method == "post":
-                    operations.setdefault(operation["x-terraform-resource"], {})[
-                        CREATE_OPERATION
-                    ] = {"schema": operation, "path": path}
-                elif method == "patch" or method == "put":
-                    operations.setdefault(operation["x-terraform-resource"], {})[
-                        UPDATE_OPERATION
-                    ] = {"schema": operation, "path": path}
-                elif method == "delete":
-                    operations.setdefault(operation["x-terraform-resource"], {})[
-                        DELETE_OPERATION
-                    ] = {"schema": operation, "path": path}
+    Generate a dictionary of resources and their CRUD operations.
 
-    return operations
+    Args:
+        spec (dict): The OpenAPI specification.
+        config (dict): The configuration tagging resources to be generated.
+
+    Raises:
+        ValueError: If an unknown CRUD operation is encountered in the config.
+
+    Returns:
+        A dictionary containing the specifications of the resources to be generated.
+    """
+    resources_to_generate = {}
+
+    # Iterate over each resource in the config
+    for resource in config["resources"]:
+        # Iterate over each CRUD operation for the resource
+        for crud_operation, value in config["resources"][resource].items():
+            method = value[
+                "method"
+            ].lower()  # Extract the HTTP method (GET, POST, etc.)
+            path = value["path"]  # Extract the endpoint path
+            operation = None
+
+            # Match the CRUD operation to the corresponding constant
+            match crud_operation:
+                case "read":
+                    operation = GET_OPERATION
+                case "create":
+                    operation = CREATE_OPERATION
+                case "update":
+                    operation = UPDATE_OPERATION
+                case "delete":
+                    operation = DELETE_OPERATION
+                case _:
+                    raise ValueError(f"Unknown operation {crud_operation}")
+
+            # Add the operation details to the resources_to_generate dictionary
+            resources_to_generate.setdefault(resource, {})[operation] = {
+                "schema": spec["paths"][path][method],
+                "path": path,
+            }
+
+    return resources_to_generate
 
 
 def get_terraform_primary_id(operations):
