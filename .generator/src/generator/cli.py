@@ -14,13 +14,19 @@ from . import openapi
         exists=True, file_okay=True, dir_okay=False, path_type=pathlib.Path
     ),
 )
+@click.argument(
+    "config_path",
+    type=click.Path(
+        exists=True, file_okay=True, dir_okay=False, path_type=pathlib.Path
+    ),
+)
 @click.option(
     "-o",
     "--output",
     default="../datadog/",
     type=click.Path(path_type=pathlib.Path),
 )
-def cli(spec_path, output):
+def cli(spec_path, config_path, output):
     """
     Generate a terraform code snippet from OpenAPI specification.
     """
@@ -29,6 +35,7 @@ def cli(spec_path, output):
     templates = setup.load_templates(env=env)
 
     spec = setup.load(spec_path)
+    config = setup.load(config_path)
 
     operations = openapi.operations_to_generate(spec)
 
