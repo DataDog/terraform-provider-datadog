@@ -124,26 +124,17 @@ func (d *datadogTeamsDataSource) Read(ctx context.Context, request datasource.Re
 		optionalParams.FilterMe = state.FilterMe.ValueBoolPointer()
 	}
 
-	pageSize := 100
-	pageNumber := int64(0)
-	optionalParams.WithPageSize(int64(pageSize))
 	optionalParams.WithSort(datadogV2.LISTTEAMSSORT_NAME)
 
 	var teams []datadogV2.Team
-	for {
-		optionalParams.WithPageNumber(pageNumber)
-
-		ddResp, _, err := d.Api.ListTeams(d.Auth, optionalParams)
-		if err != nil {
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting teams"))
+	result, _ := d.Api.ListTeamsWithPagination(d.Auth, optionalParams)
+	for paginationResult := range result {
+		if paginationResult.Error != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(paginationResult.Error, "Error when calling `ListTeamsWithPagination`"))
 			return
 		}
 
-		teams = append(teams, ddResp.GetData()...)
-		if len(ddResp.GetData()) < pageSize {
-			break
-		}
-		pageNumber++
+		teams = append(teams, paginationResult.Item)
 	}
 
 	d.updateState(&state, &teams)
