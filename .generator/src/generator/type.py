@@ -121,7 +121,7 @@ def tf_sort_params_by_type(parameters):
 
         for attr, s in schema["properties"].items():
             required = attr in schema.get("required", [])
-            s["_tf_required"] = required
+            s["required"] = required
 
             # categorize the parameter based on its type
             if is_primitive(s):
@@ -170,7 +170,7 @@ def tf_sort_properties_by_type(schema):
             json_attr_schema = openapi.json_api_attributes_schema(cSchema)
             for attr, s in json_attr_schema["properties"].items():
                 required = attr in json_attr_schema.get("required", [])
-                s["_tf_required"] = required
+                s["required"] = required
                 categorize_property(attr, s)
         else:
             # Process non-JSON API properties
