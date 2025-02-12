@@ -3050,20 +3050,7 @@ func buildDatadogHeatmapRequests(terraformRequests *[]interface{}) *[]datadogV1.
 			securityQuery := v[0].(map[string]interface{})
 			datadogHeatmapRequest.SecurityQuery = buildDatadogApmOrLogQuery(securityQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogHeatmapRequest.SetQueries(queries)
+			datadogHeatmapRequest.SetQueries(buildFormulaQuery(v))
 			datadogHeatmapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("timeseries"))
 		}
 		if v, ok := terraformRequest["formula"].([]interface{}); ok && len(v) > 0 {
@@ -6114,20 +6101,7 @@ func buildDatadogGeomapRequests(terraformRequests *[]interface{}) *[]datadogV1.G
 			rumQuery := v[0].(map[string]interface{})
 			datadogGeomapRequest.RumQuery = buildDatadogApmOrLogQuery(rumQuery)
 		} else if v, ok := terraformRequest["query"].([]interface{}); ok && len(v) > 0 {
-			queries := make([]datadogV1.FormulaAndFunctionQueryDefinition, len(v))
-			for i, q := range v {
-				query := q.(map[string]interface{})
-				if w, ok := query["event_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogEventQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["metric_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogMetricQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["process_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionProcessQuery(w[0].(map[string]interface{}))
-				} else if w, ok := query["slo_query"].([]interface{}); ok && len(w) > 0 {
-					queries[i] = *buildDatadogFormulaAndFunctionSLOQuery(w[0].(map[string]interface{}))
-				}
-			}
-			datadogGeomapRequest.SetQueries(queries)
+			datadogGeomapRequest.SetQueries(buildFormulaQuery(v))
 			// Geomap requests for formulas and functions always has a response format of "scalar"
 			datadogGeomapRequest.SetResponseFormat(datadogV1.FormulaAndFunctionResponseFormat("scalar"))
 		}
