@@ -50,7 +50,7 @@ resources:
 > ```yaml
 > resources:
 >   team:
->     get:
+>     read:
 >       method: get
 >       path: /api/v2/team/{team_id}
 >     create:
