@@ -12,10 +12,13 @@ The goal of this sub-project is to generate the scaffolding to create a Terrafor
 - This project
 - Poetry
 - An OpenApi 3.0.x specification (Datadog's OpenApi spec can be found [here](https://github.com/DataDog/datadog-api-client-go/tree/master/.generator/schemas))
+- Go
 
 ### Install dependencies
 
 Install the necessary dependencies by running `poetry install`
+
+Install go as we use the `go fmt` command on the generated files to format them.
 
 ### Marking the resources to be generated
 
