@@ -24,7 +24,7 @@ type apiKeyDataSourceModel struct {
 	Name         types.String `tfsdk:"name"`
 	ExactMatch   types.Bool   `tfsdk:"exact_match"`
 	Key          types.String `tfsdk:"key"`
-	RemoteConfig types.Bool   `tfsdk:"remote_config"`
+	RemoteConfig types.Bool   `tfsdk:"remote_config_read_enabled"`
 }
 
 type apiKeyDataSource struct {
@@ -63,7 +63,7 @@ func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Computed:    true,
 				Sensitive:   true,
 			},
-			"remote_config": schema.BoolAttribute{
+			"remote_config_read_enabled": schema.BoolAttribute{
 				Description: "Whether the API key will be used for remote config.",
 				Computed:    true,
 			},

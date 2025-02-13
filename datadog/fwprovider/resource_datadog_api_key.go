@@ -29,7 +29,7 @@ type apiKeyResourceModel struct {
 	ID           types.String `tfsdk:"id"`
 	Name         types.String `tfsdk:"name"`
 	Key          types.String `tfsdk:"key"`
-	RemoteConfig types.Bool   `tfsdk:"remote_config"`
+	RemoteConfig types.Bool   `tfsdk:"remote_config_read_enabled"`
 }
 
 type apiKeyResource struct {
@@ -61,7 +61,7 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Sensitive:     true,
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
-			"remote_config": schema.BoolAttribute{
+			"remote_config_read_enabled": schema.BoolAttribute{
 				Description: "Whether the API key will be used for remote config. Warning : default value is true for backwards compatibility",
 				Optional:    true,
 				Computed:    true,
