@@ -52,10 +52,16 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					Sensitive:   true,
 				},
 				"secure": {
-					Description: "If set to true, the value of the global variable is hidden.",
+					Description: "If set to true, the value of the global variable is hidden. Will be ignored if is_totp is true.",
 					Default:     false,
 					Type:        schema.TypeBool,
 					Optional:    true,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						if d.Get("is_totp").(bool) {
+							return true
+						}
+						return old == new
+					},
 				},
 				"parse_test_id": {
 					Description: "Id of the Synthetics test to use for a variable from test.",
@@ -144,6 +150,12 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					Description: "A list of role identifiers to associate with the Synthetics global variable.",
 					Type:        schema.TypeSet,
 					Elem:        &schema.Schema{Type: schema.TypeString},
+					Optional:    true,
+				},
+				"is_totp": {
+					Description: "If set to true, the global variable is a TOTP variable.",
+					Default:     false,
+					Type:        schema.TypeBool,
 					Optional:    true,
 				},
 			}
@@ -264,7 +276,15 @@ func buildSyntheticsGlobalVariableRequestStruct(d *schema.ResourceData) *datadog
 	syntheticsGlobalVariableValue := datadogV1.SyntheticsGlobalVariableValue{}
 
 	syntheticsGlobalVariableValue.SetValue(d.Get("value").(string))
-	syntheticsGlobalVariableValue.SetSecure(d.Get("secure").(bool))
+
+	if d.Get("is_totp").(bool) {
+		// Force secure to be true if variable is totp.
+		syntheticsGlobalVariableValue.SetSecure(true)
+	} else {
+		syntheticsGlobalVariableValue.SetSecure(d.Get("secure").(bool))
+	}
+
+	syntheticsGlobalVariableRequest.SetIsTotp(d.Get("is_totp").(bool))
 
 	if _, ok := d.GetOk("options.0"); ok {
 		variableOptions := datadogV1.SyntheticsGlobalVariableOptions{}
@@ -336,9 +356,14 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		d.Set("value", syntheticsGlobalVariableValue.GetValue())
 	}
 
-	d.Set("secure", syntheticsGlobalVariableValue.GetSecure())
+	if !syntheticsGlobalVariable.GetIsTotp() {
+		// Only store the secure value if the global variable is not a TOTP variable
+		d.Set("secure", syntheticsGlobalVariableValue.GetSecure())
+	}
 
 	d.Set("tags", syntheticsGlobalVariable.Tags)
+
+	d.Set("is_totp", syntheticsGlobalVariable.GetIsTotp())
 
 	if syntheticsGlobalVariable.HasParseTestPublicId() {
 		d.Set("parse_test_id", syntheticsGlobalVariable.GetParseTestPublicId())
