@@ -14,7 +14,7 @@ A connection that can be used in Actions, including in the Workflow Automation a
 
 ```terraform
 data "datadog_action_connection" "my_connection" {
-  id = "1d05af79-db0e-4eca-b3b2-98c4a673c8cf"
+  id = "11111111-2222-3333-4444-555555555555"
 }
 ```
 
