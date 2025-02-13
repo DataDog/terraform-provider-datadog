@@ -1,4 +1,6 @@
+import os
 import pathlib
+import shlex
 import click
 
 from jinja2 import Template
@@ -63,11 +65,13 @@ def generate_resource(
     filename = output / f"fwprovider/resource_datadog_{name}.go"
     with filename.open("w") as fp:
         fp.write(templates["base"].render(name=name, operations=resource))
+    os.system(shlex.quote(f"go fmt {filename}"))
 
     # TF test file
     filename = output / "tests" / f"resource_datadog_{name}_test.go"
     with filename.open("w") as fp:
         fp.write(templates["test"].render(name=name, operations=resource))
+    os.system(shlex.quote(f"go fmt {filename}"))
 
     # TF resource example
     filename = output.parent / f"examples/resources/datadog_{name}/resource.tf"
