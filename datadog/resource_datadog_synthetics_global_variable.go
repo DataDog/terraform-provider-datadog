@@ -356,10 +356,7 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 		d.Set("value", syntheticsGlobalVariableValue.GetValue())
 	}
 
-	if !syntheticsGlobalVariable.GetIsTotp() {
-		// Only store the secure value if the global variable is not a TOTP variable
-		d.Set("secure", syntheticsGlobalVariableValue.GetSecure())
-	}
+	d.Set("secure", syntheticsGlobalVariableValue.GetSecure())
 
 	d.Set("tags", syntheticsGlobalVariable.Tags)
 
