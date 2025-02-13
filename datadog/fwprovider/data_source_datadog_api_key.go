@@ -20,10 +20,11 @@ func NewAPIKeyDataSource() datasource.DataSource {
 }
 
 type apiKeyDataSourceModel struct {
-	ID         types.String `tfsdk:"id"`
-	Name       types.String `tfsdk:"name"`
-	ExactMatch types.Bool   `tfsdk:"exact_match"`
-	Key        types.String `tfsdk:"key"`
+	ID           types.String `tfsdk:"id"`
+	Name         types.String `tfsdk:"name"`
+	ExactMatch   types.Bool   `tfsdk:"exact_match"`
+	Key          types.String `tfsdk:"key"`
+	RemoteConfig types.Bool   `tfsdk:"remote_config"`
 }
 
 type apiKeyDataSource struct {
@@ -61,6 +62,10 @@ func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Description: "The value of the API Key.",
 				Computed:    true,
 				Sensitive:   true,
+			},
+			"remote_config": schema.BoolAttribute{
+				Description: "Whether the API key will be used for remote config.",
+				Computed:    true,
 			},
 		},
 		DeprecationMessage: "Deprecated. This will be removed in a future release with prior notice. Securely store your API keys using a secret management system or use the datadog_api_key resource to manage API keys in your Datadog account.",
@@ -157,6 +162,7 @@ func (r *apiKeyDataSource) updateState(state *apiKeyDataSourceModel, apiKeyData 
 	state.ID = types.StringValue(apiKeyData.GetId())
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
 	state.Key = types.StringValue(apiKeyAttributes.GetKey())
+	state.RemoteConfig = types.BoolValue(apiKeyAttributes.GetRemoteConfigReadEnabled())
 }
 
 func (r *apiKeyDataSource) checkAPIDeprecated(apiKeyData *datadogV2.FullAPIKey, resp *datasource.ReadResponse) bool {
