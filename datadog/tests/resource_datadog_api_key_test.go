@@ -33,7 +33,7 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyName),
 					resource.TestCheckResourceAttrSet(resourceName, "key"),
-					resource.TestCheckResourceAttr(resourceName, "remote_config", "true"),
+					resource.TestCheckResourceAttr(resourceName, "remote_config_read_enabled", "true"),
 					func(s *terraform.State) error {
 						resource, ok := s.RootModule().Resources[resourceName]
 						if !ok {
@@ -50,7 +50,7 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyNameUpdate),
-					resource.TestCheckResourceAttr(resourceName, "remote_config", "true"),
+					resource.TestCheckResourceAttr(resourceName, "remote_config_read_enabled", "true"),
 					func(s *terraform.State) error {
 						resource, ok := s.RootModule().Resources[resourceName]
 						if !ok {
@@ -70,7 +70,7 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyNameUpdate),
-					resource.TestCheckResourceAttr(resourceName, "remote_config", "false"),
+					resource.TestCheckResourceAttr(resourceName, "remote_config_read_enabled", "false"),
 					func(s *terraform.State) error {
 						resource, ok := s.RootModule().Resources[resourceName]
 						if !ok {
@@ -118,7 +118,7 @@ func TestDatadogApiKey_import(t *testing.T) {
 func testAccCheckDatadogApiKeyConfigRequired(uniq string, remoteConfig *bool) string {
 	remoteConfigParam := ""
 	if remoteConfig != nil {
-		remoteConfigParam = fmt.Sprintf("remote_config = %t", *remoteConfig)
+		remoteConfigParam = fmt.Sprintf("remote_config_read_enabled = %t", *remoteConfig)
 	}
 	return fmt.Sprintf(`
 resource "datadog_api_key" "foo" {
