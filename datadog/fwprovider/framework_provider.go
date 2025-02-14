@@ -79,7 +79,7 @@ var Resources = []func() resource.Resource{
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
 	NewWorkflowAutomationResource,
-	NewAppResource,
+	NewAppBuilderAppJSONResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -107,7 +107,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogActionConnectionDataSource,
 	NewDatadogSyntheticsGlobalVariableDataSource,
 	NewWorkflowAutomationDataSource,
-	NewDatadogAppDataSource,
+	NewDatadogAppBuilderAppJSONDataSource,
 }
 
 // FrameworkProvider struct
@@ -429,8 +429,6 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateApp", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteApp", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteApps", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.DeployApp", true)
-	ddClientConfig.SetUnstableOperationEnabled("v2.DisableApp", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetApp", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.ListApps", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateApp", true)

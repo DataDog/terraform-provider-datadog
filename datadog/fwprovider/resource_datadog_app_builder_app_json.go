@@ -19,38 +19,38 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &appResource{}
-	_ resource.ResourceWithImportState = &appResource{}
+	_ resource.ResourceWithConfigure   = &appBuilderAppJSONResource{}
+	_ resource.ResourceWithImportState = &appBuilderAppJSONResource{}
 )
 
-type appResource struct {
+type appBuilderAppJSONResource struct {
 	Api  *datadogV2.AppBuilderApi
 	Auth context.Context
 }
 
 // try single property JSON input -> validation will be handled on the API side
-type appResourceModel struct {
+type appBuilderAppJSONResourceModel struct {
 	ID      types.String         `tfsdk:"id"`
 	AppJson jsontypes.Normalized `tfsdk:"app_json"`
 }
 
-func NewAppResource() resource.Resource {
-	return &appResource{}
+func NewAppBuilderAppJSONResource() resource.Resource {
+	return &appBuilderAppJSONResource{}
 }
 
-func (r *appResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *appBuilderAppJSONResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetAppBuilderApiV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *appResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "app"
+func (r *appBuilderAppJSONResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "app_builder_app_json"
 }
 
-func (r *appResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *appBuilderAppJSONResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog App resource. This can be used to create and manage a Datadog App from the App Builder product.",
+		Description: "Provides a Datadog App JSON resource for creating and managing Datadog Apps from App Builder using the JSON definition.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"app_json": schema.StringAttribute{
@@ -65,19 +65,19 @@ func (r *appResource) Schema(_ context.Context, _ resource.SchemaRequest, respon
 	}
 }
 
-func (r *appResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *appBuilderAppJSONResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *appResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var plan appResourceModel
+func (r *appBuilderAppJSONResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var plan appBuilderAppJSONResourceModel
 	diags := request.Plan.Get(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	createRequest, err := appModelToCreateApiRequest(plan)
+	createRequest, err := appBuilderAppJSONModelToCreateApiRequest(plan)
 	if err != nil {
 		response.Diagnostics.AddError("Error building create app request", err.Error())
 		return
@@ -107,8 +107,8 @@ func (r *appResource) Create(ctx context.Context, request resource.CreateRequest
 	response.Diagnostics.Append(diags...)
 }
 
-func (r *appResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state appResourceModel
+func (r *appBuilderAppJSONResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state appBuilderAppJSONResourceModel
 	diags := request.State.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -121,19 +121,19 @@ func (r *appResource) Read(ctx context.Context, request resource.ReadRequest, re
 		return
 	}
 
-	appModel, err := readApp(r.Auth, r.Api, id)
+	appBuilderAppJSONModel, err := readAppBuilderAppJSON(r.Auth, r.Api, id)
 	if err != nil {
 		response.Diagnostics.AddError("Error reading app", err.Error())
 		return
 	}
 
 	// Save data into Terraform state
-	diags = response.State.Set(ctx, appModel)
+	diags = response.State.Set(ctx, appBuilderAppJSONModel)
 	response.Diagnostics.Append(diags...)
 }
 
-func (r *appResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var plan appResourceModel
+func (r *appBuilderAppJSONResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var plan appBuilderAppJSONResourceModel
 	diags := request.Plan.Get(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -146,7 +146,7 @@ func (r *appResource) Update(ctx context.Context, request resource.UpdateRequest
 		return
 	}
 
-	updateRequest, err := appModelToUpdateApiRequest(plan)
+	updateRequest, err := appBuilderAppJSONModelToUpdateApiRequest(plan)
 	if err != nil {
 		response.Diagnostics.AddError("Error building update app request", err.Error())
 		return
@@ -173,8 +173,8 @@ func (r *appResource) Update(ctx context.Context, request resource.UpdateRequest
 	response.Diagnostics.Append(diags...)
 }
 
-func (r *appResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state appResourceModel
+func (r *appBuilderAppJSONResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state appBuilderAppJSONResourceModel
 	diags := request.State.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -203,8 +203,8 @@ func (r *appResource) Delete(ctx context.Context, request resource.DeleteRequest
 	}
 }
 
-func apiResponseToAppModel(resp datadogV2.GetAppResponse) (*appResourceModel, error) {
-	appModel := &appResourceModel{
+func apiResponseToAppBuilderAppJSONModel(resp datadogV2.GetAppResponse) (*appBuilderAppJSONResourceModel, error) {
+	appBuilderAppJSONModel := &appBuilderAppJSONResourceModel{
 		ID: types.StringValue(resp.Data.GetId().String()),
 	}
 
@@ -216,23 +216,16 @@ func apiResponseToAppModel(resp datadogV2.GetAppResponse) (*appResourceModel, er
 		err = fmt.Errorf("error marshaling attributes: %s", err)
 		return nil, err
 	}
-	appModel.AppJson = jsontypes.NewNormalizedValue(string(marshalledBytes))
+	appBuilderAppJSONModel.AppJson = jsontypes.NewNormalizedValue(string(marshalledBytes))
 
-	return appModel, nil
+	return appBuilderAppJSONModel, nil
 }
 
-func appModelToCreateApiRequest(appModel appResourceModel) (*datadogV2.CreateAppRequest, error) {
+func appBuilderAppJSONModelToCreateApiRequest(plan appBuilderAppJSONResourceModel) (*datadogV2.CreateAppRequest, error) {
 	attributes := datadogV2.NewCreateAppRequestDataAttributesWithDefaults()
 
-	// decode encoded json into string and then decode that into the attributes struct
-	var appJsonString string
-	err := json.Unmarshal([]byte(appModel.AppJson.String()), &appJsonString)
-	if err != nil {
-		err = fmt.Errorf("error unmarshalling app json to string: %s", err)
-		return nil, err
-	}
-
-	err = json.Unmarshal([]byte(appJsonString), attributes)
+	// decode encoded json into the attributes struct
+	err := json.Unmarshal([]byte(plan.AppJson.ValueString()), attributes)
 	if err != nil {
 		err = fmt.Errorf("error unmarshalling app json string to attributes struct: %s", err)
 		return nil, err
@@ -245,18 +238,11 @@ func appModelToCreateApiRequest(appModel appResourceModel) (*datadogV2.CreateApp
 	return req, nil
 }
 
-func appModelToUpdateApiRequest(plan appResourceModel) (*datadogV2.UpdateAppRequest, error) {
+func appBuilderAppJSONModelToUpdateApiRequest(plan appBuilderAppJSONResourceModel) (*datadogV2.UpdateAppRequest, error) {
 	attributes := datadogV2.NewUpdateAppRequestDataAttributesWithDefaults()
 
-	// decode encoded json into string and then decode that into the attributes struct
-	var appJsonString string
-	err := json.Unmarshal([]byte(plan.AppJson.String()), &appJsonString)
-	if err != nil {
-		err = fmt.Errorf("error unmarshalling app json to string: %s", err)
-		return nil, err
-	}
-
-	err = json.Unmarshal([]byte(appJsonString), attributes)
+	// decode encoded json into the attributes struct
+	err := json.Unmarshal([]byte(plan.AppJson.ValueString()), attributes)
 	if err != nil {
 		err = fmt.Errorf("error unmarshalling app json string to attributes struct: %s", err)
 		return nil, err
@@ -270,7 +256,7 @@ func appModelToUpdateApiRequest(plan appResourceModel) (*datadogV2.UpdateAppRequ
 }
 
 // Read logic is shared between data source and resource
-func readApp(ctx context.Context, api *datadogV2.AppBuilderApi, id uuid.UUID) (*appResourceModel, error) {
+func readAppBuilderAppJSON(ctx context.Context, api *datadogV2.AppBuilderApi, id uuid.UUID) (*appBuilderAppJSONResourceModel, error) {
 	resp, httpResp, err := api.GetApp(ctx, id)
 	if err != nil {
 		if httpResp != nil {
@@ -283,7 +269,7 @@ func readApp(ctx context.Context, api *datadogV2.AppBuilderApi, id uuid.UUID) (*
 		return nil, err
 	}
 
-	appModel, err := apiResponseToAppModel(resp)
+	appModel, err := apiResponseToAppBuilderAppJSONModel(resp)
 	if err != nil {
 		return nil, err
 	}
