@@ -316,8 +316,6 @@ func isAPPKeySet() bool {
 }
 
 func isTestOrg() bool {
-	return true
-
 	if isTestOrgC != nil {
 		return *isTestOrgC
 	}
