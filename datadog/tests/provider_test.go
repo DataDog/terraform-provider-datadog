@@ -123,6 +123,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_csm_threats_agent_rule_test":                     "cloud-workload-security",
 	"tests/resource_datadog_csm_threats_multi_policy_agent_rule_test":        "cloud-workload-security",
 	"tests/resource_datadog_csm_threats_policy_test":                         "cloud-workload-security",
+	"tests/resource_datadog_csm_threats_policies_list_test":                  "cloud-workload-security",
 	"tests/resource_datadog_dashboard_alert_graph_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_alert_value_test":                      "dashboards",
 	"tests/resource_datadog_dashboard_change_test":                           "dashboards",
