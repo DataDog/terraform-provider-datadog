@@ -1718,6 +1718,8 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_occurrences", "5"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -1880,6 +1882,7 @@ resource "datadog_synthetics_test" "bar" {
 
 		monitor_options {
 			renotify_interval = 120
+			renotify_occurrences = 5
 		}
 	}
 
@@ -3328,6 +3331,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_occurrences", "3"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.no_screenshot", "true"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_name", fmt.Sprintf(`%s-monitor`, testName)),
@@ -3456,6 +3461,7 @@ resource "datadog_synthetics_test" "bar" {
 
 		monitor_options {
 			renotify_interval = 120
+			renotify_occurrences = 3
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5
