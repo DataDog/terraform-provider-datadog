@@ -30,4 +30,4 @@ data "datadog_api_key" "foo" {
 ### Read-Only
 
 - `key` (String, Sensitive) The value of the API Key.
-- `remote_config_read_enabled` (Boolean) Whether the API key will be used for remote config.
+- `remote_config_read_enabled` (Boolean) Whether the API key is used for remote config.

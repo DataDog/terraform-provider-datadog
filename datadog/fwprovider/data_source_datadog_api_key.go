@@ -64,7 +64,7 @@ func (d *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Sensitive:   true,
 			},
 			"remote_config_read_enabled": schema.BoolAttribute{
-				Description: "Whether the API key will be used for remote config.",
+				Description: "Whether the API key is used for remote config.",
 				Computed:    true,
 			},
 		},
