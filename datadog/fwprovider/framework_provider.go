@@ -51,6 +51,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewIpAllowListResource,
+	NewSecurityNotificationRuleResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
 	NewRumMetricResource,
@@ -96,6 +97,7 @@ var Datasources = []func() datasource.DataSource{
 	NewSecurityMonitoringSuppressionDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewLogsPipelinesOrderDataSource,
+	NewDatadogTeamsDataSource,
 	NewCSMThreatsPoliciesDataSource,
 }
 

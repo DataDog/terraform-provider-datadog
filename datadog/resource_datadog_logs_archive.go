@@ -44,6 +44,13 @@ func resourceDatadogLogsArchive() *schema.Resource {
 								ValidateDiagFunc: validators.ValidateAWSAccountID,
 							},
 							"role_name": {Description: "Your AWS role name", Type: schema.TypeString, Required: true},
+							"encryption_type": {Description: "The type of encryption on your archive.",
+								Type:             schema.TypeString,
+								Optional:         true,
+								Default:          datadogV2.LOGSARCHIVEENCRYPTIONS3TYPE_NO_OVERRIDE,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsArchiveEncryptionS3TypeFromValue),
+							},
+							"encryption_key": {Description: "The AWS KMS encryption key.", Type: schema.TypeString, Optional: true},
 						},
 					},
 				},
@@ -253,8 +260,15 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]int
 func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]interface{} {
 	result := make(map[string]interface{})
 	integration := destination.GetIntegration()
+	encryption := destination.GetEncryption()
 	result["account_id"] = integration.GetAccountId()
 	result["role_name"] = integration.GetRoleName()
+	if encryptionType, ok := encryption.GetTypeOk(); ok {
+		result["encryption_type"] = encryptionType
+	}
+	if encryptionKey, ok := encryption.GetKeyOk(); ok {
+		result["encryption_key"] = encryptionKey
+	}
 	result["bucket"] = destination.GetBucket()
 	result["path"] = destination.GetPath()
 	return result
@@ -426,6 +440,17 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 		*integration,
 		datadogV2.LOGSARCHIVEDESTINATIONS3TYPE_S3,
 	)
+	encryptionType, ok := d["encryption_type"]
+	if ok && encryptionType != "" {
+		encryption := datadogV2.NewLogsArchiveEncryptionS3(
+			datadogV2.LogsArchiveEncryptionS3Type(encryptionType.(string)),
+		)
+		encryptionKey, ok := d["encryption_key"]
+		if ok && encryptionKey != "" {
+			encryption.SetKey(encryptionKey.(string))
+		}
+		destination.SetEncryption(*encryption)
+	}
 	destination.Path = datadog.PtrString(path.(string))
 	return destination, nil
 }

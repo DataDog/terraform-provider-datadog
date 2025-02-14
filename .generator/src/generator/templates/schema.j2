@@ -1,0 +1,30 @@
+{%- import "utils/schema_helper.j2" as schemaMacros %}
+
+{%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = createOperationParams|tf_sort_params_by_type %}
+
+func (r *{{ name|camel_case|untitle_case }}Resource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+	response.Schema = schema.Schema{
+		Description: "Provides a Datadog {{ name|camel_case }} resource. This can be used to create and manage Datadog {{ name }}.",
+		Attributes: map[string]schema.Attribute{
+            {%- for name, schema in primitiveAttr.items() %}
+            {{- schemaMacros.typePrimitiveSchema(name, schema, required=schema.get("required")) }}
+			{%- endfor %}
+
+            {%- for name, schema in primitiveArrAttr.items() %}
+            {{- schemaMacros.typePrimitiveArraySchema(name, schema, required=schema.get("required")) }}
+            {%- endfor %}
+            "id": utils.ResourceIDAttribute(),
+		},
+        {%- if nonPrimitiveObjAttr or nonPrimitiveListAttr %}
+		Blocks: map[string]schema.Block{
+            {%- for name, schema in nonPrimitiveListAttr.items() %}
+            {{- schemaMacros.baseBlockListAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
+            {%- endfor %}
+
+            {%- for name, schema in nonPrimitiveObjAttr.items() %}
+            {{- schemaMacros.baseBlockObjAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
+            {%- endfor %}
+		},
+        {%- endif %}
+	}
+}

@@ -744,14 +744,14 @@ func createSyntheticsBrowserStepsConfigWithLocalML(uniq string) string {
 			modifiers = []
 			value     = "step %[1]s value"
 		}
-	}`, uniq, createSyntethicsBrowserStepMLElement(uniq))
+	}`, uniq, createSyntheticsBrowserStepMLElement(uniq))
 }
 
-func createSyntethicsBrowserStepMLElement(uniq string) string {
+func createSyntheticsBrowserStepMLElement(uniq string) string {
 	return fmt.Sprintf(`{"multiLocator":{"ab":"ab %[1]s","at":"at %[1]s","cl":"cl %[1]s","clt":"clt %[1]s","co":"co %[1]s"},"targetOuterHTML":"targetOuterHTML %[1]s","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"}`, uniq)
 }
 
-func createSYntheticsBrowserStepULElement(uniq string) string {
+func createSyntheticsBrowserStepULElement(uniq string) string {
 	return fmt.Sprintf(`{"userLocator":{"failTestOnCannotLocate":false,"values":[{"type":"css","value":".%[1]s"}]}}`, uniq)
 }
 
@@ -777,19 +777,19 @@ func createSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Con
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSyntethicsBrowserStepMLElement("first")),
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSyntheticsBrowserStepMLElement("first")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.1.name", "step name second"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.1.params.0.element", createSyntethicsBrowserStepMLElement("second")),
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", createSyntheticsBrowserStepMLElement("second")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.2.name", "step name third"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.2.params.0.element", createSyntethicsBrowserStepMLElement("third")),
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", createSyntheticsBrowserStepMLElement("third")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.3.params.0.element", createSyntethicsBrowserStepMLElement("fourth")),
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", createSyntheticsBrowserStepMLElement("fourth")),
 		),
 	}
 }
@@ -802,19 +802,19 @@ func updateSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Con
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSyntethicsBrowserStepMLElement("first")),
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSyntheticsBrowserStepMLElement("first")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.1.name", "step name third"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.1.params.0.element", createSyntethicsBrowserStepMLElement("third")),
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", createSyntheticsBrowserStepMLElement("third")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.2.name", "step name second"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.2.params.0.element", createSyntethicsBrowserStepMLElement("second")),
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", createSyntheticsBrowserStepMLElement("second")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.3.params.0.element", createSyntethicsBrowserStepMLElement("fourth")),
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", createSyntheticsBrowserStepMLElement("fourth")),
 		),
 	}
 }
@@ -827,7 +827,7 @@ func TestAccDatadogSyntheticsBrowser_UpdateStepsWithRemoteML(t *testing.T) {
 
 	stepsCreatedStr := ""
 	for _, step := range [4]string{
-		createSyntheticsBrowserStepsConfigWithRemoteML(string("first")),
+		createSyntheticsBrowserStepsConfigWithLocalMLandNoLocalKey(),
 		createSyntheticsBrowserStepsConfigWithRemoteML(string("second")),
 		createSyntheticsBrowserStepsConfigWithRemoteML(string("third")),
 		createSyntheticsBrowserStepsConfigWithRemoteML(string("fourth")),
@@ -837,7 +837,7 @@ func TestAccDatadogSyntheticsBrowser_UpdateStepsWithRemoteML(t *testing.T) {
 
 	stepsUpdatedStr := ""
 	for _, step := range [4]string{
-		createSyntheticsBrowserStepsConfigWithRemoteML(string("first")),
+		createSyntheticsBrowserStepsConfigWithLocalMLandNoLocalKey(),
 		createSyntheticsBrowserStepsConfigWithRemoteML(string("third")),
 		createSyntheticsBrowserStepsConfigWithRemoteML(string("second")),
 		createSyntheticsBrowserStepsConfigWithRemoteML(string("fourth")),
@@ -883,6 +883,21 @@ resource "datadog_synthetics_test" "test" {
 }`, uniq, steps)
 }
 
+/**	Step that doesn't have a `local_key` attribute. */
+func createSyntheticsBrowserStepsConfigWithLocalMLandNoLocalKey() string {
+	return fmt.Sprintf(`
+	browser_step {
+		name        = "step name without local key"
+		type        = "assertElementContent"
+		params {
+			check     = "contains"
+			element   = jsonencode(%[1]s)
+			modifiers = []
+			value     = "step value"
+		}
+	}`, createSyntheticsBrowserStepMLElement("no local key"))
+}
+
 func createSyntheticsBrowserStepsConfigWithRemoteML(uniq string) string {
 	return fmt.Sprintf(`
 	browser_step {
@@ -909,27 +924,27 @@ func createSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Co
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name without local key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSYntheticsBrowserStepULElement("first")),
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSyntheticsBrowserStepMLElement("no local key")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.1.name", "step name second"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.1.params.0.element", createSYntheticsBrowserStepULElement("second")),
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", createSyntheticsBrowserStepULElement("second")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.2.name", "step name third"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.2.params.0.element", createSYntheticsBrowserStepULElement("third")),
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", createSyntheticsBrowserStepULElement("third")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.3.params.0.element", createSYntheticsBrowserStepULElement("fourth")),
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", createSyntheticsBrowserStepULElement("fourth")),
 			// Fill in the missing ML in the steps, to simulate the backend computing the ML.
 			editSyntheticsTestMML(accProvider, []string{
-				createSyntethicsBrowserStepMLElement("first"),
-				createSyntethicsBrowserStepMLElement("second"),
-				createSyntethicsBrowserStepMLElement("third"),
-				createSyntethicsBrowserStepMLElement("fourth"),
+				createSyntheticsBrowserStepMLElement("no local key"),
+				createSyntheticsBrowserStepMLElement("second"),
+				createSyntheticsBrowserStepMLElement("third"),
+				createSyntheticsBrowserStepMLElement("fourth"),
 			}),
 		),
 	}
@@ -941,21 +956,21 @@ func updateMLinSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx contex
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name without local key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("first"), createSyntethicsBrowserStepMLElement("first"))),
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSyntheticsBrowserStepMLElement("no local key")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.1.name", "step name second"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.1.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("second"), createSyntethicsBrowserStepMLElement("second"))),
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", mergeSyntheticsBrowserStepElements(createSyntheticsBrowserStepULElement("second"), createSyntheticsBrowserStepMLElement("second"))),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.2.name", "step name third"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.2.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("third"), createSyntethicsBrowserStepMLElement("third"))),
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", mergeSyntheticsBrowserStepElements(createSyntheticsBrowserStepULElement("third"), createSyntheticsBrowserStepMLElement("third"))),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.3.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("fourth"), createSyntethicsBrowserStepMLElement("fourth"))),
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", mergeSyntheticsBrowserStepElements(createSyntheticsBrowserStepULElement("fourth"), createSyntheticsBrowserStepMLElement("fourth"))),
 		),
 	}
 }
@@ -966,21 +981,21 @@ func updateSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Co
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.name", "step name first"),
+				"datadog_synthetics_test.test", "browser_step.0.name", "step name without local key"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.0.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("first"), createSyntethicsBrowserStepMLElement("first"))),
+				"datadog_synthetics_test.test", "browser_step.0.params.0.element", createSyntheticsBrowserStepMLElement("no local key")),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.1.name", "step name third"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.1.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("third"), createSyntethicsBrowserStepMLElement("third"))),
+				"datadog_synthetics_test.test", "browser_step.1.params.0.element", mergeSyntheticsBrowserStepElements(createSyntheticsBrowserStepULElement("third"), createSyntheticsBrowserStepMLElement("third"))),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.2.name", "step name second"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.2.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("second"), createSyntethicsBrowserStepMLElement("second"))),
+				"datadog_synthetics_test.test", "browser_step.2.params.0.element", mergeSyntheticsBrowserStepElements(createSyntheticsBrowserStepULElement("second"), createSyntheticsBrowserStepMLElement("second"))),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.test", "browser_step.3.name", "step name fourth"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.test", "browser_step.3.params.0.element", mergeSyntheticsBrowserStepElements(createSYntheticsBrowserStepULElement("fourth"), createSyntethicsBrowserStepMLElement("fourth"))),
+				"datadog_synthetics_test.test", "browser_step.3.params.0.element", mergeSyntheticsBrowserStepElements(createSyntheticsBrowserStepULElement("fourth"), createSyntheticsBrowserStepMLElement("fourth"))),
 		),
 	}
 }
@@ -4035,7 +4050,7 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.#", "7"),
+				"datadog_synthetics_test.bar", "browser_step.#", "8"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.name", "first step"),
 			resource.TestCheckResourceAttr(
@@ -4091,13 +4106,29 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.5.params.0.code", "return 123"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.6.name", "click step"),
+				"datadog_synthetics_test.bar", "browser_step.5.params.0.variable.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.params.0.variable.0.name", "VAR_FROM_JS"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.params.0.variable.0.example", "super_secret"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.5.params.0.variable.0.secure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.6.name", "click step 1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.6.type", "click"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.6.params.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.6.params.0.element", MML),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.7.name", "click step 2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.7.type", "click"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.7.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.7.params.0.element", MML_2),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 		),
@@ -4234,12 +4265,14 @@ resource "datadog_synthetics_test" "bar" {
 			code = "return 123"
 			variable {
 				name = "VAR_FROM_JS"
+				example = "super_secret"
+				secure = true
 			}
 		}
 	}
 
 	browser_step {
-		name = "click step"
+		name = "click step 1"
 		type = "click"
 		params {
 			element = jsonencode({
@@ -4256,14 +4289,35 @@ resource "datadog_synthetics_test" "bar" {
 			})
 		}
 	}
+
+	browser_step {
+		name = "click step 2"
+		type = "click"
+		params {
+			element = jsonencode({
+				"multiLocator": {
+					"ab": "/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]",
+					"at": "/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]",
+					"cl": "/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]",
+					"clt": "/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]",
+					"co": "",
+					"ro": "//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"
+				},
+				"targetOuterHTML": "img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...",
+				"url": "https://www.datadoghq.com/other-page"
+			})
+		}
+	}
 }`, uniq)
 }
 
 const MML = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/"}`
-
 const MMLManualUpdate = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/updated"}`
-
 const MMLConfigUpdate = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/config-updated"}`
+
+const MML_2 = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"},"targetOuterHTML":"img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...","url":"https://www.datadoghq.com/other-page"}`
+const MMLManualUpdate_2 = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"},"targetOuterHTML":"img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...","url":"https://www.datadoghq.com/other-page/updated"}`
+const MMLConfigUpdate_2 = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"},"targetOuterHTML":"img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...","url":"https://www.datadoghq.com/other-page/config-updated"}`
 
 func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string) resource.TestStep {
 	return resource.TestStep{
@@ -4317,15 +4371,23 @@ func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider func() 
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.#", "1"),
+				"datadog_synthetics_test.bar", "browser_step.#", "2"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.name", "click step"),
+				"datadog_synthetics_test.bar", "browser_step.0.name", "click step 1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.type", "click"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.params.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.params.0.element", MML),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.name", "click step 2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.type", "click"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.element", MML_2),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 		),
@@ -4371,7 +4433,7 @@ resource "datadog_synthetics_test" "bar" {
 	status = "paused"
 
 	browser_step {
-		name = "click step"
+		name = "click step 1"
 		type = "click"
 		params {
 			element = jsonencode({
@@ -4388,6 +4450,25 @@ resource "datadog_synthetics_test" "bar" {
 			})
 		}
 	}
+
+	browser_step {
+		name = "click step 2"
+		type = "click"
+		params {
+			element = jsonencode({
+				"multiLocator": {
+					"ab": "/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]",
+					"at": "/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]",
+					"cl": "/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]",
+					"clt": "/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]",
+					"co": "",
+					"ro": "//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"
+				},
+				"targetOuterHTML": "img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...",
+				"url": "https://www.datadoghq.com/other-page"
+			})
+		}
+	}
 }`, uniq)
 }
 
@@ -4396,7 +4477,7 @@ func updateBrowserTestMML(ctx context.Context, accProvider func() (*schema.Provi
 		Config: createSyntheticsBrowserTestMMLConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
 			testSyntheticsTestExists(accProvider),
-			editSyntheticsTestMML(accProvider, []string{MMLManualUpdate}),
+			editSyntheticsTestMML(accProvider, []string{MMLManualUpdate, MMLManualUpdate_2}),
 		),
 	}
 }
@@ -4434,13 +4515,19 @@ func updateSyntheticsBrowserTestMmlStep(ctx context.Context, accProvider func() 
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.#", "1"),
+				"datadog_synthetics_test.bar", "browser_step.#", "2"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.name", "click step"),
+				"datadog_synthetics_test.bar", "browser_step.0.name", "click step 1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.type", "click"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.params.0.element", MMLManualUpdate),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.name", "click step 2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.type", "click"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.element", MMLManualUpdate_2),
 		),
 	}
 }
@@ -4478,13 +4565,19 @@ func updateSyntheticsBrowserTestForceMmlStep(ctx context.Context, accProvider fu
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "status", "paused"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.#", "1"),
+				"datadog_synthetics_test.bar", "browser_step.#", "2"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.0.name", "click step"),
+				"datadog_synthetics_test.bar", "browser_step.0.name", "click step 1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.type", "click"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.params.0.element", MMLConfigUpdate),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.name", "click step 2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.type", "click"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.1.params.0.element", MMLConfigUpdate_2),
 		),
 	}
 }
@@ -4514,7 +4607,7 @@ resource "datadog_synthetics_test" "bar" {
 	status = "paused"
 
 	browser_step {
-		name = "click step"
+		name = "click step 1"
 		type = "click"
 		force_element_update = true
 		params {
@@ -4529,6 +4622,26 @@ resource "datadog_synthetics_test" "bar" {
 				},
 				"targetOuterHTML": "img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...",
 				"url": "https://www.datadoghq.com/config-updated"
+			})
+		}
+	}
+
+	browser_step {
+		name = "click step 2"
+		type = "click"
+		force_element_update = true
+		params {
+			element = jsonencode({
+				"multiLocator": {
+					"ab": "/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]",
+					"at": "/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]",
+					"cl": "/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]",
+					"clt": "/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]",
+					"co": "",
+					"ro": "//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"
+				},
+				"targetOuterHTML": "img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...",
+				"url": "https://www.datadoghq.com/other-page/config-updated"
 			})
 		}
 	}

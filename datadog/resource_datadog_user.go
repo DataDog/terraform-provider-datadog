@@ -36,9 +36,10 @@ func resourceDatadogUser() *schema.Resource {
 					Required:    true,
 				},
 				"name": {
-					Description: "Name for user.",
+					Description: "User's name. Should be set only for password authentication, as it is overridden by Google or SAML authentication.",
 					Type:        schema.TypeString,
 					Optional:    true,
+					Computed:    true,
 				},
 				"roles": {
 					Description: "A list of role IDs to assign to the user.",
