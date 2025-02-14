@@ -71,6 +71,7 @@ var Resources = []func() resource.Resource{
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
 	NewTenantBasedHandleResource,
+	NewAppBuilderAppJSONResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -95,6 +96,7 @@ var Datasources = []func() datasource.DataSource{
 	NewCSMThreatsAgentRulesDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
+	NewDatadogAppBuilderAppJSONDataSource,
 }
 
 // FrameworkProvider struct
@@ -410,6 +412,14 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
+
+	// Enable unstable operations for the App Builder API
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateApp", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteApp", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteApps", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetApp", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.ListApps", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateApp", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
