@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 368
+        content_length: 382
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppDatasource_Inline_Basic-local-1738792126","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
+            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppJSONDataSource_Inline_Basic-local-1739516337","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
         form: {}
         headers:
             Accept:
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 78
         uncompressed: false
-        body: '{"data":{"id":"d39e013e-756e-4ddf-b427-67d08a1959a5","type":"appDefinitions"}}'
+        body: '{"data":{"id":"5b8b0373-e7ef-43fe-a34d-9c01ea9c884f","type":"appDefinitions"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 198.986792ms
+        duration: 367.2255ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/d39e013e-756e-4ddf-b427-67d08a1959a5
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/5b8b0373-e7ef-43fe-a34d-9c01ea9c884f
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 705
+        content_length: 723
         uncompressed: false
-        body: '{"data":{"id":"d39e013e-756e-4ddf-b427-67d08a1959a5","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppDatasource_Inline_Basic-local-1738792126","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-05T21:48:47.958015Z","updated_at":"2025-02-05T21:48:47.958015Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
+        body: '{"data":{"id":"5b8b0373-e7ef-43fe-a34d-9c01ea9c884f","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppJSONDataSource_Inline_Basic-local-1739516337","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":2,"user_id":4318134,"user_uuid":"3b5e795a-1368-11ed-aee5-da7ad0900002","user_name":"tiffany.trinh@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-14T06:58:58.875984Z","updated_at":"2025-02-14T06:58:58.875984Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 90.255167ms
+        duration: 113.255334ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/d39e013e-756e-4ddf-b427-67d08a1959a5
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/5b8b0373-e7ef-43fe-a34d-9c01ea9c884f
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 705
+        content_length: 723
         uncompressed: false
-        body: '{"data":{"id":"d39e013e-756e-4ddf-b427-67d08a1959a5","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppDatasource_Inline_Basic-local-1738792126","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-05T21:48:47.958015Z","updated_at":"2025-02-05T21:48:47.958015Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
+        body: '{"data":{"id":"5b8b0373-e7ef-43fe-a34d-9c01ea9c884f","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppJSONDataSource_Inline_Basic-local-1739516337","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":2,"user_id":4318134,"user_uuid":"3b5e795a-1368-11ed-aee5-da7ad0900002","user_name":"tiffany.trinh@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-14T06:58:58.875984Z","updated_at":"2025-02-14T06:58:58.875984Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 82.574708ms
+        duration: 110.977584ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/d39e013e-756e-4ddf-b427-67d08a1959a5
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/5b8b0373-e7ef-43fe-a34d-9c01ea9c884f
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 705
+        content_length: 723
         uncompressed: false
-        body: '{"data":{"id":"d39e013e-756e-4ddf-b427-67d08a1959a5","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppDatasource_Inline_Basic-local-1738792126","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-05T21:48:47.958015Z","updated_at":"2025-02-05T21:48:47.958015Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
+        body: '{"data":{"id":"5b8b0373-e7ef-43fe-a34d-9c01ea9c884f","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppJSONDataSource_Inline_Basic-local-1739516337","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":2,"user_id":4318134,"user_uuid":"3b5e795a-1368-11ed-aee5-da7ad0900002","user_name":"tiffany.trinh@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-14T06:58:58.875984Z","updated_at":"2025-02-14T06:58:58.875984Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 82.714292ms
+        duration: 127.303208ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/d39e013e-756e-4ddf-b427-67d08a1959a5
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/5b8b0373-e7ef-43fe-a34d-9c01ea9c884f
         method: GET
       response:
         proto: HTTP/1.1
@@ -160,15 +160,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 705
+        content_length: 723
         uncompressed: false
-        body: '{"data":{"id":"d39e013e-756e-4ddf-b427-67d08a1959a5","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppDatasource_Inline_Basic-local-1738792126","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-05T21:48:47.958015Z","updated_at":"2025-02-05T21:48:47.958015Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
+        body: '{"data":{"id":"5b8b0373-e7ef-43fe-a34d-9c01ea9c884f","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppJSONDataSource_Inline_Basic-local-1739516337","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":2,"user_id":4318134,"user_uuid":"3b5e795a-1368-11ed-aee5-da7ad0900002","user_name":"tiffany.trinh@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-14T06:58:58.875984Z","updated_at":"2025-02-14T06:58:58.875984Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 75.573042ms
+        duration: 120.643417ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -185,7 +185,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/d39e013e-756e-4ddf-b427-67d08a1959a5
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/5b8b0373-e7ef-43fe-a34d-9c01ea9c884f
         method: GET
       response:
         proto: HTTP/1.1
@@ -193,15 +193,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 705
+        content_length: 723
         uncompressed: false
-        body: '{"data":{"id":"d39e013e-756e-4ddf-b427-67d08a1959a5","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppDatasource_Inline_Basic-local-1738792126","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-05T21:48:47.958015Z","updated_at":"2025-02-05T21:48:47.958015Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
+        body: '{"data":{"id":"5b8b0373-e7ef-43fe-a34d-9c01ea9c884f","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppJSONDataSource_Inline_Basic-local-1739516337","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":2,"user_id":4318134,"user_uuid":"3b5e795a-1368-11ed-aee5-da7ad0900002","user_name":"tiffany.trinh@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-14T06:58:58.875984Z","updated_at":"2025-02-14T06:58:58.875984Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 87.030084ms
+        duration: 149.582667ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -218,7 +218,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/d39e013e-756e-4ddf-b427-67d08a1959a5
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/5b8b0373-e7ef-43fe-a34d-9c01ea9c884f
         method: GET
       response:
         proto: HTTP/1.1
@@ -226,15 +226,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 705
+        content_length: 723
         uncompressed: false
-        body: '{"data":{"id":"d39e013e-756e-4ddf-b427-67d08a1959a5","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppDatasource_Inline_Basic-local-1738792126","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-05T21:48:47.958015Z","updated_at":"2025-02-05T21:48:47.958015Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
+        body: '{"data":{"id":"5b8b0373-e7ef-43fe-a34d-9c01ea9c884f","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppJSONDataSource_Inline_Basic-local-1739516337","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":2,"user_id":4318134,"user_uuid":"3b5e795a-1368-11ed-aee5-da7ad0900002","user_name":"tiffany.trinh@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-02-14T06:58:58.875984Z","updated_at":"2025-02-14T06:58:58.875984Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 98.574084ms
+        duration: 89.699166ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -251,7 +251,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/d39e013e-756e-4ddf-b427-67d08a1959a5
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/5b8b0373-e7ef-43fe-a34d-9c01ea9c884f
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -261,13 +261,13 @@ interactions:
         trailer: {}
         content_length: 78
         uncompressed: false
-        body: '{"data":{"id":"d39e013e-756e-4ddf-b427-67d08a1959a5","type":"appDefinitions"}}'
+        body: '{"data":{"id":"5b8b0373-e7ef-43fe-a34d-9c01ea9c884f","type":"appDefinitions"}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 155.032834ms
+        duration: 161.685583ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -284,7 +284,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/app-builder/apps/d39e013e-756e-4ddf-b427-67d08a1959a5
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/5b8b0373-e7ef-43fe-a34d-9c01ea9c884f
         method: GET
       response:
         proto: HTTP/1.1
@@ -300,4 +300,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 59.227917ms
+        duration: 86.78825ms
