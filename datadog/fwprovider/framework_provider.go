@@ -71,6 +71,9 @@ var Resources = []func() resource.Resource{
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
 	NewTenantBasedHandleResource,
+	NewCSMThreatsPoliciesListResource,
+	NewCSMThreatsPolicyResource,
+	NewCSMThreatsMultiPolicyAgentRuleResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -95,6 +98,7 @@ var Datasources = []func() datasource.DataSource{
 	NewCSMThreatsAgentRulesDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
+	NewCSMThreatsPoliciesDataSource,
 }
 
 // FrameworkProvider struct
