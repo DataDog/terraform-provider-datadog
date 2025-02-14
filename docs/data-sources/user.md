@@ -41,6 +41,6 @@ data "datadog_user" "test" {
 - `modified_at` (String) The time at which the user was last updated (RFC3339 format).
 - `name` (String) Name of the user.
 - `service_account` (Boolean) Indicates whether the user is a service account.
-- `status` (String) Status of the user.
-- `title` (String) Title of the user.
+- `status` (String) The user's status.
+- `title` (String) The user's title.
 - `verified` (Boolean) Indicates whether the user is verified.

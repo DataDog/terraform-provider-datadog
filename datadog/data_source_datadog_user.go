@@ -76,12 +76,12 @@ func dataSourceDatadogUser() *schema.Resource {
 					Computed:    true,
 				},
 				"status": {
-					Description: "Status of the user.",
+					Description: "The user's status.",
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
 				"title": {
-					Description: "Title of the user.",
+					Description: "The user's title.",
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
