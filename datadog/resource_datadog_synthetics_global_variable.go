@@ -52,7 +52,7 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					Sensitive:   true,
 				},
 				"secure": {
-					Description: "If set to true, the value of the global variable is hidden. Will be ignored if is_totp is true.",
+					Description: "If set to true, the value of the global variable is hidden. This setting is ignored if `is_totp` is set to `true`.",
 					Default:     false,
 					Type:        schema.TypeBool,
 					Optional:    true,
