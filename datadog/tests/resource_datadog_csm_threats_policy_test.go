@@ -14,9 +14,8 @@ import (
 
 // Create an agent policy and update its description
 func TestAccCSMThreatsPolicy_CreateAndUpdate(t *testing.T) {
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	policyName := uniqueAgentRuleName(ctx)
 	resourceName := "datadog_csm_threats_policy.policy_test"
 	tags := []string{"host_name:test_host"}
 	resource.Test(t, resource.TestCase{
@@ -25,19 +24,17 @@ func TestAccCSMThreatsPolicy_CreateAndUpdate(t *testing.T) {
 		CheckDestroy:             testAccCheckCSMThreatsPolicyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: fmt.Sprintf(`
+				Config: `
 				resource "datadog_csm_threats_policy" "policy_test" {
-					name              = "%s"
 					enabled           = true
 					description       = "im a policy"
 					tags              = ["host_name:test_host"]
 				}
-				`, policyName),
+				`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckCSMThreatsPolicyExists(providers.frameworkProvider, "datadog_csm_threats_policy.policy_test"),
 					checkCSMThreatsPolicyContent(
 						resourceName,
-						policyName,
 						"im a policy",
 						tags,
 					),
@@ -45,19 +42,17 @@ func TestAccCSMThreatsPolicy_CreateAndUpdate(t *testing.T) {
 			},
 			// Update description
 			{
-				Config: fmt.Sprintf(`
+				Config: `
 				resource "datadog_csm_threats_policy" "policy_test" {
-					name              = "%s"
 					enabled           = true
 					description       = "updated policy for terraform provider test"
 					tags              = ["host_name:test_host"]
 				}
-				`, policyName),
+				`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckCSMThreatsPolicyExists(providers.frameworkProvider, resourceName),
 					checkCSMThreatsPolicyContent(
 						resourceName,
-						policyName,
 						"updated policy for terraform provider test",
 						tags,
 					),
@@ -67,9 +62,9 @@ func TestAccCSMThreatsPolicy_CreateAndUpdate(t *testing.T) {
 	})
 }
 
-func checkCSMThreatsPolicyContent(resourceName string, name string, description string, tags []string) resource.TestCheckFunc {
+func checkCSMThreatsPolicyContent(resourceName string, description string, tags []string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
-		resource.TestCheckResourceAttr(resourceName, "name", name),
+		resource.TestCheckResourceAttrSet(resourceName, "name"),
 		resource.TestCheckResourceAttr(resourceName, "description", description),
 		resource.TestCheckResourceAttr(resourceName, "enabled", "true"),
 		resource.TestCheckResourceAttr(resourceName, "tags.0", tags[0]),

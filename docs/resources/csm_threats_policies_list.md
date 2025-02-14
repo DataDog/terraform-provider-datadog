@@ -17,7 +17,7 @@ Provides a Datadog CSM Threats policies API resource.
 
 ### Optional
 
-- `entries` (Block Set) A set of policies that belong to this list/batch. All non-listed policies get deleted. (see [below for nested schema](#nestedblock--entries))
+- `entries` (Block Set) A set of policies that belong to this list. Only one policies_list resource can be defined in Terraform, containing all unique policies. All non-listed policies get deleted. (see [below for nested schema](#nestedblock--entries))
 
 ### Read-Only
 
@@ -28,7 +28,7 @@ Provides a Datadog CSM Threats policies API resource.
 
 Required:
 
-- `policy_id` (String) The ID of the policy to manage (from `csm_threats_policy`).
+- `policy_id` (String) The ID of the policy to manage (from csm_threats_policy).
 - `priority` (Number) The priority of the policy in this list.
 
 Optional:
