@@ -60,11 +60,11 @@ func (r *csmThreatsPoliciesListResource) Schema(_ context.Context, _ resource.Sc
 		},
 		Blocks: map[string]schema.Block{
 			"entries": schema.SetNestedBlock{
-				Description: "A set of policies that belong to this list/batch. All non-listed policies get deleted.",
+				Description: "A set of policies that belong to this list. Only one policies_list resource can be defined in Terraform, containing all unique policies. All non-listed policies get deleted.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"policy_id": schema.StringAttribute{
-							Description: "The ID of the policy to manage (from `csm_threats_policy`).",
+							Description: "The ID of the policy to manage (from csm_threats_policy).",
 							Required:    true,
 						},
 						"priority": schema.Int64Attribute{
