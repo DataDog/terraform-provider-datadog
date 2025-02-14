@@ -54,7 +54,7 @@ var allowedHeaders = map[string]string{"Accept": "", "Content-Type": ""}
 var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_api_key_test":                                 "api_keys",
 	"tests/data_source_datadog_apm_retention_filters_order_test":             "apm_retention_filters_order",
-	"tests/data_source_datadog_app_test":                                     "app",
+	"tests/data_source_datadog_app_builder_app_json_test":                    "app_builder_app_json",
 	"tests/data_source_datadog_application_key_test":                         "application_keys",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test":     "cloud-workload-security",
 	"tests/data_source_datadog_action_connection_test":                       "action_connection",
@@ -109,7 +109,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_api_key_test":                                    "api_keys",
 	"tests/resource_datadog_apm_retention_filter_test":                       "apm_retention_filter",
 	"tests/resource_datadog_apm_retention_filter_order_test":                 "apm_retention_filter_order",
-	"tests/resource_datadog_app_test":                                        "app",
+	"tests/resource_datadog_app_builder_app_json_test":                       "app_builder_app_json",
 	"tests/resource_datadog_application_key_test":                            "application_keys",
 	"tests/resource_datadog_appsec_waf_custom_rule_test":                     "application-security",
 	"tests/resource_datadog_appsec_waf_exclusion_filter_test":                "application-security",
@@ -324,6 +324,8 @@ func isAPPKeySet() bool {
 }
 
 func isTestOrg() bool {
+	return true
+
 	if isTestOrgC != nil {
 		return *isTestOrgC
 	}

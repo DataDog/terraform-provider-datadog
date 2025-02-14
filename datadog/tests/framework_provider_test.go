@@ -49,8 +49,6 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.CreateApp", true)
 	config.SetUnstableOperationEnabled("v2.DeleteApp", true)
 	config.SetUnstableOperationEnabled("v2.DeleteApps", true)
-	config.SetUnstableOperationEnabled("v2.DeployApp", true)
-	config.SetUnstableOperationEnabled("v2.DisableApp", true)
 	config.SetUnstableOperationEnabled("v2.GetApp", true)
 	config.SetUnstableOperationEnabled("v2.ListApps", true)
 	config.SetUnstableOperationEnabled("v2.UpdateApp", true)
