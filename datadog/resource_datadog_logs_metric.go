@@ -75,7 +75,7 @@ func resourceDatadogLogsMetric() *schema.Resource {
 				},
 
 				"group_by": {
-					Type:        schema.TypeSet,
+					Type:        schema.TypeList,
 					Optional:    true,
 					Description: "The rules for the group by.",
 					Elem: &schema.Resource{
