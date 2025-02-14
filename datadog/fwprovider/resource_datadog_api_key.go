@@ -62,7 +62,7 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"remote_config_read_enabled": schema.BoolAttribute{
-				Description: "Whether the API key will be used for remote config. Warning : default value is true for backwards compatibility",
+				Description: "Whether the API key isgi used for remote config. Warning : default value is true for backwards compatibility",
 				Optional:    true,
 				Computed:    true,
 				Default:     booldefault.StaticBool(true),

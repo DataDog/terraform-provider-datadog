@@ -28,7 +28,7 @@ resource "datadog_api_key" "foo" {
 
 ### Optional
 
-- `remote_config_read_enabled` (Boolean) Whether the API key will be used for remote config. Warning : default value is true for backwards compatibility Defaults to `true`.
+- `remote_config_read_enabled` (Boolean) Whether the API key is used for remote config. Warning : default value is true for backwards compatibility Defaults to `true`.
 
 ### Read-Only
 
