@@ -1,10 +1,10 @@
-# Example app json - loaded from a file (necessary if includes ${} syntax)
-resource "datadog_app" "example_app_from_file" {
+# Example app JSON - loaded from a file (required for ${} syntax)
+resource "datadog_app_builder_app_json" "example_app_from_file" {
   app_json = file("${path.module}/resource.json")
 }
 
-# Example app json - inline basic
-resource "datadog_app" "example_app_inline_basic" {
+# Example app JSON - inline basic
+resource "datadog_app_builder_app_json" "example_app_inline_basic" {
   app_json = jsonencode(
     {
       "queries" : [],

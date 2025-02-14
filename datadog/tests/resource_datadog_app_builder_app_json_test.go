@@ -16,23 +16,23 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func TestAccDatadogAppResource_Inline_Basic(t *testing.T) {
+func TestAccDatadogAppBuilderAppJSONResource_Inline_Basic(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	appName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_app.test_app_inline_basic"
+	resourceName := "datadog_app_builder_app_json.test_app_inline_basic"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogAppDestroy(providers.frameworkProvider, resourceName),
+		CheckDestroy:             testAccCheckDatadogAppBuilderAppJSONDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testInlineBasicAppResourceConfig(appName),
+				Config: testInlineBasicAppBuilderAppJSONResourceConfig(appName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogAppExists(providers.frameworkProvider, resourceName),
+					testAccCheckDatadogAppBuilderAppJSONExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "app_json"),
 					resource.TestMatchResourceAttr(resourceName, "app_json", regexp.MustCompile(`\"name\":\"`+appName+`\"`)),
@@ -42,21 +42,21 @@ func TestAccDatadogAppResource_Inline_Basic(t *testing.T) {
 	})
 }
 
-func TestAccDatadogAppResource_Inline_Basic_Import(t *testing.T) {
+func TestAccDatadogAppBuilderAppJSONResource_Inline_Basic_Import(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	appName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_app.test_app_inline_basic"
+	resourceName := "datadog_app_builder_app_json.test_app_inline_basic"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogAppDestroy(providers.frameworkProvider, resourceName),
+		CheckDestroy:             testAccCheckDatadogAppBuilderAppJSONDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testInlineBasicAppResourceConfig(appName),
+				Config: testInlineBasicAppBuilderAppJSONResourceConfig(appName),
 			},
 			{
 				ResourceName:      resourceName,
@@ -67,13 +67,13 @@ func TestAccDatadogAppResource_Inline_Basic_Import(t *testing.T) {
 	})
 }
 
-func TestAccDatadogAppResource_FromFile_Complex(t *testing.T) {
+func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	appName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_app.test_app_from_file"
+	resourceName := "datadog_app_builder_app_json.test_app_from_file"
 
 	// create temporary file to hold large app json & avoid ${} interpolation by TF
 	file, err := os.CreateTemp("", "test_app_json.*.json")
@@ -85,7 +85,7 @@ func TestAccDatadogAppResource_FromFile_Complex(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	// write app json to file
-	_, err = file.WriteString(testComplexAppJSON(appName))
+	_, err = file.WriteString(testComplexAppBuilderAppJSONJSON(appName))
 	if err != nil {
 		panic(fmt.Errorf("Error writing to file: %s", err))
 	}
@@ -93,28 +93,28 @@ func TestAccDatadogAppResource_FromFile_Complex(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogAppDestroy(providers.frameworkProvider, resourceName),
+		CheckDestroy:             testAccCheckDatadogAppBuilderAppJSONDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testLoadFromFileComplexAppResourceConfig(file.Name()),
+				Config: testLoadFromFileComplexAppBuilderAppJSONResourceConfig(file.Name()),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogAppExists(providers.frameworkProvider, resourceName),
+					testAccCheckDatadogAppBuilderAppJSONExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "app_json"),
-					resource.TestCheckResourceAttr(resourceName, "app_json", testComplexAppJSON(appName)),
+					resource.TestCheckResourceAttr(resourceName, "app_json", testComplexAppBuilderAppJSONJSON(appName)),
 				),
 			},
 		},
 	})
 }
 
-func TestAccDatadogAppResource_FromFile_Complex_Import(t *testing.T) {
+func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex_Import(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	appName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_app.test_app_from_file"
+	resourceName := "datadog_app_builder_app_json.test_app_from_file"
 
 	// create temporary file to hold large app json & avoid ${} interpolation by TF
 	file, err := os.CreateTemp("", "test_app_json.*.json")
@@ -126,7 +126,7 @@ func TestAccDatadogAppResource_FromFile_Complex_Import(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	// write app json to file
-	_, err = file.WriteString(testComplexAppJSON(appName))
+	_, err = file.WriteString(testComplexAppBuilderAppJSONJSON(appName))
 	if err != nil {
 		panic(fmt.Errorf("Error writing to file: %s", err))
 	}
@@ -134,10 +134,10 @@ func TestAccDatadogAppResource_FromFile_Complex_Import(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogAppDestroy(providers.frameworkProvider, resourceName),
+		CheckDestroy:             testAccCheckDatadogAppBuilderAppJSONDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testLoadFromFileComplexAppResourceConfig(file.Name()),
+				Config: testLoadFromFileComplexAppBuilderAppJSONResourceConfig(file.Name()),
 			},
 			{
 				ResourceName: resourceName,
@@ -166,26 +166,26 @@ func TestAccDatadogAppResource_FromFile_Complex_Import(t *testing.T) {
 	})
 }
 
-func testLoadFromFileComplexAppResourceConfig(fileName string) string {
+func testLoadFromFileComplexAppBuilderAppJSONResourceConfig(fileName string) string {
 	return fmt.Sprintf(`
-	resource "datadog_app" "test_app_from_file" {
+	resource "datadog_app_builder_app_json" "test_app_from_file" {
 		app_json = file("%s")
 	}`, fileName)
 }
 
-func testAccCheckDatadogAppExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
+func testAccCheckDatadogAppBuilderAppJSONExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth
 
-		if err := datadogAppExistsHelper(auth, s, apiInstances, n); err != nil {
+		if err := datadogAppBuilderAppJSONExistsHelper(auth, s, apiInstances, n); err != nil {
 			return err
 		}
 		return nil
 	}
 }
 
-func datadogAppExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
+func datadogAppBuilderAppJSONExistsHelper(ctx context.Context, s *terraform.State, apiInstances *utils.ApiInstances, name string) error {
 	idString := s.RootModule().Resources[name].Primary.ID
 	id, err := uuid.Parse(idString)
 	if err != nil {
@@ -197,7 +197,7 @@ func datadogAppExistsHelper(ctx context.Context, s *terraform.State, apiInstance
 	return nil
 }
 
-func testComplexAppJSON(name string) string {
+func testComplexAppBuilderAppJSONJSON(name string) string {
 	return fmt.Sprintf(`
 	{
 		"queries": [

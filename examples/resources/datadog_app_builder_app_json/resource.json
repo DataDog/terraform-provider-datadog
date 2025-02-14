@@ -1,7 +1,7 @@
 {
   "queries": [
     {
-      "id" : "2df060be-0743-45b1-a952-07c70eda8c98",
+      "id" : "11111111-2222-3333-4444-555555555555",
       "name": "createIssue0",
       "type": "action",
       "properties": {
@@ -16,7 +16,7 @@
             "priorityName": "${priority.value}",
             "projectKey": "${project.value}",
             "summary": "${title.value}",
-            "accountId": "00000000-0000-0000-0000-000000000000"
+            "accountId": "11111111-2222-3333-4444-555555555555"
           }
         }
       },

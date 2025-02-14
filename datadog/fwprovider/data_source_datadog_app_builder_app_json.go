@@ -12,30 +12,30 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-var _ datasource.DataSource = &appDataSource{}
+var _ datasource.DataSource = &appBuilderAppJSONDataSource{}
 
-type appDataSource struct {
+type appBuilderAppJSONDataSource struct {
 	Api  *datadogV2.AppBuilderApi
 	Auth context.Context
 }
 
-func NewDatadogAppDataSource() datasource.DataSource {
-	return &appDataSource{}
+func NewDatadogAppBuilderAppJSONDataSource() datasource.DataSource {
+	return &appBuilderAppJSONDataSource{}
 }
 
-func (d *appDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *appBuilderAppJSONDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetAppBuilderApiV2()
 	d.Auth = providerData.Auth
 }
 
-func (d *appDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
-	response.TypeName = "app"
+func (d *appBuilderAppJSONDataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+	response.TypeName = "app_builder_app_json"
 }
 
-func (d *appDataSource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *appBuilderAppJSONDataSource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Use this data source to retrieve information about an existing Datadog App from the App Builder product, for use in other resources.",
+		Description: "This data source retrieves the JSON definition of an existing Datadog App from App Builder for use in other resources.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "ID for the App.",
@@ -53,8 +53,8 @@ func (d *appDataSource) Schema(_ context.Context, request datasource.SchemaReque
 	}
 }
 
-func (d *appDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state appResourceModel
+func (d *appBuilderAppJSONDataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state appBuilderAppJSONResourceModel
 	diags := request.Config.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -67,12 +67,12 @@ func (d *appDataSource) Read(ctx context.Context, request datasource.ReadRequest
 		return
 	}
 
-	appModel, err := readApp(d.Auth, d.Api, id)
+	appBuilderAppJSONModel, err := readAppBuilderAppJSON(d.Auth, d.Api, id)
 	if err != nil {
 		response.Diagnostics.AddError("Error reading app", err.Error())
 		return
 	}
 
-	diags = response.State.Set(ctx, appModel)
+	diags = response.State.Set(ctx, appBuilderAppJSONModel)
 	response.Diagnostics.Append(diags...)
 }
