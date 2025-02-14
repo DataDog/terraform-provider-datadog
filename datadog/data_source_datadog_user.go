@@ -31,12 +31,12 @@ func dataSourceDatadogUser() *schema.Resource {
 				},
 				// Computed values
 				"created_at": {
-					Description: "Creation time of the user (RFC3339 format).",
+					Description: "The time when the user was created (RFC3339 format).",
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
 				"disabled": {
-					Description: "Whether the user is disabled.",
+					Description: "Indicates whether the user is disabled.",
 					Type:        schema.TypeBool,
 					Computed:    true,
 				},
@@ -46,22 +46,22 @@ func dataSourceDatadogUser() *schema.Resource {
 					Computed:    true,
 				},
 				"handle": {
-					Description: "Handle of the user.",
+					Description: "The user's handle.",
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
 				"icon": {
-					Description: "URL of the user's icon.",
+					Description: "The URL where the user's icon is located.",
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
 				"mfa_enabled": {
-					Description: "If user has MFA enabled.",
+					Description: "Indicates whether the user has enabled MFA.",
 					Type:        schema.TypeBool,
 					Computed:    true,
 				},
 				"modified_at": {
-					Description: "Time that the user was last modified (RFC3339 format).",
+					Description: "The time at which the user was last updated (RFC3339 format).",
 					Type:        schema.TypeString,
 					Computed:    true,
 				},
@@ -71,7 +71,7 @@ func dataSourceDatadogUser() *schema.Resource {
 					Computed:    true,
 				},
 				"service_account": {
-					Description: "Whether the user is a service account.",
+					Description: "Indicates whether the user is a service account.",
 					Type:        schema.TypeBool,
 					Computed:    true,
 				},
@@ -86,7 +86,7 @@ func dataSourceDatadogUser() *schema.Resource {
 					Computed:    true,
 				},
 				"verified": {
-					Description: "Whether the user is verified.",
+					Description: "Indicates whether the user is verified.",
 					Type:        schema.TypeBool,
 					Computed:    true,
 				},
