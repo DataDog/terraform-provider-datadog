@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -269,14 +270,7 @@ func workflowAutomationModelToUpdateApiRequest(workflowAutomationModel workflowA
 	attributes.SetPublished(workflowAutomationModel.Published.ValueBool())
 	attributes.SetWebhookSecret(workflowAutomationModel.WebhookSecret.ValueString())
 
-	var specJsonString string
-	err := json.Unmarshal([]byte(workflowAutomationModel.SpecJson.ValueString()), &specJsonString)
-	if err != nil {
-		err = fmt.Errorf("error unmarshalling spec json to string: %s", err)
-		return nil, err
-	}
-
-	err = json.Unmarshal([]byte(specJsonString), &attributes.Spec)
+	err := json.Unmarshal([]byte(workflowAutomationModel.SpecJson.ValueString()), &attributes.Spec)
 	if err != nil {
 		err = fmt.Errorf("error unmarshalling spec json string to attributes.Spec struct: %s", err)
 		return nil, err
