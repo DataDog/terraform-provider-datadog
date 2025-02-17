@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"locations":["aws:eu-central-1"],"message":"","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"status":"paused","steps":[{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name first","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name second","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name third","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name fourth","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent"}],"tags":[],"type":"browser"}
+            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"locations":["aws:eu-central-1"],"message":"","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"status":"paused","steps":[{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name first","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name second","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name third","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name fourth","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent"}],"tags":[],"type":"browser"}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:33.638294+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":163275944,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"84x-c4j-9zb","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"vki-a28-wpf","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"ju5-yxk-rfc","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"kca-3nd-3x4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}],"stepCount":{"assertions":4,"subtests":0,"total":4}}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:05.486508+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"deleted_at":null,"monitor_id":164850417,"org_id":321813,"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"ut9-65z-xpt","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"cwm-5rs-dy3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"2cw-hqv-wvm","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"hrt-kqe-93v","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}],"stepCount":{"assertions":4,"subtests":0,"total":4}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 1.123885959s
+        duration: 1.044399083s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -67,13 +67,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:33.638294+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":163275944,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"84x-c4j-9zb","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"vki-a28-wpf","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"ju5-yxk-rfc","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"kca-3nd-3x4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:05.486508+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":164850417,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"ut9-65z-xpt","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"cwm-5rs-dy3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"2cw-hqv-wvm","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"hrt-kqe-93v","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 171.015625ms
+        duration: 175.4135ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +90,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +102,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:33.638294+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":163275944,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:05.486508+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":164850417,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 153.420458ms
+        duration: 166.628833ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +125,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,13 +137,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:33.638294+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":163275944,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:05.486508+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":164850417,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 160.77575ms
+        duration: 168.995041ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -160,7 +160,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -172,13 +172,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:33.638294+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":163275944,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"84x-c4j-9zb","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"vki-a28-wpf","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"ju5-yxk-rfc","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"kca-3nd-3x4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:05.486508+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":164850417,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"ut9-65z-xpt","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"cwm-5rs-dy3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"2cw-hqv-wvm","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"hrt-kqe-93v","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 185.7065ms
+        duration: 193.54025ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -195,7 +195,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -207,13 +207,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:33.638294+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":163275944,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:05.486508+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":164850417,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 157.44725ms
+        duration: 158.230792ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -230,7 +230,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -242,13 +242,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:33.638294+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":163275944,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"84x-c4j-9zb","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"vki-a28-wpf","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"ju5-yxk-rfc","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"kca-3nd-3x4","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:05.486508+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":164850417,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"ut9-65z-xpt","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"cwm-5rs-dy3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"2cw-hqv-wvm","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"hrt-kqe-93v","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 172.733792ms
+        duration: 182.933916ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -261,14 +261,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"locations":["aws:eu-central-1"],"message":"","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"status":"paused","steps":[{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name first","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name third","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name second","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name fourth","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent"}],"tags":[],"type":"browser"}
+            {"config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"locations":["aws:eu-central-1"],"message":"","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"status":"paused","steps":[{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name first","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name third","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name second","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent"},{"allowFailure":false,"alwaysExecute":false,"exitIfSucceed":false,"isCritical":true,"name":"step name fourth","noScreenshot":false,"params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent"}],"tags":[],"type":"browser"}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/xgd-jqq-rm2
         method: PUT
       response:
         proto: HTTP/1.1
@@ -280,13 +280,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"org_id":321813,"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:37.675761+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"overall_state_modified":"2025-01-23T12:49:37.801763+00:00","monitor_id":163275944,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"23c-tsy-ygm","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"te7-3i4-hpw","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"err-zxj-vyb","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"29g-9dy-gh3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}],"stepCount":{"assertions":4,"subtests":0,"total":4}}
+            {"org_id":321813,"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:10.424633+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"overall_state_modified":"2025-02-17T21:12:10.504415+00:00","monitor_id":164850417,"created_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"modified_by":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"overall_state":2,"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"unb-kyv-e9a","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"mnh-ua9-ydb","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"4sm-uu3-tnp","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"5ki-8af-jes","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}],"stepCount":{"assertions":4,"subtests":0,"total":4}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 682.325458ms
+        duration: 652.721208ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -303,7 +303,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -315,13 +315,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:37.675761+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":163275944,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:10.424633+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":164850417,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 264.656666ms
+        duration: 166.33375ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -338,7 +338,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -350,13 +350,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:37.675761+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":163275944,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:10.424633+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":164850417,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 242.784084ms
+        duration: 201.652042ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -373,7 +373,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/browser/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -385,13 +385,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"public_id":"jci-u72-ubt","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1737636570","status":"paused","type":"browser","tags":[],"created_at":"2025-01-23T12:49:33.638294+00:00","modified_at":"2025-01-23T12:49:37.675761+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":163275944,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"23c-tsy-ygm","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"te7-3i4-hpw","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"err-zxj-vyb","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"29g-9dy-gh3","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
+            {"public_id":"xgd-jqq-rm2","name":"tf-TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML-local-1739826721","status":"paused","type":"browser","tags":[],"created_at":"2025-02-17T21:12:05.486508+00:00","modified_at":"2025-02-17T21:12:10.424633+00:00","config":{"assertions":[],"configVariables":[],"request":{"method":"GET","timeout":60,"url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"variables":[]},"message":"","options":{"device_ids":["chrome.laptop_large"],"httpVersion":"any","initialNavigationTimeout":15,"min_location_failed":1,"retry":{"count":0,"interval":300},"tick_every":3600},"locations":["aws:eu-central-1"],"monitor_id":164850417,"creator":{"name":"frog","handle":"frog@datadoghq.com","email":"frog@datadoghq.com"},"steps":[{"name":"step name first","params":{"check":"contains","element":{"multiLocator":{"ab":"ab first","at":"at first","cl":"cl first","clt":"clt first","co":"co first"},"targetOuterHTML":"targetOuterHTML first","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step first value"},"timeout":5,"type":"assertElementContent","public_id":"unb-kyv-e9a","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name third","params":{"check":"contains","element":{"multiLocator":{"ab":"ab third","at":"at third","cl":"cl third","clt":"clt third","co":"co third"},"targetOuterHTML":"targetOuterHTML third","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step third value"},"timeout":5,"type":"assertElementContent","public_id":"mnh-ua9-ydb","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name second","params":{"check":"contains","element":{"multiLocator":{"ab":"ab second","at":"at second","cl":"cl second","clt":"clt second","co":"co second"},"targetOuterHTML":"targetOuterHTML second","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step second value"},"timeout":5,"type":"assertElementContent","public_id":"4sm-uu3-tnp","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false},{"name":"step name fourth","params":{"check":"contains","element":{"multiLocator":{"ab":"ab fourth","at":"at fourth","cl":"cl fourth","clt":"clt fourth","co":"co fourth"},"targetOuterHTML":"targetOuterHTML fourth","url":"https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/disabled"},"value":"step fourth value"},"timeout":5,"type":"assertElementContent","public_id":"5ki-8af-jes","allowFailure":false,"isCritical":true,"noScreenshot":false,"exitIfSucceed":false,"alwaysExecute":false}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 164.224042ms
+        duration: 351.147792ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -404,7 +404,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"public_ids":["jci-u72-ubt"]}
+            {"public_ids":["xgd-jqq-rm2"]}
         form: {}
         headers:
             Accept:
@@ -423,13 +423,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_tests":[{"public_id":"jci-u72-ubt","deleted_at":"2025-01-23T12:49:41.125065+00:00"}]}
+            {"deleted_tests":[{"public_id":"xgd-jqq-rm2","deleted_at":"2025-02-17T21:12:16.576461+00:00"}]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 704.658666ms
+        duration: 932.302583ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -446,7 +446,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/synthetics/tests/jci-u72-ubt
+        url: https://api.datadoghq.com/api/v1/synthetics/tests/xgd-jqq-rm2
         method: GET
       response:
         proto: HTTP/1.1
@@ -463,4 +463,4 @@ interactions:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 281.696542ms
+        duration: 176.222541ms

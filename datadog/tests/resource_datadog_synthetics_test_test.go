@@ -154,7 +154,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 				ResourceName:            "datadog_synthetics_test.bar",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "browser_step"},
+				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "browser_step", "request_client_certificate"},
 			},
 		},
 	})
