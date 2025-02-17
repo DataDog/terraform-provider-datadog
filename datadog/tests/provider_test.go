@@ -233,6 +233,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_service_account_test":                            "users",
 	"tests/resource_datadog_service_definition_yaml_test":                    "service-definition",
 	"tests/resource_datadog_service_level_objective_test":                    "service-level-objectives",
+	"tests/resource_datadog_shared_dashboard_test":                           "shared-dashboard",
 	"tests/resource_datadog_slo_correction_test":                             "slo_correction",
 	"tests/resource_datadog_software_catalog_test":                           "software-catalog",
 	"tests/resource_datadog_spans_metric_test":                               "spans-metric",
