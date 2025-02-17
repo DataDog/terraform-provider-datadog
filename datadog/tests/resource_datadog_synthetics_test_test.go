@@ -3441,13 +3441,13 @@ resource "datadog_synthetics_test" "bar" {
 	}
 	
 	request_client_certificate {
-      cert {
-        content = "content-certificate"
-      }
-      key {
-        content  = "content-key"
-        filename = "key"
-      }
+		cert {
+			content = "content-certificate"
+		}
+		key {
+			content  = "content-key"
+			filename = "key"
+		}
     }
 
 	request_proxy {
