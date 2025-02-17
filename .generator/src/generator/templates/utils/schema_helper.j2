@@ -1,16 +1,20 @@
 {%- macro typePrimitiveSchema(name, schema, required=False) %}
 "{{ name }}": schema.{{ get_terraform_schema_type(schema) }}Attribute{
-    {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
+    {{- RequiredOptionalComputed(schema, required) }}
     Description: "{{ schema.description|sanitize_description if schema.description else "UPDATE ME" }}",
 },
 {%- endmacro %}
 
 {%- macro typePrimitiveArraySchema(name, schema, required=False) %}
 "{{ name }}": schema.{{ get_terraform_schema_type(schema) }}Attribute{
-    {% if required %}Required:    true,{% else %}Optional:    true,{% endif %}
+    {{- RequiredOptionalComputed(schema, required) }}
     Description: "{{ schema.description|sanitize_description if schema.description else "UPDATE ME" }}",
     ElementType: types.{{ get_terraform_schema_type(schema.get("items")) }}Type,
 },
+{%- endmacro %}
+
+{%- macro RequiredOptionalComputed(schema, required=False) %}
+{% if is_computed(schema) %} Computed: true,{% elif required %}Required:    true,{% else %}Optional:    true,{% endif %}
 {%- endmacro %}
 
 {%- macro baseBlockListAttrSchemaBuilder(name, schema, required=False) %}
