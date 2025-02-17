@@ -718,7 +718,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 								Optional:    true,
 							},
 							"renotify_occurrences": {
-								Description: "The number of times a monitor re-notifies. It can only be set if renotify_interval is set.",
+								Description: "The number of times a monitor re-notifies. It can only be set if `renotify_interval` is set.",
 								Type:        schema.TypeInt,
 								Optional:    true,
 							},
@@ -874,7 +874,7 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 								Optional: true,
 							},
 							"renotify_occurrences": {
-								Description: "The number of times a monitor re-notifies. It can only be set if renotify_interval is set.",
+								Description: "The number of times a monitor re-notifies. It can only be set if `renotify_interval` is set.",
 								Type:        schema.TypeInt,
 								Optional:    true,
 							},
