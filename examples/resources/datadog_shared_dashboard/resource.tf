@@ -1,5 +1,5 @@
 
-
+# Shared dashboard open to all users
 resource "datadog_shared_dashboard" "open_dashboard" {
   dashboard_id   = "123-abc-456"
   dashboard_type = "custom_timeboard"
@@ -16,6 +16,7 @@ resource "datadog_shared_dashboard" "open_dashboard" {
   share_type = "open"
 }
 
+# Shared dashboard accessible only to a limited list of users
 resource "datadog_shared_dashboard" "invite_only" {
   dashboard_id   = "123-abc-456"
   dashboard_type = "custom_timeboard"
