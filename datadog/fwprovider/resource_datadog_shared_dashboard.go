@@ -25,7 +25,6 @@ type sharedDashboardResource struct {
 
 type sharedDashboardModel struct {
 	ID                          types.String                   `tfsdk:"id"`
-	CreatedAt                   types.String                   `tfsdk:"created_at"`
 	DashboardId                 types.String                   `tfsdk:"dashboard_id"`
 	DashboardType               types.String                   `tfsdk:"dashboard_type"`
 	GlobalTimeSelectableEnabled types.Bool                     `tfsdk:"global_time_selectable_enabled"`
@@ -34,7 +33,8 @@ type sharedDashboardModel struct {
 	Token                       types.String                   `tfsdk:"token"`
 	ShareList                   types.List                     `tfsdk:"share_list"`
 	SelectableTemplateVars      []*selectableTemplateVarsModel `tfsdk:"selectable_template_vars"`
-	Author                      *authorModel                   `tfsdk:"author"`
+	AuthorHandle                types.String                   `tfsdk:"author_handle"`
+	AuthorName                  types.String                   `tfsdk:"author_name"`
 	GlobalTime                  *globalTimeModel               `tfsdk:"global_time"`
 }
 
@@ -43,11 +43,6 @@ type selectableTemplateVarsModel struct {
 	Name         types.String `tfsdk:"name"`
 	Prefix       types.String `tfsdk:"prefix"`
 	VisibleTags  types.List   `tfsdk:"visible_tags"`
-}
-
-type authorModel struct {
-	Handle types.String `tfsdk:"handle"`
-	Name   types.String `tfsdk:"name"`
 }
 
 type globalTimeModel struct {
@@ -72,10 +67,6 @@ func (r *sharedDashboardResource) Schema(_ context.Context, _ resource.SchemaReq
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog SharedDashboard resource. This can be used to create and manage Datadog shared_dashboard.",
 		Attributes: map[string]schema.Attribute{
-			"created_at": schema.StringAttribute{
-				Computed:    true,
-				Description: "Date the dashboard was shared.",
-			},
 			"dashboard_id": schema.StringAttribute{
 				Required:    true,
 				Description: "ID of the dashboard to share.",
@@ -106,6 +97,14 @@ func (r *sharedDashboardResource) Schema(_ context.Context, _ resource.SchemaReq
 				ElementType: types.StringType,
 			},
 			"id": utils.ResourceIDAttribute(),
+			"author_handle": schema.StringAttribute{
+				Computed:    true,
+				Description: "Identifier of the user who shared the dashboard.",
+			},
+			"author_name": schema.StringAttribute{
+				Computed:    true,
+				Description: "Name of the user who shared the dashboard.",
+			},
 		},
 		Blocks: map[string]schema.Block{
 			"selectable_template_vars": schema.ListNestedBlock{
@@ -128,18 +127,6 @@ func (r *sharedDashboardResource) Schema(_ context.Context, _ resource.SchemaReq
 							Description: "List of visible tag values on the shared dashboard.",
 							ElementType: types.StringType,
 						},
-					},
-				},
-			},
-			"author": schema.SingleNestedBlock{
-				Attributes: map[string]schema.Attribute{
-					"handle": schema.StringAttribute{
-						Computed:    true,
-						Description: "Identifier of the user who shared the dashboard.",
-					},
-					"name": schema.StringAttribute{
-						Computed:    true,
-						Description: "Name of the user who shared the dashboard.",
 					},
 				},
 			},
@@ -267,10 +254,6 @@ func (r *sharedDashboardResource) Delete(ctx context.Context, request resource.D
 func (r *sharedDashboardResource) updateState(ctx context.Context, state *sharedDashboardModel, resp *datadogV1.SharedDashboard) {
 	state.ID = types.StringValue(resp.GetToken())
 
-	if createdAt, ok := resp.GetCreatedAtOk(); ok {
-		state.CreatedAt = types.StringValue(*createdAt)
-	}
-
 	state.DashboardId = types.StringValue(resp.GetDashboardId())
 
 	state.DashboardType = types.StringValue(string(resp.GetDashboardType()))
@@ -291,48 +274,37 @@ func (r *sharedDashboardResource) updateState(ctx context.Context, state *shared
 		state.Token = types.StringValue(*token)
 	}
 
-	if shareList, ok := resp.GetShareListOk(); ok && len(*shareList) > 0 {
+	if shareList, ok := resp.GetShareListOk(); ok && shareList != nil && len(*shareList) > 0 {
 		state.ShareList, _ = types.ListValueFrom(ctx, types.StringType, *shareList)
 	}
 
 	if selectableTemplateVars, ok := resp.GetSelectableTemplateVarsOk(); ok && len(*selectableTemplateVars) > 0 {
 		state.SelectableTemplateVars = []*selectableTemplateVarsModel{}
 		for _, selectableTemplateVarsDd := range *selectableTemplateVars {
-			selectableTemplateVarsTfItem := selectableTemplateVarsModel{}
-
-			if selectableTemplateVars, ok := selectableTemplateVarsDd.GetSelectableTemplateVarsOk(); ok {
-
-				selectableTemplateVarsTf := selectableTemplateVarsModel{}
-				if defaultValue, ok := selectableTemplateVars.GetDefaultValueOk(); ok {
-					selectableTemplateVarsTf.DefaultValue = types.StringValue(*defaultValue)
-				}
-				if name, ok := selectableTemplateVars.GetNameOk(); ok {
-					selectableTemplateVarsTf.Name = types.StringValue(*name)
-				}
-				if prefix, ok := selectableTemplateVars.GetPrefixOk(); ok {
-					selectableTemplateVarsTf.Prefix = types.StringValue(*prefix)
-				}
-				if visibleTags, ok := selectableTemplateVars.GetVisibleTagsOk(); ok && len(*visibleTags) > 0 {
-					selectableTemplateVarsTf.VisibleTags, _ = types.ListValueFrom(ctx, types.StringType, *visibleTags)
-				}
-
-				selectableTemplateVarsTfItem.SelectableTemplateVars = &selectableTemplateVarsTf
+			selectableTemplateVarsTf := selectableTemplateVarsModel{}
+			if defaultValue, ok := selectableTemplateVarsDd.GetDefaultValueOk(); ok {
+				selectableTemplateVarsTf.DefaultValue = types.StringValue(*defaultValue)
 			}
-			state.SelectableTemplateVars = append(state.SelectableTemplateVars, &selectableTemplateVarsTfItem)
+			if name, ok := selectableTemplateVarsDd.GetNameOk(); ok {
+				selectableTemplateVarsTf.Name = types.StringValue(*name)
+			}
+			if prefix, ok := selectableTemplateVarsDd.GetPrefixOk(); ok {
+				selectableTemplateVarsTf.Prefix = types.StringValue(*prefix)
+			}
+			if visibleTags, ok := selectableTemplateVarsDd.GetVisibleTagsOk(); ok && len(*visibleTags) > 0 {
+				selectableTemplateVarsTf.VisibleTags, _ = types.ListValueFrom(ctx, types.StringType, *visibleTags)
+			}
+			state.SelectableTemplateVars = append(state.SelectableTemplateVars, &selectableTemplateVarsTf)
 		}
 	}
 
 	if author, ok := resp.GetAuthorOk(); ok {
-
-		authorTf := authorModel{}
 		if handle, ok := author.GetHandleOk(); ok {
-			authorTf.Handle = types.StringValue(*handle)
+			state.AuthorHandle = types.StringValue(*handle)
 		}
 		if name, ok := author.GetNameOk(); ok {
-			authorTf.Name = types.StringValue(*name)
+			state.AuthorName = types.StringValue(*name)
 		}
-
-		state.Author = &authorTf
 	}
 
 	if globalTime, ok := resp.GetGlobalTimeOk(); ok {
