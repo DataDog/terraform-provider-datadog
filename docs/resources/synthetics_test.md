@@ -1342,11 +1342,7 @@ Optional:
 Optional:
 
 - `renotify_interval` (Number) Specify a renotification frequency in minutes. Values available by default are `0`, `10`, `20`, `30`, `40`, `50`, `60`, `90`, `120`, `180`, `240`, `300`, `360`, `720`, `1440`. Defaults to `0`.
-<<<<<<< HEAD
 - `renotify_occurrences` (Number) The number of times a monitor renotifies. It can only be set if `renotify_interval` is set.
-=======
-- `renotify_occurrences` (Number) The number of times a monitor renotifies. It can only be set if `renotify_interval` is set.
->>>>>>> 2b2978a4d6bfce743324bd18b3fe68423a875bb9
 
 
 <a id="nestedblock--options_list--retry"></a>
