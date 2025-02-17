@@ -26,6 +26,10 @@ resource "datadog_api_key" "foo" {
 
 - `name` (String) Name for API Key.
 
+### Optional
+
+- `remote_config_read_enabled` (Boolean) Whether the API key is used for remote config. Warning : default value is true for backwards compatibility Defaults to `true`.
+
 ### Read-Only
 
 - `id` (String) The ID of this resource.
