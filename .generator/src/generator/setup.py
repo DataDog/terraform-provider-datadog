@@ -18,7 +18,7 @@ def load_environment(version: str) -> Environment:
     env.filters["attribute_name"] = formatter.attribute_name
     env.filters["camel_case"] = formatter.camel_case
     env.filters["sanitize_description"] = formatter.sanitize_description
-    env.filters["simple_type"] = formatter.simple_type
+
     env.filters["snake_case"] = formatter.snake_case
     env.filters["untitle_case"] = formatter.untitle_case
     env.filters["variable_name"] = formatter.variable_name
@@ -39,6 +39,11 @@ def load_environment(version: str) -> Environment:
     env.globals["get_terraform_schema_type"] = formatter.get_terraform_schema_type
     env.globals["get_type_for_parameter"] = type.get_type_for_parameter
     env.globals["get_type"] = type.type_to_go
+    env.globals["is_required"] = utils.is_required
+    env.globals["is_computed"] = utils.is_computed
+    env.globals["is_enum"] = utils.is_enum
+    env.globals["is_nullable"] = utils.is_nullable
+    env.globals["simple_type"] = formatter.simple_type
 
     env.globals["GET_OPERATION"] = utils.GET_OPERATION
     env.globals["CREATE_OPERATION"] = utils.CREATE_OPERATION
