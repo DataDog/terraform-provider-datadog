@@ -1,3 +1,25 @@
+## 3.55.0 (February 18, 2025)
+
+### BUGFIXES
+* [datadog_user] Fix the `name` field as Optional + Computed by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2784
+* [datadog_synthetics_test] Fix browser request_client_certificate by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2840
+### IMPROVEMENTS
+* [datadog_users] Add attributes to `datadog_users` datasource by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2786
+### FEATURES
+* [datadog_synthetics_test] Add secure field for extractFromJavascript browser step variables by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2818
+* [datadog_teams] Add new datasource  by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2789
+* [resource_datadog_security_notification_rule] Add notification rule terraform provider by @FredMoster in https://github.com/DataDog/terraform-provider-datadog/pull/2806
+* [datadog_api_key] Support `remote_config_read_enabled` argument by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2831
+* [synthetics_global_variable] Add is_totp by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2832
+* [datadog_synthetics_test] Add renotify occurrences option by @Alexis-Jacob-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/2820
+
+## New Contributors
+* @Supam made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2809
+* @FredMoster made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2806
+* @Alexis-Jacob-datadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2820
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.54.0...v3.55.0
+
 ## 3.54.0 (February 6, 2025)
 
 ### BUGFIXES
