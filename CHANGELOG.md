@@ -8,9 +8,9 @@
 ### FEATURES
 * [datadog_synthetics_test] Add secure field for extractFromJavascript browser step variables by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2818
 * [datadog_teams] Add new datasource  by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2789
-* [resource_datadog_security_notification_rule] Add notification rule terraform provider by @FredMoster in https://github.com/DataDog/terraform-provider-datadog/pull/2806
+* [datadog_security_notification_rule] Add notification rule terraform provider by @FredMoster in https://github.com/DataDog/terraform-provider-datadog/pull/2806
 * [datadog_api_key] Support `remote_config_read_enabled` argument by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2831
-* [synthetics_global_variable] Add is_totp by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2832
+* [datadog_synthetics_global_variable] Add is_totp by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2832
 * [datadog_synthetics_test] Add renotify occurrences option by @Alexis-Jacob-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/2820
 
 ## New Contributors
