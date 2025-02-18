@@ -2,22 +2,22 @@
     {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
 
     {%- for attr, attrSchema in primitiveAttr.items() %}
-    {%- set isRequired = schema.get("required", False) %}
+    {%- set isRequired = attr in schema.get("required", []) %}
     {{- baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
 
     {%- for attr, attrSchema in primitiveArrAttr.items() %}
-    {%- set isRequired = schema.get("required", False) %}
+    {%- set isRequired = attr in schema.get("required", []) %}
     {{ baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
 
     {%- for attr, attrSchema in nonPrimitiveListAttr.items() %}
-    {%- set isRequired = attrSchema.get("required", False) %}
+    {%- set isRequired = attr in attrSchema.get("required", []) %}
     {{ baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
 
     {%- for attr, attrSchema in nonPrimitiveObjAttr.items() %}
-    {%- set isRequired = schema.get("required", False) %}
+    {%- set isRequired = attr in schema.get("required", []) %}
     {{ baseRequestBuilder(attr, attrSchema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
 
