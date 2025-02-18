@@ -154,7 +154,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 				ResourceName:            "datadog_synthetics_test.bar",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "browser_step"},
+				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "browser_step", "request_client_certificate"},
 			},
 		},
 	})
@@ -3295,6 +3295,14 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.password", "password"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", utils.ConvertToSha256("content-certificate")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_proxy.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_proxy.0.url", "https://proxy.url"),
@@ -3436,6 +3444,16 @@ resource "datadog_synthetics_test" "bar" {
 		username = "username"
 		password = "password"
 	}
+	
+	request_client_certificate {
+		cert {
+			content = "content-certificate"
+		}
+		key {
+			content  = "content-key"
+			filename = "key"
+		}
+    }
 
 	request_proxy {
 		url = "https://proxy.url"

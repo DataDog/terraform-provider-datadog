@@ -2842,9 +2842,11 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 	}
 
 	if attr, ok := d.GetOk("request_client_certificate"); ok {
-		requestClientCertificate := attr.(map[string]interface{})
-		clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
-		request.SetCertificate(buildDatadogRequestCertificates(clientCert["content"].(string), clientCert["filename"].(string), clientKey["content"].(string), clientKey["filename"].(string)))
+		if requestClientCertificates, ok := attr.([]interface{}); ok && len(requestClientCertificates) > 0 {
+			requestClientCertificate := requestClientCertificates[0].(map[string]interface{})
+			clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
+			request.SetCertificate(buildDatadogRequestCertificates(clientCert["content"].(string), clientCert["filename"].(string), clientKey["content"].(string), clientKey["filename"].(string)))
+		}
 	}
 
 	if attr, ok := d.GetOk("request_proxy"); ok {
