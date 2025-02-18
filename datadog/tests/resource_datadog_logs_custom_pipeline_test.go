@@ -491,6 +491,58 @@ func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
 	})
 }
 
+func TestAccDatadogLogsPipelineDefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	pipelineName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // Default tags are correctly added
+				Config: pipelineConfigForCreation(pipelineName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineName),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "key1:value1"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "key2:value2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags and duplicates stay
+				Config: pipelineConfigForCreation(pipelineName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"key1": "new_value1",
+						"key2": "new_value2",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineName),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "key1:value1"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "key2:value2"),
+				),
+			},
+		},
+	})
+}
+
 func testAccCheckPipelineExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		provider, _ := accProvider()

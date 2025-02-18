@@ -468,11 +468,11 @@ func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) erro
 	tagSet := resourceTags.(*schema.Set)
 	for _, tag := range tagSet.List() {
 		key, value, _ := strings.Cut(tag.(string), ":")
-		old_val, ok := tags[key]
+		oldVal, ok := tags[key]
 		if !ok {
-			old_val = []string{}
+			oldVal = []string{}
 		}
-		tags[key] = append(old_val.([]string), value)
+		tags[key] = append(oldVal.([]string), value)
 	}
 	for k, v := range providerConf.DefaultTags {
 		if _, alreadyDefined := tags[k]; !alreadyDefined {
