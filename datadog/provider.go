@@ -480,6 +480,7 @@ func tagDiff(ctx context.Context, d *schema.ResourceDiff, meta interface{}) erro
 		}
 	}
 	tagSlice := make([]interface{}, 0, len(tags))
+
 	for k, vals := range tags {
 		for _, v := range vals.([]string) {
 			tag := fmt.Sprintf("%s:%v", k, v)

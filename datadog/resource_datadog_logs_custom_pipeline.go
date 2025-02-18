@@ -1239,6 +1239,7 @@ func getPipelineSchema(isNested bool) map[string]*schema.Schema {
 
 func getProcessorSchema(isNested bool) map[string]*schema.Schema {
 	var processorsSchema = make(map[string]*schema.Schema)
+
 	if !isNested {
 		processorsSchema[tfNestedPipelineProcessor] = &schema.Schema{
 			Type:     schema.TypeList,
