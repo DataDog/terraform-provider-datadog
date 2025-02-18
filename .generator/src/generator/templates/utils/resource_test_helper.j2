@@ -6,7 +6,7 @@ resource "datadog_{{ name }}" "foo" {
         {%- if parameterSchema|is_json_api %}
             {%- set jsonAttributeSchema = json_api_attributes_schema(parameterSchema) %}
             {%- for attr, schema in jsonAttributeSchema.properties.items() %}
-                {%- set isRequired = attr in jsonAttributeSchema.get("required", []) %}
+                {%- set isRequired = is_required(jsonAttributeSchema) %}
                 {{- baseSchema(attr, schema, required=isRequired) }}
             {%- endfor %}
         {%- else %}
@@ -34,7 +34,7 @@ resource "datadog_{{ name }}" "foo" {
 {%- macro typeObjectSchema(name, schema, required=False) %}
     {{ name }} {
         {%- for attr, childSchema in schema.get("properties", {}).items() %}
-            {%- set isRequired = attr in childSchema.get("required", []) %}
+            {%- set isRequired = is_required(childSchema) %}
             {{- baseSchema(attr, childSchema, required=isRequired) }}
         {%- endfor%}
     }
