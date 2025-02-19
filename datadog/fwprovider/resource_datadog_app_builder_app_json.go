@@ -5,11 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
+	"slices"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes" // v0.1.0, else breaking
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -30,8 +33,9 @@ type appBuilderAppJSONResource struct {
 
 // try single property JSON input -> validation will be handled on the API side
 type appBuilderAppJSONResourceModel struct {
-	ID      types.String         `tfsdk:"id"`
-	AppJson jsontypes.Normalized `tfsdk:"app_json"`
+	ID                            types.String         `tfsdk:"id"`
+	AppJson                       jsontypes.Normalized `tfsdk:"app_json"`
+	ActionQueryIDsToConnectionIDs types.Map            `tfsdk:"action_query_ids_to_connection_ids"`
 }
 
 func NewAppBuilderAppJSONResource() resource.Resource {
@@ -61,6 +65,12 @@ func (r *appBuilderAppJSONResource) Schema(_ context.Context, _ resource.SchemaR
 				},
 				CustomType: jsontypes.NormalizedType{},
 			},
+			"action_query_ids_to_connection_ids": schema.MapAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "A map of the App's Action Query IDs to Action Connection IDs. If specified, this will override the Action Connection IDs in the App JSON.",
+				ElementType: types.StringType,
+			},
 		},
 	}
 }
@@ -79,7 +89,7 @@ func (r *appBuilderAppJSONResource) Create(ctx context.Context, request resource
 
 	createRequest, err := appBuilderAppJSONModelToCreateApiRequest(plan)
 	if err != nil {
-		response.Diagnostics.AddError("Error building create app request", err.Error())
+		response.Diagnostics.AddError("error building create app request", err.Error())
 		return
 	}
 
@@ -89,18 +99,21 @@ func (r *appBuilderAppJSONResource) Create(ctx context.Context, request resource
 			// error body may have useful info for the user
 			body, err := io.ReadAll(httpResp.Body)
 			if err != nil {
-				response.Diagnostics.AddError("Error reading error response", err.Error())
+				response.Diagnostics.AddError("error reading error response", err.Error())
 				return
 			}
-			response.Diagnostics.AddError("Error creating app", string(body))
+			response.Diagnostics.AddError("error creating app", string(body))
 		} else {
-			response.Diagnostics.AddError("Error creating app", err.Error())
+			response.Diagnostics.AddError("error creating app", err.Error())
 		}
 		return
 	}
 
 	// set computed values
 	plan.ID = types.StringValue(resp.Data.GetId().String())
+	if plan.ActionQueryIDsToConnectionIDs.IsUnknown() {
+		plan.ActionQueryIDsToConnectionIDs = types.MapNull(types.StringType)
+	}
 
 	// Save data into Terraform state
 	diags = response.State.Set(ctx, &plan)
@@ -117,13 +130,13 @@ func (r *appBuilderAppJSONResource) Read(ctx context.Context, request resource.R
 
 	id, err := uuid.Parse(state.ID.ValueString())
 	if err != nil {
-		response.Diagnostics.AddError("Error parsing id as uuid", err.Error())
+		response.Diagnostics.AddError("error parsing ID as UUID", err.Error())
 		return
 	}
 
 	appBuilderAppJSONModel, err := readAppBuilderAppJSON(r.Auth, r.Api, id)
 	if err != nil {
-		response.Diagnostics.AddError("Error reading app", err.Error())
+		response.Diagnostics.AddError("error reading app", err.Error())
 		return
 	}
 
@@ -142,13 +155,13 @@ func (r *appBuilderAppJSONResource) Update(ctx context.Context, request resource
 
 	id, err := uuid.Parse(plan.ID.ValueString())
 	if err != nil {
-		response.Diagnostics.AddError("Error parsing id as uuid", err.Error())
+		response.Diagnostics.AddError("error parsing ID as UUID", err.Error())
 		return
 	}
 
 	updateRequest, err := appBuilderAppJSONModelToUpdateApiRequest(plan)
 	if err != nil {
-		response.Diagnostics.AddError("Error building update app request", err.Error())
+		response.Diagnostics.AddError("error building update app request", err.Error())
 		return
 	}
 
@@ -158,14 +171,19 @@ func (r *appBuilderAppJSONResource) Update(ctx context.Context, request resource
 			// error body may have useful info for the user
 			body, err := io.ReadAll(httpResp.Body)
 			if err != nil {
-				response.Diagnostics.AddError("Error reading error response", err.Error())
+				response.Diagnostics.AddError("error reading error response", err.Error())
 				return
 			}
-			response.Diagnostics.AddError("Error updating app", string(body))
+			response.Diagnostics.AddError("error updating app", string(body))
 		} else {
-			response.Diagnostics.AddError("Error updating app", err.Error())
+			response.Diagnostics.AddError("error updating app", err.Error())
 		}
 		return
+	}
+
+	// set computed values
+	if plan.ActionQueryIDsToConnectionIDs.IsUnknown() {
+		plan.ActionQueryIDsToConnectionIDs = types.MapNull(types.StringType)
 	}
 
 	// Save data into Terraform state
@@ -183,7 +201,7 @@ func (r *appBuilderAppJSONResource) Delete(ctx context.Context, request resource
 
 	id, err := uuid.Parse(state.ID.ValueString())
 	if err != nil {
-		response.Diagnostics.AddError("Error parsing id as uuid", err.Error())
+		response.Diagnostics.AddError("error parsing ID as UUID", err.Error())
 		return
 	}
 	_, httpResp, err := r.Api.DeleteApp(r.Auth, id)
@@ -192,12 +210,12 @@ func (r *appBuilderAppJSONResource) Delete(ctx context.Context, request resource
 			// error body may have useful info for the user
 			body, err := io.ReadAll(httpResp.Body)
 			if err != nil {
-				response.Diagnostics.AddError("Error reading error response", err.Error())
+				response.Diagnostics.AddError("error reading error response", err.Error())
 				return
 			}
-			response.Diagnostics.AddError("Error deleting app", string(body))
+			response.Diagnostics.AddError("error deleting app", string(body))
 		} else {
-			response.Diagnostics.AddError("Error deleting app", err.Error())
+			response.Diagnostics.AddError("error deleting app", err.Error())
 		}
 		return
 	}
@@ -211,12 +229,22 @@ func apiResponseToAppBuilderAppJSONModel(resp datadogV2.GetAppResponse) (*appBui
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
+	// marshal attributes into JSON string and set it as the app_json value
 	marshalledBytes, err := json.Marshal(attributes)
 	if err != nil {
 		err = fmt.Errorf("error marshaling attributes: %s", err)
 		return nil, err
 	}
 	appBuilderAppJSONModel.AppJson = jsontypes.NewNormalizedValue(string(marshalledBytes))
+
+	// build action query ids to connection ids map
+	queries := attributes.GetQueries()
+	actionQueryIDsToConnectionIDs, err := buildActionQueryIDsToConnectionIDsMap(queries)
+	if err != nil {
+		err = fmt.Errorf("error building action_query_ids_to_connection_ids map: %s", err)
+		return nil, err
+	}
+	appBuilderAppJSONModel.ActionQueryIDsToConnectionIDs = actionQueryIDsToConnectionIDs
 
 	return appBuilderAppJSONModel, nil
 }
@@ -227,7 +255,14 @@ func appBuilderAppJSONModelToCreateApiRequest(plan appBuilderAppJSONResourceMode
 	// decode encoded json into the attributes struct
 	err := json.Unmarshal([]byte(plan.AppJson.ValueString()), attributes)
 	if err != nil {
-		err = fmt.Errorf("error unmarshalling app json string to attributes struct: %s", err)
+		err = fmt.Errorf("error unmarshalling app JSON string to attributes struct: %s", err)
+		return nil, err
+	}
+
+	// replace connection ids in the create request attributes with the ones provided in the plan
+	err = replaceConnectionIDsInActionQueries(plan.ActionQueryIDsToConnectionIDs, attributes.GetQueries())
+	if err != nil {
+		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
 		return nil, err
 	}
 
@@ -244,7 +279,14 @@ func appBuilderAppJSONModelToUpdateApiRequest(plan appBuilderAppJSONResourceMode
 	// decode encoded json into the attributes struct
 	err := json.Unmarshal([]byte(plan.AppJson.ValueString()), attributes)
 	if err != nil {
-		err = fmt.Errorf("error unmarshalling app json string to attributes struct: %s", err)
+		err = fmt.Errorf("error unmarshalling app JSON string to attributes struct: %s", err)
+		return nil, err
+	}
+
+	// replace connection ids in the update request attributes with the ones provided in the plan
+	err = replaceConnectionIDsInActionQueries(plan.ActionQueryIDsToConnectionIDs, attributes.GetQueries())
+	if err != nil {
+		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
 		return nil, err
 	}
 
@@ -275,4 +317,115 @@ func readAppBuilderAppJSON(ctx context.Context, api *datadogV2.AppBuilderApi, id
 	}
 
 	return appModel, nil
+}
+
+// replace the connection ids in the queries with the ones provided in the plan, as specified by {action_query_id: connection_id}
+func replaceConnectionIDsInActionQueries(actionQueryIDsToConnectionIDs types.Map, queries []datadogV2.Query) error {
+	mapElements := actionQueryIDsToConnectionIDs.Elements()
+
+	// skip if no action query ids to connection ids are provided
+	if len(mapElements) == 0 {
+		return nil
+	}
+
+	// keep track of specified query ids that have not been used
+	unusedQueryIDs := make(map[string]struct{})
+	for key := range mapElements {
+		unusedQueryIDs[key] = struct{}{}
+	}
+
+	// loop over queries list and replace connection ids if the query id is in the map
+	for i, query := range queries {
+		queryID := query.GetId().String()
+		if connectionID, ok := mapElements[queryID]; ok {
+			// must be an action query
+			queryType := query.GetType()
+			if queryType != datadogV2.QUERYTYPE_ACTION {
+				return fmt.Errorf("query with ID %s is not an Action Query: %s", queryID, queryType)
+			}
+
+			connectionIDString := connectionID.(types.String).ValueString()
+			err := setConnectionIDForActionQuery(queryID, &queries[i], connectionIDString)
+			if err != nil {
+				return err
+			}
+			delete(unusedQueryIDs, queryID)
+		}
+	}
+
+	// return err if any query ids specified in the map were not found in the queries list
+	if len(unusedQueryIDs) > 0 {
+		return fmt.Errorf("action Query IDs not found in the App's queries: %v", slices.Collect(maps.Keys(unusedQueryIDs)))
+	}
+
+	return nil
+}
+
+func setConnectionIDForActionQuery(queryID string, query *datadogV2.Query, connectionIDString string) error {
+	// TODO: update this once the API strictly types the Action Query schema
+	properties := query.GetProperties().(map[string]any)
+	spec, ok := properties["spec"]
+	if !ok {
+		return fmt.Errorf("action Query with ID %s is missing a spec", queryID)
+	}
+
+	specMap, ok := spec.(map[string]any)
+	if !ok {
+		return fmt.Errorf("action Query with ID %s has invalid spec: %s", queryID, specMap)
+	}
+
+	// UUID validation also happens in API, but doing it here can help Terraform users catch errors earlier
+	_, err := uuid.Parse(connectionIDString)
+	if err != nil {
+		err = fmt.Errorf("specified Connection ID %s is not a valid UUID: %s", connectionIDString, err)
+		return err
+	}
+
+	specMap["connectionId"] = connectionIDString
+	return nil
+}
+
+func buildActionQueryIDsToConnectionIDsMap(queries []datadogV2.Query) (types.Map, error) {
+	elementsMap := map[string]attr.Value{}
+
+	for _, query := range queries {
+		queryID := query.GetId().String()
+
+		// must be an action query
+		queryType := query.GetType()
+		if queryType != datadogV2.QUERYTYPE_ACTION {
+			continue
+		}
+
+		// TODO: update this once the API strictly types the Action Query schema
+		// since we are reading the response from the API, we can ignore validation errors
+		properties, ok := query.GetProperties().(map[string]any)
+		if !ok {
+			continue
+		}
+		spec, ok := properties["spec"]
+		if !ok {
+			continue
+		}
+		specMap, ok := spec.(map[string]any)
+		if !ok {
+			continue
+		}
+
+		connectionID, ok := specMap["connectionId"]
+		if !ok {
+			continue
+		}
+		if connectionIDStr, ok := connectionID.(string); ok {
+			elementsMap[queryID] = types.StringValue(connectionIDStr)
+		}
+	}
+
+	// convert map to types.Map
+	resultMap, diags := types.MapValue(types.StringType, elementsMap)
+	if diags != nil {
+		return types.MapNull(types.StringType), fmt.Errorf("error converting map to types.Map: %v", diags)
+	}
+
+	return resultMap, nil
 }
