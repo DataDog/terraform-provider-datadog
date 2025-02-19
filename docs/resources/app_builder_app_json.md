@@ -49,6 +49,10 @@ resource "datadog_app_builder_app_json" "example_app_inline_basic" {
 
 - `app_json` (String) The JSON representation of the App.
 
+### Optional
+
+- `action_query_ids_to_connection_ids` (Map of String) A map of the App's Action Query IDs to Action Connection IDs. If specified, this will override the Action Connection IDs in the App JSON.
+
 ### Read-Only
 
 - `id` (String) The ID of this resource.

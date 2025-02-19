@@ -89,7 +89,7 @@ func testAccCheckDatadogAppBuilderAppJSONDestroy(accProvider *fwprovider.Framewo
 		resource := s.RootModule().Resources[resourceName]
 		id, err := uuid.Parse(resource.Primary.ID)
 		if err != nil {
-			return fmt.Errorf("Error parsing id as uuid: %s", err)
+			return fmt.Errorf("error parsing id as uuid: %s", err)
 		}
 		_, httpRes, err := apiInstances.GetAppBuilderApiV2().GetApp(auth, id)
 		if err != nil {
@@ -99,6 +99,6 @@ func testAccCheckDatadogAppBuilderAppJSONDestroy(accProvider *fwprovider.Framewo
 			return err
 		}
 
-		return fmt.Errorf("Failed app destroy check")
+		return fmt.Errorf("failed app destroy check")
 	}
 }

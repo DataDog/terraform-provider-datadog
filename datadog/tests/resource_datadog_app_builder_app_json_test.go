@@ -78,7 +78,7 @@ func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex(t *testing.T) {
 	// create temporary file to hold large app json & avoid ${} interpolation by TF
 	file, err := os.CreateTemp("", "test_app_json.*.json")
 	if err != nil {
-		panic(fmt.Errorf("Error creating temporary file: %s", err))
+		panic(fmt.Errorf("error creating temporary file: %s", err))
 	}
 
 	// delete temp file after test
@@ -87,7 +87,7 @@ func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex(t *testing.T) {
 	// write app json to file
 	_, err = file.WriteString(testComplexAppBuilderAppJSONJSON(appName))
 	if err != nil {
-		panic(fmt.Errorf("Error writing to file: %s", err))
+		panic(fmt.Errorf("error writing to file: %s", err))
 	}
 
 	resource.Test(t, resource.TestCase{
@@ -119,7 +119,7 @@ func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex_Import(t *testing.
 	// create temporary file to hold large app json & avoid ${} interpolation by TF
 	file, err := os.CreateTemp("", "test_app_json.*.json")
 	if err != nil {
-		panic(fmt.Errorf("Error creating temporary file: %s", err))
+		panic(fmt.Errorf("error creating temporary file: %s", err))
 	}
 
 	// delete temp file after test
@@ -128,7 +128,7 @@ func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex_Import(t *testing.
 	// write app json to file
 	_, err = file.WriteString(testComplexAppBuilderAppJSONJSON(appName))
 	if err != nil {
-		panic(fmt.Errorf("Error writing to file: %s", err))
+		panic(fmt.Errorf("error writing to file: %s", err))
 	}
 
 	resource.Test(t, resource.TestCase{
@@ -145,18 +145,18 @@ func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex_Import(t *testing.
 				ImportStateCheck: func(s []*terraform.InstanceState) (err error) {
 					// make sure new state has valid json and expected values
 					if len(s) != 1 {
-						return errors.New("Failed to import resource into state")
+						return errors.New("failed to import resource into state")
 					}
 
 					id := s[0].Attributes["id"]
 					if err := uuid.Validate(id); err != nil {
-						return fmt.Errorf("Imported resource id %s is not a uuid: %s", id, err)
+						return fmt.Errorf("imported resource ID %s is not a UUID: %s", id, err)
 					}
 
 					appJSON := s[0].Attributes["app_json"]
 					var js json.RawMessage
 					if err := json.Unmarshal([]byte(appJSON), &js); err != nil {
-						return fmt.Errorf("Imported resource attribute app_json not valid json: %s", err)
+						return fmt.Errorf("imported resource attribute app_json not valid JSON: %s", err)
 					}
 
 					return
@@ -189,10 +189,10 @@ func datadogAppBuilderAppJSONExistsHelper(ctx context.Context, s *terraform.Stat
 	idString := s.RootModule().Resources[name].Primary.ID
 	id, err := uuid.Parse(idString)
 	if err != nil {
-		return fmt.Errorf("Error parsing id as uuid: %s", err)
+		return fmt.Errorf("error parsing ID as UUID: %s", err)
 	}
 	if _, _, err := apiInstances.GetAppBuilderApiV2().GetApp(ctx, id); err != nil {
-		return fmt.Errorf("Error getting app: %s", err)
+		return fmt.Errorf("error getting app: %s", err)
 	}
 	return nil
 }
