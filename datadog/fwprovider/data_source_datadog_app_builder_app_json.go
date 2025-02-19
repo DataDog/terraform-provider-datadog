@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var _ datasource.DataSource = &appBuilderAppJSONDataSource{}
@@ -49,6 +50,11 @@ func (d *appBuilderAppJSONDataSource) Schema(_ context.Context, request datasour
 				},
 				CustomType: jsontypes.NormalizedType{},
 			},
+			"action_query_ids_to_connection_ids": schema.MapAttribute{
+				Computed:    true,
+				Description: "A map of the App's Action Query IDs to Action Connection IDs.",
+				ElementType: types.StringType,
+			},
 		},
 	}
 }
@@ -63,13 +69,13 @@ func (d *appBuilderAppJSONDataSource) Read(ctx context.Context, request datasour
 
 	id, err := uuid.Parse(state.ID.ValueString())
 	if err != nil {
-		response.Diagnostics.AddError("Error parsing id as uuid", err.Error())
+		response.Diagnostics.AddError("error parsing id as uuid", err.Error())
 		return
 	}
 
 	appBuilderAppJSONModel, err := readAppBuilderAppJSON(d.Auth, d.Api, id)
 	if err != nil {
-		response.Diagnostics.AddError("Error reading app", err.Error())
+		response.Diagnostics.AddError("error reading app", err.Error())
 		return
 	}
 
