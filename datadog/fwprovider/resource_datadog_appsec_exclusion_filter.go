@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -21,8 +22,9 @@ const (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &appsecExclusionFilterResource{}
-	_ resource.ResourceWithImportState = &appsecExclusionFilterResource{}
+	concurrencyMutex sync.Mutex
+	_                resource.ResourceWithConfigure   = &appsecExclusionFilterResource{}
+	_                resource.ResourceWithImportState = &appsecExclusionFilterResource{}
 )
 
 type appsecExclusionFilterResource struct {
@@ -195,6 +197,9 @@ func (r *appsecExclusionFilterResource) Create(ctx context.Context, request reso
 		return
 	}
 
+	concurrencyMutex.Lock()
+	defer concurrencyMutex.Unlock()
+
 	var resp datadogV2.ApplicationSecurityExclusionFilterResponse
 	var err error
 	err = retry.RetryContext(ctx, retryOnConflictTimeout, func() *retry.RetryError {
@@ -237,6 +242,9 @@ func (r *appsecExclusionFilterResource) Update(ctx context.Context, request reso
 		return
 	}
 
+	concurrencyMutex.Lock()
+	defer concurrencyMutex.Unlock()
+
 	var resp datadogV2.ApplicationSecurityExclusionFilterResponse
 	var err error
 	err = retry.RetryContext(ctx, retryOnConflictTimeout, func() *retry.RetryError {
@@ -272,6 +280,9 @@ func (r *appsecExclusionFilterResource) Delete(ctx context.Context, request reso
 	}
 
 	id := state.ID.ValueString()
+
+	concurrencyMutex.Lock()
+	defer concurrencyMutex.Unlock()
 
 	var httpResp *http.Response
 	var err error
