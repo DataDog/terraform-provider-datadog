@@ -12,6 +12,8 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
+const maskedSecret = "*****"
+
 var (
 	_ resource.ResourceWithConfigure   = &workflowsWebhookHandleResource{}
 	_ resource.ResourceWithImportState = &workflowsWebhookHandleResource{}
@@ -53,6 +55,7 @@ func (r *workflowsWebhookHandleResource) Schema(_ context.Context, _ resource.Sc
 			"url": schema.StringAttribute{
 				Description: "Your Microsoft Workflows webhook URL.",
 				Required:    true,
+				Sensitive:   true,
 			},
 			"id": utils.ResourceIDAttribute(),
 		},
@@ -170,7 +173,11 @@ func (r *workflowsWebhookHandleResource) updateState(ctx context.Context, state 
 		state.Name = types.StringValue(*name)
 	}
 
-	state.URL = types.StringValue("<redacted-url>")
+	// Only update URL if not set - the API endpoints never return
+	// the url, so this is how we recognize new values.
+	if state.URL.IsNull() {
+		state.URL = types.StringValue(maskedSecret)
+	}
 }
 
 func (r *workflowsWebhookHandleResource) buildWorkflowsWebhookHandleRequestBody(ctx context.Context, state *workflowsWebhookHandleModel) *datadogV2.MicrosoftTeamsCreateWorkflowsWebhookHandleRequest {
@@ -190,9 +197,7 @@ func (r *workflowsWebhookHandleResource) buildWorkflowsWebhookHandleUpdateReques
 	attributes := datadogV2.NewMicrosoftTeamsWorkflowsWebhookHandleAttributesWithDefaults()
 
 	attributes.SetName(state.Name.ValueString())
-	if state.URL.ValueString() != "<redacted-url>" {
-		attributes.SetUrl(state.URL.ValueString())
-	}
+	attributes.SetUrl(state.URL.ValueString())
 
 	req := datadogV2.NewMicrosoftTeamsUpdateWorkflowsWebhookHandleRequestWithDefaults()
 	req.Data = *datadogV2.NewMicrosoftTeamsUpdateWorkflowsWebhookHandleRequestDataWithDefaults()
