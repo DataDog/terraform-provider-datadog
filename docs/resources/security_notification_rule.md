@@ -42,7 +42,7 @@ resource "datadog_security_notification_rule" "vulnerability_rule" {
 ### Required
 
 - `name` (String) The name of the rule (must be unique).
-- `targets` (Set of String) The list of handle targets for the notifications.
+- `targets` (Set of String) The list of handle targets for the notifications. A target must be prefixed with an @. It can be an email address (@bob@email.com), or any installed integration: for example a Slack recipient (@slack-ops), or a Teams recipient (@teams-ops).
 
 ### Optional
 

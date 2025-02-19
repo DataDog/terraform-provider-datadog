@@ -85,7 +85,7 @@ func (r *SecurityNotificationRuleResource) Schema(_ context.Context, _ resource.
 				Required:    true,
 			},
 			"targets": schema.SetAttribute{
-				Description: "The list of handle targets for the notifications.",
+				Description: "The list of handle targets for the notifications. A target must be prefixed with an @. It can be an email address (@bob@email.com), or any installed integration: for example a Slack recipient (@slack-ops), or a Teams recipient (@teams-ops).",
 				Required:    true,
 				ElementType: types.StringType,
 				Validators: []validator.Set{
