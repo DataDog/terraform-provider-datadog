@@ -1,0 +1,254 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 448
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[{"default":"my-datacenter","name":"datacenter","prefix":"datacenter"}],"title":"tf-TestAccSharedDashboardBasic-local-1739805814","widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"bxz-4aq-pbf","title":"tf-TestAccSharedDashboardBasic-local-1739805814","description":"Created using the Datadog provider in Terraform","author_handle":"etienne.carriere@datadoghq.com","author_name":"Etienne Philippe Carriere","layout_type":"ordered","url":"/dashboard/bxz-4aq-pbf/tf-testaccshareddashboardbasic-local-1739805814","is_read_only":false,"template_variables":[{"default":"my-datacenter","name":"datacenter","prefix":"datacenter"}],"widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"id":1987975404879156}],"notify_list":[],"created_at":"2025-02-17T15:23:37.738276+00:00","modified_at":"2025-02-17T15:23:37.738276+00:00","template_variable_presets":[],"tags":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 588.874209ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/bxz-4aq-pbf
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"bxz-4aq-pbf","title":"tf-TestAccSharedDashboardBasic-local-1739805814","description":"Created using the Datadog provider in Terraform","author_handle":"etienne.carriere@datadoghq.com","author_name":"Etienne Philippe Carriere","layout_type":"ordered","url":"/dashboard/bxz-4aq-pbf/tf-testaccshareddashboardbasic-local-1739805814","is_read_only":false,"template_variables":[{"default":"my-datacenter","name":"datacenter","prefix":"datacenter"}],"widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"id":1987975404879156}],"notify_list":[],"created_at":"2025-02-17T15:23:37.738276+00:00","modified_at":"2025-02-17T15:23:37.738276+00:00","template_variable_presets":[],"tags":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 197.09725ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"dashboard_id":"bxz-4aq-pbf","dashboard_type":"custom_timeboard","global_time":{"live_span":"1h"},"global_time_selectable_enabled":true,"share_type":"open"}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/public
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"author":{"handle":"etienne.carriere@datadoghq.com","name":"Etienne Philippe Carriere"},"dashboard_id":"bxz-4aq-pbf","dashboard_type":"custom_timeboard","status":"active","title":"tf-TestAccSharedDashboardBasic-local-1739805814","viewing_preferences":{},"expiration":null,"last_accessed":null,"global_time_selectable_enabled":true,"global_time":{"live_span":"1h"},"selectable_template_vars":null,"token":"4bd6a048-7f08-11ee-b0a1-da7ad0900002-d706b5360886325cbeff51d662e9f353","public_url":"https://p.datadoghq.com/sb/4bd6a048-7f08-11ee-b0a1-da7ad0900002-d706b5360886325cbeff51d662e9f353","created":"2025-02-17T15:23:38.247200+00:00","share_type":"open","share_list":null,"session_duration_in_days":null,"invitees":[],"embeddable_domains":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 225.909834ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/bxz-4aq-pbf
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"bxz-4aq-pbf","title":"tf-TestAccSharedDashboardBasic-local-1739805814","description":"Created using the Datadog provider in Terraform","author_handle":"etienne.carriere@datadoghq.com","author_name":"Etienne Philippe Carriere","layout_type":"ordered","url":"/dashboard/bxz-4aq-pbf/tf-testaccshareddashboardbasic-local-1739805814","is_read_only":false,"template_variables":[{"default":"my-datacenter","name":"datacenter","prefix":"datacenter"}],"widgets":[{"definition":{"alert_id":"1234","time":{"live_span":"1h"},"title":"Widget Title","type":"alert_graph","viz_type":"timeseries"},"id":1987975404879156}],"notify_list":[],"created_at":"2025-02-17T15:23:37.738276+00:00","modified_at":"2025-02-17T15:23:37.738276+00:00","template_variable_presets":[],"tags":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 174.225917ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/public/4bd6a048-7f08-11ee-b0a1-da7ad0900002-d706b5360886325cbeff51d662e9f353
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"author":{"handle":"etienne.carriere@datadoghq.com","name":"Etienne Philippe Carriere"},"dashboard_id":"bxz-4aq-pbf","dashboard_type":"custom_timeboard","status":"active","title":"tf-TestAccSharedDashboardBasic-local-1739805814","viewing_preferences":{},"expiration":null,"last_accessed":null,"global_time_selectable_enabled":true,"global_time":{"live_span":"1h"},"selectable_template_vars":null,"token":"4bd6a048-7f08-11ee-b0a1-da7ad0900002-d706b5360886325cbeff51d662e9f353","public_url":"https://p.datadoghq.com/sb/4bd6a048-7f08-11ee-b0a1-da7ad0900002-d706b5360886325cbeff51d662e9f353","created":"2025-02-17T15:23:38.247200+00:00","share_type":"open","share_list":null,"session_duration_in_days":null,"invitees":[],"embeddable_domains":null}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 161.919083ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/public/4bd6a048-7f08-11ee-b0a1-da7ad0900002-d706b5360886325cbeff51d662e9f353
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_public_dashboard_token":"4bd6a048-7f08-11ee-b0a1-da7ad0900002-d706b5360886325cbeff51d662e9f353"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 306.04475ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/bxz-4aq-pbf
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"deleted_dashboard_id":"bxz-4aq-pbf"}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 300.092125ms

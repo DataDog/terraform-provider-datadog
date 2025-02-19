@@ -10,7 +10,7 @@
 /docs/                                    @DataDog/web-frameworks @DataDog/documentation
 
 # Terraform plugin sdk resources/data-sources
-datadog/*datadog_dashboard*               @DataDog/web-frameworks @DataDog/dashboards-backend
+datadog/*datadog_*dashboard*               @DataDog/web-frameworks @DataDog/dashboards-backend
 datadog/*datadog_downtime*                @DataDog/web-frameworks @DataDog/monitor-app
 datadog/*datadog_integration_aws*         @DataDog/web-frameworks @DataDog/cloud-integrations
 datadog/*datadog_integration_pagerduty*   @DataDog/web-frameworks @DataDog/saas-integrations @DataDog/saas-integrations

@@ -1,0 +1,1 @@
+terraform import datadog_shared_dashboard.new_list "a1b-c2d-e3f"
