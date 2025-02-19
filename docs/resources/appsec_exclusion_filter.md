@@ -51,6 +51,7 @@ resource "datadog_appsec_exclusion_filter" "trusted_ips" {
 
 ### Optional
 
+- `event_query` (String) The event query matched by the legacy exclusion filter. Cannot be created nor updated.
 - `ip_list` (List of String) The client IP addresses matched by the exclusion filter (CIDR notation is supported).
 - `on_match` (String) The action taken when the exclusion filter matches. When set to `monitor`, security traces are emitted but the requests are not blocked. By default, security traces are not emitted and the requests are not blocked.
 - `parameters` (List of String) A list of parameters matched by the exclusion filter in the HTTP query string and HTTP request body. Nested parameters can be matched by joining fields with a dot character.
@@ -60,7 +61,6 @@ resource "datadog_appsec_exclusion_filter" "trusted_ips" {
 
 ### Read-Only
 
-- `event_query` (String) The event query matched by the legacy exclusion filter. Cannot be created nor updated.
 - `id` (String) The ID of this resource.
 
 <a id="nestedblock--rules_target"></a>
