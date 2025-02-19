@@ -133,6 +133,50 @@ func TestAccDatadogSyntheticsGlobalVariableTOTP_Updated(t *testing.T) {
 	})
 }
 
+// fido variables
+func TestAccDatadogSyntheticsGlobalVariableFIDO_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	variableName := getUniqueVariableName(ctx, t)
+	config := createSyntheticsGlobalVariableConfig(variableName)
+	config = strings.ReplaceAll(config, "variable-value", "fido")
+	config = strings.ReplaceAll(config, "foo:bar", "fido:bar")
+	config = strings.ReplaceAll(config, "baz", "fido")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsGlobalVariableFIDOStep(ctx, accProvider, t),
+		},
+	})
+}
+
+func TestAccDatadogSyntheticsGlobalVariableFIDO_Updated(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	accProvider := testAccProvider(t, accProviders)
+
+	variableName := getUniqueVariableName(ctx, t)
+	config := createSyntheticsGlobalVariableConfig(variableName)
+	config = strings.ReplaceAll(config, "variable-value", "fido")
+	config = strings.ReplaceAll(config, "foo:bar", "fido:bar")
+	config = strings.ReplaceAll(config, "baz", "fido")
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsGlobalVariableFIDOStep(ctx, accProvider, t),
+			updateSyntheticsGlobalVariableFIDOStep(ctx, accProvider, t),
+		},
+	})
+}
+
 func TestAccDatadogSyntheticsGlobalVariableFromTest_Basic(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -390,6 +434,72 @@ resource "datadog_synthetics_global_variable" "foo" {
 			refresh_interval = 60
 		}
 	}
+}`, uniq)
+}
+
+func createSyntheticsGlobalVariableFIDOStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	variableName := getUniqueVariableName(ctx, t)
+	return resource.TestStep{
+		Config: createSyntheticsGlobalVariableFIDOConfig(variableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsResourceExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "name", variableName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "description", "a fido global variable"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.0", "fido:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.1", "fido"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "is_fido", "true"),
+		),
+	}
+}
+
+func createSyntheticsGlobalVariableFIDOConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "foo" {
+	name = "%s"
+	description = "a fido global variable"
+	tags = ["fido:bar", "fido"]
+	is_fido = true
+}`, uniq)
+}
+
+func updateSyntheticsGlobalVariableFIDOStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+	variableName := getUniqueVariableName(ctx, t) + "_UPDATED"
+	return resource.TestStep{
+		Config: updateSyntheticsGlobalVariableFIDOConfig(variableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsResourceExists(accProvider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "name", variableName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "description", "an updated fido global variable"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.#", "3"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.0", "fido:bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.1", "fido"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "tags.2", "env:test"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_global_variable.foo", "is_fido", "true"),
+		),
+	}
+}
+
+func updateSyntheticsGlobalVariableFIDOConfig(uniq string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "foo" {
+	name = "%s"
+	description = "an updated fido global variable"
+	tags = ["fido:bar", "fido", "env:test"]
+	is_fido = true
 }`, uniq)
 }
 
