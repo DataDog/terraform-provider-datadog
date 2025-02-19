@@ -2,6 +2,8 @@ package fwprovider
 
 import (
 	"context"
+	"net/http"
+	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -9,8 +11,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/retry"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+const (
+	retryOnConflictTimeout = 1 * time.Minute
 )
 
 var (
@@ -77,7 +84,7 @@ func (r *appsecExclusionFilterResource) Schema(_ context.Context, _ resource.Sch
 				Description: "Indicates whether the exclusion filter is enabled.",
 			},
 			"event_query": schema.StringAttribute{
-				Computed:    true,
+				Optional:    true,
 				Description: "The event query matched by the legacy exclusion filter. Cannot be created nor updated.",
 			},
 			"on_match": schema.StringAttribute{
@@ -188,7 +195,19 @@ func (r *appsecExclusionFilterResource) Create(ctx context.Context, request reso
 		return
 	}
 
-	resp, _, err := r.Api.CreateApplicationSecurityExclusionFilter(r.Auth, *body)
+	var resp datadogV2.ApplicationSecurityExclusionFilterResponse
+	var err error
+	err = retry.RetryContext(ctx, retryOnConflictTimeout, func() *retry.RetryError {
+		var httpResp *http.Response
+		resp, httpResp, err = r.Api.CreateApplicationSecurityExclusionFilter(r.Auth, *body)
+		if err != nil {
+			if httpResp.StatusCode == http.StatusConflict {
+				return retry.RetryableError(err)
+			}
+			return retry.NonRetryableError(err)
+		}
+		return nil
+	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AppsecExclusionFilter"))
 		return
@@ -218,7 +237,19 @@ func (r *appsecExclusionFilterResource) Update(ctx context.Context, request reso
 		return
 	}
 
-	resp, _, err := r.Api.UpdateApplicationSecurityExclusionFilter(r.Auth, id, *body)
+	var resp datadogV2.ApplicationSecurityExclusionFilterResponse
+	var err error
+	err = retry.RetryContext(ctx, retryOnConflictTimeout, func() *retry.RetryError {
+		var httpResp *http.Response
+		resp, httpResp, err = r.Api.UpdateApplicationSecurityExclusionFilter(r.Auth, id, *body)
+		if err != nil {
+			if httpResp.StatusCode == http.StatusConflict {
+				return retry.RetryableError(err)
+			}
+			return retry.NonRetryableError(err)
+		}
+		return nil
+	})
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving AppsecExclusionFilter"))
 		return
@@ -242,7 +273,18 @@ func (r *appsecExclusionFilterResource) Delete(ctx context.Context, request reso
 
 	id := state.ID.ValueString()
 
-	httpResp, err := r.Api.DeleteApplicationSecurityExclusionFilter(r.Auth, id)
+	var httpResp *http.Response
+	var err error
+	err = retry.RetryContext(ctx, retryOnConflictTimeout, func() *retry.RetryError {
+		httpResp, err = r.Api.DeleteApplicationSecurityExclusionFilter(r.Auth, id)
+		if err != nil {
+			if httpResp.StatusCode == http.StatusConflict {
+				return retry.RetryableError(err)
+			}
+			return retry.NonRetryableError(err)
+		}
+		return nil
+	})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
