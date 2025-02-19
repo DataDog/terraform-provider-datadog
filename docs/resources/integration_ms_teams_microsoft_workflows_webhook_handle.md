@@ -18,7 +18,7 @@ Resource for interacting with Datadog Microsoft Teams Integration Microsoft Work
 ### Required
 
 - `name` (String) Your Microsoft Workflows webhook handle name.
-- `url` (String) Your Microsoft Workflows webhook URL.
+- `url` (String, Sensitive) Your Microsoft Workflows webhook URL.
 
 ### Read-Only
 
