@@ -66,7 +66,7 @@ func (r *appsecExclusionFilterResource) Metadata(_ context.Context, request reso
 
 func (r *appsecExclusionFilterResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog AppsecExclusionFilter resource. This can be used to create and manage Datadog appsec_exclusion_filter.",
+		Description: "Provides a Datadog Application Security exclusion filter resource. This can be used to create and manage Application Security exclusion filters. Exclusion filters prevent the creation of security traces and therefore do not block originating requests.",
 		Attributes: map[string]schema.Attribute{
 			"description": schema.StringAttribute{
 				Required:    true,
@@ -78,7 +78,7 @@ func (r *appsecExclusionFilterResource) Schema(_ context.Context, _ resource.Sch
 			},
 			"event_query": schema.StringAttribute{
 				Computed:    true,
-				Description: "The event query matched by the legacy exclusion filter.",
+				Description: "The event query matched by the legacy exclusion filter. Cannot be created nor updated.",
 			},
 			"on_match": schema.StringAttribute{
 				Optional:    true,
