@@ -6,7 +6,7 @@ resource "datadog_security_notification_rule" "signal_rule" {
     query          = "env:prod"
   }
   enabled = false
-  targets = ["bob@email.com", "alice@email.com"]
+  targets = ["@bob@email.com", "@alice@email.com"]
 }
 
 resource "datadog_security_notification_rule" "vulnerability_rule" {
@@ -17,5 +17,5 @@ resource "datadog_security_notification_rule" "vulnerability_rule" {
     severities     = ["critical", "high"]
   }
   time_aggregation = 36000
-  targets          = ["john@email.com"]
+  targets          = ["@john@email.com"]
 }

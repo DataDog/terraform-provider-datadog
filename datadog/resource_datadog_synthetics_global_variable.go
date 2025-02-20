@@ -46,16 +46,28 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"value": {
-					Description: "The value of the global variable.",
+					Description: "The value of the global variable. This setting is ignored if `is_fido` is set to `true` and required otherwise.",
 					Type:        schema.TypeString,
-					Required:    true,
+					Optional:    true,
 					Sensitive:   true,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						if d.Get("is_fido").(bool) {
+							return true
+						}
+						return old == new
+					},
 				},
 				"secure": {
-					Description: "If set to true, the value of the global variable is hidden.",
+					Description: "If set to true, the value of the global variable is hidden. This setting is ignored if `is_totp` or `is_fido` is set to `true`.",
 					Default:     false,
 					Type:        schema.TypeBool,
 					Optional:    true,
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						if d.Get("is_totp").(bool) || d.Get("is_fido").(bool) {
+							return true
+						}
+						return old == new
+					},
 				},
 				"parse_test_id": {
 					Description: "Id of the Synthetics test to use for a variable from test.",
@@ -139,11 +151,29 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 							},
 						},
 					},
+					DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+						if d.Get("is_fido").(bool) {
+							return true
+						}
+						return old == new
+					},
 				},
 				"restricted_roles": {
 					Description: "A list of role identifiers to associate with the Synthetics global variable.",
 					Type:        schema.TypeSet,
 					Elem:        &schema.Schema{Type: schema.TypeString},
+					Optional:    true,
+				},
+				"is_totp": {
+					Description: "If set to true, the global variable is a TOTP variable.",
+					Default:     false,
+					Type:        schema.TypeBool,
+					Optional:    true,
+				},
+				"is_fido": {
+					Description: "If set to true, the global variable is a FIDO variable.",
+					Default:     false,
+					Type:        schema.TypeBool,
 					Optional:    true,
 				},
 			}
@@ -264,7 +294,16 @@ func buildSyntheticsGlobalVariableRequestStruct(d *schema.ResourceData) *datadog
 	syntheticsGlobalVariableValue := datadogV1.SyntheticsGlobalVariableValue{}
 
 	syntheticsGlobalVariableValue.SetValue(d.Get("value").(string))
-	syntheticsGlobalVariableValue.SetSecure(d.Get("secure").(bool))
+	syntheticsGlobalVariableRequest.SetIsFido(d.Get("is_fido").(bool))
+
+	if d.Get("is_totp").(bool) {
+		// Force secure to be true if variable is totp.
+		syntheticsGlobalVariableValue.SetSecure(true)
+	} else {
+		syntheticsGlobalVariableValue.SetSecure(d.Get("secure").(bool))
+	}
+
+	syntheticsGlobalVariableRequest.SetIsTotp(d.Get("is_totp").(bool))
 
 	if _, ok := d.GetOk("options.0"); ok {
 		variableOptions := datadogV1.SyntheticsGlobalVariableOptions{}
@@ -279,7 +318,9 @@ func buildSyntheticsGlobalVariableRequestStruct(d *schema.ResourceData) *datadog
 		syntheticsGlobalVariableValue.SetOptions(variableOptions)
 	}
 
-	syntheticsGlobalVariableRequest.SetValue(syntheticsGlobalVariableValue)
+	if !d.Get("is_fido").(bool) {
+		syntheticsGlobalVariableRequest.SetValue(syntheticsGlobalVariableValue)
+	}
 
 	if parseTestID, ok := d.GetOk("parse_test_id"); ok {
 		if _, ok := d.GetOk("parse_test_options.0"); ok {
@@ -339,6 +380,9 @@ func updateSyntheticsGlobalVariableLocalState(d *schema.ResourceData, synthetics
 	d.Set("secure", syntheticsGlobalVariableValue.GetSecure())
 
 	d.Set("tags", syntheticsGlobalVariable.Tags)
+
+	d.Set("is_totp", syntheticsGlobalVariable.GetIsTotp())
+	d.Set("is_fido", syntheticsGlobalVariable.GetIsFido())
 
 	if syntheticsGlobalVariable.HasParseTestPublicId() {
 		d.Set("parse_test_id", syntheticsGlobalVariable.GetParseTestPublicId())

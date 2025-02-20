@@ -717,6 +717,11 @@ func syntheticsTestOptionsList() *schema.Schema {
 								Default:     0,
 								Optional:    true,
 							},
+							"renotify_occurrences": {
+								Description: "The number of times a monitor renotifies. It can only be set if `renotify_interval` is set.",
+								Type:        schema.TypeInt,
+								Optional:    true,
+							},
 						},
 					},
 				},
@@ -869,8 +874,9 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 								Optional: true,
 							},
 							"renotify_occurrences": {
-								Type:     schema.TypeInt,
-								Optional: true,
+								Description: "The number of times a monitor renotifies. It can only be set if `renotify_interval` is set.",
+								Type:        schema.TypeInt,
+								Optional:    true,
 							},
 							"notification_preset_name": {
 								Type:             schema.TypeString,
@@ -2836,9 +2842,11 @@ func buildDatadogSyntheticsBrowserTest(d *schema.ResourceData) *datadogV1.Synthe
 	}
 
 	if attr, ok := d.GetOk("request_client_certificate"); ok {
-		requestClientCertificate := attr.(map[string]interface{})
-		clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
-		request.SetCertificate(buildDatadogRequestCertificates(clientCert["content"].(string), clientCert["filename"].(string), clientKey["content"].(string), clientKey["filename"].(string)))
+		if requestClientCertificates, ok := attr.([]interface{}); ok && len(requestClientCertificates) > 0 {
+			requestClientCertificate := requestClientCertificates[0].(map[string]interface{})
+			clientCert, clientKey := getCertAndKeyFromMap(requestClientCertificate)
+			request.SetCertificate(buildDatadogRequestCertificates(clientCert["content"].(string), clientCert["filename"].(string), clientKey["content"].(string), clientKey["filename"].(string)))
+		}
 	}
 
 	if attr, ok := d.GetOk("request_proxy"); ok {
@@ -3826,7 +3834,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
 				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
 			}
-
+			if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok {
+				optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
+			}
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}
 
@@ -3981,7 +3991,10 @@ func buildTerraformTestOptions(actualOptions datadogV1.SyntheticsTestOptions) []
 			optionsListMonitorOptions["renotify_interval"] = actualMonitorOptions.GetRenotifyInterval()
 			shouldUpdate = true
 		}
-
+		if actualMonitorOptions.HasRenotifyOccurrences() {
+			optionsListMonitorOptions["renotify_occurrences"] = actualMonitorOptions.GetRenotifyOccurrences()
+			shouldUpdate = true
+		}
 		if shouldUpdate {
 			localOptionsList["monitor_options"] = []map[string]int64{optionsListMonitorOptions}
 		}
@@ -4110,11 +4123,11 @@ func buildDatadogMobileTestOptions(d *schema.ResourceData) *datadogV1.Synthetics
 			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
 				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
 			}
-			if escalationMessage, ok := monitorOptions.(map[string]interface{})["escalation_message"]; ok {
-				optionsMonitorOptions.SetEscalationMessage(escalationMessage.(string))
-			}
 			if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok {
 				optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
+			}
+			if escalationMessage, ok := monitorOptions.(map[string]interface{})["escalation_message"]; ok {
+				optionsMonitorOptions.SetEscalationMessage(escalationMessage.(string))
 			}
 			if notificationPresetName, ok := monitorOptions.(map[string]interface{})["notification_preset_name"]; ok {
 				optionsMonitorOptions.SetNotificationPresetName(datadogV1.SyntheticsTestOptionsMonitorOptionsNotificationPresetName(notificationPresetName.(string)))
