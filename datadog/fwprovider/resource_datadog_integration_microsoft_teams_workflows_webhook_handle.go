@@ -46,7 +46,7 @@ func (r *workflowsWebhookHandleResource) Metadata(_ context.Context, request res
 
 func (r *workflowsWebhookHandleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Resource for interacting with Datadog Microsoft Teams Integration Microsoft Workflows webhook handles.",
+		Description: "Resource for interacting with Datadog Microsoft Teams integration Microsoft Workflows webhook handles.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Required:    true,

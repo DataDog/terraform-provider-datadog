@@ -3,12 +3,12 @@
 page_title: "datadog_integration_ms_teams_microsoft_workflows_webhook_handle Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Resource for interacting with Datadog Microsoft Teams Integration Microsoft Workflows webhook handles.
+  Resource for interacting with Datadog Microsoft Teams integration Microsoft Workflows webhook handles.
 ---
 
 # datadog_integration_ms_teams_microsoft_workflows_webhook_handle (Resource)
 
-Resource for interacting with Datadog Microsoft Teams Integration Microsoft Workflows webhook handles.
+Resource for interacting with Datadog Microsoft Teams integration Microsoft Workflows webhook handles.
 
 
 
