@@ -377,6 +377,7 @@ func resourceDatadogLogsCustomPipeline() *schema.Resource {
 		UpdateContext: resourceDatadogLogsPipelineUpdate,
 		ReadContext:   resourceDatadogLogsPipelineRead,
 		DeleteContext: resourceDatadogLogsPipelineDelete,
+		CustomizeDiff: tagDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -1220,7 +1221,7 @@ func getPipelineSchema(isNested bool) map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name":        {Type: schema.TypeString, Required: true},
 		"is_enabled":  {Type: schema.TypeBool, Optional: true},
-		"tags":        {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+		"tags":        {Type: schema.TypeSet, Optional: true, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 		"description": {Type: schema.TypeString, Optional: true},
 		"filter": {
 			Type:     schema.TypeList,
