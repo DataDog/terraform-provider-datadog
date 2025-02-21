@@ -322,10 +322,10 @@ Optional:
 <a id="nestedblock--widget--change_definition--request--formula--number_format--unit"></a>
 ### Nested Schema for `widget.change_definition.request.formula.number_format.unit`
 
-Required:
+Optional:
 
-- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--change_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.change_definition.request.formula.number_format.unit.canonical`
@@ -1295,10 +1295,10 @@ Optional:
 <a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit"></a>
 ### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit`
 
-Required:
+Optional:
 
-- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit.canonical`
@@ -1841,10 +1841,10 @@ Optional:
 <a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit"></a>
 ### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit`
 
-Required:
+Optional:
 
-- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit.canonical`
@@ -3284,10 +3284,10 @@ Optional:
 <a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit"></a>
 ### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit`
 
-Required:
+Optional:
 
-- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit.canonical`
@@ -4018,10 +4018,10 @@ Optional:
 <a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit"></a>
 ### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit`
 
-Required:
+Optional:
 
-- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit.canonical`
@@ -5700,10 +5700,10 @@ Optional:
 <a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit"></a>
 ### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit`
 
-Required:
+Optional:
 
-- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit.canonical`
@@ -6473,10 +6473,10 @@ Optional:
 <a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit"></a>
 ### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit`
 
-Required:
+Optional:
 
-- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit.canonical`
@@ -7268,10 +7268,10 @@ Optional:
 <a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit"></a>
 ### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit`
 
-Required:
+Optional:
 
-- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit.canonical`
@@ -7873,10 +7873,10 @@ Optional:
 <a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit"></a>
 ### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit`
 
-Required:
+Optional:
 
-- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit.canonical`
