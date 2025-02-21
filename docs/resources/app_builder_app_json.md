@@ -51,10 +51,16 @@ resource "datadog_app_builder_app_json" "example_app_inline_basic" {
 
 ### Optional
 
-- `action_query_ids_to_connection_ids` (Map of String) A map of the App's Action Query IDs to Action Connection IDs. If specified, this will override the Action Connection IDs in the App JSON.
+- `description` (String) If specified, this will override the human-readable description of the App in the App JSON.
+- `name` (String) If specified, this will override the name of the App in the App JSON.
+- `override_action_query_ids_to_connection_ids` (Map of String) If specified, this will override the Action Connection IDs for the specified Action Query IDs in the App JSON.
+- `publish_status_update` (String) If `published`, the latest app version will be published and available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist. If `unpublish`, the app will be unpublished, removing the live version of the app. If unspecified, the publish status will not be updated. Valid values are `publish`, `unpublish`.
+- `root_instance_name` (String) The name of the root component of the app. This must be a grid component that contains all other components. If specified, this will override the root instance name of the App in the App JSON.
+- `tags` (Set of String) A list of tags for the app, which can be used to filter apps. If specified, this will override the list of tags for the App in the App JSON. Otherwise, tags will be returned in output.
 
 ### Read-Only
 
+- `action_query_ids_to_connection_ids` (Map of String) A computed map of the App's Action Query IDs to Action Connection IDs.
 - `id` (String) The ID of this resource.
 
 ## Import

@@ -8,17 +8,24 @@ import (
 	"maps"
 	"slices"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes" // v0.1.0, else breaking
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var (
@@ -33,9 +40,15 @@ type appBuilderAppJSONResource struct {
 
 // try single property JSON input -> validation will be handled on the API side
 type appBuilderAppJSONResourceModel struct {
-	ID                            types.String         `tfsdk:"id"`
-	AppJson                       jsontypes.Normalized `tfsdk:"app_json"`
-	ActionQueryIDsToConnectionIDs types.Map            `tfsdk:"action_query_ids_to_connection_ids"`
+	ID                                    types.String         `tfsdk:"id"`
+	AppJson                               jsontypes.Normalized `tfsdk:"app_json"`
+	OverrideActionQueryIDsToConnectionIDs types.Map            `tfsdk:"override_action_query_ids_to_connection_ids"`
+	ActionQueryIDsToConnectionIDs         types.Map            `tfsdk:"action_query_ids_to_connection_ids"`
+	Name                                  types.String         `tfsdk:"name"`
+	Description                           types.String         `tfsdk:"description"`
+	RootInstanceName                      types.String         `tfsdk:"root_instance_name"`
+	Tags                                  types.Set            `tfsdk:"tags"`
+	PublishStatusUpdate                   types.String         `tfsdk:"publish_status_update"`
 }
 
 func NewAppBuilderAppJSONResource() resource.Resource {
@@ -63,14 +76,56 @@ func (r *appBuilderAppJSONResource) Schema(_ context.Context, _ resource.SchemaR
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
-				CustomType: jsontypes.NormalizedType{},
+				CustomType: customtypes.AppBuilderAppJSONStringType{},
+			},
+			"override_action_query_ids_to_connection_ids": schema.MapAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "If specified, this will override the Action Connection IDs for the specified Action Query IDs in the App JSON.",
 			},
 			"action_query_ids_to_connection_ids": schema.MapAttribute{
+				Computed:    true,
+				ElementType: types.StringType,
+				Description: "A computed map of the App's Action Query IDs to Action Connection IDs.",
+			},
+			// TODO: maybe change above to remove override and add computed/output to the other one
+			"name": schema.StringAttribute{
+				Optional:    true,
+				Description: "If specified, this will override the name of the App in the App JSON.",
+				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
+			},
+			"description": schema.StringAttribute{
+				Optional:    true,
+				Description: "If specified, this will override the human-readable description of the App in the App JSON.",
+				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
+			},
+			"root_instance_name": schema.StringAttribute{
+				Optional:    true,
+				Description: "The name of the root component of the app. This must be a grid component that contains all other components. If specified, this will override the root instance name of the App in the App JSON.",
+				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
+			},
+			// we use SetAttribute to represent tags, paradoxically to be able to maintain them ordered;
+			// we order them explicitly in the PlanModifiers of this resource and using
+			// SetAttribute makes Terraform ignore differences in order when creating a plan
+			"tags": schema.SetAttribute{
 				Optional:    true,
 				Computed:    true,
-				Description: "A map of the App's Action Query IDs to Action Connection IDs. If specified, this will override the Action Connection IDs in the App JSON.",
 				ElementType: types.StringType,
+				Description: "A list of tags for the app, which can be used to filter apps. If specified, this will override the list of tags for the App in the App JSON. Otherwise, tags will be returned in output.",
+				Validators: []validator.Set{
+					setvalidator.SizeAtLeast(1),
+					// validators.TagsSetIsNormalized(),
+				},
+				PlanModifiers: []planmodifier.Set{
+					planmodifiers.NormalizeTagSet(),
+				},
 			},
+			"publish_status_update": schema.StringAttribute{
+				Optional:    true,
+				Description: "If `published`, the latest app version will be published and available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist. If `unpublish`, the app will be unpublished, removing the live version of the app. If unspecified, the publish status will not be updated.",
+				Validators:  []validator.String{validators.NewEnumValidator[validator.String](NewPublishStatusUpdateFromValue)},
+			},
+			// TODO: update CRUD operations to handle the new optional fields
 		},
 	}
 }
@@ -111,8 +166,10 @@ func (r *appBuilderAppJSONResource) Create(ctx context.Context, request resource
 
 	// set computed values
 	plan.ID = types.StringValue(resp.Data.GetId().String())
-	if plan.ActionQueryIDsToConnectionIDs.IsUnknown() {
-		plan.ActionQueryIDsToConnectionIDs = types.MapNull(types.StringType)
+	plan.ActionQueryIDsToConnectionIDs, err = buildActionQueryIDsToConnectionIDsMap(createRequest.GetData().Attributes.GetQueries())
+	if err != nil {
+		response.Diagnostics.AddError("error building action_query_ids_to_connection_ids map", err.Error())
+		return
 	}
 
 	// Save data into Terraform state
@@ -182,8 +239,10 @@ func (r *appBuilderAppJSONResource) Update(ctx context.Context, request resource
 	}
 
 	// set computed values
-	if plan.ActionQueryIDsToConnectionIDs.IsUnknown() {
-		plan.ActionQueryIDsToConnectionIDs = types.MapNull(types.StringType)
+	plan.ActionQueryIDsToConnectionIDs, err = buildActionQueryIDsToConnectionIDsMap(updateRequest.GetData().Attributes.GetQueries())
+	if err != nil {
+		response.Diagnostics.AddError("error building action_query_ids_to_connection_ids map", err.Error())
+		return
 	}
 
 	// Save data into Terraform state
@@ -235,6 +294,7 @@ func apiResponseToAppBuilderAppJSONModel(resp datadogV2.GetAppResponse) (*appBui
 		err = fmt.Errorf("error marshaling attributes: %s", err)
 		return nil, err
 	}
+	// we use normalized type and value to ignore inconsequential differences in the JSON strings
 	appBuilderAppJSONModel.AppJson = jsontypes.NewNormalizedValue(string(marshalledBytes))
 
 	// build action query ids to connection ids map
@@ -260,7 +320,7 @@ func appBuilderAppJSONModelToCreateApiRequest(plan appBuilderAppJSONResourceMode
 	}
 
 	// replace connection ids in the create request attributes with the ones provided in the plan
-	err = replaceConnectionIDsInActionQueries(plan.ActionQueryIDsToConnectionIDs, attributes.GetQueries())
+	err = replaceConnectionIDsInActionQueries(plan.OverrideActionQueryIDsToConnectionIDs, attributes.GetQueries())
 	if err != nil {
 		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
 		return nil, err
@@ -284,7 +344,7 @@ func appBuilderAppJSONModelToUpdateApiRequest(plan appBuilderAppJSONResourceMode
 	}
 
 	// replace connection ids in the update request attributes with the ones provided in the plan
-	err = replaceConnectionIDsInActionQueries(plan.ActionQueryIDsToConnectionIDs, attributes.GetQueries())
+	err = replaceConnectionIDsInActionQueries(plan.OverrideActionQueryIDsToConnectionIDs, attributes.GetQueries())
 	if err != nil {
 		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
 		return nil, err
@@ -320,8 +380,8 @@ func readAppBuilderAppJSON(ctx context.Context, api *datadogV2.AppBuilderApi, id
 }
 
 // replace the connection ids in the queries with the ones provided in the plan, as specified by {action_query_id: connection_id}
-func replaceConnectionIDsInActionQueries(actionQueryIDsToConnectionIDs types.Map, queries []datadogV2.Query) error {
-	mapElements := actionQueryIDsToConnectionIDs.Elements()
+func replaceConnectionIDsInActionQueries(overrideActionQueryIDsToConnectionIDs types.Map, queries []datadogV2.Query) error {
+	mapElements := overrideActionQueryIDsToConnectionIDs.Elements()
 
 	// skip if no action query ids to connection ids are provided
 	if len(mapElements) == 0 {
@@ -428,4 +488,59 @@ func buildActionQueryIDsToConnectionIDsMap(queries []datadogV2.Query) (types.Map
 	}
 
 	return resultMap, nil
+}
+
+// create enum for App Builder App's PublishStatusUpdate TF field
+type PublishStatusUpdate string
+
+// List of PublishStatusUpdate.
+const (
+	PUBLISHSTATUSUPDATE_PUBLISH   PublishStatusUpdate = "publish"
+	PUBLISHSTATUSUPDATE_UNPUBLISH PublishStatusUpdate = "unpublish"
+)
+
+var allowedPublishStatusUpdateEnumValues = []PublishStatusUpdate{
+	PUBLISHSTATUSUPDATE_PUBLISH,
+	PUBLISHSTATUSUPDATE_UNPUBLISH,
+}
+
+// GetAllowedValues returns the list of possible values.
+func (v *PublishStatusUpdate) GetAllowedValues() []PublishStatusUpdate {
+	return allowedPublishStatusUpdateEnumValues
+}
+
+// UnmarshalJSON deserializes the given payload.
+func (v *PublishStatusUpdate) UnmarshalJSON(src []byte) error {
+	var value string
+	err := datadog.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	*v = PublishStatusUpdate(value)
+	return nil
+}
+
+// NewPublishStatusUpdateFromValue returns a pointer to a valid PublishStatusUpdate
+// for the value passed as argument, or an error if the value passed is not allowed by the enum.
+func NewPublishStatusUpdateFromValue(v string) (*PublishStatusUpdate, error) {
+	ev := PublishStatusUpdate(v)
+	if ev.IsValid() {
+		return &ev, nil
+	}
+	return nil, fmt.Errorf("invalid value '%v' for PublishStatusUpdate: valid values are %v", v, allowedPublishStatusUpdateEnumValues)
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise.
+func (v PublishStatusUpdate) IsValid() bool {
+	for _, existing := range allowedPublishStatusUpdateEnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
+}
+
+// Ptr returns reference to PublishStatusUpdate value.
+func (v PublishStatusUpdate) Ptr() *PublishStatusUpdate {
+	return &v
 }
