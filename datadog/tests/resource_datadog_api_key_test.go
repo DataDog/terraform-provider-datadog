@@ -45,7 +45,7 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 					},
 				),
 			},
-			// Test will succeed only if Remove config is configured for this organisation (see /organization-settings/remote-config)
+			// Test will succeed only if Remote config is configured for this organisation (see /organization-settings/remote-config)
 			{
 				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyNameUpdate, Ptr(true)),
 				Check: resource.ComposeTestCheckFunc(
