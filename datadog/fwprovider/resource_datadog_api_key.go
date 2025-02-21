@@ -3,8 +3,6 @@ package fwprovider
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -62,10 +60,9 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"remote_config_read_enabled": schema.BoolAttribute{
-				Description: "Whether the API key is used for remote config. Warning : default value is true for backwards compatibility",
+				Description: "Whether the API key is used for remote config. Should be put to true only if remote config is enabled in /organization-settings/remote-config",
 				Optional:    true,
 				Computed:    true,
-				Default:     booldefault.StaticBool(true),
 			},
 			// Resource ID
 			"id": utils.ResourceIDAttribute(),
@@ -161,7 +158,9 @@ func (r *apiKeyResource) ImportState(ctx context.Context, request resource.Impor
 
 func (r *apiKeyResource) buildDatadogApiKeyCreateV2Struct(state *apiKeyResourceModel) *datadogV2.APIKeyCreateRequest {
 	apiKeyAttributes := datadogV2.NewAPIKeyCreateAttributes(state.Name.ValueString())
-	apiKeyAttributes.SetRemoteConfigReadEnabled(state.RemoteConfig.ValueBool())
+	if !(state.RemoteConfig.IsUnknown() || state.RemoteConfig.IsNull()) {
+		apiKeyAttributes.SetRemoteConfigReadEnabled(state.RemoteConfig.ValueBool())
+	}
 	apiKeyData := datadogV2.NewAPIKeyCreateData(*apiKeyAttributes, datadogV2.APIKEYSTYPE_API_KEYS)
 	apiKeyRequest := datadogV2.NewAPIKeyCreateRequest(*apiKeyData)
 	return apiKeyRequest
@@ -169,7 +168,9 @@ func (r *apiKeyResource) buildDatadogApiKeyCreateV2Struct(state *apiKeyResourceM
 
 func (r *apiKeyResource) buildDatadogApiKeyUpdateV2Struct(state *apiKeyResourceModel) *datadogV2.APIKeyUpdateRequest {
 	apiKeyAttributes := datadogV2.NewAPIKeyUpdateAttributes(state.Name.ValueString())
-	apiKeyAttributes.SetRemoteConfigReadEnabled(state.RemoteConfig.ValueBool())
+	if !(state.RemoteConfig.IsUnknown() || state.RemoteConfig.IsNull()) {
+		apiKeyAttributes.SetRemoteConfigReadEnabled(state.RemoteConfig.ValueBool())
+	}
 	apiKeyData := datadogV2.NewAPIKeyUpdateData(*apiKeyAttributes, state.ID.ValueString(), datadogV2.APIKEYSTYPE_API_KEYS)
 	apiKeyRequest := datadogV2.NewAPIKeyUpdateRequest(*apiKeyData)
 	return apiKeyRequest
