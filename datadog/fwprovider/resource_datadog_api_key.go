@@ -3,6 +3,8 @@ package fwprovider
 import (
 	"context"
 
+	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -85,8 +87,10 @@ func (r *apiKeyResource) Create(ctx context.Context, request resource.CreateRequ
 
 	apiKeyData := resp.GetData()
 	state.ID = types.StringValue(apiKeyData.GetId())
-	r.updateState(&state, &apiKeyData)
-
+	updateStateDiag := r.updateState(&state, &apiKeyData)
+	if updateStateDiag != nil {
+		response.Diagnostics.Append(updateStateDiag)
+	}
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -130,8 +134,11 @@ func (r *apiKeyResource) Update(ctx context.Context, request resource.UpdateRequ
 
 	apiKeyData := resp.GetData()
 	state.ID = types.StringValue(apiKeyData.GetId())
-	r.updateState(&state, &apiKeyData)
-
+	updateStateDiag := r.updateState(&state, &apiKeyData)
+	if updateStateDiag != nil {
+		response.Diagnostics.Append(updateStateDiag)
+		return
+	}
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -142,7 +149,6 @@ func (r *apiKeyResource) Delete(ctx context.Context, request resource.DeleteRequ
 	if response.Diagnostics.HasError() {
 		return
 	}
-
 	if _, err := r.Api.DeleteAPIKey(r.Auth, state.ID.ValueString()); err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting api key"))
 	}
@@ -176,11 +182,15 @@ func (r *apiKeyResource) buildDatadogApiKeyUpdateV2Struct(state *apiKeyResourceM
 	return apiKeyRequest
 }
 
-func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) {
+func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) frameworkDiag.Diagnostic {
 	apiKeyAttributes := apiKeyData.GetAttributes()
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
+	if state.RemoteConfig.ValueBool() && !apiKeyAttributes.GetRemoteConfigReadEnabled() {
+		return frameworkDiag.NewErrorDiagnostic("remote_config_read_enabled is true but Remote config is not enabled at org level", "Please either remove remote_config_read_enabled from the resource configuration or enable Remote config at org level")
+	}
 	state.RemoteConfig = types.BoolValue(apiKeyAttributes.GetRemoteConfigReadEnabled())
 	if apiKeyAttributes.HasKey() {
 		state.Key = types.StringValue(apiKeyAttributes.GetKey())
 	}
+	return nil
 }
