@@ -34,6 +34,12 @@ def cli(spec_path, config_path, go_fmt):
     spec = setup.load(spec_path)
     config = setup.load(config_path)
 
+    data_sources_to_generate = openapi.get_data_sources(spec, config)
+    for name, data_source in data_sources_to_generate.items():
+        generate_data_source(
+            name=name, data_source=data_source, templates=templates, go_fmt=go_fmt
+        )
+
     resources_to_generate = openapi.get_resources(spec, config)
 
     for name, resource in resources_to_generate.items():
@@ -43,6 +49,17 @@ def cli(spec_path, config_path, go_fmt):
             templates=templates,
             go_fmt=go_fmt,
         )
+
+
+def generate_data_source(
+    name: str, data_source: dict, templates: dict[str, Template], go_fmt: bool
+) -> None:
+    output = pathlib.Path("../datadog/")
+    filename = output / f"fwprovider/data_source_datadog_{name}.go"
+    with filename.open("w") as fp:
+        fp.write(templates["datasource"].render(name=name, operations=data_source))
+    if go_fmt:
+        subprocess.call(["go", "fmt", filename])
 
 
 def generate_resource(

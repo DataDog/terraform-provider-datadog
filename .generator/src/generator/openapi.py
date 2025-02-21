@@ -62,6 +62,23 @@ def get_resources(spec: dict, config: dict) -> dict:
     return resources_to_generate
 
 
+def get_data_sources(spec: dict, config: dict) -> dict:
+    data_source_to_generate = {}
+    for data_source in config["datasources"]:
+        singular_path = config["datasources"][data_source]["singular"]
+        data_source_to_generate.setdefault(data_source, {})["singular"] = {
+            "schema": spec["paths"][singular_path]["get"],
+            "path": singular_path,
+        }
+        plural_path = config["datasources"][data_source]["plural"]
+        data_source_to_generate.setdefault(data_source, {})["plural"] = {
+            "schema": spec["paths"][plural_path]["get"],
+            "path": plural_path,
+        }
+
+    return data_source_to_generate
+
+
 def get_terraform_primary_id(operations):
     update_params = parameters(operations[UPDATE_OPERATION]["schema"])
     primary_id = operations[UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
