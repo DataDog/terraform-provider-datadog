@@ -1077,7 +1077,7 @@ Optional:
 Required:
 
 - `name` (String) Name of the variable.
-- `type` (String) Type of browser test variable. Valid values are `element`, `email`, `global`, `text`.
+- `type` (String) Type of browser test variable. Valid values are `element`, `email`, `global`, `javascript`, `text`.
 
 Optional:
 
