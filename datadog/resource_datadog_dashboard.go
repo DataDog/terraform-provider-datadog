@@ -10883,22 +10883,24 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			MinItems:    1,
 			MaxItems:    1,
-			Elem: schema.Resource{
+			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"canonical": &schema.Schema{
 						Description: "",
 						Type:        schema.TypeList,
 						MinItems:    1,
 						MaxItems:    1,
-						Elem: schema.Resource{
+						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"per_unit_name": &schema.Schema{
 									Description: "",
 									Type:        schema.TypeString,
+									Optional:    true,
 								},
 								"unit_name": &schema.Schema{
 									Description: "",
 									Type:        schema.TypeString,
+									Optional:    true,
 								},
 							},
 						},
@@ -10908,11 +10910,12 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 						Type:        schema.TypeList,
 						MinItems:    1,
 						MaxItems:    1,
-						Elem: schema.Resource{
+						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"label": &schema.Schema{
 									Description: "",
 									Type:        schema.TypeString,
+									Required:    true,
 								},
 							},
 						},
@@ -10925,11 +10928,12 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 			Type:        schema.TypeList,
 			MinItems:    0,
 			MaxItems:    1,
-			Elem: schema.Resource{
+			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"unit_name": &schema.Schema{
 						Description: "",
 						Type:        schema.TypeString,
+						Required:    true,
 					},
 				},
 			},
