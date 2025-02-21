@@ -10891,6 +10891,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 						Type:        schema.TypeList,
 						MinItems:    1,
 						MaxItems:    1,
+						Required:    true,
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"per_unit_name": &schema.Schema{
