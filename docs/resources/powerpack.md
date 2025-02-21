@@ -277,6 +277,7 @@ Optional:
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--style))
 
 <a id="nestedblock--widget--change_definition--request--formula--conditional_formats"></a>
@@ -305,6 +306,52 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format.unit`
+
+Required:
+
+- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String)
+- `unit_name` (String)
+
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String)
+
+
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--change_definition--request--formula--style"></a>
@@ -1203,6 +1250,7 @@ Optional:
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--style))
 
 <a id="nestedblock--widget--geomap_definition--request--formula--conditional_formats"></a>
@@ -1231,6 +1279,52 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit`
+
+Required:
+
+- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String)
+- `unit_name` (String)
+
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String)
+
+
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--geomap_definition--request--formula--style"></a>
@@ -1702,6 +1796,7 @@ Optional:
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--style))
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--conditional_formats"></a>
@@ -1730,6 +1825,52 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit`
+
+Required:
+
+- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String)
+- `unit_name` (String)
+
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String)
+
+
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--style"></a>
@@ -3098,6 +3239,7 @@ Optional:
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--style))
 
 <a id="nestedblock--widget--query_table_definition--request--formula--conditional_formats"></a>
@@ -3126,6 +3268,52 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit`
+
+Required:
+
+- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String)
+- `unit_name` (String)
+
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String)
+
+
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--query_table_definition--request--formula--style"></a>
@@ -3785,6 +3973,7 @@ Optional:
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--style))
 
 <a id="nestedblock--widget--query_value_definition--request--formula--conditional_formats"></a>
@@ -3813,6 +4002,52 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit`
+
+Required:
+
+- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String)
+- `unit_name` (String)
+
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String)
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--query_value_definition--request--formula--style"></a>
@@ -5420,6 +5655,7 @@ Optional:
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--style))
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--conditional_formats"></a>
@@ -5448,6 +5684,52 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit`
+
+Required:
+
+- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String)
+- `unit_name` (String)
+
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String)
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--style"></a>
@@ -6146,6 +6428,7 @@ Optional:
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--style))
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--conditional_formats"></a>
@@ -6174,6 +6457,52 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit`
+
+Required:
+
+- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String)
+- `unit_name` (String)
+
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String)
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--style"></a>
@@ -6894,6 +7223,7 @@ Optional:
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--style))
 
 <a id="nestedblock--widget--toplist_definition--request--formula--conditional_formats"></a>
@@ -6922,6 +7252,52 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit`
+
+Required:
+
+- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String)
+- `unit_name` (String)
+
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String)
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--toplist_definition--request--formula--style"></a>
@@ -7452,6 +7828,7 @@ Optional:
 - `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--style))
 
 <a id="nestedblock--widget--treemap_definition--request--formula--conditional_formats"></a>
@@ -7480,6 +7857,52 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit`
+
+Required:
+
+- `canonical` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit.canonical`
+
+Optional:
+
+- `per_unit_name` (String)
+- `unit_name` (String)
+
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String)
+
+
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--treemap_definition--request--formula--style"></a>
