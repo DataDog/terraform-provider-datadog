@@ -113,7 +113,11 @@ func (r *apiKeyResource) Read(ctx context.Context, request resource.ReadRequest,
 	}
 
 	apiKeyData := resp.GetData()
-	r.updateState(&state, &apiKeyData)
+	updateStateDiag := r.updateState(&state, &apiKeyData)
+	if updateStateDiag != nil {
+		response.Diagnostics.Append(updateStateDiag)
+		return
+	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -183,14 +187,15 @@ func (r *apiKeyResource) buildDatadogApiKeyUpdateV2Struct(state *apiKeyResourceM
 }
 
 func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) frameworkDiag.Diagnostic {
+	var d frameworkDiag.Diagnostic
 	apiKeyAttributes := apiKeyData.GetAttributes()
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
 	if state.RemoteConfig.ValueBool() && !apiKeyAttributes.GetRemoteConfigReadEnabled() {
-		return frameworkDiag.NewErrorDiagnostic("remote_config_read_enabled is true but Remote config is not enabled at org level", "Please either remove remote_config_read_enabled from the resource configuration or enable Remote config at org level")
+		d = frameworkDiag.NewErrorDiagnostic("remote_config_read_enabled is true but Remote config is not enabled at org level", "Please either remove remote_config_read_enabled from the resource configuration or enable Remote config at org level")
 	}
 	state.RemoteConfig = types.BoolValue(apiKeyAttributes.GetRemoteConfigReadEnabled())
 	if apiKeyAttributes.HasKey() {
 		state.Key = types.StringValue(apiKeyAttributes.GetKey())
 	}
-	return nil
+	return d
 }
