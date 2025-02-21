@@ -313,7 +313,7 @@ Optional:
 
 Required:
 
-- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit))
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit))
 
 Optional:
 
@@ -324,16 +324,19 @@ Optional:
 
 Optional:
 
-- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--change_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.change_definition.request.formula.number_format.unit.canonical`
 
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
 Optional:
 
-- `per_unit_name` (String)
-- `unit_name` (String)
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
 
 
 <a id="nestedblock--widget--change_definition--request--formula--number_format--unit--custom"></a>
@@ -341,7 +344,7 @@ Optional:
 
 Required:
 
-- `label` (String)
+- `label` (String) Unit label
 
 
 
@@ -1286,7 +1289,7 @@ Optional:
 
 Required:
 
-- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit))
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit))
 
 Optional:
 
@@ -1297,16 +1300,19 @@ Optional:
 
 Optional:
 
-- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit.canonical`
 
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
 Optional:
 
-- `per_unit_name` (String)
-- `unit_name` (String)
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
 
 
 <a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom"></a>
@@ -1314,7 +1320,7 @@ Optional:
 
 Required:
 
-- `label` (String)
+- `label` (String) Unit label
 
 
 
@@ -1832,7 +1838,7 @@ Optional:
 
 Required:
 
-- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit))
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit))
 
 Optional:
 
@@ -1843,16 +1849,19 @@ Optional:
 
 Optional:
 
-- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit.canonical`
 
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
 Optional:
 
-- `per_unit_name` (String)
-- `unit_name` (String)
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
 
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom"></a>
@@ -1860,7 +1869,7 @@ Optional:
 
 Required:
 
-- `label` (String)
+- `label` (String) Unit label
 
 
 
@@ -3275,7 +3284,7 @@ Optional:
 
 Required:
 
-- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit))
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit))
 
 Optional:
 
@@ -3286,16 +3295,19 @@ Optional:
 
 Optional:
 
-- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit.canonical`
 
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
 Optional:
 
-- `per_unit_name` (String)
-- `unit_name` (String)
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
 
 
 <a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom"></a>
@@ -3303,7 +3315,7 @@ Optional:
 
 Required:
 
-- `label` (String)
+- `label` (String) Unit label
 
 
 
@@ -4009,7 +4021,7 @@ Optional:
 
 Required:
 
-- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit))
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit))
 
 Optional:
 
@@ -4020,16 +4032,19 @@ Optional:
 
 Optional:
 
-- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit.canonical`
 
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
 Optional:
 
-- `per_unit_name` (String)
-- `unit_name` (String)
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
 
 
 <a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom"></a>
@@ -4037,7 +4052,7 @@ Optional:
 
 Required:
 
-- `label` (String)
+- `label` (String) Unit label
 
 
 
@@ -5691,7 +5706,7 @@ Optional:
 
 Required:
 
-- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit))
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit))
 
 Optional:
 
@@ -5702,16 +5717,19 @@ Optional:
 
 Optional:
 
-- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit.canonical`
 
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
 Optional:
 
-- `per_unit_name` (String)
-- `unit_name` (String)
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
 
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom"></a>
@@ -5719,7 +5737,7 @@ Optional:
 
 Required:
 
-- `label` (String)
+- `label` (String) Unit label
 
 
 
@@ -6464,7 +6482,7 @@ Optional:
 
 Required:
 
-- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit))
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit))
 
 Optional:
 
@@ -6475,16 +6493,19 @@ Optional:
 
 Optional:
 
-- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit.canonical`
 
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
 Optional:
 
-- `per_unit_name` (String)
-- `unit_name` (String)
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
 
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom"></a>
@@ -6492,7 +6513,7 @@ Optional:
 
 Required:
 
-- `label` (String)
+- `label` (String) Unit label
 
 
 
@@ -7259,7 +7280,7 @@ Optional:
 
 Required:
 
-- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit))
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit))
 
 Optional:
 
@@ -7270,16 +7291,19 @@ Optional:
 
 Optional:
 
-- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit.canonical`
 
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
 Optional:
 
-- `per_unit_name` (String)
-- `unit_name` (String)
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
 
 
 <a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom"></a>
@@ -7287,7 +7311,7 @@ Optional:
 
 Required:
 
-- `label` (String)
+- `label` (String) Unit label
 
 
 
@@ -7864,7 +7888,7 @@ Optional:
 
 Required:
 
-- `unit` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit))
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit))
 
 Optional:
 
@@ -7875,16 +7899,19 @@ Optional:
 
 Optional:
 
-- `canonical` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical))
-- `custom` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom))
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom))
 
 <a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical"></a>
 ### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit.canonical`
 
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
 Optional:
 
-- `per_unit_name` (String)
-- `unit_name` (String)
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
 
 
 <a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom"></a>
@@ -7892,7 +7919,7 @@ Optional:
 
 Required:
 
-- `label` (String)
+- `label` (String) Unit label
 
 
 

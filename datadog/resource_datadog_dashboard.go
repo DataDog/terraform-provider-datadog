@@ -10879,7 +10879,7 @@ func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []st
 func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"unit": &schema.Schema{
-			Description: "",
+			Description: "Unit of the number format. ",
 			Type:        schema.TypeList,
 			MinItems:    1,
 			MaxItems:    1,
@@ -10887,7 +10887,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"canonical": &schema.Schema{
-						Description: "",
+						Description: "Canonical Units",
 						Type:        schema.TypeList,
 						MinItems:    0,
 						MaxItems:    1,
@@ -10895,20 +10895,20 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"per_unit_name": &schema.Schema{
-									Description: "",
+									Description: "per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'",
 									Type:        schema.TypeString,
 									Optional:    true,
 								},
 								"unit_name": &schema.Schema{
-									Description: "",
+									Description: "Unit name. It should be in singular form ('megabyte' and not 'megabytes')",
 									Type:        schema.TypeString,
-									Optional:    true,
+									Required:    true,
 								},
 							},
 						},
 					},
 					"custom": &schema.Schema{
-						Description: "",
+						Description: "Use custom (non canonical metrics)",
 						Type:        schema.TypeList,
 						MinItems:    0,
 						MaxItems:    1,
@@ -10916,7 +10916,7 @@ func getNumberFormatFormulaSchema() map[string]*schema.Schema {
 						Elem: &schema.Resource{
 							Schema: map[string]*schema.Schema{
 								"label": &schema.Schema{
-									Description: "",
+									Description: "Unit label",
 									Type:        schema.TypeString,
 									Required:    true,
 								},
@@ -10956,23 +10956,29 @@ func buildNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *data
 		if v, ok := unit["canonical"].([]interface{}); ok && len(v) > 0 {
 			canonical := v[0].(map[string]interface{})
 			datadogNumber.Unit.NumberFormatUnitCanonical = &datadogV1.NumberFormatUnitCanonical{
-				PerUnitName: Ptr(canonical["per_unit_name"].(string)),
-				UnitName:    Ptr(canonical["unit_name"].(string)),
-				Type:        Ptr(datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT),
+				Type: Ptr(datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT),
+			}
+			if v, ok := canonical["per_unit_name"].(string); ok && len(v) > 0 {
+				datadogNumber.Unit.NumberFormatUnitCanonical.PerUnitName = Ptr(v)
+			}
+			if v, ok := canonical["unit_name"].(string); ok && len(v) > 0 {
+				datadogNumber.Unit.NumberFormatUnitCanonical.UnitName = Ptr(v)
 			}
 		}
 		if v, ok := unit["custom"].([]interface{}); ok && len(v) > 0 {
 			custom := v[0].(map[string]interface{})
 			datadogNumber.Unit.NumberFormatUnitCustom = &datadogV1.NumberFormatUnitCustom{
-				Label: Ptr(custom["label"].(string)),
-				Type:  Ptr(datadogV1.NUMBERFORMATUNITCUSTOMTYPE_CUSTOM_UNIT_LABEL),
+				Type: Ptr(datadogV1.NUMBERFORMATUNITCUSTOMTYPE_CUSTOM_UNIT_LABEL),
+			}
+			if v, ok := custom["label"].(string); ok && len(v) > 0 {
+				datadogNumber.Unit.NumberFormatUnitCustom.Label = Ptr(v)
 			}
 		}
 	}
 	return &datadogNumber
 }
 
-func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumberFormat) map[string]interface{} {
+func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumberFormat) []map[string]interface{} {
 	m := map[string]interface{}{}
 	if v, ok := datadogStyle.GetUnitOk(); ok {
 		unit := map[string]interface{}{}
@@ -10985,14 +10991,14 @@ func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumber
 					"unit_name": v.NumberFormatUnitCanonical.UnitName},
 			}
 		}
-		m["unit"] = unit
+		m["unit"] = []map[string]interface{}{unit}
 	}
 	if v, ok := datadogStyle.GetUnitScaleOk(); ok {
 		unitScale := map[string]interface{}{}
 		unitScale["unit_name"] = []map[string]interface{}{{"unit_name": v.UnitName}}
-		m["unit_scale"] = unitScale
+		m["unit_scale"] = []map[string]interface{}{unitScale}
 	}
-	return m
+	return []map[string]interface{}{m}
 }
 
 func Ptr[T any](v T) *T {
