@@ -101,14 +101,14 @@ resource "datadog_dashboard" "query_table_dashboard" {
 			    value = 90
 				comparator = ">="
 			  }
-              number_format {
-                 unit {
-                   canonical { 
-                     unit_name = "joule" 
-                     per_unit_name = "second"
-                   }
-                 }
-              }
+			  number_format {
+			     unit {
+			       canonical { 
+			         unit_name = "joule" 
+			         per_unit_name = "second"
+			       }
+			     }
+			  }
 			}
 			query {
 			  metric_query {
