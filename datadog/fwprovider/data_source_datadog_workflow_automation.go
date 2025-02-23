@@ -26,6 +26,8 @@ func NewDatadogWorkflowAutomationDataSource() datasource.DataSource {
 func (d *workflowAutomationDatasource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetWorkflowAutomationApiV2()
+	// Used to identify requests made from Terraform
+	d.Api.Client.Cfg.AddDefaultHeader("X-Datadog-Workflow-Automation-Source", "terraform")
 	d.Auth = providerData.Auth
 }
 
@@ -46,7 +48,10 @@ func (d *workflowAutomationDatasource) Schema(_ context.Context, request datasou
 				Computed:    true,
 				Description: "Description of the workflow.",
 			},
-			"tags": schema.ListAttribute{
+			"tags": schema.SetAttribute{
+				// we use TypeSet to represent tags to be able to maintain them ordered;
+				// we order them explicitly in the read/create/update methods of this resource and using
+				// TypeSet makes Terraform ignore differences in order when creating a plan
 				Computed:    true,
 				Description: "Tags of the workflow.",
 				ElementType: types.StringType,
@@ -64,14 +69,6 @@ func (d *workflowAutomationDatasource) Schema(_ context.Context, request datasou
 				Computed:    true,
 				Sensitive:   true,
 				Description: "If a Webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here.",
-			},
-			"created_at": schema.StringAttribute{
-				Computed:    true,
-				Description: "When the workflow was created.",
-			},
-			"updated_at": schema.StringAttribute{
-				Computed:    true,
-				Description: "When the workflow was last updated.",
 			},
 		},
 	}

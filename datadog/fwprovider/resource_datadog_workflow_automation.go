@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
@@ -37,8 +38,6 @@ type workflowAutomationResourceModel struct {
 	Published     types.Bool           `tfsdk:"published"`
 	SpecJson      jsontypes.Normalized `tfsdk:"spec_json"`
 	WebhookSecret types.String         `tfsdk:"webhook_secret"`
-	CreatedAt     types.String         `tfsdk:"created_at"`
-	UpdatedAt     types.String         `tfsdk:"updated_at"`
 }
 
 func NewDatadogWorkflowAutomationResource() resource.Resource {
@@ -48,6 +47,8 @@ func NewDatadogWorkflowAutomationResource() resource.Resource {
 func (r *workflowAutomationResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetWorkflowAutomationApiV2()
+	// Used to identify requests made from Terraform
+	r.Api.Client.Cfg.AddDefaultHeader("X-Datadog-Workflow-Automation-Source", "terraform")
 	r.Auth = providerData.Auth
 }
 
@@ -68,7 +69,10 @@ func (r *workflowAutomationResource) Schema(_ context.Context, _ resource.Schema
 				Optional:    true,
 				Description: "Description of the workflow.",
 			},
-			"tags": schema.ListAttribute{
+			"tags": schema.SetAttribute{
+				// we use TypeSet to represent tags to be able to maintain them ordered;
+				// we order them explicitly in the read/create/update methods of this resource and using
+				// TypeSet makes Terraform ignore differences in order when creating a plan
 				Optional:    true,
 				Description: "Tags of the workflow.",
 				ElementType: types.StringType,
@@ -86,14 +90,6 @@ func (r *workflowAutomationResource) Schema(_ context.Context, _ resource.Schema
 				Optional:    true,
 				Sensitive:   true,
 				Description: "If a Webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here.",
-			},
-			"created_at": schema.StringAttribute{
-				Computed:    true,
-				Description: "When the workflow was created.",
-			},
-			"updated_at": schema.StringAttribute{
-				Computed:    true,
-				Description: "When the workflow was last updated.",
 			},
 		},
 	}
@@ -134,8 +130,6 @@ func (r *workflowAutomationResource) Create(ctx context.Context, request resourc
 
 	// Set computed values
 	plan.ID = types.StringPointerValue(workflow.Data.Id)
-	plan.CreatedAt = types.StringValue(workflow.Data.Attributes.CreatedAt.String())
-	plan.UpdatedAt = types.StringValue(workflow.Data.Attributes.UpdatedAt.String())
 
 	diags = response.State.Set(ctx, &plan)
 	response.Diagnostics.Append(diags...)
@@ -179,7 +173,7 @@ func (r *workflowAutomationResource) Update(ctx context.Context, request resourc
 		return
 	}
 
-	workflow, httpResp, err := r.Api.UpdateWorkflow(r.Auth, id.String(), *updateRequest)
+	_, httpResp, err := r.Api.UpdateWorkflow(r.Auth, id.String(), *updateRequest)
 	if err != nil {
 		if httpResp != nil {
 			body, err := io.ReadAll(httpResp.Body)
@@ -193,10 +187,6 @@ func (r *workflowAutomationResource) Update(ctx context.Context, request resourc
 		}
 		return
 	}
-
-	// Set computed values
-	plan.CreatedAt = types.StringValue(workflow.Data.Attributes.CreatedAt.String())
-	plan.UpdatedAt = types.StringValue(workflow.Data.Attributes.UpdatedAt.String())
 
 	diags = response.State.Set(ctx, &plan)
 	response.Diagnostics.Append(diags...)
@@ -234,18 +224,12 @@ func workflowAutomationModelToCreateApiRequest(workflowAutomationModel workflowA
 	for i, tag := range workflowAutomationModel.Tags {
 		tags[i] = tag.ValueString()
 	}
+	sort.Strings(tags)
 	attributes.SetTags(tags)
 	attributes.SetPublished(workflowAutomationModel.Published.ValueBool())
 	attributes.SetWebhookSecret(workflowAutomationModel.WebhookSecret.ValueString())
 
-	var specJsonString string
-	err := json.Unmarshal([]byte(workflowAutomationModel.SpecJson.ValueString()), &specJsonString)
-	if err != nil {
-		err = fmt.Errorf("error unmarshalling spec json to string: %s", err)
-		return nil, err
-	}
-
-	err = json.Unmarshal([]byte(specJsonString), &attributes.Spec)
+	err := json.Unmarshal([]byte(workflowAutomationModel.SpecJson.ValueString()), &attributes.Spec)
 	if err != nil {
 		err = fmt.Errorf("error unmarshalling spec json string to attributes.Spec struct: %s", err)
 		return nil, err
@@ -266,6 +250,7 @@ func workflowAutomationModelToUpdateApiRequest(workflowAutomationModel workflowA
 	for i, tag := range workflowAutomationModel.Tags {
 		tags[i] = tag.ValueString()
 	}
+	sort.Strings(tags)
 	attributes.SetTags(tags)
 	attributes.SetPublished(workflowAutomationModel.Published.ValueBool())
 	attributes.SetWebhookSecret(workflowAutomationModel.WebhookSecret.ValueString())
@@ -292,14 +277,15 @@ func apiResponseToWorkflowAutomationModel(workflow datadogV2.GetWorkflowResponse
 	workflowModel.Name = types.StringValue(attributes.Name)
 	workflowModel.Description = types.StringPointerValue(attributes.Description)
 	workflowModel.Published = types.BoolPointerValue(attributes.Published)
+
+	sort.Strings(attributes.Tags)
 	var tags []types.String
 	for _, tag := range attributes.Tags {
 		tags = append(tags, types.StringValue(tag))
 	}
+
 	workflowModel.Tags = tags
 	workflowModel.WebhookSecret = types.StringPointerValue(attributes.WebhookSecret)
-	workflowModel.CreatedAt = types.StringValue(attributes.CreatedAt.String()) // TODO Pointers?
-	workflowModel.UpdatedAt = types.StringValue(attributes.UpdatedAt.String()) // TODO Pointers?
 
 	marshalledBytes, err := json.Marshal(attributes.Spec)
 	if err != nil {
