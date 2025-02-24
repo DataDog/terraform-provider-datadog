@@ -1,0 +1,19 @@
+func (d *datadog{{ name|camel_case }}DataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadog{{ name|camel_case }}DataSourceModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if !state.{{name|camel_case}}Id.IsNull() {
+		{{name|camel_case|untitle_case}}Id := state.{{name|camel_case}}Id.ValueString()
+		ddResp, _, err := d.Api.Get{{name|camel_case}}(d.Auth, {{name|camel_case|untitle_case}}Id)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog {{name|camel_case|untitle_case}}"))
+			return
+		}
+
+		d.updateState(&state, ddResp.Data)
+	}
+    
+}

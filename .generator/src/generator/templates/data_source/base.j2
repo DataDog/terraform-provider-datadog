@@ -1,4 +1,15 @@
 {%- set apiName = operations["singular"]["schema"]["tags"][0].replace(" ", "") + "Api" %}
+{%- set singularParams = operations["singular"]["schema"]|parameters %}
+{%- set singularParamAttr = singularParams|sort_schemas_by_type%}
+
+{%- set pluralParams = operations["plural"]["schema"]|parameters %}
+{%- set primitiveParamAttr, primitiveParamArrAttr, nonPrimitiveParamListAttr, nonPrimitiveParamObjAttr = pluralParams|only_keep_filters|sort_schemas_by_type %}
+
+{%- set singularResp = operations["singular"]["schema"]["responses"]|get_schema_from_response %}
+{%- set primitiveRespAttr, primitiveRespArrAttr, nonPrimitiveRespListAttr, nonPrimitiveRespObjAttr = singularResp|tf_sort_properties_by_type %}
+
+{%- set primaryId = get_terraform_primary_id(operations, "singular") %}
+
 package fwprovider
 
 import (
@@ -13,23 +24,25 @@ import (
 )
 
 var (
-    _ datasource.DataSource = &{{ name|camel_case|untitle_case }}DataSource{}
+    _ datasource.DataSource = &datadog{{ name|camel_case }}DataSource{}
 )
 
-{%- include "data_source/types.j2" %}
+{% include "data_source/types.j2" %}
 
-func New{{ name|camel_case }}DataSource() datasource.DataSource {
-	return &{{ name|camel_case|untitle_case }}DataSource{}
+func NewDatadog{{ name|camel_case }}DataSource() datasource.DataSource {
+	return &datadog{{ name|camel_case }}DataSource{}
 }
 
-func (r *{{ name|camel_case|untitle_case }}DataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
+func (d *datadog{{ name|camel_case }}DataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
-	r.Api = providerData.DatadogApiInstances.Get{{ apiName }}{{ version }}()
-	r.Auth = providerData.Auth
+	d.Api = providerData.DatadogApiInstances.Get{{ apiName }}{{ version }}()
+	d.Auth = providerData.Auth
 }
 
-func (r *{{ name|camel_case|untitle_case }}DataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
+func (d *datadog{{ name|camel_case }}DataSource) Metadata(_ context.Context, request datasource.MetadataRequest, response *datasource.MetadataResponse) {
 	response.TypeName = "{{ name|snake_case }}"
 }
 
-{%- include "data_source/schema.j2"%}
+{% include "data_source/schema.j2"%}
+
+{% include "data_source/read.j2"%}

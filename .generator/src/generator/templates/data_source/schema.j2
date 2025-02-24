@@ -1,16 +1,6 @@
 {%- import "utils/schema_helper.j2" as schemaMacros %}
 
-{%- set singularParams = operations["singular"]["schema"]|parameters %}
-{%- set singularParamAttr = singularParams|only_keep_filters|sort_schemas_by_type%}
-
-{%- set pluralParams = operations["plural"]["schema"]|parameters %}
-{%- set primitiveParamAttr, primitiveParamArrAttr, nonPrimitiveParamListAttr, nonPrimitiveParamObjAttr = pluralParams|only_keep_filters|sort_schemas_by_type %}
-
-{%- set singularResp = operations["singular"]["schema"]["responses"]|get_schema_from_response %}
-{%- set primitiveRespAttr, primitiveRespArrAttr, nonPrimitiveRespListAttr, nonPrimitiveRespObjAttr = singularResp|tf_sort_properties_by_type %}
-
-
-func (r *{{ name|camel_case|untitle_case }}DataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
+func (d *datadog{{ name|camel_case }}DataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about an existing Datadog {{ name }}.",
 		Attributes: map[string]schema.Attribute{

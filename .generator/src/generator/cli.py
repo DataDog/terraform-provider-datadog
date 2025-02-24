@@ -40,15 +40,15 @@ def cli(spec_path, config_path, go_fmt):
             name=name, data_source=data_source, templates=templates, go_fmt=go_fmt
         )
 
-    resources_to_generate = openapi.get_resources(spec, config)
+    # resources_to_generate = openapi.get_resources(spec, config)
 
-    for name, resource in resources_to_generate.items():
-        generate_resource(
-            name=name,
-            resource=resource,
-            templates=templates,
-            go_fmt=go_fmt,
-        )
+    # for name, resource in resources_to_generate.items():
+    #     generate_resource(
+    #         name=name,
+    #         resource=resource,
+    #         templates=templates,
+    #         go_fmt=go_fmt,
+    #     )
 
 
 def generate_data_source(

@@ -1,43 +1,38 @@
 {%- import "utils/types_helper.j2" as typesHelper %}
 
-{%- set singularParams = operations["singular"]["schema"]|parameters %}
-{%- set pluralParams = operations["plural"]["schema"]|parameters %}
-{%- set singularParam = singularParams|only_keep_filters|sort_schemas_by_type%}
-{%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = pluralParams|only_keep_filters|sort_schemas_by_type %}
-
-type {{ name|camel_case|untitle_case }}DataSource struct {
+type datadog{{ name|camel_case }}DataSource struct {
 	Api  *datadog{{ version }}.{{ apiName }}
 	Auth context.Context
 }
 
-type {{ name|camel_case|untitle_case }}DataSourceModel struct {
+type datadog{{ name|camel_case }}DataSourceModel struct {
     // Query Parameters
-    {%- for name, schema in singularParam[0].items() %}
+    {%- for name, schema in singularParamAttr[0].items() %}
     {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
     {%- endfor %}
 
-    {%- for name, schema in primitiveAttr.items() %}
+    {%- for name, schema in primitiveParamAttr.items() %}
     {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
     {%- endfor %}
 
-    {%- for name, schema in primitiveArrAttr.items() %}
+    {%- for name, schema in primitiveParamArrAttr.items() %}
     {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
     {%- endfor %}
 
-    {%- for name, schema in nonPrimitiveListAttr.items() %}
+    {%- for name, schema in nonPrimitiveParamListAttr.items() %}
     {{- typesHelper.nonPrimitiveTypeProperty(name, array=True) }}
     {%- endfor %}
 
-    {%- for name, schema in nonPrimitiveObjAttr.items() %}
+    {%- for name, schema in nonPrimitiveParamObjAttr.items() %}
     {{- typesHelper.nonPrimitiveTypeProperty(name) }}
     {%- endfor %}
 }
 
-{% for name, schema in nonPrimitiveListAttr.items() %}
+{% for name, schema in nonPrimitiveParamListAttr.items() %}
 {{- typesHelper.basePropertyTypeBuilder(name, schema) }}
 {% endfor %}
 
-{% for name, schema in nonPrimitiveObjAttr.items() %}
+{% for name, schema in nonPrimitiveParamObjAttr.items() %}
 {{- typesHelper.basePropertyTypeBuilder(name, schema) }}
 {% endfor %}
 
