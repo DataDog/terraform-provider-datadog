@@ -18,10 +18,10 @@ def load_environment(version: str) -> Environment:
     env.filters["attribute_name"] = formatter.attribute_name
     env.filters["camel_case"] = formatter.camel_case
     env.filters["sanitize_description"] = formatter.sanitize_description
-
     env.filters["snake_case"] = formatter.snake_case
     env.filters["untitle_case"] = formatter.untitle_case
     env.filters["variable_name"] = formatter.variable_name
+    env.filters["date_time_formatter"] = formatter.date_time_formatter
     env.filters["parameter_schema"] = openapi.parameter_schema
     env.filters["parameters"] = openapi.parameters
     env.filters["is_json_api"] = openapi.is_json_api

@@ -139,3 +139,9 @@ def get_terraform_schema_type(schema):
         "object": "Block",
         None: "String",
     }[schema.get("type")]
+
+
+def date_time_formatter(name: str, schema: dict):
+    if schema.get("format") == "date-time":
+        return f"{variable_name(name)}.String()"
+    return f"*{variable_name(name)}"
