@@ -79,9 +79,9 @@ def get_data_sources(spec: dict, config: dict) -> dict:
     return data_source_to_generate
 
 
-def get_terraform_primary_id(operations):
-    update_params = parameters(operations[UPDATE_OPERATION]["schema"])
-    primary_id = operations[UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
+def get_terraform_primary_id(operations, path=UPDATE_OPERATION):
+    update_params = parameters(operations[path]["schema"])
+    primary_id = operations[path]["path"].split("/")[-1][1:-1]
     primary_id_param = update_params.pop(primary_id)
 
     return {"schema": parameter_schema(primary_id_param), "name": primary_id}
