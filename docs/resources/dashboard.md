@@ -5305,11 +5305,21 @@ Required:
 
 Optional:
 
+- `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Usable only with logs_pattern_stream.
 - `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
+- `group_by` (Block List) Group by configuration for the List Stream Widget. Group by can be used only with logs_pattern_stream (up to 4 items) or logs_transaction_stream (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query--group_by))
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
 - `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--group_definition--widget--list_stream_definition--request--query--sort))
 - `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--query--group_by"></a>
+### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet name
+
 
 <a id="nestedblock--widget--group_definition--widget--list_stream_definition--request--query--sort"></a>
 ### Nested Schema for `widget.group_definition.widget.list_stream_definition.request.query.sort`
@@ -17877,11 +17887,21 @@ Required:
 
 Optional:
 
+- `clustering_pattern_field_path` (String) Specifies the field for logs pattern clustering. Usable only with logs_pattern_stream.
 - `event_size` (String) Size of events displayed in widget. Required if `data_source` is `event_stream`. Valid values are `s`, `l`.
+- `group_by` (Block List) Group by configuration for the List Stream Widget. Group by can be used only with logs_pattern_stream (up to 4 items) or logs_transaction_stream (one group by item is required) list stream source. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query--group_by))
 - `indexes` (List of String) List of indexes.
 - `query_string` (String) Widget query.
 - `sort` (Block List, Max: 1) The facet and order to sort the data, for example: `{"column": "time", "order": "desc"}`. (see [below for nested schema](#nestedblock--widget--list_stream_definition--request--query--sort))
 - `storage` (String) Storage location (private beta).
+
+<a id="nestedblock--widget--list_stream_definition--request--query--group_by"></a>
+### Nested Schema for `widget.list_stream_definition.request.query.group_by`
+
+Required:
+
+- `facet` (String) Facet name
+
 
 <a id="nestedblock--widget--list_stream_definition--request--query--sort"></a>
 ### Nested Schema for `widget.list_stream_definition.request.query.sort`
