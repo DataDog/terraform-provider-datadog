@@ -62,7 +62,7 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"remote_config_read_enabled": schema.BoolAttribute{
-				Description: "Whether the API key is used for remote config. Should be put to true only if remote config is enabled in /organization-settings/remote-config",
+				Description: "Whether the API key is used for remote config. Set to true only if remote config is enabled in `/organization-settings/remote-config`.",
 				Optional:    true,
 				Computed:    true,
 			},

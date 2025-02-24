@@ -28,7 +28,7 @@ resource "datadog_api_key" "foo" {
 
 ### Optional
 
-- `remote_config_read_enabled` (Boolean) Whether the API key is used for remote config. Should be put to true only if remote config is enabled in /organization-settings/remote-config
+- `remote_config_read_enabled` (Boolean) Whether the API key is used for remote config. Set to true only if remote config is enabled in `/organization-settings/remote-config`.
 
 ### Read-Only
 
