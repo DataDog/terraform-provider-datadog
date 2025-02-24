@@ -1,0 +1,298 @@
+paths:
+  /api/v2/remote_config/products/obs_pipelines/pipelines:
+    get:
+      x-menu-order: 1
+      x-undo:
+        type: safe
+      summary: Get all pipelines
+      operationId: ListPipelines
+      description: Retrieves a list of all configured observability pipelines.
+      responses:
+        "200":
+          description: A list of pipelines
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pipeline"
+        "403":
+          description: Forbidden
+        "429":
+          description: Too Many Requests
+    post:
+      x-menu-order: 2
+      x-undo:
+        type: safe
+      summary: Create a new pipeline
+      operationId: CreatePipeline
+      description: Creates a new observability pipeline.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Pipeline"
+      responses:
+        "201":
+          description: Pipeline created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pipeline"
+        "400":
+          description: Bad Request
+        "403":
+          description: Forbidden
+
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+  /api/v2/remote_config/products/obs_pipelines/pipelines/{pipeline_id}:
+    get:
+      x-menu-order: 3
+      x-undo:
+        type: safe
+      summary: Get a specific pipeline
+      operationId: GetPipeline
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Details of a pipeline
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pipeline"
+        "404":
+          description: Not Found
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+      tags:
+      - Pipelines
+    put:
+      x-menu-order: 3
+      x-undo:
+        type: safe
+      summary: Update a specific pipeline
+      operationId: UpdatePipeline
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Pipeline"
+      responses:
+        "200":
+          description: Pipeline updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pipeline"
+        "400":
+          description: Bad Request
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+    delete:
+      x-menu-order: 4
+      x-undo:
+        type: safe
+      summary: Delete a specific pipeline
+      operationId: DeletePipeline
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Pipeline deleted
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+
+        "429":
+          $ref: "#/components/responses/TooManyRequestsResponse"
+components:
+  schemas:
+    DatadogLogsDestinationType:
+      type: string
+      example: datadog_logs
+      default: datadog_logs
+      description: The type of destination.
+      enum:
+        - datadog_logs
+
+      x-enum-varnames:
+        - DATADOG_LOGS
+    FilterProcessorType:
+      example: filter
+      type: string
+      description: The type of processor.
+      enum:
+        - filter
+      x-enum-varnames:
+        - FILTER
+    DatadogAgentSourceType:
+      type: string
+      example: datadog_agent
+      default: datadog_agent
+      description: The type of source.
+      enum:
+        - datadog_agent
+      x-enum-varnames:
+        - DATADOG_AGENT
+    PipelineDataAttributesConfig:
+      type: object
+      description: pipeline config
+      required:
+        - sources
+        - processors
+        - destinations
+      properties:
+        sources:
+          description: The `config` `sources`.
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/DatadogAgentSource"
+        processors:
+          description: The `config` `processors`.
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/FilterProcessor"
+        destinations:
+          description: The `config` `destinations`.
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/DatadogLogsDestination"
+
+    PipelineDataAttributes:
+      type: object
+      description: pipeline attributes
+      required:
+        - name
+        - config
+      properties:
+        name:
+          example: ""
+          type: string
+          description: The pipeline name.
+        config:
+          $ref: "#/components/schemas/PipelineDataAttributesConfig"
+    PipelineData:
+      description: The definition of `PipelineData` object.
+      type: object
+      required:
+        - type
+        - attributes
+      properties:
+        id:
+          type: string
+          description: Pipeline ID
+          example: e8890e15-053e-4d34-9404-1b41b9e403e2
+        type:
+          type: string
+          description: The type of the resource. The value should always be pipeline.
+          example: pipeline
+        attributes:
+          $ref: "#/components/schemas/PipelineDataAttributes"
+    Pipeline:
+      type: object
+      description: A pipeline definition.
+      required:
+        - data
+      properties:
+        data:
+          $ref: "#/components/schemas/PipelineData"
+    DatadogAgentSource:
+      type: object
+      description: A Datadog Agent source component.
+      required:
+        - id
+        - type
+      properties:
+        id:
+          type: string
+          example: source-0
+          description: The unique ID of the source.
+        type:
+          $ref: "#/components/schemas/DatadogAgentSourceType"
+        tls:
+          $ref: "#/components/schemas/Tls"
+
+    FilterProcessor:
+      type: object
+      description: A filter processor component.
+      required:
+        - id
+        - type
+        - include
+      properties:
+        id:
+          example: ""
+          type: string
+          description: The unique ID of the processor.
+        type:
+          $ref: "#/components/schemas/FilterProcessorType"
+        include:
+          example: ""
+          type: string
+          description: Inclusion filter for the processor.
+
+    DatadogLogsDestination:
+      type: object
+      description: A Datadog Logs destination component.
+      required:
+        - id
+        - type
+      properties:
+        id:
+          type: string
+          example: destination-0
+          description: The unique ID of the destination.
+        type:
+          $ref: "#/components/schemas/DatadogLogsDestinationType"
+    Tls:
+      type: object
+      description: TLS settings
+      required:
+        - crt_file
+      properties:
+        crt_file:
+          type: string
+          example: my_crt_file
+          description: CRT file
+        ca_file:
+          type: string
+          example: my_ca_file
+          description: CA file
+        key_file:
+          type: string
+          example: my_key_file
+          description: Key file
+
+tags:
+  - name: Observability Pipelines
+    description: |-
+      Observability Pipelines are awesome!
+    externalDocs:
+      description: Find out more at
+      url: https://docs.datadoghq.com/observability_pipelines/
