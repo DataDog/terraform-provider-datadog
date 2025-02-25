@@ -3,10 +3,13 @@
 page_title: "datadog_integration_aws_log_collection Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
+  !>This resource is deprecated - use the datadog_integration_aws_account.
   Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which AWS services logs are collected from for an account.
 ---
 
 # datadog_integration_aws_log_collection (Resource)
+
+!>This resource is deprecated - use the `datadog_integration_aws_account`.
 
 Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which AWS services logs are collected from for an account.
 

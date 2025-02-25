@@ -3,6 +3,7 @@
 page_title: "datadog_integration_aws_lambda_arn Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
+  !>This resource is deprecated - use the datadog_integration_aws_account.
   Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the log collection Lambdas for an account.
   Update operations are currently not supported with datadog API so any change forces a new resource.
   Note: If you are using AWS GovCloud or the AWS China* region, update the lambda_arn parameter for your environment.
@@ -10,6 +11,8 @@ description: |-
 ---
 
 # datadog_integration_aws_lambda_arn (Resource)
+
+!>This resource is deprecated - use the `datadog_integration_aws_account`.
 
 Provides a Datadog - Amazon Web Services integration Lambda ARN resource. This can be used to create and manage the log collection Lambdas for an account.
 

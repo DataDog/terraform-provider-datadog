@@ -11000,7 +11000,3 @@ func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumber
 	}
 	return []map[string]interface{}{m}
 }
-
-func Ptr[T any](v T) *T {
-	return &v
-}
