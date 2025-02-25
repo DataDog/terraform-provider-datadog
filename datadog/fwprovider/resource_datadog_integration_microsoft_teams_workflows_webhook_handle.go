@@ -41,7 +41,7 @@ func (r *workflowsWebhookHandleResource) Configure(_ context.Context, request re
 }
 
 func (r *workflowsWebhookHandleResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "integration_ms_teams_microsoft_workflows_webhook_handle"
+	response.TypeName = "integration_ms_teams_workflows_webhook_handle"
 }
 
 func (r *workflowsWebhookHandleResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
@@ -171,12 +171,6 @@ func (r *workflowsWebhookHandleResource) updateState(ctx context.Context, state 
 
 	if name, ok := attributes.GetNameOk(); ok && name != nil {
 		state.Name = types.StringValue(*name)
-	}
-
-	// Only update URL if not set - the API endpoints never return
-	// the url, so this is how we recognize new values.
-	if state.URL.IsNull() {
-		state.URL = types.StringValue(maskedSecret)
 	}
 }
 

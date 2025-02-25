@@ -28,9 +28,9 @@ func TestAccMSTeamsWorkflowsWebhookHandlesBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMSTeamsWorkflowsWebhookHandlesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_ms_teams_microsoft_workflows_webhook_handle.foo", "name", uniq),
+						"datadog_integration_ms_teams_workflows_webhook_handle.foo", "name", uniq),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_ms_teams_microsoft_workflows_webhook_handle.foo", "url", url),
+						"datadog_integration_ms_teams_workflows_webhook_handle.foo", "url", url),
 				),
 			},
 			{
@@ -38,9 +38,9 @@ func TestAccMSTeamsWorkflowsWebhookHandlesBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogMSTeamsWorkflowsWebhookHandlesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_ms_teams_microsoft_workflows_webhook_handle.foo", "name", fmt.Sprintf("%s-updated", uniq)),
+						"datadog_integration_ms_teams_workflows_webhook_handle.foo", "name", fmt.Sprintf("%s-updated", uniq)),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_ms_teams_microsoft_workflows_webhook_handle.foo", "url", url),
+						"datadog_integration_ms_teams_workflows_webhook_handle.foo", "url", url),
 				),
 			},
 		},
@@ -49,7 +49,7 @@ func TestAccMSTeamsWorkflowsWebhookHandlesBasic(t *testing.T) {
 
 func testAccCheckDatadogMSTeamsWorkflowsWebhookHandles(uniq string, url string) string {
 	return fmt.Sprintf(`
-resource "datadog_integration_ms_teams_microsoft_workflows_webhook_handle" "foo" {
+resource "datadog_integration_ms_teams_workflows_webhook_handle" "foo" {
     name = "%s"
     url = "%s"
 }`, uniq, url)
@@ -57,7 +57,7 @@ resource "datadog_integration_ms_teams_microsoft_workflows_webhook_handle" "foo"
 
 func testAccCheckDatadogMSTeamsWorkflowsWebhookHandlesUpdated(uniq string, url string) string {
 	return fmt.Sprintf(`
-resource "datadog_integration_ms_teams_microsoft_workflows_webhook_handle" "foo" {
+resource "datadog_integration_ms_teams_workflows_webhook_handle" "foo" {
     name = "%s-updated"
     url = "%s"
 }`, uniq, url)
@@ -77,7 +77,7 @@ func testAccCheckDatadogMSTeamsWorkflowsWebhookHandlesDestroy(accProvider *fwpro
 
 func MSTeamsWorkflowsWebhookHandlesDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type != "resource_datadog_integration_ms_teams_microsoft_workflows_webhook_handle" {
+		if r.Type != "resource_datadog_integration_ms_teams_workflows_webhook_handle" {
 			continue
 		}
 		id := r.Primary.ID
@@ -114,7 +114,7 @@ func testAccCheckDatadogMSTeamsWorkflowsWebhookHandlesExists(accProvider *fwprov
 
 func msTeamsWorkflowsWebhookHandlesExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type != "resource_datadog_integration_ms_teams_microsoft_workflows_webhook_handle" {
+		if r.Type != "resource_datadog_integration_ms_teams_workflows_webhook_handle" {
 			continue
 		}
 		id := r.Primary.ID
