@@ -74,6 +74,7 @@ def sanitize_description(description):
 def escape_reserved_keyword(word):
     """
     Escape reserved language keywords like openapi generator does it
+
     :param word: Word to escape
     :return: The escaped word if it was a reserved keyword, the word unchanged otherwise
     """
@@ -141,7 +142,18 @@ def get_terraform_schema_type(schema):
     }[schema.get("type")]
 
 
-def date_time_formatter(name: str, schema: dict):
+def date_time_formatter(name: str, schema: dict) -> str:
+    """
+    This function is intended to be used in the Jinja2 templates.
+    It was made to support the "date-time" format of the OpenAPI schema.
+    Go's time.Time type is used to represent date-time values and should be instead transformed into a string.
+    Args:
+        name (str): The name of the variable to format.
+        schema (dict): OpenApi spec as a dictionary. May contain a "format" key.
+    Returns:
+        str: The string representation of the variable in Go.
+    """
+
     if schema.get("format") == "date-time":
         return f"{variable_name(name)}.String()"
     return f"*{variable_name(name)}"
