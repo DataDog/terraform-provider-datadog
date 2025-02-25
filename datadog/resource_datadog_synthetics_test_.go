@@ -3833,9 +3833,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 
 			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
 				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
-			}
-			if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok {
-				optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
+				if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok && renotifyInterval != 0 {
+					optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
+				}
 			}
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}
