@@ -49,6 +49,7 @@ func TestAccCSMThreatsMultiPolicyAgentRule_CreateAndUpdate(t *testing.T) {
 					enabled           = true
 					description       = "im a rule"
 					expression 		  = "open.file.name == \"etc/shadow/password\""
+					product_tags      = ["compliance_framework:PCI-DSS"]
 				}
 				`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -58,6 +59,7 @@ func TestAccCSMThreatsMultiPolicyAgentRule_CreateAndUpdate(t *testing.T) {
 						agentRuleName,
 						"im a rule",
 						"open.file.name == \"etc/shadow/password\"",
+						"compliance_framework:PCI-DSS",
 					),
 				),
 			},
@@ -71,6 +73,7 @@ func TestAccCSMThreatsMultiPolicyAgentRule_CreateAndUpdate(t *testing.T) {
 					enabled           = true
 					description       = "updated agent rule for terraform provider test"
 					expression 		  = "open.file.name == \"etc/shadow/password\""
+					product_tags      = ["compliance_framework:ISO-27799"]
 				}
 				`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -80,6 +83,7 @@ func TestAccCSMThreatsMultiPolicyAgentRule_CreateAndUpdate(t *testing.T) {
 						agentRuleName,
 						"updated agent rule for terraform provider test",
 						"open.file.name == \"etc/shadow/password\"",
+						"compliance_framework:ISO-27799",
 					),
 				),
 			},
