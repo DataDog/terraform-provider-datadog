@@ -50,7 +50,7 @@ func (r *openapiApiResource) Metadata(_ context.Context, request resource.Metada
 
 func (r *openapiApiResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Deprecated: use the `datadog_software_catalog` resource instead. Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's [API catalog](https://docs.datadoghq.com/api_catalog/) with an [OpenAPI](https://www.openapis.org/) specifications file.",
+		Description: "Deprecated: use the [`datadog_software_catalog` resource](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/software_catalog) instead. Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's [API catalog](https://docs.datadoghq.com/api_catalog/) with an [OpenAPI](https://www.openapis.org/) specifications file.",
 		Attributes: map[string]schema.Attribute{
 			"id": frameworkSchema.StringAttribute{
 				Description: "The API ID of this resource in Datadog.",
@@ -64,7 +64,7 @@ func (r *openapiApiResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Required:    true,
 			},
 		},
-		DeprecationMessage: "Deprecated. This will be removed in a future release with prior notice. Use the datadog_software_catalog resource instead.",
+		DeprecationMessage: "Deprecated. This will be removed in a future release. Use the datadog_software_catalog resource instead.",
 	}
 }
 
