@@ -3,13 +3,13 @@
 page_title: "datadog_integration_aws_tag_filter Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  !>This resource is deprecated - use the datadog_integration_aws_account.
+  !>This resource is deprecated - use the datadog_integration_aws_account resource instead.
   Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters.
 ---
 
 # datadog_integration_aws_tag_filter (Resource)
 
-!>This resource is deprecated - use the `datadog_integration_aws_account`.
+!>This resource is deprecated - use the `datadog_integration_aws_account` resource instead.
 
 Provides a Datadog AWS tag filter resource. This can be used to create and manage Datadog AWS tag filters.
 
