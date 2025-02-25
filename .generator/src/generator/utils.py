@@ -1,4 +1,5 @@
 """Utilities methods."""
+
 import re
 
 GET_OPERATION = "getOperation"
@@ -22,12 +23,12 @@ def snake_case(value):
     return PATTERN_DOUBLE_UNDERSCORE.sub("_", s1)
 
 
-def upperfirst(value):
+def capitalize(value):
     return value[0].upper() + value[1:]
 
 
 def camel_case(value):
-    return "".join(upperfirst(x) for x in snake_case(value).split("_"))
+    return "".join(capitalize(x) for x in snake_case(value).split("_"))
 
 
 def untitle_case(value):
@@ -46,3 +47,23 @@ def is_primitive(schema):
     if schema and schema.get("type") in PRIMITIVE_TYPES:
         return True
     return False
+
+def is_required(schema, attr=None):
+    req_args =schema.get("required")
+    if req_args is None:
+        return False
+    if isinstance(req_args, bool):
+        return req_args
+    if isinstance(req_args, list):
+        return attr in req_args
+    raise ValueError(f"Invalid required value: {schema} ({attr})")
+
+def is_computed(schema):
+    v = schema.get("readOnly", None) is True
+    return v
+
+def is_enum(schema):
+    return "enum" in schema
+
+def is_nullable(schema):
+    return schema.get("nullable", False)

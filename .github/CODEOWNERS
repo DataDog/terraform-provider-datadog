@@ -3,48 +3,49 @@
 # and another the rest of the directory.
 
 # All your base
-*                                         @DataDog/web-frameworks
+*                                         @DataDog/web-frameworks @DataDog/api-reliability
 
 /.generator                               @DataDog/api-reliability
 
-/docs/                                    @DataDog/web-frameworks @DataDog/documentation
+/docs/                                    @DataDog/web-frameworks @DataDog/api-reliability @DataDog/documentation
 
 # Terraform plugin sdk resources/data-sources
-datadog/*datadog_dashboard*               @DataDog/web-frameworks @DataDog/dashboards-backend
-datadog/*datadog_downtime*                @DataDog/web-frameworks @DataDog/monitor-app
-datadog/*datadog_integration_aws*         @DataDog/web-frameworks @DataDog/cloud-integrations
-datadog/*datadog_integration_pagerduty*   @DataDog/web-frameworks @DataDog/saas-integrations @DataDog/saas-integrations
-datadog/*datadog_integration_opsgenie*    @DataDog/web-frameworks @Datadog/collaboration-integrations
-datadog/*datadog_logs*                    @DataDog/web-frameworks @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
-datadog/*datadog_metric*                  @DataDog/web-frameworks @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation
-datadog/*datadog_monitor*                 @DataDog/web-frameworks @DataDog/monitor-app
-datadog/*datadog_screenboard*             @DataDog/web-frameworks @DataDog/dashboards-backend
-datadog/*security_monitoring*             @DataDog/web-frameworks @DataDog/k9-cloud-security-platform
-datadog/*datadog_service_definition*      @DataDog/web-frameworks @DataDog/service-catalog
-datadog/*datadog_service_level_objective* @DataDog/web-frameworks @DataDog/slo-app
-datadog/*datadog_synthetics*              @DataDog/web-frameworks @DataDog/synthetics-ct
-datadog/*datadog_timeboard*               @DataDog/web-frameworks @DataDog/dashboards-backend
-datadog/*datadog_user*                    @DataDog/web-frameworks @DataDog/team-aaa
-datadog/*cloud_configuration*             @DataDog/web-frameworks @DataDog/k9-cloud-security-posture-management
-datadog/*service_account*                 @DataDog/web-frameworks @DataDog/team-aaa
+datadog/*datadog_dashboard*               @DataDog/web-frameworks @DataDog/api-reliability @DataDog/dashboards-backend
+datadog/*datadog_downtime*                @DataDog/web-frameworks @DataDog/api-reliability @DataDog/monitor-app
+datadog/*datadog_integration_aws*         @DataDog/web-frameworks @DataDog/api-reliability @DataDog/cloud-integrations
+datadog/*datadog_integration_pagerduty*   @DataDog/web-frameworks @DataDog/api-reliability @DataDog/saas-integrations @DataDog/saas-integrations
+datadog/*datadog_integration_opsgenie*    @DataDog/web-frameworks @DataDog/api-reliability @Datadog/collaboration-integrations
+datadog/*datadog_logs*                    @DataDog/web-frameworks @DataDog/api-reliability @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
+datadog/*datadog_metric*                  @DataDog/web-frameworks @DataDog/api-reliability @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation
+datadog/*datadog_monitor*                 @DataDog/web-frameworks @DataDog/api-reliability @DataDog/monitor-app
+datadog/*datadog_screenboard*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/dashboards-backend
+datadog/*security_monitoring*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/k9-cloud-security-platform
+datadog/*datadog_service_definition*      @DataDog/web-frameworks @DataDog/api-reliability @DataDog/service-catalog
+datadog/*datadog_service_level_objective* @DataDog/web-frameworks @DataDog/api-reliability @DataDog/slo-app
+datadog/*datadog_synthetics*              @DataDog/web-frameworks @DataDog/api-reliability @DataDog/synthetics-ct
+datadog/*datadog_timeboard*               @DataDog/web-frameworks @DataDog/api-reliability @DataDog/dashboards-backend
+datadog/*datadog_user*                    @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
+datadog/*cloud_configuration*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/k9-cloud-security-posture-management
+datadog/*service_account*                 @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
 
 # Framework resources/data-sources
-datadog/**/*datadog_api_key*                     @DataDog/web-frameworks @DataDog/credentials-management
-datadog/**/*datadog_apm_retention_filter*        @DataDog/web-frameworks @DataDog/apm-trace-intake
-datadog/**/*datadog_application_key*             @DataDog/web-frameworks @DataDog/credentials-management
-datadog/**/*datadog_hosts*                       @DataDog/web-frameworks @DataDog/redapl-storage
-datadog/**/*datadog_ip_ranges*                   @DataDog/web-frameworks @DataDog/team-aaa
-datadog/**/*datadog_integration_aws*             @DataDog/web-frameworks @DataDog/cloud-integrations
-datadog/**/*datadog_integration_azure*           @DataDog/web-frameworks @DataDog/azure-integrations
-datadog/**/*datadog_integration_cloudflare*      @DataDog/web-frameworks @DataDog/saas-integrations
-datadog/**/*datadog_integration_confluent*       @DataDog/web-frameworks @DataDog/saas-integrations
-datadog/**/*datadog_integration_fastly*          @DataDog/web-frameworks @DataDog/saas-integrations
-datadog/**/*datadog_integration_gcp*             @DataDog/web-frameworks @DataDog/gcp-integrations
-datadog/**/*datadog_restriction_policy*          @DataDog/web-frameworks @DataDog/aaa-granular-access
-datadog/**/*datadog_sensitive_data_scanner*      @DataDog/web-frameworks @DataDog/logs-app @DataDog/sensitive-data-scanner
-datadog/**/*datadog_service_account*             @DataDog/web-frameworks @DataDog/team-aaa
-datadog/**/*datadog_spans_metric*                @DataDog/web-frameworks @DataDog/apm-trace-intake
-datadog/**/*datadog_synthetics_concurrency_cap*  @DataDog/web-frameworks @DataDog/synthetics-app @DataDog/synthetics-ct
-datadog/**/*datadog_team*                        @DataDog/web-frameworks @DataDog/core-app
-datadog/**/*datadog_organization_settings*       @DataDog/web-frameworks @DataDog/core-app @DataDog/trust-and-safety
-datadog/**/*datadog_integration_microsoft_teams* @DataDog/web-frameworks @DataDog/chat-integrations
+datadog/**/*datadog_api_key*                     @DataDog/web-frameworks @DataDog/api-reliability @DataDog/credentials-management
+datadog/**/*datadog_apm_retention_filter*        @DataDog/web-frameworks @DataDog/api-reliability @DataDog/apm-trace-intake
+datadog/**/*datadog_application_key*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/credentials-management
+datadog/**/*datadog_hosts*                       @DataDog/web-frameworks @DataDog/api-reliability @DataDog/redapl-storage
+datadog/**/*datadog_ip_ranges*                   @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
+datadog/**/*datadog_integration_aws*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/cloud-integrations
+datadog/**/*datadog_integration_azure*           @DataDog/web-frameworks @DataDog/api-reliability @DataDog/azure-integrations
+datadog/**/*datadog_integration_cloudflare*      @DataDog/web-frameworks @DataDog/api-reliability @DataDog/saas-integrations
+datadog/**/*datadog_integration_confluent*       @DataDog/web-frameworks @DataDog/api-reliability @DataDog/saas-integrations
+datadog/**/*datadog_integration_fastly*          @DataDog/web-frameworks @DataDog/api-reliability @DataDog/saas-integrations
+datadog/**/*datadog_integration_gcp*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/gcp-integrations
+datadog/**/*datadog_restriction_policy*          @DataDog/web-frameworks @DataDog/api-reliability @DataDog/aaa-granular-access
+datadog/**/*datadog_sensitive_data_scanner*      @DataDog/web-frameworks @DataDog/api-reliability @DataDog/logs-app @DataDog/sensitive-data-scanner
+datadog/**/*datadog_service_account*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
+datadog/**/*datadog_spans_metric*                @DataDog/web-frameworks @DataDog/api-reliability @DataDog/apm-trace-intake
+datadog/**/*datadog_synthetics_concurrency_cap*  @DataDog/web-frameworks @DataDog/api-reliability @DataDog/synthetics-app @DataDog/synthetics-ct
+datadog/**/*datadog_team*                        @DataDog/web-frameworks @DataDog/api-reliability @DataDog/core-app
+datadog/**/*datadog_user*                        @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
+datadog/**/*datadog_organization_settings*       @DataDog/web-frameworks @DataDog/api-reliability @DataDog/core-app @DataDog/trust-and-safety
+datadog/**/*datadog_integration_microsoft_teams* @DataDog/web-frameworks @DataDog/api-reliability @DataDog/chat-integrations

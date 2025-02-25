@@ -27,17 +27,19 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 ### Required
 
 - `name` (String) Synthetics global variable name.
-- `value` (String, Sensitive) The value of the global variable.
 
 ### Optional
 
 - `description` (String) Description of the global variable.
+- `is_fido` (Boolean) If set to true, the global variable is a FIDO variable. Defaults to `false`.
+- `is_totp` (Boolean) If set to true, the global variable is a TOTP variable. Defaults to `false`.
 - `options` (Block List, Max: 1) Additional options for the variable, such as a MFA token. (see [below for nested schema](#nestedblock--options))
 - `parse_test_id` (String) Id of the Synthetics test to use for a variable from test.
 - `parse_test_options` (Block List, Max: 1) ID of the Synthetics test to use a source of the global variable value. (see [below for nested schema](#nestedblock--parse_test_options))
 - `restricted_roles` (Set of String, Deprecated) A list of role identifiers to associate with the Synthetics global variable. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy instead.
-- `secure` (Boolean) If set to true, the value of the global variable is hidden. Defaults to `false`.
+- `secure` (Boolean) If set to true, the value of the global variable is hidden. This setting is ignored if `is_totp` or `is_fido` is set to `true`. Defaults to `false`.
 - `tags` (List of String) A list of tags to associate with your synthetics global variable.
+- `value` (String, Sensitive) The value of the global variable. This setting is ignored if `is_fido` is set to `true` and required otherwise.
 
 ### Read-Only
 
