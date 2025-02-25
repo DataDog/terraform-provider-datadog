@@ -332,6 +332,25 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Upload a file"
+    type = "uploadFiles"
+    params {
+      files = jsonencode([{
+        name      = "hello.txt" // Name of the file
+        size      = 11 // Size of the file
+        content   = "Hello world" // Content of the file
+      }])
+      element= "*[@id='simple-file-upload']"
+      element_user_locator {
+        value {
+          type = "css"
+          value = "#simple-file-upload"
+          }
+        }
+      }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"

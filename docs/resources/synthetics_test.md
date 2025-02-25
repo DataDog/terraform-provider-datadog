@@ -373,6 +373,25 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Upload a file"
+    type = "uploadFiles"
+    params {
+      files = jsonencode([{
+        name      = "hello.txt" // Name of the file
+        size      = 11 // Size of the file
+        content   = "Hello world" // Content of the file
+      }])
+      element= "*[@id='simple-file-upload']"
+      element_user_locator {
+        value {
+          type = "css"
+          value = "#simple-file-upload"
+          }
+        }
+      }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -1024,7 +1043,7 @@ Optional:
 - `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
 - `email` (String) Details of the email for an "assert email" step, JSON encoded string.
 - `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
-- `files` (String) Details of the files for an "upload files" step, JSON encoded string.
+- `files` (String) Details of the files for an "upload files" step, JSON encoded string. Refer to the examples for a usage example showing the schema.
 - `modifiers` (List of String) Modifier to use for a "press key" step.
 - `playing_tab_id` (String) ID of the tab to play the subtest.
 - `request` (String) Request for an API step.
