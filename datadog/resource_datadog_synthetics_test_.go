@@ -726,7 +726,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
 				"restricted_roles": {
-					Deprecated:  "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy instead.",
+					Deprecated:  "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
 					Type:        schema.TypeSet,
 					Optional:    true,

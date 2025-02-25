@@ -1322,7 +1322,7 @@ Optional:
 - `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - `monitor_priority` (Number)
 - `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
-- `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy instead.
+- `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
 - `rum_settings` (Block List, Max: 1) The RUM data collection settings for the Synthetic browser test. (see [below for nested schema](#nestedblock--options_list--rum_settings))
 - `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--options_list--scheduling))
