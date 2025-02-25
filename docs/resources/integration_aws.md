@@ -3,10 +3,13 @@
 page_title: "datadog_integration_aws Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
+  !>This resource is deprecated - use the datadog_integration_aws_account resource instead.
   Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.
 ---
 
 # datadog_integration_aws (Resource)
+
+!>This resource is deprecated - use the `datadog_integration_aws_account` resource instead.
 
 Provides a Datadog - Amazon Web Services integration resource. This can be used to create and manage Datadog - Amazon Web Services integration.
 

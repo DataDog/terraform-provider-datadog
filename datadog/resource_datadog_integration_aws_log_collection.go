@@ -15,7 +15,7 @@ import (
 func resourceDatadogIntegrationAwsLogCollection() *schema.Resource {
 	return &schema.Resource{
 		DeprecationMessage: "**This resource is deprecated - use the `datadog_integration_aws_account` resource instead**: https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account",
-		Description:        "Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which AWS services logs are collected from for an account.",
+		Description:        DeprecatedDocumentation("Provides a Datadog - Amazon Web Services integration log collection resource. This can be used to manage which AWS services logs are collected from for an account.", Ptr("datadog_integration_aws_account")),
 		CreateContext:      resourceDatadogIntegrationAwsLogCollectionCreate,
 		ReadContext:        resourceDatadogIntegrationAwsLogCollectionRead,
 		UpdateContext:      resourceDatadogIntegrationAwsLogCollectionUpdate,
