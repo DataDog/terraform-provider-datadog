@@ -893,14 +893,16 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
 				"restricted_roles": {
+					Deprecated:  "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
 					Type:        schema.TypeSet,
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"bindings": {
-					Type:     schema.TypeList,
-					Optional: true,
+					Description: "Restriction policy bindings for the Synthetic mobile test. Should not be used in parallel with a `datadog_restriction_policy` resource",
+					Type:        schema.TypeList,
+					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"principals": {
