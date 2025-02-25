@@ -200,6 +200,7 @@ resource "datadog_dashboard" "top_list_dashboard" {
 					type = "stacked"
 				}
 				palette = "datadog16"
+				scaling = "relative"
 			}
 		}
 	}
@@ -314,6 +315,7 @@ var datadogDashboardTopListAssertsWithStyle = []string{
 	"widget.1.toplist_definition.0.style.0.display.# = 1",
 	"widget.1.toplist_definition.0.style.0.display.0.type = stacked",
 	"widget.1.toplist_definition.0.style.0.palette = datadog16",
+	"widget.1.toplist_definition.0.style.0.scaling = relative",
 }
 
 func TestAccDatadogDashboardTopList(t *testing.T) {

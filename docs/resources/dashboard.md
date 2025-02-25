@@ -13487,6 +13487,7 @@ Optional:
 
 - `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display))
 - `palette` (String) The color palette for the widget.
+- `scaling` (String) The scaling mode for the widget. Valid values are `absolute`, `relative`.
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display"></a>
 ### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.style.display`
@@ -16153,6 +16154,7 @@ Optional:
 
 - `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--style--display))
 - `palette` (String) The color palette for the widget.
+- `scaling` (String) The scaling mode for the widget. Valid values are `absolute`, `relative`.
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--style--display"></a>
 ### Nested Schema for `widget.group_definition.widget.toplist_definition.style.display`
@@ -26059,6 +26061,7 @@ Optional:
 
 - `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display))
 - `palette` (String) The color palette for the widget.
+- `scaling` (String) The scaling mode for the widget. Valid values are `absolute`, `relative`.
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--style--display"></a>
 ### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.style.display`
@@ -28725,6 +28728,7 @@ Optional:
 
 - `display` (Block List) The display mode for the widget. (see [below for nested schema](#nestedblock--widget--toplist_definition--style--display))
 - `palette` (String) The color palette for the widget.
+- `scaling` (String) The scaling mode for the widget. Valid values are `absolute`, `relative`.
 
 <a id="nestedblock--widget--toplist_definition--style--display"></a>
 ### Nested Schema for `widget.toplist_definition.style.display`
