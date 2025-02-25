@@ -984,9 +984,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--style))
 
 <a id="nestedblock--widget--change_definition--request--formula--conditional_formats"></a>
@@ -1015,6 +1016,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--change_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.change_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--change_definition--request--formula--style"></a>
@@ -1562,7 +1612,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -1910,9 +1960,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--style))
 
 <a id="nestedblock--widget--geomap_definition--request--formula--conditional_formats"></a>
@@ -1941,6 +1992,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--geomap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.geomap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--geomap_definition--request--formula--style"></a>
@@ -2489,9 +2589,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--conditional_formats"></a>
@@ -2520,6 +2621,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.change_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--change_definition--request--formula--style"></a>
@@ -3067,7 +3217,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -3415,9 +3565,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--conditional_formats"></a>
@@ -3446,6 +3597,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.geomap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--geomap_definition--request--formula--style"></a>
@@ -3914,9 +4114,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--conditional_formats"></a>
@@ -3945,6 +4146,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.heatmap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--style"></a>
@@ -5224,7 +5474,7 @@ Optional:
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--conditional_formats))
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
@@ -5327,7 +5577,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -5361,9 +5611,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--conditional_formats"></a>
@@ -5392,6 +5643,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.query_table_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--query_table_definition--request--formula--style"></a>
@@ -6048,9 +6348,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--conditional_formats"></a>
@@ -6079,6 +6380,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.query_value_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--query_value_definition--request--formula--style"></a>
@@ -7628,9 +7978,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--conditional_formats"></a>
@@ -7659,6 +8010,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--style"></a>
@@ -8125,9 +8525,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--conditional_formats"></a>
@@ -8156,6 +8557,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--style"></a>
@@ -8529,7 +8979,7 @@ Optional:
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--conditional_formats))
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
@@ -8632,7 +9082,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -8666,9 +9116,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--conditional_formats"></a>
@@ -8697,6 +9148,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--style"></a>
@@ -9353,9 +9853,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--conditional_formats"></a>
@@ -9384,6 +9885,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--style"></a>
@@ -10859,9 +11409,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--conditional_formats"></a>
@@ -10890,6 +11441,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--style"></a>
@@ -11585,9 +12185,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--conditional_formats"></a>
@@ -11616,6 +12217,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--style"></a>
@@ -12333,9 +12983,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--conditional_formats"></a>
@@ -12364,6 +13015,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--style"></a>
@@ -12824,9 +13524,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--conditional_formats"></a>
@@ -12855,6 +13556,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--style"></a>
@@ -13325,9 +14075,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--conditional_formats"></a>
@@ -13356,6 +14107,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.sunburst_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--style"></a>
@@ -14051,9 +14851,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--conditional_formats"></a>
@@ -14082,6 +14883,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.timeseries_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--style"></a>
@@ -14799,9 +15649,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--conditional_formats"></a>
@@ -14830,6 +15681,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.toplist_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--toplist_definition--request--formula--style"></a>
@@ -15357,9 +16257,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--style))
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--conditional_formats"></a>
@@ -15388,6 +16289,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.group_definition.widget.treemap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--group_definition--widget--treemap_definition--request--formula--style"></a>
@@ -15736,9 +16686,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--style))
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--conditional_formats"></a>
@@ -15767,6 +16718,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--heatmap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.heatmap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--heatmap_definition--request--formula--style"></a>
@@ -17046,7 +18046,7 @@ Optional:
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
@@ -17149,7 +18149,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -17183,9 +18183,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--style))
 
 <a id="nestedblock--widget--query_table_definition--request--formula--conditional_formats"></a>
@@ -17214,6 +18215,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--query_table_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.query_table_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--query_table_definition--request--formula--style"></a>
@@ -17870,9 +18920,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--style))
 
 <a id="nestedblock--widget--query_value_definition--request--formula--conditional_formats"></a>
@@ -17901,6 +18952,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--query_value_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.query_value_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--query_value_definition--request--formula--style"></a>
@@ -19450,9 +20550,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--conditional_formats"></a>
@@ -19481,6 +20582,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.change_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--style"></a>
@@ -19947,9 +21097,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--conditional_formats"></a>
@@ -19978,6 +21129,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.geomap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--style"></a>
@@ -20351,7 +21551,7 @@ Optional:
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--conditional_formats))
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
@@ -20454,7 +21654,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -20488,9 +21688,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--conditional_formats"></a>
@@ -20519,6 +21720,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_table_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--style"></a>
@@ -21175,9 +22425,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--conditional_formats"></a>
@@ -21206,6 +22457,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.query_value_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--style"></a>
@@ -22681,9 +23981,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--conditional_formats"></a>
@@ -22712,6 +24013,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.sunburst_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--style"></a>
@@ -23407,9 +24757,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--conditional_formats"></a>
@@ -23438,6 +24789,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.timeseries_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--style"></a>
@@ -24155,9 +25555,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--conditional_formats"></a>
@@ -24186,6 +25587,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.toplist_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--style"></a>
@@ -24646,9 +26096,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--style))
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--conditional_formats"></a>
@@ -24677,6 +26128,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.split_graph_definition.source_widget_definition.treemap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--style"></a>
@@ -25147,9 +26647,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--style))
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--conditional_formats"></a>
@@ -25178,6 +26679,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--sunburst_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.sunburst_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--sunburst_definition--request--formula--style"></a>
@@ -25873,9 +27423,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--style))
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--conditional_formats"></a>
@@ -25904,6 +27455,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--timeseries_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.timeseries_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--timeseries_definition--request--formula--style"></a>
@@ -26621,9 +28221,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--style))
 
 <a id="nestedblock--widget--toplist_definition--request--formula--conditional_formats"></a>
@@ -26652,6 +28253,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--toplist_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.toplist_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--toplist_definition--request--formula--style"></a>
@@ -27179,9 +28829,10 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--limit))
+- `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format))
 - `style` (Block List, Max: 1) Styling options for widget formulas. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--style))
 
 <a id="nestedblock--widget--treemap_definition--request--formula--conditional_formats"></a>
@@ -27210,6 +28861,55 @@ Optional:
 
 - `count` (Number) The number of results to return.
 - `order` (String) The direction of the sort. Valid values are `asc`, `desc`. Defaults to `"desc"`.
+
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format`
+
+Required:
+
+- `unit` (Block List, Min: 1, Max: 1) Unit of the number format. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit))
+
+Optional:
+
+- `unit_scale` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit_scale))
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit`
+
+Optional:
+
+- `canonical` (Block List, Max: 1) Canonical Units (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical))
+- `custom` (Block List, Max: 1) Use custom (non canonical metrics) (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom))
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit--canonical"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit.canonical`
+
+Required:
+
+- `unit_name` (String) Unit name. It should be in singular form ('megabyte' and not 'megabytes')
+
+Optional:
+
+- `per_unit_name` (String) per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'
+
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit--custom"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit.custom`
+
+Required:
+
+- `label` (String) Unit label
+
+
+
+<a id="nestedblock--widget--treemap_definition--request--formula--number_format--unit_scale"></a>
+### Nested Schema for `widget.treemap_definition.request.formula.number_format.unit_scale`
+
+Required:
+
+- `unit_name` (String)
+
 
 
 <a id="nestedblock--widget--treemap_definition--request--formula--style"></a>

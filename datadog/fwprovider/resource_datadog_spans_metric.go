@@ -190,7 +190,7 @@ func (r *spansMetricResource) Create(ctx context.Context, request resource.Creat
 
 	resp, _, err := r.Api.CreateSpansMetric(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating spans metric"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -220,7 +220,7 @@ func (r *spansMetricResource) Update(ctx context.Context, request resource.Updat
 
 	resp, _, err := r.Api.UpdateSpansMetric(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving spans metric"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating spans metric"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -320,7 +320,7 @@ func (r *spansMetricResource) buildSpansMetricRequestBody(ctx context.Context, s
 	var compute datadogV2.SpansMetricCompute
 
 	compute.SetAggregationType(datadogV2.SpansMetricComputeAggregationType(state.Compute.AggregationType.ValueString()))
-	if !state.Compute.IncludePercentiles.IsUnknown() {
+	if !(state.Compute.IncludePercentiles.IsNull() || state.Compute.IncludePercentiles.IsUnknown()) {
 		compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
 	}
 	if !state.Compute.Path.IsNull() {
@@ -370,7 +370,7 @@ func (r *spansMetricResource) buildSpansMetricUpdateRequestBody(ctx context.Cont
 	if state.Compute != nil {
 		var compute datadogV2.SpansMetricUpdateCompute
 
-		if !state.Compute.IncludePercentiles.IsNull() {
+		if !(state.Compute.IncludePercentiles.IsNull() || state.Compute.IncludePercentiles.IsUnknown()) {
 			compute.SetIncludePercentiles(state.Compute.IncludePercentiles.ValueBool())
 		}
 
