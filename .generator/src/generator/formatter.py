@@ -74,6 +74,7 @@ def sanitize_description(description):
 def escape_reserved_keyword(word):
     """
     Escape reserved language keywords like openapi generator does it
+
     :param word: Word to escape
     :return: The escaped word if it was a reserved keyword, the word unchanged otherwise
     """
@@ -139,3 +140,28 @@ def get_terraform_schema_type(schema):
         "object": "Block",
         None: "String",
     }[schema.get("type")]
+
+
+def go_to_terraform_type_formatter(name: str, schema: dict) -> str:
+    """
+    This function is intended to be used in the Jinja2 templates.
+    It was made to support the format enrichment of the OpenAPI schema.
+    The format enrichment allows for a more appropriate Go type to be used in the provider (eg: string + date-time enrichment -> time.Time).
+    However when updating the state we wish to use the primitive type that Terraform support instead.
+    Args:
+        name (str): The name of the variable to format.
+        schema (dict): OpenApi spec as a dictionary. May contain a "format" key.
+    Returns:
+        str: The string representation of the variable in Go.
+    """
+    match schema.get("format"):
+        case "date-time":
+            return f"{variable_name(name)}.String()"
+        case "date":
+            return f"{variable_name(name)}.String()"
+        case "binary":
+            return f"string({variable_name(name)})"
+
+        # primitive types should fall through
+        case _:
+            return f"*{variable_name(name)}"
