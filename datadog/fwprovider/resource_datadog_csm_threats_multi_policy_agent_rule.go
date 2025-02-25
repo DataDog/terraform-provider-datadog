@@ -27,6 +27,7 @@ type csmThreatsMultiPolicyAgentRuleModel struct {
 	Description types.String `tfsdk:"description"`
 	Enabled     types.Bool   `tfsdk:"enabled"`
 	Expression  types.String `tfsdk:"expression"`
+	ProductTags types.Set    `tfsdk:"product_tags"`
 }
 
 func NewCSMThreatsMultiPolicyAgentRuleResource() resource.Resource {
@@ -74,6 +75,11 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) Schema(_ context.Context, _ res
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"product_tags": schema.SetAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "The list of product tags associated with the rule",
 			},
 		},
 	}
@@ -198,7 +204,7 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) Delete(ctx context.Context, req
 }
 
 func (r *csmThreatsMultiPolicyAgentRuleResource) buildCreateCSMThreatsAgentRulePayload(state *csmThreatsMultiPolicyAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleCreateRequest, error) {
-	_, policyId, name, description, enabled, expression := r.extractAgentRuleAttributesFromResource(state)
+	_, policyId, name, description, enabled, expression, productTags := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleCreateAttributes{}
 	attributes.Expression = expression
@@ -206,25 +212,27 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) buildCreateCSMThreatsAgentRuleP
 	attributes.Description = description
 	attributes.Enabled = &enabled
 	attributes.PolicyId = &policyId
+	attributes.ProductTags = productTags
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleCreateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleCreateRequest(*data), nil
 }
 
 func (r *csmThreatsMultiPolicyAgentRuleResource) buildUpdateCSMThreatsAgentRulePayload(state *csmThreatsMultiPolicyAgentRuleModel) (*datadogV2.CloudWorkloadSecurityAgentRuleUpdateRequest, error) {
-	agentRuleId, policyId, _, description, enabled, _ := r.extractAgentRuleAttributesFromResource(state)
+	agentRuleId, policyId, _, description, enabled, _, productTags := r.extractAgentRuleAttributesFromResource(state)
 
 	attributes := datadogV2.CloudWorkloadSecurityAgentRuleUpdateAttributes{}
 	attributes.Description = description
 	attributes.Enabled = &enabled
 	attributes.PolicyId = &policyId
+	attributes.ProductTags = productTags
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTRULETYPE_AGENT_RULE)
 	data.Id = &agentRuleId
 	return datadogV2.NewCloudWorkloadSecurityAgentRuleUpdateRequest(*data), nil
 }
 
-func (r *csmThreatsMultiPolicyAgentRuleResource) extractAgentRuleAttributesFromResource(state *csmThreatsMultiPolicyAgentRuleModel) (string, string, string, *string, bool, string) {
+func (r *csmThreatsMultiPolicyAgentRuleResource) extractAgentRuleAttributesFromResource(state *csmThreatsMultiPolicyAgentRuleModel) (string, string, string, *string, bool, string, []string) {
 	// Mandatory fields
 	id := state.Id.ValueString()
 	policyId := state.PolicyId.ValueString()
@@ -232,8 +240,18 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) extractAgentRuleAttributesFromR
 	enabled := state.Enabled.ValueBool()
 	expression := state.Expression.ValueString()
 	description := state.Description.ValueStringPointer()
+	var productTags []string
+	if !state.ProductTags.IsNull() && !state.ProductTags.IsUnknown() {
+		for _, tag := range state.ProductTags.Elements() {
+			tagStr, ok := tag.(types.String)
+			if !ok {
+				return "", "", "", nil, false, "", nil
+			}
+			productTags = append(productTags, tagStr.ValueString())
+		}
+	}
 
-	return id, policyId, name, description, enabled, expression
+	return id, policyId, name, description, enabled, expression, productTags
 }
 
 func (r *csmThreatsMultiPolicyAgentRuleResource) updateStateFromResponse(ctx context.Context, state *csmThreatsMultiPolicyAgentRuleModel, res *datadogV2.CloudWorkloadSecurityAgentRuleResponse) {
@@ -245,4 +263,5 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) updateStateFromResponse(ctx con
 	state.Description = types.StringValue(attributes.GetDescription())
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
 	state.Expression = types.StringValue(attributes.GetExpression())
+	state.ProductTags, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetProductTags())
 }

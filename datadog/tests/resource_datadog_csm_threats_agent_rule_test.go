@@ -30,6 +30,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 					enabled           = true
 					description       = "im a rule"
 					expression 		  = "open.file.name == \"etc/shadow/password\""
+					product_tags      = ["compliance_framework:PCI-DSS"]
 				}
 				`, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -39,6 +40,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 						agentRuleName,
 						"im a rule",
 						"open.file.name == \"etc/shadow/password\"",
+						"compliance_framework:PCI-DSS\"]",
 					),
 				),
 			},
@@ -50,6 +52,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 					enabled           = true
 					description       = "updated agent rule for terraform provider test"
 					expression 		  = "open.file.name == \"etc/shadow/password\""
+					product_tags      = ["compliance_framework:ISO-27799"]
 				}
 				`, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
@@ -59,6 +62,7 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 						agentRuleName,
 						"updated agent rule for terraform provider test",
 						"open.file.name == \"etc/shadow/password\"",
+						"compliance_framework:ISO-27799",
 					),
 				),
 			},
@@ -66,12 +70,14 @@ func TestAccCSMThreatsAgentRule_CreateAndUpdate(t *testing.T) {
 	})
 }
 
-func checkCSMThreatsAgentRuleContent(resourceName string, name string, description string, expression string) resource.TestCheckFunc {
+func checkCSMThreatsAgentRuleContent(resourceName string, name string, description string, expression string, product_tags string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(resourceName, "name", name),
 		resource.TestCheckResourceAttr(resourceName, "description", description),
 		resource.TestCheckResourceAttr(resourceName, "enabled", "true"),
 		resource.TestCheckResourceAttr(resourceName, "expression", expression),
+		resource.TestCheckResourceAttr(resourceName, "product_tags.#", "1"),
+		resource.TestCheckTypeSetElemAttr(resourceName, "product_tags.*", product_tags),
 	)
 }
 
