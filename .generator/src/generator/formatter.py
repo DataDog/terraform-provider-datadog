@@ -142,18 +142,26 @@ def get_terraform_schema_type(schema):
     }[schema.get("type")]
 
 
-def date_time_formatter(name: str, schema: dict) -> str:
+def go_to_terraform_type_formatter(name: str, schema: dict) -> str:
     """
     This function is intended to be used in the Jinja2 templates.
-    It was made to support the "date-time" format of the OpenAPI schema.
-    Go's time.Time type is used to represent date-time values and should be instead transformed into a string.
+    It was made to support the format enrichment of the OpenAPI schema.
+    The format enrichment allows for a more appropriate Go type to be used in the provider (eg: string + date-time enrichment -> time.Time).
+    However when updating the state we wish to use the primitive type that Terraform support instead.
     Args:
         name (str): The name of the variable to format.
         schema (dict): OpenApi spec as a dictionary. May contain a "format" key.
     Returns:
         str: The string representation of the variable in Go.
     """
+    match schema.get("format"):
+        case "date-time":
+            return f"{variable_name(name)}.String()"
+        case "date":
+            return f"{variable_name(name)}.String()"
+        case "binary":
+            return f"string({variable_name(name)})"
 
-    if schema.get("format") == "date-time":
-        return f"{variable_name(name)}.String()"
-    return f"*{variable_name(name)}"
+        # primitive types should fall through
+        case _:
+            return f"*{variable_name(name)}"
