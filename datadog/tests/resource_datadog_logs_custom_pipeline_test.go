@@ -131,6 +131,15 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			lookup_enrichment_table   = "test_reference_table_do_not_delete"
 		}
 	}
+ 
+    processor {
+      span_id_remapper {
+			name   = "span_id_remapper"
+			is_enabled = true
+			sources = [ "dd.span_id" ]
+		}
+    }
+
 }`, uniq)
 }
 
@@ -255,6 +264,14 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			lookup_enrichment_table   = "test_reference_table_do_not_delete"
 		}
 	}
+ 
+    processor {
+      span_id_remapper {
+			name   = "span_id_remapper"
+			is_enabled = true
+			sources = [ "dd.span_id" ]
+		}
+    }
 }`, uniq)
 }
 
@@ -372,6 +389,8 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.7.lookup_processor.0.lookup_table.#", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.8.reference_table_lookup_processor.0.lookup_enrichment_table", "test_reference_table_do_not_delete"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.9.span_id_remapper.0.sources.#", "1"),
 				),
 			}, {
 				Config: pipelineConfigForUpdate(pipelineUpdatedName),
@@ -409,6 +428,8 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.8.lookup_processor.0.lookup_table.#", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.9.reference_table_lookup_processor.0.lookup_enrichment_table", "test_reference_table_do_not_delete"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.10.span_id_remapper.0.sources.#", "1"),
 				),
 			}, { // for backward compatibility as tags and description were not always present and clients have Terraform files without them
 				Config: pipelineConfigWithoutTagsAndDescriptionForCreation(pipelineWithoutTagsAndDescriptionCreatedName),
