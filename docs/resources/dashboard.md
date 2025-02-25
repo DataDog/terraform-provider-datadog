@@ -984,7 +984,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--change_definition--request--formula--number_format))
@@ -1612,7 +1612,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -1960,7 +1960,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--geomap_definition--request--formula--number_format))
@@ -2589,7 +2589,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--change_definition--request--formula--number_format))
@@ -3217,7 +3217,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -3565,7 +3565,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--geomap_definition--request--formula--number_format))
@@ -4114,7 +4114,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--heatmap_definition--request--formula--number_format))
@@ -5474,7 +5474,7 @@ Optional:
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--conditional_formats))
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
@@ -5577,7 +5577,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -5611,7 +5611,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_table_definition--request--formula--number_format))
@@ -6348,7 +6348,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--query_value_definition--request--formula--number_format))
@@ -7978,7 +7978,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format))
@@ -8525,7 +8525,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format))
@@ -8979,7 +8979,7 @@ Optional:
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--conditional_formats))
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
@@ -9082,7 +9082,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -9116,7 +9116,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format))
@@ -9853,7 +9853,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format))
@@ -11409,7 +11409,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format))
@@ -12185,7 +12185,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format))
@@ -12983,7 +12983,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format))
@@ -13524,7 +13524,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format))
@@ -14075,7 +14075,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--sunburst_definition--request--formula--number_format))
@@ -14851,7 +14851,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--timeseries_definition--request--formula--number_format))
@@ -15649,7 +15649,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--toplist_definition--request--formula--number_format))
@@ -16257,7 +16257,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--group_definition--widget--treemap_definition--request--formula--number_format))
@@ -16686,7 +16686,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--heatmap_definition--request--formula--number_format))
@@ -18046,7 +18046,7 @@ Optional:
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--conditional_formats))
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
@@ -18149,7 +18149,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -18183,7 +18183,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--query_table_definition--request--formula--number_format))
@@ -18920,7 +18920,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--query_value_definition--request--formula--number_format))
@@ -20550,7 +20550,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--change_definition--request--formula--number_format))
@@ -21097,7 +21097,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--geomap_definition--request--formula--number_format))
@@ -21551,7 +21551,7 @@ Optional:
 - `alias` (String) The alias for the column name (defaults to metric name).
 - `apm_query` (Block List, Max: 1) The query to use for this widget. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_query))
 - `apm_stats_query` (Block List, Max: 1) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--apm_stats_query))
-- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`.
+- `cell_display_mode` (List of String) A list of display modes for each table cell. List items one of `number`, `bar`. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--conditional_formats))
 - `formula` (Block List) (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula))
 - `limit` (Number) The number of lines to show in the table.
@@ -21654,7 +21654,7 @@ Required:
 Optional:
 
 - `alias` (String) A user-assigned alias for the column.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `order` (String) Widget sorting methods. Valid values are `asc`, `desc`.
 
 
@@ -21688,7 +21688,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_table_definition--request--formula--number_format))
@@ -22425,7 +22425,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--query_value_definition--request--formula--number_format))
@@ -23981,7 +23981,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--sunburst_definition--request--formula--number_format))
@@ -24757,7 +24757,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--timeseries_definition--request--formula--number_format))
@@ -25555,7 +25555,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--toplist_definition--request--formula--number_format))
@@ -26096,7 +26096,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--split_graph_definition--source_widget_definition--treemap_definition--request--formula--number_format))
@@ -26647,7 +26647,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--sunburst_definition--request--formula--number_format))
@@ -27423,7 +27423,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--timeseries_definition--request--formula--number_format))
@@ -28221,7 +28221,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--toplist_definition--request--formula--number_format))
@@ -28829,7 +28829,7 @@ Required:
 Optional:
 
 - `alias` (String) An expression alias.
-- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`.
+- `cell_display_mode` (String) A list of display modes for each table cell. Valid values are `number`, `bar`, `trend`.
 - `conditional_formats` (Block List) Conditional formats allow you to set the color of your widget content or background depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--conditional_formats))
 - `limit` (Block List, Max: 1) The options for limiting results returned. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--limit))
 - `number_format` (Block List, Max: 1) Number formatting options for the formula. (see [below for nested schema](#nestedblock--widget--treemap_definition--request--formula--number_format))
