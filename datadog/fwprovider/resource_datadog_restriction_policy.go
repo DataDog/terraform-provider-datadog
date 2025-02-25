@@ -57,10 +57,10 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 			"resource_id": schema.StringAttribute{
 				Required: true,
 				Description: "Identifier for the resource, formatted as resource_type:resource_id.\n" +
-					"Resources to define resource_id : \n" +
+					"\nResources to define `resource_type` : \n" +
 					"* [List of supported resources](https://docs.datadoghq.com/account_management/rbac/granular_access)\n" +
 					"* [Resource type definition](https://docs.datadoghq.com/api/latest/restriction-policies/#supported-resources)\n" +
-					"Note: Dashboards and Monitors support is in private beta. Reach out to your Datadog contact or support to enable this.",
+					"\nNote: Dashboards and Monitors support is in private beta. Reach out to your Datadog contact or support to enable this.",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
