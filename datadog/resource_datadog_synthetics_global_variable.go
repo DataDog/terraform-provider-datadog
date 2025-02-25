@@ -141,7 +141,8 @@ func resourceDatadogSyntheticsGlobalVariable() *schema.Resource {
 					},
 				},
 				"restricted_roles": {
-					Description: "A list of role identifiers to associate with the Synthetics global variable.",
+					Deprecated:  "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy instead.",
+					Description: "(This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy instead) A list of role identifiers to associate with the Synthetics global variable.",
 					Type:        schema.TypeSet,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 					Optional:    true,

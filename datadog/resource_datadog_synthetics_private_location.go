@@ -65,7 +65,8 @@ func resourceDatadogSyntheticsPrivateLocation() *schema.Resource {
 func syntheticsPrivateLocationMetadata() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"restricted_roles": {
-			Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
+			Deprecated:  "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy instead.",
+			Description: "(This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy instead) A list of role identifiers pulled from the Roles API to restrict read and write access.",
 			Type:        schema.TypeSet,
 			Optional:    true,
 			Elem:        &schema.Schema{Type: schema.TypeString},

@@ -43,7 +43,7 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 Optional:
 
-- `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
+- `restricted_roles` (Set of String, Deprecated) (This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy instead) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy instead.
 
 ## Import
 
