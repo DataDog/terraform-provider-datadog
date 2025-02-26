@@ -13,39 +13,68 @@ Provides a Datadog AppsecWafCustomRule resource. This can be used to create and 
 ## Example Usage
 
 ```terraform
-# Create new appsec_waf_custom_rule resource
+# Create a new WAF custom rule to block a custom IoC
+resource "datadog_appsec_waf_custom_rule" "ioc000" {
+  name = "Block requests from a bad actor"
 
-resource "datadog_appsec_waf_custom_rule" "foo" {
-  action {
-    action = "block"
-    parameters {
-      location    = "/blocking"
-      status_code = 403
-    }
+  blocking = true
+  enabled  = true
+
+  tags = {
+    category = "attack_attempt"
+    type     = "custom_ioc"
   }
-  blocking = "UPDATE ME"
+
+  path_glob = "/db/*"
+
   conditions {
     operator = "match_regex"
     parameters {
-      data = "blocked_users"
       inputs {
-        address  = "server.db.statement"
-        key_path = "UPDATE ME"
+        address = "server.db.statement"
       }
-      list  = "UPDATE ME"
-      regex = "path.*"
+      regex = "stmt.*"
     }
   }
-  enabled   = "UPDATE ME"
-  name      = "Block request from a bad useragent"
-  path_glob = "/api/search/*"
-  scope {
-    env     = "prod"
-    service = "billing-service"
+
+  action {
+    action = "redirect_request"
+    parameters {
+      status_code = 302
+      location    = "/blocking"
+    }
   }
+}
+
+
+# Create a WAF custom rule to track business logic events
+resource "datadog_appsec_waf_custom_rule" "biz000" {
+  name = "Track payments"
+
+  blocking = false
+  enabled  = true
+
   tags = {
     category = "business_logic"
-    type     = "users.login.success"
+    type     = "payment.checkout"
+  }
+
+  path_glob = "/cart/*"
+
+  conditions {
+    operator = "capture_data"
+    parameters {
+      inputs {
+        address  = "server.request.query"
+        key_path = ["payment_id"]
+      }
+      value = "payment"
+    }
+  }
+
+  scope {
+    env     = "prod"
+    service = "paymentsvc"
   }
 }
 ```
@@ -107,6 +136,7 @@ Optional:
 - `list` (List of String) List of value to use with the condition. Only used with the phrase_match, !phrase_match, exact_match and !exact_match operator.
 - `options` (Block, Optional) (see [below for nested schema](#nestedblock--conditions--parameters--options))
 - `regex` (String) Regex to use with the condition. Only used with match_regex and !match_regex operator.
+- `value` (String) Store the captured value in the specified tag name. Only used with the capture_data operator.
 
 <a id="nestedblock--conditions--parameters--inputs"></a>
 ### Nested Schema for `conditions.parameters.inputs`
