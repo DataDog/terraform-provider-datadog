@@ -73,6 +73,6 @@ def is_nullable(schema):
     return schema.get("nullable", False)
 
 
-def print_filter(value):
+def debug_filter(value):
     print(value)
     return value

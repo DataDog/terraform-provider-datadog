@@ -27,7 +27,7 @@ def load_environment(version: str) -> Environment:
     env.filters["is_json_api"] = openapi.is_json_api
     env.filters["capitalize"] = utils.capitalize
     env.filters["is_primitive"] = utils.is_primitive
-    env.filters["print"] = utils.print_filter
+    env.filters["debug"] = utils.debug_filter
     env.filters["response_type"] = type.get_type_for_response
     env.filters["return_type"] = type.return_type
     env.filters["tf_sort_params_by_type"] = type.tf_sort_params_by_type
