@@ -1,0 +1,1 @@
+terraform import datadog_appsec_waf_custom_rule.new_list ""
