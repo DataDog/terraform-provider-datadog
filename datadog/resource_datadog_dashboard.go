@@ -6866,12 +6866,6 @@ func getScatterplotFormulaSchema() *schema.Schema {
 
 func getQueryTableFormulaSchema() *schema.Schema {
 	queryTableFormulaSchema := getFormulaSchema()
-	queryTableFormulaSchema.Elem.(*schema.Resource).Schema["cell_display_mode"] = &schema.Schema{
-		Description:      "A list of display modes for each table cell.",
-		Type:             schema.TypeString,
-		ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
-		Optional:         true,
-	}
 	queryTableFormulaSchema.Elem.(*schema.Resource).Schema["cell_display_mode_options"] = &schema.Schema{
 		Description: "A list of display modes for each table cell.",
 		Type:        schema.TypeList,
@@ -6943,6 +6937,12 @@ func getFormulaSchema() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: getWidgetConditionalFormatSchema(),
 					},
+				},
+				"cell_display_mode": {
+					Description:      "A list of display modes for each table cell.",
+					Type:             schema.TypeString,
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
+					Optional:         true,
 				},
 				"style": {
 					Type:        schema.TypeList,
@@ -10206,7 +10206,7 @@ func buildTerraformScatterplotFormula(datadogFormulas *[]datadogV1.ScatterplotWi
 	return formulas
 }
 
-func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula, cellDisplay bool) []map[string]interface{} {
+func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula, cellDisplayOptionFlag bool) []map[string]interface{} {
 	formulas := make([]map[string]interface{}, len(*datadogFormulas))
 	for i, formula := range *datadogFormulas {
 		terraformFormula := map[string]interface{}{}
@@ -10228,10 +10228,10 @@ func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula, cellDispl
 			terraformConditionalFormats := buildTerraformWidgetConditionalFormat(v)
 			terraformFormula["conditional_formats"] = terraformConditionalFormats
 		}
-		if cellDisplay {
-			if cellDisplayMode, cellDisplayModeOk := formula.GetCellDisplayModeOk(); cellDisplayModeOk {
-				terraformFormula["cell_display_mode"] = cellDisplayMode
-			}
+		if cellDisplayMode, cellDisplayModeOk := formula.GetCellDisplayModeOk(); cellDisplayModeOk {
+			terraformFormula["cell_display_mode"] = cellDisplayMode
+		}
+		if cellDisplayOptionFlag {
 			if cellDisplayOptions, cellDisplayOptionsOk := formula.GetCellDisplayModeOptionsOk(); cellDisplayOptionsOk {
 				if cellDisplayOptions != nil {
 					terraformFormula["cell_display_mode_options"] = []interface{}{
