@@ -2234,7 +2234,7 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		if v, ok := datadogRequest.GetChangeTypeOk(); ok {
@@ -3125,7 +3125,7 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWi
 			terraformRequest["query"] = buildTerraformQuery(v)
 		}
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetStyle(*v)
@@ -4359,7 +4359,7 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		if datadogRequest.ConditionalFormats != nil {
@@ -4486,7 +4486,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 		"apm_stats_query": getApmStatsQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
-		"formula": getFormulaSchema(),
+		"formula": getQueryTableFormulaSchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
 			Description: "Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
@@ -4715,7 +4715,7 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, true)
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
@@ -6228,7 +6228,7 @@ func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidge
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		terraformRequests[i] = terraformRequest
@@ -6751,7 +6751,7 @@ func buildTerraformSunburstRequests(datadogSunburstRequests *[]datadogV1.Sunburs
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetStyle(*v)
@@ -6864,6 +6864,40 @@ func getScatterplotFormulaSchema() *schema.Schema {
 	}
 }
 
+func getQueryTableFormulaSchema() *schema.Schema {
+	queryTableFormulaSchema := getFormulaSchema()
+	queryTableFormulaSchema.Elem.(*schema.Resource).Schema["cell_display_mode"] = &schema.Schema{
+		Description:      "A list of display modes for each table cell.",
+		Type:             schema.TypeString,
+		ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
+		Optional:         true,
+	}
+	queryTableFormulaSchema.Elem.(*schema.Resource).Schema["cell_display_mode_options"] = &schema.Schema{
+		Description: "A list of display modes for each table cell.",
+		Type:        schema.TypeList,
+		MinItems:    0,
+		MaxItems:    1,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"trend_type": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Description:      "The type of trend line to display.",
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetFormulaCellDisplayModeOptionsTrendTypeFromValue),
+				},
+				"y_scale": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Description:      "The scale of the y-axis.",
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetFormulaCellDisplayModeOptionsYScaleFromValue),
+				},
+			},
+		},
+	}
+	return queryTableFormulaSchema
+}
+
 func getFormulaSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -6909,12 +6943,6 @@ func getFormulaSchema() *schema.Schema {
 					Elem: &schema.Resource{
 						Schema: getWidgetConditionalFormatSchema(),
 					},
-				},
-				"cell_display_mode": {
-					Description:      "A list of display modes for each table cell.",
-					Type:             schema.TypeString,
-					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewTableWidgetCellDisplayModeFromValue),
-					Optional:         true,
 				},
 				"style": {
 					Type:        schema.TypeList,
@@ -7540,6 +7568,18 @@ func buildDatadogFormula(data map[string]interface{}) *datadogV1.WidgetFormula {
 	if value, ok := data["cell_display_mode"].(string); ok && len(value) != 0 {
 		formula.SetCellDisplayMode(datadogV1.TableWidgetCellDisplayMode(value))
 	}
+	if value, ok := data["cell_display_mode_options"].([]interface{}); ok && len(value) != 0 {
+		if options, ok := value[0].(map[string]interface{}); ok {
+			o := datadogV1.NewWidgetFormulaCellDisplayModeOptions()
+			if v, ok := options["trend_type"].(string); ok {
+				o.SetTrendType(datadogV1.WidgetFormulaCellDisplayModeOptionsTrendType(v))
+			}
+			if v, ok := options["y_scale"].(string); ok {
+				o.SetYScale(datadogV1.WidgetFormulaCellDisplayModeOptionsYScale(v))
+			}
+			formula.SetCellDisplayModeOptions(*o)
+		}
+	}
 
 	if v, ok := data["conditional_formats"].([]interface{}); ok && len(v) != 0 {
 		formula.ConditionalFormats = *buildDatadogWidgetConditionalFormat(&v)
@@ -7956,7 +7996,7 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		if v, ok := datadogRequest.GetStyleOk(); ok {
@@ -8263,7 +8303,7 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
@@ -9149,7 +9189,7 @@ func buildTerraformTreemapRequests(datadogTreemapRequests *[]datadogV1.TreeMapWi
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 		terraformRequests[i] = terraformRequest
 	}
@@ -10166,7 +10206,7 @@ func buildTerraformScatterplotFormula(datadogFormulas *[]datadogV1.ScatterplotWi
 	return formulas
 }
 
-func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula) []map[string]interface{} {
+func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula, cellDisplay bool) []map[string]interface{} {
 	formulas := make([]map[string]interface{}, len(*datadogFormulas))
 	for i, formula := range *datadogFormulas {
 		terraformFormula := map[string]interface{}{}
@@ -10188,8 +10228,20 @@ func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula) []map[str
 			terraformConditionalFormats := buildTerraformWidgetConditionalFormat(v)
 			terraformFormula["conditional_formats"] = terraformConditionalFormats
 		}
-		if cellDisplayMode, cellDisplayModeOk := formula.GetCellDisplayModeOk(); cellDisplayModeOk {
-			terraformFormula["cell_display_mode"] = cellDisplayMode
+		if cellDisplay {
+			if cellDisplayMode, cellDisplayModeOk := formula.GetCellDisplayModeOk(); cellDisplayModeOk {
+				terraformFormula["cell_display_mode"] = cellDisplayMode
+			}
+			if cellDisplayOptions, cellDisplayOptionsOk := formula.GetCellDisplayModeOptionsOk(); cellDisplayOptionsOk {
+				if cellDisplayOptions != nil {
+					terraformFormula["cell_display_mode_options"] = []interface{}{
+						map[string]interface{}{
+							"trend_type": cellDisplayOptions.TrendType,
+							"y_scale":    cellDisplayOptions.YScale,
+						},
+					}
+				}
+			}
 		}
 		if style, ok := formula.GetStyleOk(); ok {
 			terraFormstyle := make(map[string]interface{})
