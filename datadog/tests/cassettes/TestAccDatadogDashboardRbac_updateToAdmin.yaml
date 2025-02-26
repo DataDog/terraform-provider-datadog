@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740494917","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
+            {"description":"Created using the Datadog provider in Terraform","id":"","layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740561202","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"49z-ysb-ywy","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740494917","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/49z-ysb-ywy/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740494917","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":5758303516866077}],"notify_list":[],"created_at":"2025-02-25T14:48:40.445324+00:00","modified_at":"2025-02-25T14:48:40.445324+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"ccf-8xc-832","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740561202","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ccf-8xc-832/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740561202","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2368130173625047}],"notify_list":[],"created_at":"2025-02-26T09:13:26.300249+00:00","modified_at":"2025-02-26T09:13:26.300249+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 370.966625ms
+        duration: 534.510292ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -55,7 +55,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/49z-ysb-ywy
+        url: https://api.datadoghq.com/api/v1/dashboard/ccf-8xc-832
         method: GET
       response:
         proto: HTTP/1.1
@@ -66,14 +66,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: |
-            {"id":"49z-ysb-ywy","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740494917","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/49z-ysb-ywy/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740494917","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":5758303516866077}],"notify_list":[],"created_at":"2025-02-25T14:48:40.445324+00:00","modified_at":"2025-02-25T14:48:40.445324+00:00","template_variable_presets":[],"tags":[]}
+        body: '{"errors":["Dashboard with ID ccf-8xc-832 not found"]}'
         headers:
             Content-Type:
                 - application/json
-        status: 200 OK
-        code: 200
-        duration: 230.476625ms
+        status: 404 Not Found
+        code: 404
+        duration: 181.171208ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -90,7 +89,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/49z-ysb-ywy
+        url: https://api.datadoghq.com/api/v1/dashboard/ccf-8xc-832
         method: GET
       response:
         proto: HTTP/1.1
@@ -102,13 +101,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"49z-ysb-ywy","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740494917","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/49z-ysb-ywy/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740494917","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":5758303516866077}],"notify_list":[],"created_at":"2025-02-25T14:48:40.445324+00:00","modified_at":"2025-02-25T14:48:40.445324+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"ccf-8xc-832","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740561202","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ccf-8xc-832/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740561202","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2368130173625047}],"notify_list":[],"created_at":"2025-02-26T09:13:26.300249+00:00","modified_at":"2025-02-26T09:13:26.300249+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 179.823375ms
+        duration: 173.7345ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -125,7 +124,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/49z-ysb-ywy
+        url: https://api.datadoghq.com/api/v1/dashboard/ccf-8xc-832
         method: GET
       response:
         proto: HTTP/1.1
@@ -137,52 +136,14 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"49z-ysb-ywy","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740494917","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/49z-ysb-ywy/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740494917","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":5758303516866077}],"notify_list":[],"created_at":"2025-02-25T14:48:40.445324+00:00","modified_at":"2025-02-25T14:48:40.445324+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"ccf-8xc-832","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740561202","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ccf-8xc-832/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740561202","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2368130173625047}],"notify_list":[],"created_at":"2025-02-26T09:13:26.300249+00:00","modified_at":"2025-02-26T09:13:26.300249+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 171.107958ms
+        duration: 162.113292ms
     - id: 4
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 385
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"description":"Created using the Datadog provider in Terraform","id":"49z-ysb-ywy","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740494917","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/49z-ysb-ywy
-        method: PUT
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        trailer: {}
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"49z-ysb-ywy","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740494917","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/49z-ysb-ywy/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740494917","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2910557929212170}],"notify_list":[],"created_at":"2025-02-25T14:48:40.445324+00:00","modified_at":"2025-02-25T14:48:46.427606+00:00","template_variable_presets":[],"tags":[]}
-        headers:
-            Content-Type:
-                - application/json
-        status: 200 OK
-        code: 200
-        duration: 384.822583ms
-    - id: 5
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -198,7 +159,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/49z-ysb-ywy
+        url: https://api.datadoghq.com/api/v1/dashboard/ccf-8xc-832
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +171,51 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"49z-ysb-ywy","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740494917","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/49z-ysb-ywy/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740494917","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2910557929212170}],"notify_list":[],"created_at":"2025-02-25T14:48:40.445324+00:00","modified_at":"2025-02-25T14:48:46.427606+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"ccf-8xc-832","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740561202","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ccf-8xc-832/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740561202","is_read_only":false,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2368130173625047}],"notify_list":[],"created_at":"2025-02-26T09:13:26.300249+00:00","modified_at":"2025-02-26T09:13:26.300249+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 160.695375ms
+        duration: 167.636375ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 385
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"description":"Created using the Datadog provider in Terraform","id":"ccf-8xc-832","is_read_only":true,"layout_type":"ordered","notify_list":[],"tags":[],"template_variable_presets":[],"template_variables":[],"title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740561202","widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"}}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/ccf-8xc-832
+        method: PUT
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"ccf-8xc-832","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740561202","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ccf-8xc-832/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740561202","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":26312898273803}],"notify_list":[],"created_at":"2025-02-26T09:13:26.300249+00:00","modified_at":"2025-02-26T09:13:34.143242+00:00","template_variable_presets":[],"tags":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 1.910925167s
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +232,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/49z-ysb-ywy
+        url: https://api.datadoghq.com/api/v1/dashboard/ccf-8xc-832
         method: GET
       response:
         proto: HTTP/1.1
@@ -245,13 +244,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"id":"49z-ysb-ywy","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740494917","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/49z-ysb-ywy/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740494917","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":2910557929212170}],"notify_list":[],"created_at":"2025-02-25T14:48:40.445324+00:00","modified_at":"2025-02-25T14:48:46.427606+00:00","template_variable_presets":[],"tags":[]}
+            {"id":"ccf-8xc-832","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740561202","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ccf-8xc-832/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740561202","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":26312898273803}],"notify_list":[],"created_at":"2025-02-26T09:13:26.300249+00:00","modified_at":"2025-02-26T09:13:34.143242+00:00","template_variable_presets":[],"tags":[]}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 190.05525ms
+        duration: 160.693958ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +267,42 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v1/dashboard/49z-ysb-ywy
+        url: https://api.datadoghq.com/api/v1/dashboard/ccf-8xc-832
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: |
+            {"id":"ccf-8xc-832","title":"tf-TestAccDatadogDashboardRbac_updateToAdmin-local-1740561202","description":"Created using the Datadog provider in Terraform","author_handle":"frog@datadoghq.com","author_name":"frog","layout_type":"ordered","url":"/dashboard/ccf-8xc-832/tf-testaccdatadogdashboardrbacupdatetoadmin-local-1740561202","is_read_only":true,"template_variables":[],"widgets":[{"definition":{"content":"note text","has_padding":true,"show_tick":false,"type":"note"},"id":26312898273803}],"notify_list":[],"created_at":"2025-02-26T09:13:26.300249+00:00","modified_at":"2025-02-26T09:13:34.143242+00:00","template_variable_presets":[],"tags":[]}
+        headers:
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 158.425125ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v1/dashboard/ccf-8xc-832
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -280,10 +314,10 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"deleted_dashboard_id":"49z-ysb-ywy"}
+            {"deleted_dashboard_id":"ccf-8xc-832"}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 234.619542ms
+        duration: 221.240792ms
