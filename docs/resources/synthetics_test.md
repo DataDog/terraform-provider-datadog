@@ -1115,7 +1115,7 @@ Required:
 Optional:
 
 - `allow_application_crash` (Boolean)
-- `bindings` (Block List) (see [below for nested schema](#nestedblock--mobile_options_list--bindings))
+- `bindings` (Block List) Restriction policy bindings for the Synthetic mobile test. Should not be used in parallel with a `datadog_restriction_policy` resource (see [below for nested schema](#nestedblock--mobile_options_list--bindings))
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--mobile_options_list--ci))
 - `default_step_timeout` (Number)
 - `disable_auto_accept_alert` (Boolean)
@@ -1124,7 +1124,7 @@ Optional:
 - `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--monitor_options))
 - `monitor_priority` (Number)
 - `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
-- `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
+- `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--retry))
 - `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--mobile_options_list--scheduling))
 - `verbosity` (Number)
@@ -1323,7 +1323,7 @@ Optional:
 - `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - `monitor_priority` (Number)
 - `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
-- `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
+- `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
 - `rum_settings` (Block List, Max: 1) The RUM data collection settings for the Synthetic browser test. (see [below for nested schema](#nestedblock--options_list--rum_settings))
 - `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--options_list--scheduling))
