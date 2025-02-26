@@ -5903,7 +5903,7 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
 					"clustering_pattern_field_path": {
-						Description: "Specifies the field for logs pattern clustering. Usable only with logs_pattern_stream.",
+						Description: "Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.",
 						Optional:    true,
 						Type:        schema.TypeString,
 					},
@@ -5925,7 +5925,7 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
 					},
 					"group_by": {
-						Description: "Group by configuration for the List Stream Widget. Group by can be used only with logs_pattern_stream (up to 4 items) or logs_transaction_stream (one group by item is required) list stream source.",
+						Description: "Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source.",
 						Optional:    true,
 						Type:        schema.TypeList,
 						Elem: &schema.Resource{
