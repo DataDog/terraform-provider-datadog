@@ -8128,6 +8128,9 @@ func buildDatadogToplistStyle(terraformToplistStyle map[string]interface{}) data
 	if palette, ok := terraformToplistStyle["palette"].(string); ok && len(palette) != 0 {
 		datadogToplistStyle.SetPalette(palette)
 	}
+	if scaling, ok := terraformToplistStyle["scaling"].(string); ok && len(scaling) != 0 {
+		datadogToplistStyle.SetScaling(datadogV1.ToplistWidgetScaling(scaling))
+	}
 	return *datadogToplistStyle
 }
 
@@ -8323,6 +8326,9 @@ func buildTerraformToplistWidgetStyle(datadogToplistStyle *datadogV1.ToplistWidg
 	}
 	if palette, ok := datadogToplistStyle.GetPaletteOk(); ok {
 		terraformStyle["palette"] = palette
+	}
+	if scaling, ok := datadogToplistStyle.GetScalingOk(); ok {
+		terraformStyle["scaling"] = scaling
 	}
 	terraformStyles[0] = terraformStyle
 	return &terraformStyles
@@ -9501,6 +9507,13 @@ func getToplistWidgetStyleSchema() map[string]*schema.Schema {
 			Description: "The color palette for the widget.",
 			Type:        schema.TypeString,
 			Optional:    true,
+		},
+		"scaling": {
+			Description:      "The scaling mode for the widget.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Computed:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewToplistWidgetScalingFromValue),
 		},
 	}
 }
@@ -11030,8 +11043,4 @@ func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumber
 		m["unit_scale"] = []map[string]interface{}{unitScale}
 	}
 	return []map[string]interface{}{m}
-}
-
-func Ptr[T any](v T) *T {
-	return &v
 }
