@@ -49,3 +49,4 @@ datadog/**/*datadog_team*                        @DataDog/web-frameworks @DataDo
 datadog/**/*datadog_user*                        @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
 datadog/**/*datadog_organization_settings*       @DataDog/web-frameworks @DataDog/api-reliability @DataDog/core-app @DataDog/trust-and-safety
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/web-frameworks @DataDog/api-reliability @DataDog/chat-integrations
+datadog/**/*datadog_action_connection*           @DataDog/web-frameworks @DataDog/api-reliability @DataDog/action-platform
