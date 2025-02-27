@@ -25,6 +25,7 @@ type csmThreatsAgentRulesDataSource struct {
 }
 
 type csmThreatsAgentRulesDataSourceModel struct {
+	PolicyId      types.String               `tfsdk:"policy_id"`
 	Id            types.String               `tfsdk:"id"`
 	AgentRulesIds types.List                 `tfsdk:"agent_rules_ids"`
 	AgentRules    []csmThreatsAgentRuleModel `tfsdk:"agent_rules"`
@@ -51,7 +52,12 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 		return
 	}
 
-	res, _, err := r.api.ListCSMThreatsAgentRules(r.auth)
+	policyId := state.PolicyId.ValueStringPointer()
+	params := datadogV2.NewListCSMThreatsAgentRulesOptionalParameters()
+	if !state.PolicyId.IsNull() && !state.PolicyId.IsUnknown() {
+		params.WithPolicyId(*policyId)
+	}
+	res, _, err := r.api.ListCSMThreatsAgentRules(r.auth, *params)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error while fetching agent rules"))
 		return
@@ -75,7 +81,7 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 	}
 
 	stateId := strings.Join(agentRuleIds, "--")
-	state.Id = types.StringValue(computeAgentRulesDataSourceID(&stateId))
+	state.Id = types.StringValue(computeDataSourceID(&stateId))
 	tfAgentRuleIds, diags := types.ListValueFrom(ctx, types.StringType, agentRuleIds)
 	response.Diagnostics.Append(diags...)
 	state.AgentRulesIds = tfAgentRuleIds
@@ -84,11 +90,11 @@ func (r *csmThreatsAgentRulesDataSource) Read(ctx context.Context, request datas
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func computeAgentRulesDataSourceID(agentruleIds *string) string {
+func computeDataSourceID(ids *string) string {
 	// Key for hashing
 	var b strings.Builder
-	if agentruleIds != nil {
-		b.WriteString(*agentruleIds)
+	if ids != nil {
+		b.WriteString(*ids)
 	}
 	keyStr := b.String()
 	h := sha256.New()
@@ -101,6 +107,12 @@ func (*csmThreatsAgentRulesDataSource) Schema(_ context.Context, _ datasource.Sc
 	response.Schema = schema.Schema{
 		Description: "Use this data source to retrieve information about existing Agent rules.",
 		Attributes: map[string]schema.Attribute{
+			// Input
+			"policy_id": schema.StringAttribute{
+				Description: "Listing only the rules in the policy with this field as the ID",
+				Optional:    true,
+			},
+			// Output
 			"id": utils.ResourceIDAttribute(),
 			"agent_rules_ids": schema.ListAttribute{
 				Computed:    true,
