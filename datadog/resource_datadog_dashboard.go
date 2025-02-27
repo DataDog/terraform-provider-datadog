@@ -6936,6 +6936,15 @@ func getFormulaSchema() *schema.Schema {
 						},
 					},
 				},
+				"number_format": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "Number formatting options for the formula.",
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: getNumberFormatFormulaSchema(),
+					},
+				},
 			},
 		},
 	}
@@ -7547,6 +7556,10 @@ func buildDatadogFormula(data map[string]interface{}) *datadogV1.WidgetFormula {
 		}
 		formula.SetStyle(*datadogFormulaStyle)
 	}
+	if number, ok := data["number_format"].([]interface{}); ok && len(number) != 0 {
+		datadogNumberFormat := buildNumberFormatFormulaSchema(number[0].(map[string]interface{}))
+		formula.SetNumberFormat(*datadogNumberFormat)
+	}
 
 	return &formula
 }
@@ -8084,6 +8097,9 @@ func buildDatadogToplistStyle(terraformToplistStyle map[string]interface{}) data
 	if palette, ok := terraformToplistStyle["palette"].(string); ok && len(palette) != 0 {
 		datadogToplistStyle.SetPalette(palette)
 	}
+	if scaling, ok := terraformToplistStyle["scaling"].(string); ok && len(scaling) != 0 {
+		datadogToplistStyle.SetScaling(datadogV1.ToplistWidgetScaling(scaling))
+	}
 	return *datadogToplistStyle
 }
 
@@ -8279,6 +8295,9 @@ func buildTerraformToplistWidgetStyle(datadogToplistStyle *datadogV1.ToplistWidg
 	}
 	if palette, ok := datadogToplistStyle.GetPaletteOk(); ok {
 		terraformStyle["palette"] = palette
+	}
+	if scaling, ok := datadogToplistStyle.GetScalingOk(); ok {
+		terraformStyle["scaling"] = scaling
 	}
 	terraformStyles[0] = terraformStyle
 	return &terraformStyles
@@ -9458,6 +9477,13 @@ func getToplistWidgetStyleSchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
+		"scaling": {
+			Description:      "The scaling mode for the widget.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Computed:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewToplistWidgetScalingFromValue),
+		},
 	}
 }
 
@@ -10175,6 +10201,9 @@ func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula) []map[str
 			}
 			terraformFormula["style"] = []map[string]interface{}{terraFormstyle}
 		}
+		if numberFormat, ok := formula.GetNumberFormatOk(); ok {
+			terraformFormula["number_format"] = buildTerraformNumberFormatFormulaSchema(*numberFormat)
+		}
 		formulas[i] = terraformFormula
 	}
 	return formulas
@@ -10857,4 +10886,130 @@ func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []st
 			"%q contains an invalid value %q. Valid values are `0`, `2`, `4`, `8`, `16`, or `auto`", key, value))
 	}
 	return
+}
+
+// Number format Formula
+func getNumberFormatFormulaSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"unit": &schema.Schema{
+			Description: "Unit of the number format. ",
+			Type:        schema.TypeList,
+			MinItems:    1,
+			MaxItems:    1,
+			Required:    true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"canonical": &schema.Schema{
+						Description: "Canonical Units",
+						Type:        schema.TypeList,
+						MinItems:    0,
+						MaxItems:    1,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"per_unit_name": &schema.Schema{
+									Description: "per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'",
+									Type:        schema.TypeString,
+									Optional:    true,
+								},
+								"unit_name": &schema.Schema{
+									Description: "Unit name. It should be in singular form ('megabyte' and not 'megabytes')",
+									Type:        schema.TypeString,
+									Required:    true,
+								},
+							},
+						},
+					},
+					"custom": &schema.Schema{
+						Description: "Use custom (non canonical metrics)",
+						Type:        schema.TypeList,
+						MinItems:    0,
+						MaxItems:    1,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"label": &schema.Schema{
+									Description: "Unit label",
+									Type:        schema.TypeString,
+									Required:    true,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		"unit_scale": &schema.Schema{
+			Description: "",
+			Type:        schema.TypeList,
+			MinItems:    0,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"unit_name": &schema.Schema{
+						Description: "",
+						Type:        schema.TypeString,
+						Required:    true,
+					},
+				},
+			},
+		},
+	}
+}
+
+func buildNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *datadogV1.WidgetNumberFormat {
+	if terraformStyle == nil || len(terraformStyle) == 0 {
+		return nil
+	}
+	var datadogNumber datadogV1.WidgetNumberFormat
+	if v, ok := terraformStyle["unit"].([]interface{}); ok && len(v) > 0 {
+		unit := v[0].(map[string]interface{})
+		datadogNumber.Unit = &datadogV1.NumberFormatUnit{}
+		if v, ok := unit["canonical"].([]interface{}); ok && len(v) > 0 {
+			canonical := v[0].(map[string]interface{})
+			datadogNumber.Unit.NumberFormatUnitCanonical = &datadogV1.NumberFormatUnitCanonical{
+				Type: Ptr(datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT),
+			}
+			if v, ok := canonical["per_unit_name"].(string); ok && len(v) > 0 {
+				datadogNumber.Unit.NumberFormatUnitCanonical.PerUnitName = Ptr(v)
+			}
+			if v, ok := canonical["unit_name"].(string); ok && len(v) > 0 {
+				datadogNumber.Unit.NumberFormatUnitCanonical.UnitName = Ptr(v)
+			}
+		}
+		if v, ok := unit["custom"].([]interface{}); ok && len(v) > 0 {
+			custom := v[0].(map[string]interface{})
+			datadogNumber.Unit.NumberFormatUnitCustom = &datadogV1.NumberFormatUnitCustom{
+				Type: Ptr(datadogV1.NUMBERFORMATUNITCUSTOMTYPE_CUSTOM_UNIT_LABEL),
+			}
+			if v, ok := custom["label"].(string); ok && len(v) > 0 {
+				datadogNumber.Unit.NumberFormatUnitCustom.Label = Ptr(v)
+			}
+		}
+	}
+	return &datadogNumber
+}
+
+func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumberFormat) []map[string]interface{} {
+	m := map[string]interface{}{}
+	if v, ok := datadogStyle.GetUnitOk(); ok {
+		unit := map[string]interface{}{}
+		if v.NumberFormatUnitCustom != nil {
+			unit["custom"] = []map[string]interface{}{{"label": v.NumberFormatUnitCustom.Label}}
+		}
+		if v.NumberFormatUnitCanonical != nil {
+			unit["canonical"] = []map[string]interface{}{
+				{"per_unit_name": v.NumberFormatUnitCanonical.PerUnitName,
+					"unit_name": v.NumberFormatUnitCanonical.UnitName},
+			}
+		}
+		m["unit"] = []map[string]interface{}{unit}
+	}
+	if v, ok := datadogStyle.GetUnitScaleOk(); ok {
+		unitScale := map[string]interface{}{}
+		unitScale["unit_name"] = []map[string]interface{}{{"unit_name": v.UnitName}}
+		m["unit_scale"] = []map[string]interface{}{unitScale}
+	}
+	return []map[string]interface{}{m}
 }

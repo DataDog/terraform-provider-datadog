@@ -34,6 +34,7 @@ const (
 	tfTraceIDRemapperProcessor      = "trace_id_remapper"
 	tfURLParserProcessor            = "url_parser"
 	tfUserAgentParserProcessor      = "user_agent_parser"
+	tfSpanIdRemapperProcessor       = "span_id_remapper"
 	// This type string is used to differentiate between LookupProcessor and ReferenceTableLookupProcessor, due to them sharing a `type` in the API.
 	ddReferenceTableLookupProcessor = "reference-table-" + string(datadogV1.LOGSLOOKUPPROCESSORTYPE_LOOKUP_PROCESSOR)
 )
@@ -55,6 +56,7 @@ var tfProcessorTypes = map[string]string{
 	tfTraceIDRemapperProcessor:      string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER),
 	tfURLParserProcessor:            string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER),
 	tfUserAgentParserProcessor:      string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER),
+	tfSpanIdRemapperProcessor:       string(datadogV1.LOGSSPANREMAPPERTYPE_SPAN_ID_REMAPPER),
 }
 
 var tfProcessors = map[string]*schema.Schema{
@@ -73,6 +75,7 @@ var tfProcessors = map[string]*schema.Schema{
 	tfTraceIDRemapperProcessor:      traceIDRemapper,
 	tfURLParserProcessor:            urlParser,
 	tfUserAgentParserProcessor:      userAgentParser,
+	tfSpanIdRemapperProcessor:       SpanIdRemapper,
 }
 
 var ddProcessorTypes = map[string]string{
@@ -92,6 +95,7 @@ var ddProcessorTypes = map[string]string{
 	string(datadogV1.LOGSTRACEREMAPPERTYPE_TRACE_ID_REMAPPER):                 tfTraceIDRemapperProcessor,
 	string(datadogV1.LOGSURLPARSERTYPE_URL_PARSER):                            tfURLParserProcessor,
 	string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER):               tfUserAgentParserProcessor,
+	string(datadogV1.LOGSSPANREMAPPERTYPE_SPAN_ID_REMAPPER):                   tfSpanIdRemapperProcessor,
 }
 
 var arithmeticProcessor = &schema.Schema{
@@ -371,12 +375,23 @@ var userAgentParser = &schema.Schema{
 	},
 }
 
+var SpanIdRemapper = &schema.Schema{
+	Type:        schema.TypeList,
+	MaxItems:    1,
+	Description: "Span ID Remapper Processor. More information can be found in the [official docs](https://docs.datadoghq.com/logs/log_configuration/processors/?tab=ui#span-remapper)",
+	Optional:    true,
+	Elem: &schema.Resource{
+		Schema: sourceRemapper,
+	},
+}
+
 func resourceDatadogLogsCustomPipeline() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceDatadogLogsPipelineCreate,
 		UpdateContext: resourceDatadogLogsPipelineUpdate,
 		ReadContext:   resourceDatadogLogsPipelineRead,
 		DeleteContext: resourceDatadogLogsPipelineDelete,
+		CustomizeDiff: tagDiff,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -560,6 +575,9 @@ func buildTerraformProcessor(ddProcessor datadogV1.LogsProcessor) (map[string]in
 	} else if ddProcessor.LogsUserAgentParser != nil {
 		tfProcessor = buildTerraformUserAgentParser(ddProcessor.LogsUserAgentParser)
 		processorType = string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER)
+	} else if ddProcessor.LogsSpanRemapper != nil {
+		tfProcessor = buildTerraformSpanRemapper(ddProcessor.LogsSpanRemapper)
+		processorType = string(datadogV1.LOGSSPANREMAPPERTYPE_SPAN_ID_REMAPPER)
 	} else {
 		err = fmt.Errorf("failed to support datadogV1 processor type, %s", ddProcessor.GetActualInstance())
 	}
@@ -752,6 +770,14 @@ func buildTerraformArithmeticProcessor(ddArithmetic *datadogV1.LogsArithmeticPro
 	}
 }
 
+func buildTerraformSpanRemapper(ddSpanRemapper *datadogV1.LogsSpanRemapper) map[string]interface{} {
+	return map[string]interface{}{
+		"sources":    ddSpanRemapper.GetSources(),
+		"name":       ddSpanRemapper.GetName(),
+		"is_enabled": ddSpanRemapper.GetIsEnabled(),
+	}
+}
+
 func buildTerraformFilter(ddFilter *datadogV1.LogsFilter) []map[string]interface{} {
 	tfFilter := map[string]interface{}{
 		"query": ddFilter.GetQuery(),
@@ -847,11 +873,27 @@ func buildDatadogProcessor(ddProcessorType string, tfProcessor map[string]interf
 		ddProcessor = datadogV1.LogsURLParserAsLogsProcessor(buildDatadogURLParser(tfProcessor))
 	case string(datadogV1.LOGSUSERAGENTPARSERTYPE_USER_AGENT_PARSER):
 		ddProcessor = datadogV1.LogsUserAgentParserAsLogsProcessor(buildDatadogUserAgentParser(tfProcessor))
+	case string(datadogV1.LOGSSPANREMAPPERTYPE_SPAN_ID_REMAPPER):
+		ddProcessor = datadogV1.LogsSpanRemapperAsLogsProcessor(buildDatadogSpanRemapper(tfProcessor))
 	default:
 		err = fmt.Errorf("failed to recoginize processor type: %s", ddProcessorType)
 	}
 
 	return &ddProcessor, err
+}
+
+func buildDatadogSpanRemapper(tfProcessor map[string]interface{}) *datadogV1.LogsSpanRemapper {
+	ddSpanRemapper := datadogV1.NewLogsSpanRemapperWithDefaults()
+	if ddSources := buildDatadogSources(tfProcessor); ddSources != nil {
+		ddSpanRemapper.Sources = ddSources
+	}
+	if tfName, exists := tfProcessor["name"].(string); exists {
+		ddSpanRemapper.SetName(tfName)
+	}
+	if tfIsEnabled, exists := tfProcessor["is_enabled"].(bool); exists {
+		ddSpanRemapper.SetIsEnabled(tfIsEnabled)
+	}
+	return ddSpanRemapper
 }
 
 func buildDatadogURLParser(tfProcessor map[string]interface{}) *datadogV1.LogsURLParser {
@@ -1220,7 +1262,7 @@ func getPipelineSchema(isNested bool) map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name":        {Type: schema.TypeString, Required: true},
 		"is_enabled":  {Type: schema.TypeBool, Optional: true},
-		"tags":        {Type: schema.TypeSet, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}},
+		"tags":        {Type: schema.TypeSet, Optional: true, Computed: true, Elem: &schema.Schema{Type: schema.TypeString}},
 		"description": {Type: schema.TypeString, Optional: true},
 		"filter": {
 			Type:     schema.TypeList,

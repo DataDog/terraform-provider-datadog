@@ -22,11 +22,11 @@
     {%- endfor %}
 {%- endmacro %}
 
-{%- macro baseStateSetter(name, schema, baseSetter, baseAccessor, required=False) %}
+{%- macro baseStateSetter(name, schema, baseSetter, baseAccessor, required=False, arrayItem=False) %}
     {%- if schema|is_primitive %}
         {{- typePrimitiveStateSetter(name, schema, baseSetter, baseAccessor, required=required) }}
     {%- elif schema.type == "object" %}
-        {{- typeObjectStateSetter(name, schema, baseSetter, baseAccessor, required=required) }}
+        {{- typeObjectStateSetter(name, schema, baseSetter, baseAccessor, required=required, arrayItem=arrayItem) }}
     {%- elif schema.type == "array" %}
         {{- typeArrayStateSetter(name, schema, baseSetter, baseAccessor, required=required) }}
     {%- endif %}
@@ -36,48 +36,52 @@
     {%- if not required %}
     if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
     {%- endif %}
-    {%- if is_enum(schema) %}
-    {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({{ simple_type(schema) }}({% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %}))
-    {%- else %}
-    {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %})
-    {%- endif %}
+        {%- if is_enum(schema) %}
+            {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({{ simple_type(schema) }}({% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}{{name|date_time_formatter(schema)}}{% endif %}))
+        {%- else %}
+            {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}{{name|date_time_formatter(schema)}}{% endif %})
+        {%- endif %}
     {%- if not required %}
     }
     {%- endif %}
 {%- endmacro %}
 
-{%- macro typeObjectStateSetter(name, schema, baseSetter, baseAccessor, required=False) %}
+{%- macro typeObjectStateSetter(name, schema, baseSetter, baseAccessor, required=False, arrayItem=False) %}
     {%- if not required %}
-    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
+        if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
     {%- endif %}
 
     {{ name|variable_name }}Tf := {{ name|camel_case|untitle_case }}Model{}
 
     {%- if "oneOf" in schema %}
-    {%- for oneOf in schema.get("oneOf") %}
-        {%- set oneOfName = get_name(oneOf) %}
-        {%- set oneOfAccessor = baseAccessor~"."~name|camel_case if required else name|variable_name %}
-        if {{ oneOfAccessor }}.{{ oneOfName }} != nil {
-        {{ oneOfName|variable_name }}Tf := {{ oneOfName|camel_case|untitle_case }}Model{}
-        {%- for oneOfAttr, oneOfAttrSchema in oneOf.properties.items() %}
-            {{- baseStateSetter(oneOfAttr, oneOfAttrSchema, oneOfName|variable_name~"Tf", oneOfAccessor~"."~oneOfName) }}
+        {%- for oneOf in schema.get("oneOf") %}
+            {%- set oneOfName = get_name(oneOf) %}
+            {%- set oneOfAccessor = baseAccessor~"."~name|camel_case if required else name|variable_name %}
+            if {{ oneOfAccessor }}.{{ oneOfName }} != nil {
+            {{ oneOfName|variable_name }}Tf := {{ oneOfName|camel_case|untitle_case }}Model{}
+            {%- for oneOfAttr, oneOfAttrSchema in oneOf.properties.items() %}
+                {{- baseStateSetter(oneOfAttr, oneOfAttrSchema, oneOfName|variable_name~"Tf", oneOfAccessor~"."~oneOfName) }}
+            {%- endfor %}
+
+            {{ name|variable_name }}Tf.{{ oneOfName }} = &{{ oneOfName|variable_name }}Tf
+            }
         {%- endfor %}
-
-        {{ name|variable_name }}Tf.{{ oneOfName }} = &{{ oneOfName|variable_name }}Tf
-        }
-    {%- endfor %}
-
-    {%- else %}
-    
-    {%- for attr, attrSchema in schema.properties.items() %}
-        {{- baseStateSetter(attr, attrSchema, name|variable_name~"Tf", name|variable_name) }}
-    {%- endfor %}
-
-    {{ baseSetter }}.{{ name|camel_case }} = &{{ name|variable_name }}Tf
+    {%- else %}    
+        {%- if arrayItem %}
+            {%- for attr, attrSchema in schema.properties.items() %}
+                {{- baseStateSetter(attr, attrSchema, name|variable_name~"Tf", baseAccessor ) }}
+            {%- endfor %}
+            {{ baseSetter }} = {{ name|variable_name }}Tf
+        {%- else%}
+            {%- for attr, attrSchema in schema.properties.items() %}
+                {{- baseStateSetter(attr, attrSchema, name|variable_name~"Tf", name|variable_name) }}
+            {%- endfor %}
+            {{ baseSetter }}.{{ name|camel_case }} = &{{ name|variable_name }}Tf
+        {%- endif %}
     {%- endif %}
 
     {%- if not required %}
-    }
+        }
     {%- endif %}
 {%- endmacro %}
 
@@ -85,28 +89,34 @@
     {%- set itemSchema = schema.get("items") %}
     {%- if itemSchema|is_primitive %}
 
-    {%- if not required %}
-    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok && len(*{{ name|variable_name }})  > 0 {
-    {%- endif %}
-    {{ baseSetter }}.{{ name|camel_case }}, _ = types.ListValueFrom(ctx, types.{{ get_terraform_schema_type(itemSchema) }}Type, {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %})
-    {%- if not required %}
-    }
-    {%- endif %}
+        {%- if not required %}
+            if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok && len(*{{ name|variable_name }})  > 0 {
+        {%- endif %}
+
+        {{ baseSetter }}.{{ name|camel_case }}, _ = types.ListValueFrom(ctx, types.{{ get_terraform_schema_type(itemSchema) }}Type, {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %})
+        
+        {%- if not required %}
+            }
+        {%- endif %}
 
     {%- else %}
 
-    {%- if not required %}
-    if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok && len(*{{ name|variable_name }})  > 0 {
-    {%- endif %}
-    {{ baseSetter }}.{{ name|camel_case }} = []*{{ name|camel_case|untitle_case }}Model{}
-    for _, {{ name|variable_name }}Dd := range {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %} {
-        {{ name|variable_name }}TfItem := {{ name|camel_case|untitle_case }}Model{}
-        {{ baseStateSetter(name, itemSchema, name|variable_name~"TfItem", name|variable_name ~ "Dd") }}
-        {{ baseSetter }}.{{ name|camel_case }} = append({{ baseSetter }}.{{ name|camel_case }}, &{{ name|variable_name }}TfItem)
-    }
-    {%- if not required %}
-    }
-    {%- endif %}
+        {%- if not required %}
+            if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok && len(*{{ name|variable_name }})  > 0 {
+        {%- endif %}
+
+        {{ baseSetter }}.{{ name|camel_case }} = []*{{ name|camel_case|untitle_case }}Model{}
+        for _, {{ name|variable_name }}Dd := range {% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}*{{ name|variable_name }}{% endif %} {
+            {{ name|variable_name }}TfItem := {{ name|camel_case|untitle_case }}Model{}
+
+            {{ baseStateSetter(name, itemSchema, name|variable_name~"TfItem", name|variable_name ~ "Dd", required=True, arrayItem=True) }}
+            
+            {{ baseSetter }}.{{ name|camel_case }} = append({{ baseSetter }}.{{ name|camel_case }}, &{{ name|variable_name }}TfItem)
+        }
+
+        {%- if not required %}
+            }
+        {%- endif %}
 
     {%- endif %}
 {%- endmacro %}

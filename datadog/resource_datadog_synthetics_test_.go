@@ -731,6 +731,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
 				"restricted_roles": {
+					Deprecated:  "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
 					Type:        schema.TypeSet,
 					Optional:    true,
@@ -892,14 +893,16 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 					ValidateFunc: validation.IntBetween(1, 5),
 				},
 				"restricted_roles": {
+					Deprecated:  "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 					Description: "A list of role identifiers pulled from the Roles API to restrict read and write access.",
 					Type:        schema.TypeSet,
 					Optional:    true,
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"bindings": {
-					Type:     schema.TypeList,
-					Optional: true,
+					Description: "Restriction policy bindings for the Synthetic mobile test. Should not be used in parallel with a `datadog_restriction_policy` resource",
+					Type:        schema.TypeList,
+					Optional:    true,
 					Elem: &schema.Resource{
 						Schema: map[string]*schema.Schema{
 							"principals": {
@@ -3833,9 +3836,9 @@ func buildDatadogTestOptions(d *schema.ResourceData) *datadogV1.SyntheticsTestOp
 
 			if renotifyInterval, ok := monitorOptions.(map[string]interface{})["renotify_interval"]; ok {
 				optionsMonitorOptions.SetRenotifyInterval(int64(renotifyInterval.(int)))
-			}
-			if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok {
-				optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
+				if renotifyOccurrences, ok := monitorOptions.(map[string]interface{})["renotify_occurrences"]; ok && renotifyInterval != 0 {
+					optionsMonitorOptions.SetRenotifyOccurrences(int64(renotifyOccurrences.(int)))
+				}
 			}
 			options.SetMonitorOptions(optionsMonitorOptions)
 		}

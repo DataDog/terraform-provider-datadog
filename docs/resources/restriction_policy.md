@@ -36,7 +36,13 @@ resource "datadog_restriction_policy" "foo" {
 
 - `resource_id` (String) Identifier for the resource, formatted as resource_type:resource_id.
 
-Note: Dashboards support is in private beta. Reach out to your Datadog contact or support to enable this.
+Resources to define `resource_type` : 
+* [List of supported resources](https://docs.datadoghq.com/account_management/rbac/granular_access)
+* [Resource type definition](https://docs.datadoghq.com/api/latest/restriction-policies/#supported-resources)
+
+Restrictions :
+* Dashboards : support is in private beta. Reach out to your Datadog contact or support to enable this.
+* Monitors : Management of restriction policy through terraform is currently not available
 
 ### Optional
 

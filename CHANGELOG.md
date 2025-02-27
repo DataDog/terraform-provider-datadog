@@ -1,3 +1,23 @@
+## 3.56.0 (February 25, 2025)
+
+### BUGFIXES
+* [datadog_spans_metric] Fix count aggregation by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2860
+* [datadog_api_key] Fix bug introduced in 3.55.0 for organisation that doesn't have Remove config enabled by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2857
+### IMPROVEMENTS
+* [synthetics_global_variable] Add is_fido by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2836
+* [datadog_user] Add computed attributes to `datadog_user` datasource by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2787
+* [datadog_logs_custom_pipeline] Add support for default tags in log pipelines by @shuheiktgw in https://github.com/DataDog/terraform-provider-datadog/pull/2845
+* [datadog_dashboard] Add dashboard unit support by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2858
+* [datadog_logs_custom_pipeline] Manage `span-id-remapper` processor by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2861
+* [datadog_dashboard] Add `scaling` argument for style of `toplist_definition` widget by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2862
+### NOTES
+* [datadog_openapi_api] Deprecate openapi resource by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/2863
+
+## New Contributors
+* @shuheiktgw made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2845
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.55.0...v3.56.0
+
 ## 3.55.0 (February 18, 2025)
 
 ### BUGFIXES

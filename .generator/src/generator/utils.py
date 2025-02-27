@@ -48,8 +48,9 @@ def is_primitive(schema):
         return True
     return False
 
+
 def is_required(schema, attr=None):
-    req_args =schema.get("required")
+    req_args = schema.get("required")
     if req_args is None:
         return False
     if isinstance(req_args, bool):
@@ -58,12 +59,20 @@ def is_required(schema, attr=None):
         return attr in req_args
     raise ValueError(f"Invalid required value: {schema} ({attr})")
 
+
 def is_computed(schema):
     v = schema.get("readOnly", None) is True
     return v
 
+
 def is_enum(schema):
     return "enum" in schema
 
+
 def is_nullable(schema):
     return schema.get("nullable", False)
+
+
+def debug_filter(value):
+    print(value)
+    return value
