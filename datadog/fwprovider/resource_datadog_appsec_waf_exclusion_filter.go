@@ -206,7 +206,7 @@ func (r *appsecWafExclusionFilterResource) Create(ctx context.Context, request r
 		var httpResp *http.Response
 		resp, httpResp, err = r.Api.CreateApplicationSecurityWafExclusionFilter(r.Auth, *body)
 		if err != nil {
-			if httpResp.StatusCode == http.StatusConflict {
+			if httpResp != nil && httpResp.StatusCode == http.StatusConflict {
 				return retry.RetryableError(err)
 			}
 			return retry.NonRetryableError(err)
@@ -251,7 +251,7 @@ func (r *appsecWafExclusionFilterResource) Update(ctx context.Context, request r
 		var httpResp *http.Response
 		resp, httpResp, err = r.Api.UpdateApplicationSecurityWafExclusionFilter(r.Auth, id, *body)
 		if err != nil {
-			if httpResp.StatusCode == http.StatusConflict {
+			if httpResp != nil && httpResp.StatusCode == http.StatusConflict {
 				return retry.RetryableError(err)
 			}
 			return retry.NonRetryableError(err)
@@ -289,7 +289,7 @@ func (r *appsecWafExclusionFilterResource) Delete(ctx context.Context, request r
 	err = retry.RetryContext(ctx, appsecRetryOnConflictTimeout, func() *retry.RetryError {
 		httpResp, err = r.Api.DeleteApplicationSecurityWafExclusionFilter(r.Auth, id)
 		if err != nil {
-			if httpResp.StatusCode == http.StatusConflict {
+			if httpResp != nil && httpResp.StatusCode == http.StatusConflict {
 				return retry.RetryableError(err)
 			}
 			return retry.NonRetryableError(err)

@@ -26,9 +26,9 @@ func TestAccAppsecWafExclusionFilterBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAppsecWafExclusionFilterExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_appsec_waf_exclusion_filter.foo", "description", "Exclude false positives on a path"),
+						"datadog_appsec_waf_exclusion_filter.foo", "scope.0.env", "www"),
 					resource.TestCheckResourceAttr(
-						"datadog_appsec_waf_exclusion_filter.foo", "on_match", "monitor"),
+						"datadog_appsec_waf_exclusion_filter.foo", "rules_target.0.tags.category", "attack_attempt"),
 					resource.TestCheckResourceAttr(
 						"datadog_appsec_waf_exclusion_filter.foo", "path_glob", "/accounts/*"),
 				),
@@ -42,18 +42,16 @@ func testAccCheckDatadogAppsecWafExclusionFilter(uniq string) string {
 	return fmt.Sprintf(`resource "datadog_appsec_waf_exclusion_filter" "foo" {
     description = "%s"
     enabled = true
-    on_match = "monitor"
     path_glob = "/accounts/*"
     rules_target {
-    rule_id = "dog-913-009"
-    tags {
-    category = "attack_attempt"
-    type = "lfi"
-    }
+      tags {
+        category = "attack_attempt"
+        type = "lfi"
+      }
     }
     scope {
-    env = "www"
-    service = "prod"
+      env = "www"
+      service = "prod"
     }
 }`, uniq)
 }

@@ -26,7 +26,7 @@ func TestAccAppsecWafCustomRuleBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAppsecWafCustomRuleExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_appsec_waf_custom_rule.foo", "name", "Block request from a bad useragent"),
+						"datadog_appsec_waf_custom_rule.foo", "tags.category", "attack_attempt"),
 					resource.TestCheckResourceAttr(
 						"datadog_appsec_waf_custom_rule.foo", "path_glob", "/api/search/*"),
 				),
@@ -39,37 +39,36 @@ func testAccCheckDatadogAppsecWafCustomRule(uniq string) string {
 	// Update me to make use of the unique value
 	return fmt.Sprintf(`resource "datadog_appsec_waf_custom_rule" "foo" {
     action {
-    action = "block_request"
-    parameters {
-    location = "/blocking"
-    status_code = 403
+      action = "redirect_request"
+      parameters {
+        location = "/blocking"
+        status_code = 302
+      }
     }
-    }
-    blocking = false
+    blocking = true
     conditions {
-    operator = "match_regex"
-    parameters {
-    data = "blocked_users"
-    inputs {
-    address = "server.db.statement"
-    }
-    options {
-    case_sensitive = true
-    }
-    regex = "path.*"
-    value = "custom_tag"
-    }
+      operator = "match_regex"
+      parameters {
+        inputs {
+          address = "server.request.query"
+          key_path = [ "test" ]
+        }
+        options {
+          case_sensitive = true
+        }
+        regex = "test.*"
+      }
     }
     enabled = true
     name = "%s"
     path_glob = "/api/search/*"
     scope {
-    env = "prod"
-    service = "billing-service"
+      env = "prod"
+      service = "billing-service"
     }
     tags = {
-    category = "business_logic"
-    type = "users.login.success"
+      category = "attack_attempt"
+      type = "test"
     }
 }`, uniq)
 }

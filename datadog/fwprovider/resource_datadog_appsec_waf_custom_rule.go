@@ -266,7 +266,7 @@ func (r *appsecWafCustomRuleResource) Create(ctx context.Context, request resour
 		var httpResp *http.Response
 		resp, httpResp, err = r.Api.CreateApplicationSecurityWafCustomRule(r.Auth, *body)
 		if err != nil {
-			if httpResp.StatusCode == http.StatusConflict {
+			if httpResp != nil && httpResp.StatusCode == http.StatusConflict {
 				return retry.RetryableError(err)
 			}
 			return retry.NonRetryableError(err)
@@ -311,7 +311,7 @@ func (r *appsecWafCustomRuleResource) Update(ctx context.Context, request resour
 		var httpResp *http.Response
 		resp, httpResp, err = r.Api.UpdateApplicationSecurityWafCustomRule(r.Auth, id, *body)
 		if err != nil {
-			if httpResp.StatusCode == http.StatusConflict {
+			if httpResp != nil && httpResp.StatusCode == http.StatusConflict {
 				return retry.RetryableError(err)
 			}
 			return retry.NonRetryableError(err)
@@ -349,7 +349,7 @@ func (r *appsecWafCustomRuleResource) Delete(ctx context.Context, request resour
 	err = retry.RetryContext(ctx, appsecRetryOnConflictTimeout, func() *retry.RetryError {
 		httpResp, err = r.Api.DeleteApplicationSecurityWafCustomRule(r.Auth, id)
 		if err != nil {
-			if httpResp.StatusCode == http.StatusConflict {
+			if httpResp != nil && httpResp.StatusCode == http.StatusConflict {
 				return retry.RetryableError(err)
 			}
 			return retry.NonRetryableError(err)
@@ -419,6 +419,16 @@ func (r *appsecWafCustomRuleResource) updateState(ctx context.Context, state *ap
 				}
 				if value, ok := parameters.GetValueOk(); ok {
 					parametersTf.Value = types.StringValue(*value)
+				}
+				if options, ok := parameters.GetOptionsOk(); ok {
+					optionsTf := optionsModel{}
+					if caseSensitive, ok := options.GetCaseSensitiveOk(); ok {
+						optionsTf.CaseSensitive = types.BoolValue(*caseSensitive)
+					}
+					if minLength, ok := options.GetMinLengthOk(); ok {
+						optionsTf.MinLength = types.Int64Value(*minLength)
+					}
+					parametersTf.Options = &optionsTf
 				}
 				conditionsTfItem.Parameters = &parametersTf
 			}
