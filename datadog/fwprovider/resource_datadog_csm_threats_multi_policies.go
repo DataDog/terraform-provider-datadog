@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -78,22 +77,23 @@ func (r *csmThreatsPoliciesListResource) Schema(_ context.Context, _ resource.Sc
 						},
 						"name": schema.StringAttribute{
 							Description: "Name of the policy.",
-							Optional:    true,
+							Required:    true,
 						},
 						"description": schema.StringAttribute{
 							Description: "A description for the policy.",
 							Optional:    true,
+							Computed:    true,
 						},
 						"enabled": schema.BoolAttribute{
 							Description: "Indicates whether the policy is enabled.",
 							Optional:    true,
-							Default:     booldefault.StaticBool(false),
 							Computed:    true,
 						},
 						"tags": schema.SetAttribute{
 							Description: "Host tags that define where the policy is deployed.",
 							Optional:    true,
 							ElementType: types.StringType,
+							Computed:    true,
 						},
 					},
 				},
@@ -242,7 +242,7 @@ func (r *csmThreatsPoliciesListResource) applyBatchPolicies(ctx context.Context,
 
 	// add deleted policies to the batch request
 	for _, policy := range toDelete {
-		policyID := policy.PolicyLabel.ValueString()
+		policyID := policy.ID.ValueString()
 		DeleteTrue := true
 		item := datadogV2.CloudWorkloadSecurityAgentPolicyBatchUpdateAttributesPoliciesItems{
 			Id:     &policyID,
@@ -257,7 +257,7 @@ func (r *csmThreatsPoliciesListResource) applyBatchPolicies(ctx context.Context,
 		name := policy.Name.ValueString()
 		description := policy.Description.ValueString()
 		enabled := policy.Enabled.ValueBool()
-		var tags []string
+		tags := []string{}
 		if !policy.Tags.IsNull() && !policy.Tags.IsUnknown() {
 			for _, tag := range policy.Tags.Elements() {
 				tagStr, ok := tag.(types.String)
@@ -307,6 +307,7 @@ func (r *csmThreatsPoliciesListResource) applyBatchPolicies(ctx context.Context,
 	respMapByName := make(map[string]datadogV2.CloudWorkloadSecurityAgentPolicyAttributes)
 
 	for _, policy := range batchResp.GetData() {
+
 		respID := policy.GetId()
 		respAttr := policy.Attributes
 		if respAttr == nil {
