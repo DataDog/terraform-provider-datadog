@@ -5902,6 +5902,11 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
+					"clustering_pattern_field_path": {
+						Description: "Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.",
+						Optional:    true,
+						Type:        schema.TypeString,
+					},
 					"data_source": {
 						Description:      "Source from which to query items to display in the stream.",
 						Type:             schema.TypeString,
@@ -5918,6 +5923,20 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 						Type:             schema.TypeString,
 						Optional:         true,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
+					},
+					"group_by": {
+						Description: "Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source.",
+						Optional:    true,
+						Type:        schema.TypeList,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"facet": {
+									Description: "Facet name",
+									Type:        schema.TypeString,
+									Required:    true,
+								},
+							},
+						},
 					},
 					"indexes": {
 						Description: "List of indexes.",
@@ -5974,6 +5993,9 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 
 		if terraformQuery, ok := terraformRequest["query"].([]interface{}); ok && len(terraformQuery) > 0 {
 			q := terraformQuery[0].(map[string]interface{})
+			if v, ok := q["clustering_pattern_field_path"].(string); ok && len(v) > 0 {
+				datadogQuery.SetClusteringPatternFieldPath(v)
+			}
 			if v, ok := q["data_source"].(string); ok && len(v) > 0 {
 				ds := datadogV1.ListStreamSource(v)
 				datadogQuery.SetDataSource(ds)
@@ -5987,6 +6009,14 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 			if v, ok := q["storage"].(string); ok && v != "" {
 				datadogQuery.SetStorage(v)
 			}
+			if v, ok := q["group_by"].([]interface{}); ok {
+				var groupBy []datadogV1.ListStreamGroupByItems
+				for _, s := range v {
+					facet := s.(map[string]interface{})["facet"].(string)
+					groupBy = append(groupBy, *datadogV1.NewListStreamGroupByItems(facet))
+				}
+				datadogQuery.SetGroupBy(groupBy)
+			}
 			if v, ok := q["indexes"].([]interface{}); ok {
 				var indexes []string
 				for _, s := range v {
@@ -5994,6 +6024,7 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 				}
 				datadogQuery.SetIndexes(indexes)
 			}
+
 			if terraformSort, ok := q["sort"].([]interface{}); ok && len(terraformSort) > 0 {
 				sortMap := terraformSort[0].(map[string]interface{})
 				datadogSort := datadogV1.NewWidgetFieldSortWithDefaults()
