@@ -2,14 +2,15 @@ package fwprovider
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
+	"sort"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes" // v0.1.0, else breaking
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var _ datasource.DataSource = &workflowAutomationDatasource{}
@@ -17,6 +18,15 @@ var _ datasource.DataSource = &workflowAutomationDatasource{}
 type workflowAutomationDatasource struct {
 	Api  *datadogV2.WorkflowAutomationApi
 	Auth context.Context
+}
+
+type workflowAutomationDatasourceModel struct {
+	ID          types.String         `tfsdk:"id"`
+	Name        types.String         `tfsdk:"name"`
+	Description types.String         `tfsdk:"description"`
+	Tags        []types.String       `tfsdk:"tags"`
+	Published   types.Bool           `tfsdk:"published"`
+	SpecJson    jsontypes.Normalized `tfsdk:"spec_json"`
 }
 
 func NewDatadogWorkflowAutomationDataSource() datasource.DataSource {
@@ -37,9 +47,12 @@ func (d *workflowAutomationDatasource) Metadata(_ context.Context, request datas
 
 func (d *workflowAutomationDatasource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "TODO",
+		Description: "This data source retrieves the definition of an existing Datadog workflow from Workflow Automation for use in other resources.",
 		Attributes: map[string]schema.Attribute{
-			"id": utils.ResourceIDAttribute(),
+			"id": schema.StringAttribute{
+				Description: "ID of the workflow.",
+				Required:    true,
+			},
 			"name": schema.StringAttribute{
 				Computed:    true,
 				Description: "Name of the workflow.",
@@ -65,29 +78,64 @@ func (d *workflowAutomationDatasource) Schema(_ context.Context, request datasou
 				Description: "The spec defines what the workflow does.",
 				CustomType:  jsontypes.NormalizedType{},
 			},
-			"webhook_secret": schema.StringAttribute{
-				Computed:    true,
-				Sensitive:   true,
-				Description: "If a Webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here.",
-			},
 		},
 	}
 }
 
 func (d *workflowAutomationDatasource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
-	var state workflowAutomationResourceModel
+	var state workflowAutomationDatasourceModel
 	diags := request.Config.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	workflowModel, err := readWorkflow(d.Auth, d.Api, state.ID.ValueString(), state)
+	readResp, err := readWorkflow(d.Auth, d.Api, state.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError("Could not read workflow", err.Error())
 		return
 	}
 
+	workflowModel, err := apiResponseToWorkflowAutomationDatasourceModel(readResp)
+	if err != nil {
+		response.Diagnostics.AddError("Could not create workflow data source model", err.Error())
+		return
+	}
+
 	diags = response.State.Set(ctx, workflowModel)
 	response.Diagnostics.Append(diags...)
+}
+
+func apiResponseToWorkflowAutomationDatasourceModel(workflow *datadogV2.GetWorkflowResponse) (*workflowAutomationDatasourceModel, error) {
+	workflowModel := &workflowAutomationDatasourceModel{
+		ID: types.StringPointerValue(workflow.Data.Id),
+	}
+
+	attributes := workflow.Data.Attributes
+
+	workflowModel.Name = types.StringValue(attributes.Name)
+
+	if attributes.Description == nil {
+		workflowModel.Description = types.StringValue("")
+	} else {
+		workflowModel.Description = types.StringPointerValue(attributes.Description)
+	}
+
+	workflowModel.Published = types.BoolPointerValue(attributes.Published)
+
+	sort.Strings(attributes.Tags)
+	var tags []types.String = make([]types.String, 0, len(attributes.Tags))
+	for _, tag := range attributes.Tags {
+		tags = append(tags, types.StringValue(tag))
+	}
+	workflowModel.Tags = tags
+
+	marshalledBytes, err := json.Marshal(attributes.Spec)
+	if err != nil {
+		err = fmt.Errorf("error marshaling attributes.Spec: %s", err)
+		return nil, err
+	}
+	workflowModel.SpecJson = jsontypes.NewNormalizedValue(string(marshalledBytes))
+
+	return workflowModel, nil
 }

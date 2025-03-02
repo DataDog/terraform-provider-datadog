@@ -8,12 +8,13 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/google/uuid"
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes" // v0.1.0, else breaking
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2" // v0.1.0, else breaking
+	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -29,7 +30,6 @@ type workflowAutomationResource struct {
 	Auth context.Context
 }
 
-// try single property JSON input -> validation will be handled on the API side
 type workflowAutomationResourceModel struct {
 	ID            types.String         `tfsdk:"id"`
 	Name          types.String         `tfsdk:"name"`
@@ -58,27 +58,28 @@ func (r *workflowAutomationResource) Metadata(_ context.Context, request resourc
 
 func (r *workflowAutomationResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "TODO",
+		Description: "Provides a Datadog workflow resource for creating and managing Datadog workflows from Workflow Automation",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
 				Required:    true,
 				Description: "Name of the workflow.",
+				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
 			},
 			"description": schema.StringAttribute{
-				Optional:    true,
+				Required:    true,
 				Description: "Description of the workflow.",
 			},
 			"tags": schema.SetAttribute{
 				// we use TypeSet to represent tags to be able to maintain them ordered;
 				// we order them explicitly in the read/create/update methods of this resource and using
 				// TypeSet makes Terraform ignore differences in order when creating a plan
-				Optional:    true,
+				Required:    true,
 				Description: "Tags of the workflow.",
 				ElementType: types.StringType,
 			},
 			"published": schema.BoolAttribute{
-				Optional:    true,
+				Required:    true,
 				Description: "Set the workflow to published or unpublished. Workflows in an unpublished state will only be executable via manual runs. Automatic triggers such as Schedule will not execute the workflow until it is published.",
 			},
 			"spec_json": schema.StringAttribute{
@@ -89,7 +90,9 @@ func (r *workflowAutomationResource) Schema(_ context.Context, _ resource.Schema
 			"webhook_secret": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "If a Webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here.",
+				Description: "If a webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here.",
+				// BE validation requires 16 characters
+				Validators: []validator.String{stringvalidator.LengthAtLeast(16)},
 			},
 		},
 	}
@@ -113,7 +116,7 @@ func (r *workflowAutomationResource) Create(ctx context.Context, request resourc
 		return
 	}
 
-	workflow, httpResp, err := r.Api.CreateWorkflow(r.Auth, *createRequest)
+	createResp, httpResp, err := r.Api.CreateWorkflow(r.Auth, *createRequest)
 	if err != nil {
 		if httpResp != nil {
 			body, err := io.ReadAll(httpResp.Body)
@@ -129,7 +132,7 @@ func (r *workflowAutomationResource) Create(ctx context.Context, request resourc
 	}
 
 	// Set computed values
-	plan.ID = types.StringPointerValue(workflow.Data.Id)
+	plan.ID = types.StringPointerValue(createResp.Data.Id)
 
 	diags = response.State.Set(ctx, &plan)
 	response.Diagnostics.Append(diags...)
@@ -143,13 +146,22 @@ func (r *workflowAutomationResource) Read(ctx context.Context, request resource.
 		return
 	}
 
-	workflowAutomationModel, err := readWorkflow(r.Auth, r.Api, state.ID.ValueString(), state)
+	readResp, err := readWorkflow(r.Auth, r.Api, state.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError("Could not read workflow", err.Error())
 		return
 	}
 
-	diags = response.State.Set(ctx, workflowAutomationModel)
+	workflowModel, err := apiResponseToWorkflowAutomationResourceModel(readResp)
+	if err != nil {
+		response.Diagnostics.AddError("Could not create workflow resource model", err.Error())
+		return
+	}
+
+	// Set webhookSecret to current state as it is never returned by the API
+	workflowModel.WebhookSecret = state.WebhookSecret
+
+	diags = response.State.Set(ctx, workflowModel)
 	response.Diagnostics.Append(diags...)
 }
 
@@ -161,19 +173,13 @@ func (r *workflowAutomationResource) Update(ctx context.Context, request resourc
 		return
 	}
 
-	id, err := uuid.Parse(plan.ID.ValueString())
-	if err != nil {
-		response.Diagnostics.AddError("Error parsing id as uuid", err.Error())
-		return
-	}
-
 	updateRequest, err := workflowAutomationModelToUpdateApiRequest(plan)
 	if err != nil {
 		response.Diagnostics.AddError("Error building update workflow request", err.Error())
 		return
 	}
 
-	_, httpResp, err := r.Api.UpdateWorkflow(r.Auth, id.String(), *updateRequest)
+	_, httpResp, err := r.Api.UpdateWorkflow(r.Auth, plan.ID.ValueString(), *updateRequest)
 	if err != nil {
 		if httpResp != nil {
 			body, err := io.ReadAll(httpResp.Body)
@@ -200,14 +206,14 @@ func (r *workflowAutomationResource) Delete(ctx context.Context, request resourc
 		return
 	}
 
-	res, err := r.Api.DeleteWorkflow(r.Auth, state.ID.ValueString())
+	deleteResp, err := r.Api.DeleteWorkflow(r.Auth, state.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError("Delete workflow failed", err.Error())
 		return
 	}
 
-	if res.StatusCode != http.StatusNoContent {
-		body, err := io.ReadAll(res.Body)
+	if deleteResp.StatusCode != http.StatusNoContent {
+		body, err := io.ReadAll(deleteResp.Body)
 		if err != nil {
 			response.Diagnostics.AddError("Delete workflow failed", "Failed to read error")
 		} else {
@@ -236,7 +242,6 @@ func workflowAutomationModelToCreateApiRequest(workflowAutomationModel workflowA
 	}
 
 	data := datadogV2.NewWorkflowData(*attributes, datadogV2.WORKFLOWDATATYPE_WORKFLOWS)
-
 	req := datadogV2.NewCreateWorkflowRequest(*data)
 
 	return req, nil
@@ -262,30 +267,34 @@ func workflowAutomationModelToUpdateApiRequest(workflowAutomationModel workflowA
 	}
 
 	data := datadogV2.NewWorkflowDataUpdate(*attributes, datadogV2.WORKFLOWDATATYPE_WORKFLOWS)
-
 	req := datadogV2.NewUpdateWorkflowRequest(*data)
 
 	return req, nil
 }
 
-func apiResponseToWorkflowAutomationModel(workflow datadogV2.GetWorkflowResponse) (*workflowAutomationResourceModel, error) {
+func apiResponseToWorkflowAutomationResourceModel(workflow *datadogV2.GetWorkflowResponse) (*workflowAutomationResourceModel, error) {
 	workflowModel := &workflowAutomationResourceModel{
 		ID: types.StringPointerValue(workflow.Data.Id),
 	}
 
 	attributes := workflow.Data.Attributes
+
 	workflowModel.Name = types.StringValue(attributes.Name)
-	workflowModel.Description = types.StringPointerValue(attributes.Description)
+
+	if attributes.Description == nil {
+		workflowModel.Description = types.StringValue("")
+	} else {
+		workflowModel.Description = types.StringPointerValue(attributes.Description)
+	}
+
 	workflowModel.Published = types.BoolPointerValue(attributes.Published)
 
 	sort.Strings(attributes.Tags)
-	var tags []types.String
+	var tags []types.String = make([]types.String, 0, len(attributes.Tags))
 	for _, tag := range attributes.Tags {
 		tags = append(tags, types.StringValue(tag))
 	}
-
 	workflowModel.Tags = tags
-	workflowModel.WebhookSecret = types.StringPointerValue(attributes.WebhookSecret)
 
 	marshalledBytes, err := json.Marshal(attributes.Spec)
 	if err != nil {
@@ -298,7 +307,7 @@ func apiResponseToWorkflowAutomationModel(workflow datadogV2.GetWorkflowResponse
 }
 
 // Read logic is shared between data source and resource
-func readWorkflow(authCtx context.Context, api *datadogV2.WorkflowAutomationApi, id string, currentState workflowAutomationResourceModel) (*workflowAutomationResourceModel, error) {
+func readWorkflow(authCtx context.Context, api *datadogV2.WorkflowAutomationApi, id string) (*datadogV2.GetWorkflowResponse, error) {
 	workflow, httpResponse, err := api.GetWorkflow(authCtx, id)
 	if err != nil {
 		if httpResponse != nil {
@@ -315,10 +324,5 @@ func readWorkflow(authCtx context.Context, api *datadogV2.WorkflowAutomationApi,
 		return nil, fmt.Errorf("workflow not found")
 	}
 
-	workflowModel, err := apiResponseToWorkflowAutomationModel(workflow)
-	if err != nil {
-		return nil, err
-	}
-
-	return workflowModel, nil
+	return &workflow, nil
 }
