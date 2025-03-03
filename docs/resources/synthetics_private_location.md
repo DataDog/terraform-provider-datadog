@@ -3,12 +3,12 @@
 page_title: "datadog_synthetics_private_location Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.
+  Provides a Datadog SyntheticsPrivateLocation resource. This can be used to create and manage Datadog synthetics_private_location.
 ---
 
 # datadog_synthetics_private_location (Resource)
 
-Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.
+Provides a Datadog SyntheticsPrivateLocation resource. This can be used to create and manage Datadog synthetics_private_location.
 
 ## Example Usage
 
@@ -25,13 +25,13 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 ### Required
 
-- `name` (String) Synthetics private location name.
+- `name` (String) Name of the private location.
 
 ### Optional
 
 - `description` (String) Description of the private location.
-- `metadata` (Block List, Max: 1) The private location metadata (see [below for nested schema](#nestedblock--metadata))
-- `tags` (List of String) A list of tags to associate with your synthetics private location.
+- `metadata` (Block List) The private location metadata (see [below for nested schema](#nestedblock--metadata))
+- `tags` (List of String) Array of tags attached to the private location.
 
 ### Read-Only
 
@@ -43,7 +43,7 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 Optional:
 
-- `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
+- `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access.
 
 ## Import
 

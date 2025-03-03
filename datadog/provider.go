@@ -217,7 +217,6 @@ func Provider() *schema.Provider {
 			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
 			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
-			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
 			"datadog_user":                                 resourceDatadogUser(),
 		},
 

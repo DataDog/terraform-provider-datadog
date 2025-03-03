@@ -72,6 +72,7 @@ var Resources = []func() resource.Resource{
 	NewLogsCustomDestinationResource,
 	NewTenantBasedHandleResource,
 	NewActionConnectionResource,
+	NewSyntheticsPrivateLocationResource,
 }
 
 var Datasources = []func() datasource.DataSource{
