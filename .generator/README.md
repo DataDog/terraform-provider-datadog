@@ -22,7 +22,7 @@ Install go as we use the `go fmt` command on the generated files to format them.
 
 ### Marking the resources to be generated
 
-The generator reads a configuration file in order to generate the appropriate resources.
+The generator reads a configuration file in order to generate the appropriate resources and datasources.
 The configuration file should look like the following:
 
 ```yaml
@@ -40,6 +40,11 @@ resources:
     delete:
       method: { delete_method }
       path: { delete_path }
+datasources:
+  { datasource_name }:
+    singular: { get_one_method }
+    plural: { get_all_method }
+
   ...
 ```
 
@@ -65,6 +70,10 @@ resources:
 >     delete:
 >       method: delete
 >       path: /api/v2/team/{team_id}
+> datasources:
+>   team:
+>     singular: /api/v2/team/{team_id}
+>     plural: /api/v2/team
 > ```
 
 ### Running the generator
