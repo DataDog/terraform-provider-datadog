@@ -1,3 +1,61 @@
+## 3.57.0 (February 28, 2025)
+
+### BUGFIXES
+* [datadog_synthetics_test] Only set renotify_occurrences if renotify_interval is set  by @Alexis-Jacob-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/2871
+### IMPROVEMENTS
+* [datadog_dashboard] Handles `cell_display_mode_options` in Query Table widget by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2873
+* [datadog_dashboard] Add `clustering_pattern_field_path` and `group_by` for ListStream Widget by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2869
+### FEATURES
+* [datadog_action_connection] Support Action Connection API by @embeaken in https://github.com/DataDog/terraform-provider-datadog/pull/2718
+* [datadog_integration_ms_teams_microsoft_workflows_webhook_handle] Added Resource by @kblackdd in https://github.com/DataDog/terraform-provider-datadog/pull/2849
+
+## New Contributors
+* @embeaken made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2718
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.56.0...v3.57.0
+
+## 3.56.0 (February 25, 2025)
+
+### BUGFIXES
+* [datadog_spans_metric] Fix count aggregation by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2860
+* [datadog_api_key] Fix bug introduced in 3.55.0 for organisation that doesn't have Remove config enabled by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2857
+### IMPROVEMENTS
+* [synthetics_global_variable] Add is_fido by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2836
+* [datadog_user] Add computed attributes to `datadog_user` datasource by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2787
+* [datadog_logs_custom_pipeline] Add support for default tags in log pipelines by @shuheiktgw in https://github.com/DataDog/terraform-provider-datadog/pull/2845
+* [datadog_dashboard] Add dashboard unit support by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2858
+* [datadog_logs_custom_pipeline] Manage `span-id-remapper` processor by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2861
+* [datadog_dashboard] Add `scaling` argument for style of `toplist_definition` widget by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2862
+### NOTES
+* [datadog_openapi_api] Deprecate openapi resource by @therve in https://github.com/DataDog/terraform-provider-datadog/pull/2863
+
+## New Contributors
+* @shuheiktgw made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2845
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.55.0...v3.56.0
+
+## 3.55.0 (February 18, 2025)
+
+### BUGFIXES
+* [datadog_user] Fix the `name` field as Optional + Computed by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2784
+* [datadog_synthetics_test] Fix browser request_client_certificate by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2840
+### IMPROVEMENTS
+* [datadog_users] Add attributes to `datadog_users` datasource by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2786
+### FEATURES
+* [datadog_synthetics_test] Add secure field for extractFromJavascript browser step variables by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2818
+* [datadog_teams] Add new datasource  by @Supam in https://github.com/DataDog/terraform-provider-datadog/pull/2789
+* [datadog_security_notification_rule] Add notification rule terraform provider by @FredMoster in https://github.com/DataDog/terraform-provider-datadog/pull/2806
+* [datadog_api_key] Support `remote_config_read_enabled` argument by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2831
+* [datadog_synthetics_global_variable] Add is_totp by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2832
+* [datadog_synthetics_test] Add renotify occurrences option by @Alexis-Jacob-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/2820
+
+## New Contributors
+* @Supam made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2809
+* @FredMoster made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2806
+* @Alexis-Jacob-datadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2820
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.54.0...v3.55.0
+
 ## 3.54.0 (February 6, 2025)
 
 ### BUGFIXES

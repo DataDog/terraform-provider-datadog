@@ -29,7 +29,7 @@ type workflowAutomationDatasourceModel struct {
 	SpecJson    jsontypes.Normalized `tfsdk:"spec_json"`
 }
 
-func NewDatadogWorkflowAutomationDataSource() datasource.DataSource {
+func NewWorkflowAutomationDataSource() datasource.DataSource {
 	return &workflowAutomationDatasource{}
 }
 

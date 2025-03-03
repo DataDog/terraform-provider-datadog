@@ -40,7 +40,7 @@ type workflowAutomationResourceModel struct {
 	WebhookSecret types.String         `tfsdk:"webhook_secret"`
 }
 
-func NewDatadogWorkflowAutomationResource() resource.Resource {
+func NewWorkflowAutomationResource() resource.Resource {
 	return &workflowAutomationResource{}
 }
 

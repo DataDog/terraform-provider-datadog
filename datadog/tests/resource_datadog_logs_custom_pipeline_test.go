@@ -131,6 +131,15 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			lookup_enrichment_table   = "test_reference_table_do_not_delete"
 		}
 	}
+ 
+    processor {
+      span_id_remapper {
+			name   = "span_id_remapper"
+			is_enabled = true
+			sources = [ "dd.span_id" ]
+		}
+    }
+
 }`, uniq)
 }
 
@@ -255,6 +264,14 @@ resource "datadog_logs_custom_pipeline" "my_pipeline_test" {
 			lookup_enrichment_table   = "test_reference_table_do_not_delete"
 		}
 	}
+ 
+    processor {
+      span_id_remapper {
+			name   = "span_id_remapper"
+			is_enabled = true
+			sources = [ "dd.span_id" ]
+		}
+    }
 }`, uniq)
 }
 
@@ -372,6 +389,8 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.7.lookup_processor.0.lookup_table.#", "1"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.8.reference_table_lookup_processor.0.lookup_enrichment_table", "test_reference_table_do_not_delete"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.9.span_id_remapper.0.sources.#", "1"),
 				),
 			}, {
 				Config: pipelineConfigForUpdate(pipelineUpdatedName),
@@ -409,6 +428,8 @@ func TestAccDatadogLogsPipeline_basic(t *testing.T) {
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.8.lookup_processor.0.lookup_table.#", "2"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.9.reference_table_lookup_processor.0.lookup_enrichment_table", "test_reference_table_do_not_delete"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "processor.10.span_id_remapper.0.sources.#", "1"),
 				),
 			}, { // for backward compatibility as tags and description were not always present and clients have Terraform files without them
 				Config: pipelineConfigWithoutTagsAndDescriptionForCreation(pipelineWithoutTagsAndDescriptionCreatedName),
@@ -485,6 +506,58 @@ func TestAccDatadogLogsPipelineEmptyFilterQuery(t *testing.T) {
 						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "processor.1.category_processor.0.category.0.filter.0.query", ""),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_custom_pipeline.empty_filter_query_pipeline", "processor.2.pipeline.0.filter.0.query", ""),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogLogsPipelineDefaultTags(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	pipelineName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() { testAccPreCheck(t) },
+		Steps: []resource.TestStep{
+			{ // Default tags are correctly added
+				Config: pipelineConfigForCreation(pipelineName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"default_key": "default_value",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineName),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.#", "3"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "key1:value1"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "key2:value2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "default_key:default_value"),
+				),
+			},
+			{ // Resource tags take precedence over default tags and duplicates stay
+				Config: pipelineConfigForCreation(pipelineName),
+				ProviderFactories: map[string]func() (*schema.Provider, error){
+					"datadog": withDefaultTags(accProvider, map[string]interface{}{
+						"key1": "new_value1",
+						"key2": "new_value2",
+					}),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "name", pipelineName),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.#", "2"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "key1:value1"),
+					resource.TestCheckTypeSetElemAttr(
+						"datadog_logs_custom_pipeline.my_pipeline_test", "tags.*", "key2:value2"),
 				),
 			},
 		},

@@ -154,7 +154,7 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 				ResourceName:            "datadog_synthetics_test.bar",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "browser_step"},
+				ImportStateVerifyIgnore: []string{"options_list", "browser_variable", "browser_step", "request_client_certificate"},
 			},
 		},
 	})
@@ -1718,6 +1718,8 @@ func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accPro
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_occurrences", "5"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "name", testName),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "message", "Notify @datadog.user"),
@@ -1880,6 +1882,7 @@ resource "datadog_synthetics_test" "bar" {
 
 		monitor_options {
 			renotify_interval = 120
+			renotify_occurrences = 5
 		}
 	}
 
@@ -3292,6 +3295,14 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_basicauth.0.password", "password"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.content", utils.ConvertToSha256("content-certificate")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "request_client_certificate.0.key.0.filename", "key"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_proxy.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "request_proxy.0.url", "https://proxy.url"),
@@ -3327,6 +3338,8 @@ func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*s
 				"datadog_synthetics_test.bar", "options_list.0.retry.0.interval", "300"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_interval", "120"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "options_list.0.monitor_options.0.renotify_occurrences", "3"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "options_list.0.no_screenshot", "true"),
 			resource.TestCheckResourceAttr(
@@ -3431,6 +3444,16 @@ resource "datadog_synthetics_test" "bar" {
 		username = "username"
 		password = "password"
 	}
+	
+	request_client_certificate {
+		cert {
+			content = "content-certificate"
+		}
+		key {
+			content  = "content-key"
+			filename = "key"
+		}
+    }
 
 	request_proxy {
 		url = "https://proxy.url"
@@ -3456,6 +3479,7 @@ resource "datadog_synthetics_test" "bar" {
 
 		monitor_options {
 			renotify_interval = 120
+			renotify_occurrences = 3
 		}
 		monitor_name = "%[1]s-monitor"
 		monitor_priority = 5

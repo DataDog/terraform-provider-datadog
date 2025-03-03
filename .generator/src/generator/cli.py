@@ -1,7 +1,7 @@
 import os
 import pathlib
-import shlex
 import click
+import subprocess
 
 from jinja2 import Template
 
@@ -22,13 +22,8 @@ from . import openapi
         exists=True, file_okay=True, dir_okay=False, path_type=pathlib.Path
     ),
 )
-@click.option(
-    "-o",
-    "--output",
-    default="../datadog/",
-    type=click.Path(path_type=pathlib.Path),
-)
-def cli(spec_path, config_path, output):
+@click.option("--go-fmt/--no-go-fmt", default=True)
+def cli(spec_path, config_path, go_fmt):
     """
     Generate a terraform code snippet from OpenAPI specification.
     """
@@ -45,13 +40,13 @@ def cli(spec_path, config_path, output):
         generate_resource(
             name=name,
             resource=resource,
-            output=output,
             templates=templates,
+            go_fmt=go_fmt,
         )
 
 
 def generate_resource(
-    name: str, resource: dict, output: pathlib.Path, templates: dict[str, Template]
+    name: str, resource: dict, templates: dict[str, Template], go_fmt: bool
 ) -> None:
     """
     Generates files related to a resource.
@@ -62,23 +57,30 @@ def generate_resource(
     :param templates: The templates of the generated files.
     """
     # TF resource file
+    output = pathlib.Path("../datadog/")
     filename = output / f"fwprovider/resource_datadog_{name}.go"
     with filename.open("w") as fp:
         fp.write(templates["base"].render(name=name, operations=resource))
-    os.system(shlex.quote(f"go fmt {filename}"))
+    if go_fmt:
+        subprocess.call(["go", "fmt", filename])
 
     # TF test file
     filename = output / "tests" / f"resource_datadog_{name}_test.go"
     with filename.open("w") as fp:
         fp.write(templates["test"].render(name=name, operations=resource))
-    os.system(shlex.quote(f"go fmt {filename}"))
+    if go_fmt:
+        subprocess.call(["go", "fmt", filename])
+
+    dirname = output.parent / f"examples/resources/datadog_{name}"
+    if not dirname.exists():
+        os.makedirs(dirname)
 
     # TF resource example
-    filename = output.parent / f"examples/resources/datadog_{name}/resource.tf"
+    filename = dirname / "resource.tf"
     with filename.open("w") as fp:
         fp.write(templates["example"].render(name=name, operations=resource))
 
     # TF import example
-    filename = output.parent / f"examples/resources/datadog_{name}/import.sh"
+    filename = dirname / "import.sh"
     with filename.open("w") as fp:
         fp.write(templates["import"].render(name=name, operations=resource))
