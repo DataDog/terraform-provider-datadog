@@ -46,7 +46,7 @@ func (r *integrationAwsExternalIDResource) Metadata(_ context.Context, request r
 
 func (r *integrationAwsExternalIDResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: fmt.Sprintf("!>%s\n\n!>%s\n\nProvides a Datadog - Amazon Web Services external ID resource. This can be used to create Datadog - Amazon Web Services external IDs", EXPIRY_WARNING_MESSAGE, DESTROY_WARNING_MESSAGE),
+		Description: fmt.Sprintf("!>%s\n\n!>%s\n\nProvides a Datadog-Amazon Web Services external ID resource. This can be used to create Datadog-Amazon Web Services external IDs", EXPIRY_WARNING_MESSAGE, DESTROY_WARNING_MESSAGE),
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Computed:    true,

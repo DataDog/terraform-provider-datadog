@@ -5,7 +5,7 @@ subcategory: ""
 description: |-
   !>A new external ID must be used to create an AWS account integration within 48 hours of creation or it will expire.
   !>Running terraform destroy only removes the resource from Terraform state and does not deactivate anything in Datadog or AWS.
-  Provides a Datadog - Amazon Web Services external ID resource. This can be used to create Datadog - Amazon Web Services external IDs
+  Provides a Datadog-Amazon Web Services external ID resource. This can be used to create Datadog-Amazon Web Services external IDs
 ---
 
 # datadog_integration_aws_external_id (Resource)
@@ -14,7 +14,7 @@ description: |-
 
 !>Running `terraform destroy` only removes the resource from Terraform state and does not deactivate anything in Datadog or AWS.
 
-Provides a Datadog - Amazon Web Services external ID resource. This can be used to create Datadog - Amazon Web Services external IDs
+Provides a Datadog-Amazon Web Services external ID resource. This can be used to create Datadog-Amazon Web Services external IDs
 
 ## Example Usage
 
