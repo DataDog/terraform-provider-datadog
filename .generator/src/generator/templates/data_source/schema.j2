@@ -13,22 +13,22 @@ func (d *datadog{{ name|camel_case }}DataSource) Schema(_ context.Context, _ dat
 
             {%- if primitiveParamAttr or primitiveParamArrAttr %}
                 {%- for name, schema in primitiveParamAttr.items() %}
-                {{- schemaMacros.typePrimitiveSchema(name, schema, required=schema.get("required")) }}
+                    {{- schemaMacros.typePrimitiveSchema(name, schema, required=schema.get("required")) }}
                 {%- endfor %}
 
                 {%- for name, schema in primitiveParamArrAttr.items() %}
-                {{- schemaMacros.typePrimitiveArraySchema(name, schema, required=schema.get("required")) }}
+                    {{- schemaMacros.typePrimitiveArraySchema(name, schema, required=schema.get("required")) }}
                 {%- endfor %}
             {%- endif %}
 
             {%- if primitiveRespAttr or primitiveRespArrAttr %}
                 // Computed values
                 {%- for name, schema in primitiveRespAttr.items() %}
-                {{- schemaMacros.typePrimitiveSchema(name, schema, required=schema.get("required"), computed=True) }}
+                    {{- schemaMacros.typePrimitiveSchema(name, schema, required=schema.get("required"), computed=True) }}
                 {%- endfor %}
 
                 {%- for name, schema in primitiveRespArrAttr.items() %}
-                {{- schemaMacros.typePrimitiveArraySchema(name, schema, required=schema.get("required"), computed=True) }}
+                    {{- schemaMacros.typePrimitiveArraySchema(name, schema, required=schema.get("required"), computed=True) }}
                 {%- endfor %}
             {%- endif %}
 		},
@@ -38,22 +38,22 @@ func (d *datadog{{ name|camel_case }}DataSource) Schema(_ context.Context, _ dat
             {%- if nonPrimitiveParamObjAttr or nonPrimitiveParamListAttr %}
                 //Query parameters
                 {%- for name, schema in nonPrimitiveParamListAttr.items() %}
-                {{- schemaMacros.baseBlockListAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
+                    {{- schemaMacros.baseBlockListAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
                 {%- endfor %}
 
                 {%- for name, schema in nonPrimitiveParamObjAttr.items() %}
-                {{- schemaMacros.baseBlockObjAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
+                    {{- schemaMacros.baseBlockObjAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
                 {%- endfor %}
             {%- endif %}
 
             {%- if nonPrimitiveRespObjAttr or nonPrimitiveRespListAttr %}
                 // Computed values 
                 {%- for name, schema in nonPrimitiveRespListAttr.items() %}
-                {{- schemaMacros.baseBlockListAttrSchemaBuilder(name, schema, required=schema.get("required"), computed=True) }}
+                    {{- schemaMacros.baseBlockListAttrSchemaBuilder(name, schema, required=schema.get("required"), computed=True) }}
                 {%- endfor %}
 
                 {%- for name, schema in nonPrimitiveRespObjAttr.items() %}
-                {{- schemaMacros.baseBlockObjAttrSchemaBuilder(name, schema, required=schema.get("required"), computed=True) }}
+                    {{- schemaMacros.baseBlockObjAttrSchemaBuilder(name, schema, required=schema.get("required"), computed=True) }}
                 {%- endfor %}
             {%- endif %}
 		},
