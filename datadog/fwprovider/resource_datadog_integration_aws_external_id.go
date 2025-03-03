@@ -42,7 +42,7 @@ func (r *integrationAwsExternalIDResource) Metadata(_ context.Context, request r
 
 func (r *integrationAwsExternalIDResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog - Amazon Web Services external ID resource. This can be used to create Datadog - Amazon Web Services external IDs",
+		Description: "!>A new external ID must be used to create an AWS account integration within 48 hours of creation or it will expire.\n\n!>Running `terraform destroy` only removes the resource from Terraform state and does not deactivate anything in Datadog or AWS.\n\nProvides a Datadog - Amazon Web Services external ID resource. This can be used to create Datadog - Amazon Web Services external IDs",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Computed:    true,
