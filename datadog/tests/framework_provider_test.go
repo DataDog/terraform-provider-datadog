@@ -43,6 +43,7 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.UpdateAWSAccount", true)
 	config.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	config.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
+	config.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
 
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
