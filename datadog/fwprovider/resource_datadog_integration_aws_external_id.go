@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -11,6 +12,9 @@ import (
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
+
+const EXPIRY_WARNING_MESSAGE = "A new external ID must be used to create an AWS account integration within 48 hours of creation or it will expire."
+const DESTROY_WARNING_MESSAGE = "Running `terraform destroy` only removes the resource from Terraform state and does not deactivate anything in Datadog or AWS."
 
 var (
 	_ resource.ResourceWithConfigure   = &integrationAwsExternalIDResource{}
@@ -42,7 +46,7 @@ func (r *integrationAwsExternalIDResource) Metadata(_ context.Context, request r
 
 func (r *integrationAwsExternalIDResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "!>A new external ID must be used to create an AWS account integration within 48 hours of creation or it will expire.\n\n!>Running `terraform destroy` only removes the resource from Terraform state and does not deactivate anything in Datadog or AWS.\n\nProvides a Datadog - Amazon Web Services external ID resource. This can be used to create Datadog - Amazon Web Services external IDs",
+		Description: fmt.Sprintf("!>%s\n\n!>%s\n\nProvides a Datadog - Amazon Web Services external ID resource. This can be used to create Datadog - Amazon Web Services external IDs", EXPIRY_WARNING_MESSAGE, DESTROY_WARNING_MESSAGE),
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Computed:    true,
@@ -81,7 +85,7 @@ func (r *integrationAwsExternalIDResource) Create(ctx context.Context, request r
 	}
 	state.ID = types.StringValue(resp.Data.Attributes.ExternalId)
 
-	response.Diagnostics.AddWarning("External ID must be used within 48 hours", "A new external ID must be used to create an AWS account integration within 48 hours of creation or it will expire.")
+	response.Diagnostics.AddWarning("External ID must be used within 48 hours", EXPIRY_WARNING_MESSAGE)
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -92,6 +96,6 @@ func (r *integrationAwsExternalIDResource) Update(ctx context.Context, request r
 }
 
 func (r *integrationAwsExternalIDResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	response.Diagnostics.AddWarning("Destroy does not deactivate an external ID", "Running `terraform destroy` only removes the resource from Terraform state and does not deactivate anything in Datadog or AWS.")
+	response.Diagnostics.AddWarning("Destroy does not deactivate an external ID", DESTROY_WARNING_MESSAGE)
 	return
 }
