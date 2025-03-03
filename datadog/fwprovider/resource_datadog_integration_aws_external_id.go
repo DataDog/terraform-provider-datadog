@@ -81,6 +81,8 @@ func (r *integrationAwsExternalIDResource) Create(ctx context.Context, request r
 	}
 	state.ID = types.StringValue(resp.Data.Attributes.ExternalId)
 
+	response.Diagnostics.AddWarning("External ID must be used within 48 hours", "A new external ID must be used to create an AWS account integration within 48 hours of creation or it will expire.")
+
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
