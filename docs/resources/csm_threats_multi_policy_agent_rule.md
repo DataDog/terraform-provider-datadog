@@ -25,6 +25,7 @@ Provides a Datadog CSM Threats Agent Rule API resource.
 ### Optional
 
 - `description` (String) A description for the Agent rule.
+- `product_tags` (Set of String) The list of product tags associated with the rule
 
 ### Read-Only
 

@@ -45,6 +45,7 @@ resource "datadog_cloud_workload_security_agent_rule" "acceptance_test" {
     description = "an agent rule"
     enabled = "true"
 	expression = "exec.file.name == \"java\""
+	product_tags = ["compliance_framework:PCI-DSS"]
 }
 `, name)
 }
@@ -60,6 +61,8 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleCreatedCheck(accProvider f
 			tfAgentRuleName, "enabled", "true"),
 		resource.TestCheckResourceAttr(
 			tfAgentRuleName, "expression", "exec.file.name == \"java\""),
+		resource.TestCheckResourceAttr(
+			tfAgentRuleName, "product_tags", "compliance_framework:PCI-DSS"),
 	)
 }
 
@@ -70,6 +73,7 @@ resource "datadog_cloud_workload_security_agent_rule" "acceptance_test" {
     description = "a new agent rule"
     enabled = "false"
 	expression = "exec.file.name == \"go\""
+	product_tags = ["compliance_framework:ISO-27799"]
 }
 `, name)
 }
@@ -85,6 +89,8 @@ func testAccCheckDatadogCloudWorkloadSecurityAgentRuleUpdatedCheck(accProvider f
 			tfAgentRuleName, "enabled", "false"),
 		resource.TestCheckResourceAttr(
 			tfAgentRuleName, "expression", "exec.file.name == \"go\""),
+		resource.TestCheckResourceAttr(
+			tfAgentRuleName, "product_tags", "compliance_framework:ISO-27799"),
 	)
 }
 
