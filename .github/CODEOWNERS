@@ -29,29 +29,6 @@ datadog/*cloud_configuration*             @DataDog/web-frameworks @DataDog/api-r
 datadog/*service_account*                 @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
 
 # Framework resources/data-sources
-<<<<<<< HEAD
-datadog/**/*datadog_api_key*                     @DataDog/web-frameworks @DataDog/credentials-management
-datadog/**/*datadog_apm_retention_filter*        @DataDog/web-frameworks @DataDog/apm-trace-intake
-datadog/**/*datadog_application_key*             @DataDog/web-frameworks @DataDog/credentials-management
-datadog/**/*datadog_hosts*                       @DataDog/web-frameworks @DataDog/redapl-storage
-datadog/**/*datadog_ip_ranges*                   @DataDog/web-frameworks @DataDog/team-aaa
-datadog/**/*datadog_integration_aws*             @DataDog/web-frameworks @DataDog/cloud-integrations
-datadog/**/*datadog_integration_azure*           @DataDog/web-frameworks @DataDog/azure-integrations
-datadog/**/*datadog_integration_cloudflare*      @DataDog/web-frameworks @DataDog/saas-integrations
-datadog/**/*datadog_integration_confluent*       @DataDog/web-frameworks @DataDog/saas-integrations
-datadog/**/*datadog_integration_fastly*          @DataDog/web-frameworks @DataDog/saas-integrations
-datadog/**/*datadog_integration_gcp*             @DataDog/web-frameworks @DataDog/gcp-integrations
-datadog/**/*datadog_restriction_policy*          @DataDog/web-frameworks @DataDog/aaa-granular-access
-datadog/**/*datadog_sensitive_data_scanner*      @DataDog/web-frameworks @DataDog/logs-app @DataDog/sensitive-data-scanner
-datadog/**/*datadog_service_account*             @DataDog/web-frameworks @DataDog/team-aaa
-datadog/**/*datadog_spans_metric*                @DataDog/web-frameworks @DataDog/apm-trace-intake
-datadog/**/*datadog_synthetics_concurrency_cap*  @DataDog/web-frameworks @DataDog/synthetics-app @DataDog/synthetics-ct
-datadog/**/*datadog_team*                        @DataDog/web-frameworks @DataDog/core-app
-datadog/**/*datadog_user*                        @DataDog/web-frameworks @DataDog/team-aaa
-datadog/**/*datadog_organization_settings*       @DataDog/web-frameworks @DataDog/core-app @DataDog/trust-and-safety
-datadog/**/*datadog_integration_microsoft_teams* @DataDog/web-frameworks @DataDog/chat-integrations
-datadog/**/*datadog_workflow_automation*         @DataDog/web-frameworks @DataDog/api-reliability @DataDog/workflow-automation-backend
-=======
 datadog/**/*datadog_api_key*                     @DataDog/web-frameworks @DataDog/api-reliability @DataDog/credentials-management
 datadog/**/*datadog_apm_retention_filter*        @DataDog/web-frameworks @DataDog/api-reliability @DataDog/apm-trace-intake
 datadog/**/*datadog_application_key*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/credentials-management
@@ -73,4 +50,4 @@ datadog/**/*datadog_user*                        @DataDog/web-frameworks @DataDo
 datadog/**/*datadog_organization_settings*       @DataDog/web-frameworks @DataDog/api-reliability @DataDog/core-app @DataDog/trust-and-safety
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/web-frameworks @DataDog/api-reliability @DataDog/chat-integrations
 datadog/**/*datadog_action_connection*           @DataDog/web-frameworks @DataDog/api-reliability @DataDog/action-platform
->>>>>>> master
+datadog/**/*datadog_workflow_automation*         @DataDog/web-frameworks @DataDog/api-reliability @DataDog/workflow-automation-backend
