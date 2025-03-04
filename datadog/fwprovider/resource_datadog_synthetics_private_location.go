@@ -60,17 +60,19 @@ func (r *syntheticsPrivateLocationResource) Schema(_ context.Context, _ resource
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog SyntheticsPrivateLocation resource. This can be used to create and manage Datadog synthetics_private_location.",
 		Attributes: map[string]schema.Attribute{
-			"description": schema.StringAttribute{
-				Optional:    true,
-				Description: "Description of the private location.",
-			},
 			"name": schema.StringAttribute{
 				Required:    true,
-				Description: "Name of the private location.",
+				Description: "Synthetics private location name.",
+			},
+			"description": schema.StringAttribute{
+				Optional:    true,
+				Computed:    true,
+				Description: "Description of the private location.",
 			},
 			"tags": schema.ListAttribute{
 				Optional:    true,
-				Description: "Array of tags attached to the private location.",
+				Computed:    true,
+				Description: "A list of tags to associate with your synthetics private location.",
 				ElementType: types.StringType,
 			},
 			"config": schema.StringAttribute{
@@ -119,6 +121,7 @@ func (r *syntheticsPrivateLocationResource) Read(ctx context.Context, request re
 	resp, httpResp, err := r.Api.GetPrivateLocation(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
+			// Delete the resource from the local state since it doesn't exist anymore in the actual state
 			response.State.RemoveResource(ctx)
 			return
 		}
@@ -216,63 +219,58 @@ func (r *syntheticsPrivateLocationResource) Delete(ctx context.Context, request 
 
 	httpResp, err := r.Api.DeletePrivateLocation(r.Auth, id)
 	if err != nil {
-		if httpResp != nil && httpResp.StatusCode == 404 {
+		if httpResp == nil || httpResp.StatusCode != 404 {
+			// The resource is assumed to still exist, and all prior state is preserved.
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting synthetics_private_location"))
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting synthetics_private_location"))
-		return
 	}
+
+	// The resource is assumed to be destroyed, and all state is removed.
 	response.State.RemoveResource(ctx)
 }
 
 func (r *syntheticsPrivateLocationResource) updateState(ctx context.Context, state *syntheticsPrivateLocationModel, resp *datadogV1.SyntheticsPrivateLocation) {
-
 	state.Id = types.StringValue(resp.GetId())
 
 	state.Description = types.StringValue(resp.GetDescription())
-
 	state.Name = types.StringValue(resp.GetName())
+	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, resp.Tags)
 
-	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, resp.GetTags())
-
-	if metadata, ok := resp.GetMetadataOk(); ok {
-
-		metadataTf := metadataModel{}
-		if restrictedRoles, ok := metadata.GetRestrictedRolesOk(); ok && len(*restrictedRoles) > 0 {
-
-			metadataTf.RestrictedRoles, _ = types.SetValueFrom(ctx, types.StringType, *restrictedRoles)
-		}
-		state.Metadata = []metadataModel{metadataTf}
+	metadata := resp.GetMetadata()
+	localMetadata := metadataModel{}
+	if restrictedRoles, ok := metadata.GetRestrictedRolesOk(); ok && len(*restrictedRoles) > 0 {
+		localMetadata.RestrictedRoles, _ = types.SetValueFrom(ctx, types.StringType, *restrictedRoles)
 	}
+	state.Metadata = []metadataModel{localMetadata}
+
 }
 
 func (r *syntheticsPrivateLocationResource) buildSyntheticsPrivateLocationRequestBody(ctx context.Context, state *syntheticsPrivateLocationModel) (*datadogV1.SyntheticsPrivateLocation, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	req := datadogV1.NewSyntheticsPrivateLocationWithDefaults()
+	syntheticsPrivateLocation := datadogV1.NewSyntheticsPrivateLocationWithDefaults()
+
+	syntheticsPrivateLocation.SetName(state.Name.ValueString())
 
 	if !state.Description.IsNull() {
-		req.SetDescription(state.Description.ValueString())
-	}
-	if !state.Name.IsNull() {
-		req.SetName(state.Name.ValueString())
-	}
-
-	if !state.Tags.IsNull() {
-		var tags []string
-		diags.Append(state.Tags.ElementsAs(ctx, &tags, false)...)
-		req.SetTags(tags)
+		syntheticsPrivateLocation.SetDescription(state.Description.ValueString())
 	}
 
 	if state.Metadata != nil {
 		var metadata datadogV1.SyntheticsPrivateLocationMetadata
-
 		if len(state.Metadata) == 1 && !state.Metadata[0].RestrictedRoles.IsNull() {
 			var restrictedRoles []string
 			diags.Append(state.Metadata[0].RestrictedRoles.ElementsAs(ctx, &restrictedRoles, false)...)
 			metadata.SetRestrictedRoles(restrictedRoles)
 		}
-		req.Metadata = &metadata
+		syntheticsPrivateLocation.SetMetadata(metadata)
 	}
 
-	return req, diags
+	tags := make([]string, 0)
+	if !state.Tags.IsNull() {
+		diags.Append(state.Tags.ElementsAs(ctx, &tags, false)...)
+	}
+	syntheticsPrivateLocation.SetTags(tags)
+
+	return syntheticsPrivateLocation, diags
 }
