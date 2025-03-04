@@ -14,6 +14,35 @@ func (d *datadog{{ name|camel_case }}DataSource) Read(ctx context.Context, reque
 		}
 
 		d.updateState(&state, ddResp.Data)
-	}
-    
+	} else {
+		{%- for name, schema in primitiveParamAttr.items() %}
+			{{ name|variable_name }} := state.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}()
+		{%- endfor%}
+
+		optionalParams := datadog{{version}}.List{{name|camel_case}}sOptionalParameters{
+		{%- for name, schema in primitiveParamAttr.items() %}
+			{{name|camel_case}}: &{{name|variable_name}},
+		{%- endfor%}
+		}
+
+		ddResp, _, err := d.Api.List{{name|camel_case}}s(d.Auth, optionalParams)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog {{name|camel_case|untitle_case}}"))
+			return
+		}
+		
+		if len(ddResp.Data) > 1 {
+			response.Diagnostics.AddError("filters returned more than one result, use more specific search criteria", "")
+			return
+		}
+		if len(ddResp.Data) == 0 {
+			response.Diagnostics.AddError("filters returned no results", "")
+			return
+		}
+
+		d.updateStateFromListResponse(&state, &ddResp.Data[0])
+	} 
+
+    // Save data into Terraform state
+    response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
