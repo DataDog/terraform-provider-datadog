@@ -4519,7 +4519,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"cell_display_mode": {
-			Description: "A list of display modes for each table cell. List items one of `number`, `bar`.",
+			Description: "A list of display modes for each table cell.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Schema{
