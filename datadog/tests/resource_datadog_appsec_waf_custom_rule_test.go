@@ -29,6 +29,8 @@ func TestAccAppsecWafCustomRuleBasic(t *testing.T) {
 						"datadog_appsec_waf_custom_rule.foo", "tags.category", "attack_attempt"),
 					resource.TestCheckResourceAttr(
 						"datadog_appsec_waf_custom_rule.foo", "path_glob", "/api/search/*"),
+					resource.TestCheckResourceAttr(
+						"datadog_appsec_waf_custom_rule.foo", "condition.0.parameters.input.0.address", "server.request.query"),
 				),
 			},
 		},
@@ -46,10 +48,10 @@ func testAccCheckDatadogAppsecWafCustomRule(uniq string) string {
       }
     }
     blocking = true
-    conditions {
+    condition {
       operator = "match_regex"
       parameters {
-        inputs {
+        input {
           address = "server.request.query"
           key_path = [ "test" ]
         }

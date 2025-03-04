@@ -26,30 +26,30 @@ type appsecWafCustomRuleResource struct {
 }
 
 type appsecWafCustomRuleModel struct {
-	ID         types.String       `tfsdk:"id"`
-	Blocking   types.Bool         `tfsdk:"blocking"`
-	Enabled    types.Bool         `tfsdk:"enabled"`
-	Name       types.String       `tfsdk:"name"`
-	PathGlob   types.String       `tfsdk:"path_glob"`
-	Conditions []*conditionsModel `tfsdk:"conditions"`
-	Scope      []*scopeModel      `tfsdk:"scope"`
-	Action     *actionModel       `tfsdk:"action"`
-	Tags       types.Map          `tfsdk:"tags"`
+	ID        types.String      `tfsdk:"id"`
+	Blocking  types.Bool        `tfsdk:"blocking"`
+	Enabled   types.Bool        `tfsdk:"enabled"`
+	Name      types.String      `tfsdk:"name"`
+	PathGlob  types.String      `tfsdk:"path_glob"`
+	Condition []*conditionModel `tfsdk:"condition"`
+	Scope     []*scopeModel     `tfsdk:"scope"`
+	Action    *actionModel      `tfsdk:"action"`
+	Tags      types.Map         `tfsdk:"tags"`
 }
 
-type conditionsModel struct {
+type conditionModel struct {
 	Operator   types.String     `tfsdk:"operator"`
 	Parameters *parametersModel `tfsdk:"parameters"`
 }
 type parametersModel struct {
-	Data    types.String   `tfsdk:"data"`
-	Regex   types.String   `tfsdk:"regex"`
-	Value   types.String   `tfsdk:"value"`
-	List    types.List     `tfsdk:"list"`
-	Inputs  []*inputsModel `tfsdk:"inputs"`
-	Options *optionsModel  `tfsdk:"options"`
+	Data    types.String  `tfsdk:"data"`
+	Regex   types.String  `tfsdk:"regex"`
+	Value   types.String  `tfsdk:"value"`
+	List    types.List    `tfsdk:"list"`
+	Input   []*inputModel `tfsdk:"input"`
+	Options *optionsModel `tfsdk:"options"`
 }
-type inputsModel struct {
+type inputModel struct {
 	Address types.String `tfsdk:"address"`
 	KeyPath types.List   `tfsdk:"key_path"`
 }
@@ -110,7 +110,7 @@ func (r *appsecWafCustomRuleResource) Schema(_ context.Context, _ resource.Schem
 			},
 		},
 		Blocks: map[string]schema.Block{
-			"conditions": schema.ListNestedBlock{
+			"condition": schema.ListNestedBlock{
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"operator": schema.StringAttribute{
@@ -140,7 +140,7 @@ func (r *appsecWafCustomRuleResource) Schema(_ context.Context, _ resource.Schem
 								},
 							},
 							Blocks: map[string]schema.Block{
-								"inputs": schema.ListNestedBlock{
+								"input": schema.ListNestedBlock{
 									NestedObject: schema.NestedBlockObject{
 										Attributes: map[string]schema.Attribute{
 											"address": schema.StringAttribute{
@@ -388,9 +388,9 @@ func (r *appsecWafCustomRuleResource) updateState(ctx context.Context, state *ap
 	}
 
 	if conditions, ok := attributes.GetConditionsOk(); ok && len(*conditions) > 0 {
-		state.Conditions = []*conditionsModel{}
+		state.Condition = []*conditionModel{}
 		for _, conditionsDd := range *conditions {
-			conditionsTfItem := conditionsModel{}
+			conditionsTfItem := conditionModel{}
 
 			if operator, ok := conditionsDd.GetOperatorOk(); ok {
 				conditionsTfItem.Operator = types.StringValue(string(*operator))
@@ -402,15 +402,15 @@ func (r *appsecWafCustomRuleResource) updateState(ctx context.Context, state *ap
 					parametersTf.Data = types.StringValue(*data)
 				}
 				if inputs, ok := parameters.GetInputsOk(); ok && len(*inputs) > 0 {
-					parametersTf.Inputs = []*inputsModel{}
+					parametersTf.Input = []*inputModel{}
 					for _, inputsDd := range *inputs {
-						inputsTfItem := inputsModel{}
+						inputsTfItem := inputModel{}
 
 						if address, ok := inputsDd.GetAddressOk(); ok {
 							inputsTfItem.Address = types.StringValue(string(*address))
 						}
 						inputsTfItem.KeyPath, _ = types.ListValueFrom(ctx, types.StringType, inputsDd.GetKeyPath())
-						parametersTf.Inputs = append(parametersTf.Inputs, &inputsTfItem)
+						parametersTf.Input = append(parametersTf.Input, &inputsTfItem)
 					}
 				}
 				parametersTf.List, _ = types.ListValueFrom(ctx, types.StringType, parameters.GetList())
@@ -432,7 +432,7 @@ func (r *appsecWafCustomRuleResource) updateState(ctx context.Context, state *ap
 				}
 				conditionsTfItem.Parameters = &parametersTf
 			}
-			state.Conditions = append(state.Conditions, &conditionsTfItem)
+			state.Condition = append(state.Condition, &conditionsTfItem)
 		}
 	}
 
@@ -506,7 +506,7 @@ func (r *appsecWafCustomRuleResource) buildAppsecWafCustomRuleRequestBody(ctx co
 	}
 
 	var conditions []datadogV2.ApplicationSecurityWafCustomRuleCondition
-	for _, conditionsTFItem := range state.Conditions {
+	for _, conditionsTFItem := range state.Condition {
 		conditionsDDItem := datadogV2.NewApplicationSecurityWafCustomRuleConditionWithDefaults()
 
 		if !conditionsTFItem.Operator.IsNull() {
@@ -532,9 +532,9 @@ func (r *appsecWafCustomRuleResource) buildAppsecWafCustomRuleRequestBody(ctx co
 				parameters.SetList(list)
 			}
 
-			if conditionsTFItem.Parameters.Inputs != nil {
+			if conditionsTFItem.Parameters.Input != nil {
 				var inputs []datadogV2.ApplicationSecurityWafCustomRuleConditionInput
-				for _, inputsTFItem := range conditionsTFItem.Parameters.Inputs {
+				for _, inputsTFItem := range conditionsTFItem.Parameters.Input {
 					inputsDDItem := datadogV2.NewApplicationSecurityWafCustomRuleConditionInputWithDefaults()
 
 					if !inputsTFItem.Address.IsNull() {
@@ -639,9 +639,9 @@ func (r *appsecWafCustomRuleResource) buildAppsecWafCustomRuleUpdateRequestBody(
 		attributes.SetPathGlob(state.PathGlob.ValueString())
 	}
 
-	if state.Conditions != nil {
+	if state.Condition != nil {
 		var conditions []datadogV2.ApplicationSecurityWafCustomRuleCondition
-		for _, conditionsTFItem := range state.Conditions {
+		for _, conditionsTFItem := range state.Condition {
 			conditionsDDItem := datadogV2.NewApplicationSecurityWafCustomRuleConditionWithDefaults()
 
 			if !conditionsTFItem.Operator.IsNull() {
@@ -667,9 +667,9 @@ func (r *appsecWafCustomRuleResource) buildAppsecWafCustomRuleUpdateRequestBody(
 					parameters.SetList(list)
 				}
 
-				if conditionsTFItem.Parameters.Inputs != nil {
+				if conditionsTFItem.Parameters.Input != nil {
 					var inputs []datadogV2.ApplicationSecurityWafCustomRuleConditionInput
-					for _, inputsTFItem := range conditionsTFItem.Parameters.Inputs {
+					for _, inputsTFItem := range conditionsTFItem.Parameters.Input {
 						inputsDDItem := datadogV2.NewApplicationSecurityWafCustomRuleConditionInputWithDefaults()
 
 						if !inputsTFItem.Address.IsNull() {

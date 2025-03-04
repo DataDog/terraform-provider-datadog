@@ -12,10 +12,10 @@ resource "datadog_appsec_waf_custom_rule" "ioc000" {
 
   path_glob = "/db/*"
 
-  conditions {
+  condition {
     operator = "match_regex"
     parameters {
-      inputs {
+      input {
         address = "server.db.statement"
       }
       regex = "stmt.*"
@@ -46,10 +46,10 @@ resource "datadog_appsec_waf_custom_rule" "biz000" {
 
   path_glob = "/cart/*"
 
-  conditions {
+  condition {
     operator = "capture_data"
     parameters {
-      inputs {
+      input {
         address  = "server.request.query"
         key_path = ["payment_id"]
       }
