@@ -1,4 +1,4 @@
-// reference: https://github.com/hashicorp/terraform-plugin-framework-jsontypes/blob/4f0b31dbb4d9aba345ce0616029240eaa8e52f6f/jsontypes/normalized_value.go
+// reference: https://github.com/hashicorp/terraform-plugin-framework-jsontypes/blob/v0.2.0/jsontypes/normalized_value.go
 
 package customtypes
 
@@ -62,12 +62,6 @@ func (v AppBuilderAppJSONStringValue) StringSemanticEquals(ctx context.Context, 
 		return false, diags
 	}
 
-	// var prev interface{}
-	// var next interface{}
-	// yaml.Unmarshal([]byte(v.StringValue.ValueString()), &prev)
-	// yaml.Unmarshal([]byte(other.StringValue.ValueString()), &next)
-	// return cmp.Equal(prev, next), diags
-
 	result, err := appJSONEqual(newValue.ValueString(), v.ValueString())
 
 	if err != nil {
@@ -111,9 +105,10 @@ func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
 		return "", err
 	}
 
+	// feature specific to AppBuilderAppJSONStringValue:
 	// remove the "id" field from the JSON string because we want to ignore the App ID when comparing JSON strings
-	if obj, ok := temp.(map[string]interface{}); ok {
-		delete(obj, "id")
+	if jsonMap, ok := temp.(map[string]interface{}); ok {
+		delete(jsonMap, "id")
 	}
 
 	jsonBytes, err := json.Marshal(&temp)
@@ -122,4 +117,48 @@ func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
 	}
 
 	return string(jsonBytes), nil
+}
+
+// Unmarshal calls (encoding/json).Unmarshal with the AppBuilderAppJSONStringValue and `target` input. A null or unknown value will produce an error diagnostic.
+// See encoding/json docs for more on usage: https://pkg.go.dev/encoding/json#Unmarshal
+func (v AppBuilderAppJSONStringValue) Unmarshal(target any) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if v.IsNull() {
+		diags.Append(diag.NewErrorDiagnostic("AppBuilderAppJSONStringValue Unmarshal Error", "json string value is null"))
+		return diags
+	}
+
+	if v.IsUnknown() {
+		diags.Append(diag.NewErrorDiagnostic("AppBuilderAppJSONStringValue Unmarshal Error", "json string value is unknown"))
+		return diags
+	}
+
+	err := json.Unmarshal([]byte(v.ValueString()), target)
+	if err != nil {
+		diags.Append(diag.NewErrorDiagnostic("AppBuilderAppJSONStringValue Unmarshal Error", err.Error()))
+	}
+
+	return diags
+}
+
+// NewAppBuilderAppJSONStringValue creates a AppBuilderAppJSONStringValue with a known value. Access the value via ValueString method.
+func NewAppBuilderAppJSONStringValue(value string) AppBuilderAppJSONStringValue {
+	return AppBuilderAppJSONStringValue{
+		StringValue: basetypes.NewStringValue(value),
+	}
+}
+
+// NewAppBuilderAppJSONStringValueNull creates a AppBuilderAppJSONStringValue with a null value. Determine whether the value is null via IsNull method.
+func NewAppBuilderAppJSONStringValueNull() AppBuilderAppJSONStringValue {
+	return AppBuilderAppJSONStringValue{
+		StringValue: basetypes.NewStringNull(),
+	}
+}
+
+// NewAppBuilderAppJSONStringValueUnknown creates a AppBuilderAppJSONStringValue with an unknown value. Determine whether the value is unknown via IsUnknown method.
+func NewAppBuilderAppJSONStringValueUnknown() AppBuilderAppJSONStringValue {
+	return AppBuilderAppJSONStringValue{
+		StringValue: basetypes.NewStringUnknown(),
+	}
 }

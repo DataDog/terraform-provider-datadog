@@ -10,8 +10,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
-	"github.com/google/uuid"
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes" // v0.1.0, else breaking
+	"github.com/google/uuid" // v0.1.0, else breaking
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -40,15 +39,15 @@ type appBuilderAppJSONResource struct {
 
 // try single property JSON input -> validation will be handled on the API side
 type appBuilderAppJSONResourceModel struct {
-	ID                                    types.String         `tfsdk:"id"`
-	AppJson                               jsontypes.Normalized `tfsdk:"app_json"`
-	OverrideActionQueryIDsToConnectionIDs types.Map            `tfsdk:"override_action_query_ids_to_connection_ids"`
-	ActionQueryIDsToConnectionIDs         types.Map            `tfsdk:"action_query_ids_to_connection_ids"`
-	Name                                  types.String         `tfsdk:"name"`
-	Description                           types.String         `tfsdk:"description"`
-	RootInstanceName                      types.String         `tfsdk:"root_instance_name"`
-	Tags                                  types.Set            `tfsdk:"tags"`
-	PublishStatusUpdate                   types.String         `tfsdk:"publish_status_update"`
+	ID                                    types.String                             `tfsdk:"id"`
+	AppJson                               customtypes.AppBuilderAppJSONStringValue `tfsdk:"app_json"`
+	OverrideActionQueryIDsToConnectionIDs types.Map                                `tfsdk:"override_action_query_ids_to_connection_ids"`
+	ActionQueryIDsToConnectionIDs         types.Map                                `tfsdk:"action_query_ids_to_connection_ids"`
+	Name                                  types.String                             `tfsdk:"name"`
+	Description                           types.String                             `tfsdk:"description"`
+	RootInstanceName                      types.String                             `tfsdk:"root_instance_name"`
+	Tags                                  types.Set                                `tfsdk:"tags"`
+	PublishStatusUpdate                   types.String                             `tfsdk:"publish_status_update"`
 }
 
 func NewAppBuilderAppJSONResource() resource.Resource {
@@ -122,7 +121,7 @@ func (r *appBuilderAppJSONResource) Schema(_ context.Context, _ resource.SchemaR
 			},
 			"publish_status_update": schema.StringAttribute{
 				Optional:    true,
-				Description: "If `published`, the latest app version will be published and available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist. If `unpublish`, the app will be unpublished, removing the live version of the app. If unspecified, the publish status will not be updated.",
+				Description: "If `publish`, the latest app version will be published and available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist. If `unpublish`, the app will be unpublished, removing the live version of the app. If unspecified, the publish status will not be updated.",
 				Validators:  []validator.String{validators.NewEnumValidator[validator.String](NewPublishStatusUpdateFromValue)},
 			},
 			// TODO: update CRUD operations to handle the new optional fields
@@ -294,8 +293,9 @@ func apiResponseToAppBuilderAppJSONModel(resp datadogV2.GetAppResponse) (*appBui
 		err = fmt.Errorf("error marshaling attributes: %s", err)
 		return nil, err
 	}
-	// we use normalized type and value to ignore inconsequential differences in the JSON strings
-	appBuilderAppJSONModel.AppJson = jsontypes.NewNormalizedValue(string(marshalledBytes))
+	// we use AppBuilderAppJSONString type and value to ignore inconsequential differences in the JSON strings
+	// and also ignore other differences such as the App's ID, which is ignored in the App Builder API
+	appBuilderAppJSONModel.AppJson = customtypes.NewAppBuilderAppJSONStringValue(string(marshalledBytes))
 
 	// build action query ids to connection ids map
 	queries := attributes.GetQueries()

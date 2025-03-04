@@ -1,4 +1,4 @@
-// reference: https://github.com/hashicorp/terraform-plugin-framework-jsontypes/blob/4f0b31dbb4d9aba345ce0616029240eaa8e52f6f/jsontypes/normalized_type.go
+// reference: https://github.com/hashicorp/terraform-plugin-framework-jsontypes/blob/v0.2.0/jsontypes/normalized_type.go
 
 package customtypes
 
@@ -13,6 +13,7 @@ import (
 )
 
 // Ensure the implementation satisfies the expected interfaces
+// Not adding validation because that will be handled in the App Builder API
 var (
 	_ basetypes.StringTypable = (*AppBuilderAppJSONStringType)(nil)
 )
