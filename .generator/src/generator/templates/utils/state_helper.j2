@@ -1,27 +1,26 @@
 {%- macro updateStateFromSchema(schema, baseSetter, baseAccessor) %}
     {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
-
     {%- for attr, schema in primitiveAttr.items() %}
     {%- set isRequired = is_required(schema,attr) %}
     {{ baseStateSetter(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
-
+    
     {%- for attr, schema in primitiveArrAttr.items() %}
     {%- set isRequired = is_required(schema,attr) %}
     {{ baseStateSetter(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
-
+    
     {%- for attr, schema in nonPrimitiveListAttr.items() %}
     {%- set isRequired = is_required(schema,attr) %}
     {{ baseStateSetter(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
-
+    
     {%- for attr, schema in nonPrimitiveObjAttr.items() %}
     {%- set isRequired = is_required(schema,attr) %}
     {{ baseStateSetter(attr, schema, baseSetter, baseAccessor, required=isRequired) }}
     {%- endfor %}
 {%- endmacro %}
-
+    
 {%- macro baseStateSetter(name, schema, baseSetter, baseAccessor, required=False, arrayItem=False) %}
     {%- if schema|is_primitive %}
         {{- typePrimitiveStateSetter(name, schema, baseSetter, baseAccessor, required=required) }}
