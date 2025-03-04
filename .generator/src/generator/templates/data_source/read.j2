@@ -13,7 +13,7 @@ func (d *datadog{{ name|camel_case }}DataSource) Read(ctx context.Context, reque
 			return
 		}
 
-		d.updateState(&state, ddResp.Data)
+		d.updateState(ctx, &state, ddResp.Data)
 	} else {
 		{%- for name, schema in primitiveParamAttr.items() %}
 			{{ name|variable_name }} := state.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}()
@@ -40,7 +40,7 @@ func (d *datadog{{ name|camel_case }}DataSource) Read(ctx context.Context, reque
 			return
 		}
 
-		d.updateStateFromListResponse(&state, &ddResp.Data[0])
+		d.updateStateFromListResponse(ctx, &state, &ddResp.Data[0])
 	} 
 
     // Save data into Terraform state

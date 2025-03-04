@@ -36,9 +36,9 @@
     if {{ name|variable_name }}, ok := {{ baseAccessor }}.Get{{ name|camel_case }}Ok(); ok {
     {%- endif %}
         {%- if is_enum(schema) %}
-            {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({{ simple_type(schema) }}({% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}{{name|date_time_formatter(schema)}}{% endif %}))
+            {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({{ simple_type(schema) }}({% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}{{name|variable_name|go_to_terraform_type_formatter(schema)}}{% endif %}))
         {%- else %}
-            {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}{{name|date_time_formatter(schema)}}{% endif %})
+            {{ baseSetter }}.{{ name|camel_case }} = types.{{ get_terraform_schema_type(schema) }}Value({% if required %}{{ baseAccessor }}.Get{{ name|camel_case }}(){% else %}{{name|variable_name|go_to_terraform_type_formatter(schema)}}{% endif %})
         {%- endif %}
     {%- if not required %}
     }

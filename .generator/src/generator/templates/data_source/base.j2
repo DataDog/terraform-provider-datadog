@@ -43,6 +43,8 @@ func (d *datadog{{ name|camel_case }}DataSource) Metadata(_ context.Context, req
 	response.TypeName = "{{ name|snake_case }}"
 }
 
-{% include "data_source/schema.j2"%}
+{% include "data_source/schema.j2" %}
 
-{% include "data_source/read.j2"%}
+{% include "data_source/read.j2" %}
+
+{% include "data_source/state.j2" %}
