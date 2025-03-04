@@ -73,6 +73,7 @@ var Resources = []func() resource.Resource{
 	NewTenantBasedHandleResource,
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
+	NewWorkflowAutomationResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -98,6 +99,7 @@ var Datasources = []func() datasource.DataSource{
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
+	NewWorkflowAutomationDataSource,
 }
 
 // FrameworkProvider struct
