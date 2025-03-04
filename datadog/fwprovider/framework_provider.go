@@ -73,6 +73,7 @@ var Resources = []func() resource.Resource{
 	NewTenantBasedHandleResource,
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
+	NewSyntheticsPrivateLocationResource,
 }
 
 var Datasources = []func() datasource.DataSource{
