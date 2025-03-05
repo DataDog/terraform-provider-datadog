@@ -10,16 +10,10 @@ from . import utils
 from . import type
 
 
-def print_filter(tmp):
-    print(tmp)
-    exit()
-
-
 def load_environment(version: str) -> Environment:
     env = Environment(
         loader=FileSystemLoader(str(pathlib.Path(__file__).parent / "templates"))
     )
-    env.filters["print"] = print_filter
 
     env.filters["attribute_name"] = formatter.attribute_name
     env.filters["camel_case"] = formatter.camel_case
