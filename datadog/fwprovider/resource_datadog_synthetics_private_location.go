@@ -91,7 +91,7 @@ func (r *syntheticsPrivateLocationResource) Schema(_ context.Context, _ resource
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"restricted_roles": schema.SetAttribute{
-							Description:        "A list of role identifiers pulled from the Roles API to restrict read and write access.",
+							Description:        "A set of role identifiers pulled from the Roles API to restrict read and write access.",
 							DeprecationMessage: "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 							Optional:           true,
 							ElementType:        types.StringType,
@@ -237,13 +237,13 @@ func (r *syntheticsPrivateLocationResource) updateState(ctx context.Context, sta
 	state.Name = types.StringValue(resp.GetName())
 	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, resp.Tags)
 
-	metadata := resp.GetMetadata()
-	localMetadata := metadataModel{}
-	if restrictedRoles, ok := metadata.GetRestrictedRolesOk(); ok && len(*restrictedRoles) > 0 {
-		localMetadata.RestrictedRoles, _ = types.SetValueFrom(ctx, types.StringType, *restrictedRoles)
+	if metadata, ok := resp.GetMetadataOk(); ok {
+		if restrictedRoles, ok := metadata.GetRestrictedRolesOk(); ok {
+			localMetadata := metadataModel{}
+			localMetadata.RestrictedRoles, _ = types.SetValueFrom(ctx, types.StringType, *restrictedRoles)
+			state.Metadata = []metadataModel{localMetadata}
+		}
 	}
-	state.Metadata = []metadataModel{localMetadata}
-
 }
 
 func (r *syntheticsPrivateLocationResource) buildSyntheticsPrivateLocationRequestBody(ctx context.Context, state *syntheticsPrivateLocationModel) (*datadogV1.SyntheticsPrivateLocation, diag.Diagnostics) {
@@ -256,15 +256,15 @@ func (r *syntheticsPrivateLocationResource) buildSyntheticsPrivateLocationReques
 		syntheticsPrivateLocation.SetDescription(state.Description.ValueString())
 	}
 
+	metadata := datadogV1.SyntheticsPrivateLocationMetadata{}
 	if state.Metadata != nil {
-		var metadata datadogV1.SyntheticsPrivateLocationMetadata
 		if len(state.Metadata) == 1 && !state.Metadata[0].RestrictedRoles.IsNull() {
 			var restrictedRoles []string
 			diags.Append(state.Metadata[0].RestrictedRoles.ElementsAs(ctx, &restrictedRoles, false)...)
 			metadata.SetRestrictedRoles(restrictedRoles)
 		}
-		syntheticsPrivateLocation.SetMetadata(metadata)
 	}
+	syntheticsPrivateLocation.SetMetadata(metadata)
 
 	tags := make([]string, 0)
 	if !state.Tags.IsNull() {
