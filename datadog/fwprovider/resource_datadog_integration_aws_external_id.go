@@ -13,7 +13,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-const EXPIRY_WARNING_MESSAGE = "A new external ID must be used to create an AWS account integration within 48 hours of creation or it will expire."
+const EXPIRY_WARNING_MESSAGE = "A new external ID must be used to create an AWS account integration in Datadog within 48 hours of creation or it will expire."
 const DESTROY_WARNING_MESSAGE = "Running `terraform destroy` only removes the resource from Terraform state and does not deactivate anything in Datadog or AWS."
 
 var (
