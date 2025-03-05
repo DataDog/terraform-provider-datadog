@@ -48,7 +48,7 @@ func (r *integrationAwsExternalIDResource) Schema(_ context.Context, _ resource.
 	response.Schema = schema.Schema{
 		Description: fmt.Sprintf("!>%s\n\n!>%s\n\n"+
 			"Provides a Datadog-Amazon Web Services external ID resource. This can be used to create Datadog-Amazon Web Services external IDs\n\n"+
-			"This resource can be used in conjunction with the `datadog_integration_aws_account` resource to manage AWS integrations. The external ID can be referenced as shown in this example:\n\n"+
+			"This resource can be used in conjunction with the [`datadog_integration_aws_account`](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/integration_aws_account) resource. The external ID value can be referenced as shown:\n\n"+
 			"```hcl\n"+
 			"resource \"datadog_integration_aws_external_id\" \"foo\" {}\n\n"+
 			"resource \"datadog_integration_aws_account\" \"foo-defaults\" {\n"+
