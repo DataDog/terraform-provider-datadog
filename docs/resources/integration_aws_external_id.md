@@ -6,6 +6,25 @@ description: |-
   !>A new external ID must be used to create an AWS account integration in Datadog within 48 hours of creation or it will expire.
   !>Running terraform destroy only removes the resource from Terraform state and does not deactivate anything in Datadog or AWS.
   Provides a Datadog-Amazon Web Services external ID resource. This can be used to create Datadog-Amazon Web Services external IDs
+  This resource can be used in conjunction with the datadog_integration_aws_account resource to manage AWS integrations. The external ID can be referenced as shown in this example:
+  
+  resource "datadog_integration_aws_external_id" "foo" {}
+  
+  resource "datadog_integration_aws_account" "foo-defaults" {
+    aws_account_id = "123456789019"
+    aws_partition  = "aws"
+  
+    auth_config {
+      aws_auth_config_role {
+        role_name   = "DatadogIntegrationRole"
+        external_id = datadog_integration_aws_external_id.foo.id
+      }
+    }
+  }
+  
+  To force a new external ID value to regenerate, you can use the -replace flag:
+  
+  terraform apply -replace="datadog_integration_aws_external_id.foo"
 ---
 
 # datadog_integration_aws_external_id (Resource)
@@ -15,6 +34,30 @@ description: |-
 !>Running `terraform destroy` only removes the resource from Terraform state and does not deactivate anything in Datadog or AWS.
 
 Provides a Datadog-Amazon Web Services external ID resource. This can be used to create Datadog-Amazon Web Services external IDs
+
+This resource can be used in conjunction with the `datadog_integration_aws_account` resource to manage AWS integrations. The external ID can be referenced as shown in this example:
+
+```hcl
+resource "datadog_integration_aws_external_id" "foo" {}
+
+resource "datadog_integration_aws_account" "foo-defaults" {
+  aws_account_id = "123456789019"
+  aws_partition  = "aws"
+
+  auth_config {
+    aws_auth_config_role {
+      role_name   = "DatadogIntegrationRole"
+      external_id = datadog_integration_aws_external_id.foo.id
+    }
+  }
+}
+```
+
+To force a new external ID value to regenerate, you can use the `-replace` flag:
+
+```shell
+terraform apply -replace="datadog_integration_aws_external_id.foo"
+```
 
 ## Example Usage
 

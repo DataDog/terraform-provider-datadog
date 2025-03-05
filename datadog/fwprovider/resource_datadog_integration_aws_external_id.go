@@ -46,7 +46,26 @@ func (r *integrationAwsExternalIDResource) Metadata(_ context.Context, request r
 
 func (r *integrationAwsExternalIDResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: fmt.Sprintf("!>%s\n\n!>%s\n\nProvides a Datadog-Amazon Web Services external ID resource. This can be used to create Datadog-Amazon Web Services external IDs", EXPIRY_WARNING_MESSAGE, DESTROY_WARNING_MESSAGE),
+		Description: fmt.Sprintf("!>%s\n\n!>%s\n\n"+
+			"Provides a Datadog-Amazon Web Services external ID resource. This can be used to create Datadog-Amazon Web Services external IDs\n\n"+
+			"This resource can be used in conjunction with the `datadog_integration_aws_account` resource to manage AWS integrations. The external ID can be referenced as shown in this example:\n\n"+
+			"```hcl\n"+
+			"resource \"datadog_integration_aws_external_id\" \"foo\" {}\n\n"+
+			"resource \"datadog_integration_aws_account\" \"foo-defaults\" {\n"+
+			"  aws_account_id = \"123456789019\"\n"+
+			"  aws_partition  = \"aws\"\n\n"+
+			"  auth_config {\n"+
+			"    aws_auth_config_role {\n"+
+			"      role_name   = \"DatadogIntegrationRole\"\n"+
+			"      external_id = datadog_integration_aws_external_id.foo.id\n"+
+			"    }\n"+
+			"  }\n"+
+			"}\n"+
+			"```\n\n"+
+			"To force a new external ID value to regenerate, you can use the `-replace` flag:\n\n"+
+			"```shell\n"+
+			"terraform apply -replace=\"datadog_integration_aws_external_id.foo\"\n"+
+			"```", EXPIRY_WARNING_MESSAGE, DESTROY_WARNING_MESSAGE),
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Computed:    true,
