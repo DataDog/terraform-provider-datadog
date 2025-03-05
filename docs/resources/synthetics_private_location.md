@@ -29,7 +29,7 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 ### Optional
 
-- `description` (String) Description of the private location.
+- `description` (String) Description of the private location. Defaults to `""`.
 - `metadata` (Block List) The private location metadata (see [below for nested schema](#nestedblock--metadata))
 - `tags` (List of String) A list of tags to associate with your synthetics private location.
 

@@ -7,11 +7,14 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -68,12 +71,14 @@ func (r *syntheticsPrivateLocationResource) Schema(_ context.Context, _ resource
 				Optional:    true,
 				Computed:    true,
 				Description: "Description of the private location.",
+				Default:     stringdefault.StaticString(""),
 			},
 			"tags": schema.ListAttribute{
 				Optional:    true,
 				Computed:    true,
 				Description: "A list of tags to associate with your synthetics private location.",
 				ElementType: types.StringType,
+				Default:     listdefault.StaticValue(types.ListValueMust(types.StringType, []attr.Value{})),
 			},
 			"config": schema.StringAttribute{
 				Description: "Configuration skeleton for the private location. See installation instructions of the private location on how to use this configuration.",
