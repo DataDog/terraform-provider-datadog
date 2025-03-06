@@ -259,7 +259,20 @@ func resourceDatadogLogsIndexUpdate(ctx context.Context, d *schema.ResourceData,
 	return updateLogsIndexState(d, &updatedIndex)
 }
 
-func resourceDatadogLogsIndexDelete(_ context.Context, _ *schema.ResourceData, _ interface{}) diag.Diagnostics {
+func resourceDatadogLogsIndexDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
+	providerConf := meta.(*ProviderConfiguration)
+	apiInstances := providerConf.DatadogApiInstances
+	auth := providerConf.Auth
+
+	logsIndexMutex.Lock()
+	defer logsIndexMutex.Unlock()
+	ddIndex, httpResponse, err := apiInstances.GetLogsIndexesApiV1().DeleteLogsIndex(auth, d.Id())
+	if err != nil {
+		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting logs index")
+	}
+	if err := utils.CheckForUnparsed(ddIndex); err != nil {
+		return diag.FromErr(err)
+	}
 	return nil
 }
 
