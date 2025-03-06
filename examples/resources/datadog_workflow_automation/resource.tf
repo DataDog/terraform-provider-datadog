@@ -1,7 +1,7 @@
 resource "datadog_workflow_automation" "workflow" {
   name        = "Send Email when Monitor Alerts"
   description = "This workflow alerts me by email when my monitor goes off. "
-  tags        = ["service:wf-api","source:alert","team:workflow-core"]
+  tags        = ["service:foo","source:alert","team:bar"]
   published   = true
 
   spec_json = jsonencode(
@@ -21,7 +21,7 @@ resource "datadog_workflow_automation" "workflow" {
           "parameters": [
             {
               "name": "to",
-              "value": "replace_me"
+              "value": "REPLACE_ME"
             },
             {
               "name": "subject",
@@ -40,7 +40,7 @@ resource "datadog_workflow_automation" "workflow" {
           }
         }
       ],
-      "handle": "my-handle-FOO"
+      "handle": "my-handle"
     }
   )
 }

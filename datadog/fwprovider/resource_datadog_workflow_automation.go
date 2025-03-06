@@ -59,7 +59,7 @@ func (r *workflowAutomationResource) Metadata(_ context.Context, request resourc
 
 func (r *workflowAutomationResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog workflow resource for creating and managing Datadog workflows from Workflow Automation",
+		Description: "Enables the creation and management of Datadog workflows using Workflow Automation. To easily export a workflow for use with Terraform, click the export button in the Datadog Workflow Automation UI cog menu. This resource requires scoped application keys for authentication.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
