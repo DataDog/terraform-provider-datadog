@@ -616,23 +616,22 @@ func TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement(t *testing.T) {
 	})
 }
 
-func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
-	t.Parallel()
+// TODO(antoine.donascimento) Re-enable this test when migrating the synthetics resource to fwprovider
 
-	return // TODO(antoine.donascimento) Re-enable this test when migrating the synthetics resource to fwprovider
+// func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
+// 	t.Parallel()
+// 	ctx, accProviders := testAccProviders(context.Background(), t)
+// 	accProvider := testAccProvider(t, accProviders)
 
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
-
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
-		Steps: []resource.TestStep{
-			createSyntheticsMultistepAPITest(ctx, accProvider, t),
-		},
-	})
-}
+// 	resource.Test(t, resource.TestCase{
+// 		PreCheck:          func() { testAccPreCheck(t) },
+// 		ProviderFactories: accProviders,
+// 		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+// 		Steps: []resource.TestStep{
+// 			createSyntheticsMultistepAPITest(ctx, accProvider, t),
+// 		},
+// 	})
+// }
 
 func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
 	t.Parallel()
@@ -4827,557 +4826,558 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
-	testName := uniqueEntityName(ctx, t)
-	variableName := getUniqueVariableName(ctx, t)
+// TODO(antoine.donascimento) Uncomment this when migrating the synthetics resource to fwprovider
+// func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+// 	testName := uniqueEntityName(ctx, t)
+// 	variableName := getUniqueVariableName(ctx, t)
 
-	return resource.TestStep{
-		Config: createSyntheticsMultistepAPITestConfig(testName, variableName),
-		Check: resource.ComposeTestCheckFunc(
-			// testSyntheticsResourceExists(accProvider), 	// TODO(antoine.donascimento) Un comment this when migrating the synthetics resource to fwprovider
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "type", "api"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "subtype", "multi"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "locations.#", "1"),
-			resource.TestCheckTypeSetElemAttr(
-				"datadog_synthetics_test.multi", "locations.*", "aws:eu-central-1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "options_list.0.tick_every", "900"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "options_list.0.min_failure_duration", "0"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "name", testName),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "message", "Notify @datadog.user"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "tags.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "tags.0", "multistep"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "status", "paused"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.#", "7"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.exit_if_succeed", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "POST"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.body", "this is a body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.timeout", "30"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.allow_insecure", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.follow_redirects", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.http_version", "http2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_headers.Accept", "application/json"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_headers.X-Datadog-Trace-ID", "123456789"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_query.%", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_query.foo", "bar"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.type", "sigv4"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.access_key", "sigv4-access-key"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.secret_key", "sigv4-secret-key"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.region", "sigv4-region"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.service_name", "sigv4-service-name"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.session_token", "sigv4-session-token"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.content", utils.ConvertToSha256("content-certificate")),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.filename", "key"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key")),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_proxy.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.url", "https://proxy.url"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.%", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.Accept", "application/json"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.#", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.0.type", "statusCode"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.0.operator", "is"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.0.target", "200"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.1.type", "body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.1.operator", "validatesJSONSchema"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.jsonschema", "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.metaschema", "draft-07"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.#", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.name", "VAR_EXTRACT_BODY"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.type", "http_body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.field", ""),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "json_path"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", "$.id"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.secure", "false"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.name", "VAR_EXTRACT_HEADER"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.type", "http_header"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.field", "content-length"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.type", "regex"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.value", ".*"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.secure", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.retry.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.retry.0.count", "5"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.name", "Second api step"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.type", "oauth-client"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.audience", "audience"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_id", "client-id"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_secret", "client-secret"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.scope", "scope"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.token_api_authentication", "header"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.name", "Third api step"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.type", "oauth-rop"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.audience", "audience"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_id", "client-id"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_secret", "client-secret"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.resource", "resource"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.scope", "scope"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.token_api_authentication", "body"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.username", "username"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.password", "password"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.3.name", "Fourth api step"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.type", "digest"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.username", "username"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.name", "gRPC health check step"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.subtype", "grpc"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.host", "https://docs.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.port", "443"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.call_type", "healthcheck"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.service", "greeter.Greeter"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_metadata.%", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.request_metadata.foo", "bar"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.0.type", "grpcHealthcheckStatus"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.0.operator", "is"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.4.assertion.0.target", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.name", "gRPC behavior check step"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.subtype", "grpc"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.host", "https://docs.datadoghq.com"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.port", "443"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.call_type", "unary"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.service", "greeter.Greeter"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.method", "SayHello"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.message", "{\"name\": \"John\"}"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.plain_proto_file", "some proto file"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_metadata.%", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.request_metadata.foo", "bar"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.assertion.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.assertion.0.type", "grpcProto"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.assertion.0.operator", "validatesJSONPath"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.jsonpath", "$.message"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.operator", "is"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, John!"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.#", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.name", "VAR_EXTRACT_MESSAGE"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.type", "grpc_message"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.type", "json_path"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.value", "$.id"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.name", "VAR_EXTRACT_MESSAGE_2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.type", "grpc_message"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.#", "1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.0.type", "raw"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.6.subtype", "wait"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "api_step.6.value", "5"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.multi", "config_variable.0.name", "VARIABLE_NAME"),
-		),
-	}
-}
+// 	return resource.TestStep{
+// 		Config: createSyntheticsMultistepAPITestConfig(testName, variableName),
+// 		Check: resource.ComposeTestCheckFunc(
+// 			testSyntheticsResourceExists(accProvider),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "type", "api"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "subtype", "multi"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "locations.#", "1"),
+// 			resource.TestCheckTypeSetElemAttr(
+// 				"datadog_synthetics_test.multi", "locations.*", "aws:eu-central-1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "options_list.0.tick_every", "900"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "options_list.0.min_failure_duration", "0"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "name", testName),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "message", "Notify @datadog.user"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "tags.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "tags.0", "multistep"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "status", "paused"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.#", "7"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.exit_if_succeed", "true"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "POST"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.body", "this is a body"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.timeout", "30"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.allow_insecure", "true"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.follow_redirects", "true"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.http_version", "http2"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_headers.Accept", "application/json"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_headers.X-Datadog-Trace-ID", "123456789"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_query.%", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_query.foo", "bar"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.type", "sigv4"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.access_key", "sigv4-access-key"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.secret_key", "sigv4-secret-key"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.region", "sigv4-region"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.service_name", "sigv4-service-name"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.session_token", "sigv4-session-token"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.content", utils.ConvertToSha256("content-certificate")),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.filename", "key"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key")),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.url", "https://proxy.url"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.%", "2"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.Accept", "application/json"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.assertion.#", "2"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.type", "statusCode"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.operator", "is"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.target", "200"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.type", "body"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.operator", "validatesJSONSchema"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.jsonschema", "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.metaschema", "draft-07"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.#", "2"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.name", "VAR_EXTRACT_BODY"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.type", "http_body"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.field", ""),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "json_path"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", "$.id"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.secure", "false"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.name", "VAR_EXTRACT_HEADER"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.type", "http_header"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.field", "content-length"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.type", "regex"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.value", ".*"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.secure", "true"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.retry.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.retry.0.count", "5"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.1.name", "Second api step"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.type", "oauth-client"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.audience", "audience"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_id", "client-id"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_secret", "client-secret"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.scope", "scope"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.token_api_authentication", "header"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.name", "Third api step"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.type", "oauth-rop"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.audience", "audience"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_id", "client-id"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_secret", "client-secret"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.resource", "resource"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.scope", "scope"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.token_api_authentication", "body"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.username", "username"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.password", "password"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.3.name", "Fourth api step"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.type", "digest"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.username", "username"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.name", "gRPC health check step"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.subtype", "grpc"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.host", "https://docs.datadoghq.com"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.port", "443"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.call_type", "healthcheck"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.service", "greeter.Greeter"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.request_metadata.%", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.request_metadata.foo", "bar"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.assertion.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.type", "grpcHealthcheckStatus"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.operator", "is"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.target", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.name", "gRPC behavior check step"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.subtype", "grpc"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.host", "https://docs.datadoghq.com"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.port", "443"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.call_type", "unary"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.service", "greeter.Greeter"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.method", "SayHello"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.message", "{\"name\": \"John\"}"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.plain_proto_file", "some proto file"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.request_metadata.%", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.request_metadata.foo", "bar"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.assertion.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.type", "grpcProto"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.operator", "validatesJSONPath"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.jsonpath", "$.message"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.operator", "is"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, John!"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.#", "2"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.name", "VAR_EXTRACT_MESSAGE"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.type", "grpc_message"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.type", "json_path"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.value", "$.id"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.name", "VAR_EXTRACT_MESSAGE_2"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.type", "grpc_message"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.#", "1"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.0.type", "raw"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.6.subtype", "wait"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "api_step.6.value", "5"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
+// 			resource.TestCheckResourceAttr(
+// 				"datadog_synthetics_test.multi", "config_variable.0.name", "VARIABLE_NAME"),
+// 		),
+// 	}
+// }
 
-func createSyntheticsMultistepAPITestConfig(testName string, variableName string) string {
-	return fmt.Sprintf(`
-resource "datadog_synthetics_global_variable" "global_variable" {
-  name        = "%[2]s"
-  description = "a global variable"
-  tags        = ["foo:bar", "baz"]
-  value       = "variable-value"
-}
+// func createSyntheticsMultistepAPITestConfig(testName string, variableName string) string {
+// 	return fmt.Sprintf(`
+// resource "datadog_synthetics_global_variable" "global_variable" {
+//   name        = "%[2]s"
+//   description = "a global variable"
+//   tags        = ["foo:bar", "baz"]
+//   value       = "variable-value"
+// }
 
-resource "datadog_synthetics_test" "multi" {
-  type      = "api"
-  subtype   = "multi"
-  locations = ["aws:eu-central-1"]
-  options_list {
-    tick_every           = 900
-    min_failure_duration = 0
-    min_location_failed  = 1
-}
-  name    = "%[1]s"
-  message = "Notify @datadog.user"
-  tags    = ["multistep"]
-  status  = "paused"
+// resource "datadog_synthetics_test" "multi" {
+//   type      = "api"
+//   subtype   = "multi"
+//   locations = ["aws:eu-central-1"]
+//   options_list {
+//     tick_every           = 900
+//     min_failure_duration = 0
+//     min_location_failed  = 1
+// }
+//   name    = "%[1]s"
+//   message = "Notify @datadog.user"
+//   tags    = ["multistep"]
+//   status  = "paused"
 
-  config_variable {
-    id   = datadog_synthetics_global_variable.global_variable.id
-    type = "global"
-    name = "VARIABLE_NAME"
-  }
+//   config_variable {
+//     id   = datadog_synthetics_global_variable.global_variable.id
+//     type = "global"
+//     name = "VARIABLE_NAME"
+//   }
 
-  api_step {
-    name = "First api step"
-	exit_if_succeed = true
-    request_definition {
-      method           = "POST"
-      url              = "https://www.datadoghq.com"
-      body             = "this is a body"
-      timeout          = 30
-      allow_insecure   = true
-      follow_redirects = true
-      no_saving_response_body = true
-      http_version = "http2"
-    }
-    request_headers = {
-      Accept             = "application/json"
-      X-Datadog-Trace-ID = "123456789"
-    }
-    request_query = {
-      foo = "bar"
-    }
-    request_basicauth {
-		type = "sigv4"
-		access_key = "sigv4-access-key"
-		secret_key = "sigv4-secret-key"
-		region = "sigv4-region"
-		service_name = "sigv4-service-name"
-		session_token = "sigv4-session-token"
-    }
-    request_client_certificate {
-      cert {
-        content = "content-certificate"
-      }
-      key {
-        content  = "content-key"
-        filename = "key"
-      }
-    }
-    request_proxy {
-		url = "https://proxy.url"
-		headers = {
-			Accept = "application/json"
-			X-Datadog-Trace-ID = "123456789"
-		}
-	}
-    assertion {
-      type     = "statusCode"
-      operator = "is"
-      target   = "200"
-    }
-	assertion {
-		type = "body"
-		operator = "validatesJSONSchema"
-		targetjsonschema {
-			jsonschema = "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"
-			metaschema = "draft-07"
-		}
-	}
-    extracted_value {
-      name  = "VAR_EXTRACT_BODY"
-      type  = "http_body"
-      parser {
-        type  = "json_path"
-        value = "$.id"
-      }
-    }
-    extracted_value {
-      name  = "VAR_EXTRACT_HEADER"
-      field = "content-length"
-      type  = "http_header"
-      parser {
-        type  = "regex"
-        value = ".*"
-      }
-      secure = true
-    }
-    allow_failure = true
-    is_critical   = false
-    retry {
-      count    = 5
-      interval = 1000
-    }
-  }
+//   api_step {
+//     name = "First api step"
+// 	exit_if_succeed = true
+//     request_definition {
+//       method           = "POST"
+//       url              = "https://www.datadoghq.com"
+//       body             = "this is a body"
+//       timeout          = 30
+//       allow_insecure   = true
+//       follow_redirects = true
+//       no_saving_response_body = true
+//       http_version = "http2"
+//     }
+//     request_headers = {
+//       Accept             = "application/json"
+//       X-Datadog-Trace-ID = "123456789"
+//     }
+//     request_query = {
+//       foo = "bar"
+//     }
+//     request_basicauth {
+// 		type = "sigv4"
+// 		access_key = "sigv4-access-key"
+// 		secret_key = "sigv4-secret-key"
+// 		region = "sigv4-region"
+// 		service_name = "sigv4-service-name"
+// 		session_token = "sigv4-session-token"
+//     }
+//     request_client_certificate {
+//       cert {
+//         content = "content-certificate"
+//       }
+//       key {
+//         content  = "content-key"
+//         filename = "key"
+//       }
+//     }
+//     request_proxy {
+// 		url = "https://proxy.url"
+// 		headers = {
+// 			Accept = "application/json"
+// 			X-Datadog-Trace-ID = "123456789"
+// 		}
+// 	}
+//     assertion {
+//       type     = "statusCode"
+//       operator = "is"
+//       target   = "200"
+//     }
+// 	assertion {
+// 		type = "body"
+// 		operator = "validatesJSONSchema"
+// 		targetjsonschema {
+// 			jsonschema = "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"
+// 			metaschema = "draft-07"
+// 		}
+// 	}
+//     extracted_value {
+//       name  = "VAR_EXTRACT_BODY"
+//       type  = "http_body"
+//       parser {
+//         type  = "json_path"
+//         value = "$.id"
+//       }
+//     }
+//     extracted_value {
+//       name  = "VAR_EXTRACT_HEADER"
+//       field = "content-length"
+//       type  = "http_header"
+//       parser {
+//         type  = "regex"
+//         value = ".*"
+//       }
+//       secure = true
+//     }
+//     allow_failure = true
+//     is_critical   = false
+//     retry {
+//       count    = 5
+//       interval = 1000
+//     }
+//   }
 
-  api_step {
-    name = "Second api step"
-    request_definition {
-      method           = "GET"
-      url              = "https://docs.datadoghq.com"
-      timeout          = 30
-      allow_insecure   = true
-      follow_redirects = true
-    }
-    request_basicauth {
-		type = "oauth-client"
-		audience = "audience"
-		client_id = "client-id"
-		client_secret = "client-secret"
-		scope = "scope"
-		token_api_authentication = "header"
-		access_token_url = "https://token.datadoghq.com"
-	}
-    assertion {
-      type     = "statusCode"
-      operator = "is"
-      target   = "200"
-    }
-  }
+//   api_step {
+//     name = "Second api step"
+//     request_definition {
+//       method           = "GET"
+//       url              = "https://docs.datadoghq.com"
+//       timeout          = 30
+//       allow_insecure   = true
+//       follow_redirects = true
+//     }
+//     request_basicauth {
+// 		type = "oauth-client"
+// 		audience = "audience"
+// 		client_id = "client-id"
+// 		client_secret = "client-secret"
+// 		scope = "scope"
+// 		token_api_authentication = "header"
+// 		access_token_url = "https://token.datadoghq.com"
+// 	}
+//     assertion {
+//       type     = "statusCode"
+//       operator = "is"
+//       target   = "200"
+//     }
+//   }
 
-  api_step {
-    name = "Third api step"
-    request_definition {
-      method           = "GET"
-      url              = "https://docs.datadoghq.com"
-      timeout          = 30
-      allow_insecure   = true
-      follow_redirects = true
-    }
-    request_basicauth {
-		type = "oauth-rop"
-		audience = "audience"
-		client_id = "client-id"
-		client_secret = "client-secret"
-		resource = "resource"
-		scope = "scope"
-		token_api_authentication = "body"
-		access_token_url = "https://token.datadoghq.com"
-		username = "username"
-		password = "password"
-	}
-    assertion {
-      type     = "statusCode"
-      operator = "is"
-      target   = "200"
-    }
-  }
+//   api_step {
+//     name = "Third api step"
+//     request_definition {
+//       method           = "GET"
+//       url              = "https://docs.datadoghq.com"
+//       timeout          = 30
+//       allow_insecure   = true
+//       follow_redirects = true
+//     }
+//     request_basicauth {
+// 		type = "oauth-rop"
+// 		audience = "audience"
+// 		client_id = "client-id"
+// 		client_secret = "client-secret"
+// 		resource = "resource"
+// 		scope = "scope"
+// 		token_api_authentication = "body"
+// 		access_token_url = "https://token.datadoghq.com"
+// 		username = "username"
+// 		password = "password"
+// 	}
+//     assertion {
+//       type     = "statusCode"
+//       operator = "is"
+//       target   = "200"
+//     }
+//   }
 
-  api_step {
-    name = "Fourth api step"
-    request_definition {
-      method           = "GET"
-      url              = "https://docs.datadoghq.com"
-      timeout          = 30
-      allow_insecure   = true
-      follow_redirects = true
-    }
-    request_basicauth {
-		type = "digest"
-		username = "username"
-		password = "password"
-	}
-    assertion {
-      type     = "statusCode"
-      operator = "is"
-      target   = "200"
-    }
-  }
+//   api_step {
+//     name = "Fourth api step"
+//     request_definition {
+//       method           = "GET"
+//       url              = "https://docs.datadoghq.com"
+//       timeout          = 30
+//       allow_insecure   = true
+//       follow_redirects = true
+//     }
+//     request_basicauth {
+// 		type = "digest"
+// 		username = "username"
+// 		password = "password"
+// 	}
+//     assertion {
+//       type     = "statusCode"
+//       operator = "is"
+//       target   = "200"
+//     }
+//   }
 
-  api_step {
-    name    = "gRPC health check step"
-    subtype = "grpc"
-    request_definition {
-      host             = "https://docs.datadoghq.com"
-      port             = 443
-      call_type        = "healthcheck"
-      service          = "greeter.Greeter"
-    }
-    request_metadata = {
-      foo = "bar"
-    }
-    assertion {
-      type     = "grpcHealthcheckStatus"
-      operator = "is"
-      target = 1
-    }
-  } 
- 
-  api_step {
-    name    = "gRPC behavior check step"
-    subtype = "grpc"
-    request_definition {
-      host             = "https://docs.datadoghq.com"
-      port             = 443
-      call_type        = "unary"
-      service          = "greeter.Greeter"
-      method           = "SayHello"
-      message          = "{\"name\": \"John\"}"
-      plain_proto_file = "some proto file"
-    }
-    request_metadata = {
-      foo = "bar"
-    }
-    assertion {
-      type     = "grpcProto"
-      operator = "validatesJSONPath"
-      targetjsonpath {
-        jsonpath    = "$.message"
-        operator    = "is"
-        targetvalue = "Hello, John!"
-      }
-    }
-    extracted_value {
-      name  = "VAR_EXTRACT_MESSAGE"
-      type  = "grpc_message"
-      parser {
-        type  = "json_path"
-        value = "$.id"
-      }
-    }
-	extracted_value {
-      name  = "VAR_EXTRACT_MESSAGE_2"
-      type  = "grpc_message"
-      parser {
-        type  = "raw"
-      }
-    }
-  }
-  api_step {
-    name = "Wait step"
-    subtype = "wait"
-    value = 5
-  }
-}
-`, testName, variableName)
-}
+//   api_step {
+//     name    = "gRPC health check step"
+//     subtype = "grpc"
+//     request_definition {
+//       host             = "https://docs.datadoghq.com"
+//       port             = 443
+//       call_type        = "healthcheck"
+//       service          = "greeter.Greeter"
+//     }
+//     request_metadata = {
+//       foo = "bar"
+//     }
+//     assertion {
+//       type     = "grpcHealthcheckStatus"
+//       operator = "is"
+//       target = 1
+//     }
+//   }
+
+//   api_step {
+//     name    = "gRPC behavior check step"
+//     subtype = "grpc"
+//     request_definition {
+//       host             = "https://docs.datadoghq.com"
+//       port             = 443
+//       call_type        = "unary"
+//       service          = "greeter.Greeter"
+//       method           = "SayHello"
+//       message          = "{\"name\": \"John\"}"
+//       plain_proto_file = "some proto file"
+//     }
+//     request_metadata = {
+//       foo = "bar"
+//     }
+//     assertion {
+//       type     = "grpcProto"
+//       operator = "validatesJSONPath"
+//       targetjsonpath {
+//         jsonpath    = "$.message"
+//         operator    = "is"
+//         targetvalue = "Hello, John!"
+//       }
+//     }
+//     extracted_value {
+//       name  = "VAR_EXTRACT_MESSAGE"
+//       type  = "grpc_message"
+//       parser {
+//         type  = "json_path"
+//         value = "$.id"
+//       }
+//     }
+// 	extracted_value {
+//       name  = "VAR_EXTRACT_MESSAGE_2"
+//       type  = "grpc_message"
+//       parser {
+//         type  = "raw"
+//       }
+//     }
+//   }
+//   api_step {
+//     name = "Wait step"
+//     subtype = "wait"
+//     value = 5
+//   }
+// }
+// `, testName, variableName)
+// }
 
 func createSyntheticsMultistepAPITestFileUpload(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
 	bodyType := "multipart/form-data"
