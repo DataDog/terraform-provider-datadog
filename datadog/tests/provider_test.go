@@ -194,6 +194,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/resource_datadog_integration_aws_test":                            "integration-aws",
 	"tests/resource_datadog_integration_aws_account_test":                    "integration-aws",
 	"tests/resource_datadog_integration_aws_event_bridge_test":               "integration-aws",
+	"tests/resource_datadog_integration_aws_external_id_test":                "integration-aws",
 	"tests/resource_datadog_integration_azure_test":                          "integration-azure",
 	"tests/resource_datadog_integration_cloudflare_account_test":             "integration-cloudflare",
 	"tests/resource_datadog_integration_confluent_account_test":              "integration-confluend-account",
