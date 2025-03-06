@@ -36,35 +36,35 @@ type syntheticsGlobalVariableResource struct {
 }
 
 type syntheticsGlobalVariableModel struct {
-	Id               types.String            `tfsdk:"id"`
-	Name             types.String            `tfsdk:"name"`
-	Description      types.String            `tfsdk:"description"`
-	Tags             types.List              `tfsdk:"tags"`
-	Value            types.String            `tfsdk:"value"`
-	Secure           types.Bool              `tfsdk:"secure"`
-	ParseTestId      types.String            `tfsdk:"parse_test_id"`
-	ParseTestOptions []parseTestOptionsModel `tfsdk:"parse_test_options"`
-	Options          []optionsModel          `tfsdk:"options"`
-	RestrictedRoles  types.List              `tfsdk:"restricted_roles"`
-	IsTotp           types.Bool              `tfsdk:"is_totp"`
-	IsFido           types.Bool              `tfsdk:"is_fido"`
+	Id               types.String                                    `tfsdk:"id"`
+	Name             types.String                                    `tfsdk:"name"`
+	Description      types.String                                    `tfsdk:"description"`
+	Tags             types.List                                      `tfsdk:"tags"`
+	Value            types.String                                    `tfsdk:"value"`
+	Secure           types.Bool                                      `tfsdk:"secure"`
+	ParseTestId      types.String                                    `tfsdk:"parse_test_id"`
+	ParseTestOptions []syntheticsGlobalVariableParseTestOptionsModel `tfsdk:"parse_test_options"`
+	Options          []syntheticsGlobalVariableOptionsModel          `tfsdk:"options"`
+	RestrictedRoles  types.List                                      `tfsdk:"restricted_roles"`
+	IsTotp           types.Bool                                      `tfsdk:"is_totp"`
+	IsFido           types.Bool                                      `tfsdk:"is_fido"`
 }
 
-type parseTestOptionsModel struct {
-	Field             types.String  `tfsdk:"field"`
-	Type              types.String  `tfsdk:"type"`
-	Parser            []parserModel `tfsdk:"parser"`
-	LocalVariableName types.String  `tfsdk:"local_variable_name"`
+type syntheticsGlobalVariableParseTestOptionsModel struct {
+	Field             types.String                          `tfsdk:"field"`
+	Type              types.String                          `tfsdk:"type"`
+	Parser            []syntheticsGlobalVariableParserModel `tfsdk:"parser"`
+	LocalVariableName types.String                          `tfsdk:"local_variable_name"`
 }
-type parserModel struct {
+type syntheticsGlobalVariableParserModel struct {
 	Type  types.String `tfsdk:"type"`
 	Value types.String `tfsdk:"value"`
 }
 
-type optionsModel struct {
-	TotpParameters []totpParametersModel `tfsdk:"totp_parameters"`
+type syntheticsGlobalVariableOptionsModel struct {
+	TotpParameters []syntheticsGlobalVariableTotpParametersModel `tfsdk:"totp_parameters"`
 }
-type totpParametersModel struct {
+type syntheticsGlobalVariableTotpParametersModel struct {
 	Digits          types.Int64 `tfsdk:"digits"`
 	RefreshInterval types.Int64 `tfsdk:"refresh_interval"`
 }
@@ -359,14 +359,14 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 		}
 		if options, ok := value.GetOptionsOk(); ok {
 
-			localVariableOptions := optionsModel{}
+			localVariableOptions := syntheticsGlobalVariableOptionsModel{}
 			if totpParameters, ok := options.GetTotpParametersOk(); ok {
-				localTotpParameters := totpParametersModel{}
+				localTotpParameters := syntheticsGlobalVariableTotpParametersModel{}
 				localTotpParameters.Digits = types.Int64Value(int64(totpParameters.GetDigits()))
 				localTotpParameters.RefreshInterval = types.Int64Value(int64(totpParameters.GetRefreshInterval()))
-				localVariableOptions.TotpParameters = []totpParametersModel{localTotpParameters}
+				localVariableOptions.TotpParameters = []syntheticsGlobalVariableTotpParametersModel{localTotpParameters}
 			}
-			state.Options = []optionsModel{localVariableOptions}
+			state.Options = []syntheticsGlobalVariableOptionsModel{localVariableOptions}
 		}
 	}
 
@@ -378,24 +378,24 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 		state.ParseTestId = types.StringValue(*parseTestId)
 
 		if parseTestOptions, ok := resp.GetParseTestOptionsOk(); ok {
-			localParseTestOptions := parseTestOptionsModel{}
+			localParseTestOptions := syntheticsGlobalVariableParseTestOptionsModel{}
 			localParseTestOptions.Type = types.StringValue(string(parseTestOptions.GetType()))
 			if field, ok := parseTestOptions.GetFieldOk(); ok {
 				localParseTestOptions.Field = types.StringValue(*field)
 			}
 			if parser, ok := parseTestOptions.GetParserOk(); ok {
-				localParser := parserModel{}
+				localParser := syntheticsGlobalVariableParserModel{}
 				localParser.Type = types.StringValue(string(parser.GetType()))
 				if value, ok := parser.GetValueOk(); ok {
 					localParser.Value = types.StringValue(*value)
 				}
-				localParseTestOptions.Parser = []parserModel{localParser}
+				localParseTestOptions.Parser = []syntheticsGlobalVariableParserModel{localParser}
 			}
 			if localVariableName, ok := parseTestOptions.GetLocalVariableNameOk(); ok {
 				localParseTestOptions.LocalVariableName = types.StringValue(*localVariableName)
 			}
 
-			state.ParseTestOptions = []parseTestOptionsModel{localParseTestOptions}
+			state.ParseTestOptions = []syntheticsGlobalVariableParseTestOptionsModel{localParseTestOptions}
 		}
 	}
 
