@@ -18,8 +18,10 @@ var (
 	testWorkflowDescription = "My description."
 	testWorkflowTags        = "[\"service:foo\", \"team:bar\", \"foo:bar\"]"
 	testWorkflowSpec        = `{
+	"steps": [],
 	"triggers": [
 		{
+			"startStepNames": [],
 			"workflowTrigger": {}
 		}
 	]

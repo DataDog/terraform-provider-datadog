@@ -6,14 +6,14 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 273
+        content_length: 304
         transfer_encoding: []
         trailer: {}
         host: api.datadoghq.com
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741121413","published":false,"spec":{"triggers":[{"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"webhookSecret":""},"type":"workflows"}}
+            {"data":{"attributes":{"description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741300048","published":false,"spec":{"steps":[],"triggers":[{"startStepNames":[],"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"webhookSecret":""},"type":"workflows"}}
         form: {}
         headers:
             Accept:
@@ -28,15 +28,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 557
+        content_length: 584
         uncompressed: false
-        body: '{"data":{"id":"faba58a2-a35b-46f6-ad0f-97e5817d88a8","type":"workflows","attributes":{"createdAt":"2025-03-04T20:50:15.292521Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741121413","published":false,"spec":{"triggers":[{"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-04T20:50:15.292521Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"3d445719-4fc9-4782-9666-3f2e63a57b8c","type":"workflows","attributes":{"createdAt":"2025-03-06T22:27:30.1013Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741300048","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-06T22:27:30.1013Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 119.887125ms
+        duration: 144.393375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/workflows/faba58a2-a35b-46f6-ad0f-97e5817d88a8
+        url: https://api.datadoghq.com/api/v2/workflows/3d445719-4fc9-4782-9666-3f2e63a57b8c
         method: GET
       response:
         proto: HTTP/1.1
@@ -61,15 +61,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 557
+        content_length: 584
         uncompressed: false
-        body: '{"data":{"id":"faba58a2-a35b-46f6-ad0f-97e5817d88a8","type":"workflows","attributes":{"createdAt":"2025-03-04T20:50:15.292521Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741121413","published":false,"spec":{"triggers":[{"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-04T20:50:15.292521Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"3d445719-4fc9-4782-9666-3f2e63a57b8c","type":"workflows","attributes":{"createdAt":"2025-03-06T22:27:30.1013Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741300048","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-06T22:27:30.1013Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 73.772667ms
+        duration: 90.791375ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/workflows/faba58a2-a35b-46f6-ad0f-97e5817d88a8
+        url: https://api.datadoghq.com/api/v2/workflows/3d445719-4fc9-4782-9666-3f2e63a57b8c
         method: GET
       response:
         proto: HTTP/1.1
@@ -94,15 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 557
+        content_length: 584
         uncompressed: false
-        body: '{"data":{"id":"faba58a2-a35b-46f6-ad0f-97e5817d88a8","type":"workflows","attributes":{"createdAt":"2025-03-04T20:50:15.292521Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741121413","published":false,"spec":{"triggers":[{"workflowTrigger":{}}]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-04T20:50:15.292521Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
+        body: '{"data":{"id":"3d445719-4fc9-4782-9666-3f2e63a57b8c","type":"workflows","attributes":{"createdAt":"2025-03-06T22:27:30.1013Z","description":"My description.","name":"tf-TestAccDatadogWorkflowAutomationResource-local-1741300048","published":false,"spec":{"triggers":[{"startStepNames":[],"workflowTrigger":{}}],"steps":[]},"tags":["foo:bar","service:foo","team:bar"],"updatedAt":"2025-03-06T22:27:30.1013Z"},"relationships":{"creator":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}},"owner":{"data":{"id":"3ad549bf-eba0-11e9-a77a-0705486660d0","type":"users"}}}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 85.465833ms
+        duration: 91.49475ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/workflows/faba58a2-a35b-46f6-ad0f-97e5817d88a8
+        url: https://api.datadoghq.com/api/v2/workflows/3d445719-4fc9-4782-9666-3f2e63a57b8c
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -133,7 +133,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 77.175917ms
+        duration: 75.804333ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/workflows/faba58a2-a35b-46f6-ad0f-97e5817d88a8
+        url: https://api.datadoghq.com/api/v2/workflows/3d445719-4fc9-4782-9666-3f2e63a57b8c
         method: GET
       response:
         proto: HTTP/1.1
@@ -166,4 +166,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 78.079292ms
+        duration: 49.924125ms

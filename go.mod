@@ -99,4 +99,4 @@ require (
 
 go 1.23.0
 
-replace github.com/DataDog/datadog-api-client-go/v2 => ../datadog-api-client-go
+//replace github.com/DataDog/datadog-api-client-go/v2 => ../datadog-api-client-go
