@@ -27,5 +27,5 @@ data "datadog_app_builder_app_json" "my_app" {
 
 ### Read-Only
 
-- `action_query_ids_to_connection_ids` (Map of String) A map of the App's Action Query IDs to Action Connection IDs.
+- `action_query_names_to_connection_ids` (Map of String) A computed map of the App's Action Query Names to Action Connection IDs.
 - `app_json` (String) The JSON representation of the App.

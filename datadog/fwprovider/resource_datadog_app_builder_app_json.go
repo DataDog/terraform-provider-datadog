@@ -39,15 +39,15 @@ type appBuilderAppJSONResource struct {
 
 // try single property JSON input -> validation will be handled on the API side
 type appBuilderAppJSONResourceModel struct {
-	ID                                    types.String                             `tfsdk:"id"`
-	AppJson                               customtypes.AppBuilderAppJSONStringValue `tfsdk:"app_json"`
-	OverrideActionQueryIDsToConnectionIDs types.Map                                `tfsdk:"override_action_query_ids_to_connection_ids"`
-	ActionQueryIDsToConnectionIDs         types.Map                                `tfsdk:"action_query_ids_to_connection_ids"`
-	Name                                  types.String                             `tfsdk:"name"`
-	Description                           types.String                             `tfsdk:"description"`
-	RootInstanceName                      types.String                             `tfsdk:"root_instance_name"`
-	Tags                                  types.Set                                `tfsdk:"tags"`
-	PublishStatusUpdate                   types.String                             `tfsdk:"publish_status_update"`
+	ID                                      types.String                             `tfsdk:"id"`
+	AppJson                                 customtypes.AppBuilderAppJSONStringValue `tfsdk:"app_json"`
+	OverrideActionQueryNamesToConnectionIDs types.Map                                `tfsdk:"override_action_query_names_to_connection_ids"`
+	ActionQueryNamesToConnectionIDs         types.Map                                `tfsdk:"action_query_names_to_connection_ids"`
+	Name                                    types.String                             `tfsdk:"name"`
+	Description                             types.String                             `tfsdk:"description"`
+	RootInstanceName                        types.String                             `tfsdk:"root_instance_name"`
+	Tags                                    types.Set                                `tfsdk:"tags"`
+	PublishStatusUpdate                     types.String                             `tfsdk:"publish_status_update"`
 }
 
 func NewAppBuilderAppJSONResource() resource.Resource {
@@ -77,17 +77,16 @@ func (r *appBuilderAppJSONResource) Schema(_ context.Context, _ resource.SchemaR
 				},
 				CustomType: customtypes.AppBuilderAppJSONStringType{},
 			},
-			"override_action_query_ids_to_connection_ids": schema.MapAttribute{
+			"override_action_query_names_to_connection_ids": schema.MapAttribute{
 				Optional:    true,
 				ElementType: types.StringType,
-				Description: "If specified, this will override the Action Connection IDs for the specified Action Query IDs in the App JSON.",
+				Description: "If specified, this will override the Action Connection IDs for the specified Action Query Names in the App JSON.",
 			},
-			"action_query_ids_to_connection_ids": schema.MapAttribute{
+			"action_query_names_to_connection_ids": schema.MapAttribute{
 				Computed:    true,
 				ElementType: types.StringType,
-				Description: "A computed map of the App's Action Query IDs to Action Connection IDs.",
+				Description: "A computed map of the App's Action Query Names to Action Connection IDs.",
 			},
-			// TODO: maybe change above to remove override and add computed/output to the other one
 			"name": schema.StringAttribute{
 				Optional:    true,
 				Description: "If specified, this will override the name of the App in the App JSON.",
@@ -165,9 +164,9 @@ func (r *appBuilderAppJSONResource) Create(ctx context.Context, request resource
 
 	// set computed values
 	plan.ID = types.StringValue(resp.Data.GetId().String())
-	plan.ActionQueryIDsToConnectionIDs, err = buildActionQueryIDsToConnectionIDsMap(createRequest.GetData().Attributes.GetQueries())
+	plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(createRequest.GetData().Attributes.GetQueries())
 	if err != nil {
-		response.Diagnostics.AddError("error building action_query_ids_to_connection_ids map", err.Error())
+		response.Diagnostics.AddError("error building action_query_names_to_connection_ids map", err.Error())
 		return
 	}
 
@@ -238,9 +237,9 @@ func (r *appBuilderAppJSONResource) Update(ctx context.Context, request resource
 	}
 
 	// set computed values
-	plan.ActionQueryIDsToConnectionIDs, err = buildActionQueryIDsToConnectionIDsMap(updateRequest.GetData().Attributes.GetQueries())
+	plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(updateRequest.GetData().Attributes.GetQueries())
 	if err != nil {
-		response.Diagnostics.AddError("error building action_query_ids_to_connection_ids map", err.Error())
+		response.Diagnostics.AddError("error building action_query_names_to_connection_ids map", err.Error())
 		return
 	}
 
@@ -299,12 +298,12 @@ func apiResponseToAppBuilderAppJSONModel(resp datadogV2.GetAppResponse) (*appBui
 
 	// build action query ids to connection ids map
 	queries := attributes.GetQueries()
-	actionQueryIDsToConnectionIDs, err := buildActionQueryIDsToConnectionIDsMap(queries)
+	actionQueryNamesToConnectionIDs, err := buildActionQueryNamesToConnectionIDsMap(queries)
 	if err != nil {
-		err = fmt.Errorf("error building action_query_ids_to_connection_ids map: %s", err)
+		err = fmt.Errorf("error building action_query_names_to_connection_ids map: %s", err)
 		return nil, err
 	}
-	appBuilderAppJSONModel.ActionQueryIDsToConnectionIDs = actionQueryIDsToConnectionIDs
+	appBuilderAppJSONModel.ActionQueryNamesToConnectionIDs = actionQueryNamesToConnectionIDs
 
 	return appBuilderAppJSONModel, nil
 }
@@ -320,7 +319,7 @@ func appBuilderAppJSONModelToCreateApiRequest(plan appBuilderAppJSONResourceMode
 	}
 
 	// replace connection ids in the create request attributes with the ones provided in the plan
-	err = replaceConnectionIDsInActionQueries(plan.OverrideActionQueryIDsToConnectionIDs, attributes.GetQueries())
+	err = replaceConnectionIDsInActionQueries(plan.OverrideActionQueryNamesToConnectionIDs, attributes.GetQueries())
 	if err != nil {
 		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
 		return nil, err
@@ -344,7 +343,7 @@ func appBuilderAppJSONModelToUpdateApiRequest(plan appBuilderAppJSONResourceMode
 	}
 
 	// replace connection ids in the update request attributes with the ones provided in the plan
-	err = replaceConnectionIDsInActionQueries(plan.OverrideActionQueryIDsToConnectionIDs, attributes.GetQueries())
+	err = replaceConnectionIDsInActionQueries(plan.OverrideActionQueryNamesToConnectionIDs, attributes.GetQueries())
 	if err != nil {
 		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
 		return nil, err
@@ -379,60 +378,53 @@ func readAppBuilderAppJSON(ctx context.Context, api *datadogV2.AppBuilderApi, id
 	return appModel, nil
 }
 
-// replace the connection ids in the queries with the ones provided in the plan, as specified by {action_query_id: connection_id}
-func replaceConnectionIDsInActionQueries(overrideActionQueryIDsToConnectionIDs types.Map, queries []datadogV2.Query) error {
-	mapElements := overrideActionQueryIDsToConnectionIDs.Elements()
+// replace the connection ids in the queries with the ones provided in the plan, as specified by {action_query_name: connection_id}
+func replaceConnectionIDsInActionQueries(overrideActionQueryNamesToConnectionIDs types.Map, queries []datadogV2.Query) error {
+	mapElements := overrideActionQueryNamesToConnectionIDs.Elements()
 
-	// skip if no action query ids to connection ids are provided
+	// skip if no action query names to connection ids are provided
 	if len(mapElements) == 0 {
 		return nil
 	}
 
-	// keep track of specified query ids that have not been used
-	unusedQueryIDs := make(map[string]struct{})
+	// keep track of specified query names that have not been used
+	unusedQueryNames := make(map[string]struct{})
 	for key := range mapElements {
-		unusedQueryIDs[key] = struct{}{}
+		unusedQueryNames[key] = struct{}{}
 	}
 
-	// loop over queries list and replace connection ids if the query id is in the map
-	for i, query := range queries {
-		queryID := query.GetId().String()
-		if connectionID, ok := mapElements[queryID]; ok {
+	// loop over queries list and replace connection ids if the query name is in the map
+	for _, query := range queries {
+		// get the query name
+		queryName := getQueryName(query)
+		actionQuery := query.ActionQuery
+
+		if connectionID, ok := mapElements[queryName]; ok {
 			// must be an action query
-			queryType := query.GetType()
-			if queryType != datadogV2.QUERYTYPE_ACTION {
-				return fmt.Errorf("query with ID %s is not an Action Query: %s", queryID, queryType)
+			if actionQuery == nil {
+				return fmt.Errorf("query with Name %s is not an Action Query", queryName)
 			}
 
 			connectionIDString := connectionID.(types.String).ValueString()
-			err := setConnectionIDForActionQuery(queryID, &queries[i], connectionIDString)
+			err := setConnectionIDForActionQuery(actionQuery, connectionIDString)
 			if err != nil {
 				return err
 			}
-			delete(unusedQueryIDs, queryID)
+			delete(unusedQueryNames, queryName)
 		}
 	}
 
-	// return err if any query ids specified in the map were not found in the queries list
-	if len(unusedQueryIDs) > 0 {
-		return fmt.Errorf("action Query IDs not found in the App's queries: %v", slices.Collect(maps.Keys(unusedQueryIDs)))
+	// return err if any query names specified in the map were not found in the queries list
+	if len(unusedQueryNames) > 0 {
+		return fmt.Errorf("action Query Names not found in the App's queries: %v", slices.Collect(maps.Keys(unusedQueryNames)))
 	}
 
 	return nil
 }
 
-func setConnectionIDForActionQuery(queryID string, query *datadogV2.Query, connectionIDString string) error {
-	// TODO: update this once the API strictly types the Action Query schema
-	properties := query.GetProperties().(map[string]any)
-	spec, ok := properties["spec"]
-	if !ok {
-		return fmt.Errorf("action Query with ID %s is missing a spec", queryID)
-	}
-
-	specMap, ok := spec.(map[string]any)
-	if !ok {
-		return fmt.Errorf("action Query with ID %s has invalid spec: %s", queryID, specMap)
-	}
+func setConnectionIDForActionQuery(actionQuery *datadogV2.ActionQuery, connectionIDString string) error {
+	// API strictly types the Action Query schema so invalid queries should be caught when unmarshaling, before this step
+	specObj := actionQuery.Properties.GetSpec().ActionQuerySpecObject
 
 	// UUID validation also happens in API, but doing it here can help Terraform users catch errors earlier
 	_, err := uuid.Parse(connectionIDString)
@@ -441,43 +433,27 @@ func setConnectionIDForActionQuery(queryID string, query *datadogV2.Query, conne
 		return err
 	}
 
-	specMap["connectionId"] = connectionIDString
+	specObj.SetConnectionId(connectionIDString)
 	return nil
 }
 
-func buildActionQueryIDsToConnectionIDsMap(queries []datadogV2.Query) (types.Map, error) {
+func buildActionQueryNamesToConnectionIDsMap(queries []datadogV2.Query) (types.Map, error) {
 	elementsMap := map[string]attr.Value{}
 
 	for _, query := range queries {
-		queryID := query.GetId().String()
-
 		// must be an action query
-		queryType := query.GetType()
-		if queryType != datadogV2.QUERYTYPE_ACTION {
+		actionQuery := query.ActionQuery
+		if actionQuery == nil {
 			continue
 		}
 
-		// TODO: update this once the API strictly types the Action Query schema
+		queryName := actionQuery.GetName()
+
 		// since we are reading the response from the API, we can ignore validation errors
-		properties, ok := query.GetProperties().(map[string]any)
-		if !ok {
-			continue
-		}
-		spec, ok := properties["spec"]
-		if !ok {
-			continue
-		}
-		specMap, ok := spec.(map[string]any)
-		if !ok {
-			continue
-		}
-
-		connectionID, ok := specMap["connectionId"]
-		if !ok {
-			continue
-		}
-		if connectionIDStr, ok := connectionID.(string); ok {
-			elementsMap[queryID] = types.StringValue(connectionIDStr)
+		specObj := actionQuery.Properties.GetSpec().ActionQuerySpecObject
+		if specObj.HasConnectionId() {
+			connectionID := specObj.GetConnectionId()
+			elementsMap[queryName] = types.StringValue(connectionID)
 		}
 	}
 
@@ -488,6 +464,17 @@ func buildActionQueryIDsToConnectionIDsMap(queries []datadogV2.Query) (types.Map
 	}
 
 	return resultMap, nil
+}
+
+func getQueryName(query datadogV2.Query) string {
+	if query.ActionQuery != nil {
+		return query.ActionQuery.GetName()
+	} else if query.DataTransform != nil {
+		return query.DataTransform.GetName()
+	} else if query.StateVariable != nil {
+		return query.StateVariable.GetName()
+	}
+	return ""
 }
 
 // create enum for App Builder App's PublishStatusUpdate TF field
