@@ -1,0 +1,268 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 248
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"integration":{"credentials":{"account_id":"123456789012","role":"role","type":"AWSAssumeRole"},"type":"AWS"},"name":"tf-TestAccDatadogActionConnectionDatasource_AWS_AssumeRole-local-1739210753"},"type":"action_connection"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 370
+        uncompressed: false
+        body: '{"data":{"id":"12eab7db-3b38-4568-9f60-79faa1f0446c","type":"action_connection","attributes":{"integration":{"credentials":{"account_id":"123456789012","external_id":"8aaa47a6cdda4c64964eb8a623adf5d1","principal_id":"464622532012","role":"role","type":"AWSAssumeRole"},"type":"AWS"},"name":"tf-TestAccDatadogActionConnectionDatasource_AWS_AssumeRole-local-1739210753"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 469.404838ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/12eab7db-3b38-4568-9f60-79faa1f0446c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 370
+        uncompressed: false
+        body: '{"data":{"id":"12eab7db-3b38-4568-9f60-79faa1f0446c","type":"action_connection","attributes":{"integration":{"credentials":{"account_id":"123456789012","external_id":"8aaa47a6cdda4c64964eb8a623adf5d1","principal_id":"464622532012","role":"role","type":"AWSAssumeRole"},"type":"AWS"},"name":"tf-TestAccDatadogActionConnectionDatasource_AWS_AssumeRole-local-1739210753"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 70.91684ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/12eab7db-3b38-4568-9f60-79faa1f0446c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 370
+        uncompressed: false
+        body: '{"data":{"id":"12eab7db-3b38-4568-9f60-79faa1f0446c","type":"action_connection","attributes":{"integration":{"credentials":{"account_id":"123456789012","external_id":"8aaa47a6cdda4c64964eb8a623adf5d1","principal_id":"464622532012","role":"role","type":"AWSAssumeRole"},"type":"AWS"},"name":"tf-TestAccDatadogActionConnectionDatasource_AWS_AssumeRole-local-1739210753"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 71.00927ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/12eab7db-3b38-4568-9f60-79faa1f0446c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 370
+        uncompressed: false
+        body: '{"data":{"id":"12eab7db-3b38-4568-9f60-79faa1f0446c","type":"action_connection","attributes":{"integration":{"credentials":{"account_id":"123456789012","external_id":"8aaa47a6cdda4c64964eb8a623adf5d1","principal_id":"464622532012","role":"role","type":"AWSAssumeRole"},"type":"AWS"},"name":"tf-TestAccDatadogActionConnectionDatasource_AWS_AssumeRole-local-1739210753"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 108.999847ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/12eab7db-3b38-4568-9f60-79faa1f0446c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 370
+        uncompressed: false
+        body: '{"data":{"id":"12eab7db-3b38-4568-9f60-79faa1f0446c","type":"action_connection","attributes":{"integration":{"credentials":{"account_id":"123456789012","external_id":"8aaa47a6cdda4c64964eb8a623adf5d1","principal_id":"464622532012","role":"role","type":"AWSAssumeRole"},"type":"AWS"},"name":"tf-TestAccDatadogActionConnectionDatasource_AWS_AssumeRole-local-1739210753"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 50.881053ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/12eab7db-3b38-4568-9f60-79faa1f0446c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 370
+        uncompressed: false
+        body: '{"data":{"id":"12eab7db-3b38-4568-9f60-79faa1f0446c","type":"action_connection","attributes":{"integration":{"credentials":{"account_id":"123456789012","external_id":"8aaa47a6cdda4c64964eb8a623adf5d1","principal_id":"464622532012","role":"role","type":"AWSAssumeRole"},"type":"AWS"},"name":"tf-TestAccDatadogActionConnectionDatasource_AWS_AssumeRole-local-1739210753"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 72.299578ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - '*/*'
+        url: https://api.datadoghq.com/api/v2/actions/connections/12eab7db-3b38-4568-9f60-79faa1f0446c
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 0
+        uncompressed: false
+        body: ""
+        headers: {}
+        status: 204 No Content
+        code: 204
+        duration: 101.07514ms
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/actions/connections/12eab7db-3b38-4568-9f60-79faa1f0446c
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 130
+        uncompressed: false
+        body: '{"errors":[{"title":"Generic Error","detail":"error getting connection: rpc error: code = NotFound desc = connection not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 58.497748ms

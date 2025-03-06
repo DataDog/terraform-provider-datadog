@@ -1,3 +1,19 @@
+## 3.57.0 (February 28, 2025)
+
+### BUGFIXES
+* [datadog_synthetics_test] Only set renotify_occurrences if renotify_interval is set  by @Alexis-Jacob-datadog in https://github.com/DataDog/terraform-provider-datadog/pull/2871
+### IMPROVEMENTS
+* [datadog_dashboard] Handles `cell_display_mode_options` in Query Table widget by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2873
+* [datadog_dashboard] Add `clustering_pattern_field_path` and `group_by` for ListStream Widget by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2869
+### FEATURES
+* [datadog_action_connection] Support Action Connection API by @embeaken in https://github.com/DataDog/terraform-provider-datadog/pull/2718
+* [datadog_integration_ms_teams_microsoft_workflows_webhook_handle] Added Resource by @kblackdd in https://github.com/DataDog/terraform-provider-datadog/pull/2849
+
+## New Contributors
+* @embeaken made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2718
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.56.0...v3.57.0
+
 ## 3.56.0 (February 25, 2025)
 
 ### BUGFIXES
