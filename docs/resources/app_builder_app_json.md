@@ -16,13 +16,41 @@ Provides a Datadog App JSON resource for creating and managing Datadog Apps from
 # Example app JSON - loaded from a file (required for ${} syntax)
 resource "datadog_app_builder_app_json" "example_app_from_file" {
   app_json = file("${path.module}/resource.json")
+  override_action_query_names_to_connection_ids = {
+    "listTeams0" = datadog_action_connection.example_connection.id
+  }
 }
 
-# Example app JSON - inline basic
-resource "datadog_app_builder_app_json" "example_app_inline_basic" {
+# Example app JSON - inline basic with optional fields
+resource "datadog_app_builder_app_json" "example_app_inline_basic_with_optional_fields" {
+  name                  = "Example Terraform App - Basic"
+  description           = "Created using the Datadog provider in Terraform."
+  root_instance_name    = "grid0"
+  tags                  = ["team:app-builder", "service:app-builder-api", "tag_key:tag_value", "terraform_app"]
+  publish_status_update = "publish"
+
+  override_action_query_names_to_connection_ids = {
+    "listTeams0" = datadog_action_connection.example_connection.id
+  }
+
   app_json = jsonencode(
     {
-      "queries" : [],
+      "queries" : [
+        {
+          "id" : "22a65cea-b96f-44fa-a1e2-008885d7bd2e",
+          "type" : "action",
+          "name" : "listTeams0",
+          "events" : [],
+          "properties" : {
+            "spec" : {
+              "fqn" : "com.datadoghq.dd.teams.listTeams",
+              "connectionId" : "11111111-2222-3333-4444-555555555555",
+              "inputs" : {}
+            }
+          }
+        }
+      ],
+      "id" : "11111111-2222-3333-4444-555555555555",
       "components" : [
         {
           "events" : [],
@@ -33,10 +61,18 @@ resource "datadog_app_builder_app_json" "example_app_inline_basic" {
           "type" : "grid"
         }
       ],
-      "description" : "Created using the Datadog provider in Terraform.",
-      "name" : "Example Terraform App - Simple",
-      "rootInstanceName" : "grid0",
-      "tags" : [],
+      "description" : "This description will be overridden",
+      "favorite" : false,
+      "name" : "This name will be overridden",
+      "rootInstanceName" : "This rootInstanceName will be overridden",
+      "selfService" : false,
+      "tags" : ["these_tags_will_be:overridden", "foo:bar"],
+      "connections" : [
+        {
+          "id" : "11111111-2222-3333-4444-555555555555",
+          "name" : "A connection that will be overridden"
+        }
+      ]
     }
   )
 }
@@ -53,14 +89,14 @@ resource "datadog_app_builder_app_json" "example_app_inline_basic" {
 
 - `description` (String) If specified, this will override the human-readable description of the App in the App JSON.
 - `name` (String) If specified, this will override the name of the App in the App JSON.
-- `override_action_query_ids_to_connection_ids` (Map of String) If specified, this will override the Action Connection IDs for the specified Action Query IDs in the App JSON.
-- `publish_status_update` (String) If `published`, the latest app version will be published and available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist. If `unpublish`, the app will be unpublished, removing the live version of the app. If unspecified, the publish status will not be updated. Valid values are `publish`, `unpublish`.
+- `override_action_query_names_to_connection_ids` (Map of String) If specified, this will override the Action Connection IDs for the specified Action Query Names in the App JSON.
+- `publish_status_update` (String) If `publish`, the latest app version will be published and available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist. If `unpublish`, the app will be unpublished, removing the live version of the app. If unspecified, the publish status will not be updated. Valid values are `publish`, `unpublish`.
 - `root_instance_name` (String) The name of the root component of the app. This must be a grid component that contains all other components. If specified, this will override the root instance name of the App in the App JSON.
 - `tags` (Set of String) A list of tags for the app, which can be used to filter apps. If specified, this will override the list of tags for the App in the App JSON. Otherwise, tags will be returned in output.
 
 ### Read-Only
 
-- `action_query_ids_to_connection_ids` (Map of String) A computed map of the App's Action Query IDs to Action Connection IDs.
+- `action_query_names_to_connection_ids` (Map of String) A computed map of the App's Action Query Names to Action Connection IDs.
 - `id` (String) The ID of this resource.
 
 ## Import

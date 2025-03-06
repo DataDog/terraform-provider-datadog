@@ -85,7 +85,7 @@ func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex(t *testing.T) {
 	defer os.Remove(file.Name())
 
 	// write app json to file
-	_, err = file.WriteString(testComplexAppBuilderAppJSONJSON(appName))
+	_, err = file.WriteString(testComplexAppBuilderAppJSON(appName))
 	if err != nil {
 		panic(fmt.Errorf("error writing to file: %s", err))
 	}
@@ -101,7 +101,7 @@ func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex(t *testing.T) {
 					testAccCheckDatadogAppBuilderAppJSONExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestCheckResourceAttrSet(resourceName, "app_json"),
-					resource.TestCheckResourceAttr(resourceName, "app_json", testComplexAppBuilderAppJSONJSON(appName)),
+					resource.TestCheckResourceAttr(resourceName, "app_json", testComplexAppBuilderAppJSON(appName)),
 				),
 			},
 		},
@@ -126,7 +126,7 @@ func TestAccDatadogAppBuilderAppJSONResource_FromFile_Complex_Import(t *testing.
 	defer os.Remove(file.Name())
 
 	// write app json to file
-	_, err = file.WriteString(testComplexAppBuilderAppJSONJSON(appName))
+	_, err = file.WriteString(testComplexAppBuilderAppJSON(appName))
 	if err != nil {
 		panic(fmt.Errorf("error writing to file: %s", err))
 	}
@@ -197,27 +197,50 @@ func datadogAppBuilderAppJSONExistsHelper(ctx context.Context, s *terraform.Stat
 	return nil
 }
 
-func testComplexAppBuilderAppJSONJSON(name string) string {
+func testComplexAppBuilderAppJSON(name string) string {
 	return fmt.Sprintf(`
 	{
 		"queries": [
 			{
-				"id": "2df060be-0743-45b1-a952-07c70eda8c98",
-				"name": "createIssue0",
+				"id": "2480671a-04a8-4bd3-91ac-82f723ae145e",
+				"name": "getServiceNames",
+				"type": "dataTransform",
+				"properties": {
+					"outputs": "${(() => {// Write the body of your\n// transform function here.\n\n// Remember to return a value. \n\nreturn listServiceDefinitions0.outputs.data.map(output => output.attributes.schema['dd-service']);})()}"
+				}
+			},
+			{
+				"id": "4699ffaf-92ca-4e51-8a46-fac54ba1b6c2",
+				"name": "getServiceLink",
+				"type": "dataTransform",
+				"properties": {
+					"outputs": "${(() => {// Write the body of your\n// transform function here.\n\n// Remember to return a value. \n\nfunction getPagerDutyLink(ddService, data) {\n    // Iterate over the data array to find the matching dd-service\n    for (let i = 0; i < data.length; i++) {\n        if (data[i].attributes.schema['dd-service'] === ddService) {\n            // Return the corresponding PagerDuty link and exit the function\n            return data[i].attributes.schema.integrations.pagerduty;\n        }\n    }\n    // If no matching service is found, return null or an appropriate message\n    return null;\n}\n\nreturn getPagerDutyLink(region.value,listServiceDefinitions0.outputs.data)\n})()}"
+				}
+			},
+			{
+				"id": "e70f70d1-2c52-48a5-80a6-63fd50854f94",
+				"name": "getServiceId",
+				"type": "dataTransform",
+				"properties": {
+					"outputs": "${(() => {function parseExample(url) {\n    // Create a URL object from the given string\n    const urlObj = new URL(url);\n\n    // Get the pathname from the URL object\n    const pathname = urlObj.pathname;\n\n    // Split the pathname into parts using '/' as a delimiter\n    const parts = pathname.split('/');\n\n    // The last part of the array will be \"example0\"\n    const example = parts[parts.length - 1];\n\n    return example;\n}\n\n// Example usage\nreturn parseExample(getServiceLink.outputs[0].attributes.schema.integrations.pagerduty)})()}"
+				}
+			},
+			{
+				"id": "361a76b5-a868-4998-9bca-5b9dd3a8e287",
+				"name": "createOrUpdateFile0",
 				"type": "action",
 				"properties": {
 					"onlyTriggerManually": true,
-					"requiresConfirmation": true,
-					"showToastOnError": true,
 					"spec": {
-						"fqn": "com.datadoghq.jira.create_issue",
+						"fqn": "com.datadoghq.github.createOrUpdateFile",
 						"inputs": {
-							"description": "${textArea0.value}",
-							"issueTypeName": "${Issue_type.value}",
-							"priorityName": "${priority.value}",
-							"projectKey": "${project.value}",
-							"summary": "${title.value}",
-							"accountId": "00000000-0000-0000-0000-000000000000"
+							"baseBranch": "main",
+							"branchWithChanges": "new-s3-bucket-${bucketName.value}",
+							"content": "resource \"aws_s3_bucket\" \"example\" {\n  bucket = \"${bucketName.value}\"\n\n  tags = {\n    Team = \"${owner.value}\"\n    Service = \"${service.value}\"\n    Environment = \"Dev\"\n  }\n}",
+							"path": "generated-projects/My-Demo/${bucketName.value}.tf",
+							"prDescription": "Auto-generating terraform for new s3 bucket for:\n${justification.value}",
+							"prTitle": "new-s3-bucket-${bucketName.value}",
+							"repository": "DataDog/app-builder-demo"
 						}
 					}
 				},
@@ -228,8 +251,38 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 						"type": "openModal"
 					}
 				]
+			},
+			{
+				"id": "0ca0ea43-3e3a-4071-b6aa-15b72075e0c6",
+				"name": "listTeams0",
+				"type": "action",
+				"properties": {
+					"onlyTriggerManually": false,
+					"outputs": "${((outputs) => {// Use 'outputs' to reference the query's unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(item => item.attributes.name);})(self.rawOutputs)}",
+					"spec": {
+						"fqn": "com.datadoghq.dd.teams.listTeams",
+						"inputs": {},
+						"connectionId": "5afce030-9bbf-437a-aa04-540fa4768635"
+					}
+				}
+			},
+			{
+				"id": "8c203cf9-77c9-4167-a982-cb920714f3e7",
+				"name": "listServiceDefinitions0",
+				"type": "action",
+				"properties": {
+					"outputs": "${((outputs) => {// Use 'outputs' to reference the query's unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(output => output.attributes.schema['dd-service']);})(self.rawOutputs)}",
+					"spec": {
+						"fqn": "com.datadoghq.dd.service_catalog.listServiceDefinitions",
+						"inputs": {
+							"limit": 1000
+						},
+						"connectionId": "5afce030-9bbf-437a-aa04-540fa4768635"
+					}
+				}
 			}
 		],
+		"id": "e12cdda8-31a5-49f6-9307-dcd4d67cc911",
 		"components": [
 			{
 				"events": [],
@@ -244,21 +297,21 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 								"children": [
 									{
 										"events": [],
-										"name": "grid1",
+										"name": "grid2",
 										"properties": {
 											"children": [
 												{
 													"events": [],
-													"name": "gridCell3",
+													"name": "gridCell8",
 													"properties": {
 														"children": [
 															{
 																"events": [],
-																"name": "Backlog",
+																"name": "text4",
 																"properties": {
-																	"content": "## Here is the link to your [ticket](${createIssue0.outputs.issueUrl})\n\n### and you can access the backlog [here](https://example.atlassian.net)",
+																	"content": "## ✅ You've successfully created a pull request",
 																	"contentType": "markdown",
-																	"isVisible": "true",
+																	"isVisible": true,
 																	"textAlign": "center",
 																	"verticalAlign": "center"
 																},
@@ -268,10 +321,78 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 														"isVisible": "true",
 														"layout": {
 															"default": {
-																"height": 31,
+																"height": 5,
 																"width": 12,
 																"x": 0,
 																"y": 0
+															}
+														}
+													},
+													"type": "gridCell"
+												},
+												{
+													"events": [],
+													"name": "gridCell10",
+													"properties": {
+														"children": [
+															{
+																"events": [
+																	{
+																		"name": "click",
+																		"type": "openUrl",
+																		"url": "${createOrUpdateFile0?.outputs.data.url}"
+																	}
+																],
+																"name": "button1",
+																"properties": {
+																	"isBorderless": false,
+																	"isDisabled": false,
+																	"isLoading": false,
+																	"isPrimary": true,
+																	"isVisible": true,
+																	"label": "Open",
+																	"level": "default"
+																},
+																"type": "button"
+															}
+														],
+														"isVisible": "true",
+														"layout": {
+															"default": {
+																"height": 4,
+																"width": 4,
+																"x": 4,
+																"y": 17
+															}
+														}
+													},
+													"type": "gridCell"
+												},
+												{
+													"events": [],
+													"name": "gridCell0",
+													"properties": {
+														"children": [
+															{
+																"events": [],
+																"name": "text1",
+																"properties": {
+																	"content": "The request is assigned to the infrastructure team for approval. You will receive a slack notification when it is approved with the link to your new S3 bucket",
+																	"contentType": "plain_text",
+																	"isVisible": true,
+																	"textAlign": "center",
+																	"verticalAlign": "top"
+																},
+																"type": "text"
+															}
+														],
+														"isVisible": "true",
+														"layout": {
+															"default": {
+																"height": 8,
+																"width": 12,
+																"x": 0,
+																"y": 6
 															}
 														}
 													},
@@ -282,33 +403,33 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 										"type": "grid"
 									}
 								],
-								"isVisible": "true",
+								"isVisible": true,
 								"size": "sm",
-								"title": "Ticket submitted!"
+								"title": "Status"
 							},
 							"type": "modal"
 						},
 						{
 							"events": [],
-							"name": "gridCell2_copy",
+							"name": "gridCell9",
 							"properties": {
 								"children": [
 									{
 										"events": [
 											{
 												"name": "click",
-												"queryName": "createIssue0",
+												"queryName": "createOrUpdateFile0",
 												"type": "triggerQuery"
 											}
 										],
-										"name": "button0_copy",
+										"name": "button0",
 										"properties": {
 											"isBorderless": false,
 											"isDisabled": false,
-											"isLoading": "${createIssue0.isLoading}",
+											"isLoading": "${createOrUpdateFile0?.isLoading}",
 											"isPrimary": true,
-											"isVisible": "true",
-											"label": "Create Ticket",
+											"isVisible": true,
+											"label": "Create PR",
 											"level": "default"
 										},
 										"type": "button"
@@ -320,7 +441,7 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 										"height": 4,
 										"width": 6,
 										"x": 3,
-										"y": 81
+										"y": 85
 									}
 								}
 							},
@@ -328,12 +449,12 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 						},
 						{
 							"events": [],
-							"name": "gridCell1",
+							"name": "gridCell5",
 							"properties": {
 								"children": [
 									{
 										"events": [],
-										"name": "container1",
+										"name": "form",
 										"properties": {
 											"children": [
 												{
@@ -343,52 +464,20 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 														"children": [
 															{
 																"events": [],
-																"name": "gridCell1_copy1",
+																"name": "gridCell2",
 																"properties": {
 																	"children": [
 																		{
 																			"events": [],
-																			"name": "project",
-																			"properties": {
-																				"defaultValue": "",
-																				"isDisabled": false,
-																				"isMultiselect": false,
-																				"isVisible": "true",
-																				"label": "Project",
-																				"options": "${[\n    {\n        \"label\": \"App Team\",\n        \"value\": \"APPS\"\n    },\n    {\n        \"label\": \"Platform Team\",\n        \"value\": \"PLATFORM\"\n    }\n]}",
-																				"placeholder": "App Team"
-																			},
-																			"type": "select"
-																		}
-																	],
-																	"isVisible": "true",
-																	"layout": {
-																		"default": {
-																			"height": 7,
-																			"width": 12,
-																			"x": 0,
-																			"y": 0
-																		}
-																	}
-																},
-																"type": "gridCell"
-															},
-															{
-																"events": [],
-																"name": "gridCell1_copy2",
-																"properties": {
-																	"children": [
-																		{
-																			"events": [],
-																			"name": "Issue_type",
+																			"name": "region",
 																			"properties": {
 																				"defaultValue": "",
 																				"isDisabled": false,
 																				"isMultiselect": "false",
-																				"isVisible": "true",
-																				"label": "Type",
-																				"options": "${[\n    {\n        \"label\": \"Bug\",\n        \"value\": \"Bug\"\n    },\n    {\n        \"label\": \"Task\",\n        \"value\": \"Task\"\n    },\n    {\n        \"label\": \"Sub-task\",\n        \"value\": \"Sub-task\"\n    },\n       {\n        \"label\": \"Story\",\n        \"value\": \"Story\"\n    },\n         {\n        \"label\": \"Epic\",\n        \"value\": \"Epic\"\n    },\n]}",
-																				"placeholder": "Bug"
+																				"isVisible": true,
+																				"label": "Region*",
+																				"options": "[\n    {\n        \"label\": \"US East (N. Virginia)\",\n        \"value\": \"us-east-1\"\n    },\n    {\n        \"label\": \"US East (Ohio)\",\n        \"value\": \"us-east-2\"\n    },\n    {\n        \"label\": \"US West (N. California)\",\n        \"value\": \"us-west-1\"\n    },\n    {\n        \"label\": \"US West (Oregon)\",\n        \"value\": \"us-west-2\"\n    },\n    {\n        \"label\": \"Africa (Cape Town)\",\n        \"value\": \"af-south-1\"\n    },\n    {\n        \"label\": \"Asia Pacific (Hong Kong)\",\n        \"value\": \"ap-east-1\"\n    },\n    {\n        \"label\": \"Asia Pacific (Hyderabad)\",\n        \"value\": \"ap-south-2\"\n    },\n    {\n        \"label\": \"Asia Pacific (Jakarta)\",\n        \"value\": \"ap-southeast-3\"\n    },\n    {\n        \"label\": \"Asia Pacific (Mumbai)\",\n        \"value\": \"ap-south-1\"\n    },\n    {\n        \"label\": \"Asia Pacific (Osaka)\",\n        \"value\": \"ap-northeast-3\"\n    },\n    {\n        \"label\": \"Asia Pacific (Seoul)\",\n        \"value\": \"ap-northeast-2\"\n    },\n    {\n        \"label\": \"Asia Pacific (Singapore)\",\n        \"value\": \"ap-southeast-1\"\n    },\n    {\n        \"label\": \"Asia Pacific (Sydney)\",\n        \"value\": \"ap-southeast-2\"\n    },\n    {\n        \"label\": \"Asia Pacific (Tokyo)\",\n        \"value\": \"ap-northeast-1\"\n    },\n    {\n        \"label\": \"Canada (Central)\",\n        \"value\": \"ca-central-1\"\n    },\n    {\n        \"label\": \"China (Beijing)\",\n        \"value\": \"cn-north-1\"\n    },\n    {\n        \"label\": \"China (Ningxia)\",\n        \"value\": \"cn-northwest-1\"\n    },\n    {\n        \"label\": \"Europe (Frankfurt)\",\n        \"value\": \"eu-central-1\"\n    },\n    {\n        \"label\": \"Europe (Ireland)\",\n        \"value\": \"eu-west-1\"\n    },\n    {\n        \"label\": \"Europe (London)\",\n        \"value\": \"eu-west-2\"\n    },\n    {\n        \"label\": \"Europe (Milan)\",\n        \"value\": \"eu-south-1\"\n    },\n    {\n        \"label\": \"Europe (Paris)\",\n        \"value\": \"eu-west-3\"\n    },\n    {\n        \"label\": \"Europe (Spain)\",\n        \"value\": \"eu-south-2\"\n    },\n    {\n        \"label\": \"Europe (Stockholm)\",\n        \"value\": \"eu-north-1\"\n    },\n    {\n        \"label\": \"Middle East (Bahrain)\",\n        \"value\": \"me-south-1\"\n    },\n    {\n        \"label\": \"Middle East (UAE)\",\n        \"value\": \"me-central-1\"\n    },\n    {\n        \"label\": \"South America (São Paulo)\",\n        \"value\": \"sa-east-1\"\n    },\n    {\n        \"label\": \"AWS GovCloud (US-East)\",\n        \"value\": \"us-gov-east-1\"\n    },\n    {\n        \"label\": \"AWS GovCloud (US-West)\",\n        \"value\": \"us-gov-west-1\"\n    },\n    {\n        \"label\": \"Israel (Tel Aviv)\",\n        \"value\": \"il-central-1\"\n    }\n]",
+																				"placeholder": "Select a region"
 																			},
 																			"type": "select"
 																		}
@@ -399,7 +488,7 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 																			"height": 7,
 																			"width": 12,
 																			"x": 0,
-																			"y": 8
+																			"y": 5
 																		}
 																	}
 																},
@@ -407,18 +496,18 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 															},
 															{
 																"events": [],
-																"name": "gridCell0_copy2",
+																"name": "gridCell4_copy",
 																"properties": {
 																	"children": [
 																		{
 																			"events": [],
-																			"name": "title",
+																			"name": "bucketName",
 																			"properties": {
 																				"defaultValue": "",
 																				"isDisabled": false,
-																				"isVisible": "true",
-																				"label": "Title",
-																				"placeholder": "Sample title"
+																				"isVisible": true,
+																				"label": "Bucket Name*",
+																				"placeholder": "Indicate the name of the bucket"
 																			},
 																			"type": "textInput"
 																		}
@@ -429,39 +518,7 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 																			"height": 7,
 																			"width": 12,
 																			"x": 0,
-																			"y": 16
-																		}
-																	}
-																},
-																"type": "gridCell"
-															},
-															{
-																"events": [],
-																"name": "gridCell1_copy3",
-																"properties": {
-																	"children": [
-																		{
-																			"events": [],
-																			"name": "priority",
-																			"properties": {
-																				"defaultValue": "",
-																				"isDisabled": false,
-																				"isMultiselect": "false",
-																				"isVisible": "true",
-																				"label": "Priority",
-																				"options": "[\n    {\n        \"label\": \"Critical\",\n        \"value\": \"Critical\"\n    },\n    {\n        \"label\": \"High\",\n        \"value\": \"High\"\n    },\n    {\n        \"label\": \"Medium\",\n        \"value\": \"Medium\"\n    },\n    {\n        \"label\": \"Low\",\n        \"value\": \"Low\"\n    }\n]",
-																				"placeholder": "Low"
-																			},
-																			"type": "select"
-																		}
-																	],
-																	"isVisible": "true",
-																	"layout": {
-																		"default": {
-																			"height": 7,
-																			"width": 12,
-																			"x": 0,
-																			"y": 24
+																			"y": 13
 																		}
 																	}
 																},
@@ -474,39 +531,9 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 																	"children": [
 																		{
 																			"events": [],
-																			"name": "textArea0",
+																			"name": "text3",
 																			"properties": {
-																				"defaultValue": "",
-																				"isDisabled": false,
-																				"isVisible": true,
-																				"label": "Description",
-																				"placeholder": "Sample description"
-																			},
-																			"type": "textArea"
-																		}
-																	],
-																	"isVisible": "true",
-																	"layout": {
-																		"default": {
-																			"height": 13,
-																			"width": 12,
-																			"x": 0,
-																			"y": 35
-																		}
-																	}
-																},
-																"type": "gridCell"
-															},
-															{
-																"events": [],
-																"name": "gridCell5",
-																"properties": {
-																	"children": [
-																		{
-																			"events": [],
-																			"name": "text1",
-																			"properties": {
-																				"content": "----",
+																				"content": "## Bucket Info",
 																				"contentType": "markdown",
 																				"isVisible": true,
 																				"textAlign": "left",
@@ -521,7 +548,101 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 																			"height": 4,
 																			"width": 12,
 																			"x": 0,
-																			"y": 31
+																			"y": 0
+																		}
+																	}
+																},
+																"type": "gridCell"
+															},
+															{
+																"events": [],
+																"name": "gridCell15",
+																"properties": {
+																	"children": [
+																		{
+																			"events": [],
+																			"name": "owner",
+																			"properties": {
+																				"defaultValue": "alerting",
+																				"isDisabled": false,
+																				"isMultiselect": "false",
+																				"isVisible": true,
+																				"label": "Owner*",
+																				"options": "${listTeams0?.outputs}",
+																				"placeholder": "Select an owning team"
+																			},
+																			"type": "select"
+																		}
+																	],
+																	"isVisible": "true",
+																	"layout": {
+																		"default": {
+																			"height": 7,
+																			"width": 12,
+																			"x": 0,
+																			"y": 21
+																		}
+																	}
+																},
+																"type": "gridCell"
+															},
+															{
+																"events": [],
+																"name": "gridCell16",
+																"properties": {
+																	"children": [
+																		{
+																			"events": [],
+																			"name": "service",
+																			"properties": {
+																				"defaultValue": "staging",
+																				"isDisabled": false,
+																				"isMultiselect": "false",
+																				"isVisible": true,
+																				"label": "Service (optional)",
+																				"options": "${listServiceDefinitions0?.outputs}",
+																				"placeholder": "Associate a service"
+																			},
+																			"type": "select"
+																		}
+																	],
+																	"isVisible": "true",
+																	"layout": {
+																		"default": {
+																			"height": 7,
+																			"width": 12,
+																			"x": 0,
+																			"y": 29
+																		}
+																	}
+																},
+																"type": "gridCell"
+															},
+															{
+																"events": [],
+																"name": "gridCell1",
+																"properties": {
+																	"children": [
+																		{
+																			"events": [],
+																			"name": "justification",
+																			"properties": {
+																				"defaultValue": "",
+																				"isDisabled": false,
+																				"isVisible": true,
+																				"label": "Justification*",
+																				"placeholder": "Provide an overview of why you are creating the S3 bucket"
+																			},
+																			"type": "textArea"
+																		}
+																	],
+																	"isVisible": "true",
+																	"layout": {
+																		"default": {
+																			"height": 13,
+																			"width": 12,
+																			"x": 0,
+																			"y": 37
 																		}
 																	}
 																},
@@ -541,10 +662,10 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 								"isVisible": "true",
 								"layout": {
 									"default": {
-										"height": 53,
+										"height": 56,
 										"width": 6,
 										"x": 3,
-										"y": 27
+										"y": 28
 									}
 								}
 							},
@@ -552,7 +673,88 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 						},
 						{
 							"events": [],
-							"name": "gridCell2",
+							"name": "modal0",
+							"properties": {
+								"children": [
+									{
+										"events": [],
+										"name": "grid4",
+										"properties": {
+											"children": [
+												{
+													"events": [],
+													"name": "gridCell11",
+													"properties": {
+														"children": [
+															{
+																"events": [],
+																"name": "text2",
+																"properties": {
+																	"content": "# Success\nView your terraform [here]()",
+																	"contentType": "markdown",
+																	"isVisible": true,
+																	"textAlign": "center",
+																	"verticalAlign": "top"
+																},
+																"type": "text"
+															}
+														],
+														"isVisible": "true",
+														"layout": {
+															"default": {
+																"height": 14,
+																"width": 12,
+																"x": 0,
+																"y": 8
+															}
+														}
+													},
+													"type": "gridCell"
+												}
+											]
+										},
+										"type": "grid"
+									}
+								],
+								"isVisible": true,
+								"size": "sm",
+								"title": "View file"
+							},
+							"type": "modal"
+						},
+						{
+							"events": [],
+							"name": "gridCell3",
+							"properties": {
+								"children": [
+									{
+										"events": [],
+										"name": "text0",
+										"properties": {
+											"content": "# &nbsp; Create S3 Bucket with Terraform\n&nbsp; Hey ${global?.user.name} 👋,\nfill out the form to generate the terraform for a new S3 bucket. You will receive the output as a PR and receive a slack notification with a link to your new S3 bucket when approved.",
+											"contentType": "markdown",
+											"isVisible": true,
+											"textAlign": "center",
+											"verticalAlign": "center"
+										},
+										"type": "text"
+									}
+								],
+								"isVisible": "true",
+								"layout": {
+									"default": {
+										"height": 14,
+										"width": 6,
+										"x": 3,
+										"y": 14
+									}
+								}
+							},
+							"type": "gridCell"
+						},
+						{
+							"events": [],
+							"name": "gridCell6",
 							"properties": {
 								"children": [
 									{
@@ -562,83 +764,23 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 											"children": [
 												{
 													"events": [],
-													"name": "grid2",
+													"name": "grid1",
 													"properties": {
 														"children": [
 															{
 																"events": [],
-																"name": "gridCell0",
+																"name": "gridCell7",
 																"properties": {
 																	"children": [
 																		{
 																			"events": [],
-																			"name": "text0",
+																			"name": "text5",
 																			"properties": {
-																				"content": "![](https://app-builder-demo.s3.amazonaws.com/jira/jira-software.png)",
+																				"content": "![](https://app-builder-demo.s3.amazonaws.com/github/githublogo.png)",
 																				"contentType": "markdown",
 																				"isVisible": true,
 																				"textAlign": "center",
 																				"verticalAlign": "top"
-																			},
-																			"type": "text"
-																		}
-																	],
-																	"isVisible": "true",
-																	"layout": {
-																		"default": {
-																			"height": 14,
-																			"width": 2,
-																			"x": 5,
-																			"y": 0
-																		}
-																	}
-																},
-																"type": "gridCell"
-															},
-															{
-																"events": [],
-																"name": "gridCell0",
-																"properties": {
-																	"children": [
-																		{
-																			"events": [],
-																			"name": "text0",
-																			"properties": {
-																				"content": "![](https://app-builder-demo.s3.amazonaws.com/jira/jira-software.png)",
-																				"contentType": "markdown",
-																				"isVisible": true,
-																				"textAlign": "center",
-																				"verticalAlign": "top"
-																			},
-																			"type": "text"
-																		}
-																	],
-																	"isVisible": "true",
-																	"layout": {
-																		"default": {
-																			"height": 14,
-																			"width": 2,
-																			"x": 5,
-																			"y": 0
-																		}
-																	}
-																},
-																"type": "gridCell"
-															},
-															{
-																"events": [],
-																"name": "gridCell5_copy1",
-																"properties": {
-																	"children": [
-																		{
-																			"events": [],
-																			"name": "header",
-																			"properties": {
-																				"content": "## Jira Ticket Creator\nHey ${global.user.name} 👋, fill out the form to create a new jira ticket.",
-																				"contentType": "markdown",
-																				"isVisible": "true",
-																				"textAlign": "center",
-																				"verticalAlign": "center"
 																			},
 																			"type": "text"
 																		}
@@ -647,9 +789,9 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 																	"layout": {
 																		"default": {
 																			"height": 9,
-																			"width": 12,
-																			"x": 0,
-																			"y": 14
+																			"width": 2,
+																			"x": 5,
+																			"y": 0
 																		}
 																	}
 																},
@@ -669,9 +811,9 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 								"isVisible": "true",
 								"layout": {
 									"default": {
-										"height": 27,
-										"width": 6,
-										"x": 3,
+										"height": 14,
+										"width": 4,
+										"x": 4,
 										"y": 0
 									}
 								}
@@ -683,11 +825,11 @@ func testComplexAppBuilderAppJSONJSON(name string) string {
 				"type": "grid"
 			}
 		],
-		"description": "Create new tickets in Jira. Created using the Datadog provider in Terraform",
+		"description": "Fill out the form to generate the terraform for a new S3 bucket in Github. Created using the Datadog provider in Terraform",
+		"favorite": false,
 		"name": "%s",
-		"favorite" : false,
-		"rootInstanceName" : "grid0",
-		"selfService" : false,
+		"rootInstanceName": "grid0",
+		"selfService": false,
 		"tags": []
 	}`, name)
 }
