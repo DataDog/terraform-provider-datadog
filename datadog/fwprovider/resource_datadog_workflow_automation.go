@@ -1,6 +1,7 @@
 package fwprovider
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -235,11 +236,19 @@ func workflowAutomationModelToCreateApiRequest(workflowAutomationModel workflowA
 	attributes.SetPublished(workflowAutomationModel.Published.ValueBool())
 	attributes.SetWebhookSecret(workflowAutomationModel.WebhookSecret.ValueString())
 
-	err := json.Unmarshal([]byte(workflowAutomationModel.SpecJson.ValueString()), &attributes.Spec)
+	// Use a json decoder in order to enforce strict decoding
+	decoder := json.NewDecoder(bytes.NewReader([]byte(workflowAutomationModel.SpecJson.ValueString())))
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&attributes.Spec)
 	if err != nil {
-		err = fmt.Errorf("error unmarshalling spec json string to attributes.Spec struct: %s", err)
+		err = fmt.Errorf("error decoding spec json string to attributes.Spec struct: %s", err)
 		return nil, err
 	}
+	// //err := json.Unmarshal([]byte(workflowAutomationModel.SpecJson.ValueString()), &attributes.Spec)
+	// if err != nil {
+	// 	err = fmt.Errorf("error unmarshalling spec json string to attributes.Spec struct: %s", err)
+	// 	return nil, err
+	// }
 
 	data := datadogV2.NewWorkflowData(*attributes, datadogV2.WORKFLOWDATATYPE_WORKFLOWS)
 	req := datadogV2.NewCreateWorkflowRequest(*data)
@@ -260,11 +269,19 @@ func workflowAutomationModelToUpdateApiRequest(workflowAutomationModel workflowA
 	attributes.SetPublished(workflowAutomationModel.Published.ValueBool())
 	attributes.SetWebhookSecret(workflowAutomationModel.WebhookSecret.ValueString())
 
-	err := json.Unmarshal([]byte(workflowAutomationModel.SpecJson.ValueString()), &attributes.Spec)
+	// Use a json decoder in order to enforce strict decoding
+	decoder := json.NewDecoder(bytes.NewReader([]byte(workflowAutomationModel.SpecJson.ValueString())))
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&attributes.Spec)
 	if err != nil {
-		err = fmt.Errorf("error unmarshalling spec json string to attributes.Spec struct: %s", err)
+		err = fmt.Errorf("error decoding spec json string to attributes.Spec struct: %s", err)
 		return nil, err
 	}
+	// err := json.Unmarshal([]byte(workflowAutomationModel.SpecJson.ValueString()), &attributes.Spec)
+	// if err != nil {
+	// 	err = fmt.Errorf("error unmarshalling spec json string to attributes.Spec struct: %s", err)
+	// 	return nil, err
+	// }
 
 	data := datadogV2.NewWorkflowDataUpdate(*attributes, datadogV2.WORKFLOWDATATYPE_WORKFLOWS)
 	req := datadogV2.NewUpdateWorkflowRequest(*data)
