@@ -5,12 +5,12 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
-	"github.com/hashicorp/terraform-plugin-framework-jsontypes/jsontypes"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 )
 
 var _ datasource.DataSource = &appBuilderAppJSONDataSource{}
@@ -48,11 +48,11 @@ func (d *appBuilderAppJSONDataSource) Schema(_ context.Context, request datasour
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
-				CustomType: jsontypes.NormalizedType{},
+				CustomType: customtypes.AppBuilderAppJSONStringType{},
 			},
-			"action_query_ids_to_connection_ids": schema.MapAttribute{
+			"action_query_names_to_connection_ids": schema.MapAttribute{
 				Computed:    true,
-				Description: "A map of the App's Action Query IDs to Action Connection IDs.",
+				Description: "A computed map of the App's Action Query Names to Action Connection IDs.",
 				ElementType: types.StringType,
 			},
 		},
