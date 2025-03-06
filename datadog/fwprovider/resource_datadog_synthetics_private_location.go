@@ -230,9 +230,6 @@ func (r *syntheticsPrivateLocationResource) Delete(ctx context.Context, request 
 			return
 		}
 	}
-
-	// The resource is assumed to be destroyed, and all state is removed.
-	response.State.RemoveResource(ctx)
 }
 
 func (r *syntheticsPrivateLocationResource) updateState(ctx context.Context, state *syntheticsPrivateLocationModel, resp *datadogV1.SyntheticsPrivateLocation) {
