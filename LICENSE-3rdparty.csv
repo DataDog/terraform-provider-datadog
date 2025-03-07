@@ -235,3 +235,6 @@ go.sum,github.com/skeema/knownhosts,Apache-2.0,
 go.sum,github.com/vmihailenco/msgpack/v5,BSD 2-Clause,Copyright (c) 2013 The github.com/vmihailenco/msgpack Authors
 go.sum,github.com/vmihailenco/tagparser/v2,BSD 2-Clause,Copyright (c) 2019 The github.com/vmihailenco/tagparser Authors
 go.sum,github.com/goccy/go-json,MIT,2020 Masaaki Goshima
+go.sum,github.com/hashicorp/terraform-plugin-framework-jsontypes,MPL-2.0,Copyright (c) 2023 HashiCorp, Inc.
+go.sum,github.com/bufbuild/protocompile,Apache-2.0,Copyright 2020-2025 Buf Technologies, Inc.
+go.sum,google.golang.org/genproto/googleapis/rpc,Apache-2.0,Apache-2.0,2018 Google Inc.
