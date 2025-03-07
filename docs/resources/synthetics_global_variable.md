@@ -3,16 +3,18 @@
 page_title: "datadog_synthetics_global_variable Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.
+  Provides a Datadog SyntheticsGlobalVariable resource. This can be used to create and manage Datadog synthetics_global_variable.
 ---
 
 # datadog_synthetics_global_variable (Resource)
 
-Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.
+Provides a Datadog SyntheticsGlobalVariable resource. This can be used to create and manage Datadog synthetics_global_variable.
 
 ## Example Usage
 
 ```terraform
+# Create new synthetics_global_variable resource
+
 resource "datadog_synthetics_global_variable" "test_variable" {
   name        = "EXAMPLE_VARIABLE"
   description = "Description of the variable"
@@ -30,16 +32,16 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 
 ### Optional
 
-- `description` (String) Description of the global variable.
+- `description` (String) Description of the global variable. Defaults to `""`.
 - `is_fido` (Boolean) If set to true, the global variable is a FIDO variable. Defaults to `false`.
 - `is_totp` (Boolean) If set to true, the global variable is a TOTP variable. Defaults to `false`.
-- `options` (Block List, Max: 1) Additional options for the variable, such as a MFA token. (see [below for nested schema](#nestedblock--options))
+- `options` (Block List) Additional options for the variable, such as a MFA token. (see [below for nested schema](#nestedblock--options))
 - `parse_test_id` (String) Id of the Synthetics test to use for a variable from test.
-- `parse_test_options` (Block List, Max: 1) ID of the Synthetics test to use a source of the global variable value. (see [below for nested schema](#nestedblock--parse_test_options))
-- `restricted_roles` (Set of String, Deprecated) A list of role identifiers to associate with the Synthetics global variable. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
-- `secure` (Boolean) If set to true, the value of the global variable is hidden. This setting is ignored if `is_totp` or `is_fido` is set to `true`. Defaults to `false`.
+- `parse_test_options` (Block List) ID of the Synthetics test to use a source of the global variable value. (see [below for nested schema](#nestedblock--parse_test_options))
+- `restricted_roles` (List of String, Deprecated) A list of role identifiers to associate with the Synthetics global variable.
+- `secure` (Boolean) If set to true, the value of the global variable is hidden. This setting is automatically set to `true` if `is_totp` or `is_fido` is set to `true`. Defaults to `false`.
 - `tags` (List of String) A list of tags to associate with your synthetics global variable.
-- `value` (String, Sensitive) The value of the global variable. This setting is ignored if `is_fido` is set to `true` and required otherwise.
+- `value` (String, Sensitive) The value of the global variable. Required unless `is_fido` is set to `true`.
 
 ### Read-Only
 
@@ -50,7 +52,7 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 
 Optional:
 
-- `totp_parameters` (Block List, Max: 1) Parameters needed for MFA/TOTP. (see [below for nested schema](#nestedblock--options--totp_parameters))
+- `totp_parameters` (Block List) Parameters needed for MFA/TOTP. (see [below for nested schema](#nestedblock--options--totp_parameters))
 
 <a id="nestedblock--options--totp_parameters"></a>
 ### Nested Schema for `options.totp_parameters`
@@ -73,14 +75,14 @@ Optional:
 
 - `field` (String) Required when type = `http_header`. Defines the header to use to extract the value
 - `local_variable_name` (String) When type is `local_variable`, name of the local variable to use to extract the value.
-- `parser` (Block List, Max: 1) (see [below for nested schema](#nestedblock--parse_test_options--parser))
+- `parser` (Block List) (see [below for nested schema](#nestedblock--parse_test_options--parser))
 
 <a id="nestedblock--parse_test_options--parser"></a>
 ### Nested Schema for `parse_test_options.parser`
 
 Required:
 
-- `type` (String) Type of parser to extract the value. Valid values are `raw`, `json_path`, `regex`, `x_path`.
+- `type` (String) Type of parser to extract the value.
 
 Optional:
 
