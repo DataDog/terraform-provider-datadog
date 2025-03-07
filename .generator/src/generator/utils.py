@@ -76,3 +76,13 @@ def is_nullable(schema):
 def debug_filter(value):
     print(value)
     return value
+
+
+def only_keep_filters(parameters: dict):
+    """
+    This function removes all element from a dict that are not considered filters.
+    """
+    for elt in parameters.copy().keys():
+        if "filter" not in elt:
+            parameters.pop(elt, None)
+    return parameters

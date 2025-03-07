@@ -1,0 +1,48 @@
+func (d *datadog{{ name|camel_case }}DataSource) Read(ctx context.Context, request datasource.ReadRequest, response *datasource.ReadResponse) {
+	var state datadog{{ name|camel_case }}DataSourceModel
+	response.Diagnostics.Append(request.Config.Get(ctx, &state)...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
+	if !state.{{name|camel_case}}Id.IsNull() {
+		{{name|camel_case|untitle_case}}Id := state.{{name|camel_case}}Id.ValueString()
+		ddResp, _, err := d.Api.Get{{name|camel_case}}(d.Auth, {{name|camel_case|untitle_case}}Id)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error getting datadog {{name|camel_case|untitle_case}}"))
+			return
+		}
+
+		d.updateState(ctx, &state, ddResp.Data)
+	} else {
+		{%- for name, schema in primitiveParamAttr.items() %}
+			{{ name|variable_name }} := state.{{ name|camel_case }}.Value{{ get_terraform_schema_type(schema) }}()
+		{%- endfor%}
+
+		optionalParams := datadog{{version}}.List{{name|camel_case}}sOptionalParameters{
+		{%- for name, schema in primitiveParamAttr.items() %}
+			{{name|camel_case}}: &{{name|variable_name}},
+		{%- endfor%}
+		}
+
+		ddResp, _, err := d.Api.List{{name|camel_case}}s(d.Auth, optionalParams)
+		if err != nil {
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error listing datadog {{name|camel_case|untitle_case}}"))
+			return
+		}
+		
+		if len(ddResp.Data) > 1 {
+			response.Diagnostics.AddError("filters returned more than one result, use more specific search criteria", "")
+			return
+		}
+		if len(ddResp.Data) == 0 {
+			response.Diagnostics.AddError("filters returned no results", "")
+			return
+		}
+
+		d.updateStateFromListResponse(ctx, &state, &ddResp.Data[0])
+	} 
+
+    // Save data into Terraform state
+    response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
