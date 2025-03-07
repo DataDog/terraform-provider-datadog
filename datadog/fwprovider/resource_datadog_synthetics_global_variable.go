@@ -2,7 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"fmt"
 	"regexp"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -341,7 +340,6 @@ func (r *syntheticsGlobalVariableResource) Delete(ctx context.Context, request r
 func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, state *syntheticsGlobalVariableModel, resp *datadogV1.SyntheticsGlobalVariable) {
 	state.Id = types.StringValue(resp.GetId())
 
-	fmt.Printf("state before update: %+v\n", state)
 	state.Name = types.StringValue(resp.GetName())
 	state.Description = types.StringValue(resp.GetDescription())
 	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, resp.GetTags())
@@ -398,9 +396,6 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 			state.ParseTestOptions = []syntheticsGlobalVariableParseTestOptionsModel{localParseTestOptions}
 		}
 	}
-
-	fmt.Printf("state after update: %+v\n", state)
-
 }
 
 func (r *syntheticsGlobalVariableResource) buildSyntheticsGlobalVariableRequestBody(ctx context.Context, state *syntheticsGlobalVariableModel) (*datadogV1.SyntheticsGlobalVariableRequest, diag.Diagnostics) {

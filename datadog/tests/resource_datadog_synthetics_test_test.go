@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -19,15 +20,14 @@ import (
 
 func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
 	variableName := getUniqueVariableName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(providers.sdkV2Provider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsAPITestConfig(testName, variableName),
@@ -47,14 +47,14 @@ func TestAccDatadogSyntheticsAPITest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsSSLTestConfig(testName),
@@ -70,14 +70,14 @@ func TestAccDatadogSyntheticsSSLTest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsTCPTestConfig(testName),
@@ -93,14 +93,14 @@ func TestAccDatadogSyntheticsTCPTest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsDNSTestConfig(testName),
@@ -115,14 +115,14 @@ func TestAccDatadogSyntheticsDNSTest_importBasic(t *testing.T) {
 }
 func TestAccDatadogSyntheticsGRPCTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsGRPCTestConfig(testName),
@@ -138,14 +138,14 @@ func TestAccDatadogSyntheticsGRPCTest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsBrowserTestConfig(testName),
@@ -161,14 +161,14 @@ func TestAccDatadogSyntheticsBrowserTest_importBasic(t *testing.T) {
 }
 func TestAccDatadogSyntheticsMobileTest_importBasic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	testName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsMobileTestConfig(testName),
@@ -185,13 +185,13 @@ func TestAccDatadogSyntheticsMobileTest_importBasic(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStep(ctx, accProvider, t),
 		},
@@ -200,13 +200,13 @@ func TestAccDatadogSyntheticsAPITest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStep(ctx, accProvider, t),
 			updateSyntheticsAPITestStep(ctx, accProvider, t),
@@ -216,13 +216,13 @@ func TestAccDatadogSyntheticsAPITest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
 		},
@@ -231,13 +231,13 @@ func TestAccDatadogSyntheticsAPITest_BasicNewAssertionsOptions(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_AdvancedScheduling(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepAdvancedScheduling(ctx, accProvider, t),
 		},
@@ -246,13 +246,13 @@ func TestAccDatadogSyntheticsAPITest_AdvancedScheduling(t *testing.T) {
 
 func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
 			updateSyntheticsAPITestStepNewAssertionsOptions(ctx, accProvider, t),
@@ -262,8 +262,8 @@ func TestAccDatadogSyntheticsAPITest_UpdatedNewAssertionsOptions(t *testing.T) {
 
 func TestAccDatadogSyntheticsApiTest_FileUpload(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 	testName := uniqueEntityName(ctx, t)
 
 	filesCreation := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
@@ -275,9 +275,9 @@ func TestAccDatadogSyntheticsApiTest_FileUpload(t *testing.T) {
 	var previousBucketKey string
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesCreation, &previousBucketKey, true),
 			createSyntheticsAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, true),
@@ -288,13 +288,13 @@ func TestAccDatadogSyntheticsApiTest_FileUpload(t *testing.T) {
 
 func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsSSLTestStep(ctx, accProvider, t),
 		},
@@ -303,13 +303,13 @@ func TestAccDatadogSyntheticsSSLTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsSSLTestStep(ctx, accProvider, t),
 			updateSyntheticsSSLTestStep(ctx, accProvider, t),
@@ -319,13 +319,13 @@ func TestAccDatadogSyntheticsSSLTest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsSSLMissingTagsAttributeTestStep(ctx, accProvider, t),
 		},
@@ -334,13 +334,13 @@ func TestAccDatadogSyntheticsSSLMissingTagsAttributeTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsTCPTestStep(ctx, accProvider, t),
 		},
@@ -349,13 +349,13 @@ func TestAccDatadogSyntheticsTCPTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsTCPTestStep(ctx, accProvider, t),
 			updateSyntheticsTCPTestStep(ctx, accProvider, t),
@@ -365,13 +365,13 @@ func TestAccDatadogSyntheticsTCPTest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsDNSTestStep(ctx, accProvider, t),
 		},
@@ -380,13 +380,13 @@ func TestAccDatadogSyntheticsDNSTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsDNSTestStep(ctx, accProvider, t),
 			updateSyntheticsDNSTestStep(ctx, accProvider, t),
@@ -396,13 +396,13 @@ func TestAccDatadogSyntheticsDNSTest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsICMPTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsICMPTestStep(ctx, accProvider, t),
 		},
@@ -411,13 +411,13 @@ func TestAccDatadogSyntheticsICMPTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsUDPTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsUDPTestStep(ctx, accProvider, t),
 		},
@@ -426,13 +426,13 @@ func TestAccDatadogSyntheticsUDPTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsWebsocketTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsWebsocketTestStep(ctx, accProvider, t),
 		},
@@ -441,13 +441,13 @@ func TestAccDatadogSyntheticsWebsocketTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsGRPCTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsGRPCTestStep(ctx, accProvider, t),
 			updateSyntheticsGRPCTestStep(ctx, accProvider, t),
@@ -457,13 +457,13 @@ func TestAccDatadogSyntheticsGRPCTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
 		},
@@ -472,13 +472,13 @@ func TestAccDatadogSyntheticsBrowserTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
 			updateSyntheticsBrowserTestStep(ctx, accProvider, t),
@@ -488,13 +488,13 @@ func TestAccDatadogSyntheticsBrowserTest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsMobileTest_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMobileTestStep(ctx, accProvider, t),
 		},
@@ -503,13 +503,13 @@ func TestAccDatadogSyntheticsMobileTest_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMobileTestStep(ctx, accProvider, t),
 			updateSyntheticsMobileTestStep(ctx, accProvider, t),
@@ -519,13 +519,13 @@ func TestAccDatadogSyntheticsMobileTest_Updated(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStep(ctx, accProvider, t),
 			updateSyntheticsBrowserTestStepRumSettings(ctx, accProvider, t),
@@ -536,13 +536,13 @@ func TestAccDatadogSyntheticsBrowserTest_Updated_RumSettings(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestBrowserVariablesStep(ctx, accProvider, t),
 		},
@@ -551,14 +551,14 @@ func TestAccDatadogSyntheticsBrowserTestBrowserVariables_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 	testName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStepNewBrowserStep(ctx, accProvider, t, testName),
 		},
@@ -567,14 +567,14 @@ func TestAccDatadogSyntheticsBrowserTestBrowserNewBrowserStep_Basic(t *testing.T
 
 func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 	testName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStepMML(ctx, accProvider, t, testName),
 			updateBrowserTestMML(ctx, accProvider, t, testName),
@@ -586,14 +586,14 @@ func TestAccDatadogSyntheticsTestBrowserMML_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsTestBrowserUserLocator_Basic(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 	testName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStepUserLocator(ctx, accProvider, t, testName),
 		},
@@ -602,41 +602,40 @@ func TestAccDatadogSyntheticsTestBrowserUserLocator_Basic(t *testing.T) {
 
 func TestAccDatadogSyntheticsTestBrowserUserLocator_NoElement(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 	testName := uniqueEntityName(ctx, t)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestStepUserLocatorNoElement(ctx, accProvider, t, testName),
 		},
 	})
 }
 
-// TODO(antoine.donascimento) Re-enable this test when migrating the synthetics resource to fwprovider
+func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
+	t.Parallel()
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
+	fwProvider := providers.frameworkProvider
 
-// func TestAccDatadogSyntheticsTestMultistepApi_Basic(t *testing.T) {
-// 	t.Parallel()
-// 	ctx, accProviders := testAccProviders(context.Background(), t)
-// 	accProvider := testAccProvider(t, accProviders)
-
-// 	resource.Test(t, resource.TestCase{
-// 		PreCheck:          func() { testAccPreCheck(t) },
-// 		ProviderFactories: accProviders,
-// 		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
-// 		Steps: []resource.TestStep{
-// 			createSyntheticsMultistepAPITest(ctx, accProvider, t),
-// 		},
-// 	})
-// }
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
+		Steps: []resource.TestStep{
+			createSyntheticsMultistepAPITest(ctx, accProvider, fwProvider, t),
+		},
+	})
+}
 
 func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 	testName := uniqueEntityName(ctx, t)
 
 	filesCreation := []datadogV1.SyntheticsTestRequestBodyFile{createSyntheticsAPIRequestFileStruct(
@@ -648,9 +647,9 @@ func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
 	var previousBucketKey string
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsMultistepAPITestFileUpload(ctx, accProvider, t, testName, filesCreation, &previousBucketKey, true),
 			createSyntheticsMultistepAPITestFileUpload(ctx, accProvider, t, testName, filesUpdate, &previousBucketKey, true),
@@ -671,8 +670,8 @@ func TestAccDatadogSyntheticsTestMultistepApi_FileUpload(t *testing.T) {
 // then reordering its steps.
 func TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 	testName := uniqueEntityName(ctx, t)
 
 	stepsCreatedStr := ""
@@ -696,9 +695,9 @@ func TestAccDatadogSyntheticsBrowser_UpdateStepsWithLocalML(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx, accProvider, t, testName, stepsCreatedStr),
 			updateSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx, accProvider, t, testName, stepsUpdatedStr),
@@ -771,7 +770,7 @@ func mergeSyntheticsBrowserStepElements(elementA string, elementB string) string
 	return string(jsonElement)
 }
 
-func createSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+func createSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string, steps string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestWithMultipleStepsConfigWithLocalML(testName, steps),
 		Check: resource.ComposeTestCheckFunc(
@@ -796,7 +795,7 @@ func createSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Con
 	}
 }
 
-func updateSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+func updateSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string, steps string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestWithMultipleStepsConfigWithLocalML(testName, steps),
 		Check: resource.ComposeTestCheckFunc(
@@ -823,8 +822,8 @@ func updateSyntheticsBrowserTestWithMultipleStepsWithLocalMLStep(ctx context.Con
 
 func TestAccDatadogSyntheticsBrowser_UpdateStepsWithRemoteML(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	accProvider := providers.sdkV2Provider
 	testName := uniqueEntityName(ctx, t)
 
 	stepsCreatedStr := ""
@@ -848,9 +847,9 @@ func TestAccDatadogSyntheticsBrowser_UpdateStepsWithRemoteML(t *testing.T) {
 	}
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsTestIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsTestIsDestroyed(accProvider),
 		Steps: []resource.TestStep{
 			createSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx, accProvider, t, testName, stepsCreatedStr),
 			updateMLinSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx, accProvider, t, testName, stepsCreatedStr),
@@ -920,7 +919,7 @@ func createSyntheticsBrowserStepsConfigWithRemoteML(uniq string) string {
 	}`, uniq)
 }
 
-func createSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+func createSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string, steps string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
 		Check: resource.ComposeTestCheckFunc(
@@ -952,7 +951,7 @@ func createSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Co
 	}
 }
 
-func updateMLinSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+func updateMLinSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string, steps string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
 		Check: resource.ComposeTestCheckFunc(
@@ -977,7 +976,7 @@ func updateMLinSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx contex
 	}
 }
 
-func updateSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, steps string) resource.TestStep {
+func updateSyntheticsBrowserTestWithMultipleStepsWithRemoteMLStep(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string, steps string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestWithMultipleStepsConfig(testName, steps),
 		Check: resource.ComposeTestCheckFunc(
@@ -1088,7 +1087,7 @@ func createSyntheticsAPIRequestFileBlock(file datadogV1.SyntheticsTestRequestBod
 
 var bucketKeyRegex, _ = regexp.Compile("^api-upload-file/[a-z0-9]{3}-[a-z0-9]{3}-[a-z0-9]{3}/[-:._0-9Ta-z]*\\.json$")
 
-func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
+func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
 	bodyType := "multipart/form-data"
 	return resource.TestStep{
 		Config: createSyntheticsAPITestConfigFileUpload(testName, bodyType, files),
@@ -1138,7 +1137,7 @@ func createSyntheticsAPITestFileUpload(ctx context.Context, accProvider func() (
 	}
 }
 
-func createSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	variableName := getUniqueVariableName(ctx, t)
 	return resource.TestStep{
@@ -1464,7 +1463,7 @@ resource "datadog_synthetics_test" "advanced_scheduling" {
 }`, uniq)
 }
 
-func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsAPITestConfigAdvancedScheduling(testName),
@@ -1564,7 +1563,7 @@ func createSyntheticsAPITestStepAdvancedScheduling(ctx context.Context, accProvi
 	}
 }
 
-func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	globalVariableName := getUniqueVariableName(ctx, t)
 	return resource.TestStep{
@@ -1896,7 +1895,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, globalVariableName, uniq)
 }
 
-func updateSyntheticsAPITestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsAPITestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated"
 	variableName := getUniqueVariableName(ctx, t)
 	return resource.TestStep{
@@ -2022,7 +2021,7 @@ resource "datadog_synthetics_test" "foo" {
 }`, uniq, varName)
 }
 
-func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsAPITestStepNewAssertionsOptions(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "updated"
 	globalVariableName := getUniqueVariableName(ctx, t)
 
@@ -2166,7 +2165,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, globalVariableName, uniq)
 }
 
-func createSyntheticsSSLTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsSSLTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsSSLTestConfig(testName),
@@ -2247,7 +2246,7 @@ resource "datadog_synthetics_test" "ssl" {
 }`, uniq)
 }
 
-func createSyntheticsSSLMissingTagsAttributeTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsSSLMissingTagsAttributeTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsSSLMissingTagsAttributeTestConfig(testName),
@@ -2321,7 +2320,7 @@ resource "datadog_synthetics_test" "ssl" {
 }`, uniq)
 }
 
-func updateSyntheticsSSLTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsSSLTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsSSLTestConfig(testName),
@@ -2406,7 +2405,7 @@ resource "datadog_synthetics_test" "ssl" {
 }`, uniq)
 }
 
-func createSyntheticsTCPTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsTCPTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsTCPTestConfig(testName),
@@ -2494,7 +2493,7 @@ resource "datadog_synthetics_test" "tcp" {
 }`, uniq)
 }
 
-func updateSyntheticsTCPTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsTCPTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsTCPTestConfig(testName),
@@ -2572,7 +2571,7 @@ resource "datadog_synthetics_test" "tcp" {
 }`, uniq)
 }
 
-func createSyntheticsDNSTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsDNSTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsDNSTestConfig(testName),
@@ -2654,7 +2653,7 @@ resource "datadog_synthetics_test" "dns" {
 }`, uniq)
 }
 
-func updateSyntheticsDNSTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsDNSTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsDNSTestConfig(testName),
@@ -2735,7 +2734,7 @@ resource "datadog_synthetics_test" "dns" {
 }`, uniq)
 }
 
-func createSyntheticsICMPTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsICMPTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsICMPTestConfig(testName),
@@ -2829,7 +2828,7 @@ resource "datadog_synthetics_test" "icmp" {
 }`, uniq)
 }
 
-func createSyntheticsUDPTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsUDPTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsUDPTestConfig(testName),
@@ -2919,7 +2918,7 @@ resource "datadog_synthetics_test" "icmp" {
 }`, uniq)
 }
 
-func createSyntheticsWebsocketTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsWebsocketTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsWebsocketTestConfig(testName),
@@ -3032,7 +3031,7 @@ message HelloReply {
 }
 `
 
-func createSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsGRPCTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsGRPCTestConfig(testName),
@@ -3163,7 +3162,7 @@ resource "datadog_synthetics_test" "grpc" {
 }`, uniq, compressedProtoFile)
 }
 
-func updateSyntheticsGRPCTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsGRPCTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: updateSyntheticsGRPCTestConfig(testName),
@@ -3263,7 +3262,7 @@ resource "datadog_synthetics_test" "grpc" {
 }`, uniq)
 }
 
-func createSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 
 	return resource.TestStep{
@@ -3553,7 +3552,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsBrowserTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsBrowserTestConfig(testName),
@@ -3718,7 +3717,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func updateSyntheticsBrowserTestStepRumSettings(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsBrowserTestStepRumSettings(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated-rumsettings"
 	return resource.TestStep{
 		Config: updateSyntheticsBrowserTestRumSetting(testName),
@@ -3809,7 +3808,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func updateSyntheticsBrowserTestStepRumSettingsEnabled(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsBrowserTestStepRumSettingsEnabled(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated-rumsettings"
 	return resource.TestStep{
 		Config: updateSyntheticsBrowserTestRumSettingEnabled(testName),
@@ -3898,7 +3897,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsBrowserTestBrowserVariablesStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestBrowserVariablesConfig(testName),
@@ -4022,7 +4021,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string) resource.TestStep {
+func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestNewBrowserStepConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -4345,7 +4344,7 @@ const MML_2 = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name(
 const MMLManualUpdate_2 = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"},"targetOuterHTML":"img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...","url":"https://www.datadoghq.com/other-page/updated"}`
 const MMLConfigUpdate_2 = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png\"]"},"targetOuterHTML":"img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...","url":"https://www.datadoghq.com/other-page/config-updated"}`
 
-func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string) resource.TestStep {
+func createSyntheticsBrowserTestStepMML(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestMMLConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -4498,7 +4497,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func updateBrowserTestMML(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string) resource.TestStep {
+func updateBrowserTestMML(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestMMLConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -4508,7 +4507,7 @@ func updateBrowserTestMML(ctx context.Context, accProvider func() (*schema.Provi
 	}
 }
 
-func updateSyntheticsBrowserTestMmlStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsBrowserTestMmlStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestMMLConfig(testName),
@@ -4558,7 +4557,7 @@ func updateSyntheticsBrowserTestMmlStep(ctx context.Context, accProvider func() 
 	}
 }
 
-func updateSyntheticsBrowserTestForceMmlStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsBrowserTestForceMmlStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: createSyntheticsBrowserForceMmlTestConfig(testName),
@@ -4676,7 +4675,7 @@ resource "datadog_synthetics_test" "bar" {
 
 const MMLCustomUserLocator = `{"multiLocator":{"ab":"/*[local-name()=\"html\"][1]/*[local-name()=\"body\"][1]/*[local-name()=\"nav\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"a\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"div\"][1]/*[local-name()=\"img\"][1]","at":"/descendant::*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]","cl":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","clt":"/descendant::*[contains(concat('''', normalize-space(@class), '' ''), \" dog \")]/*[local-name()=\"img\"][1]","co":"","ro":"//*[@src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png\"]"},"targetOuterHTML":"img height=\"75\" src=\"https://imgix.datadoghq.com/img/dd_logo_n_70x75.png...","url":"https://www.datadoghq.com/config-updated","userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}`
 
-func createSyntheticsBrowserTestStepUserLocator(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string) resource.TestStep {
+func createSyntheticsBrowserTestStepUserLocator(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestUserLocatorConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -4721,7 +4720,7 @@ func createSyntheticsBrowserTestStepUserLocator(ctx context.Context, accProvider
 
 const MMLCustomUserLocatorNoElement = `{"userLocator":{"failTestOnCannotLocate":true,"values":[{"type":"css","value":"user-locator-test"}]}}`
 
-func createSyntheticsBrowserTestStepUserLocatorNoElement(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string) resource.TestStep {
+func createSyntheticsBrowserTestStepUserLocatorNoElement(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string) resource.TestStep {
 	return resource.TestStep{
 		Config: createSyntheticsBrowserTestUserLocatorNoElementConfig(testName),
 		Check: resource.ComposeTestCheckFunc(
@@ -4826,560 +4825,560 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-// TODO(antoine.donascimento) Uncomment this when migrating the synthetics resource to fwprovider
-// func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
-// 	testName := uniqueEntityName(ctx, t)
-// 	variableName := getUniqueVariableName(ctx, t)
+func createSyntheticsMultistepAPITest(ctx context.Context, provider *schema.Provider, fwprovider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
+	testName := uniqueEntityName(ctx, t)
+	variableName := getUniqueVariableName(ctx, t)
 
-// 	return resource.TestStep{
-// 		Config: createSyntheticsMultistepAPITestConfig(testName, variableName),
-// 		Check: resource.ComposeTestCheckFunc(
-// 			testSyntheticsResourceExists(accProvider),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "type", "api"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "subtype", "multi"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "locations.#", "1"),
-// 			resource.TestCheckTypeSetElemAttr(
-// 				"datadog_synthetics_test.multi", "locations.*", "aws:eu-central-1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "options_list.0.tick_every", "900"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "options_list.0.min_failure_duration", "0"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "name", testName),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "message", "Notify @datadog.user"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "tags.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "tags.0", "multistep"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "status", "paused"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.#", "7"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.exit_if_succeed", "true"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "POST"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.body", "this is a body"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.timeout", "30"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.allow_insecure", "true"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.follow_redirects", "true"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.http_version", "http2"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_headers.Accept", "application/json"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_headers.X-Datadog-Trace-ID", "123456789"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_query.%", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_query.foo", "bar"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.type", "sigv4"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.access_key", "sigv4-access-key"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.secret_key", "sigv4-secret-key"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.region", "sigv4-region"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.service_name", "sigv4-service-name"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.session_token", "sigv4-session-token"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.content", utils.ConvertToSha256("content-certificate")),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.filename", "key"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key")),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.url", "https://proxy.url"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.%", "2"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.Accept", "application/json"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.assertion.#", "2"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.type", "statusCode"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.operator", "is"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.assertion.0.target", "200"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.type", "body"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.operator", "validatesJSONSchema"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.jsonschema", "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.metaschema", "draft-07"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.#", "2"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.name", "VAR_EXTRACT_BODY"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.type", "http_body"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.field", ""),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "json_path"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", "$.id"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.secure", "false"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.name", "VAR_EXTRACT_HEADER"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.type", "http_header"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.field", "content-length"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.type", "regex"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.value", ".*"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.secure", "true"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.retry.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.retry.0.count", "5"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.1.name", "Second api step"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.type", "oauth-client"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.audience", "audience"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_id", "client-id"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_secret", "client-secret"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.scope", "scope"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.token_api_authentication", "header"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.name", "Third api step"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.type", "oauth-rop"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.audience", "audience"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_id", "client-id"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_secret", "client-secret"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.resource", "resource"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.scope", "scope"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.token_api_authentication", "body"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.username", "username"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.password", "password"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.3.name", "Fourth api step"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.type", "digest"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.username", "username"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.name", "gRPC health check step"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.subtype", "grpc"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.host", "https://docs.datadoghq.com"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.port", "443"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.call_type", "healthcheck"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.service", "greeter.Greeter"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.request_metadata.%", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.request_metadata.foo", "bar"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.assertion.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.type", "grpcHealthcheckStatus"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.operator", "is"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.4.assertion.0.target", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.name", "gRPC behavior check step"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.subtype", "grpc"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.host", "https://docs.datadoghq.com"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.port", "443"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.call_type", "unary"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.service", "greeter.Greeter"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.method", "SayHello"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.message", "{\"name\": \"John\"}"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.plain_proto_file", "some proto file"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.request_metadata.%", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.request_metadata.foo", "bar"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.assertion.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.type", "grpcProto"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.operator", "validatesJSONPath"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.jsonpath", "$.message"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.operator", "is"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, John!"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.#", "2"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.name", "VAR_EXTRACT_MESSAGE"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.type", "grpc_message"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.type", "json_path"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.value", "$.id"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.name", "VAR_EXTRACT_MESSAGE_2"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.type", "grpc_message"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.#", "1"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.0.type", "raw"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.6.subtype", "wait"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "api_step.6.value", "5"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
-// 			resource.TestCheckResourceAttr(
-// 				"datadog_synthetics_test.multi", "config_variable.0.name", "VARIABLE_NAME"),
-// 		),
-// 	}
-// }
+	return resource.TestStep{
+		Config: createSyntheticsMultistepAPITestConfig(testName, variableName),
+		Check: resource.ComposeTestCheckFunc(
+			testSyntheticsGlobalVariableResourceExists(fwprovider),
+			testSyntheticsTestExists(provider),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "type", "api"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "subtype", "multi"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "locations.#", "1"),
+			resource.TestCheckTypeSetElemAttr(
+				"datadog_synthetics_test.multi", "locations.*", "aws:eu-central-1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "options_list.0.tick_every", "900"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "options_list.0.min_failure_duration", "0"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "options_list.0.min_location_failed", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "name", testName),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "message", "Notify @datadog.user"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "tags.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "tags.0", "multistep"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "status", "paused"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.#", "7"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.name", "First api step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.exit_if_succeed", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.method", "POST"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.url", "https://www.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.body", "this is a body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.timeout", "30"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.allow_insecure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.follow_redirects", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.no_saving_response_body", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_definition.0.http_version", "http2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_headers.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_headers.Accept", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_headers.X-Datadog-Trace-ID", "123456789"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_query.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_query.foo", "bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.type", "sigv4"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.access_key", "sigv4-access-key"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.secret_key", "sigv4-secret-key"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.region", "sigv4-region"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.service_name", "sigv4-service-name"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_basicauth.0.session_token", "sigv4-session-token"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.filename", "Provided in Terraform config"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.cert.0.content", utils.ConvertToSha256("content-certificate")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.filename", "key"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_client_certificate.0.key.0.content", utils.ConvertToSha256("content-key")),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.url", "https://proxy.url"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.%", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.Accept", "application/json"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.request_proxy.0.headers.X-Datadog-Trace-ID", "123456789"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.0.type", "statusCode"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.0.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.0.target", "200"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.type", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.operator", "validatesJSONSchema"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.jsonschema", "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.assertion.1.targetjsonschema.0.metaschema", "draft-07"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.name", "VAR_EXTRACT_BODY"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.type", "http_body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.field", ""),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.type", "json_path"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.parser.0.value", "$.id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.0.secure", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.name", "VAR_EXTRACT_HEADER"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.type", "http_header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.field", "content-length"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.type", "regex"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.parser.0.value", ".*"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_value.1.secure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.allow_failure", "true"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.is_critical", "false"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.retry.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.retry.0.count", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.name", "Second api step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.type", "oauth-client"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.audience", "audience"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_id", "client-id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.client_secret", "client-secret"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.scope", "scope"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.token_api_authentication", "header"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.name", "Third api step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.type", "oauth-rop"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.audience", "audience"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_id", "client-id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.client_secret", "client-secret"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.resource", "resource"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.scope", "scope"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.token_api_authentication", "body"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.access_token_url", "https://token.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.username", "username"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.2.request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.name", "Fourth api step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.type", "digest"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.username", "username"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.3.request_basicauth.0.password", "password"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.name", "gRPC health check step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.subtype", "grpc"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.host", "https://docs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.call_type", "healthcheck"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_definition.0.service", "greeter.Greeter"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.request_metadata.foo", "bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.assertion.0.type", "grpcHealthcheckStatus"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.assertion.0.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.4.assertion.0.target", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.name", "gRPC behavior check step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.subtype", "grpc"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.host", "https://docs.datadoghq.com"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.port", "443"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.call_type", "unary"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.service", "greeter.Greeter"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.method", "SayHello"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.message", "{\"name\": \"John\"}"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_definition.0.plain_proto_file", "some proto file"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_metadata.%", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.request_metadata.foo", "bar"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.type", "grpcProto"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.operator", "validatesJSONPath"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.jsonpath", "$.message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.operator", "is"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.assertion.0.targetjsonpath.0.targetvalue", "Hello, John!"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.#", "2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.name", "VAR_EXTRACT_MESSAGE"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.type", "grpc_message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.type", "json_path"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.0.parser.0.value", "$.id"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.name", "VAR_EXTRACT_MESSAGE_2"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.type", "grpc_message"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.5.extracted_value.1.parser.0.type", "raw"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.6.name", "Wait step"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.6.subtype", "wait"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.6.value", "5"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "config_variable.0.type", "global"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "config_variable.0.name", "VARIABLE_NAME"),
+		),
+	}
+}
 
-// func createSyntheticsMultistepAPITestConfig(testName string, variableName string) string {
-// 	return fmt.Sprintf(`
-// resource "datadog_synthetics_global_variable" "global_variable" {
-//   name        = "%[2]s"
-//   description = "a global variable"
-//   tags        = ["foo:bar", "baz"]
-//   value       = "variable-value"
-// }
+func createSyntheticsMultistepAPITestConfig(testName string, variableName string) string {
+	return fmt.Sprintf(`
+resource "datadog_synthetics_global_variable" "global_variable" {
+  name        = "%[2]s"
+  description = "a global variable"
+  tags        = ["foo:bar", "baz"]
+  value       = "variable-value"
+}
 
-// resource "datadog_synthetics_test" "multi" {
-//   type      = "api"
-//   subtype   = "multi"
-//   locations = ["aws:eu-central-1"]
-//   options_list {
-//     tick_every           = 900
-//     min_failure_duration = 0
-//     min_location_failed  = 1
-// }
-//   name    = "%[1]s"
-//   message = "Notify @datadog.user"
-//   tags    = ["multistep"]
-//   status  = "paused"
+resource "datadog_synthetics_test" "multi" {
+  type      = "api"
+  subtype   = "multi"
+  locations = ["aws:eu-central-1"]
+  options_list {
+    tick_every           = 900
+    min_failure_duration = 0
+    min_location_failed  = 1
+}
+  name    = "%[1]s"
+  message = "Notify @datadog.user"
+  tags    = ["multistep"]
+  status  = "paused"
 
-//   config_variable {
-//     id   = datadog_synthetics_global_variable.global_variable.id
-//     type = "global"
-//     name = "VARIABLE_NAME"
-//   }
+  config_variable {
+    id   = datadog_synthetics_global_variable.global_variable.id
+    type = "global"
+    name = "VARIABLE_NAME"
+  }
 
-//   api_step {
-//     name = "First api step"
-// 	exit_if_succeed = true
-//     request_definition {
-//       method           = "POST"
-//       url              = "https://www.datadoghq.com"
-//       body             = "this is a body"
-//       timeout          = 30
-//       allow_insecure   = true
-//       follow_redirects = true
-//       no_saving_response_body = true
-//       http_version = "http2"
-//     }
-//     request_headers = {
-//       Accept             = "application/json"
-//       X-Datadog-Trace-ID = "123456789"
-//     }
-//     request_query = {
-//       foo = "bar"
-//     }
-//     request_basicauth {
-// 		type = "sigv4"
-// 		access_key = "sigv4-access-key"
-// 		secret_key = "sigv4-secret-key"
-// 		region = "sigv4-region"
-// 		service_name = "sigv4-service-name"
-// 		session_token = "sigv4-session-token"
-//     }
-//     request_client_certificate {
-//       cert {
-//         content = "content-certificate"
-//       }
-//       key {
-//         content  = "content-key"
-//         filename = "key"
-//       }
-//     }
-//     request_proxy {
-// 		url = "https://proxy.url"
-// 		headers = {
-// 			Accept = "application/json"
-// 			X-Datadog-Trace-ID = "123456789"
-// 		}
-// 	}
-//     assertion {
-//       type     = "statusCode"
-//       operator = "is"
-//       target   = "200"
-//     }
-// 	assertion {
-// 		type = "body"
-// 		operator = "validatesJSONSchema"
-// 		targetjsonschema {
-// 			jsonschema = "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"
-// 			metaschema = "draft-07"
-// 		}
-// 	}
-//     extracted_value {
-//       name  = "VAR_EXTRACT_BODY"
-//       type  = "http_body"
-//       parser {
-//         type  = "json_path"
-//         value = "$.id"
-//       }
-//     }
-//     extracted_value {
-//       name  = "VAR_EXTRACT_HEADER"
-//       field = "content-length"
-//       type  = "http_header"
-//       parser {
-//         type  = "regex"
-//         value = ".*"
-//       }
-//       secure = true
-//     }
-//     allow_failure = true
-//     is_critical   = false
-//     retry {
-//       count    = 5
-//       interval = 1000
-//     }
-//   }
+  api_step {
+    name = "First api step"
+	exit_if_succeed = true
+    request_definition {
+      method           = "POST"
+      url              = "https://www.datadoghq.com"
+      body             = "this is a body"
+      timeout          = 30
+      allow_insecure   = true
+      follow_redirects = true
+      no_saving_response_body = true
+      http_version = "http2"
+    }
+    request_headers = {
+      Accept             = "application/json"
+      X-Datadog-Trace-ID = "123456789"
+    }
+    request_query = {
+      foo = "bar"
+    }
+    request_basicauth {
+		type = "sigv4"
+		access_key = "sigv4-access-key"
+		secret_key = "sigv4-secret-key"
+		region = "sigv4-region"
+		service_name = "sigv4-service-name"
+		session_token = "sigv4-session-token"
+    }
+    request_client_certificate {
+      cert {
+        content = "content-certificate"
+      }
+      key {
+        content  = "content-key"
+        filename = "key"
+      }
+    }
+    request_proxy {
+		url = "https://proxy.url"
+		headers = {
+			Accept = "application/json"
+			X-Datadog-Trace-ID = "123456789"
+		}
+	}
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+	assertion {
+		type = "body"
+		operator = "validatesJSONSchema"
+		targetjsonschema {
+			jsonschema = "{\"type\": \"object\", \"properties\":{\"slideshow\":{\"type\":\"object\"}}}"
+			metaschema = "draft-07"
+		}
+	}
+    extracted_value {
+      name  = "VAR_EXTRACT_BODY"
+      type  = "http_body"
+      parser {
+        type  = "json_path"
+        value = "$.id"
+      }
+    }
+    extracted_value {
+      name  = "VAR_EXTRACT_HEADER"
+      field = "content-length"
+      type  = "http_header"
+      parser {
+        type  = "regex"
+        value = ".*"
+      }
+      secure = true
+    }
+    allow_failure = true
+    is_critical   = false
+    retry {
+      count    = 5
+      interval = 1000
+    }
+  }
 
-//   api_step {
-//     name = "Second api step"
-//     request_definition {
-//       method           = "GET"
-//       url              = "https://docs.datadoghq.com"
-//       timeout          = 30
-//       allow_insecure   = true
-//       follow_redirects = true
-//     }
-//     request_basicauth {
-// 		type = "oauth-client"
-// 		audience = "audience"
-// 		client_id = "client-id"
-// 		client_secret = "client-secret"
-// 		scope = "scope"
-// 		token_api_authentication = "header"
-// 		access_token_url = "https://token.datadoghq.com"
-// 	}
-//     assertion {
-//       type     = "statusCode"
-//       operator = "is"
-//       target   = "200"
-//     }
-//   }
+  api_step {
+    name = "Second api step"
+    request_definition {
+      method           = "GET"
+      url              = "https://docs.datadoghq.com"
+      timeout          = 30
+      allow_insecure   = true
+      follow_redirects = true
+    }
+    request_basicauth {
+		type = "oauth-client"
+		audience = "audience"
+		client_id = "client-id"
+		client_secret = "client-secret"
+		scope = "scope"
+		token_api_authentication = "header"
+		access_token_url = "https://token.datadoghq.com"
+	}
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+  }
 
-//   api_step {
-//     name = "Third api step"
-//     request_definition {
-//       method           = "GET"
-//       url              = "https://docs.datadoghq.com"
-//       timeout          = 30
-//       allow_insecure   = true
-//       follow_redirects = true
-//     }
-//     request_basicauth {
-// 		type = "oauth-rop"
-// 		audience = "audience"
-// 		client_id = "client-id"
-// 		client_secret = "client-secret"
-// 		resource = "resource"
-// 		scope = "scope"
-// 		token_api_authentication = "body"
-// 		access_token_url = "https://token.datadoghq.com"
-// 		username = "username"
-// 		password = "password"
-// 	}
-//     assertion {
-//       type     = "statusCode"
-//       operator = "is"
-//       target   = "200"
-//     }
-//   }
+  api_step {
+    name = "Third api step"
+    request_definition {
+      method           = "GET"
+      url              = "https://docs.datadoghq.com"
+      timeout          = 30
+      allow_insecure   = true
+      follow_redirects = true
+    }
+    request_basicauth {
+		type = "oauth-rop"
+		audience = "audience"
+		client_id = "client-id"
+		client_secret = "client-secret"
+		resource = "resource"
+		scope = "scope"
+		token_api_authentication = "body"
+		access_token_url = "https://token.datadoghq.com"
+		username = "username"
+		password = "password"
+	}
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+  }
 
-//   api_step {
-//     name = "Fourth api step"
-//     request_definition {
-//       method           = "GET"
-//       url              = "https://docs.datadoghq.com"
-//       timeout          = 30
-//       allow_insecure   = true
-//       follow_redirects = true
-//     }
-//     request_basicauth {
-// 		type = "digest"
-// 		username = "username"
-// 		password = "password"
-// 	}
-//     assertion {
-//       type     = "statusCode"
-//       operator = "is"
-//       target   = "200"
-//     }
-//   }
+  api_step {
+    name = "Fourth api step"
+    request_definition {
+      method           = "GET"
+      url              = "https://docs.datadoghq.com"
+      timeout          = 30
+      allow_insecure   = true
+      follow_redirects = true
+    }
+    request_basicauth {
+		type = "digest"
+		username = "username"
+		password = "password"
+	}
+    assertion {
+      type     = "statusCode"
+      operator = "is"
+      target   = "200"
+    }
+  }
 
-//   api_step {
-//     name    = "gRPC health check step"
-//     subtype = "grpc"
-//     request_definition {
-//       host             = "https://docs.datadoghq.com"
-//       port             = 443
-//       call_type        = "healthcheck"
-//       service          = "greeter.Greeter"
-//     }
-//     request_metadata = {
-//       foo = "bar"
-//     }
-//     assertion {
-//       type     = "grpcHealthcheckStatus"
-//       operator = "is"
-//       target = 1
-//     }
-//   }
+  api_step {
+    name    = "gRPC health check step"
+    subtype = "grpc"
+    request_definition {
+      host             = "https://docs.datadoghq.com"
+      port             = 443
+      call_type        = "healthcheck"
+      service          = "greeter.Greeter"
+    }
+    request_metadata = {
+      foo = "bar"
+    }
+    assertion {
+      type     = "grpcHealthcheckStatus"
+      operator = "is"
+      target = 1
+    }
+  }
 
-//   api_step {
-//     name    = "gRPC behavior check step"
-//     subtype = "grpc"
-//     request_definition {
-//       host             = "https://docs.datadoghq.com"
-//       port             = 443
-//       call_type        = "unary"
-//       service          = "greeter.Greeter"
-//       method           = "SayHello"
-//       message          = "{\"name\": \"John\"}"
-//       plain_proto_file = "some proto file"
-//     }
-//     request_metadata = {
-//       foo = "bar"
-//     }
-//     assertion {
-//       type     = "grpcProto"
-//       operator = "validatesJSONPath"
-//       targetjsonpath {
-//         jsonpath    = "$.message"
-//         operator    = "is"
-//         targetvalue = "Hello, John!"
-//       }
-//     }
-//     extracted_value {
-//       name  = "VAR_EXTRACT_MESSAGE"
-//       type  = "grpc_message"
-//       parser {
-//         type  = "json_path"
-//         value = "$.id"
-//       }
-//     }
-// 	extracted_value {
-//       name  = "VAR_EXTRACT_MESSAGE_2"
-//       type  = "grpc_message"
-//       parser {
-//         type  = "raw"
-//       }
-//     }
-//   }
-//   api_step {
-//     name = "Wait step"
-//     subtype = "wait"
-//     value = 5
-//   }
-// }
-// `, testName, variableName)
-// }
+  api_step {
+    name    = "gRPC behavior check step"
+    subtype = "grpc"
+    request_definition {
+      host             = "https://docs.datadoghq.com"
+      port             = 443
+      call_type        = "unary"
+      service          = "greeter.Greeter"
+      method           = "SayHello"
+      message          = "{\"name\": \"John\"}"
+      plain_proto_file = "some proto file"
+    }
+    request_metadata = {
+      foo = "bar"
+    }
+    assertion {
+      type     = "grpcProto"
+      operator = "validatesJSONPath"
+      targetjsonpath {
+        jsonpath    = "$.message"
+        operator    = "is"
+        targetvalue = "Hello, John!"
+      }
+    }
+    extracted_value {
+      name  = "VAR_EXTRACT_MESSAGE"
+      type  = "grpc_message"
+      parser {
+        type  = "json_path"
+        value = "$.id"
+      }
+    }
+	extracted_value {
+      name  = "VAR_EXTRACT_MESSAGE_2"
+      type  = "grpc_message"
+      parser {
+        type  = "raw"
+      }
+    }
+  }
+  api_step {
+    name = "Wait step"
+    subtype = "wait"
+    value = 5
+  }
+}
+`, testName, variableName)
+}
 
-func createSyntheticsMultistepAPITestFileUpload(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
+func createSyntheticsMultistepAPITestFileUpload(ctx context.Context, accProvider *schema.Provider, t *testing.T, testName string, files []datadogV1.SyntheticsTestRequestBodyFile, previousBucketKey *string, bucketKeyShouldUpdate bool) resource.TestStep {
 	bodyType := "multipart/form-data"
 	return resource.TestStep{
 		Config: createSyntheticsMultistepAPITestConfigFileUpload(testName, bodyType, files),
@@ -5470,7 +5469,7 @@ resource "datadog_synthetics_test" "file_upload" {
 `, testName, bodyType, fileBlocks)
 }
 
-func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsMobileTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t)
 
 	return resource.TestStep{
@@ -5822,7 +5821,7 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsMobileTestStep(ctx context.Context, accProvider *schema.Provider, t *testing.T) resource.TestStep {
 	testName := uniqueEntityName(ctx, t) + "-updated"
 	return resource.TestStep{
 		Config: updateSyntheticsMobileTestConfig(testName),
@@ -6156,9 +6155,8 @@ resource "datadog_synthetics_test" "bar" {
 }`, uniq)
 }
 
-func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testSyntheticsTestExists(provider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
@@ -6175,9 +6173,8 @@ func testSyntheticsTestExists(accProvider func() (*schema.Provider, error)) reso
 	}
 }
 
-func testSyntheticsTestIsDestroyed(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testSyntheticsTestIsDestroyed(provider *schema.Provider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
 		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 		apiInstances := providerConf.DatadogApiInstances
 		auth := providerConf.Auth
@@ -6199,10 +6196,9 @@ func testSyntheticsTestIsDestroyed(accProvider func() (*schema.Provider, error))
 	}
 }
 
-func editSyntheticsTestMML(accProvider func() (*schema.Provider, error), stepElements []string) resource.TestCheckFunc {
+func editSyntheticsTestMML(provider *schema.Provider, stepElements []string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		for _, r := range s.RootModule().Resources {
-			provider, _ := accProvider()
 			providerConf := provider.Meta().(*datadog.ProviderConfiguration)
 			apiInstances := providerConf.DatadogApiInstances
 			auth := providerConf.Auth
