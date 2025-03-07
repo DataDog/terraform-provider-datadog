@@ -27,10 +27,10 @@ resource "datadog_appsec_waf_custom_rule" "ioc000" {
 
   path_glob = "/db/*"
 
-  conditions {
+  condition {
     operator = "match_regex"
     parameters {
-      inputs {
+      input {
         address = "server.db.statement"
       }
       regex = "stmt.*"
@@ -61,10 +61,10 @@ resource "datadog_appsec_waf_custom_rule" "biz000" {
 
   path_glob = "/cart/*"
 
-  conditions {
+  condition {
     operator = "capture_data"
     parameters {
-      inputs {
+      input {
         address  = "server.request.query"
         key_path = ["payment_id"]
       }
@@ -92,7 +92,7 @@ resource "datadog_appsec_waf_custom_rule" "biz000" {
 ### Optional
 
 - `action` (Block, Optional) (see [below for nested schema](#nestedblock--action))
-- `conditions` (Block List) (see [below for nested schema](#nestedblock--conditions))
+- `condition` (Block List) (see [below for nested schema](#nestedblock--condition))
 - `path_glob` (String) The path glob for the WAF custom rule.
 - `scope` (Block List) (see [below for nested schema](#nestedblock--scope))
 
@@ -118,28 +118,28 @@ Optional:
 
 
 
-<a id="nestedblock--conditions"></a>
-### Nested Schema for `conditions`
+<a id="nestedblock--condition"></a>
+### Nested Schema for `condition`
 
 Optional:
 
 - `operator` (String) Operator to use for the WAF Condition.
-- `parameters` (Block, Optional) (see [below for nested schema](#nestedblock--conditions--parameters))
+- `parameters` (Block, Optional) (see [below for nested schema](#nestedblock--condition--parameters))
 
-<a id="nestedblock--conditions--parameters"></a>
-### Nested Schema for `conditions.parameters`
+<a id="nestedblock--condition--parameters"></a>
+### Nested Schema for `condition.parameters`
 
 Optional:
 
 - `data` (String) Identifier of a list of data from the denylist. Can only be used as substitution from the list parameter.
-- `inputs` (Block List) (see [below for nested schema](#nestedblock--conditions--parameters--inputs))
+- `input` (Block List) (see [below for nested schema](#nestedblock--condition--parameters--input))
 - `list` (List of String) List of value to use with the condition. Only used with the phrase_match, !phrase_match, exact_match and !exact_match operator.
-- `options` (Block, Optional) (see [below for nested schema](#nestedblock--conditions--parameters--options))
+- `options` (Block, Optional) (see [below for nested schema](#nestedblock--condition--parameters--options))
 - `regex` (String) Regex to use with the condition. Only used with match_regex and !match_regex operator.
 - `value` (String) Store the captured value in the specified tag name. Only used with the capture_data operator.
 
-<a id="nestedblock--conditions--parameters--inputs"></a>
-### Nested Schema for `conditions.parameters.inputs`
+<a id="nestedblock--condition--parameters--input"></a>
+### Nested Schema for `condition.parameters.input`
 
 Optional:
 
@@ -147,8 +147,8 @@ Optional:
 - `key_path` (List of String) Specific path for the input.
 
 
-<a id="nestedblock--conditions--parameters--options"></a>
-### Nested Schema for `conditions.parameters.options`
+<a id="nestedblock--condition--parameters--options"></a>
+### Nested Schema for `condition.parameters.options`
 
 Optional:
 
