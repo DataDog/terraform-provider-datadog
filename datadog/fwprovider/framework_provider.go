@@ -86,6 +86,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogPowerpackDataSource,
 	NewDatadogServiceAccountDatasource,
+	NewDatadogSoftwareCatalogDataSource,
 	NewDatadogTeamDataSource,
 	NewDatadogTeamMembershipsDataSource,
 	NewHostsDataSource,
