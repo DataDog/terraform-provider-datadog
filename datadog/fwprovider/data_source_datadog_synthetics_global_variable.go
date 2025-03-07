@@ -60,7 +60,6 @@ func (d *datadogSyntheticsGlobalVariableDataSource) Schema(_ context.Context, _ 
 				Description: "A list of tags assigned to the Synthetics global variable.",
 				ElementType: types.StringType,
 				Computed:    true,
-				Optional:    true,
 			},
 		},
 	}
