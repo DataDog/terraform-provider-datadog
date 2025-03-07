@@ -55,14 +55,16 @@ type filterProcessorModel struct {
 	Id      types.String `tfsdk:"id"`
 	Type    types.String `tfsdk:"type"`
 	Include types.String `tfsdk:"include"`
+	Inputs  types.List   `tfsdk:"inputs"`
 }
 
 type destinationsModel struct {
 	DatadogLogsDestination *datadogLogsDestinationModel `tfsdk:"datadog_logs_destination"`
 }
 type datadogLogsDestinationModel struct {
-	Id   types.String `tfsdk:"id"`
-	Type types.String `tfsdk:"type"`
+	Id     types.String `tfsdk:"id"`
+	Type   types.String `tfsdk:"type"`
+	Inputs types.List   `tfsdk:"inputs"`
 }
 
 func NewPipelinesResource() resource.Resource {
@@ -148,6 +150,11 @@ func (r *pipelinesResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 											Optional:    true,
 											Description: "Inclusion filter for the processor.",
 										},
+										"inputs": schema.ListAttribute{
+											Description: "The inputs for the processor.",
+											ElementType: types.StringType,
+											Required:    true,
+										},
 									},
 								},
 							},
@@ -166,6 +173,11 @@ func (r *pipelinesResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 										"type": schema.StringAttribute{
 											Optional:    true,
 											Description: "The type of destination.",
+										},
+										"inputs": schema.ListAttribute{
+											Description: "The inputs for the destination.",
+											ElementType: types.StringType,
+											Required:    true,
 										},
 									},
 								},
@@ -337,6 +349,7 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 				filterProcessorTf.Id = types.StringValue(processorsDd.FilterProcessor.Id)
 				filterProcessorTf.Type = types.StringValue(string(processorsDd.FilterProcessor.Type))
 				filterProcessorTf.Include = types.StringValue(processorsDd.FilterProcessor.Include)
+				filterProcessorTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, processorsDd.FilterProcessor.Inputs)
 				processorsTfItem.FilterProcessor = &filterProcessorTf
 			}
 
@@ -353,6 +366,7 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 
 				datadogLogsDestinationTf.Id = types.StringValue(destinationsDd.DatadogLogsDestination.Id)
 				datadogLogsDestinationTf.Type = types.StringValue(string(destinationsDd.DatadogLogsDestination.Type))
+				datadogLogsDestinationTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, destinationsDd.DatadogLogsDestination.Inputs)
 				destinationsTfItem.DatadogLogsDestination = &datadogLogsDestinationTf
 			}
 
@@ -407,6 +421,8 @@ func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state
 
 					sourcesDDItem.DatadogAgentSource = &datadogAgentSource
 				}
+
+				sources = append(sources, sourcesDDItem)
 			}
 			config.SetSources(sources)
 			attributes.SetConfig(config)
@@ -427,8 +443,14 @@ func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state
 					if !processorsTFItem.FilterProcessor.Include.IsNull() {
 						filterProcessor.SetInclude(processorsTFItem.FilterProcessor.Include.ValueString())
 					}
+					if !processorsTFItem.FilterProcessor.Inputs.IsNull() {
+						var inputs []string
+						processorsTFItem.FilterProcessor.Inputs.ElementsAs(ctx, &inputs, false)
+						filterProcessor.SetInputs(inputs)
+					}
 					processorsDDItem.FilterProcessor = &filterProcessor
 				}
+				processors = append(processors, processorsDDItem)
 			}
 			config.SetProcessors(processors)
 		}
@@ -445,8 +467,14 @@ func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state
 					if !destinationsTFItem.DatadogLogsDestination.Type.IsNull() {
 						datadogLogsDestination.SetType(datadogV2.DatadogLogsDestinationType(destinationsTFItem.DatadogLogsDestination.Type.ValueString()))
 					}
+					if !destinationsTFItem.DatadogLogsDestination.Inputs.IsNull() {
+						var inputs []string
+						destinationsTFItem.DatadogLogsDestination.Inputs.ElementsAs(ctx, &inputs, false)
+						datadogLogsDestination.SetInputs(inputs)
+					}
 					destinationsDDItem.DatadogLogsDestination = &datadogLogsDestination
 				}
+				destinations = append(destinations, destinationsDDItem)
 			}
 			config.SetDestinations(destinations)
 		}
@@ -454,6 +482,7 @@ func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state
 	}
 
 	pipelineData := datadogV2.NewPipelineDataWithDefaults()
+	pipelineData.SetAttributes(*attributes)
 	req.SetData(*pipelineData)
 
 	return req, diags
