@@ -106,7 +106,6 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 					},
 					"include_percentiles": schema.BoolAttribute{
 						Optional:    true,
-						Computed:    true,
 						Description: "Toggle to include or exclude percentile aggregations for distribution metrics. Only present when the `aggregation_type` is `distribution`.",
 					},
 					"path": schema.StringAttribute{
