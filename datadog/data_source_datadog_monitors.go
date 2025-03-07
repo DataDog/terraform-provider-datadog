@@ -87,9 +87,6 @@ func dataSourceDatadogMonitorsRead(ctx context.Context, d *schema.ResourceData, 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpresp, "error querying monitors")
 	}
-	if len(monitors) == 0 {
-		return diag.Errorf("your query returned no result, please try a less specific search criteria")
-	}
 
 	d.SetId(computeMonitorsDatasourceID(d))
 
