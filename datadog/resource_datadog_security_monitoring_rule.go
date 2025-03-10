@@ -72,8 +72,8 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 								"type": {
 									Type:             schema.TypeString,
 									ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleCaseActionTypeFromValue),
-									Required: true,
-									Description: "Type of action to perform when the case triggers.",
+									Required:         true,
+									Description:      "Type of action to perform when the case triggers.",
 								},
 								"options": {
 									Type:        schema.TypeList,
