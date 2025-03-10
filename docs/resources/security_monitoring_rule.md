@@ -62,6 +62,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
 - `case` (Block List, Max: 10) Cases for generating signals. (see [below for nested schema](#nestedblock--case))
 - `enabled` (Boolean) Whether the rule is enabled. Defaults to `true`.
 - `filter` (Block List) Additional queries to filter matched events before they are processed. **Note**: This field is deprecated for log detection, signal correlation, and workload security rules. (see [below for nested schema](#nestedblock--filter))
+- `group_signals_by` (List of String) Additional grouping to perform on top of the query grouping.
 - `has_extended_title` (Boolean) Whether the notifications include the triggering group-by values in their title. Defaults to `false`.
 - `options` (Block List, Max: 1) Options on rules. (see [below for nested schema](#nestedblock--options))
 - `query` (Block List) Queries for selecting logs which are part of the rule. (see [below for nested schema](#nestedblock--query))
@@ -85,9 +86,30 @@ Required:
 
 Optional:
 
+- `action` (Block List) Action to perform when the case trigger (see [below for nested schema](#nestedblock--case--action))
 - `condition` (String) A rule case contains logical operations (`>`,`>=`, `&&`, `||`) to determine if a signal should be generated based on the event counts in the previously defined queries.
 - `name` (String) Name of the case.
 - `notifications` (List of String) Notification targets for each rule case.
+
+<a id="nestedblock--case--action"></a>
+### Nested Schema for `case.action`
+
+Required:
+
+- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`.
+
+Optional:
+
+- `options` (Block List, Max: 1) Options for the action. (see [below for nested schema](#nestedblock--case--action--options))
+
+<a id="nestedblock--case--action--options"></a>
+### Nested Schema for `case.action.options`
+
+Optional:
+
+- `duration` (Number) Duration of the action in seconds.
+
+
 
 
 <a id="nestedblock--filter"></a>
