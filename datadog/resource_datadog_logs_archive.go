@@ -265,7 +265,6 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]int
 	if v, ok := integration.GetProjectIdOk(); ok {
 		result["project_id"] = *v
 	}
-
 	return result
 }
 
@@ -468,10 +467,26 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 	}
     storageClass, ok := d["storage_class"]
     if ok && storageClass != "" {
-        destination.SetStorageClass(datadogV2.LogsArchiveStorageClass(storageClass.(string)))
+        if enumValue, valid := getValidStorageClasses()[storageClass]; valid {
+            destination.SetStorageClass(enumValue)
+        } else {
+            return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("storage class is invalid")
+        }
+    } else {
+        destination.SetStorageClass(datadogV2.LOGSARCHIVESTORAGECLASS_STANDARD)
     }
 	destination.Path = datadog.PtrString(path.(string))
 	return destination, nil
+}
+
+func getValidStorageClasses() map[string]datadogV2.LogsArchiveStorageClass {
+    return map[string]datadogV2.LogsArchiveStorageClass{
+        "STANDARD":             datadogV2.LOGSARCHIVESTORAGECLASS_STANDARD,
+        "STANDARD_IA":          datadogV2.LOGSARCHIVESTORAGECLASS_STANDARD_IA,
+        "ONEZONE_IA":           datadogV2.LOGSARCHIVESTORAGECLASS_ONEZONE_IA,
+        "INTELLIGENT_TIERING":  datadogV2.LOGSARCHIVESTORAGECLASS_INTELLIGENT_TIERING,
+        "GLACIER_IR":           datadogV2.LOGSARCHIVESTORAGECLASS_GLACIER_IR,
+    }
 }
 
 func getRehydrationTags(d *schema.ResourceData) []string {
