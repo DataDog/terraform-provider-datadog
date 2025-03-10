@@ -89,6 +89,7 @@ type ApiInstances struct {
 	teamsApiV2                     *datadogV2.TeamsApi
 	usageMeteringApiV2             *datadogV2.UsageMeteringApi
 	usersApiV2                     *datadogV2.UsersApi
+	workflowAutomationApiV2        *datadogV2.WorkflowAutomationApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -681,6 +682,14 @@ func (i *ApiInstances) GetMicrosoftTeamsIntegrationApiV2() *datadogV2.MicrosoftT
 		i.microsoftTeamsIntegrationApiV2 = datadogV2.NewMicrosoftTeamsIntegrationApi(i.HttpClient)
 	}
 	return i.microsoftTeamsIntegrationApiV2
+}
+
+// GetWorkflowAutomationApiV2 get instance of WorkflowAutomationApi
+func (i *ApiInstances) GetWorkflowAutomationApiV2() *datadogV2.WorkflowAutomationApi {
+	if i.workflowAutomationApiV2 == nil {
+		i.workflowAutomationApiV2 = datadogV2.NewWorkflowAutomationApi(i.HttpClient)
+	}
+	return i.workflowAutomationApiV2
 }
 
 // GetApplicationSecurityApiV2 get instance of ApplicationSecurityApi

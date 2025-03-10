@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
@@ -153,6 +154,63 @@ func CheckForUnparsed(resp interface{}) error {
 		return fmt.Errorf("object contains unparsed element: %+v", invalidPart)
 	}
 	return nil
+}
+
+// CheckForAdditionalProperties takes in a API object and returns an error if it contains an additional property
+func CheckForAdditionalProperties(resp interface{}) error {
+	if unparsed, invalidPart := ContainsAdditionalProperties(resp); unparsed {
+		return fmt.Errorf("object contains additional property: %+v", invalidPart)
+	}
+	return nil
+}
+
+// ContainsAdditionalProperties returns true if the given data contains an additional properties.
+func ContainsAdditionalProperties(i interface{}) (bool, interface{}) {
+	v := reflect.ValueOf(i)
+	switch v.Kind() {
+	case reflect.Array, reflect.Slice:
+		for i := 0; i < v.Len(); i++ {
+			if n, m := ContainsAdditionalProperties(v.Index(i).Interface()); n {
+				return n, m
+			}
+		}
+	case reflect.Map:
+		for _, k := range v.MapKeys() {
+			if n, m := ContainsAdditionalProperties(v.MapIndex(k).Interface()); n {
+				return n, m
+			}
+		}
+	case reflect.Struct:
+		if u := v.FieldByName("AdditionalProperties"); u.IsValid() && !u.IsNil() {
+			return true, u.Interface()
+		}
+		for i := 0; i < v.NumField(); i++ {
+			if fn := v.Type().Field(i).Name; string(fn[0]) == strings.ToUpper(string(fn[0])) && fn != "AdditionalProperties" {
+				if n, m := ContainsAdditionalProperties(v.Field(i).Interface()); n {
+					return n, m
+				}
+			} else if fn == "value" { // Special case for Nullables
+				if get := v.MethodByName("Get"); get.IsValid() {
+					if n, m := ContainsAdditionalProperties(get.Call([]reflect.Value{})[0].Interface()); n {
+						return n, m
+					}
+				}
+			}
+		}
+	case reflect.Interface, reflect.Ptr:
+		if !v.IsNil() {
+			return ContainsAdditionalProperties(v.Elem().Interface())
+		}
+	default:
+		if v.IsValid() {
+			if m := v.MethodByName("IsValid"); m.IsValid() {
+				if !m.Call([]reflect.Value{})[0].Bool() {
+					return true, v.Interface()
+				}
+			}
+		}
+	}
+	return false, nil
 }
 
 // TranslateClientErrorDiag returns client error as type diag.Diagnostics
