@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -30,9 +31,9 @@ type pipelinesModel struct {
 }
 
 type configModel struct {
-	Sources      []*SourcesModel      `tfsdk:"sources"`
-	Processors   []*ProcessorsModel   `tfsdk:"processors"`
-	Destinations []*destinationsModel `tfsdk:"destinations"`
+	Sources      []*SourcesModel      `tfsdk:"source"`
+	Processors   []*ProcessorModel    `tfsdk:"processor"`
+	Destinations []*destinationsModel `tfsdk:"destination"`
 }
 type SourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
@@ -48,7 +49,7 @@ type tlsModel struct {
 	KeyFile types.String `tfsdk:"key_file"`
 }
 
-type ProcessorsModel struct {
+type ProcessorModel struct {
 	FilterProcessor    []*filterProcessorModel    `tfsdk:"filter"`
 	ParseJsonProcessor []*ParseJsonProcessorModel `tfsdk:"parse_json"`
 }
@@ -101,7 +102,7 @@ func (r *pipelinesResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"config": schema.SingleNestedBlock{
 				Description: "Configuration for the pipeline.",
 				Blocks: map[string]schema.Block{
-					"sources": schema.ListNestedBlock{
+					"source": schema.ListNestedBlock{
 						Description: "List of sources.",
 						NestedObject: schema.NestedBlockObject{
 							Blocks: map[string]schema.Block{
@@ -136,8 +137,7 @@ func (r *pipelinesResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 							},
 						},
 					},
-					"processors": schema.ListNestedBlock{
-						Description: "List of processors.",
+					"processor": schema.ListNestedBlock{
 						NestedObject: schema.NestedBlockObject{
 							Blocks: map[string]schema.Block{
 								"filter": schema.ListNestedBlock{
@@ -185,7 +185,7 @@ func (r *pipelinesResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 							},
 						},
 					},
-					"destinations": schema.ListNestedBlock{
+					"destination": schema.ListNestedBlock{
 						Description: "List of destinations.",
 						NestedObject: schema.NestedBlockObject{
 							Blocks: map[string]schema.Block{
@@ -219,6 +219,7 @@ func (r *pipelinesResource) ImportState(ctx context.Context, request resource.Im
 
 func (r *pipelinesResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
 	var state pipelinesModel
+	fmt.Println("read: ")
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -247,6 +248,8 @@ func (r *pipelinesResource) Read(ctx context.Context, request resource.ReadReque
 
 func (r *pipelinesResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
 	var state pipelinesModel
+	//
+	fmt.Println("create: ")
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -323,6 +326,7 @@ func (r *pipelinesResource) Delete(ctx context.Context, request resource.DeleteR
 }
 
 func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesModel, resp *datadogV2.Pipeline) {
+	fmt.Println("updateState: ", state)
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -361,9 +365,9 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 		}
 	}
 	if processors, ok := config.GetProcessorsOk(); ok && len(*processors) > 0 {
-		configTf.Processors = []*ProcessorsModel{}
+		configTf.Processors = []*ProcessorModel{}
 		for _, processorsDd := range *processors {
-			processorsTfItem := ProcessorsModel{}
+			processorsTfItem := ProcessorModel{}
 
 			if processorsDd.FilterProcessor != nil {
 				processorsTfItem.FilterProcessor = []*filterProcessorModel{}
@@ -413,6 +417,7 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 }
 
 func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state *pipelinesModel) (*datadogV2.Pipeline, diag.Diagnostics) {
+	fmt.Println("buildPipelinesRequestBody: ", state)
 	diags := diag.Diagnostics{}
 	req := &datadogV2.Pipeline{}
 	attributes := datadogV2.NewPipelineDataAttributesWithDefaults()
@@ -467,22 +472,20 @@ func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state
 			for _, processorsTFItem := range state.Config.Processors {
 				for _, filterProcessorTF := range processorsTFItem.FilterProcessor {
 					processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
-					if filterProcessorTF != nil {
-						var filterProcessor datadogV2.FilterProcessor
-						if !filterProcessorTF.Id.IsNull() {
-							filterProcessor.SetId(filterProcessorTF.Id.ValueString())
-						}
-						filterProcessor.SetType("filter")
-						if !filterProcessorTF.Include.IsNull() {
-							filterProcessor.SetInclude(filterProcessorTF.Include.ValueString())
-						}
-						if !filterProcessorTF.Inputs.IsNull() {
-							var inputs []string
-							filterProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
-							filterProcessor.SetInputs(inputs)
-						}
-						processorsDDItem.FilterProcessor = &filterProcessor
+					var filterProcessor datadogV2.FilterProcessor
+					if !filterProcessorTF.Id.IsNull() {
+						filterProcessor.SetId(filterProcessorTF.Id.ValueString())
 					}
+					filterProcessor.SetType("filter")
+					if !filterProcessorTF.Include.IsNull() {
+						filterProcessor.SetInclude(filterProcessorTF.Include.ValueString())
+					}
+					if !filterProcessorTF.Inputs.IsNull() {
+						var inputs []string
+						filterProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
+						filterProcessor.SetInputs(inputs)
+					}
+					processorsDDItem.FilterProcessor = &filterProcessor
 					processors = append(processors, processorsDDItem)
 				}
 
