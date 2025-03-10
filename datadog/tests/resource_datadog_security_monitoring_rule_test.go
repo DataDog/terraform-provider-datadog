@@ -131,6 +131,28 @@ func TestAccDatadogSecurityMonitoringRule_CwsRule(t *testing.T) {
 	})
 }
 
+func TestAccDatadogSecurityMonitoringRule_AppsecRule(t *testing.T) {
+	t.Parallel()
+	ctx, accProviders := testAccProviders(context.Background(), t)
+	ruleName := uniqueEntityName(ctx, t)
+	accProvider := testAccProvider(t, accProviders)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigAppsecRule(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringCreatedCheckAppsecRule(accProvider, ruleName),
+			},
+			{
+				Config: testAccCheckDatadogSecurityMonitoringUpdatedConfigAppsecRule(ruleName),
+				Check:  testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider, ruleName),
+			},
+		},
+	})
+}
+
 func TestAccDatadogSecurityMonitoringRule_OnlyRequiredFields(t *testing.T) {
 	t.Parallel()
 	ctx, accProviders := testAccProviders(context.Background(), t)
@@ -1617,4 +1639,196 @@ func testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider func() (*schem
 		return nil
 	}
 
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedConfigAppsecRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+	name = "%s"
+	message = "acceptance rule triggered"
+	enabled = false
+	validate = true
+
+	query {
+		name = "first"
+		query = "@appsec.security_activity:attack_attempt.*"
+		aggregation = "count"
+		group_by_fields = ["service", "env"]
+	}
+
+	case {
+		name = "high case"
+		status = "high"
+		condition = "first > 600000"
+		action {
+			type = "block_ip"
+			options {
+				duration = 3600
+			}
+		}
+		action {
+			type = "block_user"
+		}
+	}
+
+	options {
+		detection_method = "threshold"
+		evaluation_window = 300
+		keep_alive = 600
+		max_signal_duration = 900
+	}
+
+	group_signals_by = ["service"]
+
+	tags = ["i:tomato", "u:tomato"]
+
+	type = "application_security"
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringCreatedCheckAppsecRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "false"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "first"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", "@appsec.security_activity:attack_attempt.*"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.1", "env"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "high case"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "high"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.condition", "first > 600000"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.0.type", "block_ip"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.0.options.0.duration", "3600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.1.type", "block_user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "threshold"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "300"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "900"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "group_signals_by.0", "service"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "type", "application_security"),
+	)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdatedConfigAppsecRule(name string) string {
+	return fmt.Sprintf(`
+resource "datadog_security_monitoring_rule" "acceptance_test" {
+	name = "%s - updated"
+	message = "acceptance rule triggered (updated)"
+	enabled = true
+    validate = true
+
+	query {
+		name = "first"
+		query = "@appsec.security_activity:attack_attempt.*"
+		aggregation = "count"
+		group_by_fields = ["service", "env"]
+	}
+
+	case {
+		name = "high case"
+		status = "high"
+		condition = "first > 500000"
+		action {
+		    type = "block_ip"
+			options {
+			    duration = 7200
+			}
+		}
+		action {
+			type = "block_user"
+		}
+	}
+
+	options {
+		detection_method = "threshold"
+		evaluation_window = 600
+		keep_alive = 600
+		max_signal_duration = 1800
+	}
+
+	group_signals_by = ["service"]
+
+	tags = ["i:tomato", "u:tomato"]
+
+	type = "application_security"
+}
+`, name)
+}
+
+func testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider func() (*schema.Provider, error), ruleName string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		testAccCheckDatadogSecurityMonitoringRuleExists(accProvider, tfSecurityRuleName),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "name", ruleName+" - updated"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "message", "acceptance rule triggered (updated)"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "enabled", "true"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.name", "first"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.query", "@appsec.security_activity:attack_attempt.*"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.aggregation", "count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.group_by_fields.1", "env"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.name", "high case"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.status", "high"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.condition", "first > 500000"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.0.type", "block_ip"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.0.options.0.duration", "7200"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "case.0.action.1.type", "block_user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.detection_method", "threshold"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.evaluation_window", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.keep_alive", "600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "options.0.max_signal_duration", "1800"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "group_signals_by.0", "service"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "i:tomato"),
+		resource.TestCheckTypeSetElemAttr(
+			tfSecurityRuleName, "tags.*", "u:tomato"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "type", "application_security"),
+	)
 }
