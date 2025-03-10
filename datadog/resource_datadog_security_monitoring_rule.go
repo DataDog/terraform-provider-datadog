@@ -820,8 +820,8 @@ func buildCreatePayloadCases(d utils.Resource) []datadogV2.SecurityMonitoringRul
 		if v, ok := ruleCase["notifications"]; ok {
 			structRuleCase.SetNotifications(parseStringArray(v.([]interface{})))
 		}
-		if actions, ok := ruleCase["action"]; ok {
-			structRuleCase.SetActions(buildPayloadCaseActions(actions.([]interface{})))
+		if action, ok := ruleCase["action"]; ok && len(action.([]interface{})) > 0 {
+			structRuleCase.SetActions(buildPayloadCaseActions(action.([]interface{})))
 		}
 		payloadCases[idx] = *structRuleCase
 	}
@@ -1539,7 +1539,7 @@ func buildUpdatePayload(d *schema.ResourceData) (*datadogV2.SecurityMonitoringRu
 			if v, ok := ruleCase["notifications"]; ok {
 				structRuleCase.SetNotifications(parseStringArray(v.([]interface{})))
 			}
-			if action, ok := ruleCase["action"]; ok {
+			if action, ok := ruleCase["action"]; ok && len(action.([]interface{})) > 0 {
 				structRuleCase.SetActions(buildPayloadCaseActions(action.([]interface{})))
 			}
 			payloadCases[idx] = structRuleCase
