@@ -71,7 +71,7 @@ func (d *workflowAutomationDatasource) Schema(_ context.Context, request datasou
 			},
 			"published": schema.BoolAttribute{
 				Computed:    true,
-				Description: "Set the workflow to published or unpublished. Workflows in an unpublished state will only be executable via manual runs. Automatic triggers such as Schedule will not execute the workflow until it is published.",
+				Description: "Set the workflow to published or unpublished. Workflows in an unpublished state are only executable through manual runs. Automatic triggers such as Schedule do not execute the workflow until it is published.",
 			},
 			"spec_json": schema.StringAttribute{
 				Computed:    true,

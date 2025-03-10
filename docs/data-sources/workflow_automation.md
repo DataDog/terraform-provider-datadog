@@ -29,6 +29,6 @@ data "datadog_workflow_automation" "my_workflow" {
 
 - `description` (String) Description of the workflow.
 - `name` (String) Name of the workflow.
-- `published` (Boolean) Set the workflow to published or unpublished. Workflows in an unpublished state will only be executable via manual runs. Automatic triggers such as Schedule will not execute the workflow until it is published.
+- `published` (Boolean) Set the workflow to published or unpublished. Workflows in an unpublished state are only executable through manual runs. Automatic triggers such as Schedule do not execute the workflow until it is published.
 - `spec_json` (String) The spec defines what the workflow does.
 - `tags` (Set of String) Tags of the workflow.
