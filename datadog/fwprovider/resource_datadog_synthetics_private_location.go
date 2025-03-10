@@ -96,7 +96,7 @@ func (r *syntheticsPrivateLocationResource) Schema(_ context.Context, _ resource
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"restricted_roles": schema.SetAttribute{
-							Description:        "A set of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead",
+							Description:        "A set of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 							DeprecationMessage: "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 							Optional:           true,
 							ElementType:        types.StringType,
