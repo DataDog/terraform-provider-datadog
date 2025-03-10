@@ -33,15 +33,15 @@ type syntheticsPrivateLocationResource struct {
 }
 
 type syntheticsPrivateLocationModel struct {
-	Id          types.String    `tfsdk:"id"`
-	Config      types.String    `tfsdk:"config"`
-	Description types.String    `tfsdk:"description"`
-	Metadata    []metadataModel `tfsdk:"metadata"`
-	Name        types.String    `tfsdk:"name"`
-	Tags        types.List      `tfsdk:"tags"`
+	Id          types.String                             `tfsdk:"id"`
+	Config      types.String                             `tfsdk:"config"`
+	Description types.String                             `tfsdk:"description"`
+	Metadata    []syntheticsPrivateLocationMetadataModel `tfsdk:"metadata"`
+	Name        types.String                             `tfsdk:"name"`
+	Tags        types.List                               `tfsdk:"tags"`
 }
 
-type metadataModel struct {
+type syntheticsPrivateLocationMetadataModel struct {
 	RestrictedRoles types.Set `tfsdk:"restricted_roles"`
 }
 
@@ -241,9 +241,9 @@ func (r *syntheticsPrivateLocationResource) updateState(ctx context.Context, sta
 
 	if metadata, ok := resp.GetMetadataOk(); ok {
 		if restrictedRoles, ok := metadata.GetRestrictedRolesOk(); ok {
-			localMetadata := metadataModel{}
+			localMetadata := syntheticsPrivateLocationMetadataModel{}
 			localMetadata.RestrictedRoles, _ = types.SetValueFrom(ctx, types.StringType, *restrictedRoles)
-			state.Metadata = []metadataModel{localMetadata}
+			state.Metadata = []syntheticsPrivateLocationMetadataModel{localMetadata}
 		}
 	}
 }
@@ -258,15 +258,15 @@ func (r *syntheticsPrivateLocationResource) buildSyntheticsPrivateLocationReques
 		syntheticsPrivateLocation.SetDescription(state.Description.ValueString())
 	}
 
-	metadata := datadogV1.SyntheticsPrivateLocationMetadata{}
 	if state.Metadata != nil {
 		if len(state.Metadata) == 1 && !state.Metadata[0].RestrictedRoles.IsNull() {
+			metadata := datadogV1.SyntheticsPrivateLocationMetadata{}
 			var restrictedRoles []string
 			diags.Append(state.Metadata[0].RestrictedRoles.ElementsAs(ctx, &restrictedRoles, false)...)
 			metadata.SetRestrictedRoles(restrictedRoles)
+			syntheticsPrivateLocation.SetMetadata(metadata)
 		}
 	}
-	syntheticsPrivateLocation.SetMetadata(metadata)
 
 	tags := make([]string, 0)
 	if !state.Tags.IsNull() {
