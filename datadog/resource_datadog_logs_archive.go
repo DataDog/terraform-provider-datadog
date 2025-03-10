@@ -51,6 +51,18 @@ func resourceDatadogLogsArchive() *schema.Resource {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsArchiveEncryptionS3TypeFromValue),
 							},
 							"encryption_key": {Description: "The AWS KMS encryption key.", Type: schema.TypeString, Optional: true},
+							"storage_class": {
+                                Description: "The storage class logs are uploaded to.",
+                                Type:        schema.TypeString,
+                                Optional:    true,
+                                ValidateDiagFunc: validators.ValidateEnumValue([]string{
+                                    "STANDARD",
+                                    "STANDARD_IA",
+                                    "ONEZONE_IA",
+                                    "INTELLIGENT_TIERING",
+                                    "GLACIER_IR",
+                                }),
+                            },
 						},
 					},
 				},
@@ -271,6 +283,9 @@ func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]inter
 	}
 	result["bucket"] = destination.GetBucket()
 	result["path"] = destination.GetPath()
+	if storageClass, ok := destination.GetStorageClassOk(); ok {
+        result["storage_class"] = storageClass
+    }
 	return result
 }
 
@@ -451,6 +466,10 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 		}
 		destination.SetEncryption(*encryption)
 	}
+    storageClass, ok := d["storage_class"]
+    if ok && storageClass != "" {
+        destination.SetStorageClass(datadogV2.LogsArchiveStorageClass(storageClass.(string)))
+    }
 	destination.Path = datadog.PtrString(path.(string))
 	return destination, nil
 }
