@@ -23,7 +23,7 @@ require (
 )
 
 require (
-	github.com/DataDog/datadog-api-client-go/v2 v2.35.1-0.20250307163854-55d205a8116d // indirect
+	github.com/DataDog/datadog-api-client-go/v2 v2.35.1-0.20250310175926-4abe7bf10b8d // indirect
 	github.com/DataDog/datadog-go v4.8.3+incompatible // indirect
 	github.com/DataDog/gostackparse v0.5.0 // indirect
 	github.com/DataDog/sketches-go v1.2.1 // indirect

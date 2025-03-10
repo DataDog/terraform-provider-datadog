@@ -49,12 +49,20 @@ type tlsModel struct {
 }
 
 type ProcessorsModel struct {
-	FilterProcessor []*filterProcessorModel `tfsdk:"filter"`
+	FilterProcessor    []*filterProcessorModel    `tfsdk:"filter"`
+	ParseJsonProcessor []*ParseJsonProcessorModel `tfsdk:"parse_json"`
 }
 type filterProcessorModel struct {
 	Id      types.String `tfsdk:"id"`
 	Include types.String `tfsdk:"include"`
 	Inputs  types.List   `tfsdk:"inputs"`
+}
+
+type ParseJsonProcessorModel struct {
+	Id      types.String `tfsdk:"id"`
+	Inputs  types.List   `tfsdk:"inputs"`
+	Include types.String `tfsdk:"include"`
+	Field   types.String `tfsdk:"field"`
 }
 
 type destinationsModel struct {
@@ -147,6 +155,29 @@ func (r *pipelinesResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 												Description: "The inputs for the processor.",
 												ElementType: types.StringType,
 												Required:    true,
+											},
+										},
+									},
+								},
+								"parse_json": schema.ListNestedBlock{
+									NestedObject: schema.NestedBlockObject{
+										Attributes: map[string]schema.Attribute{
+											"id": schema.StringAttribute{
+												Optional:    true,
+												Description: "The unique ID of the processor.",
+											},
+											"include": schema.StringAttribute{
+												Optional:    true,
+												Description: "Inclusion filter for the processor.",
+											},
+											"inputs": schema.ListAttribute{
+												Required:    true,
+												Description: "The inputs for the processor.",
+												ElementType: types.StringType,
+											},
+											"field": schema.StringAttribute{
+												Required:    true,
+												Description: "The field to parse.",
 											},
 										},
 									},
@@ -333,9 +364,9 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 		configTf.Processors = []*ProcessorsModel{}
 		for _, processorsDd := range *processors {
 			processorsTfItem := ProcessorsModel{}
-			processorsTfItem.FilterProcessor = []*filterProcessorModel{}
 
 			if processorsDd.FilterProcessor != nil {
+				processorsTfItem.FilterProcessor = []*filterProcessorModel{}
 				filterProcessorTf := filterProcessorModel{}
 
 				filterProcessorTf.Id = types.StringValue(processorsDd.FilterProcessor.Id)
@@ -344,7 +375,20 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 				processorsTfItem.FilterProcessor = append(processorsTfItem.FilterProcessor, &filterProcessorTf)
 			}
 
+			parseJSONProcessor := processorsDd.ParseJSONProcessor
+			if parseJSONProcessor != nil {
+				processorsTfItem.ParseJsonProcessor = []*ParseJsonProcessorModel{}
+				parseJsonProcessorTf := ParseJsonProcessorModel{}
+
+				parseJsonProcessorTf.Id = types.StringValue(parseJSONProcessor.Id)
+				parseJsonProcessorTf.Include = types.StringValue(*parseJSONProcessor.Include)
+				parseJsonProcessorTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, parseJSONProcessor.Inputs)
+				parseJsonProcessorTf.Field = types.StringValue(parseJSONProcessor.Field)
+				processorsTfItem.ParseJsonProcessor = append(processorsTfItem.ParseJsonProcessor, &parseJsonProcessorTf)
+			}
+
 			configTf.Processors = append(configTf.Processors, &processorsTfItem)
+
 		}
 	}
 	if destinations, ok := config.GetDestinationsOk(); ok && len(*destinations) > 0 {
@@ -421,8 +465,8 @@ func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state
 		if state.Config.Processors != nil {
 			var processors []datadogV2.PipelineDataAttributesConfigProcessorsItem
 			for _, processorsTFItem := range state.Config.Processors {
-				processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
 				for _, filterProcessorTF := range processorsTFItem.FilterProcessor {
+					processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
 					if filterProcessorTF != nil {
 						var filterProcessor datadogV2.FilterProcessor
 						if !filterProcessorTF.Id.IsNull() {
@@ -438,6 +482,30 @@ func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state
 							filterProcessor.SetInputs(inputs)
 						}
 						processorsDDItem.FilterProcessor = &filterProcessor
+					}
+					processors = append(processors, processorsDDItem)
+				}
+
+				for _, parseJsonProcessorTF := range processorsTFItem.ParseJsonProcessor {
+					processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
+					if parseJsonProcessorTF != nil {
+						var parseJsonProcessor datadogV2.ParseJSONProcessor
+						if !parseJsonProcessorTF.Id.IsNull() {
+							parseJsonProcessor.SetId(parseJsonProcessorTF.Id.ValueString())
+						}
+						parseJsonProcessor.SetType("parse_json")
+						if !parseJsonProcessorTF.Include.IsNull() {
+							parseJsonProcessor.SetInclude(parseJsonProcessorTF.Include.ValueString())
+						}
+						if !parseJsonProcessorTF.Inputs.IsNull() {
+							var inputs []string
+							parseJsonProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
+							parseJsonProcessor.SetInputs(inputs)
+						}
+						if !parseJsonProcessorTF.Field.IsNull() {
+							parseJsonProcessor.SetField(parseJsonProcessorTF.Field.ValueString())
+						}
+						processorsDDItem.ParseJSONProcessor = &parseJsonProcessor
 					}
 					processors = append(processors, processorsDDItem)
 				}
