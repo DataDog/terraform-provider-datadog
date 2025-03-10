@@ -3,12 +3,12 @@
 page_title: "datadog_synthetics_global_variable Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog SyntheticsGlobalVariable resource. This can be used to create and manage Datadog synthetics_global_variable.
+  Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations
 ---
 
 # datadog_synthetics_global_variable (Resource)
 
-Provides a Datadog SyntheticsGlobalVariable resource. This can be used to create and manage Datadog synthetics_global_variable.
+Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations
 
 ## Example Usage
 

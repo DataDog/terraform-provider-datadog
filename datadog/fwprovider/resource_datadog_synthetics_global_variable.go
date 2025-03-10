@@ -84,7 +84,7 @@ func (r *syntheticsGlobalVariableResource) Metadata(_ context.Context, request r
 
 func (r *syntheticsGlobalVariableResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog SyntheticsGlobalVariable resource. This can be used to create and manage Datadog synthetics_global_variable.",
+		Description: "Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Synthetics global variable name.",
