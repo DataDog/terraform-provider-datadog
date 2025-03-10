@@ -13,8 +13,6 @@ import (
 )
 
 func TestAccDatadogWorkflowAutomationDatasource(t *testing.T) {
-	t.Parallel()
-
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	workflowName := uniqueEntityName(ctx, t)

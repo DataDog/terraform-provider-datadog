@@ -240,7 +240,11 @@ func workflowAutomationModelToCreateApiRequest(workflowAutomationModel workflowA
 		err = fmt.Errorf("error unmarshalling spec json string to attributes.Spec struct: %s", err)
 		return nil, err
 	}
-	// TODO: Enforce strict decoding
+	// Enforce strict decoding
+	err = utils.CheckForAdditionalProperties(attributes.Spec)
+	if err != nil {
+		return nil, fmt.Errorf("unknown field in spec, this could be due to misspelled field, using a version of the Go client that is out of date, or support for this field has not been added. Check the [API](https://docs.datadoghq.com/api/latest/workflow-automation/#create-a-workflow) documentation for what fields are currently supported. Error: %s", err)
+	}
 
 	data := datadogV2.NewWorkflowData(*attributes, datadogV2.WORKFLOWDATATYPE_WORKFLOWS)
 	req := datadogV2.NewCreateWorkflowRequest(*data)
@@ -266,7 +270,11 @@ func workflowAutomationModelToUpdateApiRequest(workflowAutomationModel workflowA
 		err = fmt.Errorf("error unmarshalling spec json string to attributes.Spec struct: %s", err)
 		return nil, err
 	}
-	// // TODO: Enforce strict decoding
+	// Enforce strict decoding
+	err = utils.CheckForAdditionalProperties(attributes.Spec)
+	if err != nil {
+		return nil, fmt.Errorf("unknown field in spec, this could be due to misspelled field, using a version of the Go client that is out of date, or support for this field has not been added. Check the [API](https://docs.datadoghq.com/api/latest/workflow-automation/#create-a-workflow) documentation for what fields are currently supported. Error: %s", err)
+	}
 
 	data := datadogV2.NewWorkflowDataUpdate(*attributes, datadogV2.WORKFLOWDATATYPE_WORKFLOWS)
 	req := datadogV2.NewUpdateWorkflowRequest(*data)

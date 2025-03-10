@@ -26,11 +26,19 @@ var (
 		}
 	]
 }`
+	testInvalidWorkflowSpec = `{
+	"foo": "bar",
+	"steps": [],
+	"triggers": [
+		{
+			"startStepNames": [],
+			"workflowTrigger": {}
+		}
+	]
+}`
 )
 
 func TestAccDatadogWorkflowAutomationResource(t *testing.T) {
-	t.Parallel()
-
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	workflowName := uniqueEntityName(ctx, t)
@@ -62,6 +70,10 @@ func TestAccDatadogWorkflowAutomationResource(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "spec_json", testWorkflowEmptySpecNoWhitespace),
 				),
 			},
+			{
+				Config:      testInvalidWorkflowAutomationResourceConfig(workflowName),
+				ExpectError: regexp.MustCompile("Error running apply"),
+			},
 		},
 	})
 }
@@ -79,6 +91,19 @@ func testWorkflowAutomationResourceConfig(workflowName string) string {
 %s
 		)
 	}`, workflowName, testWorkflowDescription, testWorkflowTags, testWorkflowSpec)
+}
+
+func testInvalidWorkflowAutomationResourceConfig(workflowName string) string {
+	return fmt.Sprintf(`
+	resource "datadog_workflow_automation" "invalid_workflow" {
+		name        = "%s"
+		description = "%s"
+		tags        = %s
+		published   = false
+		spec_json = jsonencode(
+%s
+		)
+	}`, workflowName, testWorkflowDescription, testWorkflowTags, testInvalidWorkflowSpec)
 }
 
 func testAccCheckDatadogWorkflowExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
