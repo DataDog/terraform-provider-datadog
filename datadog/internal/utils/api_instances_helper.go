@@ -47,6 +47,7 @@ type ApiInstances struct {
 	actionConnectionApiV2          *datadogV2.ActionConnectionApi
 	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
+	applicationSecurityApiV2       *datadogV2.ApplicationSecurityApi
 	auditApiV2                     *datadogV2.AuditApi
 	authNMappingsApiV2             *datadogV2.AuthNMappingsApi
 	awsIntegrationApiV2            *datadogV2.AWSIntegrationApi
@@ -689,6 +690,14 @@ func (i *ApiInstances) GetWorkflowAutomationApiV2() *datadogV2.WorkflowAutomatio
 		i.workflowAutomationApiV2 = datadogV2.NewWorkflowAutomationApi(i.HttpClient)
 	}
 	return i.workflowAutomationApiV2
+}
+
+// GetApplicationSecurityApiV2 get instance of ApplicationSecurityApi
+func (i *ApiInstances) GetApplicationSecurityApiV2() *datadogV2.ApplicationSecurityApi {
+	if i.applicationSecurityApiV2 == nil {
+		i.applicationSecurityApiV2 = datadogV2.NewApplicationSecurityApi(i.HttpClient)
+	}
+	return i.applicationSecurityApiV2
 }
 
 // GetActionConnectionApiV2 get instance of ActionConnectionApi

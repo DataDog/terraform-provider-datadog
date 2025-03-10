@@ -34,7 +34,7 @@ datadog/**/*datadog_apm_retention_filter*        @DataDog/web-frameworks @DataDo
 datadog/**/*datadog_application_key*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/credentials-management
 datadog/**/*datadog_hosts*                       @DataDog/web-frameworks @DataDog/api-reliability @DataDog/redapl-storage
 datadog/**/*datadog_ip_ranges*                   @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
-datadog/**/*datadog_integration_aws*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/cloud-integrations
+datadog/**/*datadog_integration_aws*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/aws-ints-core
 datadog/**/*datadog_integration_azure*           @DataDog/web-frameworks @DataDog/api-reliability @DataDog/azure-integrations
 datadog/**/*datadog_integration_cloudflare*      @DataDog/web-frameworks @DataDog/api-reliability @DataDog/saas-integrations
 datadog/**/*datadog_integration_confluent*       @DataDog/web-frameworks @DataDog/api-reliability @DataDog/saas-integrations
