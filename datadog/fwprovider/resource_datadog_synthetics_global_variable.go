@@ -84,7 +84,7 @@ func (r *syntheticsGlobalVariableResource) Metadata(_ context.Context, request r
 
 func (r *syntheticsGlobalVariableResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.",
+		Description: "Provides a Datadog synthetics global variable resource. This can be used to create and manage Datadog synthetics global variables.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Synthetics global variable name.",
@@ -122,7 +122,7 @@ func (r *syntheticsGlobalVariableResource) Schema(_ context.Context, _ resource.
 				Optional:    true,
 			},
 			"restricted_roles": schema.ListAttribute{
-				Description:        "A list of role identifiers to associate with the Synthetics global variable.",
+				Description:        "A list of role identifiers to associate with the Synthetics global variable. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 				DeprecationMessage: "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 				ElementType:        types.StringType,
 				Optional:           true,
@@ -168,7 +168,7 @@ func (r *syntheticsGlobalVariableResource) Schema(_ context.Context, _ resource.
 								Attributes: map[string]schema.Attribute{
 									"type": schema.StringAttribute{
 										Required:    true,
-										Description: "Type of parser to extract the value.",
+										Description: "Type of parser to extract the value. Valid values are `raw`, `json_path`, `regex`, `x_path`.",
 										Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue)},
 									},
 									"value": schema.StringAttribute{
