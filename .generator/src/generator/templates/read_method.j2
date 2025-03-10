@@ -6,14 +6,15 @@ func (r *{{ name|camel_case|untitle_case }}Resource) Read(ctx context.Context, r
     }
 
     {%- for name, param in readOperationParams.items() %}
-    {%- set paramSchema = param|parameter_schema %}
-    {%- if name == primaryId["name"] %}
-
-    id := state.ID.Value{{ get_terraform_schema_type(paramSchema) }}()
-    {%- else%}
-    {{ name|variable_name }} := state.{{ name|camel_case }}.Value{{ get_terraform_schema_type(paramSchema) }}()
-    {%- endif %}
+        {%- set paramSchema = param|parameter_schema %}
+        
+        {%- if name == primaryId["name"] %}
+            id := state.ID.Value{{ get_terraform_schema_type(paramSchema) }}()
+        {%- else%}
+            {{ name|variable_name }} := state.{{ name|camel_case }}.Value{{ get_terraform_schema_type(paramSchema) }}()
+        {%- endif %}
     {%- endfor %}
+    
     resp, httpResp, err := r.Api.{{ getOperationId }}(r.Auth, {% for name, param in readOperationParams.items() %}{% if name == primaryId["name"] %}id,{% else %}{{ name|variable_name }},{% endif%}{% endfor%})
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {

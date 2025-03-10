@@ -100,6 +100,54 @@ def return_type(operation):
         return
 
 
+def get_schema_from_response(response: dict) -> dict:
+    return response["200"]["content"]["application/json"]["schema"]["properties"][
+        "data"
+    ]["properties"]["attributes"]
+
+
+def categorize_schema(schema: dict) -> str:
+    """
+    Categorize the property based on its type.
+    """
+    if is_primitive(schema):
+        return "primitive"
+    elif schema.get("type") == "array":
+        if is_primitive(schema.get("items")):
+            return "primitive_array"
+        else:
+            return "non_primitive_array"
+    else:
+        return "non_primitive_obj"
+
+
+def sort_schemas_by_type(schemas: dict):
+    """
+    Sort schemas by primitive and non primitive types since
+    we use Blocks in terraform instead of NestedAttributes for
+    non primitives.
+    """
+    # Initialize dictionaries to store different types of parameters
+    primitive = {}
+    primitive_array = {}
+    non_primitive_array = {}
+    non_primitive_obj = {}
+
+    # Iterate through the parameters
+    for name, schema in schemas.items():
+        match categorize_schema(schema["schema"]):
+            case "primitive":
+                primitive[name] = schema["schema"]
+            case "primitive_array":
+                primitive_array[name] = schema["schema"]
+            case "non_primitive_array":
+                non_primitive_array[name] = schema["schema"]
+            case "non_primitive_obj":
+                non_primitive_obj[name] = schema["schema"]
+
+    return primitive, primitive_array, non_primitive_array, non_primitive_obj
+
+
 def tf_sort_params_by_type(parameters):
     """
     Sort parameters by primitive and non primitive types since

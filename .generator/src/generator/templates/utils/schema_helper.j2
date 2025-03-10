@@ -1,56 +1,56 @@
-{%- macro typePrimitiveSchema(name, schema, required=False) %}
+{%- macro typePrimitiveSchema(name, schema, required=False, computed=False) %}
 "{{ name }}": schema.{{ get_terraform_schema_type(schema) }}Attribute{
-    {{- RequiredOptionalComputed(schema, required) }}
+    {{- RequiredOptionalComputed(schema, required, computed=computed) }}
     Description: "{{ schema.description|sanitize_description if schema.description else "UPDATE ME" }}",
 },
 {%- endmacro %}
 
-{%- macro typePrimitiveArraySchema(name, schema, required=False) %}
+{%- macro typePrimitiveArraySchema(name, schema, required=False, computed=False) %}
 "{{ name }}": schema.{{ get_terraform_schema_type(schema) }}Attribute{
-    {{- RequiredOptionalComputed(schema, required) }}
+    {{- RequiredOptionalComputed(schema, required, computed=computed) }}
     Description: "{{ schema.description|sanitize_description if schema.description else "UPDATE ME" }}",
     ElementType: types.{{ get_terraform_schema_type(schema.get("items")) }}Type,
 },
 {%- endmacro %}
 
-{%- macro RequiredOptionalComputed(schema, required=False) %}
-{% if is_computed(schema) %} Computed: true,{% elif required %}Required:    true,{% else %}Optional:    true,{% endif %}
+{%- macro RequiredOptionalComputed(schema, required=False, computed=False) %}
+{% if computed or is_computed(schema) %} Computed: true,{% elif required %} Required:    true,{% else %} Optional:    true,{% endif %}
 {%- endmacro %}
 
-{%- macro baseBlockListAttrSchemaBuilder(name, schema, required=False) %}
+{%- macro baseBlockListAttrSchemaBuilder(name, schema, required=False, computed=False) %}
 {%- set itemSchema = schema.get("items") %}
 "{{ name }}": schema.ListNestedBlock{
     NestedObject: schema.NestedBlockObject{
-    {{- baseBlockContent(itemSchema) }}
+    {{- baseBlockContent(itemSchema, computed=computed) }}
     },
 },
 {%- endmacro %}
 
-{%- macro baseBlockObjAttrSchemaBuilder(name, schema, required=False) %}
+{%- macro baseBlockObjAttrSchemaBuilder(name, schema, required=False, computed=False) %}
 "{{ name }}": schema.SingleNestedBlock{
-    {{- baseBlockContent(schema) }}
+    {{- baseBlockContent(schema, computed=computed) }}
 },
 {%- endmacro %}
 
-{%- macro baseBlockContent(schema) %}
+{%- macro baseBlockContent(schema, computed=False) %}
 {%- set primitiveAttr, primitiveArrAttr, nonPrimitiveListAttr, nonPrimitiveObjAttr = schema|tf_sort_properties_by_type %}
     Attributes: map[string]schema.Attribute{
         {%- for name, schema in primitiveAttr.items() %}
-        {{- typePrimitiveSchema(name, schema, required=schema.get("required")) }}
+        {{- typePrimitiveSchema(name, schema, required=schema.get("required"), computed=computed) }}
         {%- endfor %}
 
         {%- for name, schema in primitiveArrAttr.items() %}
-        {{- typePrimitiveArraySchema(name, schema, required=schema.get("required")) }}
+        {{- typePrimitiveArraySchema(name, schema, required=schema.get("required"), computed=computed) }}
         {%- endfor %}
     },
         {%- if nonPrimitiveObjAttr or nonPrimitiveListAttr %}
     Blocks: map[string]schema.Block{
         {%- for name, schema in nonPrimitiveListAttr.items() %}
-        {{- baseBlockListAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
+        {{- baseBlockListAttrSchemaBuilder(name, schema, required=schema.get("required"), computed=computed) }}
         {%- endfor %}
 
         {%- for name, schema in nonPrimitiveObjAttr.items() %}
-        {{- baseBlockObjAttrSchemaBuilder(name, schema, required=schema.get("required")) }}
+        {{- baseBlockObjAttrSchemaBuilder(name, schema, required=schema.get("required"), computed=computed) }}
         {%- endfor %}
     },
     {%- endif %}

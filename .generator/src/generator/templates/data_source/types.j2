@@ -1,0 +1,58 @@
+{%- import "utils/types_helper.j2" as typesHelper %}
+
+type datadog{{ name|camel_case }}DataSource struct {
+	Api  *datadog{{ version }}.{{ apiName }}
+	Auth context.Context
+}
+
+type datadog{{ name|camel_case }}DataSourceModel struct {
+    // Datasource ID
+    ID   types.String `tfsdk:"id"`
+
+    // Query Parameters
+    {%- for name, schema in singularParamAttr[0].items() %}
+    {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
+    {%- endfor %}
+
+    {%- for name, schema in primitiveParamAttr.items() %}
+    {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
+    {%- endfor %}
+
+    {%- for name, schema in primitiveParamArrAttr.items() %}
+    {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
+    {%- endfor %}
+
+    {%- for name, schema in nonPrimitiveParamListAttr.items() %}
+    {{- typesHelper.nonPrimitiveTypeProperty(name, array=True) }}
+    {%- endfor %}
+
+    {%- for name, schema in nonPrimitiveParamObjAttr.items() %}
+    {{- typesHelper.nonPrimitiveTypeProperty(name) }}
+    {%- endfor %}
+
+    // Computed values
+    {%- for name, schema in primitiveRespAttr.items() %}
+    {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
+    {%- endfor %}
+
+    {%- for name, schema in primitiveRespArrAttr.items() %}
+    {{- typesHelper.primitiveTypeProperty(name, get_terraform_schema_type(schema)) }}
+    {%- endfor %}
+
+    {%- for name, schema in nonPrimitiveRespListAttr.items() %}
+    {{- typesHelper.nonPrimitiveTypeProperty(name, array=True) }}
+    {%- endfor %}
+
+    {%- for name, schema in nonPrimitiveRespObjAttr.items() %}
+    {{- typesHelper.nonPrimitiveTypeProperty(name) }}
+    {%- endfor %}
+}
+
+{% for name, schema in nonPrimitiveParamListAttr.items() %}
+{{- typesHelper.basePropertyTypeBuilder(name, schema) }}
+{% endfor %}
+
+{% for name, schema in nonPrimitiveParamObjAttr.items() %}
+{{- typesHelper.basePropertyTypeBuilder(name, schema) }}
+{% endfor %}
+
