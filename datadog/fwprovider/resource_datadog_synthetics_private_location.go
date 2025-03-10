@@ -61,7 +61,7 @@ func (r *syntheticsPrivateLocationResource) Metadata(_ context.Context, request 
 
 func (r *syntheticsPrivateLocationResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog SyntheticsPrivateLocation resource. This can be used to create and manage Datadog synthetics_private_location.",
+		Description: "Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Required:    true,
@@ -96,7 +96,7 @@ func (r *syntheticsPrivateLocationResource) Schema(_ context.Context, _ resource
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"restricted_roles": schema.SetAttribute{
-							Description:        "A set of role identifiers pulled from the Roles API to restrict read and write access.",
+							Description:        "A set of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead",
 							DeprecationMessage: "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 							Optional:           true,
 							ElementType:        types.StringType,
