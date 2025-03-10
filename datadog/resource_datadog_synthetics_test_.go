@@ -1073,6 +1073,11 @@ func syntheticsTestAPIStep() *schema.Schema {
 						},
 					},
 				},
+				"extracted_values_from_script": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "Generate variables using JavaScript.",
+				},
 				"request_definition": {
 					Description: "The request for the api step.",
 					Type:        schema.TypeList,
@@ -2393,6 +2398,7 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["allow_failure"] = step.SyntheticsAPITestStep.GetAllowFailure()
 				localStep["exit_if_succeed"] = step.SyntheticsAPITestStep.GetExitIfSucceed()
 				localStep["is_critical"] = step.SyntheticsAPITestStep.GetIsCritical()
+				localStep["extracted_values_from_script"] = step.SyntheticsAPITestStep.GetExtractedValuesFromScript()
 
 				if retry, ok := step.SyntheticsAPITestStep.GetRetryOk(); ok {
 					localRetry := make(map[string]interface{})
@@ -2739,6 +2745,7 @@ func buildDatadogSyntheticsAPITest(d *schema.ResourceData) *datadogV1.Synthetics
 				step.SyntheticsAPITestStep.SetAllowFailure(stepMap["allow_failure"].(bool))
 				step.SyntheticsAPITestStep.SetExitIfSucceed(stepMap["exit_if_succeed"].(bool))
 				step.SyntheticsAPITestStep.SetIsCritical(stepMap["is_critical"].(bool))
+				step.SyntheticsAPITestStep.SetExtractedValuesFromScript(stepMap["extracted_values_from_script"].(string))
 
 				optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
 				retries := stepMap["retry"].([]interface{})
