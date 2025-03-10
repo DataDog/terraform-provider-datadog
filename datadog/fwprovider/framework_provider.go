@@ -76,6 +76,7 @@ var Resources = []func() resource.Resource{
 	NewAppsecWafCustomRuleResource,
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
+	NewSyntheticsPrivateLocationResource,
 }
 
 var Datasources = []func() datasource.DataSource{

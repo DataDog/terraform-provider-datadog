@@ -6,11 +6,11 @@ import (
 	"log"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
@@ -19,14 +19,14 @@ func TestAccDatadogSyntheticsPrivateLocation_importBasic(t *testing.T) {
 		log.Println("Skipping private locations tests in non replaying mode")
 		return
 	}
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	privateLocationName := uniqueEntityName(ctx, t)
-	accProvider := testAccProvider(t, accProviders)
+	frameworkProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsPrivateLocationIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsPrivateLocationIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: createSyntheticsPrivateLocationConfig(privateLocationName),
@@ -47,15 +47,15 @@ func TestAccDatadogSyntheticsPrivateLocation_Basic(t *testing.T) {
 		log.Println("Skipping private locations tests in non replaying mode")
 		return
 	}
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	frameworkProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsPrivateLocationIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsPrivateLocationIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsPrivateLocationStep(ctx, accProvider, t),
+			createSyntheticsPrivateLocationStep(ctx, frameworkProvider, t),
 		},
 	})
 }
@@ -66,21 +66,21 @@ func TestAccDatadogSyntheticsPrivateLocation_Updated(t *testing.T) {
 		log.Println("Skipping private locations tests in non replaying mode")
 		return
 	}
-	ctx, accProviders := testAccProviders(context.Background(), t)
-	accProvider := testAccProvider(t, accProviders)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	frameworkProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsPrivateLocationIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsPrivateLocationIsDestroyed(frameworkProvider),
 		Steps: []resource.TestStep{
-			createSyntheticsPrivateLocationStep(ctx, accProvider, t),
-			updateSyntheticsPrivateLocationStep(ctx, accProvider, t),
+			createSyntheticsPrivateLocationStep(ctx, frameworkProvider, t),
+			updateSyntheticsPrivateLocationStep(ctx, frameworkProvider, t),
 		},
 	})
 }
 
-func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func createSyntheticsPrivateLocationStep(ctx context.Context, accProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
 	privateLocationName := uniqueEntityName(ctx, t)
 	return resource.TestStep{
 		Config: createSyntheticsPrivateLocationConfig(privateLocationName),
@@ -113,7 +113,7 @@ resource "datadog_synthetics_private_location" "foo" {
 }`, uniqPrivateLocation)
 }
 
-func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider func() (*schema.Provider, error), t *testing.T) resource.TestStep {
+func updateSyntheticsPrivateLocationStep(ctx context.Context, accProvider *fwprovider.FrameworkProvider, t *testing.T) resource.TestStep {
 	privateLocationName := uniqueEntityName(ctx, t) + "_updated"
 	return resource.TestStep{
 		Config: updateSyntheticsPrivateLocationConfig(privateLocationName),
@@ -148,12 +148,10 @@ resource "datadog_synthetics_private_location" "foo" {
 }`, uniqPrivateLocation)
 }
 
-func testSyntheticsPrivateLocationExists(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testSyntheticsPrivateLocationExists(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
 		for _, r := range s.RootModule().Resources {
 			if r.Type == "datadog_role" {
@@ -168,26 +166,37 @@ func testSyntheticsPrivateLocationExists(accProvider func() (*schema.Provider, e
 	}
 }
 
-func testSyntheticsPrivateLocationIsDestroyed(accProvider func() (*schema.Provider, error)) resource.TestCheckFunc {
+func testSyntheticsPrivateLocationIsDestroyed(accProvider *fwprovider.FrameworkProvider) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
-		provider, _ := accProvider()
-		providerConf := provider.Meta().(*datadog.ProviderConfiguration)
-		apiInstances := providerConf.DatadogApiInstances
-		auth := providerConf.Auth
+		apiInstances := accProvider.DatadogApiInstances
+		auth := accProvider.Auth
 
-		for _, r := range s.RootModule().Resources {
-			if r.Type == "datadog_role" {
-				continue
-			}
-
-			if _, httpresp, err := apiInstances.GetSyntheticsApiV1().GetPrivateLocation(auth, r.Primary.ID); err != nil {
-				if httpresp != nil && httpresp.StatusCode == 404 {
-					continue
-				}
-				return fmt.Errorf("received an error retrieving synthetics private location %s", err)
-			}
-			return fmt.Errorf("synthetics private location still exists")
+		if err := SyntheticsPrivateLocationDestroyerHelper(auth, s, apiInstances); err != nil {
+			return err
 		}
 		return nil
 	}
+}
+
+func SyntheticsPrivateLocationDestroyerHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
+	for _, r := range s.RootModule().Resources {
+		if r.Type != "datadog_synthetics_private_location" {
+			continue
+		}
+		err := utils.Retry(2, 10, func() error {
+			_, httpresp, err := apiInstances.GetSyntheticsApiV1().GetPrivateLocation(auth, r.Primary.ID)
+			if err != nil {
+				if httpresp != nil && httpresp.StatusCode == 404 {
+					return nil
+				}
+				return &utils.RetryableError{Prob: fmt.Sprintf("error retrieving synthetics private location: %s", err)}
+			}
+			return &utils.RetryableError{Prob: "synthetics private location still exists"}
+		})
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
