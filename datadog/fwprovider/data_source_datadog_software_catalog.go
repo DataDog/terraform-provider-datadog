@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -13,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+	"sort"
 )
 
 var (
@@ -203,6 +203,11 @@ func (d *datadogSoftwareCatalogDataSource) updateState(ctx context.Context, resp
 
 		softwareEntities = append(softwareEntities, &softwareEntity)
 	}
+
+	// Making sure that the ordering is stable
+	sort.Slice(softwareEntities, func(i, j int) bool {
+		return softwareEntities[i].Name.String() < softwareEntities[j].Name.String()
+	})
 
 	idHash := fmt.Sprintf("%x", sha256.Sum256([]byte(
 		state.FilterID.ValueString()+state.FilterName.ValueString()+state.FilterExcludeSnapshot.ValueString()+
