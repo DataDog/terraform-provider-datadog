@@ -1,33 +1,29 @@
 # Create new pipelines resource
 
-resource "datadog_pipelines" "test" {
+resource "datadog_pipelines" "test3" {
   name = "test TF pipeline"
   config {
 
-    source {
+    sources {
       datadog_agent {
         id = "source-1"
       }
     }
 
-    processor {
+    processors {
       parse_json {
         id      = "filter-1"
         include = "service:nginx"
         field   = "message"
         inputs  = ["source-1"]
       }
-    }
 
-    processor {
       filter {
         id      = "filter-2"
         include = "service:nginx"
         inputs  = ["filter-1"]
       }
-    }
 
-    processor {
       parse_json {
         id      = "filter-3"
         include = "service:nginx"
@@ -36,7 +32,7 @@ resource "datadog_pipelines" "test" {
       }
     }
 
-    destination {
+    destinations {
       datadog_logs {
         id     = "sink-1"
         inputs = ["filter-3"]
