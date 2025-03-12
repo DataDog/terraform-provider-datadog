@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -102,8 +103,8 @@ type tagFiltersModel struct {
 }
 
 type namespaceFiltersModel struct {
-	ExcludeOnly types.List `tfsdk:"exclude_only"`
-	IncludeOnly types.List `tfsdk:"include_only"`
+	ExcludeOnly types.Set `tfsdk:"exclude_only"`
+	IncludeOnly types.Set `tfsdk:"include_only"`
 }
 
 type resourcesConfigModel struct {
@@ -361,7 +362,7 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 					"namespace_filters": schema.SingleNestedBlock{
 						Description: "AWS Metrics namespace filters. Defaults to a pre-set `exclude_only` list if block is empty.",
 						Attributes: map[string]schema.Attribute{
-							"exclude_only": schema.ListAttribute{
+							"exclude_only": schema.SetAttribute{
 								Optional: true,
 								Computed: true,
 								Description: "Exclude only these namespaces from metrics collection. Use " +
@@ -370,14 +371,14 @@ func (r *integrationAwsAccountResource) Schema(_ context.Context, _ resource.Sch
 									"`AWS/SQS` and `AWS/ElasticMapReduce` are excluded by default to reduce your AWS " +
 									"CloudWatch costs from `GetMetricData` API calls.",
 								ElementType: types.StringType,
-								Default: listdefault.StaticValue(types.ListValueMust(
+								Default: setdefault.StaticValue(types.SetValueMust(
 									types.StringType, []attr.Value{
 										types.StringValue("AWS/SQS"),
 										types.StringValue("AWS/ElasticMapReduce"),
 									}),
 								),
 							},
-							"include_only": schema.ListAttribute{
+							"include_only": schema.SetAttribute{
 								Optional: true,
 								Description: "Include only these namespaces for metrics collection. Use " +
 									"[`datadog_integration_aws_available_namespaces` data source](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/data-sources/integration_aws_available_namespaces) " +
@@ -636,14 +637,14 @@ func buildStateMetricsConfig(ctx context.Context, attributes datadogV2.AWSAccoun
 
 	if namespaceFilters, ok := metricsConfig.GetNamespaceFiltersOk(); ok {
 		nsFiltersTf := namespaceFiltersModel{
-			ExcludeOnly: types.ListNull(types.StringType),
-			IncludeOnly: types.ListNull(types.StringType),
+			ExcludeOnly: types.SetNull(types.StringType),
+			IncludeOnly: types.SetNull(types.StringType),
 		}
 		if namespaceFilters.AWSNamespaceFiltersExcludeOnly != nil {
-			excludeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersExcludeOnly.GetExcludeOnly())
+			excludeOnly, _ := types.SetValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersExcludeOnly.GetExcludeOnly())
 			nsFiltersTf.ExcludeOnly = excludeOnly
 		} else if namespaceFilters.AWSNamespaceFiltersIncludeOnly != nil {
-			includeOnly, _ := types.ListValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersIncludeOnly.GetIncludeOnly())
+			includeOnly, _ := types.SetValueFrom(ctx, types.StringType, namespaceFilters.AWSNamespaceFiltersIncludeOnly.GetIncludeOnly())
 			nsFiltersTf.IncludeOnly = includeOnly
 		}
 
