@@ -60,6 +60,7 @@ var Resources = []func() resource.Resource{
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
+	NewSyntheticsPrivateLocationResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
 	NewTeamPermissionSettingResource,
@@ -77,7 +78,6 @@ var Resources = []func() resource.Resource{
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
 	NewWorkflowAutomationResource,
-  NewSyntheticsPrivateLocationResource,
 }
 
 var Datasources = []func() datasource.DataSource{
