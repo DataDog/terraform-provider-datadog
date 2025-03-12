@@ -74,6 +74,7 @@ var Resources = []func() resource.Resource{
 	NewWorkflowsWebhookHandleResource,
 	NewActionConnectionResource,
 	NewSyntheticsGlobalVariableResource,
+	NewSyntheticsTestResource,
 }
 
 var Datasources = []func() datasource.DataSource{
