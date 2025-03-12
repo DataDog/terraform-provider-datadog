@@ -266,12 +266,9 @@ func resourceDatadogLogsIndexDelete(ctx context.Context, d *schema.ResourceData,
 
 	logsIndexMutex.Lock()
 	defer logsIndexMutex.Unlock()
-	ddIndex, httpResponse, err := apiInstances.GetLogsIndexesApiV1().DeleteLogsIndex(auth, d.Id())
+	httpResponse, err := apiInstances.GetLogsIndexesApiV1().DeleteLogsIndex(auth, d.Id())
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting logs index")
-	}
-	if err := utils.CheckForUnparsed(ddIndex); err != nil {
-		return diag.FromErr(err)
 	}
 	return nil
 }
