@@ -51,6 +51,8 @@ func RemoveDefaultIfConflictingSet(ctx context.Context, request resource.ModifyP
 			defaultValue = types.ListNull(types.Float64Type)
 		case types.ListType{ElemType: types.Int64Type}:
 			defaultValue = types.ListNull(types.Int64Type)
+		case types.SetType{ElemType: types.StringType}:
+			defaultValue = types.SetNull(types.StringType)
 		default:
 			response.Diagnostics.AddError("unsupported type for default value", fmt.Sprintf("Unsupported type: %s", defaultPathMatches[0].String()))
 			return

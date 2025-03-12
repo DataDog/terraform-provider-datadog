@@ -45,9 +45,9 @@ func TestAccIntegrationAwsAccount_RoleBased(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "metrics_config.enabled", "true"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.0", "AWS/SQS"),
+						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.0", "AWS/ElasticMapReduce"),
 					resource.TestCheckResourceAttr(
-						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.1", "AWS/ElasticMapReduce"),
+						"datadog_integration_aws_account.foo", "metrics_config.namespace_filters.exclude_only.1", "AWS/SQS"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_aws_account.foo", "resources_config.cloud_security_posture_management_collection", "false"),
 					resource.TestCheckResourceAttr(
@@ -144,7 +144,7 @@ resource "datadog_integration_aws_account" "foo" {
       collect_custom_metrics = true
       enabled = false
       namespace_filters {
-        include_only = ["AWS/EC2"]
+	    include_only = ["AWS/EC2"]
       }
     }
     resources_config {
