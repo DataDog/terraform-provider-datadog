@@ -10,8 +10,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func TestAccOpenapiApiBasic(t *testing.T) {

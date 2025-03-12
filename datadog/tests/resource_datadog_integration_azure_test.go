@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
 
 	dd "github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
