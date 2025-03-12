@@ -26,7 +26,7 @@ type pipelinesResource struct {
 type pipelinesModel struct {
 	ID     types.String `tfsdk:"id"`
 	Name   types.String `tfsdk:"name"`
-	Config *configModel `tfsdk:"config"`
+	Config configModel  `tfsdk:"config"`
 }
 
 type configModel struct {
@@ -43,9 +43,9 @@ type datadogAgentSourceModel struct {
 }
 
 type tlsModel struct {
-	CrtFile types.String `tfsdk:"crt_file"`
-	CaFile  types.String `tfsdk:"ca_file"`
-	KeyFile types.String `tfsdk:"key_file"`
+	CrtFile types.String  `tfsdk:"crt_file"`
+	CaFile  *types.String `tfsdk:"ca_file"`
+	KeyFile *types.String `tfsdk:"key_file"`
 }
 
 type ProcessorsModel struct {
@@ -326,8 +326,8 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 
 	config := attributes.GetConfig()
 
-	configTf := configModel{}
-	if sources, ok := config.GetSourcesOk(); ok && len(*sources) > 0 {
+	configTf := state.Config
+	if sources, ok := config.GetSourcesOk(); ok {
 		for _, sourcesDd := range *sources {
 
 			if sourcesDd.DatadogAgentSource != nil {
@@ -339,10 +339,12 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 
 					tlsTf.CrtFile = types.StringValue(sourcesDd.DatadogAgentSource.Tls.CrtFile)
 					if sourcesDd.DatadogAgentSource.Tls.CaFile != nil {
-						tlsTf.CaFile = types.StringValue(*sourcesDd.DatadogAgentSource.Tls.CaFile)
+						caFile := types.StringValue(*sourcesDd.DatadogAgentSource.Tls.CaFile)
+						tlsTf.CaFile = &caFile
 					}
 					if sourcesDd.DatadogAgentSource.Tls.KeyFile != nil {
-						tlsTf.KeyFile = types.StringValue(*sourcesDd.DatadogAgentSource.Tls.KeyFile)
+						keyFile := types.StringValue(*sourcesDd.DatadogAgentSource.Tls.KeyFile)
+						tlsTf.KeyFile = &keyFile
 					}
 					datadogAgentSourceTf.Tls = &tlsTf
 				}
@@ -350,7 +352,7 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 			}
 		}
 	}
-	if processors, ok := config.GetProcessorsOk(); ok && len(*processors) > 0 {
+	if processors, ok := config.GetProcessorsOk(); ok {
 		for _, processorsDd := range *processors {
 			processorsTfItem := ProcessorsModel{}
 
@@ -377,7 +379,7 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 			}
 		}
 	}
-	if destinations, ok := config.GetDestinationsOk(); ok && len(*destinations) > 0 {
+	if destinations, ok := config.GetDestinationsOk(); ok {
 		for _, destinationsDd := range *destinations {
 
 			if destinationsDd.DatadogLogsDestination != nil {
@@ -389,8 +391,6 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 			}
 		}
 	}
-
-	state.Config = &configTf
 }
 
 func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state *pipelinesModel) (*datadogV2.Pipeline, diag.Diagnostics) {
@@ -402,119 +402,90 @@ func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state
 		attributes.SetName(state.Name.ValueString())
 	}
 
-	if state.Config != nil {
-		var config datadogV2.PipelineDataAttributesConfig
+	var config datadogV2.PipelineDataAttributesConfig
 
-		var sources []datadogV2.PipelineDataAttributesConfigSourcesItem
-		sourcesTFItem := state.Config.Sources
-		sourcesDDItem := datadogV2.PipelineDataAttributesConfigSourcesItem{}
+	var sources []datadogV2.PipelineDataAttributesConfigSourcesItem
+	sourcesTFItem := state.Config.Sources
+	sourcesDDItem := datadogV2.PipelineDataAttributesConfigSourcesItem{}
 
-		for _, ddSource := range sourcesTFItem.DatadogAgentSource {
-			if ddSource != nil {
-				var datadogAgentSource datadogV2.DatadogAgentSource
+	for _, ddSource := range sourcesTFItem.DatadogAgentSource {
+		var datadogAgentSource datadogV2.DatadogAgentSource
 
-				if !ddSource.Id.IsNull() {
-					datadogAgentSource.SetId(ddSource.Id.ValueString())
-				}
-				datadogAgentSource.SetType("datadog_agent")
+		datadogAgentSource.SetId(ddSource.Id.ValueString())
+		datadogAgentSource.SetType("datadog_agent")
 
-				if ddSource.Tls != nil {
-					var tls datadogV2.Tls
+		if ddSource.Tls != nil {
+			var tls datadogV2.Tls
 
-					if !ddSource.Tls.CrtFile.IsNull() {
-						tls.SetCrtFile(ddSource.Tls.CrtFile.ValueString())
-					}
-					if !ddSource.Tls.CaFile.IsNull() {
-						tls.SetCaFile(ddSource.Tls.CaFile.ValueString())
-					}
-					if !ddSource.Tls.KeyFile.IsNull() {
-						tls.SetKeyFile(ddSource.Tls.KeyFile.ValueString())
-					}
-					datadogAgentSource.Tls = &tls
-				}
-
-				sourcesDDItem.DatadogAgentSource = &datadogAgentSource
+			tls.SetCrtFile(ddSource.Tls.CrtFile.ValueString())
+			if !ddSource.Tls.CaFile.IsNull() {
+				tls.SetCaFile(ddSource.Tls.CaFile.ValueString())
 			}
-			sources = append(sources, sourcesDDItem)
-			config.SetSources(sources)
-			attributes.SetConfig(config)
+			if !ddSource.Tls.KeyFile.IsNull() {
+				tls.SetKeyFile(ddSource.Tls.KeyFile.ValueString())
+			}
+			datadogAgentSource.Tls = &tls
 		}
 
-		var processors []datadogV2.PipelineDataAttributesConfigProcessorsItem
-		processorsTFItem := state.Config.Processors
-		for _, filterProcessorTF := range processorsTFItem.FilterProcessor {
-			processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
-			if filterProcessorTF != nil {
-				var filterProcessor datadogV2.FilterProcessor
-				if !filterProcessorTF.Id.IsNull() {
-					filterProcessor.SetId(filterProcessorTF.Id.ValueString())
-				}
-				filterProcessor.SetType("filter")
-				if !filterProcessorTF.Include.IsNull() {
-					filterProcessor.SetInclude(filterProcessorTF.Include.ValueString())
-				}
-				if !filterProcessorTF.Inputs.IsNull() {
-					var inputs []string
-					filterProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
-					filterProcessor.SetInputs(inputs)
-				}
-				processorsDDItem.FilterProcessor = &filterProcessor
-			}
-			processors = append(processors, processorsDDItem)
-		}
-
-		for _, parseJsonProcessorTF := range processorsTFItem.ParseJsonProcessor {
-
-			if parseJsonProcessorTF != nil {
-				processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
-				var parseJsonProcessor datadogV2.ParseJSONProcessor
-
-				if !parseJsonProcessorTF.Id.IsNull() {
-					parseJsonProcessor.SetId(parseJsonProcessorTF.Id.ValueString())
-				}
-				parseJsonProcessor.SetType("parse_json")
-				if !parseJsonProcessorTF.Include.IsNull() {
-					parseJsonProcessor.SetInclude(parseJsonProcessorTF.Include.ValueString())
-				}
-				if !parseJsonProcessorTF.Inputs.IsNull() {
-					var inputs []string
-					parseJsonProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
-					parseJsonProcessor.SetInputs(inputs)
-				}
-				if !parseJsonProcessorTF.Field.IsNull() {
-					parseJsonProcessor.SetField(parseJsonProcessorTF.Field.ValueString())
-				}
-				processorsDDItem.ParseJSONProcessor = &parseJsonProcessor
-				processors = append(processors, processorsDDItem)
-			}
-
-		}
-		config.SetProcessors(processors)
-
-		var destinations []datadogV2.PipelineDataAttributesConfigDestinationsItem
-		destinationsTFItem := state.Config.Destinations
-		destinationsDDItem := datadogV2.PipelineDataAttributesConfigDestinationsItem{}
-
-		for _, destination := range destinationsTFItem.DatadogLogsDestination {
-			if destination != nil {
-				var datadogLogsDestination datadogV2.DatadogLogsDestination
-				if !destination.Id.IsNull() {
-					datadogLogsDestination.SetId(destination.Id.ValueString())
-				}
-				datadogLogsDestination.SetType("datadog_logs")
-				if !destination.Inputs.IsNull() {
-					var inputs []string
-					destination.Inputs.ElementsAs(ctx, &inputs, false)
-					datadogLogsDestination.SetInputs(inputs)
-				}
-				destinationsDDItem.DatadogLogsDestination = &datadogLogsDestination
-				destinations = append(destinations, destinationsDDItem)
-			}
-		}
-
-		config.SetDestinations(destinations)
-		attributes.SetConfig(config)
+		sourcesDDItem.DatadogAgentSource = &datadogAgentSource
+		sources = append(sources, sourcesDDItem)
 	}
+	config.SetSources(sources)
+
+	var processors []datadogV2.PipelineDataAttributesConfigProcessorsItem
+	processorsTFItem := state.Config.Processors
+	for _, filterProcessorTF := range processorsTFItem.FilterProcessor {
+		processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
+		if filterProcessorTF != nil {
+			var filterProcessor datadogV2.FilterProcessor
+			filterProcessor.SetId(filterProcessorTF.Id.ValueString())
+			filterProcessor.SetType("filter")
+			filterProcessor.SetInclude(filterProcessorTF.Include.ValueString())
+			var inputs []string
+			filterProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
+			filterProcessor.SetInputs(inputs)
+			processorsDDItem.FilterProcessor = &filterProcessor
+		}
+		processors = append(processors, processorsDDItem)
+	}
+
+	for _, parseJsonProcessorTF := range processorsTFItem.ParseJsonProcessor {
+
+		processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
+		var parseJsonProcessor datadogV2.ParseJSONProcessor
+
+		parseJsonProcessor.SetId(parseJsonProcessorTF.Id.ValueString())
+		parseJsonProcessor.SetType("parse_json")
+		parseJsonProcessor.SetInclude(parseJsonProcessorTF.Include.ValueString())
+		var inputs []string
+		parseJsonProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
+		parseJsonProcessor.SetInputs(inputs)
+		parseJsonProcessor.SetField(parseJsonProcessorTF.Field.ValueString())
+		processorsDDItem.ParseJSONProcessor = &parseJsonProcessor
+		processors = append(processors, processorsDDItem)
+
+	}
+	config.SetProcessors(processors)
+
+	var destinations []datadogV2.PipelineDataAttributesConfigDestinationsItem
+	destinationsTFItem := state.Config.Destinations
+	destinationsDDItem := datadogV2.PipelineDataAttributesConfigDestinationsItem{}
+
+	for _, destination := range destinationsTFItem.DatadogLogsDestination {
+		var datadogLogsDestination datadogV2.DatadogLogsDestination
+		datadogLogsDestination.SetId(destination.Id.ValueString())
+		datadogLogsDestination.SetType("datadog_logs")
+		var inputs []string
+		destination.Inputs.ElementsAs(ctx, &inputs, false)
+		datadogLogsDestination.SetInputs(inputs)
+		destinationsDDItem.DatadogLogsDestination = &datadogLogsDestination
+
+		destinations = append(destinations, destinationsDDItem)
+	}
+
+	config.SetDestinations(destinations)
+
+	attributes.SetConfig(config)
 
 	pipelineData := datadogV2.NewPipelineDataWithDefaults()
 	pipelineData.SetAttributes(*attributes)
