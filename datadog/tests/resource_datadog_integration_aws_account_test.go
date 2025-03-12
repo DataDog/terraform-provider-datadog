@@ -144,7 +144,7 @@ resource "datadog_integration_aws_account" "foo" {
       collect_custom_metrics = true
       enabled = false
       namespace_filters {
-		include_only = ["AWS/EC2"]
+        include_only = ["AWS/EC2"]
       }
     }
     resources_config {
