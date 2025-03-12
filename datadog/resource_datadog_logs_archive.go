@@ -52,17 +52,17 @@ func resourceDatadogLogsArchive() *schema.Resource {
 							},
 							"encryption_key": {Description: "The AWS KMS encryption key.", Type: schema.TypeString, Optional: true},
 							"storage_class": {
-                                Description: "The storage class logs are uploaded to.",
-                                Type:        schema.TypeString,
-                                Optional:    true,
-                                ValidateDiagFunc: validators.ValidateEnumValue([]string{
-                                    "STANDARD",
-                                    "STANDARD_IA",
-                                    "ONEZONE_IA",
-                                    "INTELLIGENT_TIERING",
-                                    "GLACIER_IR",
-                                }),
-                            },
+								Description: "The storage class logs are uploaded to.",
+								Type:        schema.TypeString,
+								Optional:    true,
+								ValidateDiagFunc: validators.ValidateEnumValue([]string{
+									"STANDARD",
+									"STANDARD_IA",
+									"ONEZONE_IA",
+									"INTELLIGENT_TIERING",
+									"GLACIER_IR",
+								}),
+							},
 						},
 					},
 				},
@@ -283,8 +283,8 @@ func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]inter
 	result["bucket"] = destination.GetBucket()
 	result["path"] = destination.GetPath()
 	if storageClass, ok := destination.GetStorageClassOk(); ok {
-        result["storage_class"] = storageClass
-    }
+		result["storage_class"] = storageClass
+	}
 	return result
 }
 
@@ -465,28 +465,28 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 		}
 		destination.SetEncryption(*encryption)
 	}
-    storageClass, ok := d["storage_class"]
-    if ok && storageClass != "" {
-        if enumValue, valid := getValidStorageClasses()[storageClass]; valid {
-            destination.SetStorageClass(enumValue)
-        } else {
-            return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("storage class is invalid")
-        }
-    } else {
-        destination.SetStorageClass(datadogV2.LOGSARCHIVESTORAGECLASS_STANDARD)
-    }
+	storageClass, ok := d["storage_class"].(string)
+	if ok && storageClass != "" {
+		if enumValue, valid := getValidStorageClasses()[storageClass]; valid {
+			destination.SetStorageClass(enumValue)
+		} else {
+			return &datadogV2.LogsArchiveDestinationS3{}, fmt.Errorf("storage class is invalid")
+		}
+	} else {
+		destination.SetStorageClass(datadogV2.LOGSARCHIVESTORAGECLASS_STANDARD)
+	}
 	destination.Path = datadog.PtrString(path.(string))
 	return destination, nil
 }
 
 func getValidStorageClasses() map[string]datadogV2.LogsArchiveStorageClass {
-    return map[string]datadogV2.LogsArchiveStorageClass{
-        "STANDARD":             datadogV2.LOGSARCHIVESTORAGECLASS_STANDARD,
-        "STANDARD_IA":          datadogV2.LOGSARCHIVESTORAGECLASS_STANDARD_IA,
-        "ONEZONE_IA":           datadogV2.LOGSARCHIVESTORAGECLASS_ONEZONE_IA,
-        "INTELLIGENT_TIERING":  datadogV2.LOGSARCHIVESTORAGECLASS_INTELLIGENT_TIERING,
-        "GLACIER_IR":           datadogV2.LOGSARCHIVESTORAGECLASS_GLACIER_IR,
-    }
+	return map[string]datadogV2.LogsArchiveStorageClass{
+		"STANDARD":            datadogV2.LOGSARCHIVESTORAGECLASS_STANDARD,
+		"STANDARD_IA":         datadogV2.LOGSARCHIVESTORAGECLASS_STANDARD_IA,
+		"ONEZONE_IA":          datadogV2.LOGSARCHIVESTORAGECLASS_ONEZONE_IA,
+		"INTELLIGENT_TIERING": datadogV2.LOGSARCHIVESTORAGECLASS_INTELLIGENT_TIERING,
+		"GLACIER_IR":          datadogV2.LOGSARCHIVESTORAGECLASS_GLACIER_IR,
+	}
 }
 
 func getRehydrationTags(d *schema.ResourceData) []string {

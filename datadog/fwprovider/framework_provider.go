@@ -43,6 +43,7 @@ var Resources = []func() resource.Resource{
 	NewDowntimeScheduleResource,
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
+	NewIntegrationAwsExternalIDResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -71,6 +72,11 @@ var Resources = []func() resource.Resource{
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
 	NewTenantBasedHandleResource,
+	NewAppsecWafExclusionFilterResource,
+	NewAppsecWafCustomRuleResource,
+	NewWorkflowsWebhookHandleResource,
+	NewActionConnectionResource,
+	NewWorkflowAutomationResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -95,6 +101,8 @@ var Datasources = []func() datasource.DataSource{
 	NewCSMThreatsAgentRulesDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
+	NewDatadogActionConnectionDataSource,
+	NewWorkflowAutomationDataSource,
 }
 
 // FrameworkProvider struct
@@ -410,6 +418,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())

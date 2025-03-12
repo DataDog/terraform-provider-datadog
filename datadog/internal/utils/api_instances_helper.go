@@ -44,8 +44,10 @@ type ApiInstances struct {
 	webhooksIntegrationApiV1              *datadogV1.WebhooksIntegrationApi
 
 	//V2 APIs
+	actionConnectionApiV2          *datadogV2.ActionConnectionApi
 	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
+	applicationSecurityApiV2       *datadogV2.ApplicationSecurityApi
 	auditApiV2                     *datadogV2.AuditApi
 	authNMappingsApiV2             *datadogV2.AuthNMappingsApi
 	awsIntegrationApiV2            *datadogV2.AWSIntegrationApi
@@ -87,6 +89,7 @@ type ApiInstances struct {
 	teamsApiV2                     *datadogV2.TeamsApi
 	usageMeteringApiV2             *datadogV2.UsageMeteringApi
 	usersApiV2                     *datadogV2.UsersApi
+	workflowAutomationApiV2        *datadogV2.WorkflowAutomationApi
 }
 
 // GetAuthenticationApiV1 get instance of AuthenticationApi
@@ -679,4 +682,28 @@ func (i *ApiInstances) GetMicrosoftTeamsIntegrationApiV2() *datadogV2.MicrosoftT
 		i.microsoftTeamsIntegrationApiV2 = datadogV2.NewMicrosoftTeamsIntegrationApi(i.HttpClient)
 	}
 	return i.microsoftTeamsIntegrationApiV2
+}
+
+// GetWorkflowAutomationApiV2 get instance of WorkflowAutomationApi
+func (i *ApiInstances) GetWorkflowAutomationApiV2() *datadogV2.WorkflowAutomationApi {
+	if i.workflowAutomationApiV2 == nil {
+		i.workflowAutomationApiV2 = datadogV2.NewWorkflowAutomationApi(i.HttpClient)
+	}
+	return i.workflowAutomationApiV2
+}
+
+// GetApplicationSecurityApiV2 get instance of ApplicationSecurityApi
+func (i *ApiInstances) GetApplicationSecurityApiV2() *datadogV2.ApplicationSecurityApi {
+	if i.applicationSecurityApiV2 == nil {
+		i.applicationSecurityApiV2 = datadogV2.NewApplicationSecurityApi(i.HttpClient)
+	}
+	return i.applicationSecurityApiV2
+}
+
+// GetActionConnectionApiV2 get instance of ActionConnectionApi
+func (i *ApiInstances) GetActionConnectionApiV2() *datadogV2.ActionConnectionApi {
+	if i.actionConnectionApiV2 == nil {
+		i.actionConnectionApiV2 = datadogV2.NewActionConnectionApi(i.HttpClient)
+	}
+	return i.actionConnectionApiV2
 }
