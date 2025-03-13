@@ -3,12 +3,12 @@
 page_title: "datadog_synthetics_private_location Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog SyntheticsPrivateLocation resource. This can be used to create and manage Datadog synthetics_private_location.
+  Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.
 ---
 
 # datadog_synthetics_private_location (Resource)
 
-Provides a Datadog SyntheticsPrivateLocation resource. This can be used to create and manage Datadog synthetics_private_location.
+Provides a Datadog synthetics private location resource. This can be used to create and manage Datadog synthetics private locations.
 
 ## Example Usage
 
@@ -43,7 +43,7 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 Optional:
 
-- `restricted_roles` (Set of String, Deprecated) A set of role identifiers pulled from the Roles API to restrict read and write access.
+- `restricted_roles` (Set of String, Deprecated) A set of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
 
 ## Import
 
