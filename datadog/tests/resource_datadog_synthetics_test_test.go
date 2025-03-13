@@ -4977,6 +4977,8 @@ func createSyntheticsMultistepAPITest(ctx context.Context, accProvider func() (*
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.0.retry.0.interval", "1000"),
 			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.multi", "api_step.0.extracted_values_from_script", "dd.variable.set('BODY', dd.response.body);"),
+			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.name", "Second api step"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.multi", "api_step.1.request_basicauth.#", "1"),
@@ -5232,6 +5234,7 @@ resource "datadog_synthetics_test" "multi" {
       count    = 5
       interval = 1000
     }
+	extracted_values_from_script = "dd.variable.set('BODY', dd.response.body);"
   }
 
   api_step {
