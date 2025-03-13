@@ -258,15 +258,15 @@ func (r *syntheticsPrivateLocationResource) buildSyntheticsPrivateLocationReques
 		syntheticsPrivateLocation.SetDescription(state.Description.ValueString())
 	}
 
+	metadata := datadogV1.SyntheticsPrivateLocationMetadata{}
 	if state.Metadata != nil {
 		if len(state.Metadata) == 1 && !state.Metadata[0].RestrictedRoles.IsNull() {
-			metadata := datadogV1.SyntheticsPrivateLocationMetadata{}
 			var restrictedRoles []string
 			diags.Append(state.Metadata[0].RestrictedRoles.ElementsAs(ctx, &restrictedRoles, false)...)
 			metadata.SetRestrictedRoles(restrictedRoles)
-			syntheticsPrivateLocation.SetMetadata(metadata)
 		}
 	}
+	syntheticsPrivateLocation.SetMetadata(metadata)
 
 	tags := make([]string, 0)
 	if !state.Tags.IsNull() {
