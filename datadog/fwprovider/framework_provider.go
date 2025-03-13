@@ -60,6 +60,7 @@ var Resources = []func() resource.Resource{
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
+	NewSyntheticsPrivateLocationResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
 	NewTeamPermissionSettingResource,
