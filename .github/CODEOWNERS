@@ -13,7 +13,7 @@
 datadog/*datadog_dashboard*               @DataDog/web-frameworks @DataDog/api-reliability @DataDog/dashboards-backend
 datadog/*datadog_downtime*                @DataDog/web-frameworks @DataDog/api-reliability @DataDog/monitor-app
 datadog/*datadog_integration_aws*         @DataDog/web-frameworks @DataDog/api-reliability @DataDog/cloud-integrations
-datadog/*datadog_integration_pagerduty*   @DataDog/web-frameworks @DataDog/api-reliability @DataDog/saas-integrations @DataDog/saas-integrations
+datadog/*datadog_integration_pagerduty*   @DataDog/web-frameworks @DataDog/api-reliability @DataDog/collaboration-integrations
 datadog/*datadog_integration_opsgenie*    @DataDog/web-frameworks @DataDog/api-reliability @Datadog/collaboration-integrations
 datadog/*datadog_logs*                    @DataDog/web-frameworks @DataDog/api-reliability @DataDog/logs-backend @DataDog/logs-core @DataDog/logs-forwarding @DataDog/logs-app
 datadog/*datadog_metric*                  @DataDog/web-frameworks @DataDog/api-reliability @DataDog/metrics-intake @DataDog/metrics-query @DataDog/points-aggregation
@@ -51,3 +51,4 @@ datadog/**/*datadog_organization_settings*       @DataDog/web-frameworks @DataDo
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/web-frameworks @DataDog/api-reliability @DataDog/chat-integrations
 datadog/**/*datadog_action_connection*           @DataDog/web-frameworks @DataDog/api-reliability @DataDog/action-platform
 datadog/**/*datadog_workflow_automation*         @DataDog/web-frameworks @DataDog/api-reliability @DataDog/workflow-automation-backend
+datadog/**/*datadog_webhook*                     @DataDog/web-frameworks @DataDog/api-reliability @DataDog/collaboration-integrations
