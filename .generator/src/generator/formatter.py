@@ -142,7 +142,9 @@ def get_terraform_schema_type(schema):
     }[schema.get("type")]
 
 
-def go_to_terraform_type_formatter(name: str, schema: dict) -> str:
+def go_to_terraform_type_formatter(
+    name: str, schema: dict, pointer: bool = True
+) -> str:
     """
     This function is intended to be used in the Jinja2 templates.
     It was made to support the format enrichment of the OpenAPI schema.
@@ -156,12 +158,16 @@ def go_to_terraform_type_formatter(name: str, schema: dict) -> str:
     """
     match schema.get("format"):
         case "date-time":
-            return f"{variable_name(name)}.String()"
+            return f"{name}.String()"
         case "date":
-            return f"{variable_name(name)}.String()"
+            return f"{name}.String()"
         case "binary":
-            return f"string({variable_name(name)})"
+            return f"string({name})"
+        case "int32":
+            return f"int64({name})"
+        case "int64":
+            return f"int64({name})"
 
         # primitive types should fall through
         case _:
-            return f"*{variable_name(name)}"
+            return f"*{name}" if pointer else f"{name}"
