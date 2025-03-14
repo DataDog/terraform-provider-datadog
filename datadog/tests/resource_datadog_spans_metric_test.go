@@ -226,7 +226,7 @@ func testAccCheckDatadogSpansMetricTestingCountGroupBys(uniq string) string {
 			}
 			group_by {
 				path     = "resource_name1"
-				tag_name = "my_resource1"
+				tag_name = "MY_RESOURCE1"
 			}
 		}
 	`, uniq)
