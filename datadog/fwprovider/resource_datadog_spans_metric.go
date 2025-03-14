@@ -108,6 +108,9 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 						Optional:    true,
 						Computed:    true,
 						Description: "Toggle to include or exclude percentile aggregations for distribution metrics. Only present when the `aggregation_type` is `distribution`.",
+						PlanModifiers: []planmodifier.Bool{
+							includePercentilesUnknownSuppressor{},
+						},
 					},
 					"path": schema.StringAttribute{
 						Optional:    true,
@@ -140,6 +143,33 @@ func (r *spansMetricResource) Schema(_ context.Context, _ resource.SchemaRequest
 				},
 			},
 		},
+	}
+}
+
+type includePercentilesUnknownSuppressor struct{}
+
+func (m includePercentilesUnknownSuppressor) Description(_ context.Context) string {
+	return "Removes unknown state when change is not needed."
+}
+
+func (m includePercentilesUnknownSuppressor) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (m includePercentilesUnknownSuppressor) PlanModifyBool(ctx context.Context, req planmodifier.BoolRequest, resp *planmodifier.BoolResponse) {
+	var aggregation_type string
+	diags := req.Plan.GetAttribute(
+		ctx,
+		frameworkPath.Root("compute").AtName("aggregation_type"),
+		&aggregation_type,
+	)
+	if diags.HasError() || aggregation_type != "distribution" {
+		resp.PlanValue = types.BoolNull()
+		return
+	}
+
+	if !req.StateValue.IsNull() && resp.PlanValue.IsUnknown() {
+		resp.PlanValue = req.StateValue
 	}
 }
 
