@@ -75,7 +75,6 @@ resource "datadog_webhook" "foo" {
 resource "datadog_webhook" "foo2" {
   name           = "%[1]s2"
   url            = "http://example.com"
-  encode_as      = "json"
   custom_headers = jsonencode({"test": "test"})
 }`, uniq)
 }
@@ -92,7 +91,6 @@ resource "datadog_webhook" "foo" {
 resource "datadog_webhook" "foo2" {
   name           = "%[1]s2UPDATED"
   url            = "http://example.com/updated"
-  encode_as      = "json"
   custom_headers = jsonencode({"test": "test-updated"})
   payload        = jsonencode({"custom": "payload"})
 }`, uniq)

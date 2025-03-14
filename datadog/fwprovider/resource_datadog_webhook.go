@@ -268,7 +268,7 @@ func (r *webhookResource) buildWebhookUpdateRequestBody(ctx context.Context, sta
 		attributes.SetCustomHeaders(state.CustomHeaders.ValueString())
 	}
 
-	if !state.EncodeAs.IsNull() {
+	if !state.EncodeAs.IsNull() && !state.EncodeAs.IsUnknown() {
 		encoding, _ := datadogV1.NewWebhooksIntegrationEncodingFromValue(state.EncodeAs.ValueString())
 		attributes.SetEncodeAs(*encoding)
 	}
