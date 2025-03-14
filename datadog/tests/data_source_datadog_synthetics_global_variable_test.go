@@ -6,30 +6,28 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func TestAccDatadogSyntheticsGlobalVariable(t *testing.T) {
 	t.Parallel()
-	ctx, accProviders := testAccProviders(context.Background(), t)
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
-	accProvider := testAccProvider(t, accProviders)
 
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { testAccPreCheck(t) },
-		ProviderFactories: accProviders,
-		CheckDestroy:      testSyntheticsGlobalVariableResourceIsDestroyed(accProvider),
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testSyntheticsGlobalVariableResourceIsDestroyed(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSyntheticsGlobalVariableConfig(uniq),
-				Check:  checkDatadogSyntheticsGlobalVariable(accProvider, uniq),
+				Check:  checkDatadogSyntheticsGlobalVariable(uniq),
 			},
 		},
 	})
 }
 
-func checkDatadogSyntheticsGlobalVariable(accProvider func() (*schema.Provider, error), uniq string) resource.TestCheckFunc {
+func checkDatadogSyntheticsGlobalVariable(uniq string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(
 			"data.datadog_synthetics_global_variable.my_variable", "name", uniq),
