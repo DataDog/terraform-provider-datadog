@@ -56,3 +56,10 @@ type datadog{{ name|camel_case }}DataSourceModel struct {
 {{- typesHelper.basePropertyTypeBuilder(name, schema) }}
 {% endfor %}
 
+{% for name, schema in nonPrimitiveRespListAttr.items() %}
+{{- typesHelper.basePropertyTypeBuilder(name, schema) }}
+{% endfor %}
+
+{% for name, schema in nonPrimitiveRespObjAttr.items() %}
+{{- typesHelper.basePropertyTypeBuilder(name, schema) }}
+{% endfor %}

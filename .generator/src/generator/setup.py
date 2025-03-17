@@ -31,6 +31,7 @@ def load_environment(version: str) -> Environment:
     env.filters["is_primitive"] = utils.is_primitive
     env.filters["debug"] = utils.debug_filter
     env.filters["only_keep_filters"] = utils.only_keep_filters
+    env.filters["clean_response_for_datasource"] = utils.clean_response_for_datasource
     env.filters["response_type"] = type.get_type_for_response
     env.filters["get_schema_from_response"] = type.get_schema_from_response
     env.filters["return_type"] = type.return_type

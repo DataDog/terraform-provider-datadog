@@ -86,3 +86,49 @@ def only_keep_filters(parameters: dict):
         if "filter" not in elt:
             parameters.pop(elt, None)
     return parameters
+
+
+def clean_response_for_datasource(schema: dict):
+    schema_save = schema.copy
+    try:
+        schema["properties"] = remove_all_but(
+            schema=schema["properties"], field_to_keep="data"
+        )
+        schema["properties"]["data"]["properties"] = remove_all_but(
+            schema=schema["properties"]["data"]["properties"],
+            field_to_keep="attributes",
+        )
+        schema = move_fields_to_top(
+            schema=schema,
+            path_to_fields=["properties", "data", "properties", "attributes"],
+        )
+    except KeyError:
+        print("Error while cleaning response for datasource, restoring original schema")
+        return schema_save
+    return schema
+
+
+def remove_all_but(schema: dict, field_to_keep: str):
+    """
+    This function removes elements from a schema that are unwanted.
+    This function is meant to be used when generating data sources as we do not want to generate models for all fields (eg: "relationships" or "included").
+    """
+    for elt in schema.copy().keys():
+        if field_to_keep not in elt:
+            schema.pop(elt, None)
+    return schema
+
+
+def move_fields_to_top(schema: dict, path_to_fields: list[str]):
+    """
+    This function moves a field to the top of the schema.
+    This function is meant to be used when generating data sources as we want to have the fields in [properties][data][properties][attributes] at the top level of the schema.
+    """
+    tmp = schema
+    for field in path_to_fields:
+        tmp = tmp[field]
+
+    for fields in tmp:
+        schema[fields] = tmp[fields]
+
+    return schema
