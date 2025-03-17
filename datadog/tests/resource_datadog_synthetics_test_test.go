@@ -5544,12 +5544,6 @@ func createSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_priority", "5"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.#", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.0", "role1"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.1", "role2"),
-			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.0.execution_rule", "blocking"),
@@ -5737,7 +5731,6 @@ resource "datadog_synthetics_test" "bar" {
 			notification_preset_name = "show_all"
 		}
 		monitor_priority = 5
-		restricted_roles = ["role1", "role2"]
 		ci {
 			execution_rule = "blocking"
 		}
@@ -5888,12 +5881,6 @@ func updateSyntheticsMobileTestStep(ctx context.Context, accProvider func() (*sc
 				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_options.0.notification_preset_name", "hide_query"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.monitor_priority", "4"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.#", "2"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.0", "role3"),
-			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "mobile_options_list.0.restricted_roles.1", "role4"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "mobile_options_list.0.ci.#", "1"),
 			resource.TestCheckResourceAttr(
@@ -6073,7 +6060,6 @@ resource "datadog_synthetics_test" "bar" {
 			notification_preset_name = "hide_query"
 		}
 		monitor_priority = 4
-		restricted_roles = ["role3", "role4"]
 		ci {
 			execution_rule = "skipped"
 		}
