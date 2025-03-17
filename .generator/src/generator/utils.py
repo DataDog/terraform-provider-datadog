@@ -89,7 +89,7 @@ def only_keep_filters(parameters: dict):
 
 
 def clean_response_for_datasource(schema: dict):
-    schema_save = schema.copy
+    schema_save = schema.copy()
     try:
         schema["properties"] = remove_all_but(
             schema=schema["properties"], field_to_keep="data"
