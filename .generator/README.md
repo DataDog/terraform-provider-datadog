@@ -17,7 +17,7 @@ The goal of this sub-project is to generate the scaffolding to create a Terrafor
 
 ### Install dependencies
 
-Install the necessary dependencies by running `poetry install`
+Install the necessary python dependencies by running `poetry install`
 
 Install go as we use the `go fmt` command on the generated files to format them.
 

@@ -6,7 +6,7 @@
 {%- set primitiveParamAttr, primitiveParamArrAttr, nonPrimitiveParamListAttr, nonPrimitiveParamObjAttr = pluralParams|only_keep_filters|sort_schemas_by_type %}
 
 {%- set singularResp = operations["singular"]["schema"]["responses"]|get_schema_from_response %}
-{%- set primitiveRespAttr, primitiveRespArrAttr, nonPrimitiveRespListAttr, nonPrimitiveRespObjAttr = singularResp|tf_sort_properties_by_type %}
+{%- set primitiveRespAttr, primitiveRespArrAttr, nonPrimitiveRespListAttr, nonPrimitiveRespObjAttr = singularResp|clean_response_for_datasource|tf_sort_properties_by_type %}
 
 {%- set primaryId = get_terraform_primary_id(operations, "singular") %}
 
@@ -15,7 +15,7 @@ package fwprovider
 import (
     "context"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog{{ version }}"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"

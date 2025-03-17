@@ -101,9 +101,7 @@ def return_type(operation):
 
 
 def get_schema_from_response(response: dict) -> dict:
-    return response["200"]["content"]["application/json"]["schema"]["properties"][
-        "data"
-    ]["properties"]["attributes"]
+    return response["200"]["content"]["application/json"]["schema"]
 
 
 def categorize_schema(schema: dict) -> str:
