@@ -31,7 +31,7 @@ def get_resources(spec: dict, config: dict) -> dict:
     resources_to_generate = {}
 
     # Iterate over each resource in the config
-    for resource in config["resources"]:
+    for resource in config.get("resources", []):
         # Iterate over each CRUD operation for the resource
         for crud_operation, value in config["resources"][resource].items():
             method = value[
@@ -63,8 +63,19 @@ def get_resources(spec: dict, config: dict) -> dict:
 
 
 def get_data_sources(spec: dict, config: dict) -> dict:
+    """
+    Creates a dictionary of data sources and their singular/plural endpoints.
+
+    Args:
+        spec (dict): The OpenAPI specification.
+        config (dict): The configuration tagging resources to be generated.
+
+    Returns:
+        A dictionary containing the specifications of the data sources to be generated.
+    """
     data_source_to_generate = {}
-    for data_source in config["datasources"]:
+
+    for data_source in config.get("datasources", []):
         singular_path = config["datasources"][data_source]["singular"]
         data_source_to_generate.setdefault(data_source, {})["singular"] = {
             "schema": spec["paths"][singular_path]["get"],
