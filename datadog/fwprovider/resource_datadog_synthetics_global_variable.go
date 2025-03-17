@@ -44,7 +44,7 @@ type syntheticsGlobalVariableModel struct {
 	ParseTestId      types.String                                    `tfsdk:"parse_test_id"`
 	ParseTestOptions []syntheticsGlobalVariableParseTestOptionsModel `tfsdk:"parse_test_options"`
 	Options          []syntheticsGlobalVariableOptionsModel          `tfsdk:"options"`
-	RestrictedRoles  types.List                                      `tfsdk:"restricted_roles"`
+	RestrictedRoles  types.Set                                       `tfsdk:"restricted_roles"`
 	IsTotp           types.Bool                                      `tfsdk:"is_totp"`
 	IsFido           types.Bool                                      `tfsdk:"is_fido"`
 }
@@ -121,7 +121,7 @@ func (r *syntheticsGlobalVariableResource) Schema(_ context.Context, _ resource.
 				Description: "Id of the Synthetics test to use for a variable from test.",
 				Optional:    true,
 			},
-			"restricted_roles": schema.ListAttribute{
+			"restricted_roles": schema.SetAttribute{
 				Description:        "A list of role identifiers to associate with the Synthetics global variable. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 				DeprecationMessage: "This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.",
 				ElementType:        types.StringType,
@@ -369,7 +369,7 @@ func (r *syntheticsGlobalVariableResource) updateState(ctx context.Context, stat
 	}
 
 	if attributes, ok := resp.GetAttributesOk(); ok {
-		state.RestrictedRoles, _ = types.ListValueFrom(ctx, types.StringType, attributes.GetRestrictedRoles())
+		state.RestrictedRoles, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetRestrictedRoles())
 	}
 
 	if parseTestId, ok := resp.GetParseTestPublicIdOk(); ok {
@@ -521,12 +521,12 @@ func (r syntheticsGlobalVariableResource) ValidateConfig(ctx context.Context, re
 		)
 	}
 
-	// If `is_fido` or `is_totp`, is `secure` should not be `false`
+	// If `is_fido` or `is_totp` is `true`, is `secure` should not be set or should be set to `true`
 	if (isFido || isTotp) && !config.Secure.IsNull() && !config.Secure.ValueBool() {
 		resp.Diagnostics.AddAttributeError(
 			frameworkPath.Root("secure"),
 			"Invalid Configuration",
-			"`secure` must be set to `true` if `is_totp` or `is_fido` is set to `true`.",
+			"`secure` must not be set to `false` if `is_totp` or `is_fido` is set to `true`.",
 		)
 	}
 }
