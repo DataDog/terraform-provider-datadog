@@ -51,6 +51,11 @@ func (d *appBuilderAppDataSource) Schema(_ context.Context, request datasource.S
 				Description: "The JSON representation of the App.",
 				CustomType:  customtypes.AppBuilderAppStringType{},
 			},
+			"override_action_query_names_to_connection_ids": schema.MapAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "If specified in a resource, this will override the Action Connection IDs for the specified Action Query Names in the App JSON.",
+			},
 			"action_query_names_to_connection_ids": schema.MapAttribute{
 				Computed:    true,
 				Description: "A computed map of the App's Action Query Names to Action Connection IDs.",
@@ -107,6 +112,8 @@ func (d *appBuilderAppDataSource) Read(ctx context.Context, request datasource.R
 
 // Read logic is shared between data source and resource
 func readAppBuilderApp(ctx context.Context, api *datadogV2.AppBuilderApi, id uuid.UUID) (*appBuilderAppResourceModel, error) {
+	fmt.Printf("DEBUG - Read - Starting read for ID: %s\n", id)
+
 	resp, httpResp, err := api.GetApp(ctx, id)
 	if err != nil {
 		if httpResp != nil {
@@ -114,9 +121,16 @@ func readAppBuilderApp(ctx context.Context, api *datadogV2.AppBuilderApi, id uui
 			if err != nil {
 				return nil, fmt.Errorf("could not read error response")
 			}
+			fmt.Printf("DEBUG - Read - Error response body: %s\n", string(body))
 			return nil, fmt.Errorf("%s", body)
 		}
 		return nil, err
+	}
+
+	fmt.Printf("DEBUG - Read - Raw API Response:\n%+v\n", resp)
+	if httpResp != nil {
+		respBody, _ := io.ReadAll(httpResp.Body)
+		fmt.Printf("DEBUG - Read - Raw HTTP Response body:\n%s\n", string(respBody))
 	}
 
 	appModel, err := apiResponseToAppBuilderAppModel(resp)
@@ -124,60 +138,83 @@ func readAppBuilderApp(ctx context.Context, api *datadogV2.AppBuilderApi, id uui
 		return nil, err
 	}
 
+	fmt.Printf("DEBUG - Read - Final model tags: %+v\n", appModel.Tags)
 	return appModel, nil
 }
 
 func apiResponseToAppBuilderAppModel(resp datadogV2.GetAppResponse) (*appBuilderAppResourceModel, error) {
-	appBuilderAppModel := &appBuilderAppResourceModel{
-		ID: types.StringValue(resp.Data.GetId().String()),
-	}
-
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	// marshal attributes into JSON string and set it as the app_json value
+	// Create a copy of the attributes that we can modify
+	var appJson map[string]interface{}
 	marshalledBytes, err := json.Marshal(attributes)
 	if err != nil {
-		err = fmt.Errorf("error marshaling attributes: %s", err)
-		return nil, err
+		return nil, fmt.Errorf("error marshaling attributes: %s", err)
 	}
-	// we use AppBuilderAppString type and value to ignore inconsequential differences in the JSON strings
-	// and also ignore other differences such as the App's ID, which is ignored in the App Builder API
-	appBuilderAppModel.AppJson = customtypes.NewAppBuilderAppStringValue(string(marshalledBytes))
-
-	// build action_query_names_to_connection_ids map
-	queries := attributes.GetQueries()
-	actionQueryNamesToConnectionIDs, err := buildActionQueryNamesToConnectionIDsMap(queries)
-	if err != nil {
-		err = fmt.Errorf("error building action_query_names_to_connection_ids map: %s", err)
-		return nil, err
+	if err := json.Unmarshal(marshalledBytes, &appJson); err != nil {
+		return nil, fmt.Errorf("error unmarshaling attributes: %s", err)
 	}
-	appBuilderAppModel.ActionQueryNamesToConnectionIDs = actionQueryNamesToConnectionIDs
 
-	// get other attributes like name, description, root_instance_name, tags, published
+	// Initialize the model with the ID
+	appBuilderAppModel := &appBuilderAppResourceModel{
+		ID: types.StringValue(data.GetId().String()),
+	}
+
+	// Set the individual fields from the attributes
 	appBuilderAppModel.Name = types.StringValue(attributes.GetName())
 	appBuilderAppModel.Description = types.StringValue(attributes.GetDescription())
 	appBuilderAppModel.RootInstanceName = types.StringValue(attributes.GetRootInstanceName())
 
-	// tags is a set of strings -> need to convert []string to []attr.Value
-	attrTags := convertTagsToAttrValues(attributes.GetTags())
-	appBuilderAppModel.Tags = types.SetValueMust(types.StringType, attrTags)
-
-	// published is a bool -> fetch published status from response included object (deployment)
-	if included, ok := resp.GetIncludedOk(); ok {
-		deployment := (*included)[0]
-		if deployment.Attributes.GetAppVersionId() != uuid.Nil {
-			appBuilderAppModel.Published = types.BoolValue(true)
-		} else {
-			appBuilderAppModel.Published = types.BoolValue(false)
+	// Handle tags
+	tags, ok := attributes.GetTagsOk()
+	if ok && tags != nil && len(*tags) > 0 {
+		// Use tags from API response
+		tagValues := make([]attr.Value, len(*tags))
+		for i, tag := range *tags {
+			tagValues[i] = types.StringValue(tag)
 		}
+		appBuilderAppModel.Tags = types.SetValueMust(types.StringType, tagValues)
+		appJson["tags"] = *tags
+	} else {
+		// If no tags found anywhere, set empty tags
+		appBuilderAppModel.Tags = types.SetValueMust(types.StringType, []attr.Value{})
+		appJson["tags"] = []string{}
 	}
+
+	// Handle published status
+	if included, ok := resp.GetIncludedOk(); ok && len(*included) > 0 {
+		deployment := (*included)[0]
+		appBuilderAppModel.Published = types.BoolValue(deployment.Attributes.GetAppVersionId() != uuid.Nil)
+	} else {
+		appBuilderAppModel.Published = types.BoolValue(false)
+	}
+
+	// Handle action query maps
+	actionQueryNamesToConnectionIDs, err := buildActionQueryNamesToConnectionIDsMap(attributes.GetQueries())
+	if err != nil {
+		return nil, fmt.Errorf("error building action_query_names_to_connection_ids map: %s", err)
+	}
+	appBuilderAppModel.ActionQueryNamesToConnectionIDs = actionQueryNamesToConnectionIDs
+
+	// Initialize the override map
+	appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
+		types.StringType,
+		map[string]attr.Value{},
+	)
+
+	// Marshal the modified app_json back to string
+	marshalledBytes, err = json.Marshal(appJson)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling app_json: %s", err)
+	}
+	appBuilderAppModel.AppJson = customtypes.NewAppBuilderAppStringValue(string(marshalledBytes))
 
 	return appBuilderAppModel, nil
 }
 
 func buildActionQueryNamesToConnectionIDsMap(queries []datadogV2.Query) (types.Map, error) {
-	elementsMap := map[string]attr.Value{}
+	elementsMap := map[string]string{}
 
 	for _, query := range queries {
 		// must be an action query
@@ -192,12 +229,15 @@ func buildActionQueryNamesToConnectionIDsMap(queries []datadogV2.Query) (types.M
 		specObj := actionQuery.Properties.GetSpec().ActionQuerySpecObject
 		if specObj.HasConnectionId() {
 			connectionID := specObj.GetConnectionId()
-			elementsMap[queryName] = types.StringValue(connectionID)
+			elementsMap[queryName] = connectionID
+		} else {
+			elementsMap[queryName] = ""
 		}
 	}
 
 	// convert map to types.Map
-	resultMap, diags := types.MapValue(types.StringType, elementsMap)
+	ctx := context.Background()
+	resultMap, diags := types.MapValueFrom(ctx, types.StringType, elementsMap)
 	if diags != nil {
 		return types.MapNull(types.StringType), fmt.Errorf("error converting map to types.Map: %v", diags)
 	}

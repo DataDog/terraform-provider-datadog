@@ -36,7 +36,12 @@ func (m normalizeTagSetModifier) PlanModifySet(ctx context.Context, req planmodi
 	}
 
 	sortedList := sortAttrValueString(elementsList)
-	resp.PlanValue = types.SetValueMust(types.StringType, sortedList)
+	newSet, newDiags := types.SetValue(types.StringType, sortedList)
+	if newDiags.HasError() {
+		resp.PlanValue = req.ConfigValue
+	} else {
+		resp.PlanValue = newSet
+	}
 }
 
 // sort []attr.Value by converting each value to string, sorting the strings, and converting back to []attr.Value

@@ -16,13 +16,13 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-func TestAccDatadogAppBuilderAppResource_Inline_Basic(t *testing.T) {
+func TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	appName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_app_builder_app.test_app_inline_basic"
+	resourceName := "datadog_app_builder_app.test_app_inline_optional"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -30,25 +30,42 @@ func TestAccDatadogAppBuilderAppResource_Inline_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testInlineBasicAppBuilderAppResourceConfig(appName),
+				Config: testAppBuilderAppInlineWithOptionalFieldsResourceConfig(appName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
-					resource.TestCheckResourceAttrSet(resourceName, "app_json"),
-					resource.TestMatchResourceAttr(resourceName, "app_json", regexp.MustCompile(`\"name\":\"`+appName+`\"`)),
+					resource.TestMatchResourceAttr(resourceName, "app_json", regexp.MustCompile(fmt.Sprintf(`"name":"%s"`, "This name will be overridden"))),
+
+					resource.TestCheckResourceAttr(resourceName, "override_action_query_names_to_connection_ids.%", "1"),
+					resource.TestCheckResourceAttr(resourceName, "override_action_query_names_to_connection_ids.listTeams0", "11111111-2222-3333-4444-555555555555"),
+
+					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.%", "1"),
+					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.listTeams0", "11111111-2222-3333-4444-555555555555"),
+
+					resource.TestCheckResourceAttr(resourceName, "name", appName),
+					resource.TestCheckResourceAttr(resourceName, "description", "Created using the Datadog provider in Terraform."),
+					resource.TestCheckResourceAttr(resourceName, "root_instance_name", "grid0"),
+					resource.TestCheckResourceAttr(resourceName, "published", "true"),
+
+					// resource.TestCheckResourceAttr(resourceName, "tags.#", "4"),
+					// resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "team:app-builder"),
+					// resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "service:app-builder-api"),
+					// resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "tag_key:tag_value"),
+					// resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "terraform_app"),
 				),
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
 }
 
-func TestAccDatadogAppBuilderAppResource_Inline_Basic_Import(t *testing.T) {
+func TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields_Import(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	appName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_app_builder_app.test_app_inline_basic"
+	resourceName := "datadog_app_builder_app.test_app_inline_optional"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -56,18 +73,20 @@ func TestAccDatadogAppBuilderAppResource_Inline_Basic_Import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testInlineBasicAppBuilderAppResourceConfig(appName),
+				Config:             testAppBuilderAppInlineWithOptionalFieldsResourceConfig(appName),
+				ExpectNonEmptyPlan: true,
 			},
 			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:       resourceName,
+				ImportState:        true,
+				ImportStateVerify:  true,
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
 }
 
-func TestAccDatadogAppBuilderAppResource_FromFile_Complex(t *testing.T) {
+func TestAccDatadogAppBuilderAppResource_FromFile(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -96,19 +115,32 @@ func TestAccDatadogAppBuilderAppResource_FromFile_Complex(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testLoadFromFileComplexAppBuilderAppResourceConfig(file.Name()),
+				Config: testLoadFromFileAppBuilderAppResourceConfig(file.Name()),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
-					resource.TestCheckResourceAttrSet(resourceName, "app_json"),
 					resource.TestCheckResourceAttr(resourceName, "app_json", testComplexAppBuilderApp(appName)),
+
+					resource.TestCheckResourceAttr(resourceName, "override_action_query_names_to_connection_ids.%", "1"),
+					resource.TestCheckResourceAttr(resourceName, "override_action_query_names_to_connection_ids.listTeams0", "11111111-2222-3333-4444-555555555555"),
+
+					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.%", "3"),
+					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.createOrUpdateFile0", ""),
+					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.listServiceDefinitions0", "11111111-1111-1111-1111-111111111111"),
+					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.listTeams0", "11111111-2222-3333-4444-555555555555"),
+
+					resource.TestCheckResourceAttr(resourceName, "name", appName),
+					resource.TestCheckResourceAttr(resourceName, "description", "Fill out the form to generate the terraform for a new S3 bucket in Github. Created using the Datadog provider in Terraform"),
+					resource.TestCheckResourceAttr(resourceName, "root_instance_name", "grid0"),
+					resource.TestCheckResourceAttr(resourceName, "published", "false"),
 				),
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
 }
 
-func TestAccDatadogAppBuilderAppResource_FromFile_Complex_Import(t *testing.T) {
+func TestAccDatadogAppBuilderAppResource_FromFile_Import(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
@@ -137,7 +169,8 @@ func TestAccDatadogAppBuilderAppResource_FromFile_Complex_Import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testLoadFromFileComplexAppBuilderAppResourceConfig(file.Name()),
+				Config:             testLoadFromFileAppBuilderAppResourceConfig(file.Name()),
+				ExpectNonEmptyPlan: true,
 			},
 			{
 				ResourceName: resourceName,
@@ -161,15 +194,19 @@ func TestAccDatadogAppBuilderAppResource_FromFile_Complex_Import(t *testing.T) {
 
 					return
 				},
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
 }
 
-func testLoadFromFileComplexAppBuilderAppResourceConfig(fileName string) string {
+func testLoadFromFileAppBuilderAppResourceConfig(fileName string) string {
 	return fmt.Sprintf(`
 	resource "datadog_app_builder_app" "test_app_from_file" {
 		app_json = file("%s")
+		override_action_query_names_to_connection_ids = {
+			"listTeams0" = "11111111-2222-3333-4444-555555555555"
+		}
 	}`, fileName)
 }
 
@@ -262,7 +299,7 @@ func testComplexAppBuilderApp(name string) string {
 					"spec": {
 						"fqn": "com.datadoghq.dd.teams.listTeams",
 						"inputs": {},
-						"connectionId": "5afce030-9bbf-437a-aa04-540fa4768635"
+						"connectionId": "11111111-1111-1111-1111-111111111111"
 					}
 				}
 			},
@@ -277,12 +314,12 @@ func testComplexAppBuilderApp(name string) string {
 						"inputs": {
 							"limit": 1000
 						},
-						"connectionId": "5afce030-9bbf-437a-aa04-540fa4768635"
+						"connectionId": "11111111-1111-1111-1111-111111111111"
 					}
 				}
 			}
 		],
-		"id": "e12cdda8-31a5-49f6-9307-dcd4d67cc911",
+		"id": "11111111-2222-3333-4444-555555555555",
 		"components": [
 			{
 				"events": [],
@@ -830,6 +867,12 @@ func testComplexAppBuilderApp(name string) string {
 		"name": "%s",
 		"rootInstanceName": "grid0",
 		"selfService": false,
-		"tags": []
+		"tags": ["team:app-builder", "service:app-builder-api", "tag_key:tag_value", "terraform_app"],
+		"connections": [
+			{
+				"id": "11111111-1111-1111-1111-111111111111",
+				"name": "A connection that will be overridden"
+			}
+		]
 	}`, name)
 }
