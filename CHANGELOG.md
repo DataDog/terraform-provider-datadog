@@ -1,11 +1,11 @@
 ## 3.58.0 (March 18, 2025)
 
 ### BUGFIXES
-* [synthetics_private_location] Fix unremovable metadata bug by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2892
+* [datadog_synthetics_private_location] Fix unremovable metadata bug by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2892
 * [datadog_webhook] Handle unknown encode_as on update by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/2907
 ### IMPROVEMENTS
-* [synthetics_private_location] Migrate synthetics resource to framework by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2881
-* [synthetics_global_variable] Migrate synthetics resource and data_source to framework by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2886
+* [datadog_synthetics_private_location] Migrate synthetics resource to framework by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2881
+* [datadog_synthetics_global_variable] Migrate synthetics resource and data_source to framework by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2886
 ### FEATURES
 * [datadog_integration_aws_external_id] Add new resource to generate an AWS Integration external ID by @raymondeah in https://github.com/DataDog/terraform-provider-datadog/pull/2880
 * [datadog_appsec] introduce the Application Security resources by @nizox in https://github.com/DataDog/terraform-provider-datadog/pull/2874
