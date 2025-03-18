@@ -7,13 +7,12 @@ import (
 	"io"
 	"maps"
 	"slices"
+	"sort"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid" // v0.1.0, else breaking
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -24,49 +23,50 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/planmodifiers"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &appBuilderAppJSONResource{}
-	_ resource.ResourceWithImportState = &appBuilderAppJSONResource{}
+	_ resource.ResourceWithConfigure   = &appBuilderAppResource{}
+	_ resource.ResourceWithImportState = &appBuilderAppResource{}
 )
 
-type appBuilderAppJSONResource struct {
+type appBuilderAppResource struct {
 	Api  *datadogV2.AppBuilderApi
 	Auth context.Context
 }
 
 // try single property JSON input -> validation will be handled on the API side
-type appBuilderAppJSONResourceModel struct {
-	ID                                      types.String                             `tfsdk:"id"`
-	AppJson                                 customtypes.AppBuilderAppJSONStringValue `tfsdk:"app_json"`
-	OverrideActionQueryNamesToConnectionIDs types.Map                                `tfsdk:"override_action_query_names_to_connection_ids"`
-	ActionQueryNamesToConnectionIDs         types.Map                                `tfsdk:"action_query_names_to_connection_ids"`
-	Name                                    types.String                             `tfsdk:"name"`
-	Description                             types.String                             `tfsdk:"description"`
-	RootInstanceName                        types.String                             `tfsdk:"root_instance_name"`
-	Tags                                    types.Set                                `tfsdk:"tags"`
-	PublishStatusUpdate                     types.String                             `tfsdk:"publish_status_update"`
+type appBuilderAppResourceModel struct {
+	ID                                      types.String                         `tfsdk:"id"`
+	AppJson                                 customtypes.AppBuilderAppStringValue `tfsdk:"app_json"`
+	OverrideActionQueryNamesToConnectionIDs types.Map                            `tfsdk:"override_action_query_names_to_connection_ids"`
+	ActionQueryNamesToConnectionIDs         types.Map                            `tfsdk:"action_query_names_to_connection_ids"`
+	Name                                    types.String                         `tfsdk:"name"`
+	Description                             types.String                         `tfsdk:"description"`
+	RootInstanceName                        types.String                         `tfsdk:"root_instance_name"`
+	Tags                                    types.Set                            `tfsdk:"tags"`
+	Published                               types.Bool                           `tfsdk:"published"`
 }
 
-func NewAppBuilderAppJSONResource() resource.Resource {
-	return &appBuilderAppJSONResource{}
+func NewAppBuilderAppResource() resource.Resource {
+	return &appBuilderAppResource{}
 }
 
-func (r *appBuilderAppJSONResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *appBuilderAppResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetAppBuilderApiV2()
+	// Used to identify requests made from Terraform
+	r.Api.Client.Cfg.AddDefaultHeader("X-Datadog-App-Builder-Source", "terraform")
 	r.Auth = providerData.Auth
 }
 
-func (r *appBuilderAppJSONResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "app_builder_app_json"
+func (r *appBuilderAppResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "app_builder_app"
 }
 
-func (r *appBuilderAppJSONResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
+func (r *appBuilderAppResource) Schema(_ context.Context, _ resource.SchemaRequest, response *resource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "Provides a Datadog App JSON resource for creating and managing Datadog Apps from App Builder using the JSON definition.",
+		Description: "Provides a Datadog App resource for creating and managing Datadog Apps from App Builder using the JSON definition.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"app_json": schema.StringAttribute{
@@ -75,7 +75,7 @@ func (r *appBuilderAppJSONResource) Schema(_ context.Context, _ resource.SchemaR
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
-				CustomType: customtypes.AppBuilderAppJSONStringType{},
+				CustomType: customtypes.AppBuilderAppStringType{},
 			},
 			"override_action_query_names_to_connection_ids": schema.MapAttribute{
 				Optional:    true,
@@ -112,40 +112,39 @@ func (r *appBuilderAppJSONResource) Schema(_ context.Context, _ resource.SchemaR
 				Description: "A list of tags for the app, which can be used to filter apps. If specified, this will override the list of tags for the App in the App JSON. Otherwise, tags will be returned in output.",
 				Validators: []validator.Set{
 					setvalidator.SizeAtLeast(1),
-					// validators.TagsSetIsNormalized(),
 				},
 				PlanModifiers: []planmodifier.Set{
 					planmodifiers.NormalizeTagSet(),
 				},
 			},
-			"publish_status_update": schema.StringAttribute{
+			"published": schema.BoolAttribute{
 				Optional:    true,
-				Description: "If `publish`, the latest app version will be published and available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist. If `unpublish`, the app will be unpublished, removing the live version of the app. If unspecified, the publish status will not be updated.",
-				Validators:  []validator.String{validators.NewEnumValidator[validator.String](NewPublishStatusUpdateFromValue)},
+				Description: "Set the app to published or unpublished. Published apps are available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist.",
 			},
-			// TODO: update CRUD operations to handle the new optional fields
 		},
 	}
 }
 
-func (r *appBuilderAppJSONResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *appBuilderAppResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *appBuilderAppJSONResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var plan appBuilderAppJSONResourceModel
+func (r *appBuilderAppResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var plan appBuilderAppResourceModel
 	diags := request.Plan.Get(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	createRequest, err := appBuilderAppJSONModelToCreateApiRequest(plan)
+	// build the create request
+	createRequest, err := appBuilderAppModelToCreateApiRequest(plan)
 	if err != nil {
 		response.Diagnostics.AddError("error building create app request", err.Error())
 		return
 	}
 
+	// create the app
 	resp, httpResp, err := r.Api.CreateApp(r.Auth, *createRequest)
 	if err != nil {
 		if httpResp != nil {
@@ -162,21 +161,45 @@ func (r *appBuilderAppJSONResource) Create(ctx context.Context, request resource
 		return
 	}
 
+	appID := resp.Data.GetId()
+
+	// publish the app if the published attribute is true
+	if plan.Published.ValueBool() {
+		_, httpResp, err := r.Api.PublishApp(r.Auth, appID)
+		if err != nil {
+			if httpResp != nil {
+				// error body may have useful info for the user
+				body, err := io.ReadAll(httpResp.Body)
+				if err != nil {
+					response.Diagnostics.AddError("error reading error response", err.Error())
+					return
+				}
+				response.Diagnostics.AddError("error publishing app", string(body))
+			} else {
+				response.Diagnostics.AddError("error publishing app", err.Error())
+			}
+			return
+		}
+	}
+
 	// set computed values
-	plan.ID = types.StringValue(resp.Data.GetId().String())
-	plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(createRequest.GetData().Attributes.GetQueries())
+	plan.ID = types.StringValue(appID.String())
+	attributes := createRequest.GetData().Attributes
+	plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(attributes.GetQueries())
 	if err != nil {
 		response.Diagnostics.AddError("error building action_query_names_to_connection_ids map", err.Error())
 		return
 	}
+	attrTags := convertTagsToAttrValues(attributes.GetTags())
+	plan.Tags = types.SetValueMust(types.StringType, attrTags)
 
 	// Save data into Terraform state
 	diags = response.State.Set(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 }
 
-func (r *appBuilderAppJSONResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state appBuilderAppJSONResourceModel
+func (r *appBuilderAppResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state appBuilderAppResourceModel
 	diags := request.State.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -189,19 +212,20 @@ func (r *appBuilderAppJSONResource) Read(ctx context.Context, request resource.R
 		return
 	}
 
-	appBuilderAppJSONModel, err := readAppBuilderAppJSON(r.Auth, r.Api, id)
+	// read the app
+	appBuilderAppModel, err := readAppBuilderApp(r.Auth, r.Api, id)
 	if err != nil {
 		response.Diagnostics.AddError("error reading app", err.Error())
 		return
 	}
 
 	// Save data into Terraform state
-	diags = response.State.Set(ctx, appBuilderAppJSONModel)
+	diags = response.State.Set(ctx, appBuilderAppModel)
 	response.Diagnostics.Append(diags...)
 }
 
-func (r *appBuilderAppJSONResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var plan appBuilderAppJSONResourceModel
+func (r *appBuilderAppResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var plan appBuilderAppResourceModel
 	diags := request.Plan.Get(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -214,12 +238,14 @@ func (r *appBuilderAppJSONResource) Update(ctx context.Context, request resource
 		return
 	}
 
-	updateRequest, err := appBuilderAppJSONModelToUpdateApiRequest(plan)
+	// build the update request
+	updateRequest, err := appBuilderAppModelToUpdateApiRequest(plan)
 	if err != nil {
 		response.Diagnostics.AddError("error building update app request", err.Error())
 		return
 	}
 
+	// update the app
 	_, httpResp, err := r.Api.UpdateApp(r.Auth, id, *updateRequest)
 	if err != nil {
 		if httpResp != nil {
@@ -236,20 +262,59 @@ func (r *appBuilderAppJSONResource) Update(ctx context.Context, request resource
 		return
 	}
 
+	// publish the app if the published attribute is true
+	if plan.Published.ValueBool() {
+		_, httpResp, err := r.Api.PublishApp(r.Auth, id)
+		if err != nil {
+			if httpResp != nil {
+				// error body may have useful info for the user
+				body, err := io.ReadAll(httpResp.Body)
+				if err != nil {
+					response.Diagnostics.AddError("error reading error response", err.Error())
+					return
+				}
+				response.Diagnostics.AddError("error publishing app", string(body))
+			} else {
+				response.Diagnostics.AddError("error publishing app", err.Error())
+			}
+			return
+		}
+	} else {
+		// unpublish the app if the published attribute is false
+		_, httpResp, err := r.Api.UnpublishApp(r.Auth, id)
+		if err != nil {
+			if httpResp != nil {
+				// error body may have useful info for the user
+				body, err := io.ReadAll(httpResp.Body)
+				if err != nil {
+					response.Diagnostics.AddError("error reading error response", err.Error())
+					return
+				}
+				response.Diagnostics.AddError("error unpublishing app", string(body))
+			} else {
+				response.Diagnostics.AddError("error unpublishing app", err.Error())
+			}
+			return
+		}
+	}
+
 	// set computed values
-	plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(updateRequest.GetData().Attributes.GetQueries())
+	attributes := updateRequest.GetData().Attributes
+	plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(attributes.GetQueries())
 	if err != nil {
 		response.Diagnostics.AddError("error building action_query_names_to_connection_ids map", err.Error())
 		return
 	}
+	attrTags := convertTagsToAttrValues(attributes.GetTags())
+	plan.Tags = types.SetValueMust(types.StringType, attrTags)
 
 	// Save data into Terraform state
 	diags = response.State.Set(ctx, &plan)
 	response.Diagnostics.Append(diags...)
 }
 
-func (r *appBuilderAppJSONResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state appBuilderAppJSONResourceModel
+func (r *appBuilderAppResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state appBuilderAppResourceModel
 	diags := request.State.Get(ctx, &state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
@@ -261,6 +326,8 @@ func (r *appBuilderAppJSONResource) Delete(ctx context.Context, request resource
 		response.Diagnostics.AddError("error parsing ID as UUID", err.Error())
 		return
 	}
+
+	// delete the app
 	_, httpResp, err := r.Api.DeleteApp(r.Auth, id)
 	if err != nil {
 		if httpResp != nil {
@@ -278,37 +345,7 @@ func (r *appBuilderAppJSONResource) Delete(ctx context.Context, request resource
 	}
 }
 
-func apiResponseToAppBuilderAppJSONModel(resp datadogV2.GetAppResponse) (*appBuilderAppJSONResourceModel, error) {
-	appBuilderAppJSONModel := &appBuilderAppJSONResourceModel{
-		ID: types.StringValue(resp.Data.GetId().String()),
-	}
-
-	data := resp.GetData()
-	attributes := data.GetAttributes()
-
-	// marshal attributes into JSON string and set it as the app_json value
-	marshalledBytes, err := json.Marshal(attributes)
-	if err != nil {
-		err = fmt.Errorf("error marshaling attributes: %s", err)
-		return nil, err
-	}
-	// we use AppBuilderAppJSONString type and value to ignore inconsequential differences in the JSON strings
-	// and also ignore other differences such as the App's ID, which is ignored in the App Builder API
-	appBuilderAppJSONModel.AppJson = customtypes.NewAppBuilderAppJSONStringValue(string(marshalledBytes))
-
-	// build action query ids to connection ids map
-	queries := attributes.GetQueries()
-	actionQueryNamesToConnectionIDs, err := buildActionQueryNamesToConnectionIDsMap(queries)
-	if err != nil {
-		err = fmt.Errorf("error building action_query_names_to_connection_ids map: %s", err)
-		return nil, err
-	}
-	appBuilderAppJSONModel.ActionQueryNamesToConnectionIDs = actionQueryNamesToConnectionIDs
-
-	return appBuilderAppJSONModel, nil
-}
-
-func appBuilderAppJSONModelToCreateApiRequest(plan appBuilderAppJSONResourceModel) (*datadogV2.CreateAppRequest, error) {
+func appBuilderAppModelToCreateApiRequest(plan appBuilderAppResourceModel) (*datadogV2.CreateAppRequest, error) {
 	attributes := datadogV2.NewCreateAppRequestDataAttributesWithDefaults()
 
 	// decode encoded json into the attributes struct
@@ -318,10 +355,10 @@ func appBuilderAppJSONModelToCreateApiRequest(plan appBuilderAppJSONResourceMode
 		return nil, err
 	}
 
-	// replace connection ids in the create request attributes with the ones provided in the plan
-	err = replaceConnectionIDsInActionQueries(plan.OverrideActionQueryNamesToConnectionIDs, attributes.GetQueries())
+	// override the attributes with the ones provided in the plan
+	err = overrideAppBuilderAppAttributesInCreateRequestAttributes(plan, attributes)
 	if err != nil {
-		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
+		err = fmt.Errorf("error overriding app JSON attributes: %s", err.Error())
 		return nil, err
 	}
 
@@ -332,7 +369,7 @@ func appBuilderAppJSONModelToCreateApiRequest(plan appBuilderAppJSONResourceMode
 	return req, nil
 }
 
-func appBuilderAppJSONModelToUpdateApiRequest(plan appBuilderAppJSONResourceModel) (*datadogV2.UpdateAppRequest, error) {
+func appBuilderAppModelToUpdateApiRequest(plan appBuilderAppResourceModel) (*datadogV2.UpdateAppRequest, error) {
 	attributes := datadogV2.NewUpdateAppRequestDataAttributesWithDefaults()
 
 	// decode encoded json into the attributes struct
@@ -342,10 +379,10 @@ func appBuilderAppJSONModelToUpdateApiRequest(plan appBuilderAppJSONResourceMode
 		return nil, err
 	}
 
-	// replace connection ids in the update request attributes with the ones provided in the plan
-	err = replaceConnectionIDsInActionQueries(plan.OverrideActionQueryNamesToConnectionIDs, attributes.GetQueries())
+	// override the attributes with the ones provided in the plan
+	err = overrideAppBuilderAppAttributesInUpdateRequestAttributes(plan, attributes)
 	if err != nil {
-		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
+		err = fmt.Errorf("error overriding app JSON attributes: %s", err.Error())
 		return nil, err
 	}
 
@@ -356,34 +393,82 @@ func appBuilderAppJSONModelToUpdateApiRequest(plan appBuilderAppJSONResourceMode
 	return req, nil
 }
 
-// Read logic is shared between data source and resource
-func readAppBuilderAppJSON(ctx context.Context, api *datadogV2.AppBuilderApi, id uuid.UUID) (*appBuilderAppJSONResourceModel, error) {
-	resp, httpResp, err := api.GetApp(ctx, id)
-	if err != nil {
-		if httpResp != nil {
-			body, err := io.ReadAll(httpResp.Body)
-			if err != nil {
-				return nil, fmt.Errorf("could not read error response")
-			}
-			return nil, fmt.Errorf("%s", body)
+func overrideAppBuilderAppAttributesInCreateRequestAttributes(plan appBuilderAppResourceModel, attributes *datadogV2.CreateAppRequestDataAttributes) error {
+
+	// name, description, root_instance_name are straightforward string replacements
+	if plan.Name.ValueString() != "" {
+		attributes.Name = plan.Name.ValueStringPointer()
+	}
+	if plan.Description.ValueString() != "" {
+		attributes.Description = plan.Description.ValueStringPointer()
+	}
+	if plan.RootInstanceName.ValueString() != "" {
+		attributes.RootInstanceName = plan.RootInstanceName.ValueStringPointer()
+	}
+
+	// tags are a bit more complex, we need to convert the types.Set to a list of strings and then replace the tags from the app json
+	setElements := plan.Tags.Elements()
+	if !plan.Tags.IsNull() && !plan.Tags.IsUnknown() || len(setElements) > 0 {
+		tags := []string{}
+		for _, element := range setElements {
+			tags = append(tags, element.(types.String).ValueString())
 		}
-		return nil, err
+		// sort the tags
+		sort.Strings(tags)
+		attributes.Tags = tags
 	}
 
-	appModel, err := apiResponseToAppBuilderAppJSONModel(resp)
+	// Using override_action_query_names_to_connection_ids, replace connection ids in the update request attributes with the ones provided in the plan
+	err := replaceConnectionIDsInActionQueries(plan.OverrideActionQueryNamesToConnectionIDs, attributes.GetQueries())
 	if err != nil {
-		return nil, err
+		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
+		return err
 	}
 
-	return appModel, nil
+	return nil
+}
+
+func overrideAppBuilderAppAttributesInUpdateRequestAttributes(plan appBuilderAppResourceModel, attributes *datadogV2.UpdateAppRequestDataAttributes) error {
+
+	// name, description, root_instance_name are straightforward string replacements
+	if plan.Name.ValueString() != "" {
+		attributes.Name = plan.Name.ValueStringPointer()
+	}
+	if plan.Description.ValueString() != "" {
+		attributes.Description = plan.Description.ValueStringPointer()
+	}
+	if plan.RootInstanceName.ValueString() != "" {
+		attributes.RootInstanceName = plan.RootInstanceName.ValueStringPointer()
+	}
+
+	// tags are a bit more complex, we need to convert the types.Set to a list of strings and then replace the tags from the app json
+	setElements := plan.Tags.Elements()
+	if !plan.Tags.IsNull() && !plan.Tags.IsUnknown() || len(setElements) > 0 {
+		tags := []string{}
+		for _, element := range setElements {
+			tags = append(tags, element.(types.String).ValueString())
+		}
+		// sort the tags
+		sort.Strings(tags)
+		attributes.Tags = tags
+	}
+
+	// Using override_action_query_names_to_connection_ids, replace connection ids in the update request attributes with the ones provided in the plan
+	err := replaceConnectionIDsInActionQueries(plan.OverrideActionQueryNamesToConnectionIDs, attributes.GetQueries())
+	if err != nil {
+		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
+		return err
+	}
+
+	return nil
 }
 
 // replace the connection ids in the queries with the ones provided in the plan, as specified by {action_query_name: connection_id}
 func replaceConnectionIDsInActionQueries(overrideActionQueryNamesToConnectionIDs types.Map, queries []datadogV2.Query) error {
 	mapElements := overrideActionQueryNamesToConnectionIDs.Elements()
 
-	// skip if no action query names to connection ids are provided
-	if len(mapElements) == 0 {
+	// skip if overrideActionQueryNamesToConnectionIDs is empty
+	if overrideActionQueryNamesToConnectionIDs.IsNull() || overrideActionQueryNamesToConnectionIDs.IsUnknown() || mapElements == nil {
 		return nil
 	}
 
@@ -437,35 +522,6 @@ func setConnectionIDForActionQuery(actionQuery *datadogV2.ActionQuery, connectio
 	return nil
 }
 
-func buildActionQueryNamesToConnectionIDsMap(queries []datadogV2.Query) (types.Map, error) {
-	elementsMap := map[string]attr.Value{}
-
-	for _, query := range queries {
-		// must be an action query
-		actionQuery := query.ActionQuery
-		if actionQuery == nil {
-			continue
-		}
-
-		queryName := actionQuery.GetName()
-
-		// since we are reading the response from the API, we can ignore validation errors
-		specObj := actionQuery.Properties.GetSpec().ActionQuerySpecObject
-		if specObj.HasConnectionId() {
-			connectionID := specObj.GetConnectionId()
-			elementsMap[queryName] = types.StringValue(connectionID)
-		}
-	}
-
-	// convert map to types.Map
-	resultMap, diags := types.MapValue(types.StringType, elementsMap)
-	if diags != nil {
-		return types.MapNull(types.StringType), fmt.Errorf("error converting map to types.Map: %v", diags)
-	}
-
-	return resultMap, nil
-}
-
 func getQueryName(query datadogV2.Query) string {
 	if query.ActionQuery != nil {
 		return query.ActionQuery.GetName()
@@ -475,59 +531,4 @@ func getQueryName(query datadogV2.Query) string {
 		return query.StateVariable.GetName()
 	}
 	return ""
-}
-
-// create enum for App Builder App's PublishStatusUpdate TF field
-type PublishStatusUpdate string
-
-// List of PublishStatusUpdate.
-const (
-	PUBLISHSTATUSUPDATE_PUBLISH   PublishStatusUpdate = "publish"
-	PUBLISHSTATUSUPDATE_UNPUBLISH PublishStatusUpdate = "unpublish"
-)
-
-var allowedPublishStatusUpdateEnumValues = []PublishStatusUpdate{
-	PUBLISHSTATUSUPDATE_PUBLISH,
-	PUBLISHSTATUSUPDATE_UNPUBLISH,
-}
-
-// GetAllowedValues returns the list of possible values.
-func (v *PublishStatusUpdate) GetAllowedValues() []PublishStatusUpdate {
-	return allowedPublishStatusUpdateEnumValues
-}
-
-// UnmarshalJSON deserializes the given payload.
-func (v *PublishStatusUpdate) UnmarshalJSON(src []byte) error {
-	var value string
-	err := datadog.Unmarshal(src, &value)
-	if err != nil {
-		return err
-	}
-	*v = PublishStatusUpdate(value)
-	return nil
-}
-
-// NewPublishStatusUpdateFromValue returns a pointer to a valid PublishStatusUpdate
-// for the value passed as argument, or an error if the value passed is not allowed by the enum.
-func NewPublishStatusUpdateFromValue(v string) (*PublishStatusUpdate, error) {
-	ev := PublishStatusUpdate(v)
-	if ev.IsValid() {
-		return &ev, nil
-	}
-	return nil, fmt.Errorf("invalid value '%v' for PublishStatusUpdate: valid values are %v", v, allowedPublishStatusUpdateEnumValues)
-}
-
-// IsValid return true if the value is valid for the enum, false otherwise.
-func (v PublishStatusUpdate) IsValid() bool {
-	for _, existing := range allowedPublishStatusUpdateEnumValues {
-		if existing == v {
-			return true
-		}
-	}
-	return false
-}
-
-// Ptr returns reference to PublishStatusUpdate value.
-func (v PublishStatusUpdate) Ptr() *PublishStatusUpdate {
-	return &v
 }

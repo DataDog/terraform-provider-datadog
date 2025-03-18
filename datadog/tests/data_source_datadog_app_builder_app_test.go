@@ -12,24 +12,24 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-func TestAccDatadogAppBuilderAppJSONDataSource_Inline_Basic(t *testing.T) {
+func TestAccDatadogAppBuilderAppDataSource_Inline_Basic(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	appName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_app_builder_app_json.test_app_inline_basic"
+	resourceName := "datadog_app_builder_app.test_app_inline_basic"
 	datasourceName := "data." + resourceName
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogAppBuilderAppJSONDestroy(providers.frameworkProvider, resourceName),
+		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testInlineBasicAppBuilderAppJSONDataSourceConfig(appName),
+				Config: testInlineBasicAppBuilderAppDataSourceConfig(appName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogAppBuilderAppJSONExists(providers.frameworkProvider, datasourceName),
+					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, datasourceName),
 					resource.TestCheckResourceAttrSet(datasourceName, "id"),
 					resource.TestCheckResourceAttrSet(datasourceName, "app_json"),
 					resource.TestMatchResourceAttr(datasourceName, "app_json", regexp.MustCompile(`\"name\":\"`+appName+`\"`)),
@@ -39,17 +39,17 @@ func TestAccDatadogAppBuilderAppJSONDataSource_Inline_Basic(t *testing.T) {
 	})
 }
 
-func testInlineBasicAppBuilderAppJSONDataSourceConfig(name string) string {
+func testInlineBasicAppBuilderAppDataSourceConfig(name string) string {
 	return fmt.Sprintf(`
 	%s
-	data "datadog_app_builder_app_json" "test_app_inline_basic" {
-		id = datadog_app_builder_app_json.test_app_inline_basic.id
-	}`, testInlineBasicAppBuilderAppJSONResourceConfig(name))
+	data "datadog_app_builder_app" "test_app_inline_basic" {
+		id = datadog_app_builder_app.test_app_inline_basic.id
+	}`, testInlineBasicAppBuilderAppResourceConfig(name))
 }
 
-func testInlineBasicAppBuilderAppJSONResourceConfig(name string) string {
+func testInlineBasicAppBuilderAppResourceConfig(name string) string {
 	return fmt.Sprintf(`
-	resource "datadog_app_builder_app_json" "test_app_inline_basic" {
+	resource "datadog_app_builder_app" "test_app_inline_basic" {
 		app_json = jsonencode(
 			%s
 		)
@@ -81,7 +81,7 @@ func testInlineBasicAppJSON(name string) string {
 	`, name)
 }
 
-func testAccCheckDatadogAppBuilderAppJSONDestroy(accProvider *fwprovider.FrameworkProvider, resourceName string) func(*terraform.State) error {
+func testAccCheckDatadogAppBuilderAppDestroy(accProvider *fwprovider.FrameworkProvider, resourceName string) func(*terraform.State) error {
 	return func(s *terraform.State) error {
 		apiInstances := accProvider.DatadogApiInstances
 		auth := accProvider.Auth

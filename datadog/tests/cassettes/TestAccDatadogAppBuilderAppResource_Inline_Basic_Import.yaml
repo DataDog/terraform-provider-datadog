@@ -1,0 +1,138 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 383
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":{"attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_Inline_Basic_Import-local-1742270118","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"type":"appDefinitions"}}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 78
+        uncompressed: false
+        body: '{"data":{"id":"0f16563d-3fc9-48a3-ac35-65137a0c5c07","type":"appDefinitions"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 201 Created
+        code: 201
+        duration: 320.43375ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/0f16563d-3fc9-48a3-ac35-65137a0c5c07
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 720
+        uncompressed: false
+        body: '{"data":{"id":"0f16563d-3fc9-48a3-ac35-65137a0c5c07","type":"appDefinitions","attributes":{"components":[{"events":[],"name":"grid0","properties":{"children":[]},"type":"grid"}],"description":"Test app created using the Datadog provider in Terraform.","favorite":false,"name":"tf-TestAccDatadogAppBuilderAppResource_Inline_Basic_Import-local-1742270118","queries":[],"rootInstanceName":"grid0","selfService":false,"tags":[]},"meta":{"org_id":321813,"user_id":1445416,"user_uuid":"3ad549bf-eba0-11e9-a77a-0705486660d0","user_name":"frog@datadoghq.com","version":1,"updated_since_deployment":false,"created_at":"2025-03-18T03:55:19.693861Z","updated_at":"2025-03-18T03:55:19.693861Z","deleted_at":"0001-01-01T00:00:00Z"}}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 93.993458ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/0f16563d-3fc9-48a3-ac35-65137a0c5c07
+        method: DELETE
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 78
+        uncompressed: false
+        body: '{"data":{"id":"0f16563d-3fc9-48a3-ac35-65137a0c5c07","type":"appDefinitions"}}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 239.047334ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers:
+            Accept:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/app-builder/apps/0f16563d-3fc9-48a3-ac35-65137a0c5c07
+        method: GET
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 38
+        uncompressed: false
+        body: '{"errors":[{"title":"app not found"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 404 Not Found
+        code: 404
+        duration: 65.315834ms

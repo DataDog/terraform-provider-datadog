@@ -15,30 +15,30 @@ import (
 // Ensure the implementation satisfies the expected interfaces
 // Not adding validation because that will be handled in the App Builder API
 var (
-	_ basetypes.StringTypable = (*AppBuilderAppJSONStringType)(nil)
+	_ basetypes.StringTypable = (*AppBuilderAppStringType)(nil)
 )
 
-// AppBuilderAppJSONStringType is an attribute type that represents a JSON string (RFC 7159). Semantic equality logic is defined for AppBuilderAppJSONStringType
+// AppBuilderAppStringType is an attribute type that represents a JSON string (RFC 7159). Semantic equality logic is defined for AppBuilderAppStringType
 // such that inconsequential differences between JSON strings are ignored (whitespace, property order, etc), similar to jsontypes.NormalizedType,
 // but also ignores other differences such as the App's ID, which is ignored in the App Builder API.
-type AppBuilderAppJSONStringType struct {
+type AppBuilderAppStringType struct {
 	basetypes.StringType
 }
 
 // String returns a human readable string of the type name.
-func (t AppBuilderAppJSONStringType) String() string {
-	return "AppBuilderAppJSONStringType"
+func (t AppBuilderAppStringType) String() string {
+	return "AppBuilderAppStringType"
 }
 
 // ValueType returns the Value type.
-func (t AppBuilderAppJSONStringType) ValueType(ctx context.Context) attr.Value {
-	// AppBuilderAppJSONStringValue defined in the value type section
-	return AppBuilderAppJSONStringValue{}
+func (t AppBuilderAppStringType) ValueType(ctx context.Context) attr.Value {
+	// AppBuilderAppStringValue defined in the value type section
+	return AppBuilderAppStringValue{}
 }
 
 // Equal returns true if the given type is equivalent.
-func (t AppBuilderAppJSONStringType) Equal(o attr.Type) bool {
-	other, ok := o.(AppBuilderAppJSONStringType)
+func (t AppBuilderAppStringType) Equal(o attr.Type) bool {
+	other, ok := o.(AppBuilderAppStringType)
 
 	if !ok {
 		return false
@@ -48,16 +48,16 @@ func (t AppBuilderAppJSONStringType) Equal(o attr.Type) bool {
 }
 
 // ValueFromString returns a StringValuable type given a StringValue.
-func (t AppBuilderAppJSONStringType) ValueFromString(ctx context.Context, in basetypes.StringValue) (basetypes.StringValuable, diag.Diagnostics) {
-	// AppBuilderAppJSONStringValue defined in the value type section
-	return AppBuilderAppJSONStringValue{
+func (t AppBuilderAppStringType) ValueFromString(ctx context.Context, in basetypes.StringValue) (basetypes.StringValuable, diag.Diagnostics) {
+	// AppBuilderAppStringValue defined in the value type section
+	return AppBuilderAppStringValue{
 		StringValue: in,
 	}, nil
 }
 
 // ValueFromTerraform returns a Value given a tftypes.Value.  This is meant to convert the tftypes.Value into a more convenient Go type
 // for the provider to consume the data with.
-func (t AppBuilderAppJSONStringType) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
+func (t AppBuilderAppStringType) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
 	attrValue, err := t.StringType.ValueFromTerraform(ctx, in)
 	if err != nil {
 		return nil, err
