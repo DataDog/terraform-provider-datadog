@@ -60,6 +60,7 @@ var Resources = []func() resource.Resource{
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
+	NewSyntheticsGlobalVariableResource,
 	NewSyntheticsPrivateLocationResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
@@ -103,6 +104,7 @@ var Datasources = []func() datasource.DataSource{
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
+	NewDatadogSyntheticsGlobalVariableDataSource,
 	NewWorkflowAutomationDataSource,
 }
 
