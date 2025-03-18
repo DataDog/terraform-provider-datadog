@@ -109,6 +109,11 @@ func normalizeAppBuilderAppString(jsonStr string) (string, error) {
 	// remove the "id" field from the JSON string because we want to ignore the App ID when comparing JSON strings
 	if jsonMap, ok := temp.(map[string]interface{}); ok {
 		delete(jsonMap, "id")
+		// ignoring other fields that don't matter in Create/Update requests
+		delete(jsonMap, "connections")
+		delete(jsonMap, "favorite")
+		delete(jsonMap, "selfService")
+		delete(jsonMap, "tags")
 	}
 
 	jsonBytes, err := json.Marshal(&temp)

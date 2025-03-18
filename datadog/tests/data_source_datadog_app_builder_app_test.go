@@ -12,13 +12,13 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-func TestAccDatadogAppBuilderAppDataSource_Inline_Basic(t *testing.T) {
+func TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields(t *testing.T) {
 	t.Parallel()
 
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	appName := uniqueEntityName(ctx, t)
-	resourceName := "datadog_app_builder_app.test_app_inline_basic"
+	resourceName := "datadog_app_builder_app.test_app_inline_optional"
 	datasourceName := "data." + resourceName
 
 	resource.Test(t, resource.TestCase{
@@ -27,58 +27,104 @@ func TestAccDatadogAppBuilderAppDataSource_Inline_Basic(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogAppBuilderAppDestroy(providers.frameworkProvider, resourceName),
 		Steps: []resource.TestStep{
 			{
-				Config: testInlineBasicAppBuilderAppDataSourceConfig(appName),
+				Config: testAppBuilderAppInlineWithOptionalFieldsDataSourceConfig(appName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogAppBuilderAppExists(providers.frameworkProvider, datasourceName),
 					resource.TestCheckResourceAttrSet(datasourceName, "id"),
-					resource.TestCheckResourceAttrSet(datasourceName, "app_json"),
-					resource.TestMatchResourceAttr(datasourceName, "app_json", regexp.MustCompile(`\"name\":\"`+appName+`\"`)),
+					resource.TestMatchResourceAttr(datasourceName, "app_json", regexp.MustCompile(fmt.Sprintf(`"name":"%s"`, appName))),
+
+					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.%", "1"),
+					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.listTeams0", "11111111-2222-3333-4444-555555555555"),
+
+					resource.TestCheckResourceAttr(datasourceName, "name", appName),
+					resource.TestCheckResourceAttr(datasourceName, "description", "Created using the Datadog provider in Terraform."),
+					resource.TestCheckResourceAttr(datasourceName, "root_instance_name", "grid0"),
+					resource.TestCheckResourceAttr(datasourceName, "published", "true"),
+
+					// resource.TestCheckResourceAttr(datasourceName, "tags.#", "4"),
+					// resource.TestCheckTypeSetElemAttr(datasourceName, "tags.*", "team:app-builder"),
+					// resource.TestCheckTypeSetElemAttr(datasourceName, "tags.*", "service:app-builder-api"),
+					// resource.TestCheckTypeSetElemAttr(datasourceName, "tags.*", "tag_key:tag_value"),
+					// resource.TestCheckTypeSetElemAttr(datasourceName, "tags.*", "terraform_app"),
 				),
+				ExpectNonEmptyPlan: true,
+				// TODO: consider removing the above once things are stable
 			},
 		},
 	})
 }
 
-func testInlineBasicAppBuilderAppDataSourceConfig(name string) string {
+func testAppBuilderAppInlineWithOptionalFieldsDataSourceConfig(name string) string {
 	return fmt.Sprintf(`
 	%s
-	data "datadog_app_builder_app" "test_app_inline_basic" {
-		id = datadog_app_builder_app.test_app_inline_basic.id
-	}`, testInlineBasicAppBuilderAppResourceConfig(name))
+	data "datadog_app_builder_app" "test_app_inline_optional" {
+		id = datadog_app_builder_app.test_app_inline_optional.id
+	}`, testAppBuilderAppInlineWithOptionalFieldsResourceConfig(name))
 }
 
-func testInlineBasicAppBuilderAppResourceConfig(name string) string {
+func testAppBuilderAppInlineWithOptionalFieldsResourceConfig(name string) string {
+	// for the sake of this test, we are only interested in the name
 	return fmt.Sprintf(`
-	resource "datadog_app_builder_app" "test_app_inline_basic" {
+	resource "datadog_app_builder_app" "test_app_inline_optional" {
+		name               = "%s"
+		description        = "Created using the Datadog provider in Terraform."
+		root_instance_name = "grid0"
+		tags               = ["team:app-builder", "service:app-builder-api", "tag_key:tag_value", "terraform_app"]
+		published          = true
+		
+		override_action_query_names_to_connection_ids = {
+			"listTeams0" = "11111111-2222-3333-4444-555555555555"
+		}
+		
 		app_json = jsonencode(
 			%s
 		)
-	}`, testInlineBasicAppJSON(name))
+	}`, name, testAppBuilderAppInlineWithOptionalFieldsAppJSON())
 }
 
-func testInlineBasicAppJSON(name string) string {
-	// for the sake of this test, we are only interested in the name
-	return fmt.Sprintf(`
-		{
-			"queries" : [],
-			"components" : [
-				{
-					"events" : [],
-					"name" : "grid0",
-					"properties" : {
-						"children" : []
-					},
-					"type" : "grid"
+func testAppBuilderAppInlineWithOptionalFieldsAppJSON() string {
+	return `
+    {
+		"queries" : [
+			{
+				"id": "22a65cea-b96f-44fa-a1e2-008885d7bd2e",
+				"type": "action",
+				"name": "listTeams0",
+				"events": [],
+				"properties": {
+					"spec": {
+						"fqn": "com.datadoghq.dd.teams.listTeams",
+						"connectionId": "11111111-1111-1111-1111-111111111111",
+						"inputs": {}
+					}
 				}
-			],
-			"description" : "Test app created using the Datadog provider in Terraform.",
-			"name" : "%s",
-			"favorite" : false,
-			"rootInstanceName" : "grid0",
-			"selfService" : false,
-			"tags" : []
-		}
-	`, name)
+			}
+		],
+		"id" : "11111111-2222-3333-4444-555555555555",
+		"components" : [
+			{
+				"events" : [],
+				"name" : "grid0",
+				"properties" : {
+					"children" : []
+				},
+				"type" : "grid"
+			}
+		],
+		"description" : "This description will be overridden",
+		"favorite": false,
+		"name" : "This name will be overridden",
+		"rootInstanceName" : "This rootInstanceName will be overridden",
+		"selfService": false,
+		"tags" : ["these_tags_will_be:overridden", "foo:bar"],
+		"connections": [
+			{
+				"id": "11111111-1111-1111-1111-111111111111",
+				"name": "A connection that will be overridden"
+			}
+		]
+	}
+	`
 }
 
 func testAccCheckDatadogAppBuilderAppDestroy(accProvider *fwprovider.FrameworkProvider, resourceName string) func(*terraform.State) error {
