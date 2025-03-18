@@ -1,3 +1,30 @@
+## 3.58.0 (March 18, 2025)
+
+### BUGFIXES
+* [datadog_synthetics_private_location] Fix unremovable metadata bug by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2892
+* [datadog_webhook] Handle unknown encode_as on update by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/2907
+### IMPROVEMENTS
+* [datadog_synthetics_private_location] Migrate synthetics resource to framework by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2881
+* [datadog_synthetics_global_variable] Migrate synthetics resource and data_source to framework by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2886
+### FEATURES
+* [datadog_integration_aws_external_id] Add new resource to generate an AWS Integration external ID by @raymondeah in https://github.com/DataDog/terraform-provider-datadog/pull/2880
+* [datadog_appsec] introduce the Application Security resources by @nizox in https://github.com/DataDog/terraform-provider-datadog/pull/2874
+* [datadog_workflow_automation] Add Workflows to Terraform by @GabeWM in https://github.com/DataDog/terraform-provider-datadog/pull/2833
+* [datadog_security_monitoring_rule] Add group_signals_by and case actions by @Moutix in https://github.com/DataDog/terraform-provider-datadog/pull/2895
+* [datadog_synthetics_test] Add `extractedValuesFromScript` to multistep API tests by @AntoineDona in https://github.com/DataDog/terraform-provider-datadog/pull/2894
+### NOTES
+* [Dependencies] Bump golang.org/x/net from 0.23.0 to 0.36.0 by @dependabot in https://github.com/DataDog/terraform-provider-datadog/pull/2902
+
+## New Contributors
+* @raymondeah made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2880
+* @janine-c made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2882
+* @RaphaelAllier made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2887
+* @GabeWM made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2833
+* @Moutix made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2895
+* @fpighi made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2914
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.57.0...v3.58.0
+
 ## 3.57.0 (February 28, 2025)
 
 ### BUGFIXES
