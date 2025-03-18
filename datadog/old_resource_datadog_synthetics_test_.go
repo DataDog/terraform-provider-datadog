@@ -1341,7 +1341,7 @@ func syntheticsBrowserStepParams() schema.Schema {
 					},
 				},
 				"files": {
-					Description: `Details of the files for an "upload files" step, JSON encoded string. Refer to the examples for a usage example showing the schema.`,
+					Description: `Details of the files for an "upload files" step, JSON encoded string.`,
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
