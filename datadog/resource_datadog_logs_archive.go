@@ -52,7 +52,7 @@ func resourceDatadogLogsArchive() *schema.Resource {
 							},
 							"encryption_key": {Description: "The AWS KMS encryption key.", Type: schema.TypeString, Optional: true},
 							"storage_class": {
-								Description:      "The storage class logs are uploaded to.",
+								Description:      "The AWS S3 storage class used to upload the logs.",
 								Type:             schema.TypeString,
 								Optional:         true,
 								Default:          datadogV2.LOGSARCHIVESTORAGECLASSS3TYPE_STANDARD,
