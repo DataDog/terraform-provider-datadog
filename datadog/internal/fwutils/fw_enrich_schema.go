@@ -14,21 +14,27 @@ func EnrichFrameworkResourceSchema(s *frameworkSchema.Schema) {
 	for i, attr := range s.Attributes {
 		s.Attributes[i] = enrichDescription(attr)
 	}
+	enrichMapBlocks(s.Blocks)
+}
 
-	for _, block := range s.Blocks {
+func enrichMapBlocks(blocks map[string]frameworkSchema.Block) {
+	for _, block := range blocks {
 		switch v := block.(type) {
 		case frameworkSchema.ListNestedBlock:
 			for i, attr := range v.NestedObject.Attributes {
 				v.NestedObject.Attributes[i] = enrichDescription(attr)
 			}
+			enrichMapBlocks(v.NestedObject.Blocks)
 		case frameworkSchema.SingleNestedBlock:
 			for i, attr := range v.Attributes {
 				v.Attributes[i] = enrichDescription(attr)
 			}
+			enrichMapBlocks(v.Blocks)
 		case frameworkSchema.SetNestedBlock:
 			for i, attr := range v.NestedObject.Attributes {
 				v.NestedObject.Attributes[i] = enrichDescription(attr)
 			}
+			enrichMapBlocks(v.NestedObject.Blocks)
 		}
 	}
 }

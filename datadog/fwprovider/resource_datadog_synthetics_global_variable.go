@@ -168,7 +168,7 @@ func (r *syntheticsGlobalVariableResource) Schema(_ context.Context, _ resource.
 								Attributes: map[string]schema.Attribute{
 									"type": schema.StringAttribute{
 										Required:    true,
-										Description: "Type of parser to extract the value. Valid values are `raw`, `json_path`, `regex`, `x_path`.",
+										Description: "Type of parser to extract the value.",
 										Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV1.NewSyntheticsGlobalVariableParserTypeFromValue)},
 									},
 									"value": schema.StringAttribute{
