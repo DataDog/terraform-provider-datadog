@@ -28,7 +28,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
@@ -136,8 +139,8 @@ type syntheticsTestRequestClientCertificateModel struct {
 }
 
 type syntheticsTestRequestClientCertificateItemModel struct {
-	Content  types.String `tfsdk:"content"`
-	Filename types.String `tfsdk:"filename"`
+	Content  ClientCertificateContentStringValue `tfsdk:"content"`
+	Filename types.String                        `tfsdk:"filename"`
 }
 
 type syntheticsTestRequestFileModel struct {
@@ -334,23 +337,24 @@ type syntheticsTestBrowserStepParamsVariableModel struct {
 }
 
 type syntheticsTestAPIStepModel struct {
-	Name                     types.String                                  `tfsdk:"name"`
-	Subtype                  types.String                                  `tfsdk:"subtype"`
-	RequestHeaders           types.Map                                     `tfsdk:"request_headers"`
-	RequestQuery             types.Map                                     `tfsdk:"request_query"`
-	RequestMetadata          types.Map                                     `tfsdk:"request_metadata"`
-	ExitIfSucceed            types.Bool                                    `tfsdk:"exit_if_succeed"`
-	AllowFailure             types.Bool                                    `tfsdk:"allow_failure"`
-	IsCritical               types.Bool                                    `tfsdk:"is_critical"`
-	Value                    types.Int64                                   `tfsdk:"value"`
-	ExtractedValue           []syntheticsTestAPIStepExtractedValueModel    `tfsdk:"extracted_value"`
-	RequestDefinition        []syntheticsTestAPIStepRequestModel           `tfsdk:"request_definition"`
-	RequestBasicAuth         []syntheticsTestRequestBasicAuthModel         `tfsdk:"request_basicauth"`
-	RequestProxy             []syntheticsTestRequestProxyModel             `tfsdk:"request_proxy"`
-	RequestClientCertificate []syntheticsTestRequestClientCertificateModel `tfsdk:"request_client_certificate"`
-	RequestFile              []syntheticsTestRequestFileModel              `tfsdk:"request_file"`
-	Assertion                []syntheticsTestAssertionModel                `tfsdk:"assertion"`
-	Retry                    []syntheticsTestRetryModel                    `tfsdk:"retry"`
+	Name                      types.String                                  `tfsdk:"name"`
+	Subtype                   types.String                                  `tfsdk:"subtype"`
+	RequestHeaders            types.Map                                     `tfsdk:"request_headers"`
+	RequestQuery              types.Map                                     `tfsdk:"request_query"`
+	RequestMetadata           types.Map                                     `tfsdk:"request_metadata"`
+	ExitIfSucceed             types.Bool                                    `tfsdk:"exit_if_succeed"`
+	AllowFailure              types.Bool                                    `tfsdk:"allow_failure"`
+	IsCritical                types.Bool                                    `tfsdk:"is_critical"`
+	Value                     types.Int64                                   `tfsdk:"value"`
+	ExtractedValue            []syntheticsTestAPIStepExtractedValueModel    `tfsdk:"extracted_value"`
+	ExtractedValuesFromScript types.String                                  `tfsdk:"extracted_values_from_script"`
+	RequestDefinition         []syntheticsTestAPIStepRequestModel           `tfsdk:"request_definition"`
+	RequestBasicAuth          []syntheticsTestRequestBasicAuthModel         `tfsdk:"request_basicauth"`
+	RequestProxy              []syntheticsTestRequestProxyModel             `tfsdk:"request_proxy"`
+	RequestClientCertificate  []syntheticsTestRequestClientCertificateModel `tfsdk:"request_client_certificate"`
+	RequestFile               []syntheticsTestRequestFileModel              `tfsdk:"request_file"`
+	Assertion                 []syntheticsTestAssertionModel                `tfsdk:"assertion"`
+	Retry                     []syntheticsTestRetryModel                    `tfsdk:"retry"`
 }
 
 type syntheticsTestAPIStepExtractedValueModel struct {
@@ -367,9 +371,29 @@ type syntheticsTestAPIStepExtractedValueParserModel struct {
 }
 
 type syntheticsTestAPIStepRequestModel struct {
-	AllowInsecure   types.Bool `tfsdk:"allow_insecure"`
-	FollowRedirects types.Bool `tfsdk:"follow_redirects"`
-	syntheticsTestRequestModel
+	AllowInsecure        types.Bool   `tfsdk:"allow_insecure"`
+	FollowRedirects      types.Bool   `tfsdk:"follow_redirects"`
+	Method               types.String `tfsdk:"method"`
+	Url                  types.String `tfsdk:"url"`
+	Body                 types.String `tfsdk:"body"`
+	BodyType             types.String `tfsdk:"body_type"`
+	Timeout              types.Int64  `tfsdk:"timeout"`
+	Host                 types.String `tfsdk:"host"`
+	Port                 types.String `tfsdk:"port"`
+	DnsServer            types.String `tfsdk:"dns_server"`
+	DnsServerPort        types.String `tfsdk:"dns_server_port"`
+	NoSavingResponseBody types.Bool   `tfsdk:"no_saving_response_body"`
+	NumberOfPackets      types.Int64  `tfsdk:"number_of_packets"`
+	ShouldTrackHops      types.Bool   `tfsdk:"should_track_hops"`
+	Servername           types.String `tfsdk:"servername"`
+	Message              types.String `tfsdk:"message"`
+	CallType             types.String `tfsdk:"call_type"`
+	Service              types.String `tfsdk:"service"`
+	CertificateDomains   types.List   `tfsdk:"certificate_domains"`
+	PersistCookies       types.Bool   `tfsdk:"persist_cookies"`
+	ProtoJsonDescriptor  types.String `tfsdk:"proto_json_descriptor"`
+	PlainProtoFile       types.String `tfsdk:"plain_proto_file"`
+	HttpVersion          types.String `tfsdk:"http_version"`
 }
 
 type syntheticsTestMobileStepModel struct {
@@ -602,6 +626,7 @@ func syntheticsTestRequest() schema.NestedBlockObject {
 			"no_saving_response_body": schema.BoolAttribute{
 				Description: "Determines whether or not to save the response body.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"number_of_packets": schema.Int64Attribute{
 				Description: "Number of pings to use per test for ICMP tests (`subtype = \"icmp\"`) between 0 and 10.",
@@ -641,6 +666,7 @@ func syntheticsTestRequest() schema.NestedBlockObject {
 			"persist_cookies": schema.BoolAttribute{
 				Description: "Persist cookies across redirects.",
 				Optional:    true,
+				Computed:    true,
 			},
 			"proto_json_descriptor": schema.StringAttribute{
 				Description:        "A protobuf JSON descriptor.",
@@ -740,20 +766,14 @@ func syntheticsTestRequestBasicAuth() schema.ListNestedBlock {
 				"audience": schema.StringAttribute{
 					Description: "Audience for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
-					Computed:    true,
-					Default:     stringdefault.StaticString(""),
 				},
 				"resource": schema.StringAttribute{
 					Description: "Resource for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
-					Computed:    true,
-					Default:     stringdefault.StaticString(""),
 				},
 				"scope": schema.StringAttribute{
 					Description: "Scope for `oauth-client` or `oauth-rop` authentication.",
 					Optional:    true,
-					Computed:    true,
-					Default:     stringdefault.StaticString(""),
 				},
 				"token_api_authentication": schema.StringAttribute{
 					Description: "Token API Authentication for `oauth-client` or `oauth-rop` authentication.",
@@ -816,10 +836,13 @@ func syntheticsTestRequestClientCertificateItem() schema.ListNestedBlock {
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"content": schema.StringAttribute{
+					CustomType:  ClientCertificateContentStringType{},
 					Description: "Content of the certificate.",
 					Required:    true,
-					Sensitive:   true,
-					// TODO: reimplement hash
+					// Sensitive:   true,
+					PlanModifiers: []planmodifier.String{
+						certificateContentHashModifier{},
+					},
 				},
 				"filename": schema.StringAttribute{
 					Description: "File name for the certificate.",
@@ -860,8 +883,8 @@ func syntheticsAPIAssertion() schema.ListNestedBlock {
 					Description: "Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).",
 					Optional:    true,
 					Validators: []validator.String{
-						validators.NewEnumValidator[validator.String](datadogV1.NewSyntheticsAssertionOperatorFromValue),
 						stringvalidator.Any(
+							validators.NewEnumValidator[validator.String](datadogV1.NewSyntheticsAssertionOperatorFromValue),
 							validators.NewEnumValidator[validator.String](datadogV1.NewSyntheticsAssertionJSONPathOperatorFromValue),
 							validators.NewEnumValidator[validator.String](datadogV1.NewSyntheticsAssertionJSONSchemaOperatorFromValue),
 							validators.NewEnumValidator[validator.String](datadogV1.NewSyntheticsAssertionXPathOperatorFromValue),
@@ -1194,8 +1217,6 @@ func syntheticsMobileTestOptionsList() schema.ListNestedBlock {
 				"min_failure_duration": schema.Int64Attribute{
 					Description: "Minimum amount of time in failure required to trigger an alert (in seconds).",
 					Optional:    true,
-					Computed:    true,
-					Default:     int64default.StaticInt64(0),
 				},
 				"tick_every": schema.Int64Attribute{
 					Description: "How often the test should run (in seconds).",
@@ -1373,6 +1394,7 @@ func syntheticsTestAPIStep() schema.ListNestedBlock {
 				"exit_if_succeed": schema.BoolAttribute{
 					Description: "Determines whether or not to exit the test if the step succeeds.",
 					Optional:    true,
+					Computed:    true,
 				},
 				"allow_failure": schema.BoolAttribute{
 					Description: "Determines whether or not to continue with test if this step fails.",
@@ -1384,6 +1406,10 @@ func syntheticsTestAPIStep() schema.ListNestedBlock {
 				},
 				"value": schema.Int64Attribute{
 					Description: "The time to wait in seconds. Minimum value: 0. Maximum value: 180.",
+					Optional:    true,
+				},
+				"extracted_values_from_script": schema.StringAttribute{
+					Description: "Generate variables using JavaScript.",
 					Optional:    true,
 				},
 			},
@@ -1409,6 +1435,7 @@ func syntheticsTestAPIStep() schema.ListNestedBlock {
 							"secure": schema.BoolAttribute{
 								Description: "Determines whether or not the extracted value will be obfuscated.",
 								Optional:    true,
+								Computed:    true,
 							},
 						},
 						Blocks: map[string]schema.Block{
@@ -1712,8 +1739,6 @@ func syntheticsBrowserStepParams() schema.ListNestedBlock {
 							"secure": schema.BoolAttribute{
 								Description: "Whether the value of this variable will be obfuscated in test results.",
 								Optional:    true,
-								Computed:    true,
-								Default:     booldefault.StaticBool(false),
 							},
 						},
 					},
@@ -1981,6 +2006,7 @@ func syntheticsBrowserVariable() schema.ListNestedBlock {
 				"secure": schema.BoolAttribute{
 					Description: "Determines whether or not the browser test variable is obfuscated. Can only be used with a browser variable of type `text`.",
 					Optional:    true,
+					Computed:    true,
 				},
 			},
 		},
@@ -2019,10 +2045,9 @@ func syntheticsConfigVariable() schema.ListNestedBlock {
 					Optional:    true,
 				},
 				"secure": schema.BoolAttribute{
-					Description: "Whether the value of this variable will be obfuscated in test results.",
+					Description: "Whether the value of this variable will be obfuscated in test results. Default to `false`.",
 					Optional:    true,
 					Computed:    true,
-					Default:     booldefault.StaticBool(false),
 				},
 			},
 		},
@@ -2130,7 +2155,7 @@ func (r *syntheticsTestResource) Read(ctx context.Context, request resource.Read
 	}
 
 	// Save data into Terraform state
-	fmt.Printf("Final state monitor_id: %v\n", state.MonitorId.ValueInt64())
+	fmt.Printf("Final state id: %v\n", state.Id.ValueString())
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -2205,6 +2230,7 @@ func (r *syntheticsTestResource) Create(ctx context.Context, request resource.Cr
 	}
 
 	state.Id = types.StringValue(testId)
+	fmt.Printf("Final state id: %v\n", state.Id.ValueString())
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
@@ -2377,7 +2403,6 @@ func (r *syntheticsTestResource) updateSyntheticsAPITestLocalState(ctx context.C
 	state.Tags, _ = types.ListValueFrom(ctx, types.StringType, resp.Tags)
 
 	if monitorId, ok := resp.GetMonitorIdOk(); ok {
-		fmt.Println("HEYYYY monitorId", *monitorId)
 		state.MonitorId = types.Int64Value(*monitorId)
 	}
 
@@ -2409,77 +2434,79 @@ func (r *syntheticsTestResource) buildDatadogSyntheticsAPITest(ctx context.Conte
 	}
 
 	request := datadogV1.SyntheticsTestRequest{}
-	requestDefinition := state.RequestDefinition[0]
-	if !requestDefinition.Method.IsNull() {
-		request.SetMethod(requestDefinition.Method.ValueString())
-	}
-	if !requestDefinition.Url.IsNull() {
-		request.SetUrl(requestDefinition.Url.ValueString())
-	}
-	// Only set the body if the request method allows it
-	body := requestDefinition.Body
-	if !body.IsNull() && body.ValueString() != "" {
-		method := requestDefinition.Method
-		httpVersion := requestDefinition.HttpVersion
-		if !method.IsNull() && (method.ValueString() == "GET" || method.ValueString() == "HEAD" || method.ValueString() == "DELETE") && (!httpVersion.IsNull() && httpVersion.ValueString() != "http1") {
-			diags.AddError("body", fmt.Sprintf("[WARN] body is not valid for %s requests. It'll be ignored.", method.ValueString()))
-		} else {
-			request.SetBody(body.ValueString())
+	if len(state.RequestDefinition) > 0 {
+		requestDefinition := state.RequestDefinition[0]
+		if !requestDefinition.Method.IsNull() {
+			request.SetMethod(requestDefinition.Method.ValueString())
 		}
-	}
-	if !requestDefinition.BodyType.IsNull() {
-		request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(requestDefinition.BodyType.ValueString()))
-	}
-	if len(state.RequestFile) > 0 {
-		request.SetFiles(buildDatadogBodyFiles(state.RequestFile))
-	}
-	if !requestDefinition.Timeout.IsNull() {
-		request.SetTimeout(float64(requestDefinition.Timeout.ValueInt64()))
-	}
-	if !requestDefinition.Host.IsNull() {
-		request.SetHost(requestDefinition.Host.ValueString())
-	}
-	if !requestDefinition.Port.IsNull() {
-		port := requestDefinition.Port.ValueString()
-		request.SetPort(datadogV1.SyntheticsTestRequestPort{
-			SyntheticsTestRequestVariablePort: &port,
-		})
-	}
-	if !requestDefinition.DnsServer.IsNull() {
-		request.SetDnsServer(requestDefinition.DnsServer.ValueString())
-	}
-	if !requestDefinition.DnsServerPort.IsNull() {
-		request.SetDnsServerPort(requestDefinition.DnsServerPort.ValueString())
-	}
-	if !requestDefinition.NoSavingResponseBody.IsNull() {
-		request.SetNoSavingResponseBody(requestDefinition.NoSavingResponseBody.ValueBool())
-	}
-	if !requestDefinition.NumberOfPackets.IsNull() {
-		request.SetNumberOfPackets(int32(requestDefinition.NumberOfPackets.ValueInt64()))
-	}
-	if !requestDefinition.ShouldTrackHops.IsNull() {
-		request.SetShouldTrackHops(requestDefinition.ShouldTrackHops.ValueBool())
-	}
-	if !requestDefinition.Servername.IsNull() {
-		request.SetServername(requestDefinition.Servername.ValueString())
-	}
-	if !requestDefinition.Message.IsNull() {
-		request.SetMessage(requestDefinition.Message.ValueString())
-	}
-	if !requestDefinition.CallType.IsNull() {
-		request.SetCallType(datadogV1.SyntheticsTestCallType(requestDefinition.CallType.ValueString()))
-	}
-	if syntheticsTest.GetSubtype() == "grpc" {
-		request.SetService(requestDefinition.Service.ValueString())
-	}
-	if !requestDefinition.PersistCookies.IsNull() {
-		request.SetPersistCookies(requestDefinition.PersistCookies.ValueBool())
-	}
-	if !requestDefinition.ProtoJsonDescriptor.IsNull() {
-		request.SetCompressedJsonDescriptor(compressAndEncodeValue(requestDefinition.ProtoJsonDescriptor.ValueString()))
-	}
-	if !requestDefinition.PlainProtoFile.IsNull() {
-		request.SetCompressedProtoFile(compressAndEncodeValue(requestDefinition.PlainProtoFile.ValueString()))
+		if !requestDefinition.Url.IsNull() {
+			request.SetUrl(requestDefinition.Url.ValueString())
+		}
+		// Only set the body if the request method allows it
+		body := requestDefinition.Body
+		if !body.IsNull() && body.ValueString() != "" {
+			method := requestDefinition.Method
+			httpVersion := requestDefinition.HttpVersion
+			if !method.IsNull() && (method.ValueString() == "GET" || method.ValueString() == "HEAD" || method.ValueString() == "DELETE") && (!httpVersion.IsNull() && httpVersion.ValueString() != "http1") {
+				diags.AddError("body", fmt.Sprintf("[WARN] body is not valid for %s requests. It'll be ignored.", method.ValueString()))
+			} else {
+				request.SetBody(body.ValueString())
+			}
+		}
+		if !requestDefinition.BodyType.IsNull() {
+			request.SetBodyType(datadogV1.SyntheticsTestRequestBodyType(requestDefinition.BodyType.ValueString()))
+		}
+		if len(state.RequestFile) > 0 {
+			request.SetFiles(buildDatadogBodyFiles(state.RequestFile))
+		}
+		if !requestDefinition.Timeout.IsNull() {
+			request.SetTimeout(float64(requestDefinition.Timeout.ValueInt64()))
+		}
+		if !requestDefinition.Host.IsNull() {
+			request.SetHost(requestDefinition.Host.ValueString())
+		}
+		if !requestDefinition.Port.IsNull() {
+			port := requestDefinition.Port.ValueString()
+			request.SetPort(datadogV1.SyntheticsTestRequestPort{
+				SyntheticsTestRequestVariablePort: &port,
+			})
+		}
+		if !requestDefinition.DnsServer.IsNull() {
+			request.SetDnsServer(requestDefinition.DnsServer.ValueString())
+		}
+		if !requestDefinition.DnsServerPort.IsNull() {
+			request.SetDnsServerPort(requestDefinition.DnsServerPort.ValueString())
+		}
+		if !requestDefinition.NoSavingResponseBody.IsNull() {
+			request.SetNoSavingResponseBody(requestDefinition.NoSavingResponseBody.ValueBool())
+		}
+		if !requestDefinition.NumberOfPackets.IsNull() {
+			request.SetNumberOfPackets(int32(requestDefinition.NumberOfPackets.ValueInt64()))
+		}
+		if !requestDefinition.ShouldTrackHops.IsNull() {
+			request.SetShouldTrackHops(requestDefinition.ShouldTrackHops.ValueBool())
+		}
+		if !requestDefinition.Servername.IsNull() {
+			request.SetServername(requestDefinition.Servername.ValueString())
+		}
+		if !requestDefinition.Message.IsNull() {
+			request.SetMessage(requestDefinition.Message.ValueString())
+		}
+		if !requestDefinition.CallType.IsNull() {
+			request.SetCallType(datadogV1.SyntheticsTestCallType(requestDefinition.CallType.ValueString()))
+		}
+		if syntheticsTest.GetSubtype() == "grpc" {
+			request.SetService(requestDefinition.Service.ValueString())
+		}
+		if !requestDefinition.PersistCookies.IsNull() {
+			request.SetPersistCookies(requestDefinition.PersistCookies.ValueBool())
+		}
+		if !requestDefinition.ProtoJsonDescriptor.IsNull() {
+			request.SetCompressedJsonDescriptor(compressAndEncodeValue(requestDefinition.ProtoJsonDescriptor.ValueString()))
+		}
+		if !requestDefinition.PlainProtoFile.IsNull() {
+			request.SetCompressedProtoFile(compressAndEncodeValue(requestDefinition.PlainProtoFile.ValueString()))
+		}
 	}
 
 	if len(state.RequestClientCertificate) > 0 {
@@ -2523,7 +2550,7 @@ func (r *syntheticsTestResource) buildDatadogSyntheticsAPITest(ctx context.Conte
 	}
 
 	if len(state.ApiStep) > 0 && syntheticsTest.GetSubtype() == "multi" {
-		steps := make([]datadogV1.SyntheticsAPIStep, len(state.ApiStep))
+		steps := make([]datadogV1.SyntheticsAPIStep, 0, len(state.ApiStep))
 		for _, stateStep := range state.ApiStep {
 			step := datadogV1.SyntheticsAPIStep{}
 
@@ -2619,6 +2646,7 @@ func (r *syntheticsTestResource) buildDatadogSyntheticsAPITest(ctx context.Conte
 				step.SyntheticsAPITestStep.SetAllowFailure(stateStep.AllowFailure.ValueBool())
 				step.SyntheticsAPITestStep.SetExitIfSucceed(stateStep.ExitIfSucceed.ValueBool())
 				step.SyntheticsAPITestStep.SetIsCritical(stateStep.IsCritical.ValueBool())
+				step.SyntheticsAPITestStep.SetExtractedValuesFromScript(stateStep.ExtractedValuesFromScript.ValueString())
 
 				optionsRetry := datadogV1.SyntheticsTestOptionsRetry{}
 				if len(stateStep.Retry) > 0 {
@@ -2651,13 +2679,15 @@ func (r *syntheticsTestResource) buildDatadogSyntheticsAPITest(ctx context.Conte
 	syntheticsTest.SetMessage(state.Message.ValueString())
 	syntheticsTest.SetStatus(datadogV1.SyntheticsTestPauseStatus(state.Status.ValueString()))
 
-	if len(state.Locations.Elements()) > 0 {
+	if !state.Locations.IsNull() {
 		syntheticsTest.SetLocations(terraformSetToStringArray(ctx, state.Locations))
 	}
 
-	if len(state.Tags.Elements()) > 0 {
-		syntheticsTest.SetTags(terraformListToStringArray(ctx, state.Tags))
+	tags := make([]string, 0)
+	if !state.Tags.IsNull() {
+		diags.Append(state.Tags.ElementsAs(ctx, &tags, false)...)
 	}
+	syntheticsTest.SetTags(tags)
 
 	return syntheticsTest, diags
 }
@@ -3199,7 +3229,7 @@ func buildTerraformBodyFiles(actualBodyFiles *[]datadogV1.SyntheticsTestRequestB
 }
 
 func buildDatadogConfigVariables(stateConfigVariables []syntheticsTestVariableModel) []datadogV1.SyntheticsConfigVariable {
-	configVariables := make([]datadogV1.SyntheticsConfigVariable, len(stateConfigVariables))
+	configVariables := make([]datadogV1.SyntheticsConfigVariable, 0)
 	for _, configVariable := range stateConfigVariables {
 		variable := datadogV1.SyntheticsConfigVariable{}
 
@@ -3362,10 +3392,14 @@ func buildTerraformRequestCertificates(clientCertificate datadogV1.SyntheticsTes
 	// we store a hash of the value.
 	if len(oldClientCertificates) > 0 {
 		if len(oldClientCertificates[0].Cert) > 0 {
-			localCertificate.Cert[0].Content = oldClientCertificates[0].Cert[0].Content
+			localCertificate.Cert[0].Content = ClientCertificateContentStringValue{
+				StringValue: types.StringValue(getCertificateStateValue(oldClientCertificates[0].Cert[0].Content.ValueString())),
+			}
 		}
 		if len(oldClientCertificates[0].Key) > 0 {
-			localCertificate.Key[0].Content = oldClientCertificates[0].Key[0].Content
+			localCertificate.Key[0].Content = ClientCertificateContentStringValue{
+				StringValue: types.StringValue(getCertificateStateValue(oldClientCertificates[0].Key[0].Content.ValueString())),
+			}
 		}
 	}
 
@@ -3732,6 +3766,7 @@ func buildTerraformTestRequestProxy(proxy datadogV1.SyntheticsTestRequestProxy) 
 }
 
 func buildTerraformAPITestStep(ctx context.Context, step datadogV1.SyntheticsAPIStep) syntheticsTestAPIStepModel {
+	// diags := diag.Diagnostics{}
 	localStep := syntheticsTestAPIStepModel{}
 
 	if step.SyntheticsAPITestStep != nil {
@@ -3745,8 +3780,30 @@ func buildTerraformAPITestStep(ctx context.Context, step datadogV1.SyntheticsAPI
 
 		stepRequest := apiTestStep.GetRequest()
 
+		// TODO: refactor this when embedded struct are available (framework v1.11.0)
+		testRequest := buildTerraformTestRequest(ctx, stepRequest)
 		localRequest := syntheticsTestAPIStepRequestModel{
-			syntheticsTestRequestModel: buildTerraformTestRequest(ctx, stepRequest),
+			Method:               testRequest.Method,
+			Url:                  testRequest.Url,
+			Body:                 testRequest.Body,
+			BodyType:             testRequest.BodyType,
+			Timeout:              testRequest.Timeout,
+			Host:                 testRequest.Host,
+			Port:                 testRequest.Port,
+			DnsServer:            testRequest.DnsServer,
+			DnsServerPort:        testRequest.DnsServerPort,
+			NoSavingResponseBody: testRequest.NoSavingResponseBody,
+			NumberOfPackets:      testRequest.NumberOfPackets,
+			ShouldTrackHops:      testRequest.ShouldTrackHops,
+			Servername:           testRequest.Servername,
+			Message:              testRequest.Message,
+			CallType:             testRequest.CallType,
+			Service:              testRequest.Service,
+			CertificateDomains:   testRequest.CertificateDomains,
+			PersistCookies:       testRequest.PersistCookies,
+			HttpVersion:          testRequest.HttpVersion,
+			ProtoJsonDescriptor:  testRequest.ProtoJsonDescriptor,
+			PlainProtoFile:       testRequest.PlainProtoFile,
 		}
 		localRequest.AllowInsecure = types.BoolValue(stepRequest.GetAllowInsecure())
 		localRequest.FollowRedirects = types.BoolValue(stepRequest.GetFollowRedirects())
@@ -3756,9 +3813,21 @@ func buildTerraformAPITestStep(ctx context.Context, step datadogV1.SyntheticsAPI
 			localRequest.HttpVersion = types.StringValue(string(datadogV1.SYNTHETICSTESTOPTIONSHTTPVERSION_ANY))
 		}
 		localStep.RequestDefinition = []syntheticsTestAPIStepRequestModel{localRequest}
-		localStep.RequestHeaders, _ = types.MapValueFrom(ctx, types.StringType, stepRequest.GetHeaders())
-		localStep.RequestQuery, _ = types.MapValueFrom(ctx, types.StringType, stepRequest.GetQuery())
-		localStep.RequestMetadata, _ = types.MapValueFrom(ctx, types.StringType, stepRequest.GetMetadata())
+		if headers := stepRequest.GetHeaders(); headers != nil {
+			localStep.RequestHeaders, _ = types.MapValueFrom(ctx, types.StringType, headers)
+		} else {
+			localStep.RequestHeaders = types.MapNull(types.StringType)
+		}
+		if query := stepRequest.GetQuery(); query != nil {
+			localStep.RequestQuery, _ = types.MapValueFrom(ctx, types.StringType, query)
+		} else {
+			localStep.RequestQuery = types.MapNull(types.StringType)
+		}
+		if metadata := stepRequest.GetMetadata(); metadata != nil {
+			localStep.RequestMetadata, _ = types.MapValueFrom(ctx, types.StringType, metadata)
+		} else {
+			localStep.RequestMetadata = types.MapNull(types.StringType)
+		}
 
 		if basicAuth, ok := stepRequest.GetBasicAuthOk(); ok {
 			localStep.RequestBasicAuth = []syntheticsTestRequestBasicAuthModel{buildTerraformBasicAuth(basicAuth)}
@@ -3779,6 +3848,7 @@ func buildTerraformAPITestStep(ctx context.Context, step datadogV1.SyntheticsAPI
 		localStep.AllowFailure = types.BoolValue(apiTestStep.GetAllowFailure())
 		localStep.ExitIfSucceed = types.BoolValue(apiTestStep.GetExitIfSucceed())
 		localStep.IsCritical = types.BoolValue(apiTestStep.GetIsCritical())
+		localStep.ExtractedValuesFromScript = types.StringValue(apiTestStep.GetExtractedValuesFromScript())
 
 		if retry, ok := apiTestStep.GetRetryOk(); ok {
 			localRetry := syntheticsTestRetryModel{}
@@ -3901,8 +3971,41 @@ func isTargetOfTypeInt(assertionType datadogV1.SyntheticsAssertionType, assertio
 	return false
 }
 
-func getConfigCertAndKeyContent() {}
+func getConfigCertAndKeyContent(rawConfig tfsdk.Config, stepIndex int) (*string, *string) {
+	// For security reasons, the certificate and keys can't be stored in the terraform state. It needs to stay in clear only in the config. This function retrieve the certificate from the terraform config, rather than the state.
+	// To retrieve the certificate and key, we first need to build the paths to the cert and key content, and then apply these paths to the rawConfig.
 
+	basePath := frameworkPath.Root("api_step").
+		AtListIndex(stepIndex).
+		AtName("request_client_certificate").
+		AtListIndex(0)
+
+	// Get the certificate
+	certContentPath := basePath.
+		AtName("cert").
+		AtListIndex(0).
+		AtName("content")
+
+	var certContentString string
+	diags := rawConfig.GetAttribute(context.Background(), certContentPath, &certContentString)
+	if diags.HasError() {
+		return nil, nil
+	}
+
+	// Get the key
+	keyContentPath := basePath.
+		AtName("key").
+		AtListIndex(0).
+		AtName("content")
+
+	var keyContentString string
+	diags = rawConfig.GetAttribute(context.Background(), keyContentPath, &keyContentString)
+	if diags.HasError() {
+		return nil, nil
+	}
+
+	return &certContentString, &keyContentString
+}
 func getCertAndKeyFromMap() {}
 
 func stringMapToTerraformMap(input map[string]string) types.Map {
@@ -3930,4 +4033,185 @@ func terraformListToStringArray(ctx context.Context, input types.List) []string 
 	output := make([]string, len(input.Elements()))
 	input.ElementsAs(ctx, &output, false)
 	return output
+}
+
+/*
+ * Validation
+ */
+
+func (r *syntheticsTestResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	var config syntheticsTestModel
+
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Validate config variables
+	for i, configVar := range config.ConfigVariable {
+		if configVar.Type.ValueString() == "global" && !configVar.Secure.IsNull() {
+			resp.Diagnostics.AddAttributeError(
+				frameworkPath.Root("config_variable").AtListIndex(i).AtName("secure"),
+				"Invalid Configuration",
+				"`secure` cannot be set for global variables",
+			)
+		}
+	}
+}
+
+/*
+ * Plan Modifiers
+ */
+
+// certificateContentHashModifier implements the plan modifier
+type certificateContentHashModifier struct{}
+
+// Description returns a human-readable description of the plan modifier.
+func (m certificateContentHashModifier) Description(_ context.Context) string {
+	return "Compares certificate content using hashed values to determine if changes are needed."
+}
+
+// MarkdownDescription returns a markdown description of the plan modifier.
+func (m certificateContentHashModifier) MarkdownDescription(_ context.Context) string {
+	return "Compares certificate content using hashed values to determine if changes are needed."
+}
+
+// PlanModifyString implements the plan modification logic.
+func (m certificateContentHashModifier) PlanModifyString(_ context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	// If there's no state value, let the configuration value pass through
+	if req.StateValue.IsNull() {
+		return
+	}
+
+	// If there's no configuration value, let the plan handle it
+	if req.ConfigValue.IsNull() {
+		return
+	}
+
+	// If the config value is unknown (i.e. dynamic value), let it pass through
+	if req.ConfigValue.IsUnknown() {
+		return
+	}
+
+	// Hash the config value and compare with state
+	configHash := utils.ConvertToSha256(req.ConfigValue.ValueString())
+
+	// If hashes match, keep the state value
+	if configHash == req.StateValue.ValueString() {
+		resp.PlanValue = req.StateValue
+		return
+	}
+
+	// Otherwise, let the new config value pass through
+}
+
+/*
+* Custom Types
+ */
+
+type ClientCertificateContentStringType struct {
+	basetypes.StringType
+}
+
+func (t ClientCertificateContentStringType) Equal(o attr.Type) bool {
+	other, ok := o.(ClientCertificateContentStringType)
+
+	if !ok {
+		return false
+	}
+
+	return t.StringType.Equal(other.StringType)
+}
+
+func (t ClientCertificateContentStringType) String() string {
+	return "ClientCertificateContentStringType"
+}
+
+func (t ClientCertificateContentStringType) ValueFromString(ctx context.Context, in basetypes.StringValue) (basetypes.StringValuable, diag.Diagnostics) {
+	// CustomStringValue defined in the value type section
+	value := ClientCertificateContentStringValue{
+		StringValue: in,
+	}
+
+	return value, nil
+}
+
+func (t ClientCertificateContentStringType) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
+	attrValue, err := t.StringType.ValueFromTerraform(ctx, in)
+
+	if err != nil {
+		return nil, err
+	}
+
+	stringValue, ok := attrValue.(basetypes.StringValue)
+
+	if !ok {
+		return nil, fmt.Errorf("unexpected value type of %T", attrValue)
+	}
+
+	stringValuable, diags := t.ValueFromString(ctx, stringValue)
+
+	if diags.HasError() {
+		return nil, fmt.Errorf("unexpected error converting StringValue to StringValuable: %v", diags)
+	}
+
+	return stringValuable, nil
+}
+
+func (t ClientCertificateContentStringType) ValueType(ctx context.Context) attr.Value {
+	// CustomStringValue defined in the value type section
+	return ClientCertificateContentStringValue{}
+}
+
+type ClientCertificateContentStringValue struct {
+	basetypes.StringValue
+}
+
+func (v ClientCertificateContentStringValue) Equal(o attr.Value) bool {
+	other, ok := o.(ClientCertificateContentStringValue)
+
+	if !ok {
+		return false
+	}
+
+	return v.StringValue.Equal(other.StringValue)
+}
+
+func (v ClientCertificateContentStringValue) Type(ctx context.Context) attr.Type {
+	// CustomStringType defined in the schema type section
+	return ClientCertificateContentStringType{}
+}
+
+func (v ClientCertificateContentStringValue) StringSemanticEquals(ctx context.Context, newValuable basetypes.StringValuable) (bool, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	// The framework should always pass the correct value type, but always check
+	newValue, ok := newValuable.(ClientCertificateContentStringValue)
+	if !ok {
+		diags.AddError(
+			"Semantic Equality Check Error",
+			"An unexpected value type was received while performing semantic equality checks. "+
+				"Please report this to the provider developers.\n\n"+
+				"Expected Value Type: "+fmt.Sprintf("%T", basetypes.StringValue{})+"\n"+
+				"Got Value Type: "+fmt.Sprintf("%T", newValuable),
+		)
+		return false, diags
+	}
+
+	// Get the string values
+	priorValue := v.ValueString()
+	newStringValue := newValue.ValueString()
+
+	// fmt.Println("priorValue", priorValue)
+	// fmt.Println("newStringValue", newStringValue)
+
+	// Calculate hashes for comparison
+	priorHash := types.StringValue(getCertificateStateValue(priorValue))
+	newHash := types.StringValue(getCertificateStateValue(newStringValue))
+
+	// fmt.Println("priorHash", priorHash)
+	// fmt.Println("newHash", newHash)
+
+	// If the hashes match, the certificate contents are semantically equivalent
+	return priorHash.Equal(newHash), diags
 }

@@ -13,7 +13,7 @@ func TestAccDatadogSyntheticsTest(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
-	accProvider := providers.sdkV2Provider
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -32,7 +32,7 @@ func TestAccDatadogSyntheticsTestWithUrl(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 	uniq := strings.ToUpper(strings.ReplaceAll(uniqueEntityName(ctx, t), "-", "_"))
-	accProvider := providers.sdkV2Provider
+	accProvider := providers.frameworkProvider
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

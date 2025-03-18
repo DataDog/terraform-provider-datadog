@@ -4,12 +4,12 @@
 page_title: "Resource datadog_synthetics_test - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.
+  Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics tests.
 ---
 
 # Resource (datadog_synthetics_test)
 
-Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics test.
+Provides a Datadog synthetics test resource. This can be used to create and manage Datadog synthetics tests.
 
 #### *Warning*
 Starting from version 3.1.0+, the direct usage of global variables in the configuration is deprecated, in favor of
@@ -670,27 +670,27 @@ resource "datadog_synthetics_test" "test_grpc_health" {
 
 ### Optional
 
-- `api_step` (Block List) Steps for multi-step api tests (see [below for nested schema](#nestedblock--api_step))
+- `api_step` (Block List) Steps for multi-step API tests. (see [below for nested schema](#nestedblock--api_step))
 - `assertion` (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--assertion))
-- `browser_step` (Block List) Steps for browser tests. (see [below for nested schema](#nestedblock--browser_step))
-- `browser_variable` (Block List) Variables used for a browser test steps. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
+- `browser_step` (Block List) Steps for Browser tests. (see [below for nested schema](#nestedblock--browser_step))
+- `browser_variable` (Block List) Variables used in Browser test step. Multiple `variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--browser_variable))
 - `config_initial_application_arguments` (Map of String) Initial application arguments for the mobile test.
 - `config_variable` (Block List) Variables used for the test configuration. Multiple `config_variable` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--config_variable))
 - `device_ids` (List of String) Required if `type = "browser"`. Array with the different device IDs used to run the test.
 - `force_delete_dependencies` (Boolean) A boolean indicating whether this synthetics test can be deleted even if it's referenced by other resources (for example, SLOs and composite monitors).
 - `message` (String) A message to include with notifications for this synthetics test. Email notifications can be sent to specific users by using the same `@username` notation as events. Defaults to `""`.
-- `mobile_options_list` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list))
+- `mobile_options_list` (Block List) Options for Synthetic mobile tests. (see [below for nested schema](#nestedblock--mobile_options_list))
 - `mobile_step` (Block List) Steps for mobile tests (see [below for nested schema](#nestedblock--mobile_step))
-- `options_list` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list))
-- `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
-- `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
-- `request_definition` (Block List, Max: 1) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
+- `options_list` (Block List) Options for Synthetic tests. (see [below for nested schema](#nestedblock--options_list))
+- `request_basicauth` (Block List) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_basicauth))
+- `request_client_certificate` (Block List) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--request_client_certificate))
+- `request_definition` (Block List) Required if `type = "api"`. The synthetics test request. (see [below for nested schema](#nestedblock--request_definition))
 - `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--request_file))
 - `request_headers` (Map of String) Header name and value map.
 - `request_metadata` (Map of String) Metadata to include when performing the gRPC request.
-- `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
+- `request_proxy` (Block List) The proxy to perform the test. (see [below for nested schema](#nestedblock--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
-- `set_cookie` (String) Cookies to be used for a browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
+- `set_cookie` (String) Cookies to be used for a Browser test request, using the [Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) syntax.
 - `subtype` (String) The subtype of the Synthetic API test. Defaults to `http`. Valid values are `http`, `ssl`, `tcp`, `dns`, `multi`, `icmp`, `udp`, `websocket`, `grpc`.
 - `tags` (List of String) A list of tags to associate with your synthetics test. This can help you categorize and filter tests in the manage synthetics page of the UI. Default is an empty list (`[]`).
 - `variables_from_script` (String) Variables defined from JavaScript code for API HTTP tests.
@@ -715,16 +715,16 @@ Optional:
 - `extracted_value` (Block List) Values to parse and save as variables from the response. (see [below for nested schema](#nestedblock--api_step--extracted_value))
 - `extracted_values_from_script` (String) Generate variables using JavaScript.
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
-- `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
-- `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
-- `request_definition` (Block List, Max: 1) The request for the api step. (see [below for nested schema](#nestedblock--api_step--request_definition))
+- `request_basicauth` (Block List) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
+- `request_client_certificate` (Block List) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
+- `request_definition` (Block List) The request for the API step. (see [below for nested schema](#nestedblock--api_step--request_definition))
 - `request_file` (Block List) Files to be used as part of the request in the test. (see [below for nested schema](#nestedblock--api_step--request_file))
 - `request_headers` (Map of String) Header name and value map.
 - `request_metadata` (Map of String) Metadata to include when performing the gRPC request.
-- `request_proxy` (Block List, Max: 1) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
+- `request_proxy` (Block List) The proxy to perform the test. (see [below for nested schema](#nestedblock--api_step--request_proxy))
 - `request_query` (Map of String) Query arguments name and value map.
-- `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--api_step--retry))
-- `subtype` (String) The subtype of the Synthetic multi-step API test step. Valid values are `http`, `grpc`, `wait`. Defaults to `"http"`.
+- `retry` (Block List) (see [below for nested schema](#nestedblock--api_step--retry))
+- `subtype` (String) The subtype of the Synthetic multi-step API test step. Defaults to `"http"`.
 - `value` (Number) The time to wait in seconds. Minimum value: 0. Maximum value: 180.
 
 <a id="nestedblock--api_step--assertion"></a>
@@ -732,7 +732,7 @@ Optional:
 
 Required:
 
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`, `javascript`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
 
 Optional:
 
@@ -740,9 +740,9 @@ Optional:
 - `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
-- `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
-- `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonschema))
-- `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetxpath))
+- `targetjsonpath` (Block List) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonpath))
+- `targetjsonschema` (Block List) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetjsonschema))
+- `targetxpath` (Block List) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion--targetxpath))
 - `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
 
 <a id="nestedblock--api_step--assertion--targetjsonpath"></a>
@@ -791,12 +791,12 @@ Optional:
 Required:
 
 - `name` (String)
-- `parser` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--extracted_value--parser))
 - `type` (String) Property of the Synthetics Test Response to use for the variable. Valid values are `grpc_message`, `grpc_metadata`, `http_body`, `http_header`, `http_status_code`.
 
 Optional:
 
 - `field` (String) When type is `http_header` or `grpc_metadata`, name of the header or metadatum to extract.
+- `parser` (Block List) (see [below for nested schema](#nestedblock--api_step--extracted_value--parser))
 - `secure` (Boolean) Determines whether or not the extracted value will be obfuscated.
 
 <a id="nestedblock--api_step--extracted_value--parser"></a>
@@ -818,7 +818,7 @@ Optional:
 Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
-- `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
+- `access_token_url` (String) Access token URL for `oauth-client` or `oauth-rop` authentication.
 - `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
@@ -839,17 +839,17 @@ Optional:
 <a id="nestedblock--api_step--request_client_certificate"></a>
 ### Nested Schema for `api_step.request_client_certificate`
 
-Required:
+Optional:
 
-- `cert` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--request_client_certificate--cert))
-- `key` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--api_step--request_client_certificate--key))
+- `cert` (Block List) (see [below for nested schema](#nestedblock--api_step--request_client_certificate--cert))
+- `key` (Block List) (see [below for nested schema](#nestedblock--api_step--request_client_certificate--key))
 
 <a id="nestedblock--api_step--request_client_certificate--cert"></a>
 ### Nested Schema for `api_step.request_client_certificate.cert`
 
 Required:
 
-- `content` (String, Sensitive) Content of the certificate.
+- `content` (String) Content of the certificate.
 
 Optional:
 
@@ -861,7 +861,7 @@ Optional:
 
 Required:
 
-- `content` (String, Sensitive) Content of the certificate.
+- `content` (String) Content of the certificate.
 
 Optional:
 
@@ -878,7 +878,7 @@ Optional:
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
-- `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
+- `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for Browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (String) DNS server port to use for DNS tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
@@ -945,7 +945,7 @@ Optional:
 
 Required:
 
-- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)). Valid values are `body`, `header`, `statusCode`, `certificate`, `responseTime`, `property`, `recordEvery`, `recordSome`, `tlsVersion`, `minTlsVersion`, `latency`, `packetLossPercentage`, `packetsReceived`, `networkHop`, `receivedMessage`, `grpcHealthcheckStatus`, `grpcMetadata`, `grpcProto`, `connection`, `bodyHash`, `javascript`.
+- `type` (String) Type of assertion. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
 
 Optional:
 
@@ -953,9 +953,9 @@ Optional:
 - `operator` (String) Assertion operator. **Note** Only some combinations of `type` and `operator` are valid (please refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test)).
 - `property` (String) If assertion type is `header`, this is the header name.
 - `target` (String) Expected value. Depends on the assertion type, refer to [Datadog documentation](https://docs.datadoghq.com/api/latest/synthetics/#create-a-test) for details.
-- `targetjsonpath` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
-- `targetjsonschema` (Block List, Max: 1) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonschema))
-- `targetxpath` (Block List, Max: 1) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetxpath))
+- `targetjsonpath` (Block List) Expected structure if `operator` is `validatesJSONPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonpath))
+- `targetjsonschema` (Block List) Expected structure if `operator` is `validatesJSONSchema`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetjsonschema))
+- `targetxpath` (Block List) Expected structure if `operator` is `validatesXPath`. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--assertion--targetxpath))
 - `timings_scope` (String) Timings scope for response time assertions. Valid values are `all`, `withoutDNS`.
 
 <a id="nestedblock--assertion--targetjsonpath"></a>
@@ -1004,7 +1004,6 @@ Optional:
 Required:
 
 - `name` (String) Name of the step.
-- `params` (Block List, Min: 1, Max: 1) Parameters for the step. (see [below for nested schema](#nestedblock--browser_step--params))
 - `type` (String) Type of the step. Valid values are `assertCurrentUrl`, `assertElementAttribute`, `assertElementContent`, `assertElementPresent`, `assertEmail`, `assertFileDownload`, `assertFromJavascript`, `assertPageContains`, `assertPageLacks`, `click`, `extractFromJavascript`, `extractVariable`, `goToEmailLink`, `goToUrl`, `goToUrlAndMeasureTti`, `hover`, `playSubTest`, `pressKey`, `refresh`, `runApiTest`, `scroll`, `selectOption`, `typeText`, `uploadFiles`, `wait`.
 
 Optional:
@@ -1012,10 +1011,11 @@ Optional:
 - `allow_failure` (Boolean) Determines if the step should be allowed to fail.
 - `always_execute` (Boolean) Determines whether or not to always execute this step even if the previous step failed or was skipped.
 - `exit_if_succeed` (Boolean) Determines whether or not to exit the test if the step succeeds.
-- `force_element_update` (Boolean) Force update of the "element" parameter for the step
+- `force_element_update` (Boolean) Force update of the "element" parameter for the step.
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
 - `local_key` (String) A unique identifier used to track steps after reordering.
 - `no_screenshot` (Boolean) Prevents saving screenshots of the step.
+- `params` (Block List) Parameters for the step. (see [below for nested schema](#nestedblock--browser_step--params))
 - `timeout` (Number) Used to override the default timeout of a step.
 
 Read-Only:
@@ -1033,7 +1033,7 @@ Optional:
 - `code` (String) Javascript code to use for the step.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
 - `element` (String) Element to use for the step, JSON encoded string.
-- `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
+- `element_user_locator` (Block List) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
 - `email` (String) Details of the email for an "assert email" step, JSON encoded string.
 - `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
 - `files` (String) Details of the files for an "upload files" step, JSON encoded string. Refer to the examples for a usage example showing the schema.
@@ -1042,7 +1042,7 @@ Optional:
 - `request` (String) Request for an API step.
 - `subtest_public_id` (String) ID of the Synthetics test to use as subtest.
 - `value` (String) Value of the step.
-- `variable` (Block List, Max: 1) Details of the variable to extract. (see [below for nested schema](#nestedblock--browser_step--params--variable))
+- `variable` (Block List) Details of the variable to extract. (see [below for nested schema](#nestedblock--browser_step--params--variable))
 - `with_click` (Boolean) For "file upload" steps.
 - `x` (Number) X coordinates for a "scroll step".
 - `y` (Number) Y coordinates for a "scroll step".
@@ -1050,13 +1050,10 @@ Optional:
 <a id="nestedblock--browser_step--params--element_user_locator"></a>
 ### Nested Schema for `browser_step.params.element_user_locator`
 
-Required:
-
-- `value` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator--value))
-
 Optional:
 
 - `fail_test_on_cannot_locate` (Boolean) Defaults to `false`.
+- `value` (Block List) (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator--value))
 
 <a id="nestedblock--browser_step--params--element_user_locator--value"></a>
 ### Nested Schema for `browser_step.params.element_user_locator.value`
@@ -1089,14 +1086,14 @@ Optional:
 Required:
 
 - `name` (String) Name of the variable.
-- `type` (String) Type of browser test variable. Valid values are `element`, `email`, `global`, `text`.
+- `type` (String) Type of Browser test variable. Valid values are `element`, `email`, `global`, `text`.
 
 Optional:
 
 - `example` (String) Example for the variable. Defaults to `""`.
 - `id` (String) ID of the global variable to use. This is actually only used (and required) in the case of using a variable of type `global`.
 - `pattern` (String) Pattern of the variable. Defaults to `""`.
-- `secure` (Boolean) Determines whether or not the browser test variable is obfuscated. Can only be used with a browser variable of type `text`
+- `secure` (Boolean) Determines whether or not the Browser test variable is obfuscated. Can only be used with a Browser test variable of type `text`.
 
 
 <a id="nestedblock--config_variable"></a>
@@ -1109,9 +1106,9 @@ Required:
 
 Optional:
 
-- `example` (String) Example for the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
+- `example` (String) Example for the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
 - `id` (String) When type = `global`, ID of the global variable to use.
-- `pattern` (String) Pattern of the variable. This value is not returned by the api when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
+- `pattern` (String) Pattern of the variable. This value is not returned by the API when `secure = true`. Avoid drift by only making updates to this value from within Terraform.
 - `secure` (Boolean) Whether the value of this variable will be obfuscated in test results. Defaults to `false`.
 
 
@@ -1121,35 +1118,25 @@ Optional:
 Required:
 
 - `device_ids` (List of String)
-- `mobile_application` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--mobile_application))
 - `tick_every` (Number) How often the test should run (in seconds).
 
 Optional:
 
 - `allow_application_crash` (Boolean)
 - `bindings` (Block List) Restriction policy bindings for the Synthetic mobile test. Should not be used in parallel with a `datadog_restriction_policy` resource (see [below for nested schema](#nestedblock--mobile_options_list--bindings))
-- `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--mobile_options_list--ci))
+- `ci` (Block List) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--mobile_options_list--ci))
 - `default_step_timeout` (Number)
 - `disable_auto_accept_alert` (Boolean)
-- `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
+- `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Defaults to `0`.
+- `mobile_application` (Block List) (see [below for nested schema](#nestedblock--mobile_options_list--mobile_application))
 - `monitor_name` (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
-- `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--monitor_options))
+- `monitor_options` (Block List) (see [below for nested schema](#nestedblock--mobile_options_list--monitor_options))
 - `monitor_priority` (Number)
 - `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
 - `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
-- `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--retry))
-- `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--mobile_options_list--scheduling))
+- `retry` (Block List) (see [below for nested schema](#nestedblock--mobile_options_list--retry))
+- `scheduling` (Block List) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--mobile_options_list--scheduling))
 - `verbosity` (Number)
-
-<a id="nestedblock--mobile_options_list--mobile_application"></a>
-### Nested Schema for `mobile_options_list.mobile_application`
-
-Required:
-
-- `application_id` (String)
-- `reference_id` (String)
-- `reference_type` (String) Valid values are `latest`, `version`.
-
 
 <a id="nestedblock--mobile_options_list--bindings"></a>
 ### Nested Schema for `mobile_options_list.bindings`
@@ -1166,6 +1153,16 @@ Optional:
 Required:
 
 - `execution_rule` (String) Execution rule for a Synthetics test. Valid values are `blocking`, `non_blocking`, `skipped`.
+
+
+<a id="nestedblock--mobile_options_list--mobile_application"></a>
+### Nested Schema for `mobile_options_list.mobile_application`
+
+Required:
+
+- `application_id` (String)
+- `reference_id` (String)
+- `reference_type` (String) Valid values are `latest`, `version`.
 
 
 <a id="nestedblock--mobile_options_list--monitor_options"></a>
@@ -1193,8 +1190,11 @@ Optional:
 
 Required:
 
-- `timeframes` (Block Set, Min: 1) Array containing objects describing the scheduling pattern to apply to each day. (see [below for nested schema](#nestedblock--mobile_options_list--scheduling--timeframes))
 - `timezone` (String) Timezone in which the timeframe is based.
+
+Optional:
+
+- `timeframes` (Block Set) Array containing objects describing the scheduling pattern to apply to each day. (see [below for nested schema](#nestedblock--mobile_options_list--scheduling--timeframes))
 
 <a id="nestedblock--mobile_options_list--scheduling--timeframes"></a>
 ### Nested Schema for `mobile_options_list.scheduling.timeframes`
@@ -1214,7 +1214,6 @@ Required:
 Required:
 
 - `name` (String) The name of the step.
-- `params` (Block List, Min: 1, Max: 1) Parameters for the step. (see [below for nested schema](#nestedblock--mobile_step--params))
 - `type` (String) The type of the step. Valid values are `assertElementContent`, `assertScreenContains`, `assertScreenLacks`, `doubleTap`, `extractVariable`, `flick`, `openDeeplink`, `playSubTest`, `pressBack`, `restartApplication`, `rotate`, `scroll`, `scrollToElement`, `tap`, `toggleWiFi`, `typeText`, `wait`.
 
 Optional:
@@ -1223,6 +1222,7 @@ Optional:
 - `has_new_step_element` (Boolean) A boolean set to determine if the step has a new step element.
 - `is_critical` (Boolean) A boolean to use in addition to `allowFailure` to determine if the test should be marked as failed when the step fails.
 - `no_screenshot` (Boolean) A boolean set to not take a screenshot for the step.
+- `params` (Block List) Parameters for the step. (see [below for nested schema](#nestedblock--mobile_step--params))
 - `public_id` (String) The public ID of the step.
 - `timeout` (Number) The time before declaring a step failed.
 
@@ -1234,13 +1234,13 @@ Optional:
 - `check` (String) Check type to use for an assertion step. Valid values are `equals`, `notEquals`, `contains`, `notContains`, `startsWith`, `notStartsWith`, `greater`, `lower`, `greaterEquals`, `lowerEquals`, `matchRegex`, `between`, `isEmpty`, `notIsEmpty`.
 - `delay` (Number) Delay between each key stroke for a "type test" step.
 - `direction` (String) Valid values are `up`, `down`, `left`, `right`.
-- `element` (Block List, Max: 1) Element to use for the step, JSON encoded string. (see [below for nested schema](#nestedblock--mobile_step--params--element))
+- `element` (Block List) Element to use for the step, JSON encoded string. (see [below for nested schema](#nestedblock--mobile_step--params--element))
 - `enable` (Boolean)
 - `max_scrolls` (Number)
 - `positions` (Block List) (see [below for nested schema](#nestedblock--mobile_step--params--positions))
 - `subtest_public_id` (String) ID of the Synthetics test to use as subtest.
 - `value` (String) Value of the step.
-- `variable` (Block List, Max: 1) Details of the variable to extract. (see [below for nested schema](#nestedblock--mobile_step--params--variable))
+- `variable` (Block List) Details of the variable to extract. (see [below for nested schema](#nestedblock--mobile_step--params--variable))
 - `with_enter` (Boolean)
 - `x` (Number) X coordinates for a "scroll step".
 - `y` (Number) Y coordinates for a "scroll step".
@@ -1254,9 +1254,9 @@ Optional:
 - `context_type` (String) Valid values are `native`, `web`.
 - `element_description` (String)
 - `multi_locator` (Map of String)
-- `relative_position` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_step--params--element--relative_position))
+- `relative_position` (Block List) (see [below for nested schema](#nestedblock--mobile_step--params--element--relative_position))
 - `text_content` (String)
-- `user_locator` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_step--params--element--user_locator))
+- `user_locator` (Block List) (see [below for nested schema](#nestedblock--mobile_step--params--element--user_locator))
 - `view_name` (String)
 
 <a id="nestedblock--mobile_step--params--element--relative_position"></a>
@@ -1274,7 +1274,7 @@ Optional:
 Optional:
 
 - `fail_test_on_cannot_locate` (Boolean)
-- `values` (Block List, Max: 5) (see [below for nested schema](#nestedblock--mobile_step--params--element--user_locator--values))
+- `values` (Block List) (see [below for nested schema](#nestedblock--mobile_step--params--element--user_locator--values))
 
 <a id="nestedblock--mobile_step--params--element--user_locator--values"></a>
 ### Nested Schema for `mobile_step.params.element.user_locator.values`
@@ -1319,26 +1319,26 @@ Required:
 
 Optional:
 
-- `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self signed certificates.
+- `accept_self_signed` (Boolean) For SSL test, whether or not the test should allow self-signed certificates.
 - `allow_insecure` (Boolean) Allows loading insecure content for a request in an API test or in a multistep API test step.
 - `check_certificate_revocation` (Boolean) For SSL test, whether or not the test should fail on revoked certificate in stapled OCSP.
-- `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
-- `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for browser tests.
-- `disable_csp` (Boolean) Disable Content Security Policy for browser tests.
+- `ci` (Block List) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--options_list--ci))
+- `disable_cors` (Boolean) Disable Cross-Origin Resource Sharing for Browser tests.
+- `disable_csp` (Boolean) Disable Content Security Policy for Browser tests.
 - `follow_redirects` (Boolean) Determines whether or not the API HTTP test should follow redirects.
 - `http_version` (String) HTTP version to use for an HTTP request in an API test or step. Valid values are `http1`, `http2`, `any`. Defaults to `"any"`.
-- `ignore_server_certificate_error` (Boolean) Ignore server certificate error for browser tests.
-- `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for browser tests.
-- `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Default is `0`.
+- `ignore_server_certificate_error` (Boolean) Ignore server certificate error for Browser tests.
+- `initial_navigation_timeout` (Number) Timeout before declaring the initial step as failed (in seconds) for Browser tests.
+- `min_failure_duration` (Number) Minimum amount of time in failure required to trigger an alert (in seconds). Defaults to `0`.
 - `min_location_failed` (Number) Minimum number of locations in failure required to trigger an alert. Defaults to `1`.
 - `monitor_name` (String) The monitor name is used for the alert title as well as for all monitor dashboard widgets and SLOs.
-- `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
+- `monitor_options` (Block List) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - `monitor_priority` (Number)
 - `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
 - `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
-- `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
-- `rum_settings` (Block List, Max: 1) The RUM data collection settings for the Synthetic browser test. (see [below for nested schema](#nestedblock--options_list--rum_settings))
-- `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--options_list--scheduling))
+- `retry` (Block List) (see [below for nested schema](#nestedblock--options_list--retry))
+- `rum_settings` (Block List) The RUM data collection settings for the Synthetic Browser test. (see [below for nested schema](#nestedblock--options_list--rum_settings))
+- `scheduling` (Block List) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--options_list--scheduling))
 
 <a id="nestedblock--options_list--ci"></a>
 ### Nested Schema for `options_list.ci`
@@ -1375,8 +1375,8 @@ Required:
 
 Optional:
 
-- `application_id` (String) RUM application ID used to collect RUM data for the browser test.
-- `client_token_id` (Number, Sensitive) RUM application API key ID used to collect RUM data for the browser test.
+- `application_id` (String) RUM application ID used to collect RUM data for the Browser test.
+- `client_token_id` (Number, Sensitive) RUM application API key ID used to collect RUM data for the Browser test.
 
 
 <a id="nestedblock--options_list--scheduling"></a>
@@ -1384,8 +1384,11 @@ Optional:
 
 Required:
 
-- `timeframes` (Block Set, Min: 1) Array containing objects describing the scheduling pattern to apply to each day. (see [below for nested schema](#nestedblock--options_list--scheduling--timeframes))
 - `timezone` (String) Timezone in which the timeframe is based.
+
+Optional:
+
+- `timeframes` (Block Set) Array containing objects describing the scheduling pattern to apply to each day. (see [below for nested schema](#nestedblock--options_list--scheduling--timeframes))
 
 <a id="nestedblock--options_list--scheduling--timeframes"></a>
 ### Nested Schema for `options_list.scheduling.timeframes`
@@ -1405,7 +1408,7 @@ Required:
 Optional:
 
 - `access_key` (String, Sensitive) Access key for `SIGV4` authentication.
-- `access_token_url` (String) Access token url for `oauth-client` or `oauth-rop` authentication.
+- `access_token_url` (String) Access token URL for `oauth-client` or `oauth-rop` authentication.
 - `audience` (String) Audience for `oauth-client` or `oauth-rop` authentication. Defaults to `""`.
 - `client_id` (String) Client ID for `oauth-client` or `oauth-rop` authentication.
 - `client_secret` (String, Sensitive) Client secret for `oauth-client` or `oauth-rop` authentication.
@@ -1426,17 +1429,17 @@ Optional:
 <a id="nestedblock--request_client_certificate"></a>
 ### Nested Schema for `request_client_certificate`
 
-Required:
+Optional:
 
-- `cert` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--request_client_certificate--cert))
-- `key` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--request_client_certificate--key))
+- `cert` (Block List) (see [below for nested schema](#nestedblock--request_client_certificate--cert))
+- `key` (Block List) (see [below for nested schema](#nestedblock--request_client_certificate--key))
 
 <a id="nestedblock--request_client_certificate--cert"></a>
 ### Nested Schema for `request_client_certificate.cert`
 
 Required:
 
-- `content` (String, Sensitive) Content of the certificate.
+- `content` (String) Content of the certificate.
 
 Optional:
 
@@ -1448,7 +1451,7 @@ Optional:
 
 Required:
 
-- `content` (String, Sensitive) Content of the certificate.
+- `content` (String) Content of the certificate.
 
 Optional:
 
@@ -1464,7 +1467,7 @@ Optional:
 - `body` (String) The request body.
 - `body_type` (String) Type of the request body. Valid values are `text/plain`, `application/json`, `text/xml`, `text/html`, `application/x-www-form-urlencoded`, `graphql`, `application/octet-stream`, `multipart/form-data`.
 - `call_type` (String) The type of gRPC call to perform. Valid values are `healthcheck`, `unary`.
-- `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
+- `certificate_domains` (List of String) By default, the client certificate is applied on the domain of the starting URL for Browser tests. If you want your client certificate to be applied on other domains instead, add them in `certificate_domains`.
 - `dns_server` (String) DNS server to use for DNS tests (`subtype = "dns"`).
 - `dns_server_port` (String) DNS server port to use for DNS tests.
 - `host` (String) Host name to perform the test with.
