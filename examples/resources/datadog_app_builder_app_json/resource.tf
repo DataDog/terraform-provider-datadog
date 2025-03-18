@@ -1,5 +1,5 @@
 # Example app JSON - loaded from a file (required for ${} syntax)
-resource "datadog_app_builder_app_json" "example_app_from_file" {
+resource "datadog_app_builder_app" "example_app_from_file" {
   app_json = file("${path.module}/resource.json")
   override_action_query_names_to_connection_ids = {
     "listTeams0" = datadog_action_connection.example_connection.id
@@ -7,7 +7,7 @@ resource "datadog_app_builder_app_json" "example_app_from_file" {
 }
 
 # Example app JSON - inline basic with optional fields
-resource "datadog_app_builder_app_json" "example_app_inline_basic_with_optional_fields" {
+resource "datadog_app_builder_app" "example_app_inline_basic_with_optional_fields" {
   name                  = "Example Terraform App - Basic"
   description           = "Created using the Datadog provider in Terraform."
   root_instance_name    = "grid0"

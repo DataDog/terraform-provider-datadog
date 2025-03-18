@@ -45,14 +45,6 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
 	config.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
 
-	// Enable unstable operations for the App Builder API
-	config.SetUnstableOperationEnabled("v2.CreateApp", true)
-	config.SetUnstableOperationEnabled("v2.DeleteApp", true)
-	config.SetUnstableOperationEnabled("v2.DeleteApps", true)
-	config.SetUnstableOperationEnabled("v2.GetApp", true)
-	config.SetUnstableOperationEnabled("v2.ListApps", true)
-	config.SetUnstableOperationEnabled("v2.UpdateApp", true)
-
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}

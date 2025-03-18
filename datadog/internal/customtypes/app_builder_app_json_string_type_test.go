@@ -11,7 +11,7 @@ import (
 )
 
 // these tests are similar to the NormalizedType tests
-func TestAppBuilderAppJSONStringTypeValueFromTerraform(t *testing.T) {
+func TestAppBuilderAppStringTypeValueFromTerraform(t *testing.T) {
 	t.Parallel()
 
 	testCases := map[string]struct {
@@ -21,15 +21,15 @@ func TestAppBuilderAppJSONStringTypeValueFromTerraform(t *testing.T) {
 	}{
 		"true": {
 			in:          tftypes.NewValue(tftypes.String, `{"hello":"world"}`),
-			expectation: NewAppBuilderAppJSONStringValue(`{"hello":"world"}`),
+			expectation: NewAppBuilderAppStringValue(`{"hello":"world"}`),
 		},
 		"unknown": {
 			in:          tftypes.NewValue(tftypes.String, tftypes.UnknownValue),
-			expectation: NewAppBuilderAppJSONStringValueUnknown(),
+			expectation: NewAppBuilderAppStringValueUnknown(),
 		},
 		"null": {
 			in:          tftypes.NewValue(tftypes.String, nil),
-			expectation: NewAppBuilderAppJSONStringValueNull(),
+			expectation: NewAppBuilderAppStringValueNull(),
 		},
 		"wrongType": {
 			in:          tftypes.NewValue(tftypes.Number, 123),
@@ -42,7 +42,7 @@ func TestAppBuilderAppJSONStringTypeValueFromTerraform(t *testing.T) {
 			t.Parallel()
 			ctx := context.Background()
 
-			got, err := AppBuilderAppJSONStringType{}.ValueFromTerraform(ctx, testCase.in)
+			got, err := AppBuilderAppStringType{}.ValueFromTerraform(ctx, testCase.in)
 			if err != nil {
 				if testCase.expectedErr == "" {
 					t.Fatalf("Unexpected error: %s", err)

@@ -14,25 +14,25 @@ import (
 )
 
 // Ensure the implementation satisfies the expected interfaces
-var _ basetypes.StringValuable = (*AppBuilderAppJSONStringValue)(nil)
-var _ basetypes.StringValuableWithSemanticEquals = (*AppBuilderAppJSONStringValue)(nil)
+var _ basetypes.StringValuable = (*AppBuilderAppStringValue)(nil)
+var _ basetypes.StringValuableWithSemanticEquals = (*AppBuilderAppStringValue)(nil)
 
-// AppBuilderAppJSONStringValue is an attribute type that represents a JSON string (RFC 7159). Semantic equality logic is defined for AppBuilderAppJSONStringValue
+// AppBuilderAppStringValue is an attribute type that represents a JSON string (RFC 7159). Semantic equality logic is defined for AppBuilderAppStringValue
 // such that inconsequential differences between JSON strings are ignored (whitespace, property order, etc), similar to jsontypes.Normalized,
 // but also ignores other differences such as the App's ID, which is ignored in the App Builder API.
-type AppBuilderAppJSONStringValue struct {
+type AppBuilderAppStringValue struct {
 	basetypes.StringValue
 }
 
-// Type returns an AppBuilderAppJSONStringType.
-func (v AppBuilderAppJSONStringValue) Type(ctx context.Context) attr.Type {
-	// AppBuilderAppJSONStringType defined in the schema type section
-	return AppBuilderAppJSONStringType{}
+// Type returns an AppBuilderAppStringType.
+func (v AppBuilderAppStringValue) Type(ctx context.Context) attr.Type {
+	// AppBuilderAppStringType defined in the schema type section
+	return AppBuilderAppStringType{}
 }
 
 // Equal returns true if the given value is equivalent.
-func (v AppBuilderAppJSONStringValue) Equal(o attr.Value) bool {
-	other, ok := o.(AppBuilderAppJSONStringValue)
+func (v AppBuilderAppStringValue) Equal(o attr.Value) bool {
+	other, ok := o.(AppBuilderAppStringValue)
 
 	if !ok {
 		return false
@@ -44,11 +44,11 @@ func (v AppBuilderAppJSONStringValue) Equal(o attr.Value) bool {
 // these JSON string values are "normalized" by marshalling them to empty Go structs. This prevents Terraform data consistency errors and
 // resource drift due to inconsequential differences in the JSON strings (whitespace, property order, etc), similar to jsontypes.Normalized,
 // but also ignores other differences such as the App's ID, which is ignored in the App Builder API.
-func (v AppBuilderAppJSONStringValue) StringSemanticEquals(ctx context.Context, newValuable basetypes.StringValuable) (bool, diag.Diagnostics) {
+func (v AppBuilderAppStringValue) StringSemanticEquals(ctx context.Context, newValuable basetypes.StringValuable) (bool, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	// The framework should always pass the correct value type, but always check
-	newValue, ok := newValuable.(AppBuilderAppJSONStringValue)
+	newValue, ok := newValuable.(AppBuilderAppStringValue)
 
 	if !ok {
 		diags.AddError(
@@ -79,12 +79,12 @@ func (v AppBuilderAppJSONStringValue) StringSemanticEquals(ctx context.Context, 
 }
 
 func appJSONEqual(s1, s2 string) (bool, error) {
-	s1, err := normalizeAppBuilderAppJSONString(s1)
+	s1, err := normalizeAppBuilderAppString(s1)
 	if err != nil {
 		return false, err
 	}
 
-	s2, err = normalizeAppBuilderAppJSONString(s2)
+	s2, err = normalizeAppBuilderAppString(s2)
 	if err != nil {
 		return false, err
 	}
@@ -92,7 +92,7 @@ func appJSONEqual(s1, s2 string) (bool, error) {
 	return s1 == s2, nil
 }
 
-func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
+func normalizeAppBuilderAppString(jsonStr string) (string, error) {
 	dec := json.NewDecoder(strings.NewReader(jsonStr))
 
 	// This ensures the JSON decoder will not parse JSON numbers into Go's float64 type; avoiding Go
@@ -105,7 +105,7 @@ func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
 		return "", err
 	}
 
-	// feature specific to AppBuilderAppJSONStringValue:
+	// feature specific to AppBuilderAppStringValue:
 	// remove the "id" field from the JSON string because we want to ignore the App ID when comparing JSON strings
 	if jsonMap, ok := temp.(map[string]interface{}); ok {
 		delete(jsonMap, "id")
@@ -119,46 +119,46 @@ func normalizeAppBuilderAppJSONString(jsonStr string) (string, error) {
 	return string(jsonBytes), nil
 }
 
-// Unmarshal calls (encoding/json).Unmarshal with the AppBuilderAppJSONStringValue and `target` input. A null or unknown value will produce an error diagnostic.
+// Unmarshal calls (encoding/json).Unmarshal with the AppBuilderAppStringValue and `target` input. A null or unknown value will produce an error diagnostic.
 // See encoding/json docs for more on usage: https://pkg.go.dev/encoding/json#Unmarshal
-func (v AppBuilderAppJSONStringValue) Unmarshal(target any) diag.Diagnostics {
+func (v AppBuilderAppStringValue) Unmarshal(target any) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if v.IsNull() {
-		diags.Append(diag.NewErrorDiagnostic("AppBuilderAppJSONStringValue Unmarshal Error", "json string value is null"))
+		diags.Append(diag.NewErrorDiagnostic("AppBuilderAppStringValue Unmarshal Error", "json string value is null"))
 		return diags
 	}
 
 	if v.IsUnknown() {
-		diags.Append(diag.NewErrorDiagnostic("AppBuilderAppJSONStringValue Unmarshal Error", "json string value is unknown"))
+		diags.Append(diag.NewErrorDiagnostic("AppBuilderAppStringValue Unmarshal Error", "json string value is unknown"))
 		return diags
 	}
 
 	err := json.Unmarshal([]byte(v.ValueString()), target)
 	if err != nil {
-		diags.Append(diag.NewErrorDiagnostic("AppBuilderAppJSONStringValue Unmarshal Error", err.Error()))
+		diags.Append(diag.NewErrorDiagnostic("AppBuilderAppStringValue Unmarshal Error", err.Error()))
 	}
 
 	return diags
 }
 
-// NewAppBuilderAppJSONStringValue creates a AppBuilderAppJSONStringValue with a known value. Access the value via ValueString method.
-func NewAppBuilderAppJSONStringValue(value string) AppBuilderAppJSONStringValue {
-	return AppBuilderAppJSONStringValue{
+// NewAppBuilderAppStringValue creates a AppBuilderAppStringValue with a known value. Access the value via ValueString method.
+func NewAppBuilderAppStringValue(value string) AppBuilderAppStringValue {
+	return AppBuilderAppStringValue{
 		StringValue: basetypes.NewStringValue(value),
 	}
 }
 
-// NewAppBuilderAppJSONStringValueNull creates a AppBuilderAppJSONStringValue with a null value. Determine whether the value is null via IsNull method.
-func NewAppBuilderAppJSONStringValueNull() AppBuilderAppJSONStringValue {
-	return AppBuilderAppJSONStringValue{
+// NewAppBuilderAppStringValueNull creates a AppBuilderAppStringValue with a null value. Determine whether the value is null via IsNull method.
+func NewAppBuilderAppStringValueNull() AppBuilderAppStringValue {
+	return AppBuilderAppStringValue{
 		StringValue: basetypes.NewStringNull(),
 	}
 }
 
-// NewAppBuilderAppJSONStringValueUnknown creates a AppBuilderAppJSONStringValue with an unknown value. Determine whether the value is unknown via IsUnknown method.
-func NewAppBuilderAppJSONStringValueUnknown() AppBuilderAppJSONStringValue {
-	return AppBuilderAppJSONStringValue{
+// NewAppBuilderAppStringValueUnknown creates a AppBuilderAppStringValue with an unknown value. Determine whether the value is unknown via IsUnknown method.
+func NewAppBuilderAppStringValueUnknown() AppBuilderAppStringValue {
+	return AppBuilderAppStringValue{
 		StringValue: basetypes.NewStringUnknown(),
 	}
 }
