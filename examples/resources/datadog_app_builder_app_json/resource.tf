@@ -12,11 +12,10 @@ resource "datadog_app_builder_app" "example_app_from_file" {
 }
 
 # Example App Builder App resource - inline with optional fields
-resource "datadog_app_builder_app" "test_app_inline_optional" {
+resource "datadog_app_builder_app" "example_app_inline_optional" {
   name               = "Example Terraform App - Inline - Optional"
   description        = "Created using the Datadog provider in Terraform."
   root_instance_name = "grid0"
-  tags               = ["team:app-builder", "service:app-builder-api", "tag_key:tag_value", "terraform_app"]
   published          = false
 
   override_action_query_names_to_connection_ids = {
@@ -56,7 +55,7 @@ resource "datadog_app_builder_app" "test_app_inline_optional" {
       "name" : "This name will be overridden",
       "rootInstanceName" : "This rootInstanceName will be overridden",
       "selfService" : false,
-      "tags" : ["these_tags_will_be:overridden", "foo:bar"],
+      "tags" : [],
       "connections" : [
         {
           "id" : "11111111-1111-1111-1111-111111111111",
@@ -84,11 +83,6 @@ variable "description" {
 variable "root_instance_name" {
   type    = string
   default = "grid0"
-}
-
-variable "tags" {
-  type    = list(string)
-  default = ["team:app-builder", "service:app-builder-api", "tag_key:tag_value", "terraform_app", "interpolation:true"]
 }
 
 # Example App Builder App resource - inline with escaped $${} syntax for Javascript and ${} for Terraform variables
@@ -127,7 +121,7 @@ resource "datadog_app_builder_app" "example_app_inline_escaped_interpolated" {
       "name" : "${var.name}",
       "rootInstanceName" : "${var.root_instance_name}",
       "selfService" : false,
-      "tags" : var.tags,
+      "tags" : [],
       "connections" : [
         {
           "id" : "${var.connection_id}",

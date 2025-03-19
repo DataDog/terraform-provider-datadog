@@ -26,7 +26,6 @@ Provides a Datadog App resource for creating and managing Datadog Apps from App 
 - `override_action_query_names_to_connection_ids` (Map of String) If specified, this will override the Action Connection IDs for the specified Action Query Names in the App JSON.
 - `published` (Boolean) Set the app to published or unpublished. Published apps are available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist.
 - `root_instance_name` (String) The name of the root component of the app. This must be a grid component that contains all other components. If specified, this will override the root instance name of the App in the App JSON.
-- `tags` (Set of String) A list of tags for the app, which can be used to filter apps. If specified, this will override the list of tags for the App in the App JSON. Otherwise, tags will be returned in output.
 
 ### Read-Only
 

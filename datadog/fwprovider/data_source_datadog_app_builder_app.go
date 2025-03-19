@@ -73,11 +73,6 @@ func (d *appBuilderAppDataSource) Schema(_ context.Context, request datasource.S
 				Computed:    true,
 				Description: "The name of the root component of the app. This is a grid component that contains all other components.",
 			},
-			"tags": schema.SetAttribute{
-				Computed:    true,
-				ElementType: types.StringType,
-				Description: "A list of tags for the app, which can be used to filter apps.",
-			},
 			"published": schema.BoolAttribute{
 				Computed:    true,
 				Description: "Whether the app is published or unpublished. Published apps are available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist.",
@@ -112,8 +107,6 @@ func (d *appBuilderAppDataSource) Read(ctx context.Context, request datasource.R
 
 // Read logic is shared between data source and resource
 func readAppBuilderApp(ctx context.Context, api *datadogV2.AppBuilderApi, id uuid.UUID) (*appBuilderAppResourceModel, error) {
-	fmt.Printf("DEBUG - Read - Starting read for ID: %s\n", id)
-
 	resp, httpResp, err := api.GetApp(ctx, id)
 	if err != nil {
 		if httpResp != nil {
@@ -121,16 +114,9 @@ func readAppBuilderApp(ctx context.Context, api *datadogV2.AppBuilderApi, id uui
 			if err != nil {
 				return nil, fmt.Errorf("could not read error response")
 			}
-			fmt.Printf("DEBUG - Read - Error response body: %s\n", string(body))
 			return nil, fmt.Errorf("%s", body)
 		}
 		return nil, err
-	}
-
-	fmt.Printf("DEBUG - Read - Raw API Response:\n%+v\n", resp)
-	if httpResp != nil {
-		respBody, _ := io.ReadAll(httpResp.Body)
-		fmt.Printf("DEBUG - Read - Raw HTTP Response body:\n%s\n", string(respBody))
 	}
 
 	appModel, err := apiResponseToAppBuilderAppModel(resp)
@@ -138,7 +124,6 @@ func readAppBuilderApp(ctx context.Context, api *datadogV2.AppBuilderApi, id uui
 		return nil, err
 	}
 
-	fmt.Printf("DEBUG - Read - Final model tags: %+v\n", appModel.Tags)
 	return appModel, nil
 }
 
@@ -165,22 +150,6 @@ func apiResponseToAppBuilderAppModel(resp datadogV2.GetAppResponse) (*appBuilder
 	appBuilderAppModel.Name = types.StringValue(attributes.GetName())
 	appBuilderAppModel.Description = types.StringValue(attributes.GetDescription())
 	appBuilderAppModel.RootInstanceName = types.StringValue(attributes.GetRootInstanceName())
-
-	// Handle tags
-	tags, ok := attributes.GetTagsOk()
-	if ok && tags != nil && len(*tags) > 0 {
-		// Use tags from API response
-		tagValues := make([]attr.Value, len(*tags))
-		for i, tag := range *tags {
-			tagValues[i] = types.StringValue(tag)
-		}
-		appBuilderAppModel.Tags = types.SetValueMust(types.StringType, tagValues)
-		appJson["tags"] = *tags
-	} else {
-		// If no tags found anywhere, set empty tags
-		appBuilderAppModel.Tags = types.SetValueMust(types.StringType, []attr.Value{})
-		appJson["tags"] = []string{}
-	}
 
 	// Handle published status
 	if included, ok := resp.GetIncludedOk(); ok && len(*included) > 0 {
@@ -243,12 +212,4 @@ func buildActionQueryNamesToConnectionIDsMap(queries []datadogV2.Query) (types.M
 	}
 
 	return resultMap, nil
-}
-
-func convertTagsToAttrValues(tags []string) []attr.Value {
-	attrTags := []attr.Value{}
-	for _, tag := range tags {
-		attrTags = append(attrTags, types.StringValue(tag))
-	}
-	return attrTags
 }

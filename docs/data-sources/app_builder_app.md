@@ -31,4 +31,3 @@ This data source retrieves the definition of an existing Datadog App from App Bu
 - `name` (String) The name of the App.
 - `published` (Boolean) Whether the app is published or unpublished. Published apps are available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist.
 - `root_instance_name` (String) The name of the root component of the app. This is a grid component that contains all other components.
-- `tags` (Set of String) A list of tags for the app, which can be used to filter apps.

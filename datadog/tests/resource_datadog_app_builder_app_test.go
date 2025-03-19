@@ -46,12 +46,6 @@ func TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields(t *testing.T)
 					resource.TestCheckResourceAttr(resourceName, "description", "Created using the Datadog provider in Terraform."),
 					resource.TestCheckResourceAttr(resourceName, "root_instance_name", "grid0"),
 					resource.TestCheckResourceAttr(resourceName, "published", "true"),
-
-					// resource.TestCheckResourceAttr(resourceName, "tags.#", "4"),
-					// resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "team:app-builder"),
-					// resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "service:app-builder-api"),
-					// resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "tag_key:tag_value"),
-					// resource.TestCheckTypeSetElemAttr(resourceName, "tags.*", "terraform_app"),
 				),
 				ExpectNonEmptyPlan: true,
 			},
@@ -867,7 +861,7 @@ func testComplexAppBuilderApp(name string) string {
 		"name": "%s",
 		"rootInstanceName": "grid0",
 		"selfService": false,
-		"tags": ["team:app-builder", "service:app-builder-api", "tag_key:tag_value", "terraform_app"],
+		"tags": [],
 		"connections": [
 			{
 				"id": "11111111-1111-1111-1111-111111111111",
