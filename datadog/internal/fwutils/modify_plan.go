@@ -23,7 +23,11 @@ func RemoveDefaultIfConflictingSet(ctx context.Context, request resource.ModifyP
 			response.Diagnostics.Append(diag...)
 			return
 		}
-		schema, _ := request.Config.Schema.AttributeAtPath(ctx, conflictingPathMatches[0])
+		schema, diag := request.Config.Schema.AttributeAtPath(ctx, conflictingPathMatches[0])
+		if diag.HasError() {
+			response.Diagnostics.Append(diag...)
+			return
+		}
 		if (schema.IsComputed() && !conflictingValue.IsUnknown()) || (!schema.IsComputed() && !conflictingValue.IsNull()) {
 			isConflictingSet = true
 			break
