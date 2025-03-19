@@ -238,3 +238,15 @@ go.sum,github.com/goccy/go-json,MIT,2020 Masaaki Goshima
 go.sum,github.com/hashicorp/terraform-plugin-framework-jsontypes,MPL-2.0,Copyright (c) 2023 HashiCorp, Inc.
 go.sum,github.com/bufbuild/protocompile,Apache-2.0,Copyright 2020-2025 Buf Technologies, Inc.
 go.sum,google.golang.org/genproto/googleapis/rpc,Apache-2.0,Apache-2.0,2018 Google Inc.
+go.sum,dario.cat/mergo,BSD-3-Clause,Dario Castañé
+go.sum,github.com/apparentlymart/go-textseg/v15,?,Martin Atkins
+go.sum,github.com/cyphar/filepath-securejoin,BSD-3-Clause
+go.sum,github.com/go-logr/logr,Apache-2.0
+go.sum,github.com/go-logr/stdr,Apache-2.0
+go.sum,github.com/hashicorp/go-retryablehttp,MPL-2.0,HashiCorp, Inc
+go.sum,go.opentelemetry.io/otel,Apache-2.0,The OpenTelemetry Authors
+go.sum,go.opentelemetry.io/otel/metric,Apache-2.0,The OpenTelemetry Authors
+go.sum,go.opentelemetry.io/otel/sdk,Apache-2.0,The OpenTelemetry Authors
+go.sum,go.opentelemetry.io/otel/sdk/metric,Apache-2.0,The OpenTelemetry Authors
+go.sum,go.opentelemetry.io/otel/trace,Apache-2.0,The OpenTelemetry Authors
+
