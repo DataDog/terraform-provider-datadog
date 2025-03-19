@@ -42,10 +42,12 @@ datadog/**/*datadog_integration_fastly*          @DataDog/web-frameworks @DataDo
 datadog/**/*datadog_integration_gcp*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/gcp-integrations
 datadog/**/*datadog_integration_microsoft_teams* @DataDog/web-frameworks @DataDog/api-reliability @DataDog/chat-integrations
 datadog/**/*datadog_ip_ranges*                   @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
+datadog/**/*datadog_open_api*                    @DataDog/web-frameworks @DataDog/api-reliability @DataDog/service-catalog
 datadog/**/*datadog_organization_settings*       @DataDog/web-frameworks @DataDog/api-reliability @DataDog/core-app @DataDog/trust-and-safety
 datadog/**/*datadog_restriction_policy*          @DataDog/web-frameworks @DataDog/api-reliability @DataDog/aaa-granular-access
 datadog/**/*datadog_sensitive_data_scanner*      @DataDog/web-frameworks @DataDog/api-reliability @DataDog/logs-app @DataDog/sensitive-data-scanner
 datadog/**/*datadog_service_account*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/team-aaa
+datadog/**/*datadog_software_catalog*            @DataDog/web-frameworks @DataDog/api-reliability @DataDog/service-catalog
 datadog/**/*datadog_spans_metric*                @DataDog/web-frameworks @DataDog/api-reliability @DataDog/apm-trace-intake
 datadog/**/*datadog_synthetics_concurrency_cap*  @DataDog/web-frameworks @DataDog/api-reliability @DataDog/synthetics-app @DataDog/synthetics-ct
 datadog/**/*datadog_team*                        @DataDog/web-frameworks @DataDog/api-reliability @DataDog/core-app
