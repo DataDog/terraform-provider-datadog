@@ -40,12 +40,6 @@ func TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields(t *testing.
 					resource.TestCheckResourceAttr(datasourceName, "description", "Created using the Datadog provider in Terraform."),
 					resource.TestCheckResourceAttr(datasourceName, "root_instance_name", "grid0"),
 					resource.TestCheckResourceAttr(datasourceName, "published", "true"),
-
-					// resource.TestCheckResourceAttr(datasourceName, "tags.#", "4"),
-					// resource.TestCheckTypeSetElemAttr(datasourceName, "tags.*", "team:app-builder"),
-					// resource.TestCheckTypeSetElemAttr(datasourceName, "tags.*", "service:app-builder-api"),
-					// resource.TestCheckTypeSetElemAttr(datasourceName, "tags.*", "tag_key:tag_value"),
-					// resource.TestCheckTypeSetElemAttr(datasourceName, "tags.*", "terraform_app"),
 				),
 				ExpectNonEmptyPlan: true,
 				// TODO: consider removing the above once things are stable
@@ -69,7 +63,6 @@ func testAppBuilderAppInlineWithOptionalFieldsResourceConfig(name string) string
 		name               = "%s"
 		description        = "Created using the Datadog provider in Terraform."
 		root_instance_name = "grid0"
-		tags               = ["team:app-builder", "service:app-builder-api", "tag_key:tag_value", "terraform_app"]
 		published          = true
 		
 		override_action_query_names_to_connection_ids = {
@@ -116,7 +109,7 @@ func testAppBuilderAppInlineWithOptionalFieldsAppJSON() string {
 		"name" : "This name will be overridden",
 		"rootInstanceName" : "This rootInstanceName will be overridden",
 		"selfService": false,
-		"tags" : ["these_tags_will_be:overridden", "foo:bar"],
+		"tags" : [],
 		"connections": [
 			{
 				"id": "11111111-1111-1111-1111-111111111111",

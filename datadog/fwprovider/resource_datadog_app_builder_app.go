@@ -7,14 +7,11 @@ import (
 	"io"
 	"maps"
 	"slices"
-	"sort"
 	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
-	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -48,7 +45,6 @@ type appBuilderAppResourceModel struct {
 	Name                                    types.String                         `tfsdk:"name"`
 	Description                             types.String                         `tfsdk:"description"`
 	RootInstanceName                        types.String                         `tfsdk:"root_instance_name"`
-	Tags                                    types.Set                            `tfsdk:"tags"`
 	Published                               types.Bool                           `tfsdk:"published"`
 }
 
@@ -109,21 +105,6 @@ func (r *appBuilderAppResource) Schema(_ context.Context, _ resource.SchemaReque
 				Description: "The name of the root component of the app. This must be a grid component that contains all other components. If specified, this will override the root instance name of the App in the App JSON.",
 				Validators:  []validator.String{stringvalidator.LengthAtLeast(1)},
 			},
-			// we use SetAttribute to represent tags, paradoxically to be able to maintain them ordered;
-			// we order them explicitly in the PlanModifiers of this resource and using
-			// SetAttribute makes Terraform ignore differences in order when creating a plan
-			"tags": schema.SetAttribute{
-				Optional:    true,
-				Computed:    true,
-				ElementType: types.StringType,
-				Description: "A list of tags for the app, which can be used to filter apps. If specified, this will override the list of tags for the App in the App JSON. Otherwise, tags will be returned in output.",
-				Validators: []validator.Set{
-					setvalidator.SizeAtLeast(1),
-				},
-				// PlanModifiers: []planmodifier.Set{
-				// 	planmodifiers.NormalizeTagSet(),
-				// },
-			},
 			"published": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
@@ -154,25 +135,16 @@ func (r *appBuilderAppResource) Create(ctx context.Context, request resource.Cre
 		return
 	}
 
-	// Add debug before create
-	fmt.Printf("DEBUG - Create - About to send request:\n%+v\n", createReq)
-
 	// create the app
 	createResp, httpResp, err := r.Api.CreateApp(r.Auth, *createReq)
 	if err != nil {
 		if httpResp != nil {
 			body, _ := io.ReadAll(httpResp.Body)
-			fmt.Printf("DEBUG - Create - Error response body: %s\n", string(body))
+			response.Diagnostics.AddError("error creating app", string(body))
+		} else {
+			response.Diagnostics.AddError("error creating app", err.Error())
 		}
-		response.Diagnostics.AddError("error creating app", err.Error())
 		return
-	}
-
-	// Add these debug statements
-	fmt.Printf("DEBUG - Create - Raw API Response:\n%+v\n", createResp)
-	if httpResp != nil {
-		body, _ := io.ReadAll(httpResp.Body)
-		fmt.Printf("DEBUG - Create - Raw HTTP Response body:\n%s\n", string(body))
 	}
 
 	appID := createResp.Data.GetId()
@@ -205,25 +177,6 @@ func (r *appBuilderAppResource) Create(ctx context.Context, request resource.Cre
 	if plan.RootInstanceName.IsNull() || plan.RootInstanceName.IsUnknown() {
 		plan.RootInstanceName = types.StringValue(*attributes.RootInstanceName)
 	}
-	if plan.Tags.IsNull() || plan.Tags.IsUnknown() {
-		attrTags := convertTagsToAttrValues(attributes.GetTags())
-		tags, newDiags := types.SetValue(types.StringType, attrTags)
-
-		// if there is an error converting the tags to a set, set the tags to an empty set
-		if newDiags.HasError() {
-			plan.Tags = types.SetValueMust(types.StringType, []attr.Value{})
-		} else {
-			plan.Tags = tags
-		}
-	}
-
-	// // prevent type conversion error when the map is null
-	// if plan.OverrideActionQueryNamesToConnectionIDs.IsNull() {
-	// 	plan.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
-	// 		types.StringType,
-	// 		map[string]attr.Value{},
-	// 	)
-	// }
 
 	// Save data into Terraform state
 	diags = response.State.Set(ctx, &plan)
@@ -269,9 +222,6 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 		return
 	}
 
-	fmt.Printf("DEBUG - Update - Plan tags: %+v\n", plan.Tags)
-	fmt.Printf("DEBUG - Update - State tags: %+v\n", state.Tags)
-
 	updateReq, err := appBuilderAppModelToUpdateApiRequest(plan)
 	if err != nil {
 		response.Diagnostics.AddError(
@@ -280,8 +230,6 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 		)
 		return
 	}
-
-	fmt.Printf("DEBUG - Update Request - Final request:\n%+v\n", updateReq)
 
 	appID, err := uuid.Parse(plan.ID.ValueString())
 	if err != nil {
@@ -296,19 +244,11 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 	if err != nil {
 		if httpResp != nil {
 			body, _ := io.ReadAll(httpResp.Body)
-			fmt.Printf("DEBUG - Update - Error response body: %s\n", string(body))
+			response.Diagnostics.AddError("error updating app", string(body))
+		} else {
+			response.Diagnostics.AddError("error updating app", err.Error())
 		}
-		response.Diagnostics.AddError(
-			"Unable to update app",
-			err.Error(),
-		)
 		return
-	}
-
-	fmt.Printf("DEBUG - Update - Raw API Response:\n%+v\n", updateResp)
-	if httpResp != nil {
-		body, _ := io.ReadAll(httpResp.Body)
-		fmt.Printf("DEBUG - Update - Raw HTTP Response body:\n%s\n", string(body))
 	}
 
 	// if the published attribute is not set, set it to false
@@ -321,7 +261,7 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 	}
 
 	// set computed values
-	attributes := updateReq.GetData().Attributes
+	attributes := updateResp.GetData().Attributes
 	plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(attributes.GetQueries())
 	if err != nil {
 		response.Diagnostics.AddError("error building action_query_names_to_connection_ids map", err.Error())
@@ -338,25 +278,6 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 	if plan.RootInstanceName.IsNull() || plan.RootInstanceName.IsUnknown() {
 		plan.RootInstanceName = types.StringValue(*attributes.RootInstanceName)
 	}
-	if plan.Tags.IsNull() || plan.Tags.IsUnknown() {
-		attrTags := convertTagsToAttrValues(attributes.GetTags())
-		tags, newDiags := types.SetValue(types.StringType, attrTags)
-
-		// if there is an error converting the tags to a set, set the tags to an empty set
-		if newDiags.HasError() {
-			plan.Tags = types.SetValueMust(types.StringType, []attr.Value{})
-		} else {
-			plan.Tags = tags
-		}
-	}
-
-	// // prevent type conversion error when the map is null
-	// if plan.OverrideActionQueryNamesToConnectionIDs.IsNull() {
-	// 	plan.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
-	// 		types.StringType,
-	// 		map[string]attr.Value{},
-	// 	)
-	// }
 
 	// Save data into Terraform state
 	diags = response.State.Set(ctx, &plan)
@@ -470,27 +391,6 @@ func overrideAppBuilderAppAttributesInCreateRequestAttributes(plan appBuilderApp
 		appJsonMap["rootInstanceName"] = plan.RootInstanceName.ValueString()
 	}
 
-	// Handle tags: if explicitly set in plan, use those; otherwise use tags from app JSON
-	if !plan.Tags.IsNull() && !plan.Tags.IsUnknown() {
-		setElements := plan.Tags.Elements()
-		tags := make([]string, 0, len(setElements))
-		for _, element := range setElements {
-			tags = append(tags, element.(types.String).ValueString())
-		}
-		sort.Strings(tags)
-		appJsonMap["tags"] = tags
-	} else if existingTags, ok := appJsonMap["tags"].([]interface{}); ok && len(existingTags) > 0 {
-		// Convert []interface{} to []string
-		tags := make([]string, len(existingTags))
-		for i, tag := range existingTags {
-			if strTag, ok := tag.(string); ok {
-				tags[i] = strTag
-			}
-		}
-		sort.Strings(tags)
-		appJsonMap["tags"] = tags
-	}
-
 	// Using override_action_query_names_to_connection_ids, replace connection ids in the update request attributes with the ones provided in the plan
 	err := replaceConnectionIDsInActionQueries(plan.OverrideActionQueryNamesToConnectionIDs, appJsonMap)
 	if err != nil {
@@ -511,27 +411,6 @@ func overrideAppBuilderAppAttributesInUpdateRequestAttributes(plan appBuilderApp
 	}
 	if !plan.RootInstanceName.IsNull() && !plan.RootInstanceName.IsUnknown() {
 		appJsonMap["rootInstanceName"] = plan.RootInstanceName.ValueString()
-	}
-
-	// Handle tags: if explicitly set in plan, use those; otherwise use tags from app JSON
-	if !plan.Tags.IsNull() && !plan.Tags.IsUnknown() {
-		setElements := plan.Tags.Elements()
-		tags := make([]string, 0, len(setElements))
-		for _, element := range setElements {
-			tags = append(tags, element.(types.String).ValueString())
-		}
-		sort.Strings(tags)
-		appJsonMap["tags"] = tags
-	} else if existingTags, ok := appJsonMap["tags"].([]interface{}); ok && len(existingTags) > 0 {
-		// Convert []interface{} to []string
-		tags := make([]string, len(existingTags))
-		for i, tag := range existingTags {
-			if strTag, ok := tag.(string); ok {
-				tags[i] = strTag
-			}
-		}
-		sort.Strings(tags)
-		appJsonMap["tags"] = tags
 	}
 
 	// Using override_action_query_names_to_connection_ids, replace connection ids in the update request attributes with the ones provided in the plan
