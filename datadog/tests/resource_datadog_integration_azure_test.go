@@ -46,6 +46,29 @@ resource "datadog_integration_azure" "an_azure_integration" {
 }`, uniq)
 }
 
+func TestAccDatadogIntegrationAzure_import(t *testing.T) {
+	t.Parallel()
+	resourceName := "datadog_integration_azure.an_azure_integration"
+	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	tenantName := fmt.Sprintf("aaaaaaaa-bbbb-cccc-dddd-%dee", clockFromContext(ctx).Now().Unix())
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             checkIntegrationAzureDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccCheckDatadogIntegrationAzureConfig(tenantName),
+			},
+			{
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
+			},
+		},
+	})
+}
+
 func TestAccDatadogIntegrationAzure(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)

@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
@@ -174,7 +175,14 @@ func (r *integrationAzureResource) Schema(_ context.Context, _ resource.SchemaRe
 }
 
 func (r *integrationAzureResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
+	result := strings.SplitN(request.ID, ":", 2)
+	if len(result) != 2 {
+		response.Diagnostics.AddError("error retrieving tenant_name or client_id from given ID", "")
+		return
+	}
+
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, frameworkPath.Root("tenant_name"), result[0])...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, frameworkPath.Root("client_id"), result[1])...)
 }
 
 func (r *integrationAzureResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
