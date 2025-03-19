@@ -8,12 +8,14 @@ import (
 	"maps"
 	"slices"
 	"sort"
+	"strings"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -28,6 +30,9 @@ var (
 	_ resource.ResourceWithConfigure   = &appBuilderAppResource{}
 	_ resource.ResourceWithImportState = &appBuilderAppResource{}
 )
+
+var ErrDeploymentExists = "a deployment with the same app version already exists"
+var ErrAppAlreadyDisabled = "app already disabled"
 
 type appBuilderAppResource struct {
 	Api  *datadogV2.AppBuilderApi
@@ -172,23 +177,13 @@ func (r *appBuilderAppResource) Create(ctx context.Context, request resource.Cre
 
 	appID := createResp.Data.GetId()
 
-	// publish the app if the published attribute is true
-	if plan.Published.ValueBool() {
-		_, httpResp, err := r.Api.PublishApp(r.Auth, appID)
-		if err != nil {
-			if httpResp != nil {
-				// error body may have useful info for the user
-				body, err := io.ReadAll(httpResp.Body)
-				if err != nil {
-					response.Diagnostics.AddError("error reading error response", err.Error())
-					return
-				}
-				response.Diagnostics.AddError("error publishing app", string(body))
-			} else {
-				response.Diagnostics.AddError("error publishing app", err.Error())
-			}
-			return
-		}
+	// if the published attribute is not set, set it to false
+	if plan.Published.IsNull() || plan.Published.IsUnknown() {
+		plan.Published = types.BoolValue(false)
+	}
+	err = handleAppBuilderAppPublishUnpublish(r.Auth, response.Diagnostics, r.Api, &plan, appID)
+	if err != nil {
+		return
 	}
 
 	// set computed values
@@ -221,17 +216,14 @@ func (r *appBuilderAppResource) Create(ctx context.Context, request resource.Cre
 			plan.Tags = tags
 		}
 	}
-	if plan.Published.IsNull() || plan.Published.IsUnknown() {
-		plan.Published = types.BoolValue(false)
-	}
 
-	// prevent type conversion error when the map is null
-	if plan.OverrideActionQueryNamesToConnectionIDs.IsNull() {
-		plan.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
-			types.StringType,
-			map[string]attr.Value{},
-		)
-	}
+	// // prevent type conversion error when the map is null
+	// if plan.OverrideActionQueryNamesToConnectionIDs.IsNull() {
+	// 	plan.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
+	// 		types.StringType,
+	// 		map[string]attr.Value{},
+	// 	)
+	// }
 
 	// Save data into Terraform state
 	diags = response.State.Set(ctx, &plan)
@@ -291,7 +283,7 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 
 	fmt.Printf("DEBUG - Update Request - Final request:\n%+v\n", updateReq)
 
-	appId, err := uuid.Parse(plan.ID.ValueString())
+	appID, err := uuid.Parse(plan.ID.ValueString())
 	if err != nil {
 		response.Diagnostics.AddError(
 			"Unable to parse app ID",
@@ -300,7 +292,7 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 		return
 	}
 
-	updateResp, httpResp, err := r.Api.UpdateApp(r.Auth, appId, *updateReq)
+	updateResp, httpResp, err := r.Api.UpdateApp(r.Auth, appID, *updateReq)
 	if err != nil {
 		if httpResp != nil {
 			body, _ := io.ReadAll(httpResp.Body)
@@ -319,40 +311,13 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 		fmt.Printf("DEBUG - Update - Raw HTTP Response body:\n%s\n", string(body))
 	}
 
-	// publish the app if the published attribute is true
-	if plan.Published.ValueBool() {
-		_, httpResp, err := r.Api.PublishApp(r.Auth, appId)
-		if err != nil {
-			if httpResp != nil {
-				// error body may have useful info for the user
-				body, err := io.ReadAll(httpResp.Body)
-				if err != nil {
-					response.Diagnostics.AddError("error reading error response", err.Error())
-					return
-				}
-				response.Diagnostics.AddError("error publishing app", string(body))
-			} else {
-				response.Diagnostics.AddError("error publishing app", err.Error())
-			}
-			return
-		}
-	} else {
-		// unpublish the app if the published attribute is false
-		_, httpResp, err := r.Api.UnpublishApp(r.Auth, appId)
-		if err != nil {
-			if httpResp != nil {
-				// error body may have useful info for the user
-				body, err := io.ReadAll(httpResp.Body)
-				if err != nil {
-					response.Diagnostics.AddError("error reading error response", err.Error())
-					return
-				}
-				response.Diagnostics.AddError("error unpublishing app", string(body))
-			} else {
-				response.Diagnostics.AddError("error unpublishing app", err.Error())
-			}
-			return
-		}
+	// if the published attribute is not set, set it to false
+	if plan.Published.IsNull() || plan.Published.IsUnknown() {
+		plan.Published = types.BoolValue(false)
+	}
+	err = handleAppBuilderAppPublishUnpublish(r.Auth, response.Diagnostics, r.Api, &plan, appID)
+	if err != nil {
+		return
 	}
 
 	// set computed values
@@ -384,17 +349,14 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 			plan.Tags = tags
 		}
 	}
-	if plan.Published.IsNull() || plan.Published.IsUnknown() {
-		plan.Published = types.BoolValue(false)
-	}
 
-	// prevent type conversion error when the map is null
-	if plan.OverrideActionQueryNamesToConnectionIDs.IsNull() {
-		plan.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
-			types.StringType,
-			map[string]attr.Value{},
-		)
-	}
+	// // prevent type conversion error when the map is null
+	// if plan.OverrideActionQueryNamesToConnectionIDs.IsNull() {
+	// 	plan.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
+	// 		types.StringType,
+	// 		map[string]attr.Value{},
+	// 	)
+	// }
 
 	// Save data into Terraform state
 	diags = response.State.Set(ctx, &plan)
@@ -518,6 +480,7 @@ func overrideAppBuilderAppAttributesInCreateRequestAttributes(plan appBuilderApp
 		sort.Strings(tags)
 		appJsonMap["tags"] = tags
 	} else if existingTags, ok := appJsonMap["tags"].([]interface{}); ok && len(existingTags) > 0 {
+		// Convert []interface{} to []string
 		tags := make([]string, len(existingTags))
 		for i, tag := range existingTags {
 			if strTag, ok := tag.(string); ok {
@@ -559,10 +522,16 @@ func overrideAppBuilderAppAttributesInUpdateRequestAttributes(plan appBuilderApp
 		}
 		sort.Strings(tags)
 		appJsonMap["tags"] = tags
-	} else if existingTags := appJsonMap["tags"].([]string); len(existingTags) > 0 {
-		// Preserve existing tags from app JSON if no override
-		sort.Strings(existingTags)
-		appJsonMap["tags"] = existingTags
+	} else if existingTags, ok := appJsonMap["tags"].([]interface{}); ok && len(existingTags) > 0 {
+		// Convert []interface{} to []string
+		tags := make([]string, len(existingTags))
+		for i, tag := range existingTags {
+			if strTag, ok := tag.(string); ok {
+				tags[i] = strTag
+			}
+		}
+		sort.Strings(tags)
+		appJsonMap["tags"] = tags
 	}
 
 	// Using override_action_query_names_to_connection_ids, replace connection ids in the update request attributes with the ones provided in the plan
@@ -638,6 +607,58 @@ func replaceConnectionIDsInActionQueries(overrideActionQueryNamesToConnectionIDs
 	// Return error if any overrides weren't used
 	if len(unusedOverrides) > 0 {
 		return fmt.Errorf("action Query Names not found in the App's queries: %v", slices.Collect(maps.Keys(unusedOverrides)))
+	}
+
+	return nil
+}
+
+func handleAppBuilderAppPublishUnpublish(ctx context.Context, diags diag.Diagnostics, api *datadogV2.AppBuilderApi, plan *appBuilderAppResourceModel, appID uuid.UUID) (err error) {
+	// publish the app if the published attribute is true
+	if plan.Published.ValueBool() {
+		_, httpResp, err := api.PublishApp(ctx, appID)
+		if err != nil {
+			if httpResp != nil {
+				// error body may have useful info for the user
+				body, err := io.ReadAll(httpResp.Body)
+				if err != nil {
+					diags.AddError("error reading error response", err.Error())
+					return err
+				}
+
+				// if error is related to the app already being published, we can ignore it
+				if !strings.Contains(string(body), ErrDeploymentExists) {
+					diags.AddError("error publishing app", string(body))
+				} else {
+					return nil
+				}
+			} else {
+				diags.AddError("error publishing app", err.Error())
+			}
+			return err
+		}
+	} else {
+		// unpublish the app if the published attribute is false
+		_, httpResp, err := api.UnpublishApp(ctx, appID)
+		if err != nil {
+			if httpResp != nil {
+				// error body may have useful info for the user
+				body, err := io.ReadAll(httpResp.Body)
+				if err != nil {
+					diags.AddError("error reading error response", err.Error())
+					return err
+				}
+
+				// if error is related to the app already being unpublished, we can ignore It
+				if !strings.Contains(string(body), ErrAppAlreadyDisabled) {
+					diags.AddError("error unpublishing app", string(body))
+				} else {
+					return nil
+				}
+			} else {
+				diags.AddError("error unpublishing app", err.Error())
+			}
+			return err
+		}
 	}
 
 	return nil

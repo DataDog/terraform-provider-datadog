@@ -62,6 +62,10 @@ func (v AppBuilderAppStringValue) StringSemanticEquals(ctx context.Context, newV
 		return false, diags
 	}
 
+	// Add debug logging
+	fmt.Printf("Original old value: %s\n", v.ValueString())
+	fmt.Printf("Original new value: %s\n", newValue.ValueString())
+
 	result, err := appJSONEqual(newValue.ValueString(), v.ValueString())
 
 	if err != nil {
@@ -89,6 +93,10 @@ func appJSONEqual(s1, s2 string) (bool, error) {
 		return false, err
 	}
 
+	// Add debug logging
+	fmt.Printf("Normalized string 1: %s\n", s1)
+	fmt.Printf("Normalized string 2: %s\n", s2)
+
 	return s1 == s2, nil
 }
 
@@ -114,6 +122,7 @@ func normalizeAppBuilderAppString(jsonStr string) (string, error) {
 		delete(jsonMap, "favorite")
 		delete(jsonMap, "selfService")
 		delete(jsonMap, "tags")
+		temp = jsonMap
 	}
 
 	jsonBytes, err := json.Marshal(&temp)

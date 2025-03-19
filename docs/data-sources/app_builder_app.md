@@ -19,6 +19,10 @@ This data source retrieves the definition of an existing Datadog App from App Bu
 
 - `id` (String) ID for the App.
 
+### Optional
+
+- `override_action_query_names_to_connection_ids` (Map of String) If specified in a resource, this will override the Action Connection IDs for the specified Action Query Names in the App JSON.
+
 ### Read-Only
 
 - `action_query_names_to_connection_ids` (Map of String) A computed map of the App's Action Query Names to Action Connection IDs.
