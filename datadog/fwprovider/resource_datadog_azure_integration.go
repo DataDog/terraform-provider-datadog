@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 
@@ -183,6 +184,12 @@ func (r *integrationAzureResource) ImportState(ctx context.Context, request reso
 
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, frameworkPath.Root("tenant_name"), result[0])...)
 	response.Diagnostics.Append(response.State.SetAttribute(ctx, frameworkPath.Root("client_id"), result[1])...)
+
+	// Set client_secret if it is passed via environment variable
+	if secret := os.Getenv("CLIENT_SECRET"); secret != "" {
+		response.Diagnostics.Append(response.State.SetAttribute(ctx, frameworkPath.Root("client_secret"), secret)...)
+	}
+
 }
 
 func (r *integrationAzureResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {

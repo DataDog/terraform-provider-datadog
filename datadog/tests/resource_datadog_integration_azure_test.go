@@ -61,9 +61,10 @@ func TestAccDatadogIntegrationAzure_import(t *testing.T) {
 				Config: testAccCheckDatadogIntegrationAzureConfig(tenantName),
 			},
 			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName: resourceName,
+				ImportState:  true,
+				// Disabled because API doesn't return client_secret
+				ImportStateVerify: false,
 			},
 		},
 	})
