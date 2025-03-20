@@ -22,80 +22,80 @@ func TestAppBuilderAppStringValueSemanticEquals(t *testing.T) {
 		expectedDiags diag.Diagnostics
 	}{
 		"not equal - mismatched field values": {
-			currentJson:   NewAppBuilderAppStringValue(`{"hello": "dlrow", "nums": [3, 2, 1], "nested": {"test-bool": false}}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"name": "dlrow", "queries": [3, 2, 1], "components": {"test-bool": false}}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
 			expectedMatch: false,
 		},
 		"not equal - mismatched field names": {
-			currentJson:   NewAppBuilderAppStringValue(`{"Hello": "world", "Nums": [1, 2, 3], "Nested": {"Test-bool": true}}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"Name": "world", "Queries": [1, 2, 3], "Components": {"Test-bool": true}}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
 			expectedMatch: false,
 		},
 		"not equal - object additional field": {
-			currentJson:   NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}, "new-field": null}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}, "description": null}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
 			expectedMatch: false,
 		},
 		"not equal - array additional field": {
-			currentJson:   NewAppBuilderAppStringValue(`[{"hello": "world"}, {"nums":[1, 2, 3]}, {"nested": {"test-bool": true, "new-field": null}}]`),
-			givenJson:     NewAppBuilderAppStringValue(`[{"hello": "world"}, {"nums":[1, 2, 3]}, {"nested": {"test-bool": true}}]`),
+			currentJson:   NewAppBuilderAppStringValue(`[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true, "description": null}}]`),
+			givenJson:     NewAppBuilderAppStringValue(`[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`),
 			expectedMatch: false,
 		},
 		"not equal - array item order difference": {
-			currentJson:   NewAppBuilderAppStringValue(`[{"nums":[1, 2, 3]}, {"hello": "world"}, {"nested": {"test-bool": true}}]`),
-			givenJson:     NewAppBuilderAppStringValue(`[{"hello": "world"}, {"nums":[1, 2, 3]}, {"nested": {"test-bool": true}}]`),
+			currentJson:   NewAppBuilderAppStringValue(`[{"queries":[1, 2, 3]}, {"name": "world"}, {"components": {"test-bool": true}}]`),
+			givenJson:     NewAppBuilderAppStringValue(`[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`),
 			expectedMatch: false,
 		},
 		"semantically equal - object byte-for-byte match": {
-			currentJson:   NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
 			expectedMatch: true,
 		},
 		"semantically equal - array byte-for-byte match": {
-			currentJson:   NewAppBuilderAppStringValue(`[{"hello": "world"}, {"nums":[1, 2, 3]}, {"nested": {"test-bool": true}}]`),
-			givenJson:     NewAppBuilderAppStringValue(`[{"hello": "world"}, {"nums":[1, 2, 3]}, {"nested": {"test-bool": true}}]`),
+			currentJson:   NewAppBuilderAppStringValue(`[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`),
+			givenJson:     NewAppBuilderAppStringValue(`[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`),
 			expectedMatch: true,
 		},
 		"semantically equal - object field order difference": {
-			currentJson:   NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"nums": [1, 2, 3], "nested": {"test-bool": true}, "hello": "world"}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"queries": [1, 2, 3], "components": {"test-bool": true}, "name": "world"}`),
 			expectedMatch: true,
 		},
 		"semantically equal - object whitespace difference": {
 			currentJson: NewAppBuilderAppStringValue(`{
-				"hello": "world",
-				"nums": [1, 2, 3],
-				"nested": {
+				"name": "world",
+				"queries": [1, 2, 3],
+				"components": {
 					"test-bool": true
 				}
 			}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"hello":"world","nums":[1,2,3],"nested":{"test-bool":true}}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"name":"world","queries":[1,2,3],"components":{"test-bool":true}}`),
 			expectedMatch: true,
 		},
 		"semantically equal - array whitespace difference": {
 			currentJson: NewAppBuilderAppStringValue(`[
 				{
-				  "hello": "world"
+				  "name": "world"
 				},
 				{
-				  "nums": [
+				  "queries": [
 					1,
 					2,
 					3
 				  ]
 				},
 				{
-				  "nested": {
+				  "components": {
 					"test-bool": true
 				  }
 				}
 			  ]`),
-			givenJson:     NewAppBuilderAppStringValue(`[{"hello": "world"}, {"nums":[1, 2, 3]}, {"nested": {"test-bool": true}}]`),
+			givenJson:     NewAppBuilderAppStringValue(`[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`),
 			expectedMatch: true,
 		},
 		"error - invalid json": {
-			currentJson:   NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
-			givenJson:     NewAppBuilderAppStringValue(`&#$^"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
+			givenJson:     NewAppBuilderAppStringValue(`&#$^"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
 			expectedMatch: false,
 			expectedDiags: diag.Diagnostics{
 				diag.NewErrorDiagnostic(
@@ -107,15 +107,15 @@ func TestAppBuilderAppStringValueSemanticEquals(t *testing.T) {
 			},
 		},
 		"error - not given normalized json value": {
-			currentJson:   NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
-			givenJson:     basetypes.NewStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
+			givenJson:     basetypes.NewStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
 			expectedMatch: false,
 			expectedDiags: diag.Diagnostics{
 				diag.NewErrorDiagnostic(
 					"Semantic Equality Check Error",
 					"An unexpected value type was received while performing semantic equality checks. "+
 						"Please report this to the provider developers.\n\n"+
-						"Expected Value Type: AppBuilderAppStringValue\n"+
+						"Expected Value Type: customtypes.AppBuilderAppStringValue\n"+
 						"Got Value Type: basetypes.StringValue",
 				),
 			},
@@ -123,30 +123,30 @@ func TestAppBuilderAppStringValueSemanticEquals(t *testing.T) {
 		// JSON Semantic equality uses (decoder).UseNumber to avoid Go parsing JSON numbers into float64. This ensures that Go
 		// won't normalize the JSON number representation or impose limits on numeric range.
 		"not equal - different JSON number representations": {
-			currentJson:   NewAppBuilderAppStringValue(`{"large": 12423434}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"large": 1.2423434e+07}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"rootInstanceName": 12423434}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"rootInstanceName": 1.2423434e+07}`),
 			expectedMatch: false,
 		},
 		"semantically equal - larger than max float64 values": {
-			currentJson:   NewAppBuilderAppStringValue(`{"large": 1.79769313486231570814527423731704356798070e+309}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"large": 1.79769313486231570814527423731704356798070e+309}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"rootInstanceName": 1.79769313486231570814527423731704356798070e+309}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"rootInstanceName": 1.79769313486231570814527423731704356798070e+309}`),
 			expectedMatch: true,
 		},
 		// JSON Semantic equality uses Go's encoding/json library, which replaces some characters to escape codes
 		"semantically equal - HTML escape characters are equal": {
-			currentJson:   NewAppBuilderAppStringValue(`{"url_ampersand": "http://example.com?foo=bar&hello=world", "left-caret": "<", "right-caret": ">"}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"url_ampersand": "http://example.com?foo=bar\u0026hello=world", "left-caret": "\u003c", "right-caret": "\u003e"}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"description": "http://example.com?foo=bar&name=world", "left-caret": "<", "right-caret": ">"}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"description": "http://example.com?foo=bar\u0026name=world", "left-caret": "\u003c", "right-caret": "\u003e"}`),
 			expectedMatch: true,
 		},
 		// additional tests specific to AppBuilderAppStringValue below
 		"semantically equal - existence of id field is ignored": {
-			currentJson:   NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}, "id": "11111111-2222-3333-4444-555555555555"}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}, "id": "11111111-2222-3333-4444-555555555555"}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`),
 			expectedMatch: true,
 		},
 		"semantically equal - differences in id field is ignored": {
-			currentJson:   NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}, "id": "11111111-2222-3333-4444-555555555555"}`),
-			givenJson:     NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "nested": {"test-bool": true}, "id": "11111111-2222-3333-4444-555555555554"}`),
+			currentJson:   NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}, "id": "11111111-2222-3333-4444-555555555555"}`),
+			givenJson:     NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}, "id": "11111111-2222-3333-4444-555555555554"}`),
 			expectedMatch: true,
 		},
 	}
@@ -180,7 +180,7 @@ func TestAppBuilderAppStringValueUnmarshal(t *testing.T) {
 		"AppBuilderAppStringValue value is null ": {
 			json: NewAppBuilderAppStringValueNull(),
 			target: struct {
-				Hello string `json:"hello"`
+				Name string `json:"name"`
 			}{},
 			expectedDiags: diag.Diagnostics{
 				diag.NewErrorDiagnostic(
@@ -192,7 +192,7 @@ func TestAppBuilderAppStringValueUnmarshal(t *testing.T) {
 		"AppBuilderAppStringValue value is unknown ": {
 			json: NewAppBuilderAppStringValueUnknown(),
 			target: struct {
-				Hello string `json:"hello"`
+				Name string `json:"name"`
 			}{},
 			expectedDiags: diag.Diagnostics{
 				diag.NewErrorDiagnostic(
@@ -202,30 +202,30 @@ func TestAppBuilderAppStringValueUnmarshal(t *testing.T) {
 			},
 		},
 		"invalid target - not a pointer ": {
-			json: NewAppBuilderAppStringValue(`{"hello": "world"}`),
+			json: NewAppBuilderAppStringValue(`{"name": "world"}`),
 			target: struct {
-				Hello string `json:"hello"`
+				Name string `json:"name"`
 			}{},
 			expectedDiags: diag.Diagnostics{
 				diag.NewErrorDiagnostic(
 					"AppBuilderAppStringValue Unmarshal Error",
-					"json: Unmarshal(non-pointer struct { Hello string \"json:\\\"hello\\\"\" })",
+					"json: Unmarshal(non-pointer struct { Name string \"json:\\\"name\\\"\" })",
 				),
 			},
 		},
 		"valid target ": {
-			json: NewAppBuilderAppStringValue(`{"hello": "world", "nums": [1, 2, 3], "test-bool": true}`),
+			json: NewAppBuilderAppStringValue(`{"name": "world", "queries": [1, 2, 3], "test-bool": true}`),
 			target: &struct {
-				Hello   string `json:"hello"`
-				Numbers []int  `json:"nums"`
+				Name    string `json:"name"`
+				Numbers []int  `json:"queries"`
 				Test    bool   `json:"test-bool"`
 			}{},
 			output: &struct {
-				Hello   string `json:"hello"`
-				Numbers []int  `json:"nums"`
+				Name    string `json:"name"`
+				Numbers []int  `json:"queries"`
 				Test    bool   `json:"test-bool"`
 			}{
-				Hello:   "world",
+				Name:    "world",
 				Numbers: []int{1, 2, 3},
 				Test:    true,
 			},
