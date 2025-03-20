@@ -205,6 +205,16 @@ func (r *appBuilderAppResource) Read(ctx context.Context, request resource.ReadR
 		return
 	}
 
+	// Initialize the override map to avoid map type conversion errors (bug in TF 1.3.3)
+	if state.OverrideActionQueryNamesToConnectionIDs.IsNull() {
+		appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapNull(types.StringType)
+	} else {
+		appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
+			types.StringType,
+			state.OverrideActionQueryNamesToConnectionIDs.Elements(),
+		)
+	}
+
 	// Save data into Terraform state
 	diags = response.State.Set(ctx, appBuilderAppModel)
 	response.Diagnostics.Append(diags...)
@@ -451,6 +461,7 @@ func (r *appBuilderAppResource) ModifyPlan(ctx context.Context, req resource.Mod
 
 	planAndStateEq, _ := customtypes.NewAppBuilderAppStringValue(string(planBytes)).StringSemanticEquals(ctx, customtypes.NewAppBuilderAppStringValue(string(stateBytes)))
 
+	// if the plan and state are equal, set the plan to the state
 	if planAndStateEq {
 		plan.AppJson = state.AppJson
 
