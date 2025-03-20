@@ -8,7 +8,6 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/google/uuid"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -101,6 +100,16 @@ func (d *appBuilderAppDataSource) Read(ctx context.Context, request datasource.R
 		return
 	}
 
+	// Initialize the override map to avoid map type conversion errors (bug in TF 1.3.3)
+	if state.OverrideActionQueryNamesToConnectionIDs.IsNull() {
+		appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapNull(types.StringType)
+	} else {
+		appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
+			types.StringType,
+			state.OverrideActionQueryNamesToConnectionIDs.Elements(),
+		)
+	}
+
 	diags = response.State.Set(ctx, appBuilderAppModel)
 	response.Diagnostics.Append(diags...)
 }
@@ -165,12 +174,6 @@ func apiResponseToAppBuilderAppModel(resp datadogV2.GetAppResponse) (*appBuilder
 		return nil, fmt.Errorf("error building action_query_names_to_connection_ids map: %s", err)
 	}
 	appBuilderAppModel.ActionQueryNamesToConnectionIDs = actionQueryNamesToConnectionIDs
-
-	// Initialize the override map
-	appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
-		types.StringType,
-		map[string]attr.Value{},
-	)
 
 	// Marshal the modified app_json back to string
 	marshalledBytes, err = json.Marshal(appJson)

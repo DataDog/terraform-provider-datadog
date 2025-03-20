@@ -69,9 +69,10 @@ func TestAccDatadogAppBuilderAppResource_Inline_WithOptionalFields_Import(t *tes
 				Config: testAppBuilderAppInlineWithOptionalFieldsResourceConfig(appName),
 			},
 			{
-				ResourceName:      resourceName,
-				ImportState:       true,
-				ImportStateVerify: true,
+				ResourceName:            resourceName,
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"override_action_query_names_to_connection_ids"},
 			},
 		},
 	})
@@ -97,7 +98,7 @@ func TestAccDatadogAppBuilderAppResource_Escaped_Interpolated(t *testing.T) {
 					resource.TestCheckResourceAttrSet(resourceName, "id"),
 					resource.TestMatchResourceAttr(resourceName, "app_json", regexp.MustCompile(fmt.Sprintf(`"name":"%s"`, appName))),
 
-					resource.TestCheckResourceAttr(resourceName, "override_action_query_names_to_connection_ids.%", "0"),
+					resource.TestCheckNoResourceAttr(resourceName, "override_action_query_names_to_connection_ids"),
 
 					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.%", "1"),
 					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.listTeams0", "11111111-2222-3333-4444-555555555555"),

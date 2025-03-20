@@ -33,8 +33,10 @@ func TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields(t *testing.
 					resource.TestCheckResourceAttrSet(datasourceName, "id"),
 					resource.TestMatchResourceAttr(datasourceName, "app_json", regexp.MustCompile(fmt.Sprintf(`"name":"%s"`, appName))),
 
-					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.%", "1"),
-					resource.TestCheckResourceAttr(resourceName, "action_query_names_to_connection_ids.listTeams0", "11111111-2222-3333-4444-555555555555"),
+					resource.TestCheckResourceAttr(datasourceName, "override_action_query_names_to_connection_ids.%", "0"),
+
+					resource.TestCheckResourceAttr(datasourceName, "action_query_names_to_connection_ids.%", "1"),
+					resource.TestCheckResourceAttr(datasourceName, "action_query_names_to_connection_ids.listTeams0", "11111111-2222-3333-4444-555555555555"),
 
 					resource.TestCheckResourceAttr(datasourceName, "name", appName),
 					resource.TestCheckResourceAttr(datasourceName, "description", "Created using the Datadog provider in Terraform."),
