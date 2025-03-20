@@ -26,6 +26,7 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &appBuilderAppResource{}
 	_ resource.ResourceWithImportState = &appBuilderAppResource{}
+	_ resource.ResourceWithModifyPlan  = &appBuilderAppResource{}
 )
 
 var ErrDeploymentExists = "a deployment with the same app version already exists"
@@ -312,6 +313,170 @@ func (r *appBuilderAppResource) Delete(ctx context.Context, request resource.Del
 		} else {
 			response.Diagnostics.AddError("error deleting app", err.Error())
 		}
+		return
+	}
+}
+
+func (r *appBuilderAppResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// If the plan is null (resource is being destroyed) or no state exists yet, return early
+	// as there's nothing to modify
+	if req.Plan.Raw.IsNull() || req.State.Raw.IsNull() {
+		return
+	}
+
+	var plan, config, state appBuilderAppResourceModel
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// If app_json isn't set in either plan or config, nothing to do
+	if plan.AppJson.IsNull() || config.AppJson.IsNull() {
+		return
+	}
+
+	// Unmarshal all JSONs to compare their structures
+	var planJSON, configJSON, stateJSON map[string]interface{}
+	if err := json.Unmarshal([]byte(plan.AppJson.ValueString()), &planJSON); err != nil {
+		resp.Diagnostics.AddError("Error unmarshaling plan JSON", err.Error())
+		return
+	}
+	if err := json.Unmarshal([]byte(config.AppJson.ValueString()), &configJSON); err != nil {
+		resp.Diagnostics.AddError("Error unmarshaling config JSON", err.Error())
+		return
+	}
+	if err := json.Unmarshal([]byte(state.AppJson.ValueString()), &stateJSON); err != nil {
+		resp.Diagnostics.AddError("Error unmarshaling state JSON", err.Error())
+		return
+	}
+
+	// Helper function to recursively remove empty arrays, maps, and null values
+	// This ensures we don't treat empty/null values as meaningful differences
+	var removeEmptyValues func(map[string]interface{})
+	removeEmptyValues = func(m map[string]interface{}) {
+		for k, v := range m {
+			switch val := v.(type) {
+			case []interface{}:
+				if len(val) == 0 {
+					delete(m, k)
+				} else {
+					for _, item := range val {
+						if itemMap, ok := item.(map[string]interface{}); ok {
+							removeEmptyValues(itemMap)
+						}
+					}
+				}
+			case map[string]interface{}:
+				removeEmptyValues(val)
+				if len(val) == 0 {
+					delete(m, k)
+				}
+			case nil:
+				delete(m, k)
+			}
+		}
+	}
+
+	// Create copies of the JSON structures to modify without affecting originals
+	planCopy := make(map[string]interface{})
+	configCopy := make(map[string]interface{})
+	stateCopy := make(map[string]interface{})
+	maps.Copy(planCopy, planJSON)
+	maps.Copy(configCopy, configJSON)
+	maps.Copy(stateCopy, stateJSON)
+
+	// Remove fields that match the state values - these don't need to trigger updates
+	if !plan.Name.IsNull() && state.Name.ValueString() == stateCopy["name"] {
+		delete(planCopy, "name")
+		delete(configCopy, "name")
+		delete(stateCopy, "name")
+	}
+	if !plan.Description.IsNull() && state.Description.ValueString() == stateCopy["description"] {
+		delete(planCopy, "description")
+		delete(configCopy, "description")
+		delete(stateCopy, "description")
+	}
+	if !plan.RootInstanceName.IsNull() && state.RootInstanceName.ValueString() == stateCopy["rootInstanceName"] {
+		delete(planCopy, "rootInstanceName")
+		delete(configCopy, "rootInstanceName")
+		delete(stateCopy, "rootInstanceName")
+	}
+
+	// Handle connection ID overrides
+	if !plan.OverrideActionQueryNamesToConnectionIDs.IsNull() {
+		overrides := plan.OverrideActionQueryNamesToConnectionIDs.Elements()
+
+		// Process queries in all JSONs to remove connectionId fields that will be overridden
+		processQueries := func(queries []interface{}, isState bool) {
+			for _, q := range queries {
+				if query, ok := q.(map[string]interface{}); ok {
+					if queryName, ok := query["name"].(string); ok {
+						if _, exists := overrides[queryName]; exists {
+							if properties, ok := query["properties"].(map[string]interface{}); ok {
+								if spec, ok := properties["spec"].(map[string]interface{}); ok {
+									delete(spec, "connectionId")
+								}
+							}
+						}
+					}
+					// Remove empty events array as it's not meaningful for comparison
+					if _, hasEvents := query["events"]; hasEvents {
+						delete(query, "events")
+					}
+				}
+			}
+		}
+
+		if queries, ok := planCopy["queries"].([]interface{}); ok {
+			processQueries(queries, false)
+		}
+		if queries, ok := configCopy["queries"].([]interface{}); ok {
+			processQueries(queries, false)
+		}
+		if queries, ok := stateCopy["queries"].([]interface{}); ok {
+			processQueries(queries, true)
+		}
+	}
+
+	// Clean up any remaining empty values that might have been created during processing
+	removeEmptyValues(planCopy)
+	removeEmptyValues(configCopy)
+	removeEmptyValues(stateCopy)
+
+	// Marshal back to JSON for final comparison
+	planBytes, _ := json.Marshal(planCopy)
+	stateBytes, _ := json.Marshal(stateCopy)
+
+	planAndStateEq, _ := customtypes.NewAppBuilderAppStringValue(string(planBytes)).StringSemanticEquals(ctx, customtypes.NewAppBuilderAppStringValue(string(stateBytes)))
+
+	if planAndStateEq {
+		plan.AppJson = state.AppJson
+
+		// Keep existing computed values logic
+		if !state.ActionQueryNamesToConnectionIDs.IsNull() && config.ActionQueryNamesToConnectionIDs.IsNull() {
+			plan.ActionQueryNamesToConnectionIDs = state.ActionQueryNamesToConnectionIDs
+		}
+		if !state.Name.IsNull() && config.Name.IsNull() {
+			plan.Name = state.Name
+		}
+		if !state.Description.IsNull() && config.Description.IsNull() {
+			plan.Description = state.Description
+		}
+		if !state.RootInstanceName.IsNull() && config.RootInstanceName.IsNull() {
+			plan.RootInstanceName = state.RootInstanceName
+		}
+		if !state.Published.IsNull() && config.Published.IsNull() {
+			plan.Published = state.Published
+		}
+
+		// Keep existing override map logic
+		if !config.OverrideActionQueryNamesToConnectionIDs.IsNull() && !state.OverrideActionQueryNamesToConnectionIDs.IsNull() {
+			plan.OverrideActionQueryNamesToConnectionIDs = state.OverrideActionQueryNamesToConnectionIDs
+		}
+
+		resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
 		return
 	}
 }

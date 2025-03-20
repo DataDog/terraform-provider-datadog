@@ -41,8 +41,6 @@ func TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields(t *testing.
 					resource.TestCheckResourceAttr(datasourceName, "root_instance_name", "grid0"),
 					resource.TestCheckResourceAttr(datasourceName, "published", "true"),
 				),
-				ExpectNonEmptyPlan: true,
-				// TODO: consider removing the above once things are stable
 			},
 		},
 	})
@@ -57,7 +55,6 @@ func testAppBuilderAppInlineWithOptionalFieldsDataSourceConfig(name string) stri
 }
 
 func testAppBuilderAppInlineWithOptionalFieldsResourceConfig(name string) string {
-	// for the sake of this test, we are only interested in the name
 	return fmt.Sprintf(`
 	resource "datadog_app_builder_app" "test_app_inline_optional" {
 		name               = "%s"
@@ -115,7 +112,11 @@ func testAppBuilderAppInlineWithOptionalFieldsAppJSON() string {
 				"id": "11111111-1111-1111-1111-111111111111",
 				"name": "A connection that will be overridden"
 			}
-		]
+		],
+		"deployment" : {
+			"id" : "11111111-1111-1111-1111-111111111111",
+			"app_version_id" : "00000000-0000-0000-0000-000000000000"
+		}
 	}
 	`
 }

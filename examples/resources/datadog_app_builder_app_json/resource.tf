@@ -74,19 +74,17 @@ variable "name" {
   type    = string
   default = "Example Terraform App - Inline - Escaped - Interpolated"
 }
-
 variable "description" {
   type    = string
   default = "Created using the Datadog provider in Terraform. Variable interpolation."
 }
-
 variable "root_instance_name" {
   type    = string
   default = "grid0"
 }
 
 # Example App Builder App resource - inline with escaped $${} syntax for Javascript and ${} for Terraform variables
-resource "datadog_app_builder_app" "example_app_inline_escaped_interpolated" {
+resource "datadog_app_builder_app" "example_app_escaped_interpolated" {
   app_json = jsonencode(
     {
       "queries" : [
