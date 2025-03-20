@@ -62,10 +62,6 @@ func (v AppBuilderAppStringValue) StringSemanticEquals(ctx context.Context, newV
 		return false, diags
 	}
 
-	// Add debug logging
-	fmt.Printf("Original old value: %s\n", v.ValueString())
-	fmt.Printf("Original new value: %s\n", newValue.ValueString())
-
 	result, err := appJSONEqual(newValue.ValueString(), v.ValueString())
 
 	if err != nil {
@@ -93,10 +89,6 @@ func appJSONEqual(s1, s2 string) (bool, error) {
 		return false, err
 	}
 
-	// Add debug logging
-	fmt.Printf("Normalized string 1: %s\n", s1)
-	fmt.Printf("Normalized string 2: %s\n", s2)
-
 	return s1 == s2, nil
 }
 
@@ -114,15 +106,18 @@ func normalizeAppBuilderAppString(jsonStr string) (string, error) {
 	}
 
 	// feature specific to AppBuilderAppStringValue:
-	// remove the "id" field from the JSON string because we want to ignore the App ID when comparing JSON strings
+	// we only want to compare fields that matter to Create/Update requests when comparing JSON strings
 	if jsonMap, ok := temp.(map[string]interface{}); ok {
-		delete(jsonMap, "id")
-		// ignoring other fields that don't matter in Create/Update requests
-		delete(jsonMap, "connections")
-		delete(jsonMap, "favorite")
-		delete(jsonMap, "selfService")
-		delete(jsonMap, "tags")
-		temp = jsonMap
+		fieldsToKeep := []string{"components", "description", "name", "queries", "rootInstanceName"}
+
+		newJsonMap := make(map[string]interface{})
+		for _, field := range fieldsToKeep {
+			if val, ok := jsonMap[field]; ok {
+				newJsonMap[field] = val
+			}
+		}
+
+		temp = newJsonMap
 	}
 
 	jsonBytes, err := json.Marshal(&temp)
