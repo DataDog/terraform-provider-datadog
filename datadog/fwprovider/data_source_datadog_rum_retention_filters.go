@@ -13,10 +13,10 @@ import (
 )
 
 var (
-	_ datasource.DataSource = &datadogTeamDataSource{}
+	_ datasource.DataSource = &rumRetentionFiltersDataSource{}
 )
 
-func NewDatadogRumRetentionFiltersDataSource() datasource.DataSource {
+func NewRumRetentionFiltersDataSource() datasource.DataSource {
 	return &rumRetentionFiltersDataSource{}
 }
 
