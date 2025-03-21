@@ -52,3 +52,4 @@ datadog/**/*datadog_integration_microsoft_teams* @DataDog/web-frameworks @DataDo
 datadog/**/*datadog_action_connection*           @DataDog/web-frameworks @DataDog/api-reliability @DataDog/action-platform
 datadog/**/*datadog_workflow_automation*         @DataDog/web-frameworks @DataDog/api-reliability @DataDog/workflow-automation-backend
 datadog/**/*datadog_webhook*                     @DataDog/web-frameworks @DataDog/api-reliability @DataDog/collaboration-integrations
+datadog/**/*datadog_app_builder_app*             @DataDog/web-frameworks @DataDog/api-reliability @DataDog/app-builder-backend
