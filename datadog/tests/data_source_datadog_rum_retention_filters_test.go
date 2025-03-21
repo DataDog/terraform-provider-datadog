@@ -23,7 +23,7 @@ func TestAccRumRetentionFiltersDatasource(t *testing.T) {
 			{
 				Config: dataDatadogRumRetentionFilters(),
 				Check: resource.TestMatchResourceAttr("data.datadog_rum_retention_filters.testing_rum_retention_filters",
-					"retention_filters.#", regexp.MustCompile("^(0|[1-9]\\d*)$")), // check the size of list is >= 0
+					"retention_filters.#", regexp.MustCompile(`^(0|[1-9]\d*)$`)), // check the size of list is >= 0
 			},
 		},
 	})
