@@ -51,6 +51,13 @@ func resourceDatadogLogsArchive() *schema.Resource {
 								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsArchiveEncryptionS3TypeFromValue),
 							},
 							"encryption_key": {Description: "The AWS KMS encryption key.", Type: schema.TypeString, Optional: true},
+							"storage_class": {
+								Description:      "The AWS S3 storage class used to upload the logs.",
+								Type:             schema.TypeString,
+								Optional:         true,
+								Default:          datadogV2.LOGSARCHIVESTORAGECLASSS3TYPE_STANDARD,
+								ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewLogsArchiveStorageClassS3TypeFromValue),
+							},
 						},
 					},
 				},
@@ -253,7 +260,6 @@ func buildGCSMap(destination datadogV2.LogsArchiveDestinationGCS) map[string]int
 	if v, ok := integration.GetProjectIdOk(); ok {
 		result["project_id"] = *v
 	}
-
 	return result
 }
 
@@ -271,6 +277,9 @@ func buildS3Map(destination datadogV2.LogsArchiveDestinationS3) map[string]inter
 	}
 	result["bucket"] = destination.GetBucket()
 	result["path"] = destination.GetPath()
+	if storageClass, ok := destination.GetStorageClassOk(); ok {
+		result["storage_class"] = storageClass
+	}
 	return result
 }
 
@@ -451,6 +460,8 @@ func buildS3Destination(dest interface{}) (*datadogV2.LogsArchiveDestinationS3, 
 		}
 		destination.SetEncryption(*encryption)
 	}
+	storageClass := d["storage_class"]
+	destination.SetStorageClass(datadogV2.LogsArchiveStorageClassS3Type(storageClass.(string)))
 	destination.Path = datadog.PtrString(path.(string))
 	return destination, nil
 }
