@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
 )
 
 const EXPIRY_WARNING_MESSAGE = "A new external ID must be used to create an AWS account integration in Datadog within 48 hours of creation or it will expire."

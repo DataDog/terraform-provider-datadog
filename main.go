@@ -10,8 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tfprotov5/tf5server"
 	"github.com/hashicorp/terraform-plugin-mux/tf5muxserver"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/DataDog/terraform-provider-datadog/datadog"
+	"github.com/DataDog/terraform-provider-datadog/datadog/fwprovider"
 )
 
 func main() {

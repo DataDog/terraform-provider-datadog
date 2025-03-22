@@ -10,8 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	communityClient "github.com/zorkian/go-datadog-api"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
 )
 
 func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {

@@ -23,7 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/meta"
 
-	"github.com/terraform-providers/terraform-provider-datadog/version"
+	"github.com/DataDog/terraform-provider-datadog/version"
 )
 
 // DDAPPKeyEnvName name of env var for APP key

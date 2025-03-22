@@ -19,9 +19,9 @@ import (
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 	ddhttp "gopkg.in/DataDog/dd-trace-go.v1/contrib/net/http"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog"
+	"github.com/DataDog/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
 )
 
 type compositeProviderStruct struct {

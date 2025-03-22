@@ -5,7 +5,7 @@ PKG_NAME=datadog
 DIR=~/.terraform.d/plugins
 ZORKIAN_VERSION?=master
 API_CLIENT_VERSION?=master
-LOCAL_PACKAGE="github.com/terraform-providers/terraform-provider-datadog"
+LOCAL_PACKAGE="github.com/DataDog/terraform-provider-datadog"
 
 default: build
 
