@@ -16,10 +16,10 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
@@ -39,14 +39,13 @@ type appBuilderAppResource struct {
 
 // try single property JSON input -> validation will be handled on the API side
 type appBuilderAppResourceModel struct {
-	ID                                      types.String                         `tfsdk:"id"`
-	AppJson                                 customtypes.AppBuilderAppStringValue `tfsdk:"app_json"`
-	OverrideActionQueryNamesToConnectionIDs types.Map                            `tfsdk:"override_action_query_names_to_connection_ids"`
-	ActionQueryNamesToConnectionIDs         types.Map                            `tfsdk:"action_query_names_to_connection_ids"`
-	Name                                    types.String                         `tfsdk:"name"`
-	Description                             types.String                         `tfsdk:"description"`
-	RootInstanceName                        types.String                         `tfsdk:"root_instance_name"`
-	Published                               types.Bool                           `tfsdk:"published"`
+	ID                              types.String `tfsdk:"id"`
+	AppJson                         types.String `tfsdk:"app_json"`
+	ActionQueryNamesToConnectionIDs types.Map    `tfsdk:"action_query_names_to_connection_ids"`
+	Name                            types.String `tfsdk:"name"`
+	Description                     types.String `tfsdk:"description"`
+	RootInstanceName                types.String `tfsdk:"root_instance_name"`
+	Published                       types.Bool   `tfsdk:"published"`
 }
 
 func NewAppBuilderAppResource() resource.Resource {
@@ -76,17 +75,12 @@ func (r *appBuilderAppResource) Schema(_ context.Context, _ resource.SchemaReque
 				Validators: []validator.String{
 					stringvalidator.LengthAtLeast(1),
 				},
-				CustomType: customtypes.AppBuilderAppStringType{},
-			},
-			"override_action_query_names_to_connection_ids": schema.MapAttribute{
-				Optional:    true,
-				ElementType: types.StringType,
-				Description: "If specified, this will override the Action Connection IDs for the specified Action Query Names in the App JSON.",
 			},
 			"action_query_names_to_connection_ids": schema.MapAttribute{
+				Optional:    true,
 				Computed:    true,
 				ElementType: types.StringType,
-				Description: "A computed map of the App's Action Query Names to Action Connection IDs.",
+				Description: "If specified, this will override the Action Connection IDs for the specified Action Query Names in the App JSON. Otherwise, a map of the App's Action Query Names to Action Connection IDs will be returned in output.",
 			},
 			"name": schema.StringAttribute{
 				Optional:    true,
@@ -109,6 +103,7 @@ func (r *appBuilderAppResource) Schema(_ context.Context, _ resource.SchemaReque
 			"published": schema.BoolAttribute{
 				Optional:    true,
 				Computed:    true,
+				Default:     booldefault.StaticBool(false),
 				Description: "Set the app to published or unpublished. Published apps are available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist.",
 			},
 		},
@@ -150,23 +145,13 @@ func (r *appBuilderAppResource) Create(ctx context.Context, request resource.Cre
 
 	appID := createResp.Data.GetId()
 
-	// if the published attribute is not set, set it to false
-	if plan.Published.IsNull() || plan.Published.IsUnknown() {
-		plan.Published = types.BoolValue(false)
-	}
-	err = handleAppBuilderAppPublishUnpublish(r.Auth, response.Diagnostics, r.Api, &plan, appID)
-	if err != nil {
+	if ok := handleAppBuilderPublishState(r.Auth, &response.Diagnostics, r.Api, &plan, appID); !ok {
 		return
 	}
 
 	// set computed values
 	plan.ID = types.StringValue(appID.String())
 	attributes := createReq.GetData().Attributes
-	plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(attributes.GetQueries())
-	if err != nil {
-		response.Diagnostics.AddError("error building action_query_names_to_connection_ids map", err.Error())
-		return
-	}
 
 	// if optional fields are not set, compute them from the app json
 	if plan.Name.IsNull() || plan.Name.IsUnknown() {
@@ -177,6 +162,13 @@ func (r *appBuilderAppResource) Create(ctx context.Context, request resource.Cre
 	}
 	if plan.RootInstanceName.IsNull() || plan.RootInstanceName.IsUnknown() {
 		plan.RootInstanceName = types.StringValue(*attributes.RootInstanceName)
+	}
+	if plan.ActionQueryNamesToConnectionIDs.IsNull() || plan.ActionQueryNamesToConnectionIDs.IsUnknown() {
+		plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(attributes.GetQueries())
+		if err != nil {
+			response.Diagnostics.AddError("error building action_query_names_to_connection_ids map", err.Error())
+			return
+		}
 	}
 
 	// Save data into Terraform state
@@ -203,16 +195,6 @@ func (r *appBuilderAppResource) Read(ctx context.Context, request resource.ReadR
 	if err != nil {
 		response.Diagnostics.AddError("error reading app", err.Error())
 		return
-	}
-
-	// Initialize the override map to avoid map type conversion errors (bug in TF 1.3.3)
-	if state.OverrideActionQueryNamesToConnectionIDs.IsNull() {
-		appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapNull(types.StringType)
-	} else {
-		appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
-			types.StringType,
-			state.OverrideActionQueryNamesToConnectionIDs.Elements(),
-		)
 	}
 
 	// Save data into Terraform state
@@ -262,22 +244,12 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 		return
 	}
 
-	// if the published attribute is not set, set it to false
-	if plan.Published.IsNull() || plan.Published.IsUnknown() {
-		plan.Published = types.BoolValue(false)
-	}
-	err = handleAppBuilderAppPublishUnpublish(r.Auth, response.Diagnostics, r.Api, &plan, appID)
-	if err != nil {
+	if ok := handleAppBuilderPublishState(r.Auth, &response.Diagnostics, r.Api, &plan, appID); !ok {
 		return
 	}
 
 	// set computed values
 	attributes := updateResp.GetData().Attributes
-	plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(attributes.GetQueries())
-	if err != nil {
-		response.Diagnostics.AddError("error building action_query_names_to_connection_ids map", err.Error())
-		return
-	}
 
 	// if optional fields are not set, compute them from the app json
 	if plan.Name.IsNull() || plan.Name.IsUnknown() {
@@ -288,6 +260,13 @@ func (r *appBuilderAppResource) Update(ctx context.Context, request resource.Upd
 	}
 	if plan.RootInstanceName.IsNull() || plan.RootInstanceName.IsUnknown() {
 		plan.RootInstanceName = types.StringValue(*attributes.RootInstanceName)
+	}
+	if plan.ActionQueryNamesToConnectionIDs.IsNull() || plan.ActionQueryNamesToConnectionIDs.IsUnknown() {
+		plan.ActionQueryNamesToConnectionIDs, err = buildActionQueryNamesToConnectionIDsMap(attributes.GetQueries())
+		if err != nil {
+			response.Diagnostics.AddError("error building action_query_names_to_connection_ids map", err.Error())
+			return
+		}
 	}
 
 	// Save data into Terraform state
@@ -347,14 +326,10 @@ func (r *appBuilderAppResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// Unmarshal all JSONs to compare their structures
-	var planJSON, configJSON, stateJSON map[string]interface{}
+	// Unmarshal plan and state JSONs to compare their structures
+	var planJSON, stateJSON map[string]any
 	if err := json.Unmarshal([]byte(plan.AppJson.ValueString()), &planJSON); err != nil {
 		resp.Diagnostics.AddError("Error unmarshaling plan JSON", err.Error())
-		return
-	}
-	if err := json.Unmarshal([]byte(config.AppJson.ValueString()), &configJSON); err != nil {
-		resp.Diagnostics.AddError("Error unmarshaling config JSON", err.Error())
 		return
 	}
 	if err := json.Unmarshal([]byte(state.AppJson.ValueString()), &stateJSON); err != nil {
@@ -362,70 +337,38 @@ func (r *appBuilderAppResource) ModifyPlan(ctx context.Context, req resource.Mod
 		return
 	}
 
-	// Helper function to recursively remove empty arrays, maps, and null values
-	// This ensures we don't treat empty/null values as meaningful differences
-	var removeEmptyValues func(map[string]interface{})
-	removeEmptyValues = func(m map[string]interface{}) {
-		for k, v := range m {
-			switch val := v.(type) {
-			case []interface{}:
-				if len(val) == 0 {
-					delete(m, k)
-				} else {
-					for _, item := range val {
-						if itemMap, ok := item.(map[string]interface{}); ok {
-							removeEmptyValues(itemMap)
-						}
-					}
-				}
-			case map[string]interface{}:
-				removeEmptyValues(val)
-				if len(val) == 0 {
-					delete(m, k)
-				}
-			case nil:
-				delete(m, k)
-			}
-		}
-	}
-
 	// Create copies of the JSON structures to modify without affecting originals
-	planCopy := make(map[string]interface{})
-	configCopy := make(map[string]interface{})
-	stateCopy := make(map[string]interface{})
+	planCopy := make(map[string]any)
+	stateCopy := make(map[string]any)
 	maps.Copy(planCopy, planJSON)
-	maps.Copy(configCopy, configJSON)
 	maps.Copy(stateCopy, stateJSON)
 
 	// Remove fields that match the state values - these don't need to trigger updates
 	if !plan.Name.IsNull() && state.Name.ValueString() == stateCopy["name"] {
 		delete(planCopy, "name")
-		delete(configCopy, "name")
 		delete(stateCopy, "name")
 	}
 	if !plan.Description.IsNull() && state.Description.ValueString() == stateCopy["description"] {
 		delete(planCopy, "description")
-		delete(configCopy, "description")
 		delete(stateCopy, "description")
 	}
 	if !plan.RootInstanceName.IsNull() && state.RootInstanceName.ValueString() == stateCopy["rootInstanceName"] {
 		delete(planCopy, "rootInstanceName")
-		delete(configCopy, "rootInstanceName")
 		delete(stateCopy, "rootInstanceName")
 	}
 
 	// Handle connection ID overrides
-	if !plan.OverrideActionQueryNamesToConnectionIDs.IsNull() {
-		overrides := plan.OverrideActionQueryNamesToConnectionIDs.Elements()
+	if !plan.ActionQueryNamesToConnectionIDs.IsNull() {
+		overrides := plan.ActionQueryNamesToConnectionIDs.Elements()
 
 		// Process queries in all JSONs to remove connectionId fields that will be overridden
-		processQueries := func(queries []interface{}, isState bool) {
+		processQueries := func(queries []any, isState bool) {
 			for _, q := range queries {
-				if query, ok := q.(map[string]interface{}); ok {
+				if query, ok := q.(map[string]any); ok {
 					if queryName, ok := query["name"].(string); ok {
 						if _, exists := overrides[queryName]; exists {
-							if properties, ok := query["properties"].(map[string]interface{}); ok {
-								if spec, ok := properties["spec"].(map[string]interface{}); ok {
+							if properties, ok := query["properties"].(map[string]any); ok {
+								if spec, ok := properties["spec"].(map[string]any); ok {
 									delete(spec, "connectionId")
 								}
 							}
@@ -439,27 +382,23 @@ func (r *appBuilderAppResource) ModifyPlan(ctx context.Context, req resource.Mod
 			}
 		}
 
-		if queries, ok := planCopy["queries"].([]interface{}); ok {
+		if queries, ok := planCopy["queries"].([]any); ok {
 			processQueries(queries, false)
 		}
-		if queries, ok := configCopy["queries"].([]interface{}); ok {
-			processQueries(queries, false)
-		}
-		if queries, ok := stateCopy["queries"].([]interface{}); ok {
+		if queries, ok := stateCopy["queries"].([]any); ok {
 			processQueries(queries, true)
 		}
 	}
 
 	// Clean up any remaining empty values that might have been created during processing
-	removeEmptyValues(planCopy)
-	removeEmptyValues(configCopy)
-	removeEmptyValues(stateCopy)
+	utils.RemoveEmptyValuesInMap(planCopy)
+	utils.RemoveEmptyValuesInMap(stateCopy)
 
 	// Marshal back to JSON for final comparison
 	planBytes, _ := json.Marshal(planCopy)
 	stateBytes, _ := json.Marshal(stateCopy)
 
-	planAndStateEq, _ := customtypes.NewAppBuilderAppStringValue(string(planBytes)).StringSemanticEquals(ctx, customtypes.NewAppBuilderAppStringValue(string(stateBytes)))
+	planAndStateEq, _ := utils.AppJSONStringSemanticEquals(string(planBytes), string(stateBytes))
 
 	// if the plan and state are equal, set the plan to the state
 	if planAndStateEq {
@@ -482,9 +421,9 @@ func (r *appBuilderAppResource) ModifyPlan(ctx context.Context, req resource.Mod
 			plan.Published = state.Published
 		}
 
-		// Keep existing override map logic
-		if !config.OverrideActionQueryNamesToConnectionIDs.IsNull() && !state.OverrideActionQueryNamesToConnectionIDs.IsNull() {
-			plan.OverrideActionQueryNamesToConnectionIDs = state.OverrideActionQueryNamesToConnectionIDs
+		// Keep existing action_query_names_to_connection_ids map logic
+		if !config.ActionQueryNamesToConnectionIDs.IsNull() && !state.ActionQueryNamesToConnectionIDs.IsNull() {
+			plan.ActionQueryNamesToConnectionIDs = state.ActionQueryNamesToConnectionIDs
 		}
 
 		resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
@@ -494,7 +433,7 @@ func (r *appBuilderAppResource) ModifyPlan(ctx context.Context, req resource.Mod
 
 func appBuilderAppModelToCreateApiRequest(plan appBuilderAppResourceModel) (*datadogV2.CreateAppRequest, error) {
 	// unmarshal app JSON into a map
-	var appJson map[string]interface{}
+	var appJson map[string]any
 	if err := json.Unmarshal([]byte(plan.AppJson.ValueString()), &appJson); err != nil {
 		return nil, fmt.Errorf("error unmarshalling app JSON: %s", err)
 	}
@@ -526,7 +465,7 @@ func appBuilderAppModelToCreateApiRequest(plan appBuilderAppResourceModel) (*dat
 
 func appBuilderAppModelToUpdateApiRequest(plan appBuilderAppResourceModel) (*datadogV2.UpdateAppRequest, error) {
 	// unmarshal app JSON into a map
-	var appJson map[string]interface{}
+	var appJson map[string]any
 	if err := json.Unmarshal([]byte(plan.AppJson.ValueString()), &appJson); err != nil {
 		return nil, fmt.Errorf("error unmarshalling app JSON: %s", err)
 	}
@@ -555,7 +494,7 @@ func appBuilderAppModelToUpdateApiRequest(plan appBuilderAppResourceModel) (*dat
 	return req, nil
 }
 
-func overrideAppBuilderAppAttributesInCreateRequestAttributes(plan appBuilderAppResourceModel, appJsonMap map[string]interface{}) error {
+func overrideAppBuilderAppAttributesInCreateRequestAttributes(plan appBuilderAppResourceModel, appJsonMap map[string]any) error {
 	// name, description, root_instance_name are straightforward string replacements
 	if !plan.Name.IsNull() && !plan.Name.IsUnknown() {
 		appJsonMap["name"] = plan.Name.ValueString()
@@ -567,8 +506,8 @@ func overrideAppBuilderAppAttributesInCreateRequestAttributes(plan appBuilderApp
 		appJsonMap["rootInstanceName"] = plan.RootInstanceName.ValueString()
 	}
 
-	// Using override_action_query_names_to_connection_ids, replace connection ids in the update request attributes with the ones provided in the plan
-	err := replaceConnectionIDsInActionQueries(plan.OverrideActionQueryNamesToConnectionIDs, appJsonMap)
+	// Using action_query_names_to_connection_ids, replace connection ids in the update request attributes with the ones provided in the plan
+	err := replaceConnectionIDsInActionQueries(plan.ActionQueryNamesToConnectionIDs, appJsonMap)
 	if err != nil {
 		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
 		return err
@@ -577,7 +516,7 @@ func overrideAppBuilderAppAttributesInCreateRequestAttributes(plan appBuilderApp
 	return nil
 }
 
-func overrideAppBuilderAppAttributesInUpdateRequestAttributes(plan appBuilderAppResourceModel, appJsonMap map[string]interface{}) error {
+func overrideAppBuilderAppAttributesInUpdateRequestAttributes(plan appBuilderAppResourceModel, appJsonMap map[string]any) error {
 	// name, description, root_instance_name are straightforward string replacements
 	if !plan.Name.IsNull() && !plan.Name.IsUnknown() {
 		appJsonMap["name"] = plan.Name.ValueString()
@@ -589,8 +528,8 @@ func overrideAppBuilderAppAttributesInUpdateRequestAttributes(plan appBuilderApp
 		appJsonMap["rootInstanceName"] = plan.RootInstanceName.ValueString()
 	}
 
-	// Using override_action_query_names_to_connection_ids, replace connection ids in the update request attributes with the ones provided in the plan
-	err := replaceConnectionIDsInActionQueries(plan.OverrideActionQueryNamesToConnectionIDs, appJsonMap)
+	// Using action_query_names_to_connection_ids, replace connection ids in the update request attributes with the ones provided in the plan
+	err := replaceConnectionIDsInActionQueries(plan.ActionQueryNamesToConnectionIDs, appJsonMap)
 	if err != nil {
 		err = fmt.Errorf("error replacing connection IDs in queries: %s", err.Error())
 		return err
@@ -600,14 +539,13 @@ func overrideAppBuilderAppAttributesInUpdateRequestAttributes(plan appBuilderApp
 }
 
 // replace the connection ids in the queries with the ones provided in the plan, as specified by {action_query_name: connection_id}
-func replaceConnectionIDsInActionQueries(overrideActionQueryNamesToConnectionIDs types.Map, appJsonMap map[string]interface{}) error {
+func replaceConnectionIDsInActionQueries(overrideActionQueryNamesToConnectionIDs types.Map, appJsonMap map[string]any) error {
 	// skip if overrideActionQueryNamesToConnectionIDs is empty
 	if overrideActionQueryNamesToConnectionIDs.IsNull() || overrideActionQueryNamesToConnectionIDs.IsUnknown() {
 		return nil
 	}
 
-	// Handle connection ID overrides
-	queries, ok := appJsonMap["queries"].([]interface{})
+	queries, ok := appJsonMap["queries"].([]any)
 	if !ok {
 		return nil
 	}
@@ -627,7 +565,7 @@ func replaceConnectionIDsInActionQueries(overrideActionQueryNamesToConnectionIDs
 
 	// Update connection IDs in queries
 	for _, q := range queries {
-		query, ok := q.(map[string]interface{})
+		query, ok := q.(map[string]any)
 		if !ok {
 			continue
 		}
@@ -644,12 +582,12 @@ func replaceConnectionIDsInActionQueries(overrideActionQueryNamesToConnectionIDs
 
 		// Check if we have an override for this query
 		if connectionID, ok := overrides[queryName]; ok {
-			properties, ok := query["properties"].(map[string]interface{})
+			properties, ok := query["properties"].(map[string]any)
 			if !ok {
 				continue
 			}
 
-			spec, ok := properties["spec"].(map[string]interface{})
+			spec, ok := properties["spec"].(map[string]any)
 			if !ok {
 				continue
 			}
@@ -667,7 +605,7 @@ func replaceConnectionIDsInActionQueries(overrideActionQueryNamesToConnectionIDs
 	return nil
 }
 
-func handleAppBuilderAppPublishUnpublish(ctx context.Context, diags diag.Diagnostics, api *datadogV2.AppBuilderApi, plan *appBuilderAppResourceModel, appID uuid.UUID) (err error) {
+func handleAppBuilderPublishState(ctx context.Context, diags *diag.Diagnostics, api *datadogV2.AppBuilderApi, plan *appBuilderAppResourceModel, appID uuid.UUID) (ok bool) {
 	// publish the app if the published attribute is true
 	if plan.Published.ValueBool() {
 		_, httpResp, err := api.PublishApp(ctx, appID)
@@ -677,19 +615,18 @@ func handleAppBuilderAppPublishUnpublish(ctx context.Context, diags diag.Diagnos
 				body, err := io.ReadAll(httpResp.Body)
 				if err != nil {
 					diags.AddError("error reading error response", err.Error())
-					return err
+					return false
 				}
 
 				// if error is related to the app already being published, we can ignore it
-				if !strings.Contains(string(body), ErrDeploymentExists) {
-					diags.AddError("error publishing app", string(body))
-				} else {
-					return nil
+				if strings.Contains(string(body), ErrDeploymentExists) {
+					return true
 				}
-			} else {
-				diags.AddError("error publishing app", err.Error())
+				diags.AddError("error publishing app", string(body))
+				return false
 			}
-			return err
+			diags.AddError("error publishing app", err.Error())
+			return false
 		}
 	} else {
 		// unpublish the app if the published attribute is false
@@ -700,21 +637,20 @@ func handleAppBuilderAppPublishUnpublish(ctx context.Context, diags diag.Diagnos
 				body, err := io.ReadAll(httpResp.Body)
 				if err != nil {
 					diags.AddError("error reading error response", err.Error())
-					return err
+					return false
 				}
 
-				// if error is related to the app already being unpublished, we can ignore It
-				if !strings.Contains(string(body), ErrAppAlreadyDisabled) {
-					diags.AddError("error unpublishing app", string(body))
-				} else {
-					return nil
+				// if error is related to the app already being unpublished, we can ignore it
+				if strings.Contains(string(body), ErrAppAlreadyDisabled) {
+					return true
 				}
-			} else {
-				diags.AddError("error unpublishing app", err.Error())
+				diags.AddError("error unpublishing app", string(body))
+				return false
 			}
-			return err
+			diags.AddError("error unpublishing app", err.Error())
+			return false
 		}
 	}
 
-	return nil
+	return true
 }

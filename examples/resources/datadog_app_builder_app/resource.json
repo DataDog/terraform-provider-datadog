@@ -59,7 +59,7 @@
                 "onlyTriggerManually": false,
                 "outputs": "${((outputs) => {// Use `outputs` to reference the query's unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(item => item.attributes.name);})(self.rawOutputs)}",
                 "spec": {
-                    "connectionId": "11111111-2222-3333-4444-555555555555",
+                    "connectionId": "11111111-1111-1111-1111-111111111111",
                     "fqn": "com.datadoghq.dd.teams.listTeams",
                     "inputs": {}
                 }
@@ -72,7 +72,7 @@
             "properties": {
                 "outputs": "${((outputs) => {// Use `outputs` to reference the query's unformatted output.\n\n// TODO: Apply transformations to the raw query output\n\nreturn outputs.data.map(output => output.attributes.schema['dd-service']);})(self.rawOutputs)}",
                 "spec": {
-                    "connectionId": "11111111-2222-3333-4444-555555555555",
+                    "connectionId": "11111111-1111-1111-1111-111111111111",
                     "fqn": "com.datadoghq.dd.service_catalog.listServiceDefinitions",
                     "inputs": {
                         "limit": 1000

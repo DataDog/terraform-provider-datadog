@@ -33,8 +33,6 @@ func TestAccDatadogAppBuilderAppDataSource_Inline_WithOptionalFields(t *testing.
 					resource.TestCheckResourceAttrSet(datasourceName, "id"),
 					resource.TestMatchResourceAttr(datasourceName, "app_json", regexp.MustCompile(fmt.Sprintf(`"name":"%s"`, appName))),
 
-					resource.TestCheckResourceAttr(datasourceName, "override_action_query_names_to_connection_ids.%", "0"),
-
 					resource.TestCheckResourceAttr(datasourceName, "action_query_names_to_connection_ids.%", "1"),
 					resource.TestCheckResourceAttr(datasourceName, "action_query_names_to_connection_ids.listTeams0", "11111111-2222-3333-4444-555555555555"),
 
@@ -64,7 +62,7 @@ func testAppBuilderAppInlineWithOptionalFieldsResourceConfig(name string) string
 		root_instance_name = "grid0"
 		published          = true
 		
-		override_action_query_names_to_connection_ids = {
+		action_query_names_to_connection_ids = {
 			"listTeams0" = "11111111-2222-3333-4444-555555555555"
 		}
 		

@@ -11,7 +11,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 )
 
 var _ datasource.DataSource = &appBuilderAppDataSource{}
@@ -48,16 +47,10 @@ func (d *appBuilderAppDataSource) Schema(_ context.Context, request datasource.S
 			"app_json": schema.StringAttribute{
 				Computed:    true,
 				Description: "The JSON representation of the App.",
-				CustomType:  customtypes.AppBuilderAppStringType{},
-			},
-			"override_action_query_names_to_connection_ids": schema.MapAttribute{
-				Optional:    true,
-				ElementType: types.StringType,
-				Description: "If specified in a resource, this will override the Action Connection IDs for the specified Action Query Names in the App JSON.",
 			},
 			"action_query_names_to_connection_ids": schema.MapAttribute{
 				Computed:    true,
-				Description: "A computed map of the App's Action Query Names to Action Connection IDs.",
+				Description: "A map of the App's Action Query Names to Action Connection IDs.",
 				ElementType: types.StringType,
 			},
 			"name": schema.StringAttribute{
@@ -100,16 +93,6 @@ func (d *appBuilderAppDataSource) Read(ctx context.Context, request datasource.R
 		return
 	}
 
-	// Initialize the override map to avoid map type conversion errors (bug in TF 1.3.3)
-	if state.OverrideActionQueryNamesToConnectionIDs.IsNull() {
-		appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapNull(types.StringType)
-	} else {
-		appBuilderAppModel.OverrideActionQueryNamesToConnectionIDs = types.MapValueMust(
-			types.StringType,
-			state.OverrideActionQueryNamesToConnectionIDs.Elements(),
-		)
-	}
-
 	diags = response.State.Set(ctx, appBuilderAppModel)
 	response.Diagnostics.Append(diags...)
 }
@@ -141,7 +124,7 @@ func apiResponseToAppBuilderAppModel(resp datadogV2.GetAppResponse) (*appBuilder
 	attributes := data.GetAttributes()
 
 	// Create a copy of the attributes that we can modify
-	var appJson map[string]interface{}
+	var appJson map[string]any
 	marshalledBytes, err := json.Marshal(attributes)
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling attributes: %s", err)
@@ -180,8 +163,7 @@ func apiResponseToAppBuilderAppModel(resp datadogV2.GetAppResponse) (*appBuilder
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling app_json: %s", err)
 	}
-	appBuilderAppModel.AppJson = customtypes.NewAppBuilderAppStringValue(string(marshalledBytes))
-
+	appBuilderAppModel.AppJson = types.StringValue(string(marshalledBytes))
 	return appBuilderAppModel, nil
 }
 
@@ -197,13 +179,10 @@ func buildActionQueryNamesToConnectionIDsMap(queries []datadogV2.Query) (types.M
 
 		queryName := actionQuery.GetName()
 
-		// since we are reading the response from the API, we can ignore validation errors
 		specObj := actionQuery.Properties.GetSpec().ActionQuerySpecObject
 		if specObj.HasConnectionId() {
 			connectionID := specObj.GetConnectionId()
 			elementsMap[queryName] = connectionID
-		} else {
-			elementsMap[queryName] = ""
 		}
 	}
 

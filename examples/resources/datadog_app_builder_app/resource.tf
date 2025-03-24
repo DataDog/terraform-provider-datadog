@@ -6,7 +6,7 @@ variable "connection_id" {
 # Example App Builder App resource - loaded from a file (required for ${} syntax, else use $${} inline for escaping)
 resource "datadog_app_builder_app" "example_app_from_file" {
   app_json = file("${path.module}/resource.json")
-  override_action_query_names_to_connection_ids = {
+  action_query_names_to_connection_ids = {
     "listTeams0" = var.connection_id
   }
 }
@@ -18,7 +18,7 @@ resource "datadog_app_builder_app" "example_app_inline_optional" {
   root_instance_name = "grid0"
   published          = false
 
-  override_action_query_names_to_connection_ids = {
+  action_query_names_to_connection_ids = {
     "listTeams0" = var.connection_id
   }
 
