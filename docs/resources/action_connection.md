@@ -113,8 +113,8 @@ Optional:
 
 Optional:
 
-- `account_id` (String) AWS account that the connection is created for
-- `role` (String) Role to assume
+- `account_id` (String) [Length > 1] AWS account that the connection is created for
+- `role` (String) [Length > 1] Role to assume
 
 Read-Only:
 
@@ -128,7 +128,7 @@ Read-Only:
 
 Optional:
 
-- `base_url` (String) Base HTTP url for the integration
+- `base_url` (String) [Length > 1] Base HTTP url for the integration
 - `token_auth` (Block, Optional) Configuration for an HTTP connection that uses token auth (see [below for nested schema](#nestedblock--http--token_auth))
 
 <a id="nestedblock--http--token_auth"></a>
@@ -146,8 +146,8 @@ Optional:
 
 Optional:
 
-- `content` (String) Serialized body content
-- `content_type` (String) Content type of the body
+- `content` (String) [Length > 1] Serialized body content
+- `content_type` (String) [Length > 1] Content type of the body
 
 
 <a id="nestedblock--http--token_auth--header"></a>
@@ -155,8 +155,8 @@ Optional:
 
 Optional:
 
-- `name` (String) Header name
-- `value` (String)
+- `name` (String) [Length > 1] Header name
+- `value` (String) [Length > 1]
 
 
 <a id="nestedblock--http--token_auth--token"></a>
@@ -164,9 +164,9 @@ Optional:
 
 Optional:
 
-- `name` (String) Token name
-- `type` (String) Token type
-- `value` (String, Sensitive) Token value
+- `name` (String) [Length > 1] Token name
+- `type` (String) Token type. Valid values are `SECRET`.
+- `value` (String, Sensitive) [Length > 1] Token value
 
 
 <a id="nestedblock--http--token_auth--url_parameter"></a>
@@ -174,8 +174,8 @@ Optional:
 
 Optional:
 
-- `name` (String) URL parameter name
-- `value` (String) URL parameter value
+- `name` (String) [Length > 1] URL parameter name
+- `value` (String) [Length > 1] URL parameter value
 
 ## Import
 

@@ -60,7 +60,7 @@ func enrichDescription(r any) frameworkSchema.Attribute {
 
 func buildEnrichedSchemaDescription(rv reflect.Value) {
 	descField := rv.Elem().FieldByName("Description")
-	curentDesc := descField.String()
+	currentDesc := descField.String()
 
 	// Build description with validators
 	validators := rv.Elem().FieldByName("Validators")
@@ -81,9 +81,62 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 					}
 					validValuesMsg += fmt.Sprintf("%s`%v`", sep, v.Index(i).Interface())
 				}
-				curentDesc = fmt.Sprintf("%s Valid values are %s.", curentDesc, validValuesMsg)
+				currentDesc = fmt.Sprintf("%s Valid values are %s.", currentDesc, validValuesMsg)
 				break
 			}
+			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "oneOfValidator") {
+				allowedValues := validators.Index(i).Elem().FieldByName("values")
+				validValuesMsg := ""
+				sep := ""
+				for i := 0; i < allowedValues.Len(); i++ {
+					if len(validValuesMsg) > 0 {
+						sep = ", "
+					}
+					// Index(i).Field(1) is the value of the types.String
+					// If we would use "only" Index(i) we would have { 2 <VALUE> }
+					validValuesMsg += fmt.Sprintf("%s`%v`", sep, allowedValues.Index(i).Field(1))
+				}
+				currentDesc = fmt.Sprintf("%s. Valid values are %s.", currentDesc, validValuesMsg)
+				break
+			}
+			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "regexMatchesValidator") {
+				validationMessage := validators.Index(i).Elem().FieldByName("message").String()
+				currentDesc = fmt.Sprintf("%s %s", currentDesc, validationMessage)
+				break
+			}
+			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "validEntityYAMLValidator") {
+				currentDesc = fmt.Sprintf("%s entity must be a valid entity YAML/JSON structure.", currentDesc)
+				break
+			}
+			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "cidrIpValidator") {
+				currentDesc = fmt.Sprintf("%s String must be a valid CIDR block or IP address.", currentDesc)
+				break
+			}
+
+			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "lengthAtLeastValidator") {
+				minLength := validators.Index(i).Elem().FieldByName("minLength").Int()
+				currentDesc = fmt.Sprintf("[Length > %d] %s", minLength, currentDesc)
+				break
+			}
+			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "betweenValidator") {
+				min := validators.Index(i).Elem().FieldByName("min").Int()
+				max := validators.Index(i).Elem().FieldByName("max").Int()
+				currentDesc = fmt.Sprintf("[Min %d, Max %d] %s", min, max, currentDesc)
+				break
+			}
+			// Must have a different case for float validators
+			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "BetweenValidator") {
+				min := validators.Index(i).Elem().FieldByName("min").Float()
+				max := validators.Index(i).Elem().FieldByName("max").Float()
+				currentDesc = fmt.Sprintf("[Min %.1f, Max %.1f] %s", min, max, currentDesc)
+				break
+			}
+			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "atLeastValidator") {
+				min := validators.Index(i).Elem().FieldByName("min").Int()
+				currentDesc = fmt.Sprintf("[Min %d] %s", min, currentDesc)
+				break
+			}
+
 		}
 	}
 
@@ -94,12 +147,12 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 		if defaultVal.IsValid() {
 			switch defaultVal.Type() {
 			case stringType:
-				curentDesc = fmt.Sprintf("%s Defaults to `\"%v\"`.", curentDesc, defaultVal)
+				currentDesc = fmt.Sprintf("%s Defaults to `\"%v\"`.", currentDesc, defaultVal)
 			default:
-				curentDesc = fmt.Sprintf("%s Defaults to `%v`.", curentDesc, defaultVal)
+				currentDesc = fmt.Sprintf("%s Defaults to `%v`.", currentDesc, defaultVal)
 			}
 		}
 	}
 
-	descField.SetString(curentDesc)
+	descField.SetString(currentDesc)
 }
