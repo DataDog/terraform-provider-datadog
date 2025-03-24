@@ -590,6 +590,11 @@ func (r *FrameworkResourceWrapper) ConfigValidators(ctx context.Context) []resou
 
 func (r *FrameworkResourceWrapper) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	if v, ok := (*r.innerResource).(resource.ResourceWithModifyPlan); ok {
+		// If the plan is null, no need to modify the plan
+		// Plan is null in case destroy planning
+		if req.Plan.Raw.IsNull() {
+			return
+		}
 		v.ModifyPlan(ctx, req, resp)
 	}
 }
