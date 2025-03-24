@@ -184,9 +184,6 @@ func (r *integrationAwsAccountResource) ConfigValidators(ctx context.Context) []
 }
 
 func (r *integrationAwsAccountResource) ModifyPlan(ctx context.Context, request resource.ModifyPlanRequest, response *resource.ModifyPlanResponse) {
-	if request.Plan.Raw.IsNull() {
-		return
-	}
 	// Remove `metrics_config.aws_namespace_filers.exclude_only` default if `include_only` is set.
 	fwutils.RemoveDefaultIfConflictingSet(ctx, request, response, namespaceFiltersPath.AtName("exclude_only"), namespaceFiltersPath.AtName("include_only"))
 	// Remove `aws_regions.include_all` default if `include_only` is set.

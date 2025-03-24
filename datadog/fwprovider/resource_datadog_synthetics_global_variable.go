@@ -533,9 +533,6 @@ func (r syntheticsGlobalVariableResource) ValidateConfig(ctx context.Context, re
 
 func (r syntheticsGlobalVariableResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	var config syntheticsGlobalVariableModel
-	if req.Plan.Raw.IsNull() {
-		return
-	}
 	diags := req.Plan.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
