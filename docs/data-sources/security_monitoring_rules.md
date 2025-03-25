@@ -155,6 +155,7 @@ Read-Only:
 
 - `agent_rule` (List of Object) (see [below for nested schema](#nestedobjatt--rules--query--agent_rule))
 - `aggregation` (String)
+- `data_source` (String)
 - `distinct_fields` (List of String)
 - `group_by_fields` (List of String)
 - `metric` (String)
