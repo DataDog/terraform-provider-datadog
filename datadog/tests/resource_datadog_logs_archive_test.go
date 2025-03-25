@@ -159,6 +159,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
     account_id   = "%s"
     role_name    = "testacc-datadog-integration-role"
 	%s
+	storage_class = "STANDARD_IA"
   }
   rehydration_tags = ["team:intake", "team:app"]
   include_tags = true
@@ -197,6 +198,8 @@ func TestAccDatadogLogsArchiveS3_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "NO_OVERRIDE"),
 					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.storage_class", "STANDARD_IA"),
+					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.0", "team:intake"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_tags.1", "team:app"),
@@ -228,6 +231,7 @@ resource "datadog_logs_archive" "my_s3_archive" {
 	account_id   = "%s"
 	role_name    = "testacc-datadog-integration-role"
 	%s
+	storage_class = "GLACIER_IR"
   }
   include_tags = false
 	rehydration_max_scan_size_in_gb = 345
@@ -269,6 +273,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "NO_OVERRIDE"),
 					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.storage_class", "GLACIER_IR"),
+					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
 				),
 			},
@@ -292,6 +298,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "SSE_KMS"),
 					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.storage_class", "GLACIER_IR"),
+					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_key", "arn:aws:kms:us-east-1:012345678901:key/DatadogIntegrationRoleKms"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "345"),
@@ -312,6 +320,8 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.path", "/path/foo"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "SSE_S3"),
+					resource.TestCheckResourceAttr(
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.storage_class", "GLACIER_IR"),
 				),
 			},
 		},
