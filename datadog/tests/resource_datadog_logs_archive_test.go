@@ -273,7 +273,7 @@ func TestAccDatadogLogsArchiveS3Update_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "s3_archive.0.encryption_type", "NO_OVERRIDE"),
 					resource.TestCheckResourceAttr(
-						"datadog_logs_archive.my_s3_archive", "s3_archive.0.storage_class", "GLACIER_IR"),
+						"datadog_logs_archive.my_s3_archive", "s3_archive.0.storage_class", "STANDARD_IA"),
 					resource.TestCheckResourceAttr(
 						"datadog_logs_archive.my_s3_archive", "rehydration_max_scan_size_in_gb", "123"),
 				),
