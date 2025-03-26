@@ -98,7 +98,7 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 					// If we would use "only" Index(i) we would have { 2 <VALUE> }
 					validValuesMsg += fmt.Sprintf("%s`%v`", sep, allowedValues.Index(i).Field(1))
 				}
-				currentDesc = fmt.Sprintf("%s. Valid values are %s.", currentDesc, validValuesMsg)
+				currentDesc = fmt.Sprintf("%s valid values are %s.", currentDesc, validValuesMsg)
 				break
 			}
 

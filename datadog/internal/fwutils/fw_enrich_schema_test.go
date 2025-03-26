@@ -1,10 +1,13 @@
 package fwutils
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
@@ -82,6 +85,7 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 		expectedDescription string
 	}
 	testCases := map[string]testStruct{
+		// String validators
 		"description with string enum validator": {
 			schema: schema.Schema{
 				Blocks: map[string]schema.Block{
@@ -101,6 +105,184 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 				},
 			},
 			expectedDescription: "Example description. Valid values are `admins`, `members`, `organization`, `user_access_manage`, `teams_manage`.",
+		},
+		"description with string oneOf validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.String{
+										stringvalidator.OneOf("asc", "desc"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. valid values are `asc`, `desc`.",
+		},
+		"description with string regexMatches with message validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.String{
+										stringvalidator.RegexMatches(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), "must be all uppercase with underscores"),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. must be all uppercase with underscores.",
+		},
+		"description with string regexMatches without message validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.String{
+										stringvalidator.RegexMatches(regexp.MustCompile(`^[A-Z][A-Z0-9_]+[A-Z0-9]$`), ""),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. value must match regular expression '^[A-Z][A-Z0-9_]+[A-Z0-9]$'.",
+		},
+		"description with string entity YAML validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators:  []validator.String{validators.ValidEntityYAMLValidator()},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. Entity must be a valid entity YAML/JSON structure.",
+		},
+		"description with string CIDR IP validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators:  []validator.String{validators.CidrIpValidator()},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. String must be a valid CIDR block or IP address.",
+		},
+		"description with string lengthAtLeast validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.String{
+										stringvalidator.LengthAtLeast(1),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. string length must be at least 1.",
+		},
+		"description with string betweenValidator|float validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.StringAttribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.String{
+										validators.Float64Between(0, 1),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. value must be between 0.00 and 1.00.",
+		},
+
+		// Int validators
+		"description with int64 betweenValidator|int validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.Int64Attribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.Int64{
+										int64validator.Between(4, 10),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. value must be between 4 and 10.",
+		},
+		"description with int64 atLeast validator": {
+			schema: schema.Schema{
+				Blocks: map[string]schema.Block{
+					"nested_block": schema.ListNestedBlock{
+						NestedObject: schema.NestedBlockObject{
+							Attributes: map[string]schema.Attribute{
+								"test_attribute": schema.Int64Attribute{
+									Required:    true,
+									Description: "Example description.",
+									Validators: []validator.Int64{
+										int64validator.AtLeast(1),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedDescription: "Example description. value must be at least 1.",
 		},
 		"description without validator": {
 			schema: schema.Schema{

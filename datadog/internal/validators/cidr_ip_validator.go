@@ -12,7 +12,7 @@ type cidrIpValidator struct {
 }
 
 func (v cidrIpValidator) Description(ctx context.Context) string {
-	return "String must be a valid CIDR block or IP address."
+	return "String must be a valid CIDR block or IP address"
 }
 
 func (v cidrIpValidator) MarkdownDescription(ctx context.Context) string {
