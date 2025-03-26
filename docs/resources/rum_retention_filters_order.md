@@ -31,12 +31,12 @@ data "datadog_rum_retention_filters" "my_retention_filters" {
 
 resource "datadog_rum_retention_filter" "new_rum_retention_filter" {
   application_id = resource.datadog_rum_application.my_rum_application.id
-  name = "testing.rum.retention_filter"
-  event_type = "action"
-  sample_rate = 60
-  query = "@session.has_replay:true"
-  enabled = true
-  depends_on = [data.datadog_rum_retention_filters.my_retention_filters]
+  name           = "testing.rum.retention_filter"
+  event_type     = "action"
+  sample_rate    = 60
+  query          = "@session.has_replay:true"
+  enabled        = true
+  depends_on     = [data.datadog_rum_retention_filters.my_retention_filters]
 }
 
 # Create new rum_retention_filters_order resource for reordering
@@ -45,8 +45,8 @@ resource "datadog_rum_retention_filters_order" "my_rum_retention_filters_order" 
   application_id = resource.datadog_rum_application.my_rum_application.id
   retention_filter_ids = concat([
     for rf in data.datadog_rum_retention_filters.my_retention_filters.retention_filters :
-      rf.id if startswith(rf.id, "default")
-    ], [datadog_rum_retention_filter.new_rum_retention_filter.id])
+    rf.id if startswith(rf.id, "default")
+  ], [datadog_rum_retention_filter.new_rum_retention_filter.id])
 }
 ```
 
