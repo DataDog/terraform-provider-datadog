@@ -19,7 +19,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-const KeyDelimiter = ":"
+const RumRetentionFilterImportIdDelimiter = ":"
 
 var (
 	_ resource.ResourceWithConfigure   = &rumRetentionFilterResource{}
@@ -32,13 +32,13 @@ type rumRetentionFilterResource struct {
 }
 
 type rumRetentionFilterModel struct {
-	ID         types.String `tfsdk:"id"` // Composite key "{app_id}:{retention_filter_id}"
-	AppID      types.String `tfsdk:"app_id"`
-	Name       types.String `tfsdk:"name"`
-	EventType  types.String `tfsdk:"event_type"`
-	SampleRate types.Int64  `tfsdk:"sample_rate"`
-	Query      types.String `tfsdk:"query"`   // Optional
-	Enabled    types.Bool   `tfsdk:"enabled"` // Optional
+	ID            types.String `tfsdk:"id"` // retention_filter_id
+	ApplicationID types.String `tfsdk:"application_id"`
+	Name          types.String `tfsdk:"name"`
+	EventType     types.String `tfsdk:"event_type"`
+	SampleRate    types.Int64  `tfsdk:"sample_rate"`
+	Query         types.String `tfsdk:"query"`   // Optional
+	Enabled       types.Bool   `tfsdk:"enabled"` // Optional
 }
 
 func NewRumRetentionFilterResource() resource.Resource {
@@ -59,7 +59,7 @@ func (r *rumRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 	response.Schema = schema.Schema{
 		Description: "Provides a Datadog RumRetentionFilter resource. This can be used to create and manage Datadog rum_retention_filter.",
 		Attributes: map[string]schema.Attribute{
-			"app_id": schema.StringAttribute{
+			"application_id": schema.StringAttribute{
 				Description: "RUM application ID.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
@@ -96,13 +96,13 @@ func (r *rumRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 }
 
 func (r *rumRetentionFilterResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
-	appId, _, err := ParseRetentionFilterId(request.ID)
+	appId, retentionFilterId, err := ParseRumRetentionFilterImportId(request.ID)
 	if err != nil {
 		response.Diagnostics.AddError(err.Error(), "")
 		return
 	}
-	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), request.ID)...)
-	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("app_id"), appId)...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("id"), retentionFilterId)...)
+	response.Diagnostics.Append(response.State.SetAttribute(ctx, path.Root("application_id"), appId)...)
 }
 
 func (r *rumRetentionFilterResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
@@ -112,13 +112,7 @@ func (r *rumRetentionFilterResource) Read(ctx context.Context, request resource.
 		return
 	}
 
-	appId, retentionFilterId, err := ParseRetentionFilterId(state.ID.ValueString())
-	if err != nil {
-		response.Diagnostics.AddError(err.Error(), "")
-		return
-	}
-
-	resp, httpResp, err := r.Api.GetRetentionFilter(r.Auth, appId, retentionFilterId)
+	resp, httpResp, err := r.Api.GetRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString())
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			response.State.RemoveResource(ctx)
@@ -149,7 +143,7 @@ func (r *rumRetentionFilterResource) Create(ctx context.Context, request resourc
 	if response.Diagnostics.HasError() {
 		return
 	}
-	appId := state.AppID.ValueString()
+	appId := state.ApplicationID.ValueString()
 
 	resp, _, err := r.Api.CreateRetentionFilter(r.Auth, appId, *body)
 	if err != nil {
@@ -173,19 +167,13 @@ func (r *rumRetentionFilterResource) Update(ctx context.Context, request resourc
 		return
 	}
 
-	appId, retentionFilterId, err := ParseRetentionFilterId(state.ID.ValueString())
-	if err != nil {
-		response.Diagnostics.AddError(err.Error(), "")
-		return
-	}
-
 	body, diags := r.buildRumRetentionFilterUpdateRequestBody(&state)
 	response.Diagnostics.Append(diags...)
 	if response.Diagnostics.HasError() {
 		return
 	}
 
-	resp, _, err := r.Api.UpdateRetentionFilter(r.Auth, appId, retentionFilterId, *body)
+	resp, _, err := r.Api.UpdateRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString(), *body)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving RumRetentionFilter"))
 		return
@@ -207,13 +195,7 @@ func (r *rumRetentionFilterResource) Delete(ctx context.Context, request resourc
 		return
 	}
 
-	appId, retentionFilterId, err := ParseRetentionFilterId(state.ID.ValueString())
-	if err != nil {
-		response.Diagnostics.AddError(err.Error(), "")
-		return
-	}
-
-	httpResp, err := r.Api.DeleteRetentionFilter(r.Auth, appId, retentionFilterId)
+	httpResp, err := r.Api.DeleteRetentionFilter(r.Auth, state.ApplicationID.ValueString(), state.ID.ValueString())
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
@@ -227,8 +209,7 @@ func (r *rumRetentionFilterResource) updateState(state *rumRetentionFilterModel,
 	data := resp.GetData()
 	attributes := data.GetAttributes()
 
-	// ID should be a composite key of app_id and retention_filter_id for Terraform state to be able to access them together
-	state.ID = types.StringValue(state.AppID.ValueString() + KeyDelimiter + data.GetId())
+	state.ID = types.StringValue(data.GetId())
 	state.EventType = types.StringValue(string(attributes.GetEventType()))
 	state.Name = types.StringValue(attributes.GetName())
 	state.SampleRate = types.Int64Value(attributes.GetSampleRate())
@@ -283,13 +264,7 @@ func (r *rumRetentionFilterResource) buildRumRetentionFilterUpdateRequestBody(st
 	req := datadogV2.NewRumRetentionFilterUpdateRequestWithDefaults()
 	req.Data = *datadogV2.NewRumRetentionFilterUpdateDataWithDefaults()
 
-	_, retentionFilterId, err := ParseRetentionFilterId(state.ID.ValueString())
-	if err != nil {
-		diags.AddError(err.Error(), "")
-		return nil, diags
-	}
-
-	req.Data.SetId(retentionFilterId)
+	req.Data.SetId(state.ID.ValueString())
 	req.Data.SetType(datadogV2.RUMRETENTIONFILTERTYPE_RETENTION_FILTERS)
 	req.Data.SetAttributes(*attributes)
 
@@ -305,10 +280,10 @@ func (r *rumRetentionFilterResource) composeMeta() map[string]any {
 	return meta
 }
 
-func ParseRetentionFilterId(id string) (appId string, retentionFilterId string, err error) {
-	result := strings.SplitN(id, KeyDelimiter, 2)
+func ParseRumRetentionFilterImportId(id string) (appId string, retentionFilterId string, err error) {
+	result := strings.SplitN(id, RumRetentionFilterImportIdDelimiter, 2)
 	if len(result) != 2 {
-		return "", "", errors.New("error parsing id into app_id and retention_filter_id")
+		return "", "", errors.New("error parsing id into application_id and retention_filter_id")
 	}
 	return result[0], result[1], nil
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+// test application of DD Integration Tests org (321813) in us1.prod.dog
 const RumRetentionFiltersDataSourceTestAppId = "6d6b8210-efde-4a1d-bc4d-0f9773f21b0c"
 
 func TestAccRumRetentionFiltersDatasource(t *testing.T) {

@@ -13,12 +13,13 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
 )
 
-const AppId = "17a2877d-5a77-406e-9039-9da24714936e"
+// test application of DD Integration Tests org (321813) in us1.prod.dog
+const RumRetentionFilterResourceTestAppId = "9ff07c10-11f9-402c-a9d4-9eca42ef4a64"
 
 func TestAccRumRetentionFilterImport(t *testing.T) {
 	t.Parallel()
 	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	resourceName := "datadog_rum_retention_filter.testing_rum_retention_filter"
+	resourceName := "datadog_rum_retention_filter.testing_rum_retention_filter_for_import"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
@@ -26,10 +27,15 @@ func TestAccRumRetentionFilterImport(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogRumRetentionFilterDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: minimalDatadogRumRetentionFilter(uniqueEntityName(ctx, t)),
+				Config: minimalDatadogRumRetentionFilterForImport(uniqueEntityName(ctx, t)),
 			},
 			{
-				ResourceName:      resourceName,
+				ResourceName: resourceName,
+				ImportStateIdFunc: func(state *terraform.State) (string, error) {
+					resources := state.RootModule().Resources
+					resourceState := resources[resourceName]
+					return RumRetentionFilterResourceTestAppId + ":" + resourceState.Primary.Attributes["id"], nil
+				},
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
@@ -52,7 +58,7 @@ func TestAccRumRetentionFilterAttributes(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRumRetentionFilterExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_rum_retention_filter.testing_rum_retention_filter", "app_id", AppId),
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "application_id", RumRetentionFilterResourceTestAppId),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_retention_filter.testing_rum_retention_filter", "name", name1),
 					resource.TestCheckResourceAttr(
@@ -70,7 +76,7 @@ func TestAccRumRetentionFilterAttributes(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRumRetentionFilterExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_rum_retention_filter.testing_rum_retention_filter", "app_id", AppId),
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "application_id", RumRetentionFilterResourceTestAppId),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_retention_filter.testing_rum_retention_filter", "name", name1),
 					resource.TestCheckResourceAttr(
@@ -88,7 +94,7 @@ func TestAccRumRetentionFilterAttributes(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRumRetentionFilterExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_rum_retention_filter.testing_rum_retention_filter", "app_id", AppId),
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "application_id", RumRetentionFilterResourceTestAppId),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_retention_filter.testing_rum_retention_filter", "name", name2),
 					resource.TestCheckResourceAttr(
@@ -107,7 +113,7 @@ func TestAccRumRetentionFilterAttributes(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRumRetentionFilterExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_rum_retention_filter.testing_rum_retention_filter", "app_id", AppId),
+						"datadog_rum_retention_filter.testing_rum_retention_filter", "application_id", RumRetentionFilterResourceTestAppId),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_retention_filter.testing_rum_retention_filter", "name", name2),
 					resource.TestCheckResourceAttr(
@@ -124,49 +130,59 @@ func TestAccRumRetentionFilterAttributes(t *testing.T) {
 	})
 }
 
-func minimalDatadogRumRetentionFilter(name string) string {
-	return fmt.Sprintf(`resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
-		app_id = %q
+func minimalDatadogRumRetentionFilterForImport(name string) string {
+	return fmt.Sprintf(`resource "datadog_rum_retention_filter" "testing_rum_retention_filter_for_import" {
+		application_id = %q
 		name = %q
 	    event_type = "session"
 		sample_rate = 25
 	}
-	`, AppId, name)
+	`, RumRetentionFilterResourceTestAppId, name)
+}
+
+func minimalDatadogRumRetentionFilter(name string) string {
+	return fmt.Sprintf(`resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
+		application_id = %q
+		name = %q
+	    event_type = "session"
+		sample_rate = 25
+	}
+	`, RumRetentionFilterResourceTestAppId, name)
 }
 
 func fullDatadogRumRetentionFilter(name string) string {
 	return fmt.Sprintf(`resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
-		app_id = %q
+		application_id = %q
 		name = %q
 	    event_type = "action"
 		sample_rate = 50
 		query = "custom_query_1"
 		enabled = false
 	}
-	`, AppId, name)
+	`, RumRetentionFilterResourceTestAppId, name)
 }
 
 func withQueryDatadogRumRetentionFilter(name string) string {
 	return fmt.Sprintf(`resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
-		app_id = %q
+		application_id = %q
 		name = %q
 	    event_type = "view"
 		sample_rate = 75
 		query = "custom_query_2"
 	}
-	`, AppId, name)
+	`, RumRetentionFilterResourceTestAppId, name)
 }
 
 func withEnabledDatadogRumRetentionFilter(name string) string {
 	return fmt.Sprintf(`resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
-		app_id = %q
+		application_id = %q
 		name = %q
 	    event_type = "session"
 		sample_rate = 100
 		enabled = false
 	}
 
-	`, AppId, name)
+	`, RumRetentionFilterResourceTestAppId, name)
 }
 
 func testAccCheckDatadogRumRetentionFilterDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
@@ -186,14 +202,9 @@ func RumRetentionFilterDestroyHelper(auth context.Context, s *terraform.State, a
 		for _, r := range s.RootModule().Resources {
 			if r.Type != "datadog_rum_retention_filter" {
 				continue
-
-			}
-			appId, retentionFilterId, err := fwprovider.ParseRetentionFilterId(r.Primary.ID)
-			if err != nil {
-				return err
 			}
 
-			_, httpResp, err := apiInstances.GetRumRetentionFiltersApiV2().GetRetentionFilter(auth, appId, retentionFilterId)
+			_, httpResp, err := apiInstances.GetRumRetentionFiltersApiV2().GetRetentionFilter(auth, RumRetentionFilterResourceTestAppId, r.Primary.ID)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
@@ -225,12 +236,8 @@ func rumRetentionFilterExistsHelper(auth context.Context, s *terraform.State, ap
 		if r.Type != "datadog_rum_retention_filter" {
 			continue
 		}
-		appId, retentionFilterId, err := fwprovider.ParseRetentionFilterId(r.Primary.ID)
-		if err != nil {
-			return err
-		}
 
-		res, httpResp, err := apiInstances.GetRumRetentionFiltersApiV2().GetRetentionFilter(auth, appId, retentionFilterId)
+		res, httpResp, err := apiInstances.GetRumRetentionFiltersApiV2().GetRetentionFilter(auth, RumRetentionFilterResourceTestAppId, r.Primary.ID)
 		if err != nil {
 			return utils.TranslateClientError(err, httpResp, "error retrieving RumRetentionFilter")
 		}

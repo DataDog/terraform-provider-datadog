@@ -16,12 +16,12 @@ Provides a Datadog RumRetentionFilter resource. This can be used to create and m
 # Create new rum_retention_filter resource
 
 resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
-  app_id      = "<APP_ID>"
-  name        = "testing.rum.retention_filter"
-  event_type  = "session"
-  sample_rate = 41
-  query       = "@session.has_replay:true"
-  enabled     = false
+  application_id = "<APPLICATION_ID>"
+  name           = "testing.rum.retention_filter"
+  event_type     = "session"
+  sample_rate    = 41
+  query          = "@session.has_replay:true"
+  enabled        = false
 }
 ```
 
@@ -30,7 +30,7 @@ resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
 
 ### Required
 
-- `app_id` (String) RUM application ID.
+- `application_id` (String) RUM application ID.
 - `event_type` (String) The type of RUM events to filter on.
 - `name` (String) The name of a RUM retention filter.
 - `sample_rate` (Number) The sample rate for a RUM retention filter, between 0 and 100.
@@ -49,5 +49,5 @@ resource "datadog_rum_retention_filter" "testing_rum_retention_filter" {
 Import is supported using the following syntax:
 
 ```shell
-terraform import datadog_rum_retention_filter.testing_rum_retention_filter "{app_id}:{retention_filter_id}"
+terraform import datadog_rum_retention_filter.testing_rum_retention_filter "<application_id>:<retention_filter_id>"
 ```

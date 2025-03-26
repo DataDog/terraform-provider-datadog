@@ -13,14 +13,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"","sample_rate":25},"meta":{"source":"terraform"},"type":"retention_filters"}}
+            {"data":{"attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"","sample_rate":25},"meta":{"source":"terraform"},"type":"retention_filters"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters
         method: POST
       response:
         proto: HTTP/1.1
@@ -30,13 +30,13 @@ interactions:
         trailer: {}
         content_length: 257
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 201 Created
         code: 201
-        duration: 133.561417ms
+        duration: 70.708459ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -53,7 +53,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -63,13 +63,13 @@ interactions:
         trailer: {}
         content_length: 257
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 45.161375ms
+        duration: 66.561ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -86,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -96,13 +96,13 @@ interactions:
         trailer: {}
         content_length: 257
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 59.923667ms
+        duration: 93.270584ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -129,13 +129,13 @@ interactions:
         trailer: {}
         content_length: 257
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"","sample_rate":25},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 64.516333ms
+        duration: 54.426167ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -148,14 +148,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_1","sample_rate":50},"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","meta":{"source":"terraform"},"type":"retention_filters"}}
+            {"data":{"attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_1","sample_rate":50},"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","meta":{"source":"terraform"},"type":"retention_filters"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -165,13 +165,13 @@ interactions:
         trailer: {}
         content_length: 271
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_1","sample_rate":50},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_1","sample_rate":50},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 75.1965ms
+        duration: 60.874084ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: 271
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_1","sample_rate":50},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_1","sample_rate":50},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 51.953375ms
+        duration: 46.389209ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -221,7 +221,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -231,13 +231,13 @@ interactions:
         trailer: {}
         content_length: 271
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_1","sample_rate":50},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_1","sample_rate":50},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 59.289625ms
+        duration: 62.787708ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -254,7 +254,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -264,13 +264,13 @@ interactions:
         trailer: {}
         content_length: 271
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_1","sample_rate":50},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":false,"event_type":"action","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_1","sample_rate":50},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 45.646583ms
+        duration: 45.274166ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -283,14 +283,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_2","sample_rate":75},"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","meta":{"source":"terraform"},"type":"retention_filters"}}
+            {"data":{"attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_2","sample_rate":75},"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","meta":{"source":"terraform"},"type":"retention_filters"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -300,13 +300,13 @@ interactions:
         trailer: {}
         content_length: 268
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_2","sample_rate":75},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_2","sample_rate":75},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 115.627667ms
+        duration: 68.188291ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -323,7 +323,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -333,13 +333,13 @@ interactions:
         trailer: {}
         content_length: 268
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_2","sample_rate":75},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_2","sample_rate":75},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 40.49275ms
+        duration: 56.187084ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -356,7 +356,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -366,13 +366,13 @@ interactions:
         trailer: {}
         content_length: 268
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_2","sample_rate":75},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_2","sample_rate":75},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 47.6185ms
+        duration: 57.443084ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -389,7 +389,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -399,13 +399,13 @@ interactions:
         trailer: {}
         content_length: 268
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"custom_query_2","sample_rate":75},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":true,"event_type":"view","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"custom_query_2","sample_rate":75},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 49.725458ms
+        duration: 62.072666ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -418,14 +418,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":false,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"","sample_rate":100},"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","meta":{"source":"terraform"},"type":"retention_filters"}}
+            {"data":{"attributes":{"enabled":false,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"","sample_rate":100},"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","meta":{"source":"terraform"},"type":"retention_filters"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -435,13 +435,13 @@ interactions:
         trailer: {}
         content_length: 259
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":false,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"","sample_rate":100},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":false,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"","sample_rate":100},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 52.914042ms
+        duration: 64.451291ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -458,7 +458,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -468,13 +468,13 @@ interactions:
         trailer: {}
         content_length: 259
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":false,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"","sample_rate":100},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":false,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"","sample_rate":100},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 37.952542ms
+        duration: 50.545583ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -491,7 +491,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -501,13 +501,13 @@ interactions:
         trailer: {}
         content_length: 259
         uncompressed: false
-        body: '{"data":{"id":"1229fb3f-d0f1-4649-8ba7-134ddbc15f5c","type":"retention_filters","attributes":{"enabled":false,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1741717766","query":"","sample_rate":100},"meta":{"source":"terraform"}}}'
+        body: '{"data":{"id":"d49e9333-05a4-4d9c-8426-4685c98b0760","type":"retention_filters","attributes":{"enabled":false,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742955088","query":"","sample_rate":100},"meta":{"source":"terraform"}}}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 42.231583ms
+        duration: 58.8915ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -524,7 +524,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -538,7 +538,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 62.7745ms
+        duration: 59.790875ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -555,7 +555,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters/1229fb3f-d0f1-4649-8ba7-134ddbc15f5c
+        url: https://api.datadoghq.com/api/v2/rum/applications/9ff07c10-11f9-402c-a9d4-9eca42ef4a64/retention_filters/d49e9333-05a4-4d9c-8426-4685c98b0760
         method: GET
       response:
         proto: HTTP/1.1
@@ -571,4 +571,4 @@ interactions:
                 - application/vnd.api+json
         status: 404 Not Found
         code: 404
-        duration: 51.865875ms
+        duration: 54.792208ms
