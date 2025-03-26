@@ -13,21 +13,20 @@ Provides a Datadog RumRetentionFiltersOrder resource. This is used to manage the
 ## Example Usage
 
 ```terraform
-# Create new rum_application resource
+# Create a new rum_application resource.
 
 resource "datadog_rum_application" "my_rum_application" {
   name = "my-rum-application-test"
   type = "browser"
 }
 
-# Retrieve rum_retention_filters for rum_application created above
+# Retrieve rum_retention_filters for the rum_application created above.
 
 data "datadog_rum_retention_filters" "my_retention_filters" {
   application_id = resource.datadog_rum_application.my_rum_application.id
 }
 
-# Create new rum_retention_filter resource.
-# 'depends_on' is to prevent creating rum_retention_filter and retrieving rum_retention_filters from running in parallel for race condition.
+# Create a new rum_retention_filter resource.
 
 resource "datadog_rum_retention_filter" "new_rum_retention_filter" {
   application_id = resource.datadog_rum_application.my_rum_application.id
@@ -36,17 +35,21 @@ resource "datadog_rum_retention_filter" "new_rum_retention_filter" {
   sample_rate    = 60
   query          = "@session.has_replay:true"
   enabled        = true
-  depends_on     = [data.datadog_rum_retention_filters.my_retention_filters]
 }
 
-# Create new rum_retention_filters_order resource for reordering
+# Create a new rum_retention_filters_order resource for reordering.
+# Please note that the IDs of all default retention filters have the prefix 'default', and you need to populate the retention_filter_ids field with all retention filter IDs.
 
 resource "datadog_rum_retention_filters_order" "my_rum_retention_filters_order" {
   application_id = resource.datadog_rum_application.my_rum_application.id
-  retention_filter_ids = concat([
-    for rf in data.datadog_rum_retention_filters.my_retention_filters.retention_filters :
-    rf.id if startswith(rf.id, "default")
-  ], [datadog_rum_retention_filter.new_rum_retention_filter.id])
+  retention_filter_ids = concat(
+    [for rf in data.datadog_rum_retention_filters.my_retention_filters.retention_filters :
+      rf.id if startswith(rf.id, "default")
+    ],
+    [datadog_rum_retention_filter.new_rum_retention_filter.id],
+    [for rf in data.datadog_rum_retention_filters.my_retention_filters.retention_filters :
+      rf.id if !startswith(rf.id, "default") && rf.id != datadog_rum_retention_filter.new_rum_retention_filter.id
+  ])
 }
 ```
 

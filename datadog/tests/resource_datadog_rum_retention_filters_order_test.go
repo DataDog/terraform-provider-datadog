@@ -14,7 +14,7 @@ import (
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 )
 
-const RumRetentionFiltersOrderResourceTestAppId = "17a2877d-5a77-406e-9039-9da24714936e"
+const RumRetentionFiltersOrderResourceTestAppId = "fdb76419-eff5-4344-867a-4b72bad613cb"
 
 func validDatadogRumRetentionFiltersOrder() string {
 	return fmt.Sprintf(`data "datadog_rum_retention_filters" "my_retention_filters" {
@@ -50,14 +50,13 @@ func TestAccRumRetentionFilterOrder(t *testing.T) {
 			{
 				Config: validDatadogRumRetentionFiltersOrder(),
 				Check: resource.ComposeTestCheckFunc(
+					resource.TestMatchResourceAttr("datadog_rum_retention_filters_order.testing_rum_retention_filters_order", "retention_filter_ids.#", regexp.MustCompile(`3`)),
 					testAccCheckDatadogRumRetentionFiltersOrderResourceMatch(providers.frameworkProvider,
 						"datadog_rum_retention_filters_order.testing_rum_retention_filters_order", "retention_filter_ids.0"),
 					testAccCheckDatadogRumRetentionFiltersOrderResourceMatch(providers.frameworkProvider,
 						"datadog_rum_retention_filters_order.testing_rum_retention_filters_order", "retention_filter_ids.1"),
 					testAccCheckDatadogRumRetentionFiltersOrderResourceMatch(providers.frameworkProvider,
 						"datadog_rum_retention_filters_order.testing_rum_retention_filters_order", "retention_filter_ids.2"),
-					testAccCheckDatadogRumRetentionFiltersOrderResourceMatch(providers.frameworkProvider,
-						"datadog_rum_retention_filters_order.testing_rum_retention_filters_order", "retention_filter_ids.3"),
 				),
 			},
 		},

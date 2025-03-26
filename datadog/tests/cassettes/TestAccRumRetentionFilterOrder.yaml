@@ -17,7 +17,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
+        url: https://api.datadoghq.com/api/v2/rum/applications/fdb76419-eff5-4344-867a-4b72bad613cb/retention_filters
         method: GET
       response:
         proto: HTTP/1.1
@@ -25,16 +25,52 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 995
+        content_length: 597
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 132.656375ms
+        duration: 137.827166ms
     - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 167
+        transfer_encoding: []
+        trailer: {}
+        host: api.datadoghq.com
+        remote_addr: ""
+        request_uri: ""
+        body: |
+            {"data":[{"id":"default_replays","type":"retention_filters"},{"id":"default_sessions","type":"retention_filters"},{"id":"default_errors","type":"retention_filters"}]}
+        form: {}
+        headers:
+            Accept:
+                - application/json
+            Content-Type:
+                - application/json
+        url: https://api.datadoghq.com/api/v2/rum/applications/fdb76419-eff5-4344-867a-4b72bad613cb/relationships/retention_filters
+        method: PATCH
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding: []
+        trailer: {}
+        content_length: 166
+        uncompressed: false
+        body: '{"data":[{"id":"default_replays","type":"retention_filters"},{"id":"default_sessions","type":"retention_filters"},{"id":"default_errors","type":"retention_filters"}]}'
+        headers:
+            Content-Type:
+                - application/vnd.api+json
+        status: 200 OK
+        code: 200
+        duration: 54.066833ms
+    - id: 2
       request:
         proto: HTTP/1.1
         proto_major: 1
@@ -50,7 +86,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
+        url: https://api.datadoghq.com/api/v2/rum/applications/fdb76419-eff5-4344-867a-4b72bad613cb/retention_filters
         method: GET
       response:
         proto: HTTP/1.1
@@ -58,51 +94,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 995
+        content_length: 597
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 62.688083ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 282
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: |
-            {"data":[{"id":"default_replays","type":"retention_filters"},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters"},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters"},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters"}]}
-        form: {}
-        headers:
-            Accept:
-                - application/json
-            Content-Type:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/relationships/retention_filters
-        method: PATCH
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 281
-        uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters"},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters"},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters"},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters"}]}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 51.16275ms
+        duration: 49.880375ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -119,7 +119,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
+        url: https://api.datadoghq.com/api/v2/rum/applications/fdb76419-eff5-4344-867a-4b72bad613cb/retention_filters
         method: GET
       response:
         proto: HTTP/1.1
@@ -127,15 +127,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 995
+        content_length: 597
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 55.426625ms
+        duration: 55.345375ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -152,7 +152,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
+        url: https://api.datadoghq.com/api/v2/rum/applications/fdb76419-eff5-4344-867a-4b72bad613cb/retention_filters
         method: GET
       response:
         proto: HTTP/1.1
@@ -160,15 +160,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 995
+        content_length: 597
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 63.942292ms
+        duration: 51.004458ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -185,7 +185,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
+        url: https://api.datadoghq.com/api/v2/rum/applications/fdb76419-eff5-4344-867a-4b72bad613cb/retention_filters
         method: GET
       response:
         proto: HTTP/1.1
@@ -193,15 +193,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 995
+        content_length: 597
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 61.482916ms
+        duration: 56.318584ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -218,7 +218,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
+        url: https://api.datadoghq.com/api/v2/rum/applications/fdb76419-eff5-4344-867a-4b72bad613cb/retention_filters
         method: GET
       response:
         proto: HTTP/1.1
@@ -226,15 +226,15 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 995
+        content_length: 597
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 89.78525ms
+        duration: 46.488458ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -251,7 +251,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
+        url: https://api.datadoghq.com/api/v2/rum/applications/fdb76419-eff5-4344-867a-4b72bad613cb/retention_filters
         method: GET
       response:
         proto: HTTP/1.1
@@ -259,111 +259,12 @@ interactions:
         proto_minor: 1
         transfer_encoding: []
         trailer: {}
-        content_length: 995
+        content_length: 597
         uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
+        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"default_sessions","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions","query":"","sample_rate":100},"meta":{"source":"default"}},{"id":"default_errors","type":"retention_filters","attributes":{"enabled":true,"event_type":"error","name":"Sessions with errors","query":"","sample_rate":100},"meta":{"source":"default"}}]}'
         headers:
             Content-Type:
                 - application/vnd.api+json
         status: 200 OK
         code: 200
-        duration: 50.6655ms
-    - id: 8
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 995
-        uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 52.643583ms
-    - id: 9
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 995
-        uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 56.660542ms
-    - id: 10
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        transfer_encoding: []
-        trailer: {}
-        host: api.datadoghq.com
-        remote_addr: ""
-        request_uri: ""
-        body: ""
-        form: {}
-        headers:
-            Accept:
-                - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/retention_filters
-        method: GET
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding: []
-        trailer: {}
-        content_length: 995
-        uncompressed: false
-        body: '{"data":[{"id":"default_replays","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"Sessions with replays","query":"@session.has_replay:true","sample_rate":100},"meta":{"source":"default"}},{"id":"f019db04-dee5-4ee0-b9c4-fc70a1518732","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480427","query":"","sample_rate":25},"meta":{"source":"terraform"}},{"id":"4ab744fc-a2f8-4905-899f-d3d86950fba4","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterAttributes-local-1742480417","query":"@session.has_replay:true ","sample_rate":25},"meta":{"source":"terraform"}},{"id":"506c8d00-f3aa-4e23-b8c3-59dd5bd2edff","type":"retention_filters","attributes":{"enabled":true,"event_type":"session","name":"tf-TestAccRumRetentionFilterImport-local-1742581232","query":"","sample_rate":25},"meta":{"source":"terraform"}}]}'
-        headers:
-            Content-Type:
-                - application/vnd.api+json
-        status: 200 OK
-        code: 200
-        duration: 56.760667ms
+        duration: 48.526083ms

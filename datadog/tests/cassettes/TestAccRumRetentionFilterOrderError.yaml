@@ -20,7 +20,7 @@ interactions:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/rum/applications/17a2877d-5a77-406e-9039-9da24714936e/relationships/retention_filters
+        url: https://api.datadoghq.com/api/v2/rum/applications/fdb76419-eff5-4344-867a-4b72bad613cb/relationships/retention_filters
         method: PATCH
       response:
         proto: HTTP/1.1
@@ -36,4 +36,4 @@ interactions:
                 - application/vnd.api+json
         status: 400 Bad Request
         code: 400
-        duration: 120.366583ms
+        duration: 65.757542ms
