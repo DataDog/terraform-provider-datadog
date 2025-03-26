@@ -55,8 +55,6 @@ func NewAppBuilderAppResource() resource.Resource {
 func (r *appBuilderAppResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetAppBuilderApiV2()
-	// Used to identify requests made from Terraform
-	r.Api.Client.Cfg.AddDefaultHeader("X-Datadog-App-Builder-Source", "terraform")
 	r.Auth = providerData.Auth
 }
 

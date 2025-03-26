@@ -27,8 +27,6 @@ func NewDatadogAppBuilderAppDataSource() datasource.DataSource {
 func (d *appBuilderAppDataSource) Configure(_ context.Context, request datasource.ConfigureRequest, response *datasource.ConfigureResponse) {
 	providerData := request.ProviderData.(*FrameworkProvider)
 	d.Api = providerData.DatadogApiInstances.GetAppBuilderApiV2()
-	// Used to identify requests made from Terraform
-	d.Api.Client.Cfg.AddDefaultHeader("X-Datadog-App-Builder-Source", "terraform")
 	d.Auth = providerData.Auth
 }
 
@@ -38,7 +36,7 @@ func (d *appBuilderAppDataSource) Metadata(_ context.Context, request datasource
 
 func (d *appBuilderAppDataSource) Schema(_ context.Context, request datasource.SchemaRequest, response *datasource.SchemaResponse) {
 	response.Schema = schema.Schema{
-		Description: "This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources.",
+		Description: "This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources, such as embedding Apps in Dashboards.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
 				Description: "ID for the App.",

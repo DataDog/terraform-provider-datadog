@@ -3,12 +3,12 @@
 page_title: "datadog_app_builder_app Data Source - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources.
+  This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources, such as embedding Apps in Dashboards.
 ---
 
 # datadog_app_builder_app (Data Source)
 
-This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources.
+This data source retrieves the definition of an existing Datadog App from App Builder for use in other resources, such as embedding Apps in Dashboards.
 
 ## Example Usage
 
