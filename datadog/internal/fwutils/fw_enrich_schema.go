@@ -1,11 +1,13 @@
 package fwutils
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 	"strings"
 
 	frameworkSchema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 var stringType = reflect.TypeOf("")
@@ -62,16 +64,16 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 	descField := rv.Elem().FieldByName("Description")
 	currentDesc := descField.String()
 
-	// Build description with validators
-	validators := rv.Elem().FieldByName("Validators")
-	if validators.IsValid() && !validators.IsNil() && validators.Len() > 0 {
-		for i := 0; i < validators.Len(); i++ {
-			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "enumValidator") {
-				enrichSchema := validators.Index(i).Elem().FieldByName("enrichSchema").Bool()
+	// Build description with rv_validators
+	rv_validators := rv.Elem().FieldByName("Validators")
+	if rv_validators.IsValid() && !rv_validators.IsNil() && rv_validators.Len() > 0 {
+		for i := 0; i < rv_validators.Len(); i++ {
+			if strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "enumValidator") {
+				enrichSchema := rv_validators.Index(i).Elem().FieldByName("enrichSchema").Bool()
 				if !enrichSchema {
 					continue
 				}
-				allowedValues := validators.Index(i).Elem().FieldByName("AllowedEnumValues")
+				allowedValues := rv_validators.Index(i).Elem().FieldByName("AllowedEnumValues")
 				v := reflect.ValueOf(allowedValues.Interface())
 				validValuesMsg := ""
 				sep := ""
@@ -84,8 +86,8 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 				currentDesc = fmt.Sprintf("%s Valid values are %s.", currentDesc, validValuesMsg)
 				break
 			}
-			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "oneOfValidator") {
-				allowedValues := validators.Index(i).Elem().FieldByName("values")
+			if strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "oneOfValidator") {
+				allowedValues := rv_validators.Index(i).Elem().FieldByName("values")
 				validValuesMsg := ""
 				sep := ""
 				for i := 0; i < allowedValues.Len(); i++ {
@@ -99,41 +101,25 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 				currentDesc = fmt.Sprintf("%s. Valid values are %s.", currentDesc, validValuesMsg)
 				break
 			}
-			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "regexMatchesValidator") {
-				validationMessage := validators.Index(i).Elem().FieldByName("message").String()
-				currentDesc = fmt.Sprintf("%s %s", currentDesc, validationMessage)
-				break
-			}
-			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "validEntityYAMLValidator") {
-				currentDesc = fmt.Sprintf("%s entity must be a valid entity YAML/JSON structure.", currentDesc)
-				break
-			}
-			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "cidrIpValidator") {
-				currentDesc = fmt.Sprintf("%s String must be a valid CIDR block or IP address.", currentDesc)
+
+			// String validators
+			if strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "regexMatchesValidator") ||
+				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "validEntityYAMLValidator") ||
+				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "cidrIpValidator") ||
+				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "lengthAtLeastValidator") ||
+				// BetweenValidator is a "homemade" validator and does not come from Hashicorp, it lives in out validators package as Float64Between
+				// It validates a string representation of a float64
+				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "BetweenValidator") {
+				validationMessage := rv_validators.Index(i).Elem().Interface().(validator.String).Description(context.Background())
+				currentDesc = fmt.Sprintf("%s %s.", currentDesc, validationMessage)
 				break
 			}
 
-			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "lengthAtLeastValidator") {
-				minLength := validators.Index(i).Elem().FieldByName("minLength").Int()
-				currentDesc = fmt.Sprintf("[Length > %d] %s", minLength, currentDesc)
-				break
-			}
-			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "betweenValidator") {
-				min := validators.Index(i).Elem().FieldByName("min").Int()
-				max := validators.Index(i).Elem().FieldByName("max").Int()
-				currentDesc = fmt.Sprintf("[Min %d, Max %d] %s", min, max, currentDesc)
-				break
-			}
-			// Must have a different case for float validators
-			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "BetweenValidator") {
-				min := validators.Index(i).Elem().FieldByName("min").Float()
-				max := validators.Index(i).Elem().FieldByName("max").Float()
-				currentDesc = fmt.Sprintf("[Min %.1f, Max %.1f] %s", min, max, currentDesc)
-				break
-			}
-			if strings.HasPrefix(validators.Index(i).Elem().Type().Name(), "atLeastValidator") {
-				min := validators.Index(i).Elem().FieldByName("min").Int()
-				currentDesc = fmt.Sprintf("[Min %d] %s", min, currentDesc)
+			// Int64 validators
+			if strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "betweenValidator") ||
+				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "atLeastValidator") {
+				validationMessage := rv_validators.Index(i).Elem().Interface().(validator.Int64).Description(context.Background())
+				currentDesc = fmt.Sprintf("%s %s.", currentDesc, validationMessage)
 				break
 			}
 

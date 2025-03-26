@@ -256,6 +256,8 @@ func ValidateBasicEmail(val any, path cty.Path) diag.Diagnostics {
 	return nil
 }
 
+var _ validator.String = BetweenValidator{}
+
 type BetweenValidator struct {
 	min float64
 	max float64
@@ -266,7 +268,7 @@ func (v BetweenValidator) Description(ctx context.Context) string {
 }
 
 func (v BetweenValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("value must be between %f and %f", v.min, v.max)
+	return fmt.Sprintf("value must be between %.2f and %.2f", v.min, v.max)
 }
 
 func (v BetweenValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {

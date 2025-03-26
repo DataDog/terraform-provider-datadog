@@ -48,7 +48,7 @@ resource "datadog_ip_allowlist" "example" {
 
 Required:
 
-- `cidr_block` (String) IP address or range of addresses. String must be a valid CIDR block or IP address.
+- `cidr_block` (String) IP address or range of addresses. String must be a valid CIDR block or IP address..
 
 Optional:
 

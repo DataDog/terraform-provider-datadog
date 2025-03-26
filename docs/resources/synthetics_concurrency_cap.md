@@ -24,7 +24,7 @@ resource "datadog_synthetics_concurrency_cap" "this" {
 
 ### Required
 
-- `on_demand_concurrency_cap` (Number) [Min 1] Value of the on-demand concurrency cap, customizing the number of Synthetic tests run in parallel.
+- `on_demand_concurrency_cap` (Number) Value of the on-demand concurrency cap, customizing the number of Synthetic tests run in parallel. value must be at least 1.
 
 ### Read-Only
 

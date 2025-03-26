@@ -209,7 +209,7 @@ func (v validEntityYAMLValidator) Description(ctx context.Context) string {
 }
 
 func (v validEntityYAMLValidator) MarkdownDescription(_ context.Context) string {
-	return "entity must be a valid entity YAML/JSON structure"
+	return "Entity must be a valid entity YAML/JSON structure."
 }
 
 func (v validEntityYAMLValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
