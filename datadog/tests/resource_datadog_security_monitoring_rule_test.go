@@ -748,7 +748,6 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name = "first"
 		query = "@agent.rule_id:(%s_random_id OR random_id)"
 		aggregation = "count"
-		data_source = "logs"
 		group_by_fields = ["host"]
 	}
 
@@ -823,8 +822,6 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider func()
 			tfSecurityRuleName, "query.0.query", fmt.Sprintf("@agent.rule_id:(%s_random_id OR random_id)", strings.Replace(ruleName, "-", "_", -1))),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.aggregation", "count"),
-		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.data_source", "logs"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
 		resource.TestCheckResourceAttr(
