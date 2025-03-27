@@ -48,7 +48,7 @@ func TestEnrichSchemaAttributes(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. valid values are `asc`, `desc`.",
+			expectedDescription: "Example description. Valid values are `asc`, `desc`.",
 		},
 		"description with string regexMatches with message validator": {
 			schema: schema.Schema{
@@ -63,7 +63,7 @@ func TestEnrichSchemaAttributes(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. must be all uppercase with underscores.",
+			expectedDescription: "Example description. Must be all uppercase with underscores.",
 		},
 		"description with string regexMatches without message validator": {
 			schema: schema.Schema{
@@ -78,7 +78,7 @@ func TestEnrichSchemaAttributes(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must match regular expression '^[A-Z][A-Z0-9_]+[A-Z0-9]$'.",
+			expectedDescription: "Example description. Value must match regular expression '^[A-Z][A-Z0-9_]+[A-Z0-9]$'.",
 		},
 		"description with string entity YAML validator": {
 			schema: schema.Schema{
@@ -119,7 +119,7 @@ func TestEnrichSchemaAttributes(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. string length must be at least 1.",
+			expectedDescription: "Example description. String length must be at least 1.",
 		},
 		"description with string betweenValidator|float validator": {
 			schema: schema.Schema{
@@ -134,7 +134,7 @@ func TestEnrichSchemaAttributes(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must be between 0.00 and 1.00.",
+			expectedDescription: "Example description. Value must be between 0.00 and 1.00.",
 		},
 
 		// Int validators
@@ -164,7 +164,7 @@ func TestEnrichSchemaAttributes(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must be between 4 and 10.",
+			expectedDescription: "Example description. Value must be between 4 and 10.",
 		},
 		"description with int64 atLeast validator": {
 			schema: schema.Schema{
@@ -178,7 +178,7 @@ func TestEnrichSchemaAttributes(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must be at least 1.",
+			expectedDescription: "Example description. Value must be at least 1.",
 		},
 		"description without validators": {
 			schema: schema.Schema{
@@ -254,7 +254,7 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. valid values are `asc`, `desc`.",
+			expectedDescription: "Example description. Valid values are `asc`, `desc`.",
 		},
 		"description with string regexMatches with message validator": {
 			schema: schema.Schema{
@@ -274,7 +274,7 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. must be all uppercase with underscores.",
+			expectedDescription: "Example description. Must be all uppercase with underscores.",
 		},
 		"description with string regexMatches without message validator": {
 			schema: schema.Schema{
@@ -294,7 +294,7 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must match regular expression '^[A-Z][A-Z0-9_]+[A-Z0-9]$'.",
+			expectedDescription: "Example description. Value must match regular expression '^[A-Z][A-Z0-9_]+[A-Z0-9]$'.",
 		},
 		"description with string entity YAML validator": {
 			schema: schema.Schema{
@@ -350,7 +350,7 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. string length must be at least 1.",
+			expectedDescription: "Example description. String length must be at least 1.",
 		},
 		"description with string betweenValidator|float validator": {
 			schema: schema.Schema{
@@ -370,7 +370,7 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must be between 0.00 and 1.00.",
+			expectedDescription: "Example description. Value must be between 0.00 and 1.00.",
 		},
 
 		// Int validators
@@ -392,7 +392,7 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must be between 4 and 10.",
+			expectedDescription: "Example description. Value must be between 4 and 10.",
 		},
 		"description with int64 atLeast validator": {
 			schema: schema.Schema{
@@ -412,7 +412,7 @@ func TestEnrichSchemaListNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must be at least 1.",
+			expectedDescription: "Example description. Value must be at least 1.",
 		},
 		"description without validator": {
 			schema: schema.Schema{
@@ -513,7 +513,7 @@ func TestNestedNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Nested test attribute. valid values are `asc`, `desc`.",
+			expectedDescription: "Nested test attribute. Valid values are `asc`, `desc`.",
 		},
 		"description with string regexMatches with message validator in nested nested block": {
 			schema: schema.Schema{
@@ -543,7 +543,7 @@ func TestNestedNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Nested test attribute. must be all uppercase with underscores.",
+			expectedDescription: "Nested test attribute. Must be all uppercase with underscores.",
 		},
 		"description with string regexMatches without message validator in nested nested block": {
 			schema: schema.Schema{
@@ -573,7 +573,7 @@ func TestNestedNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Nested test attribute. value must match regular expression '^[A-Z][A-Z0-9_]+[A-Z0-9]$'.",
+			expectedDescription: "Nested test attribute. Value must match regular expression '^[A-Z][A-Z0-9_]+[A-Z0-9]$'.",
 		},
 		"description with string entity YAML validator in nested nested block": {
 			schema: schema.Schema{
@@ -663,7 +663,7 @@ func TestNestedNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Nested test attribute. string length must be at least 1.",
+			expectedDescription: "Nested test attribute. String length must be at least 1.",
 		},
 		"description with string betweenValidator|float validator in nested nested block": {
 			schema: schema.Schema{
@@ -693,7 +693,7 @@ func TestNestedNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Nested test attribute. value must be between 0.00 and 1.00.",
+			expectedDescription: "Nested test attribute. Value must be between 0.00 and 1.00.",
 		},
 
 		// Int validators
@@ -725,7 +725,7 @@ func TestNestedNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Nested test attribute. value must be between 4 and 10.",
+			expectedDescription: "Nested test attribute. Value must be between 4 and 10.",
 		},
 		"description with int64 atLeast validator in nested nested block": {
 			schema: schema.Schema{
@@ -755,7 +755,7 @@ func TestNestedNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Nested test attribute. value must be at least 1.",
+			expectedDescription: "Nested test attribute. Value must be at least 1.",
 		},
 		"description without validator in nested nested block": {
 			schema: schema.Schema{
@@ -841,7 +841,7 @@ func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. valid values are `asc`, `desc`.",
+			expectedDescription: "Example description. Valid values are `asc`, `desc`.",
 		},
 		"description with string regexMatches with message validator": {
 			schema: schema.Schema{
@@ -859,7 +859,7 @@ func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. must be all uppercase with underscores.",
+			expectedDescription: "Example description. Must be all uppercase with underscores.",
 		},
 		"description with string regexMatches without message validator": {
 			schema: schema.Schema{
@@ -877,7 +877,7 @@ func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must match regular expression '^[A-Z][A-Z0-9_]+[A-Z0-9]$'.",
+			expectedDescription: "Example description. Value must match regular expression '^[A-Z][A-Z0-9_]+[A-Z0-9]$'.",
 		},
 		"description with string entity YAML validator": {
 			schema: schema.Schema{
@@ -927,7 +927,7 @@ func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. string length must be at least 1.",
+			expectedDescription: "Example description. String length must be at least 1.",
 		},
 		"description with string betweenValidator|float validator": {
 			schema: schema.Schema{
@@ -945,7 +945,7 @@ func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must be between 0.00 and 1.00.",
+			expectedDescription: "Example description. Value must be between 0.00 and 1.00.",
 		},
 
 		// Int validators
@@ -965,7 +965,7 @@ func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must be between 4 and 10.",
+			expectedDescription: "Example description. Value must be between 4 and 10.",
 		},
 		"description with int64 atLeast validator": {
 			schema: schema.Schema{
@@ -983,7 +983,7 @@ func TestEnrichSchemaSingleNestedBlock(t *testing.T) {
 					},
 				},
 			},
-			expectedDescription: "Example description. value must be at least 1.",
+			expectedDescription: "Example description. Value must be at least 1.",
 		},
 		"description without validator": {
 			schema: schema.Schema{
