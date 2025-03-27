@@ -59,7 +59,7 @@ func (r *rumRetentionFiltersOrderResource) Schema(_ context.Context, _ resource.
 				},
 			},
 			"retention_filter_ids": schema.ListAttribute{
-				Description: "RUM retention filter ID list. The order of IDs in this attribute defines the order of RUM retention filters",
+				Description: "RUM retention filter ID list. The order of IDs in this attribute defines the order of RUM retention filters.",
 				ElementType: types.StringType,
 				Required:    true,
 			},

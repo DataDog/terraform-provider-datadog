@@ -59,7 +59,7 @@ resource "datadog_rum_retention_filters_order" "my_rum_retention_filters_order" 
 ### Required
 
 - `application_id` (String) RUM application ID.
-- `retention_filter_ids` (List of String) RUM retention filter ID list. The order of IDs in this attribute defines the order of RUM retention filters
+- `retention_filter_ids` (List of String) RUM retention filter ID list. The order of IDs in this attribute defines the order of RUM retention filters.
 
 ### Read-Only
 
