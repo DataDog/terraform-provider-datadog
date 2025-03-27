@@ -98,7 +98,7 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 					// If we would use "only" Index(i) we would have { 2 <VALUE> }
 					validValuesMsg += fmt.Sprintf("%s`%v`", sep, allowedValues.Index(i).Field(1))
 				}
-				currentDesc = fmt.Sprintf("%s valid values are %s.", currentDesc, validValuesMsg)
+				currentDesc = fmt.Sprintf("%s Valid values are %s.", currentDesc, validValuesMsg)
 				break
 			}
 
@@ -107,11 +107,11 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "validEntityYAMLValidator") ||
 				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "cidrIpValidator") ||
 				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "lengthAtLeastValidator") ||
-				// BetweenValidator is a "homemade" validator and does not come from Hashicorp, it lives in out validators package as Float64Between
+				// BetweenValidator is a custom validator and does not come from Hashicorp, it lives in out validators package as Float64Between
 				// It validates a string representation of a float64
 				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "BetweenValidator") {
 				validationMessage := rv_validators.Index(i).Elem().Interface().(validator.String).Description(context.Background())
-				currentDesc = fmt.Sprintf("%s %s.", currentDesc, validationMessage)
+				currentDesc = fmt.Sprintf("%s %s", ensureTrailingPoint(currentDesc), formatDescription(validationMessage))
 				break
 			}
 
@@ -119,7 +119,7 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 			if strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "betweenValidator") ||
 				strings.HasPrefix(rv_validators.Index(i).Elem().Type().Name(), "atLeastValidator") {
 				validationMessage := rv_validators.Index(i).Elem().Interface().(validator.Int64).Description(context.Background())
-				currentDesc = fmt.Sprintf("%s %s.", currentDesc, validationMessage)
+				currentDesc = fmt.Sprintf("%s %s", ensureTrailingPoint(currentDesc), formatDescription(validationMessage))
 				break
 			}
 
@@ -141,4 +141,25 @@ func buildEnrichedSchemaDescription(rv reflect.Value) {
 	}
 
 	descField.SetString(currentDesc)
+}
+
+func formatDescription(s string) string {
+	return ensureTrailingPoint(ensureCapitalize(s))
+}
+
+func ensureCapitalize(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+	return strings.ToUpper(s[0:1]) + s[1:]
+}
+
+func ensureTrailingPoint(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+	if s[len(s)-1:] == "." {
+		return s
+	}
+	return s + "."
 }

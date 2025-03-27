@@ -113,8 +113,8 @@ Optional:
 
 Optional:
 
-- `account_id` (String) AWS account that the connection is created for string length must be at least 1.
-- `role` (String) Role to assume string length must be at least 1.
+- `account_id` (String) AWS account that the connection is created for. String length must be at least 1.
+- `role` (String) Role to assume. String length must be at least 1.
 
 Read-Only:
 
@@ -128,7 +128,7 @@ Read-Only:
 
 Optional:
 
-- `base_url` (String) Base HTTP url for the integration string length must be at least 1.
+- `base_url` (String) Base HTTP url for the integration. String length must be at least 1.
 - `token_auth` (Block, Optional) Configuration for an HTTP connection that uses token auth (see [below for nested schema](#nestedblock--http--token_auth))
 
 <a id="nestedblock--http--token_auth"></a>
@@ -146,8 +146,8 @@ Optional:
 
 Optional:
 
-- `content` (String) Serialized body content string length must be at least 1.
-- `content_type` (String) Content type of the body string length must be at least 1.
+- `content` (String) Serialized body content. String length must be at least 1.
+- `content_type` (String) Content type of the body. String length must be at least 1.
 
 
 <a id="nestedblock--http--token_auth--header"></a>
@@ -155,8 +155,8 @@ Optional:
 
 Optional:
 
-- `name` (String) Header name string length must be at least 1.
-- `value` (String) string length must be at least 1.
+- `name` (String) Header name. String length must be at least 1.
+- `value` (String) String length must be at least 1.
 
 
 <a id="nestedblock--http--token_auth--token"></a>
@@ -164,9 +164,9 @@ Optional:
 
 Optional:
 
-- `name` (String) Token name string length must be at least 1.
-- `type` (String) Token type valid values are `SECRET`.
-- `value` (String, Sensitive) Token value string length must be at least 1.
+- `name` (String) Token name. String length must be at least 1.
+- `type` (String) Token type Valid values are `SECRET`.
+- `value` (String, Sensitive) Token value. String length must be at least 1.
 
 
 <a id="nestedblock--http--token_auth--url_parameter"></a>
@@ -174,8 +174,8 @@ Optional:
 
 Optional:
 
-- `name` (String) URL parameter name string length must be at least 1.
-- `value` (String) URL parameter value string length must be at least 1.
+- `name` (String) URL parameter name. String length must be at least 1.
+- `value` (String) URL parameter value. String length must be at least 1.
 
 ## Import
 
