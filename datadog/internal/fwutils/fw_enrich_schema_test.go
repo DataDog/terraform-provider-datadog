@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/validators"
 )
 
 func TestEnrichSchemaAttributes(t *testing.T) {

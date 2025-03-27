@@ -20,8 +20,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/fwutils"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/fwutils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
 )
 
 var (

@@ -20,8 +20,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 	datadogCommunity "github.com/zorkian/go-datadog-api"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/validators"
 )
 
 func init() {

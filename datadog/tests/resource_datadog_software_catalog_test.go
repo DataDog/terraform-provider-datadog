@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/fwprovider"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"

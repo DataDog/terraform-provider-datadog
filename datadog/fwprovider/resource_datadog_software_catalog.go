@@ -10,8 +10,8 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
 	"github.com/Masterminds/semver/v3"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/customtypes"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"

@@ -1,4 +1,4 @@
-module github.com/terraform-providers/terraform-provider-datadog
+module github.com/DataDog/terraform-provider-datadog
 
 require (
 	github.com/DataDog/datadog-api-client-go/v2 v2.36.1

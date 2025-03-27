@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/zorkian/go-datadog-api"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/DataDog/terraform-provider-datadog/datadog/internal/utils"
 )
 
 // creating/modifying/deleting PD integration and its service objects in parallel on one account
