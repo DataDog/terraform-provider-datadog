@@ -248,7 +248,7 @@ EOF
 
 ### Required
 
-- `entity` (String) The catalog entity definition. Entity must be a valid entity YAML/JSON structure..
+- `entity` (String) The catalog entity definition. Entity must be a valid entity YAML/JSON structure.
 
 ### Read-Only
 

@@ -165,7 +165,7 @@ Optional:
 Optional:
 
 - `name` (String) Token name string length must be at least 1.
-- `type` (String) Token type. Valid values are `SECRET`.
+- `type` (String) Token type valid values are `SECRET`.
 - `value` (String, Sensitive) Token value string length must be at least 1.
 
 
