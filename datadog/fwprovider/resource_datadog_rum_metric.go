@@ -129,6 +129,7 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						"tag_name": schema.StringAttribute{
 							Description: "Name of the tag that gets created. By default, `path` is used as the tag name.",
 							Optional:    true,
+							Computed:    true,
 						},
 					},
 				},
