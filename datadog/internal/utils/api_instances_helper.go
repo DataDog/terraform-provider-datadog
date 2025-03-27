@@ -47,6 +47,7 @@ type ApiInstances struct {
 	actionConnectionApiV2          *datadogV2.ActionConnectionApi
 	apiManagementAPIV2             *datadogV2.APIManagementApi
 	apmRetentionFiltersApiV2       *datadogV2.APMRetentionFiltersApi
+	appBuilderApiV2                *datadogV2.AppBuilderApi
 	applicationSecurityApiV2       *datadogV2.ApplicationSecurityApi
 	auditApiV2                     *datadogV2.AuditApi
 	authNMappingsApiV2             *datadogV2.AuthNMappingsApi
@@ -706,4 +707,12 @@ func (i *ApiInstances) GetActionConnectionApiV2() *datadogV2.ActionConnectionApi
 		i.actionConnectionApiV2 = datadogV2.NewActionConnectionApi(i.HttpClient)
 	}
 	return i.actionConnectionApiV2
+}
+
+// GetAppBuilderApiV2 get instance of AppBuilderApi
+func (i *ApiInstances) GetAppBuilderApiV2() *datadogV2.AppBuilderApi {
+	if i.appBuilderApiV2 == nil {
+		i.appBuilderApiV2 = datadogV2.NewAppBuilderApi(i.HttpClient)
+	}
+	return i.appBuilderApiV2
 }
