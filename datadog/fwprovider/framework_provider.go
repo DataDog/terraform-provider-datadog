@@ -68,7 +68,6 @@ var Resources = []func() resource.Resource{
 	NewTeamResource,
 	NewUserRoleResource,
 	NewSecurityMonitoringSuppressionResource,
-	NewCSMThreatsAgentRuleResource,
 	NewServiceAccountResource,
 	NewWebhookResource,
 	NewWebhookCustomVariableResource,
@@ -80,6 +79,9 @@ var Resources = []func() resource.Resource{
 	NewActionConnectionResource,
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
+	NewCSMThreatsPoliciesListResource,
+	NewCSMThreatsPolicyResource,
+	NewCSMThreatsMultiPolicyAgentRuleResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -102,13 +104,14 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
 	NewSecurityMonitoringSuppressionDataSource,
-	NewCSMThreatsAgentRulesDataSource,
+	NewCSMThreatsMultiPolicyAgentRulesDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
 	NewDatadogSyntheticsGlobalVariableDataSource,
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
+	NewCSMThreatsPoliciesDataSource,
 }
 
 // FrameworkProvider struct
