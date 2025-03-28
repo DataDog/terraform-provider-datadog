@@ -85,7 +85,7 @@ func TestAccRumMetricAttributes(t *testing.T) {
 			{
 				Config: distributionDatadogRumMetricUpdate(uniq),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogSpansMetricExists(providers.frameworkProvider),
+					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_metric.testing_rum_metric", "compute.include_percentiles", "false"),
 				),
@@ -111,6 +111,12 @@ func TestAccRumMetricAttributes(t *testing.T) {
 					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_metric.testing_rum_metric", "filter.query", "@service:another-service"),
+				),
+			},
+			{
+				Config: filterDatadogRumMetricDelete(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
 				),
 			},
 		},
@@ -158,6 +164,14 @@ func TestAccRumMetricAttributes(t *testing.T) {
 						"datadog_rum_metric.testing_rum_metric", "group_by.2.path", "@os.version.minor"),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_metric.testing_rum_metric", "group_by.2.tag_name", "os_version_minor"),
+				),
+			},
+			{
+				Config: groupByDatadogRumMetricDelete(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.#", "0"),
 				),
 			},
 		},
@@ -229,6 +243,17 @@ func filterDatadogRumMetricUpdate(uniq string) string {
 	`, uniq)
 }
 
+func filterDatadogRumMetricDelete(uniq string) string {
+	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
+		name = %q
+	    event_type = "action"
+    	compute {
+    		aggregation_type = "count"
+    	}
+	}
+	`, uniq)
+}
+
 func groupByDatadogRumMetric(uniq string) string {
 	// Note: the group_bys are not defined in alphabetical order. This is on purpose to verify
 	// a set behavior rather than a list behavior on the terraform attribute.
@@ -272,6 +297,17 @@ func groupByDatadogRumMetricUpdate(uniq string) string {
 			path = "@os.version.minor"
 			tag_name = "os_version_minor"
 		}
+	}
+	`, uniq)
+}
+
+func groupByDatadogRumMetricDelete(uniq string) string {
+	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
+		name = %q
+	    event_type = "action"
+    	compute {
+    		aggregation_type = "count"
+    	}
 	}
 	`, uniq)
 }
