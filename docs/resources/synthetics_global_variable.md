@@ -28,7 +28,7 @@ resource "datadog_synthetics_global_variable" "test_variable" {
 
 ### Required
 
-- `name` (String) Synthetics global variable name.
+- `name` (String) Synthetics global variable name. Must be all uppercase with underscores.
 
 ### Optional
 
@@ -59,8 +59,8 @@ Optional:
 
 Required:
 
-- `digits` (Number) Number of digits for the OTP.
-- `refresh_interval` (Number) Interval for which to refresh the token (in seconds).
+- `digits` (Number) Number of digits for the OTP. Value must be between 4 and 10.
+- `refresh_interval` (Number) Interval for which to refresh the token (in seconds). Value must be between 0 and 999.
 
 
 

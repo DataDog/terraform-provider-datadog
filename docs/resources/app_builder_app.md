@@ -155,15 +155,15 @@ resource "datadog_app_builder_app" "example_app_escaped_interpolated" {
 
 ### Required
 
-- `app_json` (String) The JSON representation of the App.
+- `app_json` (String) The JSON representation of the App. String length must be at least 1.
 
 ### Optional
 
 - `action_query_names_to_connection_ids` (Map of String) If specified, this will override the Action Connection IDs for the specified Action Query Names in the App JSON. Otherwise, a map of the App's Action Query Names to Action Connection IDs will be returned in output.
-- `description` (String) If specified, this will override the human-readable description of the App in the App JSON.
-- `name` (String) If specified, this will override the name of the App in the App JSON.
+- `description` (String) If specified, this will override the human-readable description of the App in the App JSON. String length must be at least 1.
+- `name` (String) If specified, this will override the name of the App in the App JSON. String length must be at least 1.
 - `published` (Boolean) Set the app to published or unpublished. Published apps are available to other users. To ensure the app is accessible to the correct users, you also need to set a [Restriction Policy](https://docs.datadoghq.com/api/latest/restriction-policies/) on the app if a policy does not yet exist. Defaults to `false`.
-- `root_instance_name` (String) The name of the root component of the app. This must be a grid component that contains all other components. If specified, this will override the root instance name of the App in the App JSON.
+- `root_instance_name` (String) The name of the root component of the app. This must be a grid component that contains all other components. If specified, this will override the root instance name of the App in the App JSON. String length must be at least 1.
 
 ### Read-Only
 
