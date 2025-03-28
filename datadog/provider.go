@@ -224,7 +224,6 @@ func Provider() *schema.Provider {
 		// NEW DATA SOURCES ARE NOT ALLOWED TO BE ADDED HERE
 		// New data sources must be implemented using the `terraform-plugin-framework`, and added to the `datadog/fwprovider` directory.
 		DataSourcesMap: map[string]*schema.Resource{
-			"datadog_cloud_workload_security_agent_rules":     dataSourceDatadogCloudWorkloadSecurityAgentRules(),
 			"datadog_dashboard":                               dataSourceDatadogDashboard(),
 			"datadog_integration_aws_logs_services":           dataSourceDatadogIntegrationAWSLogsServices(),
 			"datadog_logs_archives_order":                     dataSourceDatadogLogsArchivesOrder(),
