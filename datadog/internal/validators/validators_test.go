@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"context"
 	"testing"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -210,7 +211,7 @@ func TestValidateFloat64Between(t *testing.T) {
 
 	for _, tc := range cases {
 		validationResult := validator.StringResponse{}
-		Float64Between(0.1, 1).ValidateString(nil, validator.StringRequest{ConfigValue: basetypes.NewStringValue(tc.InputValue)}, &validationResult)
+		Float64Between(0.1, 1).ValidateString(context.Background(), validator.StringRequest{ConfigValue: basetypes.NewStringValue(tc.InputValue)}, &validationResult)
 		if tc.ExpectedError == false && len(validationResult.Diagnostics) != 0 {
 			t.Fatalf("Expected no diagnostics for input %v, found %d instead", tc.InputValue, len(validationResult.Diagnostics))
 		}

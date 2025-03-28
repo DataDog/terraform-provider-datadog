@@ -268,7 +268,7 @@ func (v BetweenValidator) Description(ctx context.Context) string {
 }
 
 func (v BetweenValidator) MarkdownDescription(_ context.Context) string {
-	return fmt.Sprintf("value must be between %.2f and %.2f", v.min, v.max)
+	return fmt.Sprintf("Value must be between %.2f and %.2f.", v.min, v.max)
 }
 
 func (v BetweenValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
