@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -15,8 +16,9 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &csmThreatsPoliciesListResource{}
-	_ resource.ResourceWithImportState = &csmThreatsPoliciesListResource{}
+	csmThreatsMutex sync.Mutex
+	_               resource.ResourceWithConfigure   = &csmThreatsPoliciesListResource{}
+	_               resource.ResourceWithImportState = &csmThreatsPoliciesListResource{}
 )
 
 type csmThreatsPoliciesListResource struct {
