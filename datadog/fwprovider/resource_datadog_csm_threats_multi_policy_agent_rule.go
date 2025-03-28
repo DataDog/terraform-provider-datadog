@@ -3,7 +3,6 @@ package fwprovider
 import (
 	"context"
 	"strings"
-	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -17,9 +16,8 @@ import (
 )
 
 var (
-	csmThreatsMutex sync.Mutex
-	_               resource.ResourceWithConfigure   = &csmThreatsMultiPolicyAgentRuleResource{}
-	_               resource.ResourceWithImportState = &csmThreatsMultiPolicyAgentRuleResource{}
+	_ resource.ResourceWithConfigure   = &csmThreatsMultiPolicyAgentRuleResource{}
+	_ resource.ResourceWithImportState = &csmThreatsMultiPolicyAgentRuleResource{}
 )
 
 type csmThreatsMultiPolicyAgentRuleResource struct {
@@ -110,9 +108,6 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) Create(ctx context.Context, req
 		return
 	}
 
-	csmThreatsMutex.Lock()
-	defer csmThreatsMutex.Unlock()
-
 	agentRulePayload, err := r.buildCreateCSMThreatsAgentRulePayload(&state)
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
@@ -166,9 +161,6 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) Update(ctx context.Context, req
 		return
 	}
 
-	csmThreatsMutex.Lock()
-	defer csmThreatsMutex.Unlock()
-
 	agentRulePayload, err := r.buildUpdateCSMThreatsAgentRulePayload(&state)
 	if err != nil {
 		response.Diagnostics.AddError("error while parsing resource", err.Error())
@@ -194,9 +186,6 @@ func (r *csmThreatsMultiPolicyAgentRuleResource) Delete(ctx context.Context, req
 	if response.Diagnostics.HasError() {
 		return
 	}
-
-	csmThreatsMutex.Lock()
-	defer csmThreatsMutex.Unlock()
 
 	id := state.Id.ValueString()
 	policyId := state.PolicyId.ValueString()
