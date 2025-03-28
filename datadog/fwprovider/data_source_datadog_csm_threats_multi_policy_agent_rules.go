@@ -97,47 +97,32 @@ func (r *csmThreatsMultiPolicyAgentRulesDataSource) Read(ctx context.Context, re
 		agentRuleModel.Description = types.StringValue(attributes.GetDescription())
 		agentRuleModel.Enabled = types.BoolValue(attributes.GetEnabled())
 		agentRuleModel.Expression = types.StringValue(*attributes.Expression)
-
-		// Handle product tags if they exist
-		if attributes.ProductTags != nil && len(attributes.GetProductTags()) > 0 {
-			// Remove duplicates from product tags
-			uniqueTags := make(map[string]struct{})
-			for _, tag := range attributes.GetProductTags() {
-				uniqueTags[tag] = struct{}{}
-			}
-			uniqueTagsSlice := make([]string, 0, len(uniqueTags))
-			for tag := range uniqueTags {
-				uniqueTagsSlice = append(uniqueTagsSlice, tag)
-			}
-
-			productTags, diags := types.SetValueFrom(ctx, types.StringType, uniqueTagsSlice)
-			if diags.HasError() {
-				response.Diagnostics.Append(diags...)
-				continue
-			}
-			agentRuleModel.ProductTags = productTags
-		} else {
-			// Create an empty set if no product tags
-			emptySet, diags := types.SetValueFrom(ctx, types.StringType, []string{})
-			if diags.HasError() {
-				response.Diagnostics.Append(diags...)
-				continue
-			}
-			agentRuleModel.ProductTags = emptySet
-		}
-
+		agentRuleModel.ProductTags, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetProductTags())
 		agentRuleIds[idx] = agentRule.GetId()
 		agentRules[idx] = agentRuleModel
 	}
 
 	stateId := strings.Join(agentRuleIds, "--")
-	state.Id = types.StringValue(computeDataSourceID(&stateId))
+	state.Id = types.StringValue(computeMultiPolicyAgentRulesID(&stateId))
 	tfAgentRuleIds, diags := types.ListValueFrom(ctx, types.StringType, agentRuleIds)
 	response.Diagnostics.Append(diags...)
 	state.AgentRulesIds = tfAgentRuleIds
 	state.AgentRules = agentRules
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+}
+
+func computeMultiPolicyAgentRulesID(ids *string) string {
+	// Key for hashing
+	var b strings.Builder
+	if ids != nil {
+		b.WriteString(*ids)
+	}
+	keyStr := b.String()
+	h := sha256.New()
+	h.Write([]byte(keyStr))
+
+	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 func (*csmThreatsMultiPolicyAgentRulesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
@@ -172,17 +157,4 @@ func (*csmThreatsMultiPolicyAgentRulesDataSource) Schema(_ context.Context, _ da
 			},
 		},
 	}
-}
-
-func computeDataSourceID(ids *string) string {
-	// Key for hashing
-	var b strings.Builder
-	if ids != nil {
-		b.WriteString(*ids)
-	}
-	keyStr := b.String()
-	h := sha256.New()
-	h.Write([]byte(keyStr))
-
-	return fmt.Sprintf("%x", h.Sum(nil))
 }
