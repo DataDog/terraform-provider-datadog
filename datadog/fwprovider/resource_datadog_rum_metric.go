@@ -8,6 +8,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -119,6 +120,16 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						Optional:    true,
 					},
 				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplaceIf(
+						func(ctx context.Context, req planmodifier.ObjectRequest, resp *objectplanmodifier.RequiresReplaceIfFuncResponse) {
+							shouldReplace := req.ConfigValue.IsNull()
+							resp.RequiresReplace = shouldReplace
+							return
+						},
+						"Due to limitations with the API, the filter block cannot be emptied through an update. The resource will be recreated.",
+						"Due to limitations with the API, the filter block cannot be emptied through an update. The resource will be recreated."),
+				},
 			},
 			"group_by": schema.SetNestedBlock{
 				NestedObject: schema.NestedBlockObject{
@@ -139,10 +150,15 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 					"when": schema.StringAttribute{
 						Description: "When to count updatable events. `match` when the event is first seen, or `end` when the event is complete.",
 						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
 					},
+				},
+				// Setting this at the object level ensures that the resource will be recreated if the uniqueness
+				// block is emptied. There is no valid use case for this (the event type needs to be changed as well,
+				// forcing a recreate anyway), but the user trying it would cause a cryptic provider state mismatch
+				// error, because the API does not support emptying an object attribute. Instead they will receive a
+				// 400 from the API during the recreate.
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 			},
 		},
@@ -416,19 +432,17 @@ func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context,
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewRumMetricUpdateAttributesWithDefaults()
 
-	if state.GroupBy != nil {
-		var groupBy []datadogV2.RumMetricGroupBy
-		for _, groupByTFItem := range state.GroupBy {
-			groupByDDItem := datadogV2.NewRumMetricGroupBy(groupByTFItem.Path.ValueString())
+	groupBy := []datadogV2.RumMetricGroupBy{}
+	for _, groupByTFItem := range state.GroupBy {
+		groupByDDItem := datadogV2.NewRumMetricGroupBy(groupByTFItem.Path.ValueString())
 
-			if !groupByTFItem.TagName.IsNull() {
-				groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
-			}
-
-			groupBy = append(groupBy, *groupByDDItem)
+		if !groupByTFItem.TagName.IsNull() {
+			groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
 		}
-		attributes.SetGroupBy(groupBy)
+
+		groupBy = append(groupBy, *groupByDDItem)
 	}
+	attributes.SetGroupBy(groupBy)
 
 	if state.Compute != nil {
 		var compute datadogV2.RumMetricUpdateCompute
