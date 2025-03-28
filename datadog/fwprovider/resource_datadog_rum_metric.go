@@ -18,6 +18,7 @@ import (
 var (
 	_ resource.ResourceWithConfigure   = &rumMetricResource{}
 	_ resource.ResourceWithImportState = &rumMetricResource{}
+	_ resource.ResourceWithModifyPlan  = &rumMetricResource{}
 )
 
 type rumMetricResource struct {
@@ -316,6 +317,44 @@ func (r *rumMetricResource) updateState(ctx context.Context, state *rumMetricMod
 
 		state.Uniqueness = &uniquenessTf
 	}
+}
+
+func (r *rumMetricResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	// If the plan is null (resource being deleted), skip modifications
+	if req.Plan.Raw.IsNull() {
+		return
+	}
+	var plan rumMetricModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	r.manageGroupByTagName(ctx, plan, resp)
+}
+
+func (r *rumMetricResource) manageGroupByTagName(ctx context.Context, plan rumMetricModel, resp *resource.ModifyPlanResponse) {
+	// If no group_by blocks are present, no modifications needed
+	if plan.GroupBy == nil || len(plan.GroupBy) == 0 {
+		return
+	}
+	// Create a new list of group_by items with defaults applied
+	updatedGroupBy := make([]*rumMetricGroupByModel, 0, len(plan.GroupBy))
+	for _, groupBy := range plan.GroupBy {
+		// Create a copy of the group_by item
+		updatedGroupByItem := &rumMetricGroupByModel{
+			Path:    groupBy.Path,
+			TagName: groupBy.TagName,
+		}
+
+		// If tag_name is null but path is set, use path as the tag_name
+		if groupBy.TagName.IsNull() && !groupBy.Path.IsNull() {
+			updatedGroupByItem.TagName = groupBy.Path
+		}
+		updatedGroupBy = append(updatedGroupBy, updatedGroupByItem)
+	}
+	// Set the updated group_by list in the plan
+	resp.Plan.SetAttribute(ctx, frameworkPath.Root("group_by"), updatedGroupBy)
 }
 
 func (r *rumMetricResource) buildRumMetricRequestBody(ctx context.Context, state *rumMetricModel) (*datadogV2.RumMetricCreateRequest, diag.Diagnostics) {

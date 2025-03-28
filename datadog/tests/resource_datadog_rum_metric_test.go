@@ -125,7 +125,7 @@ func TestAccRumMetricAttributes(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(
-						"datadog_rum_metric.testing_rum_metric", "group_by.#", "2"),
+						"datadog_rum_metric.testing_rum_metric", "group_by.#", "3"),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_metric.testing_rum_metric", "group_by.0.path", "@os"),
 					resource.TestCheckResourceAttr(
@@ -134,6 +134,10 @@ func TestAccRumMetricAttributes(t *testing.T) {
 						"datadog_rum_metric.testing_rum_metric", "group_by.1.path", "@service"),
 					resource.TestCheckResourceAttr(
 						"datadog_rum_metric.testing_rum_metric", "group_by.1.tag_name", "service"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.2.path", "path_only"),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "group_by.2.tag_name", "path_only"),
 				),
 			},
 			{
@@ -241,6 +245,9 @@ func groupByDatadogRumMetric(uniq string) string {
 		group_by {
 			path = "@os"
 			tag_name = "os"
+		}
+		group_by {
+			path = "path_only"
 		}
 	}
 	`, uniq)
