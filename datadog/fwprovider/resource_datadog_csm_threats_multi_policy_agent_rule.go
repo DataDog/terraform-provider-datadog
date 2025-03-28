@@ -3,6 +3,7 @@ package fwprovider
 import (
 	"context"
 	"strings"
+	"sync"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -13,6 +14,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+)
+
+var (
+	csmThreatsMutex sync.Mutex
+	_               resource.ResourceWithConfigure   = &csmThreatsMultiPolicyAgentRuleResource{}
+	_               resource.ResourceWithImportState = &csmThreatsMultiPolicyAgentRuleResource{}
 )
 
 type csmThreatsMultiPolicyAgentRuleResource struct {
