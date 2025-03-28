@@ -136,3 +136,14 @@ func testAccCheckCSMThreatsMultiPolicyAgentRuleDestroy(accProvider *fwprovider.F
 		return nil
 	}
 }
+
+func checkCSMThreatsAgentRuleContent(resourceName string, name string, description string, expression string, product_tags string) resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(resourceName, "name", name),
+		resource.TestCheckResourceAttr(resourceName, "description", description),
+		resource.TestCheckResourceAttr(resourceName, "enabled", "true"),
+		resource.TestCheckResourceAttr(resourceName, "expression", expression),
+		resource.TestCheckResourceAttr(resourceName, "product_tags.#", "1"),
+		resource.TestCheckTypeSetElemAttr(resourceName, "product_tags.*", product_tags),
+	)
+}
