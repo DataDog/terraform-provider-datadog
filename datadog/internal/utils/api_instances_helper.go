@@ -85,6 +85,7 @@ type ApiInstances struct {
 	securityMonitoringApiV2        *datadogV2.SecurityMonitoringApi
 	sensitiveDataScannerApiV2      *datadogV2.SensitiveDataScannerApi
 	serviceAccountsApiV2           *datadogV2.ServiceAccountsApi
+	softwareCatalogApiV2           *datadogV2.SoftwareCatalogApi
 	spansMetricsApiV2              *datadogV2.SpansMetricsApi
 	syntheticsApiV2                *datadogV2.SyntheticsApi
 	teamsApiV2                     *datadogV2.TeamsApi
@@ -587,6 +588,14 @@ func (i *ApiInstances) GetServiceAccountsApiV2() *datadogV2.ServiceAccountsApi {
 		i.serviceAccountsApiV2 = datadogV2.NewServiceAccountsApi(i.HttpClient)
 	}
 	return i.serviceAccountsApiV2
+}
+
+// GetSoftwareCatalogApiV2 get instance of SoftwareCatalogApi
+func (i *ApiInstances) GetSoftwareCatalogApiV2() *datadogV2.SoftwareCatalogApi {
+	if i.softwareCatalogApiV2 == nil {
+		i.softwareCatalogApiV2 = datadogV2.NewSoftwareCatalogApi(i.HttpClient)
+	}
+	return i.softwareCatalogApiV2
 }
 
 // GetUsageMeteringApiV2 get instance of UsageMeteringApi
