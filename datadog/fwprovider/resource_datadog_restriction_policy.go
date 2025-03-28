@@ -55,8 +55,14 @@ func (r *RestrictionPolicyResource) Schema(_ context.Context, _ resource.SchemaR
 		Description: "Provides a Datadog RestrictionPolicy resource. This can be used to create and manage Datadog restriction policies.",
 		Attributes: map[string]schema.Attribute{
 			"resource_id": schema.StringAttribute{
-				Required:    true,
-				Description: "Identifier for the resource, formatted as resource_type:resource_id.\n\nNote: Dashboards support is in private beta. Reach out to your Datadog contact or support to enable this.",
+				Required: true,
+				Description: "Identifier for the resource, formatted as resource_type:resource_id.\n" +
+					"\nResources to define `resource_type` : \n" +
+					"* [List of supported resources](https://docs.datadoghq.com/account_management/rbac/granular_access)\n" +
+					"* [Resource type definition](https://docs.datadoghq.com/api/latest/restriction-policies/#supported-resources)\n" +
+					"\nRestrictions :\n" +
+					"* Dashboards : support is in private beta. Reach out to your Datadog contact or support to enable this.\n" +
+					"* Monitors : Management of restriction policy through terraform is currently not available",
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},

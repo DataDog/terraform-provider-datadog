@@ -43,6 +43,7 @@ var Resources = []func() resource.Resource{
 	NewDowntimeScheduleResource,
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
+	NewIntegrationAwsExternalIDResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -51,6 +52,7 @@ var Resources = []func() resource.Resource{
 	NewIntegrationGcpResource,
 	NewIntegrationGcpStsResource,
 	NewIpAllowListResource,
+	NewSecurityNotificationRuleResource,
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
 	NewRumMetricResource,
@@ -58,6 +60,8 @@ var Resources = []func() resource.Resource{
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
+	NewSyntheticsGlobalVariableResource,
+	NewSyntheticsPrivateLocationResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
 	NewTeamPermissionSettingResource,
@@ -70,6 +74,12 @@ var Resources = []func() resource.Resource{
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
 	NewTenantBasedHandleResource,
+	NewAppsecWafExclusionFilterResource,
+	NewAppsecWafCustomRuleResource,
+	NewWorkflowsWebhookHandleResource,
+	NewActionConnectionResource,
+	NewWorkflowAutomationResource,
+	NewAppBuilderAppResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -94,6 +104,11 @@ var Datasources = []func() datasource.DataSource{
 	NewSecurityMonitoringSuppressionDataSource,
 	NewCSMThreatsAgentRulesDataSource,
 	NewLogsPipelinesOrderDataSource,
+	NewDatadogTeamsDataSource,
+	NewDatadogActionConnectionDataSource,
+	NewDatadogSyntheticsGlobalVariableDataSource,
+	NewWorkflowAutomationDataSource,
+	NewDatadogAppBuilderAppDataSource,
 }
 
 // FrameworkProvider struct
@@ -200,13 +215,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Monitors only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Monitors and Logs Pipelines only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Monitors only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Monitors and Logs Pipelines only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
@@ -409,6 +424,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
@@ -577,6 +593,11 @@ func (r *FrameworkResourceWrapper) ConfigValidators(ctx context.Context) []resou
 
 func (r *FrameworkResourceWrapper) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	if v, ok := (*r.innerResource).(resource.ResourceWithModifyPlan); ok {
+		// If the plan is null, no need to modify the plan
+		// Plan is null in case destroy planning
+		if req.Plan.Raw.IsNull() {
+			return
+		}
 		v.ModifyPlan(ctx, req, resp)
 	}
 }

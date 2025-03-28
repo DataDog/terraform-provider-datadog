@@ -3,12 +3,12 @@
 page_title: "datadog_openapi_api Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's API catalog https://docs.datadoghq.com/api_catalog/ with an OpenAPI https://www.openapis.org/ specifications file.
+  Deprecated: use the datadog_software_catalog resource https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/software_catalog instead. Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's API catalog https://docs.datadoghq.com/api_catalog/ with an OpenAPI https://www.openapis.org/ specifications file.
 ---
 
 # datadog_openapi_api (Resource)
 
-Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's [API catalog](https://docs.datadoghq.com/api_catalog/) with an [OpenAPI](https://www.openapis.org/) specifications file.
+Deprecated: use the [`datadog_software_catalog` resource](https://registry.terraform.io/providers/DataDog/datadog/latest/docs/resources/software_catalog) instead. Provides a Datadog OpenAPI resource. This can be used to synchronize Datadog's [API catalog](https://docs.datadoghq.com/api_catalog/) with an [OpenAPI](https://www.openapis.org/) specifications file.
 
 ## Example Usage
 

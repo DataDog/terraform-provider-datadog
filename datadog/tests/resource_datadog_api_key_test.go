@@ -28,11 +28,12 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName),
+				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName, nil),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyName),
 					resource.TestCheckResourceAttrSet(resourceName, "key"),
+					resource.TestCheckResourceAttr(resourceName, "remote_config_read_enabled", "true"),
 					func(s *terraform.State) error {
 						resource, ok := s.RootModule().Resources[resourceName]
 						if !ok {
@@ -44,11 +45,33 @@ func TestAccDatadogApiKey_Update(t *testing.T) {
 					},
 				),
 			},
+			// Test will succeed only if Remote config is configured for this organisation (see /organization-settings/remote-config)
 			{
-				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyNameUpdate),
+				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyNameUpdate, Ptr(true)),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
 					resource.TestCheckResourceAttr(resourceName, "name", apiKeyNameUpdate),
+					resource.TestCheckResourceAttr(resourceName, "remote_config_read_enabled", "true"),
+					func(s *terraform.State) error {
+						resource, ok := s.RootModule().Resources[resourceName]
+						if !ok {
+							return fmt.Errorf("Resource not found: %s", resourceName)
+						}
+
+						stateAPIKey := resource.Primary.Attributes["key"]
+						if stateAPIKey != apiKey {
+							return fmt.Errorf("API key (%s) does not match expected value (%s)", stateAPIKey, apiKey)
+						}
+						return nil
+					},
+				),
+			},
+			{
+				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyNameUpdate, Ptr(false)),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogApiKeyExists(providers.frameworkProvider, resourceName),
+					resource.TestCheckResourceAttr(resourceName, "name", apiKeyNameUpdate),
+					resource.TestCheckResourceAttr(resourceName, "remote_config_read_enabled", "false"),
 					func(s *terraform.State) error {
 						resource, ok := s.RootModule().Resources[resourceName]
 						if !ok {
@@ -82,7 +105,7 @@ func TestDatadogApiKey_import(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogApiKeyDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName),
+				Config: testAccCheckDatadogApiKeyConfigRequired(apiKeyName, nil),
 			},
 			{
 				ResourceName:      resourceName,
@@ -93,11 +116,16 @@ func TestDatadogApiKey_import(t *testing.T) {
 	})
 }
 
-func testAccCheckDatadogApiKeyConfigRequired(uniq string) string {
+func testAccCheckDatadogApiKeyConfigRequired(uniq string, remoteConfig *bool) string {
+	remoteConfigParam := ""
+	if remoteConfig != nil {
+		remoteConfigParam = fmt.Sprintf("remote_config_read_enabled = %t", *remoteConfig)
+	}
 	return fmt.Sprintf(`
 resource "datadog_api_key" "foo" {
   name = "%s"
-}`, uniq)
+  %s
+}`, uniq, remoteConfigParam)
 }
 
 func testAccCheckDatadogApiKeyExists(accProvider *fwprovider.FrameworkProvider, n string) resource.TestCheckFunc {
@@ -152,4 +180,8 @@ func datadogApiKeyDestroyHelper(ctx context.Context, s *terraform.State, apiInst
 	}
 
 	return nil
+}
+
+func Ptr[T any](v T) *T {
+	return &v
 }

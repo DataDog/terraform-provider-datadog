@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
 func TestAccountAndLambdaArnFromID(t *testing.T) {
@@ -220,5 +223,250 @@ func TestNormMetricNameParse(t *testing.T) {
 			t.Errorf("Expected tag '%s' to be idempotent', got '%s' instead.", normed, again)
 			return
 		}
+	}
+}
+
+func TestRemoveEmptyValuesInMap(t *testing.T) {
+	cases := map[string]struct {
+		input    map[string]any
+		expected map[string]any
+	}{
+		"empty_map": {
+			input:    map[string]any{},
+			expected: map[string]any{},
+		},
+		"nil_values": {
+			input: map[string]any{
+				"keep":    "value",
+				"remove":  nil,
+				"number":  42,
+				"remove2": nil,
+			},
+			expected: map[string]any{
+				"keep":   "value",
+				"number": 42,
+			},
+		},
+		"empty_arrays": {
+			input: map[string]any{
+				"keep":      []any{"value"},
+				"remove":    []any{},
+				"keep_nums": []any{1, 2, 3},
+			},
+			expected: map[string]any{
+				"keep":      []any{"value"},
+				"keep_nums": []any{1, 2, 3},
+			},
+		},
+		"nested_maps": {
+			input: map[string]any{
+				"keep": map[string]any{
+					"nested_keep": "value",
+					"nested_nil":  nil,
+				},
+				"remove": map[string]any{},
+				"deep": map[string]any{
+					"deeper": map[string]any{
+						"empty_array": []any{},
+						"keep_this":   "value",
+					},
+				},
+			},
+			expected: map[string]any{
+				"keep": map[string]any{
+					"nested_keep": "value",
+				},
+				"deep": map[string]any{
+					"deeper": map[string]any{
+						"keep_this": "value",
+					},
+				},
+			},
+		},
+		"array_with_maps": {
+			input: map[string]any{
+				"items": []any{
+					map[string]any{
+						"keep":   "value",
+						"remove": nil,
+					},
+					map[string]any{
+						"empty_map": map[string]any{},
+						"keep":      "value2",
+					},
+				},
+			},
+			expected: map[string]any{
+				"items": []any{
+					map[string]any{
+						"keep": "value",
+					},
+					map[string]any{
+						"keep": "value2",
+					},
+				},
+			},
+		},
+	}
+
+	for name, tc := range cases {
+		t.Run(name, func(t *testing.T) {
+			// Create a copy of the input to avoid modifying the test case
+			input := make(map[string]any)
+			for k, v := range tc.input {
+				input[k] = v
+			}
+
+			// Run the function
+			RemoveEmptyValuesInMap(input)
+
+			// Compare the result
+			if !reflect.DeepEqual(input, tc.expected) {
+				t.Errorf("%s: expected %#v, but got %#v", name, tc.expected, input)
+			}
+		})
+	}
+}
+
+// reference: https://github.com/hashicorp/terraform-plugin-framework-jsontypes/blob/v0.2.0/jsontypes/normalized_value_test.go
+func TestAppBuilderAppJSONStringSemanticEquals(t *testing.T) {
+	t.Parallel()
+
+	testCases := map[string]struct {
+		currentJson   string
+		givenJson     string
+		expectedMatch bool
+		expectedDiags diag.Diagnostics
+	}{
+		"not equal - mismatched field values": {
+			currentJson:   `{"name": "dlrow", "queries": [3, 2, 1], "components": {"test-bool": false}}`,
+			givenJson:     `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`,
+			expectedMatch: false,
+		},
+		"not equal - mismatched field names": {
+			currentJson:   `{"Name": "world", "Queries": [1, 2, 3], "Components": {"Test-bool": true}}`,
+			givenJson:     `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`,
+			expectedMatch: false,
+		},
+		"not equal - object additional field": {
+			currentJson:   `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}, "description": null}`,
+			givenJson:     `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`,
+			expectedMatch: false,
+		},
+		"not equal - array additional field": {
+			currentJson:   `[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true, "description": null}}]`,
+			givenJson:     `[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`,
+			expectedMatch: false,
+		},
+		"not equal - array item order difference": {
+			currentJson:   `[{"queries":[1, 2, 3]}, {"name": "world"}, {"components": {"test-bool": true}}]`,
+			givenJson:     `[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`,
+			expectedMatch: false,
+		},
+		"semantically equal - object byte-for-byte match": {
+			currentJson:   `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`,
+			givenJson:     `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`,
+			expectedMatch: true,
+		},
+		"semantically equal - array byte-for-byte match": {
+			currentJson:   `[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`,
+			givenJson:     `[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`,
+			expectedMatch: true,
+		},
+		"semantically equal - object field order difference": {
+			currentJson:   `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`,
+			givenJson:     `{"queries": [1, 2, 3], "components": {"test-bool": true}, "name": "world"}`,
+			expectedMatch: true,
+		},
+		"semantically equal - object whitespace difference": {
+			currentJson: `{
+				"name": "world",
+				"queries": [1, 2, 3],
+				"components": {
+					"test-bool": true
+				}
+			}`,
+			givenJson:     `{"name":"world","queries":[1,2,3],"components":{"test-bool":true}}`,
+			expectedMatch: true,
+		},
+		"semantically equal - array whitespace difference": {
+			currentJson: `[
+				{
+				  "name": "world"
+				},
+				{
+				  "queries": [
+					1,
+					2,
+					3
+				  ]
+				},
+				{
+				  "components": {
+					"test-bool": true
+				  }
+				}
+			  ]`,
+			givenJson:     `[{"name": "world"}, {"queries":[1, 2, 3]}, {"components": {"test-bool": true}}]`,
+			expectedMatch: true,
+		},
+		"error - invalid json": {
+			currentJson:   `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`,
+			givenJson:     `&#$^"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`,
+			expectedMatch: false,
+			expectedDiags: diag.Diagnostics{
+				diag.NewErrorDiagnostic(
+					"Semantic Equality Check Error",
+					"An unexpected error occurred while performing semantic equality checks. "+
+						"Please report this to the provider developers.\n\n"+
+						"Error: invalid character '&' looking for beginning of value",
+				),
+			},
+		},
+		// JSON Semantic equality uses (decoder).UseNumber to avoid Go parsing JSON numbers into float64. This ensures that Go
+		// won't normalize the JSON number representation or impose limits on numeric range.
+		"not equal - different JSON number representations": {
+			currentJson:   `{"rootInstanceName": 12423434}`,
+			givenJson:     `{"rootInstanceName": 1.2423434e+07}`,
+			expectedMatch: false,
+		},
+		"semantically equal - larger than max float64 values": {
+			currentJson:   `{"rootInstanceName": 1.79769313486231570814527423731704356798070e+309}`,
+			givenJson:     `{"rootInstanceName": 1.79769313486231570814527423731704356798070e+309}`,
+			expectedMatch: true,
+		},
+		// JSON Semantic equality uses Go's encoding/json library, which replaces some characters to escape codes
+		"semantically equal - HTML escape characters are equal": {
+			currentJson:   `{"description": "http://example.com?foo=bar&name=world", "left-caret": "<", "right-caret": ">"}`,
+			givenJson:     `{"description": "http://example.com?foo=bar\u0026name=world", "left-caret": "\u003c", "right-caret": "\u003e"}`,
+			expectedMatch: true,
+		},
+		// additional tests specific to AppBuilderAppStringValue below
+		"semantically equal - existence of id field is ignored": {
+			currentJson:   `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}, "id": "11111111-2222-3333-4444-555555555555"}`,
+			givenJson:     `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}}`,
+			expectedMatch: true,
+		},
+		"semantically equal - differences in id field is ignored": {
+			currentJson:   `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}, "id": "11111111-2222-3333-4444-555555555555"}`,
+			givenJson:     `{"name": "world", "queries": [1, 2, 3], "components": {"test-bool": true}, "id": "11111111-2222-3333-4444-555555555554"}`,
+			expectedMatch: true,
+		},
+	}
+	for name, testCase := range testCases {
+		name, testCase := name, testCase
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			match, diags := AppJSONStringSemanticEquals(testCase.currentJson, testCase.givenJson)
+
+			if testCase.expectedMatch != match {
+				t.Errorf("Expected StringSemanticEquals to return: %t, but got: %t", testCase.expectedMatch, match)
+			}
+
+			if diff := cmp.Diff(diags, testCase.expectedDiags); diff != "" {
+				t.Errorf("Unexpected diagnostics (-got, +expected): %s", diff)
+			}
+		})
 	}
 }

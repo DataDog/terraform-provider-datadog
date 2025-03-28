@@ -332,6 +332,25 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Upload a file"
+    type = "uploadFiles"
+    params {
+      files = jsonencode([{
+        name    = "hello.txt"   // Name of the file
+        size    = 11            // Size of the file
+        content = "Hello world" // Content of the file
+      }])
+      element = "*[@id='simple-file-upload']"
+      element_user_locator {
+        value {
+          type  = "css"
+          value = "#simple-file-upload"
+        }
+      }
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -405,14 +424,6 @@ resource "datadog_synthetics_test" "test_mobile" {
       notification_preset_name = "show_all"
     }
     monitor_priority = 5
-    restricted_roles = ["role1", "role2"]
-    bindings {
-      principals = [
-        "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091",
-        "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"
-      ]
-      relation = "editor"
-    }
     ci {
       execution_rule = "blocking"
     }

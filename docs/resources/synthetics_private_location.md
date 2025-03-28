@@ -29,8 +29,8 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 ### Optional
 
-- `description` (String) Description of the private location.
-- `metadata` (Block List, Max: 1) The private location metadata (see [below for nested schema](#nestedblock--metadata))
+- `description` (String) Description of the private location. Defaults to `""`.
+- `metadata` (Block List) The private location metadata (see [below for nested schema](#nestedblock--metadata))
 - `tags` (List of String) A list of tags to associate with your synthetics private location.
 
 ### Read-Only
@@ -43,7 +43,7 @@ resource "datadog_synthetics_private_location" "private_location" {
 
 Optional:
 
-- `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
+- `restricted_roles` (Set of String, Deprecated) A set of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
 
 ## Import
 
