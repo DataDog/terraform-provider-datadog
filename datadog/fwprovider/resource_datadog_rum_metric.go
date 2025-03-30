@@ -2,6 +2,7 @@ package fwprovider
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -125,6 +126,7 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						func(ctx context.Context, req planmodifier.ObjectRequest, resp *objectplanmodifier.RequiresReplaceIfFuncResponse) {
 							shouldReplace := req.ConfigValue.IsNull()
 							resp.RequiresReplace = shouldReplace
+							fmt.Println("RequiresReplaceIf")
 							return
 						},
 						"Due to limitations with the API, the filter block cannot be emptied through an update. The resource will be recreated.",
@@ -340,12 +342,25 @@ func (r *rumMetricResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	if req.Plan.Raw.IsNull() {
 		return
 	}
-	var plan rumMetricModel
-	diags := req.Plan.Get(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
+
+	var config, plan rumMetricModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	// This is workaround for https://github.com/hashicorp/terraform/issues/32460,
+	//which is fixed in Terraform 1.4.0 and above. Otherwise, removing the filter after
+	// it was created will cause an internal error.
+	if config.Filter == nil {
+		plan.Filter = nil
+
+		// The RequiresReplaceIf() for filter is not run due to the same bug, so force it here.
+		resp.RequiresReplace = append(resp.RequiresReplace, frameworkPath.Root("filter"))
+	}
+	resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
+
 	r.manageGroupByTagName(ctx, plan, resp)
 }
 
