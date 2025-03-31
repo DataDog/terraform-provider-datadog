@@ -8,6 +8,7 @@ import (
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -119,6 +120,16 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						Optional:    true,
 					},
 				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplaceIf(
+						func(ctx context.Context, req planmodifier.ObjectRequest, resp *objectplanmodifier.RequiresReplaceIfFuncResponse) {
+							shouldReplace := req.ConfigValue.IsNull()
+							resp.RequiresReplace = shouldReplace
+							return
+						},
+						"Due to limitations with the API, the filter block cannot be emptied through an update. The resource will be recreated.",
+						"Due to limitations with the API, the filter block cannot be emptied through an update. The resource will be recreated."),
+				},
 			},
 			"group_by": schema.SetNestedBlock{
 				NestedObject: schema.NestedBlockObject{
@@ -139,10 +150,10 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 					"when": schema.StringAttribute{
 						Description: "When to count updatable events. `match` when the event is first seen, or `end` when the event is complete.",
 						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
 					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 			},
 		},
@@ -324,12 +335,31 @@ func (r *rumMetricResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	if req.Plan.Raw.IsNull() {
 		return
 	}
-	var plan rumMetricModel
-	diags := req.Plan.Get(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
+
+	var config, plan rumMetricModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	// This is workaround for https://github.com/hashicorp/terraform/issues/32460,
+	// which is fixed in Terraform 1.4.0 and above. Otherwise, removing the filter after
+	// it was created will cause an internal error.
+	if config.Filter == nil {
+		plan.Filter = nil
+
+		// The RequiresReplaceIf() for filter is not run due to the same bug, so force it here.
+		resp.RequiresReplace = append(resp.RequiresReplace, frameworkPath.Root("filter"))
+	}
+
+	// Same as above for uniqueness
+	if config.Uniqueness == nil {
+		plan.Uniqueness = nil
+		resp.RequiresReplace = append(resp.RequiresReplace, frameworkPath.Root("uniqueness"))
+	}
+	resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
+
 	r.manageGroupByTagName(ctx, plan, resp)
 }
 
@@ -416,19 +446,17 @@ func (r *rumMetricResource) buildRumMetricUpdateRequestBody(ctx context.Context,
 	diags := diag.Diagnostics{}
 	attributes := datadogV2.NewRumMetricUpdateAttributesWithDefaults()
 
-	if state.GroupBy != nil {
-		var groupBy []datadogV2.RumMetricGroupBy
-		for _, groupByTFItem := range state.GroupBy {
-			groupByDDItem := datadogV2.NewRumMetricGroupBy(groupByTFItem.Path.ValueString())
+	groupBy := []datadogV2.RumMetricGroupBy{}
+	for _, groupByTFItem := range state.GroupBy {
+		groupByDDItem := datadogV2.NewRumMetricGroupBy(groupByTFItem.Path.ValueString())
 
-			if !groupByTFItem.TagName.IsNull() {
-				groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
-			}
-
-			groupBy = append(groupBy, *groupByDDItem)
+		if !groupByTFItem.TagName.IsNull() {
+			groupByDDItem.SetTagName(groupByTFItem.TagName.ValueString())
 		}
-		attributes.SetGroupBy(groupBy)
+
+		groupBy = append(groupBy, *groupByDDItem)
 	}
+	attributes.SetGroupBy(groupBy)
 
 	if state.Compute != nil {
 		var compute datadogV2.RumMetricUpdateCompute
