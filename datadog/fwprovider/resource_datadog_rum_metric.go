@@ -357,9 +357,6 @@ func (r *rumMetricResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	// Same as above for uniqueness
 	if config.Uniqueness == nil {
 		plan.Uniqueness = nil
-
-		// // The RequiresReplace() for uniqueness is not run due to the same bug, so force it here.
-		// resp.RequiresReplace = append(resp.RequiresReplace, frameworkPath.Root("uniqueness"))
 	}
 	resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
 
