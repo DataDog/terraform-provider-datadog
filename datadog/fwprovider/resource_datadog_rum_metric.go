@@ -2,7 +2,6 @@ package fwprovider
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -126,7 +125,6 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						func(ctx context.Context, req planmodifier.ObjectRequest, resp *objectplanmodifier.RequiresReplaceIfFuncResponse) {
 							shouldReplace := req.ConfigValue.IsNull()
 							resp.RequiresReplace = shouldReplace
-							fmt.Println("RequiresReplaceIf")
 							return
 						},
 						"Due to limitations with the API, the filter block cannot be emptied through an update. The resource will be recreated.",
@@ -154,11 +152,6 @@ func (r *rumMetricResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						Optional:    true,
 					},
 				},
-				// Setting this at the object level ensures that the resource will be recreated if the uniqueness
-				// block is emptied. There is no valid use case for this (the event type needs to be changed as well,
-				// forcing a recreate anyway), but the user trying it would cause a cryptic provider state mismatch
-				// error, because the API does not support emptying an object attribute. Instead they will receive a
-				// 400 from the API during the recreate.
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
 				},
@@ -351,13 +344,22 @@ func (r *rumMetricResource) ModifyPlan(ctx context.Context, req resource.ModifyP
 	}
 
 	// This is workaround for https://github.com/hashicorp/terraform/issues/32460,
-	//which is fixed in Terraform 1.4.0 and above. Otherwise, removing the filter after
+	// which is fixed in Terraform 1.4.0 and above. Otherwise, removing the filter after
 	// it was created will cause an internal error.
 	if config.Filter == nil {
 		plan.Filter = nil
 
 		// The RequiresReplaceIf() for filter is not run due to the same bug, so force it here.
 		resp.RequiresReplace = append(resp.RequiresReplace, frameworkPath.Root("filter"))
+	}
+	resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
+
+	// Same as above for uniqueness
+	if config.Uniqueness == nil {
+		plan.Uniqueness = nil
+
+		// // The RequiresReplace() for uniqueness is not run due to the same bug, so force it here.
+		// resp.RequiresReplace = append(resp.RequiresReplace, frameworkPath.Root("uniqueness"))
 	}
 	resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
 

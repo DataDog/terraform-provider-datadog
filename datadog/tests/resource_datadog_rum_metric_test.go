@@ -117,6 +117,8 @@ func TestAccRumMetricAttributes(t *testing.T) {
 				Config: filterDatadogRumMetricDelete(uniq),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
+					resource.TestCheckNoResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "filter"),
 				),
 			},
 		},
@@ -173,6 +175,40 @@ func TestAccRumMetricAttributes(t *testing.T) {
 					resource.TestCheckResourceAttr(
 						"datadog_rum_metric.testing_rum_metric", "group_by.#", "0"),
 				),
+			},
+		},
+	})
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogRumMetricDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: uniquenessDatadogRumMetric(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "uniqueness.when", "match"),
+				),
+			},
+			{
+				Config: uniquenessDatadogRumMetricUpdate(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(
+						"datadog_rum_metric.testing_rum_metric", "uniqueness.when", "end"),
+				),
+			},
+			{
+				// Simply verify that we don't run into an error during planning. Deleting only the uniqueness is
+				// not valid, because we would need to update the event type. This makes sure the user sees the 400
+				// error from the API at apply time.
+				Config: uniquenessDatadogRumMetricDelete(uniq),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogRumMetricExists(providers.frameworkProvider),
+				),
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
@@ -305,6 +341,47 @@ func groupByDatadogRumMetricDelete(uniq string) string {
 	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
 		name = %q
 	    event_type = "action"
+    	compute {
+    		aggregation_type = "count"
+    	}
+	}
+	`, uniq)
+}
+
+func uniquenessDatadogRumMetric(uniq string) string {
+	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
+		name = %q
+	    event_type = "session"
+    	compute {
+    		aggregation_type = "count"
+    	}
+		uniqueness {
+			when = "match"
+		}
+	}
+	`, uniq)
+}
+
+func uniquenessDatadogRumMetricUpdate(uniq string) string {
+	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
+		name = %q
+	    event_type = "session"
+    	compute {
+    		aggregation_type = "count"
+    	}
+		uniqueness {
+			when = "end"
+		}
+	}
+	`, uniq)
+}
+
+func uniquenessDatadogRumMetricDelete(uniq string) string {
+	// Note: this is not a valid configuration, but it's used to verify that the provider will
+	// behave properly when the attribute is deleted.
+	return fmt.Sprintf(`resource "datadog_rum_metric" "testing_rum_metric" {
+		name = %q
+	    event_type = "session"
     	compute {
     		aggregation_type = "count"
     	}
