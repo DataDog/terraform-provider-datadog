@@ -269,9 +269,10 @@ resource "datadog_synthetics_test" "test_multi_step" {
     subtype = "grpc"
 
     assertion {
-      type     = "statusCode"
+      type     = "grpcMetadata"
       operator = "is"
-      target   = "200"
+      property = "X-Header"
+      target   = "test"
     }
 
     request_definition {
@@ -287,9 +288,9 @@ resource "datadog_synthetics_test" "test_multi_step" {
     subtype = "grpc"
 
     assertion {
-      type     = "statusCode"
+      type     = "grpcHealthcheckStatus"
       operator = "is"
-      target   = "200"
+      target   = "1"
     }
 
     request_definition {
