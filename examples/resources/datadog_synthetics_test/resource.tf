@@ -175,6 +175,7 @@ resource "datadog_synthetics_test" "test_api_icmp" {
   subtype   = "icmp"
   status    = "live"
   locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
 
   request_definition {
     host                    = "example.com"
