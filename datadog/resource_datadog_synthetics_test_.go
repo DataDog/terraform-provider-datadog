@@ -605,7 +605,7 @@ func syntheticsTestOptionsRetry() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"count": {
-					Description: "Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `5`.",
+					Description: "Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `3` for `api` tests, `2` for `browser` and `mobile` tests.",
 					Type:        schema.TypeInt,
 					Default:     0,
 					Optional:    true,
