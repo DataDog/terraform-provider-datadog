@@ -54,7 +54,7 @@ func TestAccCSMThreatsMultiPolicyAgentRule_CreateAndUpdate(t *testing.T) {
 				`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckCSMThreatsMultiPolicyAgentRuleExists(providers.frameworkProvider, resourceName),
-					checkCSMThreatsAgentRuleContent(
+					checkCSMThreatsAgentRuleContentMultiPolicy(
 						resourceName,
 						agentRuleName,
 						"im a rule",
@@ -78,7 +78,7 @@ func TestAccCSMThreatsMultiPolicyAgentRule_CreateAndUpdate(t *testing.T) {
 				`, policyConfig, agentRuleName),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckCSMThreatsMultiPolicyAgentRuleExists(providers.frameworkProvider, resourceName),
-					checkCSMThreatsAgentRuleContent(
+					checkCSMThreatsAgentRuleContentMultiPolicy(
 						resourceName,
 						agentRuleName,
 						"updated agent rule for terraform provider test",
@@ -137,7 +137,7 @@ func testAccCheckCSMThreatsMultiPolicyAgentRuleDestroy(accProvider *fwprovider.F
 	}
 }
 
-func checkCSMThreatsAgentRuleContent(resourceName string, name string, description string, expression string, product_tags string) resource.TestCheckFunc {
+func checkCSMThreatsAgentRuleContentMultiPolicy(resourceName string, name string, description string, expression string, product_tags string) resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(resourceName, "name", name),
 		resource.TestCheckResourceAttr(resourceName, "description", description),

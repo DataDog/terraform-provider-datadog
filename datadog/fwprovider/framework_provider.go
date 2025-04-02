@@ -84,7 +84,7 @@ var Resources = []func() resource.Resource{
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
 	NewSecurityMonitoringRuleJSONResource,
-	NewCSMThreatsPoliciesListResource,
+	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewCSMThreatsMultiPolicyAgentRuleResource,
 }
@@ -119,6 +119,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogSyntheticsLocationsDataSource,
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
+	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
 }
 
