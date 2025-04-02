@@ -240,7 +240,6 @@ func Provider() *schema.Provider {
 			"datadog_sensitive_data_scanner_standard_pattern": dataSourceDatadogSensitiveDataScannerStandardPattern(),
 			"datadog_service_level_objective":                 dataSourceDatadogServiceLevelObjective(),
 			"datadog_service_level_objectives":                dataSourceDatadogServiceLevelObjectives(),
-			"datadog_synthetics_locations":                    dataSourceDatadogSyntheticsLocations(),
 			"datadog_synthetics_test":                         dataSourceDatadogSyntheticsTest(),
 			"datadog_user":                                    dataSourceDatadogUser(),
 		},

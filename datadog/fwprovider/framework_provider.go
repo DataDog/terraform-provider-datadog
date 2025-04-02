@@ -110,6 +110,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogTeamsDataSource,
 	NewDatadogActionConnectionDataSource,
 	NewDatadogSyntheticsGlobalVariableDataSource,
+	NewDatadogSyntheticsLocationsDataSource,
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
 }
