@@ -1,6 +1,6 @@
 # Create new pipelines resource
 
-resource "datadog_pipelines" "test3" {
+resource "datadog_observability_pipeline" "test" {
   name = "test TF pipeline"
   config {
 

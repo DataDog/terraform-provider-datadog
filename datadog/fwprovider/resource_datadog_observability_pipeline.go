@@ -17,16 +17,16 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure   = &pipelinesResource{}
-	_ resource.ResourceWithImportState = &pipelinesResource{}
+	_ resource.ResourceWithConfigure   = &observabilityPipelineResource{}
+	_ resource.ResourceWithImportState = &observabilityPipelineResource{}
 )
 
-type pipelinesResource struct {
+type observabilityPipelineResource struct {
 	Api  *datadogV2.ObservabilityPipelinesApi
 	Auth context.Context
 }
 
-type pipelinesModel struct {
+type observabilityPipelineModel struct {
 	ID     types.String `tfsdk:"id"`
 	Name   types.String `tfsdk:"name"`
 	Config configModel  `tfsdk:"config"`
@@ -96,20 +96,20 @@ type kafkaSourceSaslModel struct {
 }
 
 func NewPipelinesResource() resource.Resource {
-	return &pipelinesResource{}
+	return &observabilityPipelineResource{}
 }
 
-func (r *pipelinesResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
+func (r *observabilityPipelineResource) Configure(_ context.Context, request resource.ConfigureRequest, response *resource.ConfigureResponse) {
 	providerData, _ := request.ProviderData.(*FrameworkProvider)
 	r.Api = providerData.DatadogApiInstances.GetObsPipelinesV2()
 	r.Auth = providerData.Auth
 }
 
-func (r *pipelinesResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
-	response.TypeName = "pipelines"
+func (r *observabilityPipelineResource) Metadata(_ context.Context, request resource.MetadataRequest, response *resource.MetadataResponse) {
+	response.TypeName = "observability_pipeline"
 }
 
-func (r *pipelinesResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "Provides a Datadog Pipelines resource. This can be used to create and manage Datadog pipelines.",
 		Attributes: map[string]schema.Attribute{
@@ -284,12 +284,12 @@ func tlsSchema() schema.SingleNestedBlock {
 	}
 }
 
-func (r *pipelinesResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
+func (r *observabilityPipelineResource) ImportState(ctx context.Context, request resource.ImportStateRequest, response *resource.ImportStateResponse) {
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *pipelinesResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
-	var state pipelinesModel
+func (r *observabilityPipelineResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+	var state observabilityPipelineModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -316,8 +316,8 @@ func (r *pipelinesResource) Read(ctx context.Context, request resource.ReadReque
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *pipelinesResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
-	var state pipelinesModel
+func (r *observabilityPipelineResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+	var state observabilityPipelineModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -344,8 +344,8 @@ func (r *pipelinesResource) Create(ctx context.Context, request resource.CreateR
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *pipelinesResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state pipelinesModel
+func (r *observabilityPipelineResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
+	var state observabilityPipelineModel
 	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -374,8 +374,8 @@ func (r *pipelinesResource) Update(ctx context.Context, request resource.UpdateR
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
 
-func (r *pipelinesResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
-	var state pipelinesModel
+func (r *observabilityPipelineResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+	var state observabilityPipelineModel
 	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
 	if response.Diagnostics.HasError() {
 		return
@@ -393,7 +393,7 @@ func (r *pipelinesResource) Delete(ctx context.Context, request resource.DeleteR
 	}
 }
 
-func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesModel, resp *datadogV2.Pipeline) {
+func (r *observabilityPipelineResource) updateState(ctx context.Context, state *observabilityPipelineModel, resp *datadogV2.Pipeline) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -514,7 +514,7 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 	state.Config = stateConfig
 }
 
-func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state *pipelinesModel) (*datadogV2.Pipeline, diag.Diagnostics) {
+func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.Pipeline, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 	req := &datadogV2.Pipeline{}
 	attributes := datadogV2.NewPipelineDataAttributesWithDefaults()
