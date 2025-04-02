@@ -3,6 +3,9 @@ package fwprovider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -36,6 +39,7 @@ type configModel struct {
 }
 type SourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
+	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
 }
 type datadogAgentSourceModel struct {
 	Id  types.String `tfsdk:"id"`
@@ -43,9 +47,9 @@ type datadogAgentSourceModel struct {
 }
 
 type tlsModel struct {
-	CrtFile types.String  `tfsdk:"crt_file"`
-	CaFile  *types.String `tfsdk:"ca_file"`
-	KeyFile *types.String `tfsdk:"key_file"`
+	CrtFile types.String `tfsdk:"crt_file"`
+	CaFile  types.String `tfsdk:"ca_file"`
+	KeyFile types.String `tfsdk:"key_file"`
 }
 
 type ProcessorsModel struct {
@@ -71,6 +75,24 @@ type destinationsModel struct {
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
 	Inputs types.List   `tfsdk:"inputs"`
+}
+
+type kafkaSourceModel struct {
+	Id                types.String            `tfsdk:"id"`
+	GroupId           types.String            `tfsdk:"group_id"`
+	Topics            []types.String          `tfsdk:"topics"`
+	LibrdkafkaOptions []librdkafkaOptionModel `tfsdk:"librdkafka_option"`
+	Sasl              *kafkaSourceSaslModel   `tfsdk:"sasl"`
+	Tls               *tlsModel               `tfsdk:"tls"`
+}
+
+type librdkafkaOptionModel struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
+}
+
+type kafkaSourceSaslModel struct {
+	Mechanism types.String `tfsdk:"mechanism"`
 }
 
 func NewPipelinesResource() resource.Resource {
@@ -113,22 +135,57 @@ func (r *pipelinesResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 										},
 									},
 									Blocks: map[string]schema.Block{
-										"tls": schema.SingleNestedBlock{
-											Attributes: map[string]schema.Attribute{
-												"crt_file": schema.StringAttribute{
-													Optional:    true,
-													Description: "CRT file",
-												},
-												"ca_file": schema.StringAttribute{
-													Optional:    true,
-													Description: "CA file",
-												},
-												"key_file": schema.StringAttribute{
-													Optional:    true,
-													Description: "Key file",
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"kafka": schema.ListNestedBlock{
+								Description: "Kafka sources.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Optional:    true,
+											Description: "The unique ID of the source.",
+										},
+										"group_id": schema.StringAttribute{
+											Required:    true,
+											Description: "The Kafka consumer group ID.",
+										},
+										"topics": schema.ListAttribute{
+											Required:    true,
+											Description: "List of Kafka topics to consume.",
+											ElementType: types.StringType,
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"librdkafka_option": schema.ListNestedBlock{
+											Description: "Advanced librdkafka client configuration options.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Required:    true,
+														Description: "The name of the librdkafka option.",
+													},
+													"value": schema.StringAttribute{
+														Required:    true,
+														Description: "The value of the librdkafka option.",
+													},
 												},
 											},
 										},
+										"sasl": schema.SingleNestedBlock{
+											Description: "SASL authentication settings.",
+											Attributes: map[string]schema.Attribute{
+												"mechanism": schema.StringAttribute{
+													Required:    true,
+													Description: "SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512).",
+													Validators: []validator.String{
+														stringvalidator.OneOf("PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"),
+													},
+												},
+											},
+										},
+										"tls": tlsSchema(),
 									},
 								},
 							},
@@ -202,6 +259,26 @@ func (r *pipelinesResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 						},
 					},
 				},
+			},
+		},
+	}
+}
+
+func tlsSchema() schema.SingleNestedBlock {
+	return schema.SingleNestedBlock{
+		Description: "TLS client configuration.",
+		Attributes: map[string]schema.Attribute{
+			"crt_file": schema.StringAttribute{
+				Required:    true,
+				Description: "Path to the TLS certificate file.",
+			},
+			"ca_file": schema.StringAttribute{
+				Optional:    true,
+				Description: "Path to the Certificate Authority file.",
+			},
+			"key_file": schema.StringAttribute{
+				Optional:    true,
+				Description: "Path to the private key file.",
 			},
 		},
 	}
@@ -325,57 +402,99 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 	state.Name = types.StringValue(attributes.GetName())
 
 	config := attributes.GetConfig()
+	stateConfig := configModel{}
 
-	configTf := state.Config
 	if sources, ok := config.GetSourcesOk(); ok {
-		for _, sourcesDd := range *sources {
+		for _, src := range *sources {
 
-			if sourcesDd.DatadogAgentSource != nil {
+			if src.DatadogAgentSource != nil {
 				datadogAgentSourceTf := datadogAgentSourceModel{}
 
-				datadogAgentSourceTf.Id = types.StringValue(sourcesDd.DatadogAgentSource.Id)
-				if sourcesDd.DatadogAgentSource.Tls != nil {
+				datadogAgentSourceTf.Id = types.StringValue(src.DatadogAgentSource.Id)
+				if src.DatadogAgentSource != nil {
 					tlsTf := tlsModel{}
 
-					tlsTf.CrtFile = types.StringValue(sourcesDd.DatadogAgentSource.Tls.CrtFile)
-					if sourcesDd.DatadogAgentSource.Tls.CaFile != nil {
-						caFile := types.StringValue(*sourcesDd.DatadogAgentSource.Tls.CaFile)
-						tlsTf.CaFile = &caFile
+					tlsTf.CrtFile = types.StringValue(src.DatadogAgentSource.Tls.CrtFile)
+					if src.DatadogAgentSource.Tls.CaFile != nil {
+						caFile := types.StringValue(*src.DatadogAgentSource.Tls.CaFile)
+						tlsTf.CaFile = caFile
 					}
-					if sourcesDd.DatadogAgentSource.Tls.KeyFile != nil {
-						keyFile := types.StringValue(*sourcesDd.DatadogAgentSource.Tls.KeyFile)
-						tlsTf.KeyFile = &keyFile
+					if src.DatadogAgentSource.Tls.KeyFile != nil {
+						keyFile := types.StringValue(*src.DatadogAgentSource.Tls.KeyFile)
+						tlsTf.KeyFile = keyFile
 					}
 					datadogAgentSourceTf.Tls = &tlsTf
 				}
-				configTf.Sources.DatadogAgentSource = append(configTf.Sources.DatadogAgentSource, &datadogAgentSourceTf)
+				stateConfig.Sources.DatadogAgentSource = append(stateConfig.Sources.DatadogAgentSource, &datadogAgentSourceTf)
+			}
+
+			if src.KafkaSource != nil {
+				srcKafka := src.KafkaSource
+				kafka := &kafkaSourceModel{
+					Id:      types.StringValue(srcKafka.GetId()),
+					GroupId: types.StringValue(srcKafka.GetGroupId()),
+				}
+
+				topics := srcKafka.GetTopics()
+				for _, t := range topics {
+					kafka.Topics = append(kafka.Topics, types.StringValue(t))
+				}
+
+				if tls, ok := srcKafka.GetTlsOk(); ok {
+					tlsModel := &tlsModel{
+						CrtFile: types.StringValue(tls.GetCrtFile()),
+					}
+					if tls.CaFile != nil {
+						val := types.StringValue(*tls.CaFile)
+						tlsModel.CaFile = val
+					}
+					if tls.KeyFile != nil {
+						val := types.StringValue(*tls.KeyFile)
+						tlsModel.KeyFile = val
+					}
+					kafka.Tls = tlsModel
+				}
+
+				if sasl, ok := srcKafka.GetSaslOk(); ok {
+					kafka.Sasl = &kafkaSourceSaslModel{
+						Mechanism: types.StringValue(string(sasl.GetMechanism())),
+					}
+				}
+
+				for _, opt := range srcKafka.GetLibrdkafkaOptions() {
+					kafka.LibrdkafkaOptions = append(kafka.LibrdkafkaOptions, librdkafkaOptionModel{
+						Name:  types.StringValue(opt.Name),
+						Value: types.StringValue(opt.Value),
+					})
+				}
+
+				stateConfig.Sources.KafkaSource = append(stateConfig.Sources.KafkaSource, kafka)
 			}
 		}
 	}
 	if processors, ok := config.GetProcessorsOk(); ok {
 		for _, processorsDd := range *processors {
-			processorsTfItem := ProcessorsModel{}
 
 			if processorsDd.FilterProcessor != nil {
-				processorsTfItem.FilterProcessor = []*filterProcessorModel{}
 				filterProcessorTf := filterProcessorModel{}
 
 				filterProcessorTf.Id = types.StringValue(processorsDd.FilterProcessor.Id)
 				filterProcessorTf.Include = types.StringValue(processorsDd.FilterProcessor.Include)
 				filterProcessorTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, processorsDd.FilterProcessor.Inputs)
-				configTf.Processors.FilterProcessor = append(configTf.Processors.FilterProcessor, &filterProcessorTf)
+
+				stateConfig.Processors.FilterProcessor = append(stateConfig.Processors.FilterProcessor, &filterProcessorTf)
 			}
 
 			parseJSONProcessor := processorsDd.ParseJSONProcessor
 			if parseJSONProcessor != nil {
-				processorsTfItem.ParseJsonProcessor = []*ParseJsonProcessorModel{}
 				parseJsonProcessorTf := ParseJsonProcessorModel{}
 
 				parseJsonProcessorTf.Id = types.StringValue(parseJSONProcessor.Id)
-				parseJsonProcessorTf.Include = types.StringValue(*parseJSONProcessor.Include)
+				parseJsonProcessorTf.Include = types.StringValue(parseJSONProcessor.Include)
 				parseJsonProcessorTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, parseJSONProcessor.Inputs)
 				parseJsonProcessorTf.Field = types.StringValue(parseJSONProcessor.Field)
-				processorsTfItem.ParseJsonProcessor = append(processorsTfItem.ParseJsonProcessor, &parseJsonProcessorTf)
+
+				stateConfig.Processors.ParseJsonProcessor = append(stateConfig.Processors.ParseJsonProcessor, &parseJsonProcessorTf)
 			}
 		}
 	}
@@ -387,10 +506,12 @@ func (r *pipelinesResource) updateState(ctx context.Context, state *pipelinesMod
 
 				datadogLogsDestinationTf.Id = types.StringValue(destinationsDd.DatadogLogsDestination.Id)
 				datadogLogsDestinationTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, destinationsDd.DatadogLogsDestination.Inputs)
-				configTf.Destinations.DatadogLogsDestination = append(configTf.Destinations.DatadogLogsDestination, &datadogLogsDestinationTf)
+				stateConfig.Destinations.DatadogLogsDestination = append(stateConfig.Destinations.DatadogLogsDestination, &datadogLogsDestinationTf)
 			}
 		}
 	}
+
+	state.Config = stateConfig
 }
 
 func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state *pipelinesModel) (*datadogV2.Pipeline, diag.Diagnostics) {
@@ -429,6 +550,58 @@ func (r *pipelinesResource) buildPipelinesRequestBody(ctx context.Context, state
 
 		sourcesDDItem.DatadogAgentSource = &datadogAgentSource
 		sources = append(sources, sourcesDDItem)
+	}
+
+	for _, kafka := range sourcesTFItem.KafkaSource {
+		var kafkaSource datadogV2.KafkaSource
+		kafkaSource.SetId(kafka.Id.ValueString())
+		kafkaSource.SetType("kafka")
+		kafkaSource.SetGroupId(kafka.GroupId.ValueString())
+
+		topics := []string{}
+		for _, t := range kafka.Topics {
+			topics = append(topics, t.ValueString())
+		}
+		kafkaSource.SetTopics(topics)
+
+		if kafka.Tls != nil {
+			tls := datadogV2.Tls{}
+			tls.SetCrtFile(kafka.Tls.CrtFile.ValueString())
+			if !kafka.Tls.CaFile.IsNull() {
+				tls.SetCaFile(kafka.Tls.CaFile.ValueString())
+			}
+			if !kafka.Tls.KeyFile.IsNull() {
+				tls.SetKeyFile(kafka.Tls.KeyFile.ValueString())
+			}
+			kafkaSource.SetTls(tls)
+		}
+
+		if kafka.Sasl != nil {
+			mechanism, _ := datadogV2.NewKafkaSourceSaslMechanismFromValue(kafka.Sasl.Mechanism.ValueString())
+			if mechanism == nil {
+				diags.AddError("InvalidSaslMechanism", "Invalid Kafka SASL mechanism provided")
+				return nil, diags
+			}
+			sasl := datadogV2.KafkaSourceSasl{}
+			sasl.SetMechanism(*mechanism)
+			kafkaSource.SetSasl(sasl)
+		}
+
+		if len(kafka.LibrdkafkaOptions) > 0 {
+			opts := []datadogV2.KafkaSourceLibrdkafkaOption{}
+			for _, opt := range kafka.LibrdkafkaOptions {
+				opts = append(opts, datadogV2.KafkaSourceLibrdkafkaOption{
+					Name:  opt.Name.ValueString(),
+					Value: opt.Value.ValueString(),
+				})
+			}
+			kafkaSource.SetLibrdkafkaOptions(opts)
+		}
+
+		sources = append(sources, datadogV2.PipelineDataAttributesConfigSourcesItem{
+			KafkaSource: &kafkaSource,
+		})
+
 	}
 	config.SetSources(sources)
 

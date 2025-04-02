@@ -1,6 +1,7 @@
 module github.com/terraform-providers/terraform-provider-datadog
 
 require (
+	github.com/DataDog/datadog-api-client-go/v2 v2.36.2-0.20250402103934-12674cd1f6da
 	github.com/DataDog/dd-sdk-go-testing v0.0.0-20211116174033-1cd082e322ad
 	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/google/go-cmp v0.5.9
@@ -23,7 +24,6 @@ require (
 )
 
 require (
-	github.com/DataDog/datadog-api-client-go/v2 v2.35.1-0.20250310175926-4abe7bf10b8d // indirect
 	github.com/DataDog/datadog-go v4.8.3+incompatible // indirect
 	github.com/DataDog/gostackparse v0.5.0 // indirect
 	github.com/DataDog/sketches-go v1.2.1 // indirect
