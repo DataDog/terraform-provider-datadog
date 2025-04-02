@@ -102,3 +102,4 @@ require (
 )
 
 go 1.23.0
+replace github.com/DataDog/datadog-api-client-go/v2 v2.36.1 => ../datadog-api-spec/generated/datadog-api-client-go
