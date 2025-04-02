@@ -33,11 +33,11 @@ type observabilityPipelineModel struct {
 }
 
 type configModel struct {
-	Sources      SourcesModel      `tfsdk:"sources"`
-	Processors   ProcessorsModel   `tfsdk:"processors"`
+	Sources      sourcesModel      `tfsdk:"sources"`
+	Processors   processorsModel   `tfsdk:"processors"`
 	Destinations destinationsModel `tfsdk:"destinations"`
 }
-type SourcesModel struct {
+type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
 }
@@ -52,9 +52,9 @@ type tlsModel struct {
 	KeyFile types.String `tfsdk:"key_file"`
 }
 
-type ProcessorsModel struct {
+type processorsModel struct {
 	FilterProcessor    []*filterProcessorModel    `tfsdk:"filter"`
-	ParseJsonProcessor []*ParseJsonProcessorModel `tfsdk:"parse_json"`
+	ParseJsonProcessor []*parseJsonProcessorModel `tfsdk:"parse_json"`
 }
 type filterProcessorModel struct {
 	Id      types.String `tfsdk:"id"`
@@ -62,7 +62,7 @@ type filterProcessorModel struct {
 	Inputs  types.List   `tfsdk:"inputs"`
 }
 
-type ParseJsonProcessorModel struct {
+type parseJsonProcessorModel struct {
 	Id      types.String `tfsdk:"id"`
 	Inputs  types.List   `tfsdk:"inputs"`
 	Include types.String `tfsdk:"include"`
@@ -95,7 +95,7 @@ type kafkaSourceSaslModel struct {
 	Mechanism types.String `tfsdk:"mechanism"`
 }
 
-func NewPipelinesResource() resource.Resource {
+func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
 
@@ -487,7 +487,7 @@ func (r *observabilityPipelineResource) updateState(ctx context.Context, state *
 
 			parseJSONProcessor := processorsDd.ParseJSONProcessor
 			if parseJSONProcessor != nil {
-				parseJsonProcessorTf := ParseJsonProcessorModel{}
+				parseJsonProcessorTf := parseJsonProcessorModel{}
 
 				parseJsonProcessorTf.Id = types.StringValue(parseJSONProcessor.Id)
 				parseJsonProcessorTf.Include = types.StringValue(parseJSONProcessor.Include)
