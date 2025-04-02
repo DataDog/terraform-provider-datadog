@@ -1,3 +1,26 @@
+## 3.59.0 (April 2, 2025)
+
+### BUGFIXES
+* [datadog_metric_metadata] Fix drift on imported resources by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2922
+* [datadog_spans_metric] Suppress unknown include_percentiles state by @fpighi in https://github.com/DataDog/terraform-provider-datadog/pull/2906
+* [datadog_azure_integration] Fix import command by @agulen in https://github.com/DataDog/terraform-provider-datadog/pull/2924
+* [datadog_rum_metric] Set `tag_name` parameter as computed by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2934
+* [datadog_rum_metric] Fix issue with rum metric resource. by @hemeryar in https://github.com/DataDog/terraform-provider-datadog/pull/2936
+### FEATURES
+* [datadog_logs_archive] Added storage class to s3 archive terraform provider by @jcausey8 in https://github.com/DataDog/terraform-provider-datadog/pull/2875
+* [datadog_app_builder_app] Add App Builder Terraform Support by @tyffical in https://github.com/DataDog/terraform-provider-datadog/pull/2723
+* [data_source_datadog_software_catalog] Adding Software Catalog data source by @cmcmacs in https://github.com/DataDog/terraform-provider-datadog/pull/2822
+* [datadog_rum_retention_filter] Add support for the resource. by @kwangjunkim in https://github.com/DataDog/terraform-provider-datadog/pull/2899
+
+## New Contributors
+* @agulen made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2924
+* @jcausey8 made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2875
+* @tyffical made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2723
+* @cmcmacs made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2822
+* @kwangjunkim made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2899
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.58.0...v3.59.0
+
 ## 3.58.0 (March 18, 2025)
 
 ### BUGFIXES
