@@ -79,7 +79,7 @@ var Resources = []func() resource.Resource{
 	NewActionConnectionResource,
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
-	NewCSMThreatsPoliciesListResource,
+	NewCSMThreatsAgentRuleResource,
 	NewCSMThreatsPolicyResource,
 	NewCSMThreatsMultiPolicyAgentRuleResource,
 }
@@ -110,6 +110,7 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogSyntheticsGlobalVariableDataSource,
 	NewWorkflowAutomationDataSource,
 	NewDatadogAppBuilderAppDataSource,
+	NewCSMThreatsAgentRulesDataSource,
 	NewCSMThreatsPoliciesDataSource,
 }
 

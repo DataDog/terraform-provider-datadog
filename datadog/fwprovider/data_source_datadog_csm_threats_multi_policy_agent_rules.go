@@ -97,32 +97,34 @@ func (r *csmThreatsMultiPolicyAgentRulesDataSource) Read(ctx context.Context, re
 		agentRuleModel.Description = types.StringValue(attributes.GetDescription())
 		agentRuleModel.Enabled = types.BoolValue(attributes.GetEnabled())
 		agentRuleModel.Expression = types.StringValue(*attributes.Expression)
-		agentRuleModel.ProductTags, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetProductTags())
+		tags := attributes.GetProductTags()
+		tagSet := make(map[string]struct{})
+		for _, tag := range tags {
+			tagSet[tag] = struct{}{}
+		}
+		uniqueTags := make([]string, 0, len(tagSet))
+		for tag := range tagSet {
+			uniqueTags = append(uniqueTags, tag)
+		}
+
+		productTags, diags := types.SetValueFrom(ctx, types.StringType, uniqueTags)
+		if diags.HasError() {
+			response.Diagnostics.Append(diags...)
+			continue
+		}
+		agentRuleModel.ProductTags = productTags
 		agentRuleIds[idx] = agentRule.GetId()
 		agentRules[idx] = agentRuleModel
 	}
 
 	stateId := strings.Join(agentRuleIds, "--")
-	state.Id = types.StringValue(computeMultiPolicyAgentRulesID(&stateId))
+	state.Id = types.StringValue(computeDataSourceID(&stateId))
 	tfAgentRuleIds, diags := types.ListValueFrom(ctx, types.StringType, agentRuleIds)
 	response.Diagnostics.Append(diags...)
 	state.AgentRulesIds = tfAgentRuleIds
 	state.AgentRules = agentRules
 
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
-}
-
-func computeMultiPolicyAgentRulesID(ids *string) string {
-	// Key for hashing
-	var b strings.Builder
-	if ids != nil {
-		b.WriteString(*ids)
-	}
-	keyStr := b.String()
-	h := sha256.New()
-	h.Write([]byte(keyStr))
-
-	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 func (*csmThreatsMultiPolicyAgentRulesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, response *datasource.SchemaResponse) {
@@ -135,7 +137,10 @@ func (*csmThreatsMultiPolicyAgentRulesDataSource) Schema(_ context.Context, _ da
 				Optional:    true,
 			},
 			// Output
-			"id": utils.ResourceIDAttribute(),
+			"id": schema.StringAttribute{
+				Description: "The ID of the data source",
+				Computed:    true,
+			},
 			"agent_rules_ids": schema.ListAttribute{
 				Computed:    true,
 				Description: "List of IDs for the Agent rules.",
@@ -157,4 +162,17 @@ func (*csmThreatsMultiPolicyAgentRulesDataSource) Schema(_ context.Context, _ da
 			},
 		},
 	}
+}
+
+func computeDataSourceID(ids *string) string {
+	// Key for hashing
+	var b strings.Builder
+	if ids != nil {
+		b.WriteString(*ids)
+	}
+	keyStr := b.String()
+	h := sha256.New()
+	h.Write([]byte(keyStr))
+
+	return fmt.Sprintf("%x", h.Sum(nil))
 }

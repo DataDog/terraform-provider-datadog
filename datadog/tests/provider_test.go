@@ -58,6 +58,7 @@ var testFiles2EndpointTags = map[string]string{
 	"tests/data_source_datadog_application_key_test":                         "application_keys",
 	"tests/data_source_datadog_cloud_workload_security_agent_rules_test":     "cloud-workload-security",
 	"tests/data_source_datadog_action_connection_test":                       "action_connection",
+	"tests/data_source_datadog_csm_threats_agent_rule_test":                  "cloud-workload-security",
 	"tests/data_source_datadog_csm_threats_agent_rules_test":                 "cloud-workload-security",
 	"tests/data_source_datadog_csm_threats_multi_policy_agent_rules_test":    "cloud-workload-security",
 	"tests/data_source_datadog_csm_threats_policies_test":                    "cloud-workload-security",
