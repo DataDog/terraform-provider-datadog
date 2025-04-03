@@ -368,7 +368,6 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
 						Optional:         true,
 						Description:      "Source of events.",
-						Default:          datadogV2.SECURITYMONITORINGSTANDARDDATASOURCE_LOGS,
 					},
 					"metric": {
 						Type:        schema.TypeString,

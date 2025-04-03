@@ -140,6 +140,7 @@ func TestAccDatadogSecurityMonitoringRule_AppsecRule(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { testAccPreCheck(t) },
 		ProviderFactories: accProviders,
+		CheckDestroy:      testAccCheckDatadogSecurityMonitoringRuleDestroy(accProvider),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCheckDatadogSecurityMonitoringCreatedConfigAppsecRule(ruleName),
@@ -298,8 +299,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
     query {
         name = "first"
         query = "does not really match much"
-        aggregation = "count"
-		data_source = "logs"
+		aggregation = "count"
+		data_source = "network"
         group_by_fields = ["host"]
     }
 
@@ -307,7 +308,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
         name = "second"
         query = "does not really match much either"
         aggregation = "cardinality"
-		data_source = "logs"
+		data_source = "network"	
         distinct_fields = ["@orgId"]
         group_by_fields = ["host"]
     }
@@ -748,6 +749,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name = "first"
 		query = "@agent.rule_id:(%s_random_id OR random_id)"
 		aggregation = "count"
+		data_source = "security_runtime"
 		group_by_fields = ["host"]
 	}
 
@@ -822,6 +824,8 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckCwsRule(accProvider func()
 			tfSecurityRuleName, "query.0.query", fmt.Sprintf("@agent.rule_id:(%s_random_id OR random_id)", strings.Replace(ruleName, "-", "_", -1))),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.aggregation", "count"),
+		resource.TestCheckResourceAttr(
+			tfSecurityRuleName, "query.0.data_source", "security_runtime"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "host"),
 		resource.TestCheckResourceAttr(
@@ -1058,7 +1062,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name = "first"
         query = "@agent.rule_id:(%s_random_id OR random_id)"
         aggregation = "count"
-		data_source = "logs"
+		data_source = "security_runtime"
         group_by_fields = ["service"]
     }
 
@@ -1099,7 +1103,7 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckCwsRule(accProvider func() 
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.aggregation", "count"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.data_source", "logs"),
+			tfSecurityRuleName, "query.0.data_source", "security_runtime"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
@@ -1686,7 +1690,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name = "first"
 		query = "@appsec.security_activity:attack_attempt.*"
 		aggregation = "count"
-		data_source = "logs"
+		data_source = "app_sec_spans"
 		group_by_fields = ["service", "env"]
 	}
 
@@ -1737,7 +1741,7 @@ func testAccCheckDatadogSecurityMonitoringCreatedCheckAppsecRule(accProvider fun
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.aggregation", "count"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.data_source", "logs"),
+			tfSecurityRuleName, "query.0.data_source", "app_sec_spans"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
@@ -1785,7 +1789,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name = "first"
 		query = "@appsec.security_activity:attack_attempt.*"
 		aggregation = "count"
-		data_source = "logs"
+		data_source = "app_sec_spans"
 		group_by_fields = ["service", "env"]
 	}
 
@@ -1836,7 +1840,7 @@ func testAccCheckDatadogSecurityMonitoringUpdateCheckAppsecRule(accProvider func
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.aggregation", "count"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "query.0.data_source", "logs"),
+			tfSecurityRuleName, "query.0.data_source", "app_sec_spans"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "query.0.group_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
