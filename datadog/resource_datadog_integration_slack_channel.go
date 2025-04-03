@@ -73,7 +73,7 @@ func resourceDatadogIntegrationSlackChannel() *schema.Resource {
 							"mute_buttons": {
 								Type:        schema.TypeBool,
 								Optional:    true,
-								Description: "Show the mute buttons in the alert event.",
+								Description: "Show interactive buttons to mute the alerting monitor.",
 								Default:     true,
 							},
 						},
