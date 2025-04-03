@@ -45,6 +45,8 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 						"datadog_integration_slack_channel.slack_channel", "display.0.snapshot", "true"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_slack_channel.slack_channel", "display.0.tags", "true"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_slack_channel.slack_channel", "display.0.mute_buttons", "true"),
 				),
 			},
 			{
@@ -61,6 +63,8 @@ func TestAccDatadogIntegrationSlackChannel_Basic(t *testing.T) {
 						"datadog_integration_slack_channel.slack_channel", "display.0.snapshot", "false"),
 					resource.TestCheckResourceAttr(
 						"datadog_integration_slack_channel.slack_channel", "display.0.tags", "false"),
+					resource.TestCheckResourceAttr(
+						"datadog_integration_slack_channel.slack_channel", "display.0.mute_buttons", "false"),
 				),
 			},
 		},
@@ -118,6 +122,7 @@ func testAccCheckDatadogIntegrationSlackChannelConfigUpdate(uniq string) string 
 				notified = false
 				snapshot = false
 				tags = false
+				mute_buttons = false
 			}
 			channel_name = "#%s"
 			account_name    = "test_account"

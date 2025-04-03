@@ -70,6 +70,12 @@ func resourceDatadogIntegrationSlackChannel() *schema.Resource {
 								Description: "Show the scopes on which the monitor alerted.",
 								Default:     true,
 							},
+							"mute_buttons": {
+								Type:        schema.TypeBool,
+								Optional:    true,
+								Description: "Show the mute buttons in the alert event.",
+								Default:     true,
+							},
 						},
 					},
 				},
@@ -90,6 +96,7 @@ func buildDatadogSlackChannel(d *schema.ResourceData) *datadogV1.SlackIntegratio
 	resultDisplay.SetNotified(d.Get("display.0.notified").(bool))
 	resultDisplay.SetSnapshot(d.Get("display.0.snapshot").(bool))
 	resultDisplay.SetTags(d.Get("display.0.tags").(bool))
+	resultDisplay.SetMuteButtons(d.Get("display.0.mute_buttons").(bool))
 
 	datadogSlackChannel.SetDisplay(*resultDisplay)
 
@@ -221,6 +228,6 @@ func buildTerraformSlackChannelDisplay(ddChannelDisplay datadogV1.SlackIntegrati
 	tfChannelDisplay["notified"] = ddChannelDisplay.GetNotified()
 	tfChannelDisplay["snapshot"] = ddChannelDisplay.GetSnapshot()
 	tfChannelDisplay["tags"] = ddChannelDisplay.GetTags()
-
+	tfChannelDisplay["mute_buttons"] = ddChannelDisplay.GetMuteButtons()
 	return tfChannelDisplay
 }
