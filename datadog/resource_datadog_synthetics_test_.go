@@ -3543,7 +3543,8 @@ func decompressAndDecodeValue(value string, acceptBase64Only bool) (string, erro
 		return "", err
 	}
 	zl, err := zlib.NewReader(bytes.NewReader(decodedValue))
-	// Dirty hack
+	// A past UI bug corrupted some tests by not compressing `compressedProtoFile`,
+	// so we return the base64-decoded string to be stored in `plain_proto_file` directly.
 	if err != nil {
 		if acceptBase64Only {
 			return string(b), nil
