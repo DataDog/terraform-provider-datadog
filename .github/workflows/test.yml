@@ -116,6 +116,8 @@ jobs:
           echo "TF_ACC_TERRAFORM_PATH=$(which tofu)" >> $GITHUB_ENV
           echo "TF_ACC_PROVIDER_HOST=registry.opentofu.org" >> $GITHUB_ENV
       - name: Set regex for tests to run
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         shell: bash
         run: |
           test_re=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- datadog/*.go datadog/*/*.go datadog/internal/* go.mod go.sum | \
@@ -124,7 +126,7 @@ jobs:
             sed -e "s/\(.*\)/\\(?i\\)\1/" | \
             xargs | sed -e 's/ /|/g')
           
-          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ "${{ github.head_ref }}" = release/* ]] || [[ "${{ github.event_name }}" == "schedule" ]]; then
+          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ "$HEAD_REF" = release/* ]] || [[ "${{ github.event_name }}" == "schedule" ]]; then
             echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
           elif [[ ! -z "$test_re" ]]; then
             echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_ENV
