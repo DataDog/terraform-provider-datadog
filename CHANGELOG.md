@@ -1,3 +1,11 @@
+## 3.59.1 (April 4, 2025)
+
+### BUGFIXES
+* [datadog_synthetics_tests] Fix encoding bug on plain_proto_file / compressedProtoFile by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2947
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.59.0...v3.59.1
+
 ## 3.59.0 (April 2, 2025)
 
 ### BUGFIXES
