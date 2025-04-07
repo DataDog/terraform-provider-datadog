@@ -82,7 +82,9 @@ type processorsModel struct {
 	AddFieldsProcessor    []*addFieldsProcessor         `tfsdk:"add_fields"`
 	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
 	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
+	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
 }
+
 type filterProcessorModel struct {
 	Id      types.String `tfsdk:"id"`
 	Include types.String `tfsdk:"include"`
@@ -121,6 +123,28 @@ type removeFieldsProcessorModel struct {
 	Include types.String `tfsdk:"include"`
 	Inputs  types.List   `tfsdk:"inputs"`
 	Fields  types.List   `tfsdk:"fields"`
+}
+
+type quotaProcessorModel struct {
+	Id                          types.String         `tfsdk:"id"`
+	Include                     types.String         `tfsdk:"include"`
+	Inputs                      types.List           `tfsdk:"inputs"`
+	Name                        types.String         `tfsdk:"name"`
+	DropEvents                  types.Bool           `tfsdk:"drop_events"`
+	Limit                       quotaLimitModel      `tfsdk:"limit"`
+	PartitionFields             []types.String       `tfsdk:"partition_fields"`
+	IgnoreWhenMissingPartitions types.Bool           `tfsdk:"ignore_when_missing_partitions"`
+	Overrides                   []quotaOverrideModel `tfsdk:"overrides"`
+}
+
+type quotaLimitModel struct {
+	Enforce types.String `tfsdk:"enforce"` // "bytes" or "events"
+	Limit   types.Int64  `tfsdk:"limit"`
+}
+
+type quotaOverrideModel struct {
+	Fields []fieldValue    `tfsdk:"field"`
+	Limit  quotaLimitModel `tfsdk:"limit"`
 }
 
 type fieldValue struct {
@@ -381,6 +405,93 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"quota": schema.ListNestedBlock{
+								Description: "Limits event volume based on specified thresholds.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Optional:    true,
+											Description: "Processor ID.",
+										},
+										"include": schema.StringAttribute{
+											Optional:    true,
+											Description: "Filter to include events.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "Input processor IDs.",
+										},
+										"name": schema.StringAttribute{
+											Required:    true,
+											Description: "Name of the quota processor.",
+										},
+										"drop_events": schema.BoolAttribute{
+											Required:    true,
+											Description: "Whether to drop events exceeding the limit.",
+										},
+										"ignore_when_missing_partitions": schema.BoolAttribute{
+											Optional:    true,
+											Description: "Ignore when partition fields are missing.",
+										},
+										"partition_fields": schema.ListAttribute{
+											Optional:    true,
+											ElementType: types.StringType,
+											Description: "List of partition fields.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"limit": schema.SingleNestedBlock{
+											Attributes: map[string]schema.Attribute{
+												"enforce": schema.StringAttribute{
+													Required:    true,
+													Description: "Whether to enforce by 'bytes' or 'events'.",
+													Validators: []validator.String{
+														stringvalidator.OneOf("bytes", "events"),
+													},
+												},
+												"limit": schema.Int64Attribute{
+													Required:    true,
+													Description: "Limit value.",
+												},
+											},
+										},
+										"overrides": schema.ListNestedBlock{
+											Description: "Field-specific quota overrides.",
+											NestedObject: schema.NestedBlockObject{
+												Blocks: map[string]schema.Block{
+													"limit": schema.SingleNestedBlock{
+														Attributes: map[string]schema.Attribute{
+															"enforce": schema.StringAttribute{
+																Required: true,
+																Validators: []validator.String{
+																	stringvalidator.OneOf("bytes", "events"),
+																},
+															},
+															"limit": schema.Int64Attribute{
+																Required: true,
+															},
+														},
+													},
+													"field": schema.ListNestedBlock{
+														Description: "Fields that trigger this override.",
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"name": schema.StringAttribute{
+																	Required: true,
+																},
+																"value": schema.StringAttribute{
+																	Required: true,
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -580,6 +691,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.RemoveFieldsProcessor {
 		config.Processors = append(config.Processors, expandRemoveFieldsProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.QuotaProcessor {
+		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -624,6 +738,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenRemoveFieldsProcessor(ctx, p.ObservabilityPipelineRemoveFieldsProcessor); f != nil {
 			outCfg.Processors.RemoveFieldsProcessor = append(outCfg.Processors.RemoveFieldsProcessor, f)
+		}
+		if f := flattenQuotaProcessor(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
+			outCfg.Processors.QuotaProcessor = append(outCfg.Processors.QuotaProcessor, f)
 		}
 	}
 	for _, d := range cfg.GetDestinations() {
@@ -898,6 +1015,99 @@ func expandRemoveFieldsProcessor(ctx context.Context, src *removeFieldsProcessor
 
 	return datadogV2.ObservabilityPipelineConfigProcessorItem{
 		ObservabilityPipelineRemoveFieldsProcessor: proc,
+	}
+}
+
+func flattenQuotaProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineQuotaProcessor) *quotaProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+	partitionFields, _ := types.ListValueFrom(ctx, types.StringType, src.PartitionFields)
+
+	var partitions []types.String
+	for _, p := range partitionFields.Elements() {
+		if strVal, ok := p.(types.String); ok {
+			partitions = append(partitions, strVal)
+		}
+	}
+
+	out := &quotaProcessorModel{
+		Id:                          types.StringValue(src.Id),
+		Include:                     types.StringValue(src.Include),
+		Name:                        types.StringValue(src.Name),
+		DropEvents:                  types.BoolValue(src.DropEvents),
+		IgnoreWhenMissingPartitions: types.BoolValue(src.GetIgnoreWhenMissingPartitions()),
+		Inputs:                      inputs,
+		PartitionFields:             partitions,
+		Limit: quotaLimitModel{
+			Enforce: types.StringValue(string(src.Limit.Enforce)),
+			Limit:   types.Int64Value(src.Limit.Limit),
+		},
+	}
+
+	for _, o := range src.Overrides {
+		override := quotaOverrideModel{
+			Limit: quotaLimitModel{
+				Enforce: types.StringValue(string(o.Limit.Enforce)),
+				Limit:   types.Int64Value(o.Limit.Limit),
+			},
+		}
+		for _, f := range o.Fields {
+			override.Fields = append(override.Fields, fieldValue{
+				Name:  types.StringValue(f.Name),
+				Value: types.StringValue(f.Value),
+			})
+		}
+		out.Overrides = append(out.Overrides, override)
+	}
+
+	return out
+}
+
+func expandQuotaProcessor(ctx context.Context, src *quotaProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineQuotaProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+	proc.SetName(src.Name.ValueString())
+	proc.SetDropEvents(src.DropEvents.ValueBool())
+	proc.SetIgnoreWhenMissingPartitions(src.IgnoreWhenMissingPartitions.ValueBool())
+
+	var inputs, partitions []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	for _, p := range src.PartitionFields {
+		partitions = append(partitions, p.ValueString())
+	}
+	proc.SetInputs(inputs)
+	proc.SetPartitionFields(partitions)
+
+	proc.SetLimit(datadogV2.ObservabilityPipelineQuotaProcessorLimit{
+		Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(src.Limit.Enforce.ValueString()),
+		Limit:   src.Limit.Limit.ValueInt64(),
+	})
+
+	var overrides []datadogV2.ObservabilityPipelineQuotaProcessorOverride
+	for _, o := range src.Overrides {
+		var fields []datadogV2.ObservabilityPipelineFieldValue
+		for _, f := range o.Fields {
+			fields = append(fields, datadogV2.ObservabilityPipelineFieldValue{
+				Name:  f.Name.ValueString(),
+				Value: f.Value.ValueString(),
+			})
+		}
+		overrides = append(overrides, datadogV2.ObservabilityPipelineQuotaProcessorOverride{
+			Fields: fields,
+			Limit: datadogV2.ObservabilityPipelineQuotaProcessorLimit{
+				Enforce: datadogV2.ObservabilityPipelineQuotaProcessorLimitEnforceType(o.Limit.Enforce.ValueString()),
+				Limit:   o.Limit.Limit.ValueInt64(),
+			},
+		})
+	}
+	proc.SetOverrides(overrides)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineQuotaProcessor: proc,
 	}
 }
 

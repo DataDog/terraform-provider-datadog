@@ -436,3 +436,106 @@ resource "datadog_observability_pipeline" "remove_fields" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_quotaProcessor(t *testing.T) {
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.quota"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "quota" {
+  name = "quota-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      quota {
+        id      = "quota-1"
+        include = "*"
+        inputs  = ["source-1"]
+        name    = "limitByHostAndEnv"
+        drop_events = true
+        ignore_when_missing_partitions = true
+        partition_fields = ["host", "env"]
+
+        limit {
+          enforce = "events"
+          limit   = 1000
+        }
+
+        overrides {
+          field {
+            name  = "env"
+            value = "prod"
+          }
+          field {
+            name  = "host"
+            value = "*"
+          }
+          limit {
+            enforce = "events"
+            limit   = 500
+          }
+        }
+
+        overrides {
+          field {
+            name  = "env"
+            value = "*"
+          }
+          field {
+            name  = "host"
+            value = "localhost"
+          }
+          limit {
+            enforce = "bytes"
+            limit   = 300
+          }
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["quota-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "quota-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.id", "quota-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.name", "limitByHostAndEnv"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.drop_events", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.limit.enforce", "events"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.limit.limit", "1000"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.0.field.0.name", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.0.field.0.value", "prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.0.field.1.name", "host"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.0.field.1.value", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.0.limit.enforce", "events"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.0.limit.limit", "500"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.1.field.0.name", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.1.field.0.value", "*"), resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.1.field.0.name", "env"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.1.field.1.name", "host"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.1.field.1.value", "localhost"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.1.limit.enforce", "bytes"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.quota.0.overrides.1.limit.limit", "300"),
+				),
+			},
+		},
+	})
+}
