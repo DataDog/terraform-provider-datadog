@@ -17,7 +17,7 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 	t.Parallel()
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
-	resourceName := "datadog_observability_pipeline.test"
+	resourceName := "datadog_observability_pipeline.basic"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
@@ -46,7 +46,7 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 
 func testAccObservabilityPipelineBasicConfig() string {
 	return fmt.Sprintf(`
-resource "datadog_observability_pipeline" "test" {
+resource "datadog_observability_pipeline" "basic" {
   name = "test pipeline"
 
   config {
@@ -77,7 +77,7 @@ resource "datadog_observability_pipeline" "test" {
 
 func testAccObservabilityPipelineUpdatedConfig() string {
 	return `
-resource "datadog_observability_pipeline" "test" {
+resource "datadog_observability_pipeline" "basic" {
   name = "updated pipeline"
 
   config {
@@ -247,9 +247,9 @@ func TestAccDatadogObservabilityPipeline_datadogAgentWithTLS(t *testing.T) {
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
 					resource.TestCheckResourceAttr(resourceName, "name", "agent with tls"),
 					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-with-tls"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.crt_file", "/etc/certs/agent.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.ca_file", "/etc/certs/ca.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.key_file", "/etc/certs/agent.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.crt_file", "/etc/certs/agent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.ca_file", "/etc/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.key_file", "/etc/certs/agent.key"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
 				),
 			},

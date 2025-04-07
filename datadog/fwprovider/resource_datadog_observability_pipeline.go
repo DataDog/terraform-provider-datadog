@@ -45,13 +45,13 @@ type sourcesModel struct {
 }
 type datadogAgentSourceModel struct {
 	Id  types.String `tfsdk:"id"`
-	Tls *tlsModel    `tfsdk:"tls"`
+	Tls []tlsModel   `tfsdk:"tls"`
 }
 
 type tlsModel struct {
-	CrtFile types.String  `tfsdk:"crt_file"`
-	CaFile  *types.String `tfsdk:"ca_file"`
-	KeyFile *types.String `tfsdk:"key_file"`
+	CrtFile types.String `tfsdk:"crt_file"`
+	CaFile  types.String `tfsdk:"ca_file"`
+	KeyFile types.String `tfsdk:"key_file"`
 }
 
 type processorsModel struct {
@@ -98,7 +98,7 @@ type kafkaSourceModel struct {
 	Topics            []types.String          `tfsdk:"topics"`
 	LibrdkafkaOptions []librdkafkaOptionModel `tfsdk:"librdkafka_option"`
 	Sasl              *kafkaSourceSaslModel   `tfsdk:"sasl"`
-	Tls               *tlsModel               `tfsdk:"tls"`
+	Tls               []tlsModel              `tfsdk:"tls"`
 }
 
 type librdkafkaOptionModel struct {
@@ -345,419 +345,419 @@ func (r *observabilityPipelineResource) ImportState(ctx context.Context, request
 	resource.ImportStatePassthroughID(ctx, frameworkPath.Root("id"), request, response)
 }
 
-func (r *observabilityPipelineResource) Read(ctx context.Context, request resource.ReadRequest, response *resource.ReadResponse) {
+func (r *observabilityPipelineResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state observabilityPipelineModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...) // Read config from plan
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	body, diags := expandPipelineRequest(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	createReq := datadogV2.NewObservabilityPipelineCreateRequestWithDefaults()
+	createReq.Data = *datadogV2.NewObservabilityPipelineCreateRequestDataWithDefaults()
+	createReq.Data.Attributes = body.Data.Attributes
+
+	result, _, err := r.Api.CreatePipeline(r.Auth, *createReq)
+	if err != nil {
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating Pipeline"))
+		return
+	}
+	if err := utils.CheckForUnparsed(result); err != nil {
+		resp.Diagnostics.AddError("response contains unparsedObject", err.Error())
+		return
+	}
+
+	flattenPipeline(ctx, &state, &result)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...) // Save to state
+}
+
+func (r *observabilityPipelineResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
+	var state observabilityPipelineModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...) // Load current state
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	id := state.ID.ValueString()
-	resp, httpResp, err := r.Api.GetPipeline(r.Auth, id)
+	result, httpResp, err := r.Api.GetPipeline(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
-			response.State.RemoveResource(ctx)
+			resp.State.RemoveResource(ctx)
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Pipelines"))
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Pipeline"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+	if err := utils.CheckForUnparsed(result); err != nil {
+		resp.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
 
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	flattenPipeline(ctx, &state, &result)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...) // Save to state
 }
 
-func (r *observabilityPipelineResource) Create(ctx context.Context, request resource.CreateRequest, response *resource.CreateResponse) {
+func (r *observabilityPipelineResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var state observabilityPipelineModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	body, diags := r.buildPipelinesRequestBody(ctx, &state)
-	response.Diagnostics.Append(diags...)
-	if response.Diagnostics.HasError() {
-		return
-	}
-
-	createRequest := datadogV2.NewObservabilityPipelineCreateRequestWithDefaults()
-	createRequest.Data = *datadogV2.NewObservabilityPipelineCreateRequestDataWithDefaults()
-	createRequest.Data.Attributes = body.Data.Attributes
-	resp, _, err := r.Api.CreatePipeline(r.Auth, *createRequest)
-	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Pipelines"))
-		return
-	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
-		return
-	}
-	r.updateState(ctx, &state, &resp)
-
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
-}
-
-func (r *observabilityPipelineResource) Update(ctx context.Context, request resource.UpdateRequest, response *resource.UpdateResponse) {
-	var state observabilityPipelineModel
-	response.Diagnostics.Append(request.Plan.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...) // Read config from plan
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	id := state.ID.ValueString()
-
-	body, diags := r.buildPipelinesRequestBody(ctx, &state)
-	response.Diagnostics.Append(diags...)
-	if response.Diagnostics.HasError() {
+	body, diags := expandPipelineRequest(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	resp, _, err := r.Api.UpdatePipeline(r.Auth, id, *body)
+	result, _, err := r.Api.UpdatePipeline(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Pipelines"))
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating Pipeline"))
 		return
 	}
-	if err := utils.CheckForUnparsed(resp); err != nil {
-		response.Diagnostics.AddError("response contains unparsedObject", err.Error())
+	if err := utils.CheckForUnparsed(result); err != nil {
+		resp.Diagnostics.AddError("response contains unparsedObject", err.Error())
 		return
 	}
-	r.updateState(ctx, &state, &resp)
 
-	// Save data into Terraform state
-	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
+	flattenPipeline(ctx, &state, &result)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...) // Save to state
 }
 
-func (r *observabilityPipelineResource) Delete(ctx context.Context, request resource.DeleteRequest, response *resource.DeleteResponse) {
+func (r *observabilityPipelineResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	var state observabilityPipelineModel
-	response.Diagnostics.Append(request.State.Get(ctx, &state)...)
-	if response.Diagnostics.HasError() {
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...) // Load current state
+	if resp.Diagnostics.HasError() {
 		return
 	}
 
 	id := state.ID.ValueString()
-
 	httpResp, err := r.Api.DeletePipeline(r.Auth, id)
 	if err != nil {
 		if httpResp != nil && httpResp.StatusCode == 404 {
 			return
 		}
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting pipelines"))
+		resp.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting Pipeline"))
 		return
 	}
 }
 
-func (r *observabilityPipelineResource) updateState(ctx context.Context, state *observabilityPipelineModel, resp *datadogV2.ObservabilityPipeline) {
-	state.ID = types.StringValue(resp.Data.GetId())
+// --- Schema + Models ---
+// [These remain unchanged — reuse your existing schema + model types]
 
-	data := resp.GetData()
-	attributes := data.GetAttributes()
-
-	state.Name = types.StringValue(attributes.GetName())
-
-	config := attributes.GetConfig()
-	stateConfig := configModel{}
-
-	if sources, ok := config.GetSourcesOk(); ok {
-		for _, src := range *sources {
-
-			if src.ObservabilityPipelineDatadogAgentSource != nil {
-				datadogAgentSourceTf := datadogAgentSourceModel{}
-
-				datadogAgentSourceTf.Id = types.StringValue(src.ObservabilityPipelineDatadogAgentSource.Id)
-				if src.ObservabilityPipelineDatadogAgentSource.Tls != nil {
-					tlsTf := tlsModel{}
-
-					tlsTf.CrtFile = types.StringValue(src.ObservabilityPipelineDatadogAgentSource.Tls.CrtFile)
-					if src.ObservabilityPipelineDatadogAgentSource.Tls.CaFile != nil {
-						caFile := types.StringValue(*src.ObservabilityPipelineDatadogAgentSource.Tls.CaFile)
-						tlsTf.CaFile = &caFile
-					}
-					if src.ObservabilityPipelineDatadogAgentSource.Tls.KeyFile != nil {
-						keyFile := types.StringValue(*src.ObservabilityPipelineDatadogAgentSource.Tls.KeyFile)
-						tlsTf.KeyFile = &keyFile
-					}
-					datadogAgentSourceTf.Tls = &tlsTf
-				}
-				stateConfig.Sources.DatadogAgentSource = append(stateConfig.Sources.DatadogAgentSource, &datadogAgentSourceTf)
-			}
-
-			if src.ObservabilityPipelineKafkaSource != nil {
-				srcKafka := src.ObservabilityPipelineKafkaSource
-				kafka := &kafkaSourceModel{
-					Id:      types.StringValue(srcKafka.GetId()),
-					GroupId: types.StringValue(srcKafka.GetGroupId()),
-				}
-
-				topics := srcKafka.GetTopics()
-				for _, t := range topics {
-					kafka.Topics = append(kafka.Topics, types.StringValue(t))
-				}
-
-				if tls, ok := srcKafka.GetTlsOk(); ok {
-					tlsModel := &tlsModel{
-						CrtFile: types.StringValue(tls.GetCrtFile()),
-					}
-					if tls.CaFile != nil {
-						val := types.StringValue(*tls.CaFile)
-						tlsModel.CaFile = &val
-					}
-					if tls.KeyFile != nil {
-						val := types.StringValue(*tls.KeyFile)
-						tlsModel.KeyFile = &val
-					}
-					kafka.Tls = tlsModel
-				}
-
-				if sasl, ok := srcKafka.GetSaslOk(); ok {
-					kafka.Sasl = &kafkaSourceSaslModel{
-						Mechanism: types.StringValue(string(sasl.GetMechanism())),
-					}
-				}
-
-				for _, opt := range srcKafka.GetLibrdkafkaOptions() {
-					kafka.LibrdkafkaOptions = append(kafka.LibrdkafkaOptions, librdkafkaOptionModel{
-						Name:  types.StringValue(opt.Name),
-						Value: types.StringValue(opt.Value),
-					})
-				}
-
-				stateConfig.Sources.KafkaSource = append(stateConfig.Sources.KafkaSource, kafka)
-			}
-		}
-	}
-	if processors, ok := config.GetProcessorsOk(); ok {
-		for _, processorsDd := range *processors {
-
-			if processorsDd.ObservabilityPipelineFilterProcessor != nil {
-				filterProcessorTf := filterProcessorModel{}
-
-				filterProcessorTf.Id = types.StringValue(processorsDd.ObservabilityPipelineFilterProcessor.Id)
-				filterProcessorTf.Include = types.StringValue(processorsDd.ObservabilityPipelineFilterProcessor.Include)
-				filterProcessorTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, processorsDd.ObservabilityPipelineFilterProcessor.Inputs)
-
-				stateConfig.Processors.FilterProcessor = append(stateConfig.Processors.FilterProcessor, &filterProcessorTf)
-			}
-
-			parseJSONProcessor := processorsDd.ObservabilityPipelineParseJSONProcessor
-			if parseJSONProcessor != nil {
-				parseJsonProcessorTf := parseJsonProcessorModel{}
-
-				parseJsonProcessorTf.Id = types.StringValue(parseJSONProcessor.Id)
-				parseJsonProcessorTf.Include = types.StringValue(parseJSONProcessor.Include)
-				parseJsonProcessorTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, parseJSONProcessor.Inputs)
-				parseJsonProcessorTf.Field = types.StringValue(parseJSONProcessor.Field)
-
-				stateConfig.Processors.ParseJsonProcessor = append(stateConfig.Processors.ParseJsonProcessor, &parseJsonProcessorTf)
-			}
-
-			addFields := processorsDd.ObservabilityPipelineAddFieldsProcessor
-			if addFields != nil {
-				addFieldsTf := &addFieldsProcessor{}
-
-				addFieldsTf.Id = types.StringValue(addFields.Id)
-				addFieldsTf.Include = types.StringValue(addFields.Include)
-				addFieldsTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, addFields.Inputs)
-
-				for _, f := range addFields.Fields {
-					addFieldsTf.Fields = append(addFieldsTf.Fields, fieldValue{
-						Name:  types.StringValue(f.Name),
-						Value: types.StringValue(f.Value),
-					})
-				}
-
-				stateConfig.Processors.AddFieldsProcessor = append(stateConfig.Processors.AddFieldsProcessor, addFieldsTf)
-			}
-
-		}
-	}
-	if destinations, ok := config.GetDestinationsOk(); ok {
-		for _, destinationsDd := range *destinations {
-
-			if destinationsDd.ObservabilityPipelineDatadogLogsDestination != nil {
-				datadogLogsDestinationTf := datadogLogsDestinationModel{}
-
-				datadogLogsDestinationTf.Id = types.StringValue(destinationsDd.ObservabilityPipelineDatadogLogsDestination.Id)
-				datadogLogsDestinationTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, destinationsDd.ObservabilityPipelineDatadogLogsDestination.Inputs)
-				stateConfig.Destinations.DatadogLogsDestination = append(stateConfig.Destinations.DatadogLogsDestination, &datadogLogsDestinationTf)
-			}
-		}
-	}
-
-	state.Config = stateConfig
-}
-
-func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.ObservabilityPipeline, diag.Diagnostics) {
+// --- Expansion ---
+func expandPipelineRequest(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.ObservabilityPipeline, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	req := &datadogV2.ObservabilityPipeline{}
-	attributes := datadogV2.NewObservabilityPipelineDataAttributesWithDefaults()
+
+	req := datadogV2.NewObservabilityPipelineWithDefaults()
+	data := datadogV2.NewObservabilityPipelineDataWithDefaults()
+	attrs := datadogV2.NewObservabilityPipelineDataAttributesWithDefaults()
 
 	if !state.Name.IsNull() {
-		attributes.SetName(state.Name.ValueString())
+		attrs.SetName(state.Name.ValueString())
 	}
 
-	var config datadogV2.ObservabilityPipelineConfig
+	config := datadogV2.NewObservabilityPipelineConfigWithDefaults()
 
-	var sources []datadogV2.ObservabilityPipelineConfigSourceItem
-	sourcesTFItem := state.Config.Sources
-	sourcesDDItem := datadogV2.ObservabilityPipelineConfigSourceItem{}
-
-	for _, ddSource := range sourcesTFItem.DatadogAgentSource {
-		datadogAgentSource := datadogV2.NewObservabilityPipelineDatadogAgentSourceWithDefaults()
-		datadogAgentSource.SetId(ddSource.Id.ValueString())
-
-		if ddSource.Tls != nil {
-			var tls datadogV2.ObservabilityPipelineTls
-
-			tls.SetCrtFile(ddSource.Tls.CrtFile.ValueString())
-			if !ddSource.Tls.CaFile.IsNull() {
-				tls.SetCaFile(ddSource.Tls.CaFile.ValueString())
-			}
-			if !ddSource.Tls.KeyFile.IsNull() {
-				tls.SetKeyFile(ddSource.Tls.KeyFile.ValueString())
-			}
-			datadogAgentSource.Tls = &tls
-		}
-
-		sourcesDDItem.ObservabilityPipelineDatadogAgentSource = datadogAgentSource
-		sources = append(sources, sourcesDDItem)
+	// Sources
+	for _, s := range state.Config.Sources.DatadogAgentSource {
+		config.Sources = append(config.Sources, expandDatadogAgentSource(s))
+	}
+	for _, k := range state.Config.Sources.KafkaSource {
+		config.Sources = append(config.Sources, expandKafkaSource(k))
 	}
 
-	for _, kafka := range sourcesTFItem.KafkaSource {
-		kafkaSource := datadogV2.NewObservabilityPipelineKafkaSourceWithDefaults()
-		kafkaSource.SetId(kafka.Id.ValueString())
-		kafkaSource.SetGroupId(kafka.GroupId.ValueString())
+	// Processors
+	for _, p := range state.Config.Processors.FilterProcessor {
+		config.Processors = append(config.Processors, expandFilterProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.ParseJsonProcessor {
+		config.Processors = append(config.Processors, expandParseJsonProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.AddFieldsProcessor {
+		config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
+	}
 
-		topics := []string{}
-		for _, t := range kafka.Topics {
-			topics = append(topics, t.ValueString())
+	// Destinations
+	for _, d := range state.Config.Destinations.DatadogLogsDestination {
+		config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, d))
+	}
+
+	attrs.SetConfig(*config)
+	data.SetAttributes(*attrs)
+	req.SetData(*data)
+	return req, diags
+}
+
+// --- Flattening ---
+func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, resp *datadogV2.ObservabilityPipeline) {
+	state.ID = types.StringValue(resp.Data.GetId())
+	attrs := resp.Data.GetAttributes()
+	state.Name = types.StringValue(attrs.GetName())
+
+	cfg := attrs.GetConfig()
+	outCfg := configModel{}
+
+	for _, src := range cfg.GetSources() {
+		if a := flattenDatadogAgentSource(src.ObservabilityPipelineDatadogAgentSource); a != nil {
+			outCfg.Sources.DatadogAgentSource = append(outCfg.Sources.DatadogAgentSource, a)
 		}
-		kafkaSource.SetTopics(topics)
-
-		if kafka.Tls != nil {
-			tls := datadogV2.ObservabilityPipelineTls{}
-			tls.SetCrtFile(kafka.Tls.CrtFile.ValueString())
-			if !kafka.Tls.CaFile.IsNull() {
-				tls.SetCaFile(kafka.Tls.CaFile.ValueString())
-			}
-			if !kafka.Tls.KeyFile.IsNull() {
-				tls.SetKeyFile(kafka.Tls.KeyFile.ValueString())
-			}
-			kafkaSource.SetTls(tls)
+		if k := flattenKafkaSource(src.ObservabilityPipelineKafkaSource); k != nil {
+			outCfg.Sources.KafkaSource = append(outCfg.Sources.KafkaSource, k)
 		}
+	}
+	for _, p := range cfg.GetProcessors() {
+		if f := flattenFilterProcessor(ctx, p.ObservabilityPipelineFilterProcessor); f != nil {
+			outCfg.Processors.FilterProcessor = append(outCfg.Processors.FilterProcessor, f)
+		}
+		if pj := flattenParseJsonProcessor(ctx, p.ObservabilityPipelineParseJSONProcessor); pj != nil {
+			outCfg.Processors.ParseJsonProcessor = append(outCfg.Processors.ParseJsonProcessor, pj)
+		}
+		if af := flattenAddFieldsProcessor(ctx, p.ObservabilityPipelineAddFieldsProcessor); af != nil {
+			outCfg.Processors.AddFieldsProcessor = append(outCfg.Processors.AddFieldsProcessor, af)
+		}
+	}
+	for _, d := range cfg.GetDestinations() {
+		if logs := flattenDatadogLogsDestination(ctx, d.ObservabilityPipelineDatadogLogsDestination); logs != nil {
+			outCfg.Destinations.DatadogLogsDestination = append(outCfg.Destinations.DatadogLogsDestination, logs)
+		}
+	}
 
-		if kafka.Sasl != nil {
-			mechanism, _ := datadogV2.NewObservabilityPipelinePipelineKafkaSourceSaslMechanismFromValue(kafka.Sasl.Mechanism.ValueString())
-			if mechanism == nil {
-				diags.AddError("InvalidSaslMechanism", "Invalid Kafka SASL mechanism provided")
-				return nil, diags
-			}
+	state.Config = outCfg
+}
+
+// ---------- Sources ----------
+
+func flattenDatadogAgentSource(src *datadogV2.ObservabilityPipelineDatadogAgentSource) *datadogAgentSourceModel {
+	if src == nil {
+		return nil
+	}
+	out := &datadogAgentSourceModel{
+		Id: types.StringValue(src.Id),
+	}
+	if src.Tls != nil {
+		out.Tls = []tlsModel{flattenTls(src.Tls)}
+	}
+	return out
+}
+
+func expandDatadogAgentSource(src *datadogAgentSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	agent := datadogV2.NewObservabilityPipelineDatadogAgentSourceWithDefaults()
+	agent.SetId(src.Id.ValueString())
+	if len(src.Tls) > 0 {
+		agent.Tls = expandTls(src.Tls)
+	}
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineDatadogAgentSource: agent,
+	}
+}
+
+func flattenKafkaSource(src *datadogV2.ObservabilityPipelineKafkaSource) *kafkaSourceModel {
+	if src == nil {
+		return nil
+	}
+	out := &kafkaSourceModel{
+		Id:      types.StringValue(src.GetId()),
+		GroupId: types.StringValue(src.GetGroupId()),
+	}
+	for _, topic := range src.GetTopics() {
+		out.Topics = append(out.Topics, types.StringValue(topic))
+	}
+	if src.Tls != nil {
+		out.Tls = []tlsModel{flattenTls(src.Tls)}
+	}
+	if sasl, ok := src.GetSaslOk(); ok {
+		out.Sasl = &kafkaSourceSaslModel{
+			Mechanism: types.StringValue(string(sasl.GetMechanism())),
+		}
+	}
+	for _, opt := range src.GetLibrdkafkaOptions() {
+		out.LibrdkafkaOptions = append(out.LibrdkafkaOptions, librdkafkaOptionModel{
+			Name:  types.StringValue(opt.Name),
+			Value: types.StringValue(opt.Value),
+		})
+	}
+	return out
+}
+
+func expandKafkaSource(src *kafkaSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	source := datadogV2.NewObservabilityPipelineKafkaSourceWithDefaults()
+	source.SetId(src.Id.ValueString())
+	source.SetGroupId(src.GroupId.ValueString())
+	var topics []string
+	for _, t := range src.Topics {
+		topics = append(topics, t.ValueString())
+	}
+	source.SetTopics(topics)
+
+	if len(src.Tls) > 0 {
+		source.Tls = expandTls(src.Tls)
+	}
+
+	if src.Sasl != nil {
+		mechanism, _ := datadogV2.NewObservabilityPipelinePipelineKafkaSourceSaslMechanismFromValue(src.Sasl.Mechanism.ValueString())
+		if mechanism != nil {
 			sasl := datadogV2.ObservabilityPipelineKafkaSourceSasl{}
 			sasl.SetMechanism(*mechanism)
-			kafkaSource.SetSasl(sasl)
+			source.SetSasl(sasl)
 		}
-
-		if len(kafka.LibrdkafkaOptions) > 0 {
-			opts := []datadogV2.ObservabilityPipelineKafkaSourceLibrdkafkaOption{}
-			for _, opt := range kafka.LibrdkafkaOptions {
-				opts = append(opts, datadogV2.ObservabilityPipelineKafkaSourceLibrdkafkaOption{
-					Name:  opt.Name.ValueString(),
-					Value: opt.Value.ValueString(),
-				})
-			}
-			kafkaSource.SetLibrdkafkaOptions(opts)
-		}
-
-		sources = append(sources, datadogV2.ObservabilityPipelineConfigSourceItem{
-			ObservabilityPipelineKafkaSource: kafkaSource,
-		})
-
-	}
-	config.SetSources(sources)
-
-	var processors []datadogV2.ObservabilityPipelineConfigProcessorItem
-	processorsTFItem := state.Config.Processors
-	for _, filterProcessorTF := range processorsTFItem.FilterProcessor {
-		processorsDDItem := datadogV2.ObservabilityPipelineConfigProcessorItem{}
-		if filterProcessorTF != nil {
-			filterProcessor := datadogV2.NewObservabilityPipelineFilterProcessorWithDefaults()
-			filterProcessor.SetId(filterProcessorTF.Id.ValueString())
-			filterProcessor.SetInclude(filterProcessorTF.Include.ValueString())
-			var inputs []string
-			filterProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
-			filterProcessor.SetInputs(inputs)
-			processorsDDItem.ObservabilityPipelineFilterProcessor = filterProcessor
-		}
-		processors = append(processors, processorsDDItem)
 	}
 
-	for _, parseJsonProcessorTF := range processorsTFItem.ParseJsonProcessor {
-
-		processorsDDItem := datadogV2.ObservabilityPipelineConfigProcessorItem{}
-		parseJsonProcessor := datadogV2.NewObservabilityPipelineParseJSONProcessorWithDefaults()
-
-		parseJsonProcessor.SetId(parseJsonProcessorTF.Id.ValueString())
-		parseJsonProcessor.SetInclude(parseJsonProcessorTF.Include.ValueString())
-		var inputs []string
-		parseJsonProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
-		parseJsonProcessor.SetInputs(inputs)
-		parseJsonProcessor.SetField(parseJsonProcessorTF.Field.ValueString())
-		processorsDDItem.ObservabilityPipelineParseJSONProcessor = parseJsonProcessor
-		processors = append(processors, processorsDDItem)
-
-	}
-
-	for _, addFieldsTF := range processorsTFItem.AddFieldsProcessor {
-		processorsDDItem := datadogV2.ObservabilityPipelineConfigProcessorItem{}
-		addFields := datadogV2.NewObservabilityPipelineAddFieldsProcessorWithDefaults()
-
-		var fields []datadogV2.ObservabilityPipelineFieldValue
-		for _, f := range addFieldsTF.Fields {
-			fields = append(fields, datadogV2.ObservabilityPipelineFieldValue{
-				Name:  f.Name.ValueString(),
-				Value: f.Value.ValueString(),
+	if len(src.LibrdkafkaOptions) > 0 {
+		opts := []datadogV2.ObservabilityPipelineKafkaSourceLibrdkafkaOption{}
+		for _, opt := range src.LibrdkafkaOptions {
+			opts = append(opts, datadogV2.ObservabilityPipelineKafkaSourceLibrdkafkaOption{
+				Name:  opt.Name.ValueString(),
+				Value: opt.Value.ValueString(),
 			})
 		}
-		addFields.SetFields(fields)
-		addFields.SetId(addFieldsTF.Id.ValueString())
-		addFields.SetInclude(addFieldsTF.Include.ValueString())
-		var inputs []string
-		addFieldsTF.Inputs.ElementsAs(ctx, &inputs, false)
-		addFields.SetInputs(inputs)
-		processorsDDItem.ObservabilityPipelineAddFieldsProcessor = addFields
-		processors = append(processors, processorsDDItem)
+		source.SetLibrdkafkaOptions(opts)
 	}
 
-	config.SetProcessors(processors)
-
-	var destinations []datadogV2.ObservabilityPipelineConfigDestinationItem
-	destinationsTFItem := state.Config.Destinations
-	destinationsDDItem := datadogV2.ObservabilityPipelineConfigDestinationItem{}
-
-	for _, destination := range destinationsTFItem.DatadogLogsDestination {
-		datadogLogsDestination := datadogV2.NewObservabilityPipelineDatadogLogsDestinationWithDefaults()
-		datadogLogsDestination.SetId(destination.Id.ValueString())
-		var inputs []string
-		destination.Inputs.ElementsAs(ctx, &inputs, false)
-		datadogLogsDestination.SetInputs(inputs)
-		destinationsDDItem.ObservabilityPipelineDatadogLogsDestination = datadogLogsDestination
-
-		destinations = append(destinations, destinationsDDItem)
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineKafkaSource: source,
 	}
+}
 
-	config.SetDestinations(destinations)
+// ---------- Processors ----------
 
-	attributes.SetConfig(config)
+func flattenFilterProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineFilterProcessor) *filterProcessorModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+	return &filterProcessorModel{
+		Id:      types.StringValue(src.Id),
+		Include: types.StringValue(src.Include),
+		Inputs:  inputs,
+	}
+}
 
-	pipelineData := datadogV2.NewObservabilityPipelineDataWithDefaults()
-	pipelineData.SetAttributes(*attributes)
-	req.SetData(*pipelineData)
+func expandFilterProcessor(ctx context.Context, src *filterProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineFilterProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineFilterProcessor: proc,
+	}
+}
 
-	return req, diags
+func flattenParseJsonProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineParseJSONProcessor) *parseJsonProcessorModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+	return &parseJsonProcessorModel{
+		Id:      types.StringValue(src.Id),
+		Include: types.StringValue(src.Include),
+		Inputs:  inputs,
+		Field:   types.StringValue(src.Field),
+	}
+}
+
+func expandParseJsonProcessor(ctx context.Context, src *parseJsonProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineParseJSONProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+	proc.SetField(src.Field.ValueString())
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineParseJSONProcessor: proc,
+	}
+}
+
+func flattenAddFieldsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineAddFieldsProcessor) *addFieldsProcessor {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+	out := &addFieldsProcessor{
+		Id:      types.StringValue(src.Id),
+		Include: types.StringValue(src.Include),
+		Inputs:  inputs,
+	}
+	for _, f := range src.Fields {
+		out.Fields = append(out.Fields, fieldValue{
+			Name:  types.StringValue(f.Name),
+			Value: types.StringValue(f.Value),
+		})
+	}
+	return out
+}
+
+func expandAddFieldsProcessor(ctx context.Context, src *addFieldsProcessor) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineAddFieldsProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+	var fields []datadogV2.ObservabilityPipelineFieldValue
+	for _, f := range src.Fields {
+		fields = append(fields, datadogV2.ObservabilityPipelineFieldValue{
+			Name:  f.Name.ValueString(),
+			Value: f.Value.ValueString(),
+		})
+	}
+	proc.SetFields(fields)
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineAddFieldsProcessor: proc,
+	}
+}
+
+// ---------- Destinations ----------
+
+func flattenDatadogLogsDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineDatadogLogsDestination) *datadogLogsDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+	return &datadogLogsDestinationModel{
+		Id:     types.StringValue(src.Id),
+		Inputs: inputs,
+	}
+}
+
+func expandDatadogLogsDestination(ctx context.Context, src *datadogLogsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineDatadogLogsDestinationWithDefaults()
+	dest.SetId(src.Id.ValueString())
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineDatadogLogsDestination: dest,
+	}
+}
+
+func flattenTls(src *datadogV2.ObservabilityPipelineTls) tlsModel {
+	return tlsModel{
+		CrtFile: types.StringValue(src.CrtFile),
+		CaFile:  types.StringPointerValue(src.CaFile),
+		KeyFile: types.StringPointerValue(src.KeyFile),
+	}
+}
+
+func expandTls(src []tlsModel) *datadogV2.ObservabilityPipelineTls {
+	tls := &datadogV2.ObservabilityPipelineTls{}
+	// there must be no more than one TLS block
+	tlsTF := src[0]
+	tls.SetCrtFile(tlsTF.CrtFile.ValueString())
+	if !tlsTF.CaFile.IsNull() {
+		tls.SetCaFile(tlsTF.CaFile.ValueString())
+	}
+	if !tlsTF.KeyFile.IsNull() {
+		tls.SetKeyFile(tlsTF.KeyFile.ValueString())
+	}
+	return tls
 }
