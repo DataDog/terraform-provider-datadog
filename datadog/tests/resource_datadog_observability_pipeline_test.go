@@ -539,3 +539,55 @@ resource "datadog_observability_pipeline" "quota" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_parseJsonProcessor(t *testing.T) {
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.parse_json"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "parse_json" {
+  name = "parse-json-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      parse_json {
+        id      = "parser-1"
+        include = "env:parse"
+        field   = "message"
+        inputs  = ["source-1"]
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["parser-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "parse-json-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.id", "parser-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.include", "env:parse"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.field", "message"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.inputs.0", "source-1"),
+				),
+			},
+		},
+	})
+}
