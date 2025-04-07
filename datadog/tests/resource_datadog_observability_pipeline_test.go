@@ -40,7 +40,7 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 func testAccObservabilityPipelineBasicConfig() string {
 	return fmt.Sprintf(`
 resource "datadog_observability_pipeline" "test" {
-  name = "test-pipeline"
+  name = "test pipeline"
 
   config {
     sources {

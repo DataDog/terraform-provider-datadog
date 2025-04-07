@@ -329,7 +329,10 @@ func (r *observabilityPipelineResource) Create(ctx context.Context, request reso
 		return
 	}
 
-	resp, _, err := r.Api.CreatePipeline(r.Auth, *body)
+	createRequest := datadogV2.NewObservabilityPipelineCreateRequestWithDefaults()
+	createRequest.Data = *datadogV2.NewObservabilityPipelineCreateRequestDataWithDefaults()
+	createRequest.Data.Attributes = body.Data.Attributes
+	resp, _, err := r.Api.CreatePipeline(r.Auth, *createRequest)
 	if err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving Pipelines"))
 		return
@@ -393,7 +396,7 @@ func (r *observabilityPipelineResource) Delete(ctx context.Context, request reso
 	}
 }
 
-func (r *observabilityPipelineResource) updateState(ctx context.Context, state *observabilityPipelineModel, resp *datadogV2.Pipeline) {
+func (r *observabilityPipelineResource) updateState(ctx context.Context, state *observabilityPipelineModel, resp *datadogV2.ObservabilityPipeline) {
 	state.ID = types.StringValue(resp.Data.GetId())
 
 	data := resp.GetData()
@@ -407,20 +410,20 @@ func (r *observabilityPipelineResource) updateState(ctx context.Context, state *
 	if sources, ok := config.GetSourcesOk(); ok {
 		for _, src := range *sources {
 
-			if src.DatadogAgentSource != nil {
+			if src.ObservabilityPipelineDatadogAgentSource != nil {
 				datadogAgentSourceTf := datadogAgentSourceModel{}
 
-				datadogAgentSourceTf.Id = types.StringValue(src.DatadogAgentSource.Id)
-				if src.DatadogAgentSource != nil {
+				datadogAgentSourceTf.Id = types.StringValue(src.ObservabilityPipelineDatadogAgentSource.Id)
+				if src.ObservabilityPipelineDatadogAgentSource != nil {
 					tlsTf := tlsModel{}
 
-					tlsTf.CrtFile = types.StringValue(src.DatadogAgentSource.Tls.CrtFile)
-					if src.DatadogAgentSource.Tls.CaFile != nil {
-						caFile := types.StringValue(*src.DatadogAgentSource.Tls.CaFile)
+					tlsTf.CrtFile = types.StringValue(src.ObservabilityPipelineDatadogAgentSource.Tls.CrtFile)
+					if src.ObservabilityPipelineDatadogAgentSource.Tls.CaFile != nil {
+						caFile := types.StringValue(*src.ObservabilityPipelineDatadogAgentSource.Tls.CaFile)
 						tlsTf.CaFile = caFile
 					}
-					if src.DatadogAgentSource.Tls.KeyFile != nil {
-						keyFile := types.StringValue(*src.DatadogAgentSource.Tls.KeyFile)
+					if src.ObservabilityPipelineDatadogAgentSource.Tls.KeyFile != nil {
+						keyFile := types.StringValue(*src.ObservabilityPipelineDatadogAgentSource.Tls.KeyFile)
 						tlsTf.KeyFile = keyFile
 					}
 					datadogAgentSourceTf.Tls = &tlsTf
@@ -428,8 +431,8 @@ func (r *observabilityPipelineResource) updateState(ctx context.Context, state *
 				stateConfig.Sources.DatadogAgentSource = append(stateConfig.Sources.DatadogAgentSource, &datadogAgentSourceTf)
 			}
 
-			if src.KafkaSource != nil {
-				srcKafka := src.KafkaSource
+			if src.ObservabilityPipelineKafkaSource != nil {
+				srcKafka := src.ObservabilityPipelineKafkaSource
 				kafka := &kafkaSourceModel{
 					Id:      types.StringValue(srcKafka.GetId()),
 					GroupId: types.StringValue(srcKafka.GetGroupId()),
@@ -475,17 +478,17 @@ func (r *observabilityPipelineResource) updateState(ctx context.Context, state *
 	if processors, ok := config.GetProcessorsOk(); ok {
 		for _, processorsDd := range *processors {
 
-			if processorsDd.FilterProcessor != nil {
+			if processorsDd.ObservabilityPipelineFilterProcessor != nil {
 				filterProcessorTf := filterProcessorModel{}
 
-				filterProcessorTf.Id = types.StringValue(processorsDd.FilterProcessor.Id)
-				filterProcessorTf.Include = types.StringValue(processorsDd.FilterProcessor.Include)
-				filterProcessorTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, processorsDd.FilterProcessor.Inputs)
+				filterProcessorTf.Id = types.StringValue(processorsDd.ObservabilityPipelineFilterProcessor.Id)
+				filterProcessorTf.Include = types.StringValue(processorsDd.ObservabilityPipelineFilterProcessor.Include)
+				filterProcessorTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, processorsDd.ObservabilityPipelineFilterProcessor.Inputs)
 
 				stateConfig.Processors.FilterProcessor = append(stateConfig.Processors.FilterProcessor, &filterProcessorTf)
 			}
 
-			parseJSONProcessor := processorsDd.ParseJSONProcessor
+			parseJSONProcessor := processorsDd.ObservabilityPipelineParseJSONProcessor
 			if parseJSONProcessor != nil {
 				parseJsonProcessorTf := parseJsonProcessorModel{}
 
@@ -501,11 +504,11 @@ func (r *observabilityPipelineResource) updateState(ctx context.Context, state *
 	if destinations, ok := config.GetDestinationsOk(); ok {
 		for _, destinationsDd := range *destinations {
 
-			if destinationsDd.DatadogLogsDestination != nil {
+			if destinationsDd.ObservabilityPipelineDatadogLogsDestination != nil {
 				datadogLogsDestinationTf := datadogLogsDestinationModel{}
 
-				datadogLogsDestinationTf.Id = types.StringValue(destinationsDd.DatadogLogsDestination.Id)
-				datadogLogsDestinationTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, destinationsDd.DatadogLogsDestination.Inputs)
+				datadogLogsDestinationTf.Id = types.StringValue(destinationsDd.ObservabilityPipelineDatadogLogsDestination.Id)
+				datadogLogsDestinationTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, destinationsDd.ObservabilityPipelineDatadogLogsDestination.Inputs)
 				stateConfig.Destinations.DatadogLogsDestination = append(stateConfig.Destinations.DatadogLogsDestination, &datadogLogsDestinationTf)
 			}
 		}
@@ -514,29 +517,27 @@ func (r *observabilityPipelineResource) updateState(ctx context.Context, state *
 	state.Config = stateConfig
 }
 
-func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.Pipeline, diag.Diagnostics) {
+func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.ObservabilityPipeline, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
-	req := &datadogV2.Pipeline{}
-	attributes := datadogV2.NewPipelineDataAttributesWithDefaults()
+	req := &datadogV2.ObservabilityPipeline{}
+	attributes := datadogV2.NewObservabilityPipelineDataAttributesWithDefaults()
 
 	if !state.Name.IsNull() {
 		attributes.SetName(state.Name.ValueString())
 	}
 
-	var config datadogV2.PipelineDataAttributesConfig
+	var config datadogV2.ObservabilityPipelineConfig
 
-	var sources []datadogV2.PipelineDataAttributesConfigSourcesItem
+	var sources []datadogV2.ObservabilityPipelineConfigSourceItem
 	sourcesTFItem := state.Config.Sources
-	sourcesDDItem := datadogV2.PipelineDataAttributesConfigSourcesItem{}
+	sourcesDDItem := datadogV2.ObservabilityPipelineConfigSourceItem{}
 
 	for _, ddSource := range sourcesTFItem.DatadogAgentSource {
-		var datadogAgentSource datadogV2.DatadogAgentSource
-
+		datadogAgentSource := datadogV2.NewObservabilityPipelineDatadogAgentSourceWithDefaults()
 		datadogAgentSource.SetId(ddSource.Id.ValueString())
-		datadogAgentSource.SetType("datadog_agent")
 
 		if ddSource.Tls != nil {
-			var tls datadogV2.Tls
+			var tls datadogV2.ObservabilityPipelineTls
 
 			tls.SetCrtFile(ddSource.Tls.CrtFile.ValueString())
 			if !ddSource.Tls.CaFile.IsNull() {
@@ -548,14 +549,13 @@ func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Co
 			datadogAgentSource.Tls = &tls
 		}
 
-		sourcesDDItem.DatadogAgentSource = &datadogAgentSource
+		sourcesDDItem.ObservabilityPipelineDatadogAgentSource = datadogAgentSource
 		sources = append(sources, sourcesDDItem)
 	}
 
 	for _, kafka := range sourcesTFItem.KafkaSource {
-		var kafkaSource datadogV2.KafkaSource
+		kafkaSource := datadogV2.NewObservabilityPipelineKafkaSourceWithDefaults()
 		kafkaSource.SetId(kafka.Id.ValueString())
-		kafkaSource.SetType("kafka")
 		kafkaSource.SetGroupId(kafka.GroupId.ValueString())
 
 		topics := []string{}
@@ -565,7 +565,7 @@ func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Co
 		kafkaSource.SetTopics(topics)
 
 		if kafka.Tls != nil {
-			tls := datadogV2.Tls{}
+			tls := datadogV2.ObservabilityPipelineTls{}
 			tls.SetCrtFile(kafka.Tls.CrtFile.ValueString())
 			if !kafka.Tls.CaFile.IsNull() {
 				tls.SetCaFile(kafka.Tls.CaFile.ValueString())
@@ -577,20 +577,20 @@ func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Co
 		}
 
 		if kafka.Sasl != nil {
-			mechanism, _ := datadogV2.NewKafkaSourceSaslMechanismFromValue(kafka.Sasl.Mechanism.ValueString())
+			mechanism, _ := datadogV2.NewObservabilityPipelinePipelineKafkaSourceSaslMechanismFromValue(kafka.Sasl.Mechanism.ValueString())
 			if mechanism == nil {
 				diags.AddError("InvalidSaslMechanism", "Invalid Kafka SASL mechanism provided")
 				return nil, diags
 			}
-			sasl := datadogV2.KafkaSourceSasl{}
+			sasl := datadogV2.ObservabilityPipelineKafkaSourceSasl{}
 			sasl.SetMechanism(*mechanism)
 			kafkaSource.SetSasl(sasl)
 		}
 
 		if len(kafka.LibrdkafkaOptions) > 0 {
-			opts := []datadogV2.KafkaSourceLibrdkafkaOption{}
+			opts := []datadogV2.ObservabilityPipelineKafkaSourceLibrdkafkaOption{}
 			for _, opt := range kafka.LibrdkafkaOptions {
-				opts = append(opts, datadogV2.KafkaSourceLibrdkafkaOption{
+				opts = append(opts, datadogV2.ObservabilityPipelineKafkaSourceLibrdkafkaOption{
 					Name:  opt.Name.ValueString(),
 					Value: opt.Value.ValueString(),
 				})
@@ -598,60 +598,57 @@ func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Co
 			kafkaSource.SetLibrdkafkaOptions(opts)
 		}
 
-		sources = append(sources, datadogV2.PipelineDataAttributesConfigSourcesItem{
-			KafkaSource: &kafkaSource,
+		sources = append(sources, datadogV2.ObservabilityPipelineConfigSourceItem{
+			ObservabilityPipelineKafkaSource: kafkaSource,
 		})
 
 	}
 	config.SetSources(sources)
 
-	var processors []datadogV2.PipelineDataAttributesConfigProcessorsItem
+	var processors []datadogV2.ObservabilityPipelineConfigProcessorItem
 	processorsTFItem := state.Config.Processors
 	for _, filterProcessorTF := range processorsTFItem.FilterProcessor {
-		processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
+		processorsDDItem := datadogV2.ObservabilityPipelineConfigProcessorItem{}
 		if filterProcessorTF != nil {
-			var filterProcessor datadogV2.FilterProcessor
+			filterProcessor := datadogV2.NewObservabilityPipelineFilterProcessorWithDefaults()
 			filterProcessor.SetId(filterProcessorTF.Id.ValueString())
-			filterProcessor.SetType("filter")
 			filterProcessor.SetInclude(filterProcessorTF.Include.ValueString())
 			var inputs []string
 			filterProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
 			filterProcessor.SetInputs(inputs)
-			processorsDDItem.FilterProcessor = &filterProcessor
+			processorsDDItem.ObservabilityPipelineFilterProcessor = filterProcessor
 		}
 		processors = append(processors, processorsDDItem)
 	}
 
 	for _, parseJsonProcessorTF := range processorsTFItem.ParseJsonProcessor {
 
-		processorsDDItem := datadogV2.PipelineDataAttributesConfigProcessorsItem{}
-		var parseJsonProcessor datadogV2.ParseJSONProcessor
+		processorsDDItem := datadogV2.ObservabilityPipelineConfigProcessorItem{}
+		parseJsonProcessor := datadogV2.NewObservabilityPipelineParseJSONProcessorWithDefaults()
 
 		parseJsonProcessor.SetId(parseJsonProcessorTF.Id.ValueString())
-		parseJsonProcessor.SetType("parse_json")
 		parseJsonProcessor.SetInclude(parseJsonProcessorTF.Include.ValueString())
 		var inputs []string
 		parseJsonProcessorTF.Inputs.ElementsAs(ctx, &inputs, false)
 		parseJsonProcessor.SetInputs(inputs)
 		parseJsonProcessor.SetField(parseJsonProcessorTF.Field.ValueString())
-		processorsDDItem.ParseJSONProcessor = &parseJsonProcessor
+		processorsDDItem.ObservabilityPipelineParseJSONProcessor = parseJsonProcessor
 		processors = append(processors, processorsDDItem)
 
 	}
 	config.SetProcessors(processors)
 
-	var destinations []datadogV2.PipelineDataAttributesConfigDestinationsItem
+	var destinations []datadogV2.ObservabilityPipelineConfigDestinationItem
 	destinationsTFItem := state.Config.Destinations
-	destinationsDDItem := datadogV2.PipelineDataAttributesConfigDestinationsItem{}
+	destinationsDDItem := datadogV2.ObservabilityPipelineConfigDestinationItem{}
 
 	for _, destination := range destinationsTFItem.DatadogLogsDestination {
-		var datadogLogsDestination datadogV2.DatadogLogsDestination
+		datadogLogsDestination := datadogV2.NewObservabilityPipelineDatadogLogsDestinationWithDefaults()
 		datadogLogsDestination.SetId(destination.Id.ValueString())
-		datadogLogsDestination.SetType("datadog_logs")
 		var inputs []string
 		destination.Inputs.ElementsAs(ctx, &inputs, false)
 		datadogLogsDestination.SetInputs(inputs)
-		destinationsDDItem.DatadogLogsDestination = &datadogLogsDestination
+		destinationsDDItem.ObservabilityPipelineDatadogLogsDestination = datadogLogsDestination
 
 		destinations = append(destinations, destinationsDDItem)
 	}
@@ -660,7 +657,7 @@ func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Co
 
 	attributes.SetConfig(config)
 
-	pipelineData := datadogV2.NewPipelineDataWithDefaults()
+	pipelineData := datadogV2.NewObservabilityPipelineDataWithDefaults()
 	pipelineData.SetAttributes(*attributes)
 	req.SetData(*pipelineData)
 
