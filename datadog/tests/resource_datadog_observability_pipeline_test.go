@@ -53,9 +53,6 @@ resource "datadog_observability_pipeline" "test" {
     sources {
       datadog_agent {
         id = "source-1"
-        tls {
-          crt_file = "/path/to/cert.crt"
-        }
       }
     }
 
@@ -283,6 +280,65 @@ resource "datadog_observability_pipeline" "agent_tls" {
       datadog_logs {
         id     = "destination-1"
         inputs = ["source-with-tls"]
+      }
+    }
+  }
+}`
+}
+
+func TestAccDatadogObservabilityPipeline_addFieldsProcessor(t *testing.T) {
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.add_fields"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineAddFieldsConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "add-fields-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.add_fields.0.field.0.name", "custom.field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.add_fields.0.field.0.value", "hello-world"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineAddFieldsConfig() string {
+	return `
+resource "datadog_observability_pipeline" "add_fields" {
+  name = "add-fields-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      add_fields {
+		id	  = "add-fields-1"
+		inputs = ["source-1"]
+		include = "*"
+        field {
+		  name  = "custom.field"
+          value = "hello-world"
+		}
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["add-fields-1"]
       }
     }
   }

@@ -3,6 +3,8 @@ package fwprovider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 
@@ -47,14 +49,15 @@ type datadogAgentSourceModel struct {
 }
 
 type tlsModel struct {
-	CrtFile types.String `tfsdk:"crt_file"`
-	CaFile  types.String `tfsdk:"ca_file"`
-	KeyFile types.String `tfsdk:"key_file"`
+	CrtFile types.String  `tfsdk:"crt_file"`
+	CaFile  *types.String `tfsdk:"ca_file"`
+	KeyFile *types.String `tfsdk:"key_file"`
 }
 
 type processorsModel struct {
 	FilterProcessor    []*filterProcessorModel    `tfsdk:"filter"`
 	ParseJsonProcessor []*parseJsonProcessorModel `tfsdk:"parse_json"`
+	AddFieldsProcessor []*addFieldsProcessor      `tfsdk:"add_fields"`
 }
 type filterProcessorModel struct {
 	Id      types.String `tfsdk:"id"`
@@ -67,6 +70,18 @@ type parseJsonProcessorModel struct {
 	Inputs  types.List   `tfsdk:"inputs"`
 	Include types.String `tfsdk:"include"`
 	Field   types.String `tfsdk:"field"`
+}
+
+type addFieldsProcessor struct {
+	Id      types.String `tfsdk:"id"`
+	Include types.String `tfsdk:"include"`
+	Inputs  types.List   `tfsdk:"inputs"`
+	Fields  []fieldValue `tfsdk:"field"`
+}
+
+type fieldValue struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
 }
 
 type destinationsModel struct {
@@ -236,6 +251,42 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"add_fields": schema.ListNestedBlock{
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Optional:    true,
+											Description: "The unique ID of the processor.",
+										},
+										"include": schema.StringAttribute{
+											Optional:    true,
+											Description: "Inclusion filter for the processor.",
+										},
+										"inputs": schema.ListAttribute{
+											Description: "The inputs for the processor.",
+											ElementType: types.StringType,
+											Required:    true,
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"field": schema.ListNestedBlock{
+											Description: "List of fields to add.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Required:    true,
+														Description: "Field name to add.",
+													},
+													"value": schema.StringAttribute{
+														Required:    true,
+														Description: "Value to assign to the field.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -264,21 +315,27 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 	}
 }
 
-func tlsSchema() schema.SingleNestedBlock {
-	return schema.SingleNestedBlock{
+func tlsSchema() schema.ListNestedBlock {
+	return schema.ListNestedBlock{
+		Validators: []validator.List{
+			// this is the only way to make the block optional
+			listvalidator.SizeAtMost(1),
+		},
 		Description: "TLS client configuration.",
-		Attributes: map[string]schema.Attribute{
-			"crt_file": schema.StringAttribute{
-				Required:    true,
-				Description: "Path to the TLS certificate file.",
-			},
-			"ca_file": schema.StringAttribute{
-				Optional:    true,
-				Description: "Path to the Certificate Authority file.",
-			},
-			"key_file": schema.StringAttribute{
-				Optional:    true,
-				Description: "Path to the private key file.",
+		NestedObject: schema.NestedBlockObject{
+			Attributes: map[string]schema.Attribute{
+				"crt_file": schema.StringAttribute{
+					Required:    true,
+					Description: "Path to the TLS certificate file.",
+				},
+				"ca_file": schema.StringAttribute{
+					Optional:    true,
+					Description: "Path to the Certificate Authority file.",
+				},
+				"key_file": schema.StringAttribute{
+					Optional:    true,
+					Description: "Path to the private key file.",
+				},
 			},
 		},
 	}
@@ -414,17 +471,17 @@ func (r *observabilityPipelineResource) updateState(ctx context.Context, state *
 				datadogAgentSourceTf := datadogAgentSourceModel{}
 
 				datadogAgentSourceTf.Id = types.StringValue(src.ObservabilityPipelineDatadogAgentSource.Id)
-				if src.ObservabilityPipelineDatadogAgentSource != nil {
+				if src.ObservabilityPipelineDatadogAgentSource.Tls != nil {
 					tlsTf := tlsModel{}
 
 					tlsTf.CrtFile = types.StringValue(src.ObservabilityPipelineDatadogAgentSource.Tls.CrtFile)
 					if src.ObservabilityPipelineDatadogAgentSource.Tls.CaFile != nil {
 						caFile := types.StringValue(*src.ObservabilityPipelineDatadogAgentSource.Tls.CaFile)
-						tlsTf.CaFile = caFile
+						tlsTf.CaFile = &caFile
 					}
 					if src.ObservabilityPipelineDatadogAgentSource.Tls.KeyFile != nil {
 						keyFile := types.StringValue(*src.ObservabilityPipelineDatadogAgentSource.Tls.KeyFile)
-						tlsTf.KeyFile = keyFile
+						tlsTf.KeyFile = &keyFile
 					}
 					datadogAgentSourceTf.Tls = &tlsTf
 				}
@@ -449,11 +506,11 @@ func (r *observabilityPipelineResource) updateState(ctx context.Context, state *
 					}
 					if tls.CaFile != nil {
 						val := types.StringValue(*tls.CaFile)
-						tlsModel.CaFile = val
+						tlsModel.CaFile = &val
 					}
 					if tls.KeyFile != nil {
 						val := types.StringValue(*tls.KeyFile)
-						tlsModel.KeyFile = val
+						tlsModel.KeyFile = &val
 					}
 					kafka.Tls = tlsModel
 				}
@@ -499,6 +556,25 @@ func (r *observabilityPipelineResource) updateState(ctx context.Context, state *
 
 				stateConfig.Processors.ParseJsonProcessor = append(stateConfig.Processors.ParseJsonProcessor, &parseJsonProcessorTf)
 			}
+
+			addFields := processorsDd.ObservabilityPipelineAddFieldsProcessor
+			if addFields != nil {
+				addFieldsTf := &addFieldsProcessor{}
+
+				addFieldsTf.Id = types.StringValue(addFields.Id)
+				addFieldsTf.Include = types.StringValue(addFields.Include)
+				addFieldsTf.Inputs, _ = types.ListValueFrom(ctx, types.StringType, addFields.Inputs)
+
+				for _, f := range addFields.Fields {
+					addFieldsTf.Fields = append(addFieldsTf.Fields, fieldValue{
+						Name:  types.StringValue(f.Name),
+						Value: types.StringValue(f.Value),
+					})
+				}
+
+				stateConfig.Processors.AddFieldsProcessor = append(stateConfig.Processors.AddFieldsProcessor, addFieldsTf)
+			}
+
 		}
 	}
 	if destinations, ok := config.GetDestinationsOk(); ok {
@@ -636,6 +712,28 @@ func (r *observabilityPipelineResource) buildPipelinesRequestBody(ctx context.Co
 		processors = append(processors, processorsDDItem)
 
 	}
+
+	for _, addFieldsTF := range processorsTFItem.AddFieldsProcessor {
+		processorsDDItem := datadogV2.ObservabilityPipelineConfigProcessorItem{}
+		addFields := datadogV2.NewObservabilityPipelineAddFieldsProcessorWithDefaults()
+
+		var fields []datadogV2.ObservabilityPipelineFieldValue
+		for _, f := range addFieldsTF.Fields {
+			fields = append(fields, datadogV2.ObservabilityPipelineFieldValue{
+				Name:  f.Name.ValueString(),
+				Value: f.Value.ValueString(),
+			})
+		}
+		addFields.SetFields(fields)
+		addFields.SetId(addFieldsTF.Id.ValueString())
+		addFields.SetInclude(addFieldsTF.Include.ValueString())
+		var inputs []string
+		addFieldsTF.Inputs.ElementsAs(ctx, &inputs, false)
+		addFields.SetInputs(inputs)
+		processorsDDItem.ObservabilityPipelineAddFieldsProcessor = addFields
+		processors = append(processors, processorsDDItem)
+	}
+
 	config.SetProcessors(processors)
 
 	var destinations []datadogV2.ObservabilityPipelineConfigDestinationItem
