@@ -233,3 +233,58 @@ resource "datadog_observability_pipeline" "kafka_test" {
   }
 }`
 }
+
+func TestAccDatadogObservabilityPipeline_datadogAgentWithTLS(t *testing.T) {
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.agent_tls"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineDatadogAgentTLSConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "agent with tls"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-with-tls"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.crt_file", "/etc/certs/agent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.ca_file", "/etc/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.key_file", "/etc/certs/agent.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineDatadogAgentTLSConfig() string {
+	return `
+resource "datadog_observability_pipeline" "agent_tls" {
+  name = "agent with tls"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-with-tls"
+        tls {
+          crt_file = "/etc/certs/agent.crt"
+          ca_file  = "/etc/certs/ca.crt"
+          key_file = "/etc/certs/agent.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["source-with-tls"]
+      }
+    }
+  }
+}`
+}
