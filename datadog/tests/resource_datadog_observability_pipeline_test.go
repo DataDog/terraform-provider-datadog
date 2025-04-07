@@ -14,7 +14,6 @@ import (
 )
 
 func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
-	t.Parallel()
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.basic"
@@ -171,7 +170,7 @@ func pipelinesExistsHelper(auth context.Context, s *terraform.State, apiInstance
 }
 
 func TestAccDatadogObservabilityPipeline_kafka(t *testing.T) {
-	t.Parallel()
+
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.kafka_test"
@@ -228,7 +227,7 @@ resource "datadog_observability_pipeline" "kafka_test" {
 }
 
 func TestAccDatadogObservabilityPipeline_datadogAgentWithTLS(t *testing.T) {
-	t.Parallel()
+
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.agent_tls"
@@ -279,7 +278,7 @@ resource "datadog_observability_pipeline" "agent_tls" {
 }
 
 func TestAccDatadogObservabilityPipeline_filterProcessor(t *testing.T) {
-	t.Parallel()
+
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.filter"
@@ -329,7 +328,7 @@ resource "datadog_observability_pipeline" "filter" {
 }
 
 func TestAccDatadogObservabilityPipeline_renameFieldsProcessor(t *testing.T) {
-	t.Parallel()
+
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.rename_fields"
@@ -386,7 +385,7 @@ resource "datadog_observability_pipeline" "rename_fields" {
 }
 
 func TestAccDatadogObservabilityPipeline_removeFieldsProcessor(t *testing.T) {
-	t.Parallel()
+
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.remove_fields"
@@ -438,7 +437,7 @@ resource "datadog_observability_pipeline" "remove_fields" {
 }
 
 func TestAccDatadogObservabilityPipeline_quotaProcessor(t *testing.T) {
-	t.Parallel()
+
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.quota"
@@ -541,7 +540,7 @@ resource "datadog_observability_pipeline" "quota" {
 }
 
 func TestAccDatadogObservabilityPipeline_parseJsonProcessor(t *testing.T) {
-	t.Parallel()
+
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.parse_json"
@@ -593,7 +592,7 @@ resource "datadog_observability_pipeline" "parse_json" {
 }
 
 func TestAccDatadogObservabilityPipeline_addFieldsProcessor(t *testing.T) {
-	t.Parallel()
+
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
 	resourceName := "datadog_observability_pipeline.add_fields"
