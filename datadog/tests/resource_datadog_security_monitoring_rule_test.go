@@ -299,8 +299,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
     query {
         name = "first"
         query = "does not really match much"
-		aggregation = "count"
-		data_source = "network"
+        aggregation = "count"
+        data_source = "network"
         group_by_fields = ["host"]
     }
 
@@ -308,7 +308,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
         name = "second"
         query = "does not really match much either"
         aggregation = "cardinality"
-		data_source = "network"	
+        data_source = "network"	
         distinct_fields = ["@orgId"]
         group_by_fields = ["host"]
     }
@@ -317,7 +317,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
 		name = "third"
         query = "does not really match much either"
         aggregation = "sum"
-		data_source = "logs"
+        data_source = "logs"
         group_by_fields = ["host"]
         metric = "@network.bytes_read"
     }
@@ -471,8 +471,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         name = "first"
         query = "does not really match much"
         aggregation = "new_value"
-		data_source = "logs"
-		metric = "@value"
+        data_source = "logs"
+        metric = "@value"
         group_by_fields = ["host"]
     }
 
@@ -592,8 +592,8 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         name = "my_query"
         query = "*"
         aggregation = "geo_data"
-		data_source = "logs"
-		metric = "@usr.handle"
+        data_source = "logs"
+        metric = "@usr.handle"
         group_by_fields = ["@usr.handle"]
     }
 
@@ -668,9 +668,9 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         name = "my_updated_query"
         query = "*"
         aggregation = "geo_data"
-		data_source = "logs"
-		metric = "@usr.handle"
-		group_by_fields = ["@usr.handle"]
+        data_source = "logs"
+        metric = "@usr.handle"
+        group_by_fields = ["@usr.handle"]
     }
 
     case {
@@ -864,7 +864,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         name = "first_updated"
         query = "does not really match much (updated)"
         aggregation = "cardinality"
-		data_source = "logs"
+        data_source = "logs"
         distinct_fields = ["@orgId"]
         group_by_fields = ["service"]
     }
@@ -975,7 +975,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         name = "first"
         query = "does not really match much (updated)"
         aggregation = "new_value"
-		data_source = "logs"
+        data_source = "logs"
         group_by_fields = ["service"]
         metric = "@network.bytes_read"
     }
@@ -1062,7 +1062,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name = "first"
         query = "@agent.rule_id:(%s_random_id OR random_id)"
         aggregation = "count"
-		data_source = "security_runtime"
+        data_source = "security_runtime"
         group_by_fields = ["service"]
     }
 
@@ -1142,7 +1142,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
         name = "first_updated"
         query = "does not really match much (updated)"
         aggregation = "cardinality"
-		data_source = "logs"
+        data_source = "logs"
         distinct_fields = ["@orgId"]
         group_by_fields = ["service"]
     }
@@ -1452,7 +1452,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
     query {
         query = "does not really match much"
         aggregation = "count"
-		data_source = "logs"
+        data_source = "logs"
         group_by_fields = ["host"]
     }
 
