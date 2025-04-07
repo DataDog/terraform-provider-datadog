@@ -172,3 +172,64 @@ func pipelinesExistsHelper(auth context.Context, s *terraform.State, apiInstance
 	}
 	return nil
 }
+
+func TestAccDatadogObservabilityPipeline_kafka(t *testing.T) {
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.kafka_test"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineKafkaConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "kafka pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.id", "kafka-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.group_id", "consumer-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.topics.0", "topic-a"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.topics.1", "topic-b"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.sasl.mechanism", "PLAIN"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineKafkaConfig() string {
+	return `
+resource "datadog_observability_pipeline" "kafka_test" {
+  name = "kafka pipeline"
+
+  config {
+    sources {
+      kafka {
+        id       = "kafka-source-1"
+        group_id = "consumer-group-1"
+        topics   = ["topic-a", "topic-b"]
+
+        tls {
+          crt_file = "/path/to/kafka.crt"
+        }
+
+        sasl {
+          mechanism = "PLAIN"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["kafka-source-1"]
+      }
+    }
+  }
+}`
+}
