@@ -33,6 +33,13 @@ func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
 				),
 			},
+			{
+				Config: testAccObservabilityPipelineUpdatedConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr(resourceName, "name", "updated pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.include", "service:updated-service"),
+				),
+			},
 		},
 	})
 }
@@ -69,6 +76,40 @@ resource "datadog_observability_pipeline" "test" {
     }
   }
 }`)
+}
+
+func testAccObservabilityPipelineUpdatedConfig() string {
+	return `
+resource "datadog_observability_pipeline" "test" {
+  name = "updated pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+        tls {
+          crt_file = "/path/to/cert.crt"
+        }
+      }
+    }
+
+    processors {
+      parse_json {
+        id      = "parser-1"
+        include = "service:updated-service"
+        field   = "message"
+        inputs  = ["source-1"]
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["parser-1"]
+      }
+    }
+  }
+}`
 }
 
 func testAccCheckDatadogPipelinesDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
