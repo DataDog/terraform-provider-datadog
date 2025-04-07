@@ -344,3 +344,57 @@ resource "datadog_observability_pipeline" "add_fields" {
   }
 }`
 }
+
+func TestAccDatadogObservabilityPipeline_filterProcessor(t *testing.T) {
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.filter"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineFilterProcessorConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "filter-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.id", "filter-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.include", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.inputs.0", "source-1"),
+				),
+			},
+		},
+	})
+}
+
+func testAccObservabilityPipelineFilterProcessorConfig() string {
+	return `
+resource "datadog_observability_pipeline" "filter" {
+  name = "filter-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      filter {
+        id      = "filter-1"
+        include = "env:prod"
+        inputs  = ["source-1"]
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["filter-1"]
+      }
+    }
+  }
+}`
+}
