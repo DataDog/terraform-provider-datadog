@@ -3,12 +3,12 @@
 page_title: "datadog_observability_pipeline Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Pipelines resource. This can be used to create and manage Datadog pipelines.
+  Provides a Datadog Observability Pipeline resource. Observability Pipeline allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations.
 ---
 
 # datadog_observability_pipeline (Resource)
 
-Provides a Datadog Pipelines resource. This can be used to create and manage Datadog pipelines.
+Provides a Datadog Observability Pipeline resource. Observability Pipeline allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations.
 
 ## Example Usage
 
@@ -107,7 +107,7 @@ Optional:
 
 Optional:
 
-- `datadog_logs` (Block List) (see [below for nested schema](#nestedblock--config--destinations--datadog_logs))
+- `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destinations--datadog_logs))
 
 <a id="nestedblock--config--destinations--datadog_logs"></a>
 ### Nested Schema for `config.destinations.datadog_logs`
@@ -280,8 +280,8 @@ Required:
 
 Optional:
 
-- `datadog_agent` (Block List) (see [below for nested schema](#nestedblock--config--sources--datadog_agent))
-- `kafka` (Block List) Kafka sources. (see [below for nested schema](#nestedblock--config--sources--kafka))
+- `datadog_agent` (Block List) The `datadog_agent` source collects logs from the Datadog Agent. (see [below for nested schema](#nestedblock--config--sources--datadog_agent))
+- `kafka` (Block List) The `kafka` source ingests data from Apache Kafka topics. (see [below for nested schema](#nestedblock--config--sources--kafka))
 
 <a id="nestedblock--config--sources--datadog_agent"></a>
 ### Nested Schema for `config.sources.datadog_agent`

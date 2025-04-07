@@ -178,7 +178,7 @@ func (r *observabilityPipelineResource) Metadata(_ context.Context, request reso
 
 func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Provides a Datadog Pipelines resource. This can be used to create and manage Datadog pipelines.",
+		Description: "Provides a Datadog Observability Pipeline resource. Observability Pipeline allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations.",
 		Attributes: map[string]schema.Attribute{
 			"id": utils.ResourceIDAttribute(),
 			"name": schema.StringAttribute{
@@ -194,6 +194,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 						Description: "List of sources.",
 						Blocks: map[string]schema.Block{
 							"datadog_agent": schema.ListNestedBlock{
+								Description: "The `datadog_agent` source collects logs from the Datadog Agent.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
@@ -207,7 +208,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"kafka": schema.ListNestedBlock{
-								Description: "Kafka sources.",
+								Description: "The `kafka` source ingests data from Apache Kafka topics.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
@@ -501,6 +502,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 						Description: "List of destinations.",
 						Blocks: map[string]schema.Block{
 							"datadog_logs": schema.ListNestedBlock{
+								Description: "The `datadog_logs` destination forwards logs to Datadog Log Management.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
