@@ -204,7 +204,7 @@ Optional:
 
 Required:
 
-- `enforce` (String) Whether to enforce by 'bytes' or 'events'.
+- `enforce` (String) Whether to enforce by 'bytes' or 'events'. Valid values are `bytes`, `events`.
 - `limit` (Number) Limit value.
 
 
@@ -230,7 +230,7 @@ Required:
 
 Required:
 
-- `enforce` (String)
+- `enforce` (String) Valid values are `bytes`, `events`.
 - `limit` (Number)
 
 
@@ -334,7 +334,7 @@ Required:
 
 Required:
 
-- `mechanism` (String) SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512).
+- `mechanism` (String) SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512). Valid values are `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.
 
 
 <a id="nestedblock--config--sources--kafka--tls"></a>
