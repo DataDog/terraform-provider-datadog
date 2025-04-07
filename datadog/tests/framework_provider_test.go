@@ -44,6 +44,12 @@ func buildFrameworkDatadogClient(ctx context.Context, httpClient *http.Client) *
 	config.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	config.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
 
+	// Enable Observability Pipelines
+	config.SetUnstableOperationEnabled("v2.CreatePipeline", true)
+	config.SetUnstableOperationEnabled("v2.GetPipeline", true)
+	config.SetUnstableOperationEnabled("v2.UpdatePipeline", true)
+	config.SetUnstableOperationEnabled("v2.DeletePipeline", true)
+
 	if ctx.Value("http_retry_enable") == true {
 		config.RetryConfiguration.EnableRetry = true
 	}

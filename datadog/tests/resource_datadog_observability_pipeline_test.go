@@ -5,48 +5,70 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 
-	"github.com/terraform-providers/terraform-provider-datadog/datadog"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/fwprovider"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestAccPipelinesBasic(t *testing.T) {
+func TestAccDatadogObservabilityPipeline_basic(t *testing.T) {
 	t.Parallel()
-	ctx, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-	uniq := uniqueEntityName(ctx, t)
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.test"
 
 	resource.Test(t, resource.TestCase{
 		ProtoV5ProviderFactories: accProviders,
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckDatadogPipelines(uniq),
+				Config: testAccObservabilityPipelineBasicConfig(),
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(
-						"datadog_pipelines.foo", "name", "UPDATE ME"),
+					resource.TestCheckResourceAttr(resourceName, "name", "test pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.id", "parser-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
 				),
 			},
 		},
 	})
 }
 
-func testAccCheckDatadogPipelines(uniq string) string {
-	// Update me to make use of the unique value
-	return fmt.Sprintf(`resource "datadog_pipelines" "foo" {
-    name = "UPDATE ME"
-    config {
+func testAccObservabilityPipelineBasicConfig() string {
+	return fmt.Sprintf(`
+resource "datadog_observability_pipeline" "test" {
+  name = "test-pipeline"
+
+  config {
     sources {
+      datadog_agent {
+        id = "source-1"
+        tls {
+          crt_file = "/path/to/cert.crt"
+        }
+      }
     }
+
     processors {
+      parse_json {
+        id      = "parser-1"
+        include = "service:my-service"
+        field   = "message"
+        inputs  = ["source-1"]
+      }
     }
+
     destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["parser-1"]
+      }
     }
-    }
-}`, uniq)
+  }
+}`)
 }
 
 func testAccCheckDatadogPipelinesDestroy(accProvider *fwprovider.FrameworkProvider) func(*terraform.State) error {
@@ -64,19 +86,19 @@ func testAccCheckDatadogPipelinesDestroy(accProvider *fwprovider.FrameworkProvid
 func PipelinesDestroyHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	err := utils.Retry(2, 10, func() error {
 		for _, r := range s.RootModule().Resources {
-			if r.Type != "resource_datadog_pipelines" {
+			if r.Type != "resource_datadog_observability_pipeline" {
 				continue
 			}
 			id := r.Primary.ID
 
-			_, httpResp, err := apiInstances.GetPipelinesApiV2().GetPipeline(auth, id)
+			_, httpResp, err := apiInstances.GetObsPipelinesV2().GetPipeline(auth, id)
 			if err != nil {
 				if httpResp != nil && httpResp.StatusCode == 404 {
 					return nil
 				}
-				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Pipelines %s", err)}
+				return &utils.RetryableError{Prob: fmt.Sprintf("received an error retrieving Observability Pipeline %s", err)}
 			}
-			return &utils.RetryableError{Prob: "Pipelines still exists"}
+			return &utils.RetryableError{Prob: "Observability Pipeline still exists"}
 		}
 		return nil
 	})
@@ -97,14 +119,14 @@ func testAccCheckDatadogPipelinesExists(accProvider *fwprovider.FrameworkProvide
 
 func pipelinesExistsHelper(auth context.Context, s *terraform.State, apiInstances *utils.ApiInstances) error {
 	for _, r := range s.RootModule().Resources {
-		if r.Type != "resource_datadog_pipelines" {
+		if r.Type != "resource_datadog_observability_pipeline" {
 			continue
 		}
 		id := r.Primary.ID
 
-		_, httpResp, err := apiInstances.GetPipelinesApiV2().GetPipeline(auth, id)
+		_, httpResp, err := apiInstances.GetObsPipelinesV2().GetPipeline(auth, id)
 		if err != nil {
-			return utils.TranslateClientError(err, httpResp, "error retrieving Pipelines")
+			return utils.TranslateClientError(err, httpResp, "error retrieving Observability Pipeline")
 		}
 	}
 	return nil
