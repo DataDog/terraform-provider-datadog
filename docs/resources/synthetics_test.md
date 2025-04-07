@@ -208,6 +208,55 @@ resource "datadog_synthetics_test" "test_dns" {
   }
 }
 
+# Example Usage (Synthetics ICMP test)
+# Create a new Datadog Synthetics ICMP test on example.org
+resource "datadog_synthetics_test" "test_api_icmp" {
+  name      = "ICMP Test on example.com"
+  type      = "api"
+  subtype   = "icmp"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host                    = "example.com"
+    no_saving_response_body = "false"
+    number_of_packets       = "1"
+    persist_cookies         = "false"
+    should_track_hops       = "false"
+    timeout                 = "0"
+  }
+
+  assertion {
+    operator = "is"
+    target   = "0"
+    type     = "packetLossPercentage"
+  }
+
+  assertion {
+    operator = "lessThan"
+    property = "avg"
+    target   = "1000"
+    type     = "latency"
+  }
+
+  assertion {
+    operator = "moreThanOrEqual"
+    target   = "1"
+    type     = "packetsReceived"
+  }
+  options_list {
+    tick_every = 900
+    retry {
+      count    = 2
+      interval = 300
+    }
+    monitor_options {
+      renotify_interval = 120
+    }
+  }
+}
+
 
 # Example Usage (Synthetics Multistep API test)
 # Create a new Datadog Synthetics Multistep API test
@@ -261,9 +310,10 @@ resource "datadog_synthetics_test" "test_multi_step" {
     subtype = "grpc"
 
     assertion {
-      type     = "statusCode"
+      type     = "grpcMetadata"
       operator = "is"
-      target   = "200"
+      property = "X-Header"
+      target   = "test"
     }
 
     request_definition {
@@ -279,9 +329,9 @@ resource "datadog_synthetics_test" "test_multi_step" {
     subtype = "grpc"
 
     assertion {
-      type     = "statusCode"
+      type     = "grpcHealthcheckStatus"
       operator = "is"
-      target   = "200"
+      target   = "1"
     }
 
     request_definition {
@@ -373,6 +423,25 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Upload a file"
+    type = "uploadFiles"
+    params {
+      files = jsonencode([{
+        name    = "hello.txt"   // Name of the file
+        size    = 11            // Size of the file
+        content = "Hello world" // Content of the file
+      }])
+      element = "*[@id='simple-file-upload']"
+      element_user_locator {
+        value {
+          type  = "css"
+          value = "#simple-file-upload"
+        }
+      }
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -446,14 +515,6 @@ resource "datadog_synthetics_test" "test_mobile" {
       notification_preset_name = "show_all"
     }
     monitor_priority = 5
-    restricted_roles = ["role1", "role2"]
-    bindings {
-      principals = [
-        "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091",
-        "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"
-      ]
-      relation = "editor"
-    }
     ci {
       execution_rule = "blocking"
     }
@@ -702,6 +763,7 @@ Optional:
 - `assertion` (Block List) Assertions used for the test. Multiple `assertion` blocks are allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--assertion))
 - `exit_if_succeed` (Boolean) Determines whether or not to exit the test if the step succeeds.
 - `extracted_value` (Block List) Values to parse and save as variables from the response. (see [below for nested schema](#nestedblock--api_step--extracted_value))
+- `extracted_values_from_script` (String) Generate variables using JavaScript.
 - `is_critical` (Boolean) Determines whether or not to consider the entire test as failed if this step fails. Can be used only if `allow_failure` is `true`.
 - `request_basicauth` (Block List, Max: 1) The HTTP basic authentication credentials. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_basicauth))
 - `request_client_certificate` (Block List, Max: 1) Client certificate to use when performing the test request. Exactly one nested block is allowed with the structure below. (see [below for nested schema](#nestedblock--api_step--request_client_certificate))
@@ -923,7 +985,7 @@ Optional:
 
 Optional:
 
-- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `5`. Defaults to `0`.
+- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `3` for `api` tests, `2` for `browser` and `mobile` tests. Defaults to `0`.
 - `interval` (Number) Interval between a failed test and the next retry in milliseconds. Maximum value: `5000`. Defaults to `300`.
 
 
@@ -1024,7 +1086,7 @@ Optional:
 - `element_user_locator` (Block List, Max: 1) Custom user selector to use for the step. (see [below for nested schema](#nestedblock--browser_step--params--element_user_locator))
 - `email` (String) Details of the email for an "assert email" step, JSON encoded string.
 - `file` (String) JSON encoded string used for an "assert download" step. Refer to the examples for a usage example showing the schema.
-- `files` (String) Details of the files for an "upload files" step, JSON encoded string.
+- `files` (String) Details of the files for an "upload files" step, JSON encoded string. Refer to the examples for a usage example showing the schema.
 - `modifiers` (List of String) Modifier to use for a "press key" step.
 - `playing_tab_id` (String) ID of the tab to play the subtest.
 - `request` (String) Request for an API step.
@@ -1077,7 +1139,7 @@ Optional:
 Required:
 
 - `name` (String) Name of the variable.
-- `type` (String) Type of browser test variable. Valid values are `element`, `email`, `global`, `javascript`, `text`.
+- `type` (String) Type of browser test variable. Valid values are `element`, `email`, `global`, `text`.
 
 Optional:
 
@@ -1115,7 +1177,7 @@ Required:
 Optional:
 
 - `allow_application_crash` (Boolean)
-- `bindings` (Block List) (see [below for nested schema](#nestedblock--mobile_options_list--bindings))
+- `bindings` (Block List) Restriction policy bindings for the Synthetic mobile test. Should not be used in parallel with a `datadog_restriction_policy` resource (see [below for nested schema](#nestedblock--mobile_options_list--bindings))
 - `ci` (Block List, Max: 1) CI/CD options for a Synthetic test. (see [below for nested schema](#nestedblock--mobile_options_list--ci))
 - `default_step_timeout` (Number)
 - `disable_auto_accept_alert` (Boolean)
@@ -1124,7 +1186,7 @@ Optional:
 - `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--monitor_options))
 - `monitor_priority` (Number)
 - `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
-- `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
+- `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--retry))
 - `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--mobile_options_list--scheduling))
 - `verbosity` (Number)
@@ -1172,7 +1234,7 @@ Optional:
 
 Optional:
 
-- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `5`. Defaults to `0`.
+- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `3` for `api` tests, `2` for `browser` and `mobile` tests. Defaults to `0`.
 - `interval` (Number) Interval between a failed test and the next retry in milliseconds. Maximum value: `5000`. Defaults to `300`.
 
 
@@ -1323,7 +1385,7 @@ Optional:
 - `monitor_options` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--monitor_options))
 - `monitor_priority` (Number)
 - `no_screenshot` (Boolean) Prevents saving screenshots of the steps.
-- `restricted_roles` (Set of String) A list of role identifiers pulled from the Roles API to restrict read and write access.
+- `restricted_roles` (Set of String, Deprecated) A list of role identifiers pulled from the Roles API to restrict read and write access. **Deprecated.** This field is no longer supported by the Datadog API. Please use `datadog_restriction_policy` instead.
 - `retry` (Block List, Max: 1) (see [below for nested schema](#nestedblock--options_list--retry))
 - `rum_settings` (Block List, Max: 1) The RUM data collection settings for the Synthetic browser test. (see [below for nested schema](#nestedblock--options_list--rum_settings))
 - `scheduling` (Block List, Max: 1) Object containing timeframes and timezone used for advanced scheduling. (see [below for nested schema](#nestedblock--options_list--scheduling))
@@ -1350,7 +1412,7 @@ Optional:
 
 Optional:
 
-- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `5`. Defaults to `0`.
+- `count` (Number) Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `3` for `api` tests, `2` for `browser` and `mobile` tests. Defaults to `0`.
 - `interval` (Number) Interval between a failed test and the next retry in milliseconds. Maximum value: `5000`. Defaults to `300`.
 
 

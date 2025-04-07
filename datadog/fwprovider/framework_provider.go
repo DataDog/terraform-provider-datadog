@@ -43,6 +43,7 @@ var Resources = []func() resource.Resource{
 	NewDowntimeScheduleResource,
 	NewIntegrationAzureResource,
 	NewIntegrationAwsEventBridgeResource,
+	NewIntegrationAwsExternalIDResource,
 	NewIntegrationCloudflareAccountResource,
 	NewIntegrationConfluentAccountResource,
 	NewIntegrationConfluentResourceResource,
@@ -55,10 +56,14 @@ var Resources = []func() resource.Resource{
 	NewRestrictionPolicyResource,
 	NewRumApplicationResource,
 	NewRumMetricResource,
+	NewRumRetentionFilterResource,
+	NewRumRetentionFiltersOrderResource,
 	NewSensitiveDataScannerGroupOrder,
 	NewServiceAccountApplicationKeyResource,
 	NewSpansMetricResource,
 	NewSyntheticsConcurrencyCapResource,
+	NewSyntheticsGlobalVariableResource,
+	NewSyntheticsPrivateLocationResource,
 	NewTeamLinkResource,
 	NewTeamMembershipResource,
 	NewTeamPermissionSettingResource,
@@ -71,6 +76,12 @@ var Resources = []func() resource.Resource{
 	NewWebhookCustomVariableResource,
 	NewLogsCustomDestinationResource,
 	NewTenantBasedHandleResource,
+	NewAppsecWafExclusionFilterResource,
+	NewAppsecWafCustomRuleResource,
+	NewWorkflowsWebhookHandleResource,
+	NewActionConnectionResource,
+	NewWorkflowAutomationResource,
+	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
 }
 
@@ -84,11 +95,13 @@ var Datasources = []func() datasource.DataSource{
 	NewDatadogIntegrationAWSNamespaceRulesDatasource,
 	NewDatadogPowerpackDataSource,
 	NewDatadogServiceAccountDatasource,
+	NewDatadogSoftwareCatalogDataSource,
 	NewDatadogTeamDataSource,
 	NewDatadogTeamMembershipsDataSource,
 	NewHostsDataSource,
 	NewIPRangesDataSource,
 	NewRumApplicationDataSource,
+	NewRumRetentionFiltersDataSource,
 	NewSensitiveDataScannerGroupOrderDatasource,
 	NewDatadogUsersDataSource,
 	NewDatadogRoleUsersDataSource,
@@ -96,6 +109,11 @@ var Datasources = []func() datasource.DataSource{
 	NewCSMThreatsAgentRulesDataSource,
 	NewLogsPipelinesOrderDataSource,
 	NewDatadogTeamsDataSource,
+	NewDatadogActionConnectionDataSource,
+	NewDatadogSyntheticsGlobalVariableDataSource,
+	NewDatadogSyntheticsLocationsDataSource,
+	NewWorkflowAutomationDataSource,
+	NewDatadogAppBuilderAppDataSource,
 }
 
 // FrameworkProvider struct
@@ -411,6 +429,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.UpdateAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
@@ -585,6 +604,11 @@ func (r *FrameworkResourceWrapper) ConfigValidators(ctx context.Context) []resou
 
 func (r *FrameworkResourceWrapper) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	if v, ok := (*r.innerResource).(resource.ResourceWithModifyPlan); ok {
+		// If the plan is null, no need to modify the plan
+		// Plan is null in case destroy planning
+		if req.Plan.Raw.IsNull() {
+			return
+		}
 		v.ModifyPlan(ctx, req, resp)
 	}
 }

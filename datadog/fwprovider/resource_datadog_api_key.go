@@ -3,7 +3,7 @@ package fwprovider
 import (
 	"context"
 
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
+	frameworkDiag "github.com/hashicorp/terraform-plugin-framework/diag"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -62,10 +62,9 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
 			},
 			"remote_config_read_enabled": schema.BoolAttribute{
-				Description: "Whether the API key is used for remote config. Warning : default value is true for backwards compatibility",
+				Description: "Whether the API key is used for remote config. Set to true only if remote config is enabled in `/organization-settings/remote-config`.",
 				Optional:    true,
 				Computed:    true,
-				Default:     booldefault.StaticBool(true),
 			},
 			// Resource ID
 			"id": utils.ResourceIDAttribute(),
@@ -88,8 +87,10 @@ func (r *apiKeyResource) Create(ctx context.Context, request resource.CreateRequ
 
 	apiKeyData := resp.GetData()
 	state.ID = types.StringValue(apiKeyData.GetId())
-	r.updateState(&state, &apiKeyData)
-
+	updateStateDiag := r.updateState(&state, &apiKeyData)
+	if updateStateDiag != nil {
+		response.Diagnostics.Append(updateStateDiag)
+	}
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -112,7 +113,11 @@ func (r *apiKeyResource) Read(ctx context.Context, request resource.ReadRequest,
 	}
 
 	apiKeyData := resp.GetData()
-	r.updateState(&state, &apiKeyData)
+	updateStateDiag := r.updateState(&state, &apiKeyData)
+	if updateStateDiag != nil {
+		response.Diagnostics.Append(updateStateDiag)
+		return
+	}
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -133,8 +138,11 @@ func (r *apiKeyResource) Update(ctx context.Context, request resource.UpdateRequ
 
 	apiKeyData := resp.GetData()
 	state.ID = types.StringValue(apiKeyData.GetId())
-	r.updateState(&state, &apiKeyData)
-
+	updateStateDiag := r.updateState(&state, &apiKeyData)
+	if updateStateDiag != nil {
+		response.Diagnostics.Append(updateStateDiag)
+		return
+	}
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
 }
@@ -145,7 +153,6 @@ func (r *apiKeyResource) Delete(ctx context.Context, request resource.DeleteRequ
 	if response.Diagnostics.HasError() {
 		return
 	}
-
 	if _, err := r.Api.DeleteAPIKey(r.Auth, state.ID.ValueString()); err != nil {
 		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting api key"))
 	}
@@ -161,7 +168,9 @@ func (r *apiKeyResource) ImportState(ctx context.Context, request resource.Impor
 
 func (r *apiKeyResource) buildDatadogApiKeyCreateV2Struct(state *apiKeyResourceModel) *datadogV2.APIKeyCreateRequest {
 	apiKeyAttributes := datadogV2.NewAPIKeyCreateAttributes(state.Name.ValueString())
-	apiKeyAttributes.SetRemoteConfigReadEnabled(state.RemoteConfig.ValueBool())
+	if !(state.RemoteConfig.IsUnknown() || state.RemoteConfig.IsNull()) {
+		apiKeyAttributes.SetRemoteConfigReadEnabled(state.RemoteConfig.ValueBool())
+	}
 	apiKeyData := datadogV2.NewAPIKeyCreateData(*apiKeyAttributes, datadogV2.APIKEYSTYPE_API_KEYS)
 	apiKeyRequest := datadogV2.NewAPIKeyCreateRequest(*apiKeyData)
 	return apiKeyRequest
@@ -169,17 +178,24 @@ func (r *apiKeyResource) buildDatadogApiKeyCreateV2Struct(state *apiKeyResourceM
 
 func (r *apiKeyResource) buildDatadogApiKeyUpdateV2Struct(state *apiKeyResourceModel) *datadogV2.APIKeyUpdateRequest {
 	apiKeyAttributes := datadogV2.NewAPIKeyUpdateAttributes(state.Name.ValueString())
-	apiKeyAttributes.SetRemoteConfigReadEnabled(state.RemoteConfig.ValueBool())
+	if !(state.RemoteConfig.IsUnknown() || state.RemoteConfig.IsNull()) {
+		apiKeyAttributes.SetRemoteConfigReadEnabled(state.RemoteConfig.ValueBool())
+	}
 	apiKeyData := datadogV2.NewAPIKeyUpdateData(*apiKeyAttributes, state.ID.ValueString(), datadogV2.APIKEYSTYPE_API_KEYS)
 	apiKeyRequest := datadogV2.NewAPIKeyUpdateRequest(*apiKeyData)
 	return apiKeyRequest
 }
 
-func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) {
+func (r *apiKeyResource) updateState(state *apiKeyResourceModel, apiKeyData *datadogV2.FullAPIKey) frameworkDiag.Diagnostic {
+	var d frameworkDiag.Diagnostic
 	apiKeyAttributes := apiKeyData.GetAttributes()
 	state.Name = types.StringValue(apiKeyAttributes.GetName())
+	if state.RemoteConfig.ValueBool() && !apiKeyAttributes.GetRemoteConfigReadEnabled() {
+		d = frameworkDiag.NewErrorDiagnostic("remote_config_read_enabled is true but Remote config is not enabled at org level", "Please either remove remote_config_read_enabled from the resource configuration or enable Remote config at org level")
+	}
 	state.RemoteConfig = types.BoolValue(apiKeyAttributes.GetRemoteConfigReadEnabled())
 	if apiKeyAttributes.HasKey() {
 		state.Key = types.StringValue(apiKeyAttributes.GetKey())
 	}
+	return d
 }

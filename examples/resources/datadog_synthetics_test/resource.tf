@@ -167,6 +167,55 @@ resource "datadog_synthetics_test" "test_dns" {
   }
 }
 
+# Example Usage (Synthetics ICMP test)
+# Create a new Datadog Synthetics ICMP test on example.org
+resource "datadog_synthetics_test" "test_api_icmp" {
+  name      = "ICMP Test on example.com"
+  type      = "api"
+  subtype   = "icmp"
+  status    = "live"
+  locations = ["aws:eu-central-1"]
+  tags      = ["foo:bar", "foo", "env:test"]
+
+  request_definition {
+    host                    = "example.com"
+    no_saving_response_body = "false"
+    number_of_packets       = "1"
+    persist_cookies         = "false"
+    should_track_hops       = "false"
+    timeout                 = "0"
+  }
+
+  assertion {
+    operator = "is"
+    target   = "0"
+    type     = "packetLossPercentage"
+  }
+
+  assertion {
+    operator = "lessThan"
+    property = "avg"
+    target   = "1000"
+    type     = "latency"
+  }
+
+  assertion {
+    operator = "moreThanOrEqual"
+    target   = "1"
+    type     = "packetsReceived"
+  }
+  options_list {
+    tick_every = 900
+    retry {
+      count    = 2
+      interval = 300
+    }
+    monitor_options {
+      renotify_interval = 120
+    }
+  }
+}
+
 
 # Example Usage (Synthetics Multistep API test)
 # Create a new Datadog Synthetics Multistep API test
@@ -220,9 +269,10 @@ resource "datadog_synthetics_test" "test_multi_step" {
     subtype = "grpc"
 
     assertion {
-      type     = "statusCode"
+      type     = "grpcMetadata"
       operator = "is"
-      target   = "200"
+      property = "X-Header"
+      target   = "test"
     }
 
     request_definition {
@@ -238,9 +288,9 @@ resource "datadog_synthetics_test" "test_multi_step" {
     subtype = "grpc"
 
     assertion {
-      type     = "statusCode"
+      type     = "grpcHealthcheckStatus"
       operator = "is"
-      target   = "200"
+      target   = "1"
     }
 
     request_definition {
@@ -332,6 +382,25 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Upload a file"
+    type = "uploadFiles"
+    params {
+      files = jsonencode([{
+        name    = "hello.txt"   // Name of the file
+        size    = 11            // Size of the file
+        content = "Hello world" // Content of the file
+      }])
+      element = "*[@id='simple-file-upload']"
+      element_user_locator {
+        value {
+          type  = "css"
+          value = "#simple-file-upload"
+        }
+      }
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -405,14 +474,6 @@ resource "datadog_synthetics_test" "test_mobile" {
       notification_preset_name = "show_all"
     }
     monitor_priority = 5
-    restricted_roles = ["role1", "role2"]
-    bindings {
-      principals = [
-        "org:8dee7c38-0000-aaaa-zzzz-8b5a08d3b091",
-        "team:3a0cdd74-0000-aaaa-zzzz-da7ad0900002"
-      ]
-      relation = "editor"
-    }
     ci {
       execution_rule = "blocking"
     }

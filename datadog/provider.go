@@ -216,8 +216,6 @@ func Provider() *schema.Provider {
 			"datadog_service_definition_yaml":              resourceDatadogServiceDefinitionYAML(),
 			"datadog_slo_correction":                       resourceDatadogSloCorrection(),
 			"datadog_synthetics_test":                      resourceDatadogSyntheticsTest(),
-			"datadog_synthetics_global_variable":           resourceDatadogSyntheticsGlobalVariable(),
-			"datadog_synthetics_private_location":          resourceDatadogSyntheticsPrivateLocation(),
 			"datadog_user":                                 resourceDatadogUser(),
 		},
 
@@ -242,8 +240,6 @@ func Provider() *schema.Provider {
 			"datadog_sensitive_data_scanner_standard_pattern": dataSourceDatadogSensitiveDataScannerStandardPattern(),
 			"datadog_service_level_objective":                 dataSourceDatadogServiceLevelObjective(),
 			"datadog_service_level_objectives":                dataSourceDatadogServiceLevelObjectives(),
-			"datadog_synthetics_locations":                    dataSourceDatadogSyntheticsLocations(),
-			"datadog_synthetics_global_variable":              dataSourceDatadogSyntheticsGlobalVariable(),
 			"datadog_synthetics_test":                         dataSourceDatadogSyntheticsTest(),
 			"datadog_user":                                    dataSourceDatadogUser(),
 		},

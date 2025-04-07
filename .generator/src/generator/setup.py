@@ -18,17 +18,24 @@ def load_environment(version: str) -> Environment:
     env.filters["attribute_name"] = formatter.attribute_name
     env.filters["camel_case"] = formatter.camel_case
     env.filters["sanitize_description"] = formatter.sanitize_description
-
     env.filters["snake_case"] = formatter.snake_case
     env.filters["untitle_case"] = formatter.untitle_case
     env.filters["variable_name"] = formatter.variable_name
+    env.filters["go_to_terraform_type_formatter"] = (
+        formatter.go_to_terraform_type_formatter
+    )
     env.filters["parameter_schema"] = openapi.parameter_schema
     env.filters["parameters"] = openapi.parameters
     env.filters["is_json_api"] = openapi.is_json_api
     env.filters["capitalize"] = utils.capitalize
     env.filters["is_primitive"] = utils.is_primitive
+    env.filters["debug"] = utils.debug_filter
+    env.filters["only_keep_filters"] = utils.only_keep_filters
+    env.filters["clean_response_for_datasource"] = utils.clean_response_for_datasource
     env.filters["response_type"] = type.get_type_for_response
+    env.filters["get_schema_from_response"] = type.get_schema_from_response
     env.filters["return_type"] = type.return_type
+    env.filters["sort_schemas_by_type"] = type.sort_schemas_by_type
     env.filters["tf_sort_params_by_type"] = type.tf_sort_params_by_type
     env.filters["tf_sort_properties_by_type"] = type.tf_sort_properties_by_type
 
@@ -61,6 +68,7 @@ def load_templates(env: Environment) -> dict[str, Template]:
         "test": env.get_template("resource_test.j2"),
         "example": env.get_template("resource_example.j2"),
         "import": env.get_template("resource_import_example.j2"),
+        "datasource": env.get_template("data_source/base.j2"),
     }
     return templates
 

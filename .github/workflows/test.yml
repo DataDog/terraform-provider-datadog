@@ -1,5 +1,8 @@
 name: Run Tests
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches:
@@ -87,24 +90,8 @@ jobs:
           terraform_wrapper: false
       - name: Set TF_ACC_TERRAFORM_PATH env var
         run: echo "TF_ACC_TERRAFORM_PATH=$(which terraform)" >> $GITHUB_ENV
-      - name: Set regex for tests to run
-        shell: bash
-        run: |
-          test_re=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- datadog/*.go datadog/*/*.go datadog/internal/* go.mod go.sum | \
-            sed 's/.*_datadog_\(.*\).*.go/\1/' | sed 's/.*\/.*\/\(.*\).*.go/\1/' | \
-            sed -E 's+test|_++g' | \
-            sed -e "s/\(.*\)/\\(?i\\)\1/" | \
-            xargs | sed -e 's/ /|/g')
-          
-          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ "${{ github.head_ref }}" = release/* ]] || [[ "${{ github.event_name }}" == "schedule" ]]; then
-            echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
-          elif [[ ! -z "$test_re" ]]; then
-            echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_ENV
-          fi
       - name: Test
-        shell: bash
-        run: |
-          [[ -z "${TESTARGS}" ]] && echo "Skipping tests" || make testall
+        run: make testall
         env:
           RECORD: false
   
@@ -128,23 +115,7 @@ jobs:
         run: |
           echo "TF_ACC_TERRAFORM_PATH=$(which tofu)" >> $GITHUB_ENV
           echo "TF_ACC_PROVIDER_HOST=registry.opentofu.org" >> $GITHUB_ENV
-      - name: Set regex for tests to run
-        shell: bash
-        run: |
-          test_re=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} -- datadog/*.go datadog/*/*.go datadog/internal/* go.mod go.sum | \
-            sed 's/.*_datadog_\(.*\).*.go/\1/' | sed 's/.*\/.*\/\(.*\).*.go/\1/' | \
-            sed -E 's+test|_++g' | \
-            sed -e "s/\(.*\)/\\(?i\\)\1/" | \
-            xargs | sed -e 's/ /|/g')
-          
-          if [[ "$test_re" =~ go.mod|go.sum|provider ]] || [[ "${{ github.head_ref }}" = release/* ]] || [[ "${{ github.event_name }}" == "schedule" ]]; then
-            echo TESTARGS="-run \".*\"" >> $GITHUB_ENV
-          elif [[ ! -z "$test_re" ]]; then
-            echo TESTARGS="-run \"${test_re}\"" >> $GITHUB_ENV
-          fi
       - name: Test
-        shell: bash
-        run: |
-          [[ -z "${TESTARGS}" ]] && echo "Skipping tests" || make testacc
+        run: make testacc
         env:
           RECORD: false

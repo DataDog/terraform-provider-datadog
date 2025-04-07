@@ -1,0 +1,1 @@
+terraform import datadog_rum_retention_filters_order.testing_rum_retention_filters_order "<application_id>"

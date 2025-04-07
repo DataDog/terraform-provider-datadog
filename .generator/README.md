@@ -1,9 +1,10 @@
 # Terraform Generation
 
-The goal of this sub-project is to generate the scaffolding to create a Terraform resource.
+The goal of this sub-project is to generate the scaffolding to create a Terraform resource or datasource.
 
 > [!CAUTION]
 > This code is HIGHLY experimental and should stabilize over the next weeks/months. As such this code is NOT intended for production uses.
+> Any code that has been generate should and needs to be proofread by a human.
 
 ## How to use
 
@@ -16,13 +17,13 @@ The goal of this sub-project is to generate the scaffolding to create a Terrafor
 
 ### Install dependencies
 
-Install the necessary dependencies by running `poetry install`
+Install the necessary python dependencies by running `poetry install`
 
 Install go as we use the `go fmt` command on the generated files to format them.
 
 ### Marking the resources to be generated
 
-The generator reads a configuration file in order to generate the appropriate resources.
+The generator reads a configuration file in order to generate the appropriate resources and datasources.
 The configuration file should look like the following:
 
 ```yaml
@@ -41,14 +42,25 @@ resources:
       method: { delete_method }
       path: { delete_path }
   ...
+
+datasources:
+  { datasource_name }:
+    singular: { get_one_path }
+    plural: { get_all_path }
+  ...
 ```
 
-- `resource_name` is the name of the resource to be generated.
-- `xxx_method` should be the HTTP method used by the relevant route
-- `xxx_path` should be the HTTP route of the resource's CRUD operation
+- Resources
+  - `resource_name` is the name of the resource to be generated.
+  - `xxx_method` should be the HTTP method used by the relevant route
+  - `xxx_path` should be the HTTP route of the resource's CRUD operation
+- Datasources
+  - `datasource_name` is the name of the datasource to be generated.
+  - `get_one_path` should be the api route to get a singular item relevant to the datasource
+  - `get_all_path` should be the api route to get a list of items relevant to the datasource
 
 > [!NOTE]
-> An example using the `team` resource would look like this:
+> An example using the `team` resource and datasource would look like this:
 >
 > ```yaml
 > resources:
@@ -65,6 +77,10 @@ resources:
 >     delete:
 >       method: delete
 >       path: /api/v2/team/{team_id}
+> datasources:
+>   team:
+>     singular: /api/v2/team/{team_id}
+>     plural: /api/v2/team
 > ```
 
 ### Running the generator
@@ -76,4 +92,6 @@ Once the configuration file is written, you can run the following command to gen
 ```
 
 > [!NOTE]
+> The `openapi_spec_path` must be placed in a folder named V1 or V2 depending on the datadog api's version it contains
+>
 > The generated resources will be placed in `datadog/fwprovider/`

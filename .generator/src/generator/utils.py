@@ -48,8 +48,9 @@ def is_primitive(schema):
         return True
     return False
 
+
 def is_required(schema, attr=None):
-    req_args =schema.get("required")
+    req_args = schema.get("required")
     if req_args is None:
         return False
     if isinstance(req_args, bool):
@@ -58,12 +59,76 @@ def is_required(schema, attr=None):
         return attr in req_args
     raise ValueError(f"Invalid required value: {schema} ({attr})")
 
+
 def is_computed(schema):
     v = schema.get("readOnly", None) is True
     return v
 
+
 def is_enum(schema):
     return "enum" in schema
 
+
 def is_nullable(schema):
     return schema.get("nullable", False)
+
+
+def debug_filter(value):
+    print(value)
+    return value
+
+
+def only_keep_filters(parameters: dict):
+    """
+    This function removes all element from a dict that are not considered filters.
+    """
+    for elt in parameters.copy().keys():
+        if "filter" not in elt:
+            parameters.pop(elt, None)
+    return parameters
+
+
+def clean_response_for_datasource(schema: dict):
+    schema_save = schema.copy()
+    try:
+        schema["properties"] = remove_all_but(
+            schema=schema["properties"], field_to_keep="data"
+        )
+        schema["properties"]["data"]["properties"] = remove_all_but(
+            schema=schema["properties"]["data"]["properties"],
+            field_to_keep="attributes",
+        )
+        schema = move_fields_to_top(
+            schema=schema,
+            path_to_fields=["properties", "data", "properties", "attributes"],
+        )
+    except KeyError:
+        print("Error while cleaning response for datasource, restoring original schema")
+        return schema_save
+    return schema
+
+
+def remove_all_but(schema: dict, field_to_keep: str):
+    """
+    This function removes elements from a schema that are unwanted.
+    This function is meant to be used when generating data sources as we do not want to generate models for all fields (eg: "relationships" or "included").
+    """
+    for elt in schema.copy().keys():
+        if field_to_keep not in elt:
+            schema.pop(elt, None)
+    return schema
+
+
+def move_fields_to_top(schema: dict, path_to_fields: list[str]):
+    """
+    This function moves a field to the top of the schema.
+    This function is meant to be used when generating data sources as we want to have the fields in [properties][data][properties][attributes] at the top level of the schema.
+    """
+    tmp = schema
+    for field in path_to_fields:
+        tmp = tmp[field]
+
+    for fields in tmp:
+        schema[fields] = tmp[fields]
+
+    return schema

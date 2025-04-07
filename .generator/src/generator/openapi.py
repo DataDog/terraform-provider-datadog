@@ -31,7 +31,7 @@ def get_resources(spec: dict, config: dict) -> dict:
     resources_to_generate = {}
 
     # Iterate over each resource in the config
-    for resource in config["resources"]:
+    for resource in config.get("resources", []):
         # Iterate over each CRUD operation for the resource
         for crud_operation, value in config["resources"][resource].items():
             method = value[
@@ -62,9 +62,37 @@ def get_resources(spec: dict, config: dict) -> dict:
     return resources_to_generate
 
 
-def get_terraform_primary_id(operations):
-    update_params = parameters(operations[UPDATE_OPERATION]["schema"])
-    primary_id = operations[UPDATE_OPERATION]["path"].split("/")[-1][1:-1]
+def get_data_sources(spec: dict, config: dict) -> dict:
+    """
+    Creates a dictionary of data sources and their singular/plural endpoints.
+
+    Args:
+        spec (dict): The OpenAPI specification.
+        config (dict): The configuration tagging resources to be generated.
+
+    Returns:
+        A dictionary containing the specifications of the data sources to be generated.
+    """
+    data_source_to_generate = {}
+
+    for data_source in config.get("datasources", []):
+        singular_path = config["datasources"][data_source]["singular"]
+        data_source_to_generate.setdefault(data_source, {})["singular"] = {
+            "schema": spec["paths"][singular_path]["get"],
+            "path": singular_path,
+        }
+        plural_path = config["datasources"][data_source]["plural"]
+        data_source_to_generate.setdefault(data_source, {})["plural"] = {
+            "schema": spec["paths"][plural_path]["get"],
+            "path": plural_path,
+        }
+
+    return data_source_to_generate
+
+
+def get_terraform_primary_id(operations, path=UPDATE_OPERATION):
+    update_params = parameters(operations[path]["schema"])
+    primary_id = operations[path]["path"].split("/")[-1][1:-1]
     primary_id_param = update_params.pop(primary_id)
 
     return {"schema": parameter_schema(primary_id_param), "name": primary_id}

@@ -2234,7 +2234,7 @@ func buildTerraformChangeRequests(datadogChangeRequests *[]datadogV1.ChangeWidge
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		if v, ok := datadogRequest.GetChangeTypeOk(); ok {
@@ -3125,7 +3125,7 @@ func buildTerraformHeatmapRequests(datadogHeatmapRequests *[]datadogV1.HeatMapWi
 			terraformRequest["query"] = buildTerraformQuery(v)
 		}
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetStyle(*v)
@@ -4359,7 +4359,7 @@ func buildTerraformQueryValueRequests(datadogQueryValueRequests *[]datadogV1.Que
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		if datadogRequest.ConditionalFormats != nil {
@@ -4486,7 +4486,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 		"apm_stats_query": getApmStatsQuerySchema(),
 		// "query" and "formula" go together
 		"query":   getFormulaQuerySchema(),
-		"formula": getFormulaSchema(),
+		"formula": getQueryTableFormulaSchema(),
 		// Settings specific to QueryTable requests
 		"conditional_formats": {
 			Description: "Conditional formats allow you to set the color of your widget content or background, depending on the rule applied to your data. Multiple `conditional_formats` blocks are allowed using the structure below.",
@@ -4519,7 +4519,7 @@ func getQueryTableRequestSchema() map[string]*schema.Schema {
 			Optional:         true,
 		},
 		"cell_display_mode": {
-			Description: "A list of display modes for each table cell. List items one of `number`, `bar`.",
+			Description: "A list of display modes for each table cell.",
 			Type:        schema.TypeList,
 			Optional:    true,
 			Elem: &schema.Schema{
@@ -4715,7 +4715,7 @@ func buildTerraformQueryTableRequests(datadogQueryTableRequests *[]datadogV1.Tab
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, true)
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
@@ -5902,6 +5902,11 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 			MaxItems:    1,
 			Elem: &schema.Resource{
 				Schema: map[string]*schema.Schema{
+					"clustering_pattern_field_path": {
+						Description: "Specifies the field for logs pattern clustering. Can only be used with `logs_pattern_stream`.",
+						Optional:    true,
+						Type:        schema.TypeString,
+					},
 					"data_source": {
 						Description:      "Source from which to query items to display in the stream.",
 						Type:             schema.TypeString,
@@ -5918,6 +5923,20 @@ func getListStreamRequestSchema() map[string]*schema.Schema {
 						Type:             schema.TypeString,
 						Optional:         true,
 						ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetEventSizeFromValue),
+					},
+					"group_by": {
+						Description: "Group by configuration for the List Stream widget. Group by can only be used with `logs_pattern_stream` (up to 4 items) or `logs_transaction_stream` (one group by item is required) list stream source.",
+						Optional:    true,
+						Type:        schema.TypeList,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"facet": {
+									Description: "Facet name",
+									Type:        schema.TypeString,
+									Required:    true,
+								},
+							},
+						},
 					},
 					"indexes": {
 						Description: "List of indexes.",
@@ -5974,6 +5993,9 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 
 		if terraformQuery, ok := terraformRequest["query"].([]interface{}); ok && len(terraformQuery) > 0 {
 			q := terraformQuery[0].(map[string]interface{})
+			if v, ok := q["clustering_pattern_field_path"].(string); ok && len(v) > 0 {
+				datadogQuery.SetClusteringPatternFieldPath(v)
+			}
 			if v, ok := q["data_source"].(string); ok && len(v) > 0 {
 				ds := datadogV1.ListStreamSource(v)
 				datadogQuery.SetDataSource(ds)
@@ -5987,6 +6009,14 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 			if v, ok := q["storage"].(string); ok && v != "" {
 				datadogQuery.SetStorage(v)
 			}
+			if v, ok := q["group_by"].([]interface{}); ok {
+				var groupBy []datadogV1.ListStreamGroupByItems
+				for _, s := range v {
+					facet := s.(map[string]interface{})["facet"].(string)
+					groupBy = append(groupBy, *datadogV1.NewListStreamGroupByItems(facet))
+				}
+				datadogQuery.SetGroupBy(groupBy)
+			}
 			if v, ok := q["indexes"].([]interface{}); ok {
 				var indexes []string
 				for _, s := range v {
@@ -5994,6 +6024,7 @@ func buildDatadogListStreamRequests(terraformRequests *[]interface{}) *[]datadog
 				}
 				datadogQuery.SetIndexes(indexes)
 			}
+
 			if terraformSort, ok := q["sort"].([]interface{}); ok && len(terraformSort) > 0 {
 				sortMap := terraformSort[0].(map[string]interface{})
 				datadogSort := datadogV1.NewWidgetFieldSortWithDefaults()
@@ -6228,7 +6259,7 @@ func buildTerraformGeomapRequests(datadogGeomapRequests *[]datadogV1.GeomapWidge
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		terraformRequests[i] = terraformRequest
@@ -6751,7 +6782,7 @@ func buildTerraformSunburstRequests(datadogSunburstRequests *[]datadogV1.Sunburs
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 		if v, ok := datadogRequest.GetStyleOk(); ok {
 			style := buildTerraformWidgetStyle(*v)
@@ -6864,6 +6895,34 @@ func getScatterplotFormulaSchema() *schema.Schema {
 	}
 }
 
+func getQueryTableFormulaSchema() *schema.Schema {
+	queryTableFormulaSchema := getFormulaSchema()
+	queryTableFormulaSchema.Elem.(*schema.Resource).Schema["cell_display_mode_options"] = &schema.Schema{
+		Description: "A list of display modes for each table cell.",
+		Type:        schema.TypeList,
+		MinItems:    0,
+		MaxItems:    1,
+		Optional:    true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"trend_type": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Description:      "The type of trend line to display.",
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetFormulaCellDisplayModeOptionsTrendTypeFromValue),
+				},
+				"y_scale": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					Description:      "The scale of the y-axis.",
+					ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewWidgetFormulaCellDisplayModeOptionsYScaleFromValue),
+				},
+			},
+		},
+	}
+	return queryTableFormulaSchema
+}
+
 func getFormulaSchema() *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeList,
@@ -6934,6 +6993,15 @@ func getFormulaSchema() *schema.Schema {
 								Description: "Index specifying which color to use within the palette.",
 							},
 						},
+					},
+				},
+				"number_format": {
+					Type:        schema.TypeList,
+					Optional:    true,
+					Description: "Number formatting options for the formula.",
+					MaxItems:    1,
+					Elem: &schema.Resource{
+						Schema: getNumberFormatFormulaSchema(),
 					},
 				},
 			},
@@ -7531,6 +7599,18 @@ func buildDatadogFormula(data map[string]interface{}) *datadogV1.WidgetFormula {
 	if value, ok := data["cell_display_mode"].(string); ok && len(value) != 0 {
 		formula.SetCellDisplayMode(datadogV1.TableWidgetCellDisplayMode(value))
 	}
+	if value, ok := data["cell_display_mode_options"].([]interface{}); ok && len(value) != 0 {
+		if options, ok := value[0].(map[string]interface{}); ok {
+			o := datadogV1.NewWidgetFormulaCellDisplayModeOptions()
+			if v, ok := options["trend_type"].(string); ok {
+				o.SetTrendType(datadogV1.WidgetFormulaCellDisplayModeOptionsTrendType(v))
+			}
+			if v, ok := options["y_scale"].(string); ok {
+				o.SetYScale(datadogV1.WidgetFormulaCellDisplayModeOptionsYScale(v))
+			}
+			formula.SetCellDisplayModeOptions(*o)
+		}
+	}
 
 	if v, ok := data["conditional_formats"].([]interface{}); ok && len(v) != 0 {
 		formula.ConditionalFormats = *buildDatadogWidgetConditionalFormat(&v)
@@ -7546,6 +7626,10 @@ func buildDatadogFormula(data map[string]interface{}) *datadogV1.WidgetFormula {
 			datadogFormulaStyle.SetPaletteIndex(int64(palette_index))
 		}
 		formula.SetStyle(*datadogFormulaStyle)
+	}
+	if number, ok := data["number_format"].([]interface{}); ok && len(number) != 0 {
+		datadogNumberFormat := buildNumberFormatFormulaSchema(number[0].(map[string]interface{}))
+		formula.SetNumberFormat(*datadogNumberFormat)
 	}
 
 	return &formula
@@ -7943,7 +8027,7 @@ func buildTerraformTimeseriesRequests(datadogTimeseriesRequests *[]datadogV1.Tim
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		if v, ok := datadogRequest.GetStyleOk(); ok {
@@ -8083,6 +8167,9 @@ func buildDatadogToplistStyle(terraformToplistStyle map[string]interface{}) data
 	}
 	if palette, ok := terraformToplistStyle["palette"].(string); ok && len(palette) != 0 {
 		datadogToplistStyle.SetPalette(palette)
+	}
+	if scaling, ok := terraformToplistStyle["scaling"].(string); ok && len(scaling) != 0 {
+		datadogToplistStyle.SetScaling(datadogV1.ToplistWidgetScaling(scaling))
 	}
 	return *datadogToplistStyle
 }
@@ -8247,7 +8334,7 @@ func buildTerraformToplistRequests(datadogToplistRequests *[]datadogV1.ToplistWi
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 
 		if v, ok := datadogRequest.GetConditionalFormatsOk(); ok {
@@ -8279,6 +8366,9 @@ func buildTerraformToplistWidgetStyle(datadogToplistStyle *datadogV1.ToplistWidg
 	}
 	if palette, ok := datadogToplistStyle.GetPaletteOk(); ok {
 		terraformStyle["palette"] = palette
+	}
+	if scaling, ok := datadogToplistStyle.GetScalingOk(); ok {
+		terraformStyle["scaling"] = scaling
 	}
 	terraformStyles[0] = terraformStyle
 	return &terraformStyles
@@ -9130,7 +9220,7 @@ func buildTerraformTreemapRequests(datadogTreemapRequests *[]datadogV1.TreeMapWi
 		}
 
 		if v, ok := datadogRequest.GetFormulasOk(); ok {
-			terraformRequest["formula"] = buildTerraformFormula(v)
+			terraformRequest["formula"] = buildTerraformFormula(v, false)
 		}
 		terraformRequests[i] = terraformRequest
 	}
@@ -9457,6 +9547,13 @@ func getToplistWidgetStyleSchema() map[string]*schema.Schema {
 			Description: "The color palette for the widget.",
 			Type:        schema.TypeString,
 			Optional:    true,
+		},
+		"scaling": {
+			Description:      "The scaling mode for the widget.",
+			Type:             schema.TypeString,
+			Optional:         true,
+			Computed:         true,
+			ValidateDiagFunc: validators.ValidateEnumValue(datadogV1.NewToplistWidgetScalingFromValue),
 		},
 	}
 }
@@ -10140,7 +10237,7 @@ func buildTerraformScatterplotFormula(datadogFormulas *[]datadogV1.ScatterplotWi
 	return formulas
 }
 
-func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula) []map[string]interface{} {
+func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula, cellDisplayOptionFlag bool) []map[string]interface{} {
 	formulas := make([]map[string]interface{}, len(*datadogFormulas))
 	for i, formula := range *datadogFormulas {
 		terraformFormula := map[string]interface{}{}
@@ -10165,6 +10262,18 @@ func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula) []map[str
 		if cellDisplayMode, cellDisplayModeOk := formula.GetCellDisplayModeOk(); cellDisplayModeOk {
 			terraformFormula["cell_display_mode"] = cellDisplayMode
 		}
+		if cellDisplayOptionFlag {
+			if cellDisplayOptions, cellDisplayOptionsOk := formula.GetCellDisplayModeOptionsOk(); cellDisplayOptionsOk {
+				if cellDisplayOptions != nil {
+					terraformFormula["cell_display_mode_options"] = []interface{}{
+						map[string]interface{}{
+							"trend_type": cellDisplayOptions.TrendType,
+							"y_scale":    cellDisplayOptions.YScale,
+						},
+					}
+				}
+			}
+		}
 		if style, ok := formula.GetStyleOk(); ok {
 			terraFormstyle := make(map[string]interface{})
 			if palette, ok := style.GetPaletteOk(); ok {
@@ -10174,6 +10283,9 @@ func buildTerraformFormula(datadogFormulas *[]datadogV1.WidgetFormula) []map[str
 				terraFormstyle["palette_index"] = palette_index
 			}
 			terraformFormula["style"] = []map[string]interface{}{terraFormstyle}
+		}
+		if numberFormat, ok := formula.GetNumberFormatOk(); ok {
+			terraformFormula["number_format"] = buildTerraformNumberFormatFormulaSchema(*numberFormat)
 		}
 		formulas[i] = terraformFormula
 	}
@@ -10857,4 +10969,130 @@ func validateTimeseriesWidgetLegendSize(val interface{}, key string) (warns []st
 			"%q contains an invalid value %q. Valid values are `0`, `2`, `4`, `8`, `16`, or `auto`", key, value))
 	}
 	return
+}
+
+// Number format Formula
+func getNumberFormatFormulaSchema() map[string]*schema.Schema {
+	return map[string]*schema.Schema{
+		"unit": &schema.Schema{
+			Description: "Unit of the number format. ",
+			Type:        schema.TypeList,
+			MinItems:    1,
+			MaxItems:    1,
+			Required:    true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"canonical": &schema.Schema{
+						Description: "Canonical Units",
+						Type:        schema.TypeList,
+						MinItems:    0,
+						MaxItems:    1,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"per_unit_name": &schema.Schema{
+									Description: "per unit name. If you want to represent megabytes/s, you set 'unit_name' = 'megabyte' and 'per_unit_name = 'second'",
+									Type:        schema.TypeString,
+									Optional:    true,
+								},
+								"unit_name": &schema.Schema{
+									Description: "Unit name. It should be in singular form ('megabyte' and not 'megabytes')",
+									Type:        schema.TypeString,
+									Required:    true,
+								},
+							},
+						},
+					},
+					"custom": &schema.Schema{
+						Description: "Use custom (non canonical metrics)",
+						Type:        schema.TypeList,
+						MinItems:    0,
+						MaxItems:    1,
+						Optional:    true,
+						Elem: &schema.Resource{
+							Schema: map[string]*schema.Schema{
+								"label": &schema.Schema{
+									Description: "Unit label",
+									Type:        schema.TypeString,
+									Required:    true,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		"unit_scale": &schema.Schema{
+			Description: "",
+			Type:        schema.TypeList,
+			MinItems:    0,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"unit_name": &schema.Schema{
+						Description: "",
+						Type:        schema.TypeString,
+						Required:    true,
+					},
+				},
+			},
+		},
+	}
+}
+
+func buildNumberFormatFormulaSchema(terraformStyle map[string]interface{}) *datadogV1.WidgetNumberFormat {
+	if terraformStyle == nil || len(terraformStyle) == 0 {
+		return nil
+	}
+	var datadogNumber datadogV1.WidgetNumberFormat
+	if v, ok := terraformStyle["unit"].([]interface{}); ok && len(v) > 0 {
+		unit := v[0].(map[string]interface{})
+		datadogNumber.Unit = &datadogV1.NumberFormatUnit{}
+		if v, ok := unit["canonical"].([]interface{}); ok && len(v) > 0 {
+			canonical := v[0].(map[string]interface{})
+			datadogNumber.Unit.NumberFormatUnitCanonical = &datadogV1.NumberFormatUnitCanonical{
+				Type: Ptr(datadogV1.NUMBERFORMATUNITSCALETYPE_CANONICAL_UNIT),
+			}
+			if v, ok := canonical["per_unit_name"].(string); ok && len(v) > 0 {
+				datadogNumber.Unit.NumberFormatUnitCanonical.PerUnitName = Ptr(v)
+			}
+			if v, ok := canonical["unit_name"].(string); ok && len(v) > 0 {
+				datadogNumber.Unit.NumberFormatUnitCanonical.UnitName = Ptr(v)
+			}
+		}
+		if v, ok := unit["custom"].([]interface{}); ok && len(v) > 0 {
+			custom := v[0].(map[string]interface{})
+			datadogNumber.Unit.NumberFormatUnitCustom = &datadogV1.NumberFormatUnitCustom{
+				Type: Ptr(datadogV1.NUMBERFORMATUNITCUSTOMTYPE_CUSTOM_UNIT_LABEL),
+			}
+			if v, ok := custom["label"].(string); ok && len(v) > 0 {
+				datadogNumber.Unit.NumberFormatUnitCustom.Label = Ptr(v)
+			}
+		}
+	}
+	return &datadogNumber
+}
+
+func buildTerraformNumberFormatFormulaSchema(datadogStyle datadogV1.WidgetNumberFormat) []map[string]interface{} {
+	m := map[string]interface{}{}
+	if v, ok := datadogStyle.GetUnitOk(); ok {
+		unit := map[string]interface{}{}
+		if v.NumberFormatUnitCustom != nil {
+			unit["custom"] = []map[string]interface{}{{"label": v.NumberFormatUnitCustom.Label}}
+		}
+		if v.NumberFormatUnitCanonical != nil {
+			unit["canonical"] = []map[string]interface{}{
+				{"per_unit_name": v.NumberFormatUnitCanonical.PerUnitName,
+					"unit_name": v.NumberFormatUnitCanonical.UnitName},
+			}
+		}
+		m["unit"] = []map[string]interface{}{unit}
+	}
+	if v, ok := datadogStyle.GetUnitScaleOk(); ok {
+		unitScale := map[string]interface{}{}
+		unitScale["unit_name"] = []map[string]interface{}{{"unit_name": v.UnitName}}
+		m["unit_scale"] = []map[string]interface{}{unitScale}
+	}
+	return []map[string]interface{}{m}
 }
