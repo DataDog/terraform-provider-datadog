@@ -220,7 +220,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"topics": schema.ListAttribute{
 											Required:    true,
-											Description: "List of Kafka topics to consume.",
+											Description: "A list of Kafka topic names to subscribe to. The source ingests messages from each topic specified.",
 											ElementType: types.StringType,
 										},
 									},
@@ -270,7 +270,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"include": schema.StringAttribute{
 											Optional:    true,
-											Description: "Inclusion filter for the processor.",
+											Description: "A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.",
 										},
 										"inputs": schema.ListAttribute{
 											Description: "The inputs for the processor.",
@@ -289,7 +289,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"include": schema.StringAttribute{
 											Optional:    true,
-											Description: "Inclusion filter for the processor.",
+											Description: "A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.",
 										},
 										"inputs": schema.ListAttribute{
 											Required:    true,
@@ -312,7 +312,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"include": schema.StringAttribute{
 											Optional:    true,
-											Description: "Inclusion filter for the processor.",
+											Description: "A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.",
 										},
 										"inputs": schema.ListAttribute{
 											Description: "The inputs for the processor.",
@@ -322,7 +322,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"field": schema.ListNestedBlock{
-											Description: "List of fields to add.",
+											Description: "A list of static fields (key-value pairs) that is added to each log event processed by this component.",
 											NestedObject: schema.NestedBlockObject{
 												Attributes: map[string]schema.Attribute{
 													"name": schema.StringAttribute{
@@ -526,20 +526,20 @@ func tlsSchema() schema.ListNestedBlock {
 			// this is the only way to make the block optional
 			listvalidator.SizeAtMost(1),
 		},
-		Description: "TLS client configuration.",
+		Description: "Configuration for enabling TLS encryption between the pipeline component and external services.",
 		NestedObject: schema.NestedBlockObject{
 			Attributes: map[string]schema.Attribute{
 				"crt_file": schema.StringAttribute{
 					Required:    true,
-					Description: "Path to the TLS certificate file.",
+					Description: "Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.",
 				},
 				"ca_file": schema.StringAttribute{
 					Optional:    true,
-					Description: "Path to the Certificate Authority file.",
+					Description: "Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.",
 				},
 				"key_file": schema.StringAttribute{
 					Optional:    true,
-					Description: "Path to the private key file.",
+					Description: "Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.",
 				},
 			},
 		},
