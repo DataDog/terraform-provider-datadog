@@ -33,7 +33,7 @@ resource "datadog_apm_retention_filter" "foo" {
 - `enabled` (Boolean) the status of the retention filter.
 - `filter_type` (String) The type of the retention filter, currently only spans-processing-sampling is available. Valid values are `spans-sampling-processor`.
 - `name` (String) The name of the retention filter.
-- `rate` (String) Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.
+- `rate` (String) Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query. Value must be between 0.00 and 1.00.
 
 ### Optional
 

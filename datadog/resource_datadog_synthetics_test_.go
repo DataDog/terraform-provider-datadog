@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	_nethttp "net/http"
 	"regexp"
@@ -605,7 +606,7 @@ func syntheticsTestOptionsRetry() *schema.Schema {
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"count": {
-					Description: "Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `5`.",
+					Description: "Number of retries needed to consider a location as failed before sending a notification alert. Maximum value: `3` for `api` tests, `2` for `browser` and `mobile` tests.",
 					Type:        schema.TypeInt,
 					Default:     0,
 					Optional:    true,
@@ -2037,7 +2038,10 @@ func updateSyntheticsBrowserTestLocalState(d *schema.ResourceData, syntheticsTes
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
-	localRequest := buildTerraformTestRequest(actualRequest)
+	localRequest, diags := buildTerraformTestRequest(actualRequest)
+	if diags != nil {
+		return diags
+	}
 
 	if config.HasSetCookie() {
 		if err := d.Set("set_cookie", config.GetSetCookie()); err != nil {
@@ -2259,7 +2263,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 
 	config := syntheticsTest.GetConfig()
 	actualRequest := config.GetRequest()
-	localRequest := buildTerraformTestRequest(actualRequest)
+	localRequest, diags := buildTerraformTestRequest(actualRequest)
+	if diags != nil {
+		return diags
+	}
 
 	if syntheticsTest.GetSubtype() != "multi" {
 		if err := d.Set("request_definition", []map[string]interface{}{localRequest}); err != nil {
@@ -2353,7 +2360,10 @@ func updateSyntheticsAPITestLocalState(d *schema.ResourceData, syntheticsTest *d
 				localStep["extracted_value"] = buildTerraformExtractedValues(step.SyntheticsAPITestStep.GetExtractedValues())
 
 				stepRequest := step.SyntheticsAPITestStep.GetRequest()
-				localRequest := buildTerraformTestRequest(stepRequest)
+				localRequest, diags := buildTerraformTestRequest(stepRequest)
+				if diags != nil {
+					return diags
+				}
 				localRequest["allow_insecure"] = stepRequest.GetAllowInsecure()
 				localRequest["follow_redirects"] = stepRequest.GetFollowRedirects()
 				if step.SyntheticsAPITestStep.GetSubtype() == "grpc" {
@@ -4554,7 +4564,7 @@ func completeSyntheticsTestRequest(request datadogV1.SyntheticsTestRequest, requ
 	return &request
 }
 
-func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) map[string]interface{} {
+func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) (map[string]interface{}, diag.Diagnostics) {
 	localRequest := make(map[string]interface{})
 	if request.HasBody() {
 		localRequest["body"] = request.GetBody()
@@ -4618,15 +4628,22 @@ func buildTerraformTestRequest(request datadogV1.SyntheticsTestRequest) map[stri
 	if request.HasHttpVersion() {
 		localRequest["http_version"] = request.GetHttpVersion()
 	}
+	var err error
 	if request.HasCompressedJsonDescriptor() {
-		localRequest["proto_json_descriptor"] = decompressAndDecodeValue(request.GetCompressedJsonDescriptor())
+		localRequest["proto_json_descriptor"], err = decompressAndDecodeValue(request.GetCompressedJsonDescriptor(), false)
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
 	}
 
 	if request.HasCompressedProtoFile() {
-		localRequest["plain_proto_file"] = decompressAndDecodeValue(request.GetCompressedProtoFile())
+		localRequest["plain_proto_file"], err = decompressAndDecodeValue(request.GetCompressedProtoFile(), true)
+		if err != nil {
+			return nil, diag.FromErr(err)
+		}
 	}
 
-	return localRequest
+	return localRequest, nil
 }
 
 func buildDatadogTestRequestProxy(requestProxy map[string]interface{}) datadogV1.SyntheticsTestRequestProxy {
@@ -4665,13 +4682,26 @@ func compressAndEncodeValue(value string) string {
 	return encodedCompressedValue
 }
 
-func decompressAndDecodeValue(value string) string {
+func decompressAndDecodeValue(value string, acceptBase64Only bool) (string, error) {
 	decodedValue, _ := b64.StdEncoding.DecodeString(value)
 	decodedBytes := bytes.NewReader(decodedValue)
-	zl, _ := zlib.NewReader(decodedBytes)
+	b, err := ioutil.ReadAll(decodedBytes)
+	if err != nil {
+		return "", err
+	}
+	zl, err := zlib.NewReader(bytes.NewReader(decodedValue))
+	// A past UI bug corrupted some tests by not compressing `compressedProtoFile`,
+	// so we return the base64-decoded string to be stored in `plain_proto_file` directly.
+	if err != nil {
+		if acceptBase64Only {
+			return string(b), nil
+		} else {
+			return "", err
+		}
+	}
 	defer zl.Close()
 	compressedProtoFile, _ := io.ReadAll(zl)
-	return string(compressedProtoFile)
+	return string(compressedProtoFile), nil
 }
 
 func convertStepParamsValueForConfig(stepType interface{}, key string, value interface{}) interface{} {

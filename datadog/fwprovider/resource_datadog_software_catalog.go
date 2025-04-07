@@ -8,10 +8,10 @@ import (
 	"fmt"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
-	"github.com/Masterminds/semver/v3"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/customtypes"
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
+	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/validators"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
@@ -161,7 +161,7 @@ func (r *catalogEntityResource) Schema(_ context.Context, _ resource.SchemaReque
 			"entity": schema.StringAttribute{
 				Description:   "The catalog entity definition.",
 				Required:      true,
-				Validators:    []validator.String{validEntityYAMLValidator{}},
+				Validators:    []validator.String{validators.ValidEntityYAMLValidator()},
 				PlanModifiers: []planmodifier.String{stringplanmodifier.RequiresReplaceIf(replacePlanModifier, modifierDesc, modifierDesc)},
 				CustomType:    customtypes.YAMLStringType{},
 			},
@@ -198,43 +198,6 @@ var replacePlanModifier = func(ctx context.Context, request planmodifier.StringR
 		oldRef := oldEntity.reference()
 		newRef := newEntity.reference()
 		response.RequiresReplace = !oldRef.equal(*newRef)
-	}
-}
-
-type validEntityYAMLValidator struct {
-}
-
-func (v validEntityYAMLValidator) Description(ctx context.Context) string {
-	return v.MarkdownDescription(ctx)
-}
-
-func (v validEntityYAMLValidator) MarkdownDescription(_ context.Context) string {
-	return "entity must be a valid entity YAML/JSON structure"
-}
-
-func (v validEntityYAMLValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
-	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
-		return
-	}
-	inYAML := req.ConfigValue.ValueString()
-	e, err := entityFromYAML(inYAML)
-	if err != nil {
-		resp.Diagnostics.AddAttributeError(req.Path, "", "entity must be a valid entity YAML/JSON structure")
-		return
-	}
-
-	// verify apiVersion is v3 or above
-	if e.APIVersion == "" {
-		resp.Diagnostics.AddAttributeError(req.Path, "", "apiVersion must be non empty (v3 or above)")
-		return
-	}
-
-	version, err := semver.NewVersion(e.APIVersion)
-	if err != nil {
-		resp.Diagnostics.AddAttributeError(req.Path, "", "apiVersion must be a valid version (v3 or above)")
-	}
-	if version.Major() < 3 {
-		resp.Diagnostics.AddAttributeError(req.Path, "", "apiVersion must be v3 or above")
 	}
 }
 

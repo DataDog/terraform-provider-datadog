@@ -67,14 +67,14 @@ resource "datadog_workflow_automation" "workflow" {
 ### Required
 
 - `description` (String) Description of the workflow.
-- `name` (String) Name of the workflow.
+- `name` (String) Name of the workflow. String length must be at least 1.
 - `published` (Boolean) Set the workflow to published or unpublished. Workflows in an unpublished state are only executable through manual runs. Automatic triggers such as Schedule do not execute the workflow until it is published.
 - `spec_json` (String) The spec defines what the workflow does.
 - `tags` (Set of String) Tags of the workflow.
 
 ### Optional
 
-- `webhook_secret` (String, Sensitive) If a webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here.
+- `webhook_secret` (String, Sensitive) If a webhook trigger is defined on this workflow, a webhookSecret is required and should be provided here. String length must be at least 16.
 
 ### Read-Only
 

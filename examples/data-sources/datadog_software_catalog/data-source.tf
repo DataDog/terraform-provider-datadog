@@ -1,0 +1,1 @@
+data "datadog_software_catalog" "test" {}
