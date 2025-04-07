@@ -424,6 +424,31 @@ func TestAccDatadogObservabilityPipeline_parseJsonProcessor(t *testing.T) {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_renameFieldsProcessor(t *testing.T) {
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.rename_fields"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccObservabilityPipelineRenameFieldsProcessorConfig(),
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "rename-fields-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.id", "rename-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.field.0.source", "old.field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.field.0.destination", "new.field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.field.0.preserve_source", "true"),
+				),
+			},
+		},
+	})
+}
+
 func testAccObservabilityPipelineParseJsonProcessorConfig() string {
 	return `
 resource "datadog_observability_pipeline" "parse_json" {
@@ -449,6 +474,42 @@ resource "datadog_observability_pipeline" "parse_json" {
       datadog_logs {
         id     = "destination-1"
         inputs = ["parser-1"]
+      }
+    }
+  }
+}`
+}
+
+func testAccObservabilityPipelineRenameFieldsProcessorConfig() string {
+	return `
+resource "datadog_observability_pipeline" "rename_fields" {
+  name = "rename-fields-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      rename_fields {
+        id      = "rename-1"
+        include = "*"
+        inputs  = ["source-1"]
+
+        field {
+          source          = "old.field"
+          destination     = "new.field"
+          preserve_source = true
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["rename-1"]
       }
     }
   }

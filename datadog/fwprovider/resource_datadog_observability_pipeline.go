@@ -43,9 +43,29 @@ type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
 }
+
+// / Source models
 type datadogAgentSourceModel struct {
 	Id  types.String `tfsdk:"id"`
 	Tls []tlsModel   `tfsdk:"tls"`
+}
+
+type kafkaSourceModel struct {
+	Id                types.String            `tfsdk:"id"`
+	GroupId           types.String            `tfsdk:"group_id"`
+	Topics            []types.String          `tfsdk:"topics"`
+	LibrdkafkaOptions []librdkafkaOptionModel `tfsdk:"librdkafka_option"`
+	Sasl              *kafkaSourceSaslModel   `tfsdk:"sasl"`
+	Tls               []tlsModel              `tfsdk:"tls"`
+}
+
+type librdkafkaOptionModel struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
+}
+
+type kafkaSourceSaslModel struct {
+	Mechanism types.String `tfsdk:"mechanism"`
 }
 
 type tlsModel struct {
@@ -54,10 +74,13 @@ type tlsModel struct {
 	KeyFile types.String `tfsdk:"key_file"`
 }
 
+// Processor models
+
 type processorsModel struct {
-	FilterProcessor    []*filterProcessorModel    `tfsdk:"filter"`
-	ParseJsonProcessor []*parseJsonProcessorModel `tfsdk:"parse_json"`
-	AddFieldsProcessor []*addFieldsProcessor      `tfsdk:"add_fields"`
+	FilterProcessor            []*filterProcessorModel       `tfsdk:"filter"`
+	ParseJsonProcessor         []*parseJsonProcessorModel    `tfsdk:"parse_json"`
+	AddFieldsProcessor         []*addFieldsProcessor         `tfsdk:"add_fields"`
+	RenameFieldsProcessorModel []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
 }
 type filterProcessorModel struct {
 	Id      types.String `tfsdk:"id"`
@@ -79,10 +102,25 @@ type addFieldsProcessor struct {
 	Fields  []fieldValue `tfsdk:"field"`
 }
 
+type renameFieldsProcessorModel struct {
+	Id      types.String           `tfsdk:"id"`
+	Include types.String           `tfsdk:"include"`
+	Inputs  types.List             `tfsdk:"inputs"`
+	Fields  []renameFieldItemModel `tfsdk:"field"`
+}
+
+type renameFieldItemModel struct {
+	Source         types.String `tfsdk:"source"`
+	Destination    types.String `tfsdk:"destination"`
+	PreserveSource types.Bool   `tfsdk:"preserve_source"`
+}
+
 type fieldValue struct {
 	Name  types.String `tfsdk:"name"`
 	Value types.String `tfsdk:"value"`
 }
+
+// Destination models
 
 type destinationsModel struct {
 	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
@@ -90,24 +128,6 @@ type destinationsModel struct {
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
 	Inputs types.List   `tfsdk:"inputs"`
-}
-
-type kafkaSourceModel struct {
-	Id                types.String            `tfsdk:"id"`
-	GroupId           types.String            `tfsdk:"group_id"`
-	Topics            []types.String          `tfsdk:"topics"`
-	LibrdkafkaOptions []librdkafkaOptionModel `tfsdk:"librdkafka_option"`
-	Sasl              *kafkaSourceSaslModel   `tfsdk:"sasl"`
-	Tls               []tlsModel              `tfsdk:"tls"`
-}
-
-type librdkafkaOptionModel struct {
-	Name  types.String `tfsdk:"name"`
-	Value types.String `tfsdk:"value"`
-}
-
-type kafkaSourceSaslModel struct {
-	Mechanism types.String `tfsdk:"mechanism"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -280,6 +300,47 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													"value": schema.StringAttribute{
 														Required:    true,
 														Description: "Value to assign to the field.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							"rename_fields": schema.ListNestedBlock{
+								Description: "Rename fields from source to destination.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Optional:    true,
+											Description: "The unique ID of the processor.",
+										},
+										"include": schema.StringAttribute{
+											Optional:    true,
+											Description: "Filter to include events.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "The input processor IDs.",
+											ElementType: types.StringType,
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"field": schema.ListNestedBlock{
+											Description: "List of fields to rename.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"source": schema.StringAttribute{
+														Required:    true,
+														Description: "Source field to rename.",
+													},
+													"destination": schema.StringAttribute{
+														Required:    true,
+														Description: "Destination field name.",
+													},
+													"preserve_source": schema.BoolAttribute{
+														Required:    true,
+														Description: "Whether to keep the original field.",
 													},
 												},
 											},
@@ -483,6 +544,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.AddFieldsProcessor {
 		config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.RenameFieldsProcessorModel {
+		config.Processors = append(config.Processors, expandRenameFieldsProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -516,11 +580,14 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		if f := flattenFilterProcessor(ctx, p.ObservabilityPipelineFilterProcessor); f != nil {
 			outCfg.Processors.FilterProcessor = append(outCfg.Processors.FilterProcessor, f)
 		}
-		if pj := flattenParseJsonProcessor(ctx, p.ObservabilityPipelineParseJSONProcessor); pj != nil {
-			outCfg.Processors.ParseJsonProcessor = append(outCfg.Processors.ParseJsonProcessor, pj)
+		if f := flattenParseJsonProcessor(ctx, p.ObservabilityPipelineParseJSONProcessor); f != nil {
+			outCfg.Processors.ParseJsonProcessor = append(outCfg.Processors.ParseJsonProcessor, f)
 		}
-		if af := flattenAddFieldsProcessor(ctx, p.ObservabilityPipelineAddFieldsProcessor); af != nil {
-			outCfg.Processors.AddFieldsProcessor = append(outCfg.Processors.AddFieldsProcessor, af)
+		if f := flattenAddFieldsProcessor(ctx, p.ObservabilityPipelineAddFieldsProcessor); f != nil {
+			outCfg.Processors.AddFieldsProcessor = append(outCfg.Processors.AddFieldsProcessor, f)
+		}
+		if f := flattenRenameFieldsProcessor(ctx, p.ObservabilityPipelineRenameFieldsProcessor); f != nil {
+			outCfg.Processors.RenameFieldsProcessorModel = append(outCfg.Processors.RenameFieldsProcessorModel, f)
 		}
 	}
 	for _, d := range cfg.GetDestinations() {
@@ -713,6 +780,54 @@ func expandAddFieldsProcessor(ctx context.Context, src *addFieldsProcessor) data
 	proc.SetFields(fields)
 	return datadogV2.ObservabilityPipelineConfigProcessorItem{
 		ObservabilityPipelineAddFieldsProcessor: proc,
+	}
+}
+
+func flattenRenameFieldsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineRenameFieldsProcessor) *renameFieldsProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+
+	out := &renameFieldsProcessorModel{
+		Id:      types.StringValue(src.Id),
+		Include: types.StringValue(src.Include),
+		Inputs:  inputs,
+	}
+
+	for _, f := range src.Fields {
+		out.Fields = append(out.Fields, renameFieldItemModel{
+			Source:         types.StringValue(f.Source),
+			Destination:    types.StringValue(f.Destination),
+			PreserveSource: types.BoolValue(f.PreserveSource),
+		})
+	}
+
+	return out
+}
+
+func expandRenameFieldsProcessor(ctx context.Context, src *renameFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineRenameFieldsProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	var fields []datadogV2.ObservabilityPipelineRenameFieldsProcessorField
+	for _, f := range src.Fields {
+		fields = append(fields, datadogV2.ObservabilityPipelineRenameFieldsProcessorField{
+			Source:         f.Source.ValueString(),
+			Destination:    f.Destination.ValueString(),
+			PreserveSource: f.PreserveSource.ValueBool(),
+		})
+	}
+	proc.SetFields(fields)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineRenameFieldsProcessor: proc,
 	}
 }
 
