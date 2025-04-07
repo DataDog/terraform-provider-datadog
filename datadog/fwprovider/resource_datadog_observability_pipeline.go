@@ -77,10 +77,11 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor            []*filterProcessorModel       `tfsdk:"filter"`
-	ParseJsonProcessor         []*parseJsonProcessorModel    `tfsdk:"parse_json"`
-	AddFieldsProcessor         []*addFieldsProcessor         `tfsdk:"add_fields"`
-	RenameFieldsProcessorModel []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
+	FilterProcessor       []*filterProcessorModel       `tfsdk:"filter"`
+	ParseJsonProcessor    []*parseJsonProcessorModel    `tfsdk:"parse_json"`
+	AddFieldsProcessor    []*addFieldsProcessor         `tfsdk:"add_fields"`
+	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
 }
 type filterProcessorModel struct {
 	Id      types.String `tfsdk:"id"`
@@ -113,6 +114,13 @@ type renameFieldItemModel struct {
 	Source         types.String `tfsdk:"source"`
 	Destination    types.String `tfsdk:"destination"`
 	PreserveSource types.Bool   `tfsdk:"preserve_source"`
+}
+
+type removeFieldsProcessorModel struct {
+	Id      types.String `tfsdk:"id"`
+	Include types.String `tfsdk:"include"`
+	Inputs  types.List   `tfsdk:"inputs"`
+	Fields  types.List   `tfsdk:"fields"`
 }
 
 type fieldValue struct {
@@ -348,6 +356,31 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"remove_fields": schema.ListNestedBlock{
+								Description: "Removes specified fields from events.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Optional:    true,
+											Description: "The unique ID of the processor.",
+										},
+										"include": schema.StringAttribute{
+											Optional:    true,
+											Description: "Filter to include events.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "The input processor IDs.",
+											ElementType: types.StringType,
+										},
+										"fields": schema.ListAttribute{
+											Required:    true,
+											Description: "List of fields to remove from events.",
+											ElementType: types.StringType,
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -509,10 +542,7 @@ func (r *observabilityPipelineResource) Delete(ctx context.Context, req resource
 	}
 }
 
-// --- Schema + Models ---
-// [These remain unchanged — reuse your existing schema + model types]
-
-// --- Expansion ---
+// --- Expansion - converting TF state to API model ---
 func expandPipelineRequest(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.ObservabilityPipeline, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
@@ -544,8 +574,11 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.AddFieldsProcessor {
 		config.Processors = append(config.Processors, expandAddFieldsProcessor(ctx, p))
 	}
-	for _, p := range state.Config.Processors.RenameFieldsProcessorModel {
+	for _, p := range state.Config.Processors.RenameFieldsProcessor {
 		config.Processors = append(config.Processors, expandRenameFieldsProcessor(ctx, p))
+	}
+	for _, p := range state.Config.Processors.RemoveFieldsProcessor {
+		config.Processors = append(config.Processors, expandRemoveFieldsProcessor(ctx, p))
 	}
 
 	// Destinations
@@ -559,7 +592,7 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	return req, diags
 }
 
-// --- Flattening ---
+// --- Flattening - converting API model to TF state ---
 func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, resp *datadogV2.ObservabilityPipeline) {
 	state.ID = types.StringValue(resp.Data.GetId())
 	attrs := resp.Data.GetAttributes()
@@ -587,7 +620,10 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 			outCfg.Processors.AddFieldsProcessor = append(outCfg.Processors.AddFieldsProcessor, f)
 		}
 		if f := flattenRenameFieldsProcessor(ctx, p.ObservabilityPipelineRenameFieldsProcessor); f != nil {
-			outCfg.Processors.RenameFieldsProcessorModel = append(outCfg.Processors.RenameFieldsProcessorModel, f)
+			outCfg.Processors.RenameFieldsProcessor = append(outCfg.Processors.RenameFieldsProcessor, f)
+		}
+		if f := flattenRemoveFieldsProcessor(ctx, p.ObservabilityPipelineRemoveFieldsProcessor); f != nil {
+			outCfg.Processors.RemoveFieldsProcessor = append(outCfg.Processors.RemoveFieldsProcessor, f)
 		}
 	}
 	for _, d := range cfg.GetDestinations() {
@@ -828,6 +864,40 @@ func expandRenameFieldsProcessor(ctx context.Context, src *renameFieldsProcessor
 
 	return datadogV2.ObservabilityPipelineConfigProcessorItem{
 		ObservabilityPipelineRenameFieldsProcessor: proc,
+	}
+}
+
+func flattenRemoveFieldsProcessor(ctx context.Context, src *datadogV2.ObservabilityPipelineRemoveFieldsProcessor) *removeFieldsProcessorModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.Inputs)
+	fields, _ := types.ListValueFrom(ctx, types.StringType, src.Fields)
+
+	return &removeFieldsProcessorModel{
+		Id:      types.StringValue(src.Id),
+		Include: types.StringValue(src.Include),
+		Inputs:  inputs,
+		Fields:  fields,
+	}
+}
+
+func expandRemoveFieldsProcessor(ctx context.Context, src *removeFieldsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineRemoveFieldsProcessorWithDefaults()
+	proc.SetId(src.Id.ValueString())
+	proc.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	var fields []string
+	src.Fields.ElementsAs(ctx, &fields, false)
+	proc.SetFields(fields)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineRemoveFieldsProcessor: proc,
 	}
 }
 

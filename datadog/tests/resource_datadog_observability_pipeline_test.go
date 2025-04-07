@@ -181,24 +181,7 @@ func TestAccDatadogObservabilityPipeline_kafka(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccObservabilityPipelineKafkaConfig(),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "kafka pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.id", "kafka-source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.group_id", "consumer-group-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.topics.0", "topic-a"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.topics.1", "topic-b"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.sasl.mechanism", "PLAIN"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
-				),
-			},
-		},
-	})
-}
-
-func testAccObservabilityPipelineKafkaConfig() string {
-	return `
+				Config: `
 resource "datadog_observability_pipeline" "kafka_test" {
   name = "kafka pipeline"
 
@@ -228,7 +211,20 @@ resource "datadog_observability_pipeline" "kafka_test" {
       }
     }
   }
-}`
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "kafka pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.id", "kafka-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.group_id", "consumer-group-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.topics.0", "topic-a"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.topics.1", "topic-b"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.kafka.0.sasl.mechanism", "PLAIN"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
+				),
+			},
+		},
+	})
 }
 
 func TestAccDatadogObservabilityPipeline_datadogAgentWithTLS(t *testing.T) {
@@ -242,23 +238,7 @@ func TestAccDatadogObservabilityPipeline_datadogAgentWithTLS(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccObservabilityPipelineDatadogAgentTLSConfig(),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "agent with tls"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-with-tls"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.crt_file", "/etc/certs/agent.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.ca_file", "/etc/certs/ca.crt"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.key_file", "/etc/certs/agent.key"),
-					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
-				),
-			},
-		},
-	})
-}
-
-func testAccObservabilityPipelineDatadogAgentTLSConfig() string {
-	return `
+				Config: `
 resource "datadog_observability_pipeline" "agent_tls" {
   name = "agent with tls"
 
@@ -283,66 +263,19 @@ resource "datadog_observability_pipeline" "agent_tls" {
       }
     }
   }
-}`
-}
-
-func TestAccDatadogObservabilityPipeline_addFieldsProcessor(t *testing.T) {
-	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-
-	resourceName := "datadog_observability_pipeline.add_fields"
-
-	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccObservabilityPipelineAddFieldsConfig(),
+}`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "add-fields-pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.add_fields.0.field.0.name", "custom.field"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.add_fields.0.field.0.value", "hello-world"),
+					resource.TestCheckResourceAttr(resourceName, "name", "agent with tls"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.id", "source-with-tls"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.crt_file", "/etc/certs/agent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.ca_file", "/etc/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.datadog_agent.0.tls.0.key_file", "/etc/certs/agent.key"),
 					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.id", "destination-1"),
 				),
 			},
 		},
 	})
-}
-
-func testAccObservabilityPipelineAddFieldsConfig() string {
-	return `
-resource "datadog_observability_pipeline" "add_fields" {
-  name = "add-fields-pipeline"
-
-  config {
-    sources {
-      datadog_agent {
-        id = "source-1"
-      }
-    }
-
-    processors {
-      add_fields {
-		id	  = "add-fields-1"
-		inputs = ["source-1"]
-		include = "*"
-        field {
-		  name  = "custom.field"
-          value = "hello-world"
-		}
-      }
-    }
-
-    destinations {
-      datadog_logs {
-        id     = "destination-1"
-        inputs = ["add-fields-1"]
-      }
-    }
-  }
-}`
 }
 
 func TestAccDatadogObservabilityPipeline_filterProcessor(t *testing.T) {
@@ -356,21 +289,7 @@ func TestAccDatadogObservabilityPipeline_filterProcessor(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccObservabilityPipelineFilterProcessorConfig(),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "filter-pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.id", "filter-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.include", "env:prod"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.inputs.0", "source-1"),
-				),
-			},
-		},
-	})
-}
-
-func testAccObservabilityPipelineFilterProcessorConfig() string {
-	return `
+				Config: `
 resource "datadog_observability_pipeline" "filter" {
   name = "filter-pipeline"
 
@@ -396,28 +315,13 @@ resource "datadog_observability_pipeline" "filter" {
       }
     }
   }
-}`
-}
-
-func TestAccDatadogObservabilityPipeline_parseJsonProcessor(t *testing.T) {
-	t.Parallel()
-	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
-
-	resourceName := "datadog_observability_pipeline.parse_json"
-
-	resource.Test(t, resource.TestCase{
-		ProtoV5ProviderFactories: accProviders,
-		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
-		Steps: []resource.TestStep{
-			{
-				Config: testAccObservabilityPipelineParseJsonProcessorConfig(),
+}`,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "parse-json-pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.id", "parser-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.include", "env:parse"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.field", "message"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_json.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "name", "filter-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.id", "filter-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.include", "env:prod"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.filter.0.inputs.0", "source-1"),
 				),
 			},
 		},
@@ -435,53 +339,7 @@ func TestAccDatadogObservabilityPipeline_renameFieldsProcessor(t *testing.T) {
 		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccObservabilityPipelineRenameFieldsProcessorConfig(),
-				Check: resource.ComposeTestCheckFunc(
-					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
-					resource.TestCheckResourceAttr(resourceName, "name", "rename-fields-pipeline"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.id", "rename-1"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.field.0.source", "old.field"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.field.0.destination", "new.field"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.field.0.preserve_source", "true"),
-				),
-			},
-		},
-	})
-}
-
-func testAccObservabilityPipelineParseJsonProcessorConfig() string {
-	return `
-resource "datadog_observability_pipeline" "parse_json" {
-  name = "parse-json-pipeline"
-
-  config {
-    sources {
-      datadog_agent {
-        id = "source-1"
-      }
-    }
-
-    processors {
-      parse_json {
-        id      = "parser-1"
-        include = "env:parse"
-        field   = "message"
-        inputs  = ["source-1"]
-      }
-    }
-
-    destinations {
-      datadog_logs {
-        id     = "destination-1"
-        inputs = ["parser-1"]
-      }
-    }
-  }
-}`
-}
-
-func testAccObservabilityPipelineRenameFieldsProcessorConfig() string {
-	return `
+				Config: `
 resource "datadog_observability_pipeline" "rename_fields" {
   name = "rename-fields-pipeline"
 
@@ -513,5 +371,68 @@ resource "datadog_observability_pipeline" "rename_fields" {
       }
     }
   }
-}`
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "rename-fields-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.id", "rename-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.field.0.source", "old.field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.field.0.destination", "new.field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.rename_fields.0.field.0.preserve_source", "true"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_removeFieldsProcessor(t *testing.T) {
+	t.Parallel()
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.remove_fields"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "remove_fields" {
+  name = "remove-fields-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      remove_fields {
+        id      = "remove-1"
+        include = "*"
+        inputs  = ["source-1"]
+        fields  = ["temp.debug", "internal.trace_id"]
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["remove-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "remove-fields-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.remove_fields.0.id", "remove-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.remove_fields.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.remove_fields.0.fields.0", "temp.debug"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.remove_fields.0.fields.1", "internal.trace_id"),
+				),
+			},
+		},
+	})
 }
