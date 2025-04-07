@@ -124,12 +124,12 @@ Required:
 
 Optional:
 
-- `add_fields` (Block List) (see [below for nested schema](#nestedblock--config--processors--add_fields))
-- `filter` (Block List) (see [below for nested schema](#nestedblock--config--processors--filter))
-- `parse_json` (Block List) (see [below for nested schema](#nestedblock--config--processors--parse_json))
-- `quota` (Block List) Limits event volume based on specified thresholds. (see [below for nested schema](#nestedblock--config--processors--quota))
-- `remove_fields` (Block List) Removes specified fields from events. (see [below for nested schema](#nestedblock--config--processors--remove_fields))
-- `rename_fields` (Block List) Rename fields from source to destination. (see [below for nested schema](#nestedblock--config--processors--rename_fields))
+- `add_fields` (Block List) The `add_fields` processor adds static key-value fields to logs. (see [below for nested schema](#nestedblock--config--processors--add_fields))
+- `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processors--filter))
+- `parse_json` (Block List) The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string. (see [below for nested schema](#nestedblock--config--processors--parse_json))
+- `quota` (Block List) The Quota Processor measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert. (see [below for nested schema](#nestedblock--config--processors--quota))
+- `remove_fields` (Block List) The `remove_fields` processor deletes specified fields from logs. (see [below for nested schema](#nestedblock--config--processors--remove_fields))
+- `rename_fields` (Block List) The `rename_fields` processor changes field names. (see [below for nested schema](#nestedblock--config--processors--rename_fields))
 
 <a id="nestedblock--config--processors--add_fields"></a>
 ### Nested Schema for `config.processors.add_fields`

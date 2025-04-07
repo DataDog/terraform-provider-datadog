@@ -262,6 +262,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 						Description: "List of processors.",
 						Blocks: map[string]schema.Block{
 							"filter": schema.ListNestedBlock{
+								Description: "The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
@@ -281,6 +282,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"parse_json": schema.ListNestedBlock{
+								Description: "The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
@@ -304,6 +306,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"add_fields": schema.ListNestedBlock{
+								Description: "The `add_fields` processor adds static key-value fields to logs.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
@@ -340,7 +343,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"rename_fields": schema.ListNestedBlock{
-								Description: "Rename fields from source to destination.",
+								Description: "The `rename_fields` processor changes field names.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
@@ -381,7 +384,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"remove_fields": schema.ListNestedBlock{
-								Description: "Removes specified fields from events.",
+								Description: "The `remove_fields` processor deletes specified fields from logs.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
@@ -406,7 +409,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"quota": schema.ListNestedBlock{
-								Description: "Limits event volume based on specified thresholds.",
+								Description: "The Quota Processor measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
