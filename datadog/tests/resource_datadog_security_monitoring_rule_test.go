@@ -300,7 +300,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
         name = "first"
         query = "does not really match much"
         aggregation = "count"
-        data_source = "network"
+        data_source = "logs"
         group_by_fields = ["host"]
     }
 
@@ -308,7 +308,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test%s" {
         name = "second"
         query = "does not really match much either"
         aggregation = "cardinality"
-        data_source = "network"	
+        data_source = "logs"	
         distinct_fields = ["@orgId"]
         group_by_fields = ["host"]
     }
@@ -1310,7 +1310,7 @@ resource "datadog_security_monitoring_rule" "acceptance_test" {
 		name = "second_updated"
 		rule_id = "${datadog_security_monitoring_rule.acceptance_test_1.id}"
 		correlated_by_fields = ["service"]
-		correlated_query_index = "0"
+		correlated_query_index = "1"
 		aggregation = "event_count"
 	}
 
@@ -1364,7 +1364,7 @@ func testAccCheckDatadogSecurityMonitoringUpdateSignalCorrelationCheck(accProvid
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "signal_query.1.correlated_by_fields.0", "service"),
 		resource.TestCheckResourceAttr(
-			tfSecurityRuleName, "signal_query.1.correlated_query_index", "0"),
+			tfSecurityRuleName, "signal_query.1.correlated_query_index", "1"),
 		resource.TestCheckResourceAttr(
 			tfSecurityRuleName, "case.0.name", "high case (updated)"),
 		resource.TestCheckResourceAttr(

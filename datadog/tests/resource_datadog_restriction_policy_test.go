@@ -135,6 +135,7 @@ func testAccCheckDatadogRestrictionPolicy(ruleName string, resourceType string) 
             name            = "errors"
             query           = "status:error"
             aggregation     = "count"
+			data_source     = "logs"
             group_by_fields = ["host"]
           }
 
@@ -142,6 +143,7 @@ func testAccCheckDatadogRestrictionPolicy(ruleName string, resourceType string) 
             name            = "warnings"
             query           = "status:warning"
             aggregation     = "count"
+			data_source     = "logs"
             group_by_fields = ["host"]
           }
 
@@ -178,6 +180,7 @@ func testAccCheckDatadogRestrictionPolicyUpdate(ruleName string) string {
             name            = "errors"
             query           = "status:error"
             aggregation     = "count"
+			data_source     = "logs"
             group_by_fields = ["host"]
           }
 
@@ -185,6 +188,7 @@ func testAccCheckDatadogRestrictionPolicyUpdate(ruleName string) string {
             name            = "warnings"
             query           = "status:warning"
             aggregation     = "count"
+			data_source     = "logs"
             group_by_fields = ["host"]
           }
 
@@ -222,13 +226,15 @@ func testAccCheckDatadogRestrictionPolicyInvalidPrincipal(ruleName string, resou
             name            = "errors"
             query           = "status:error"
             aggregation     = "count"
+			data_source     = "logs"
             group_by_fields = ["host"]
           }
 
           query {
             name            = "warnings"
             query           = "status:warning"
-            aggregation     = "count"
+			aggregation     = "count"
+			data_source     = "logs"
             group_by_fields = ["host"]
           }
 
