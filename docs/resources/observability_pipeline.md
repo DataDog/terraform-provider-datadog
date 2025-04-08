@@ -3,12 +3,12 @@
 page_title: "datadog_observability_pipeline Resource - terraform-provider-datadog"
 subcategory: ""
 description: |-
-  Provides a Datadog Observability Pipeline resource. Observability Pipeline allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations.
+  Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations.
 ---
 
 # datadog_observability_pipeline (Resource)
 
-Provides a Datadog Observability Pipeline resource. Observability Pipeline allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations.
+Provides a Datadog Observability Pipeline resource. Observability Pipelines allows you to collect and process logs within your own infrastructure, and then route them to downstream integrations.
 
 ## Example Usage
 
@@ -114,8 +114,8 @@ Optional:
 
 Required:
 
-- `id` (String) The unique ID of the source.
-- `inputs` (List of String) The inputs for the processor.
+- `id` (String) The unique ID of the destination.
+- `inputs` (List of String) The inputs for the destination.
 
 
 
@@ -127,7 +127,7 @@ Optional:
 - `add_fields` (Block List) The `add_fields` processor adds static key-value fields to logs. (see [below for nested schema](#nestedblock--config--processors--add_fields))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processors--filter))
 - `parse_json` (Block List) The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string. (see [below for nested schema](#nestedblock--config--processors--parse_json))
-- `quota` (Block List) The Quota Processor measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert. (see [below for nested schema](#nestedblock--config--processors--quota))
+- `quota` (Block List) The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert. (see [below for nested schema](#nestedblock--config--processors--quota))
 - `remove_fields` (Block List) The `remove_fields` processor deletes specified fields from logs. (see [below for nested schema](#nestedblock--config--processors--remove_fields))
 - `rename_fields` (Block List) The `rename_fields` processor changes field names. (see [below for nested schema](#nestedblock--config--processors--rename_fields))
 
@@ -142,15 +142,15 @@ Optional:
 
 - `field` (Block List) A list of static fields (key-value pairs) that is added to each log event processed by this component. (see [below for nested schema](#nestedblock--config--processors--add_fields--field))
 - `id` (String) The unique ID of the processor.
-- `include` (String) A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
 
 <a id="nestedblock--config--processors--add_fields--field"></a>
 ### Nested Schema for `config.processors.add_fields.field`
 
 Required:
 
-- `name` (String) Field name to add.
-- `value` (String) Value to assign to the field.
+- `name` (String) The field name to add.
+- `value` (String) The value to assign to the field.
 
 
 
@@ -178,7 +178,7 @@ Required:
 Optional:
 
 - `id` (String) The unique ID of the processor.
-- `include` (String) A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
 
 
 <a id="nestedblock--config--processors--quota"></a>
@@ -187,16 +187,16 @@ Optional:
 Required:
 
 - `drop_events` (Boolean) Whether to drop events exceeding the limit.
-- `inputs` (List of String) Input processor IDs.
-- `name` (String) Name of the quota processor.
+- `inputs` (List of String) The inputs for the processor.
+- `name` (String) The name of the quota.
 
 Optional:
 
-- `id` (String) Processor ID.
-- `ignore_when_missing_partitions` (Boolean) Ignore when partition fields are missing.
-- `include` (String) Filter to include events.
+- `id` (String) The unique ID of the processor.
+- `ignore_when_missing_partitions` (Boolean) Whether to ignore when partition fields are missing.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
 - `limit` (Block, Optional) (see [below for nested schema](#nestedblock--config--processors--quota--limit))
-- `overrides` (Block List) Field-specific quota overrides. (see [below for nested schema](#nestedblock--config--processors--quota--overrides))
+- `overrides` (Block List) The overrides for field-specific quotas. (see [below for nested schema](#nestedblock--config--processors--quota--overrides))
 - `partition_fields` (List of String) List of partition fields.
 
 <a id="nestedblock--config--processors--quota--limit"></a>
@@ -205,7 +205,7 @@ Optional:
 Required:
 
 - `enforce` (String) Whether to enforce by 'bytes' or 'events'. Valid values are `bytes`, `events`.
-- `limit` (Number) Limit value.
+- `limit` (Number) The daily quota limit.
 
 
 <a id="nestedblock--config--processors--quota--overrides"></a>
@@ -221,8 +221,8 @@ Optional:
 
 Required:
 
-- `name` (String)
-- `value` (String)
+- `name` (String) The field name.
+- `value` (String) The field value.
 
 
 <a id="nestedblock--config--processors--quota--overrides--limit"></a>
@@ -230,8 +230,8 @@ Required:
 
 Required:
 
-- `enforce` (String) Valid values are `bytes`, `events`.
-- `limit` (Number)
+- `enforce` (String) Whether to enforce by 'bytes' or 'events'. Valid values are `bytes`, `events`.
+- `limit` (Number) The daily quota limit.
 
 
 
@@ -241,13 +241,13 @@ Required:
 
 Required:
 
-- `fields` (List of String) List of fields to remove from events.
-- `inputs` (List of String) The input processor IDs.
+- `fields` (List of String) List of fields to remove from the events.
+- `inputs` (List of String) The inputs for the processor.
 
 Optional:
 
 - `id` (String) The unique ID of the processor.
-- `include` (String) Filter to include events.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
 
 
 <a id="nestedblock--config--processors--rename_fields"></a>
@@ -255,13 +255,13 @@ Optional:
 
 Required:
 
-- `inputs` (List of String) The input processor IDs.
+- `inputs` (List of String) he inputs for the processor.
 
 Optional:
 
 - `field` (Block List) List of fields to rename. (see [below for nested schema](#nestedblock--config--processors--rename_fields--field))
 - `id` (String) The unique ID of the processor.
-- `include` (String) Filter to include events.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
 
 <a id="nestedblock--config--processors--rename_fields--field"></a>
 ### Nested Schema for `config.processors.rename_fields.field`
