@@ -353,7 +353,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"include": schema.StringAttribute{
 											Optional:    true,
-											Description: "A Datadog search query used to determine which logs this processor targets."
+											Description: "A Datadog search query used to determine which logs this processor targets.",
 										},
 										"inputs": schema.ListAttribute{
 											Required:    true,
@@ -467,16 +467,16 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													"limit": schema.SingleNestedBlock{
 														Attributes: map[string]schema.Attribute{
 															"enforce": schema.StringAttribute{
-                                                                Required:    true,
-                                                                Description: "Whether to enforce by 'bytes' or 'events'.",
-                                                                Validators: []validator.String{
-                                                                    stringvalidator.OneOf("bytes", "events"),
-                                                                },
-                                                            },
-                                                            "limit": schema.Int64Attribute{
-                                                                Required:    true,
-                                                                Description: "The daily quota limit.",
-                                                            },
+																Required:    true,
+																Description: "Whether to enforce by 'bytes' or 'events'.",
+																Validators: []validator.String{
+																	stringvalidator.OneOf("bytes", "events"),
+																},
+															},
+															"limit": schema.Int64Attribute{
+																Required:    true,
+																Description: "The daily quota limit.",
+															},
 														},
 													},
 													"field": schema.ListNestedBlock{
@@ -484,12 +484,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{
 																"name": schema.StringAttribute{
-																    Description: "The field name.",
-																	Required: true,
+																	Description: "The field name.",
+																	Required:    true,
 																},
 																"value": schema.StringAttribute{
-																    Description: "The field value.",
-																	Required: true,
+																	Description: "The field value.",
+																	Required:    true,
 																},
 															},
 														},
