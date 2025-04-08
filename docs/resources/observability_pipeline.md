@@ -136,13 +136,13 @@ Optional:
 
 Required:
 
+- `id` (String) The unique ID of the processor.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
 - `inputs` (List of String) The inputs for the processor.
 
 Optional:
 
 - `field` (Block List) A list of static fields (key-value pairs) that is added to each log event processed by this component. (see [below for nested schema](#nestedblock--config--processors--add_fields--field))
-- `id` (String) The unique ID of the processor.
-- `include` (String) A Datadog search query used to determine which logs this processor targets.
 
 <a id="nestedblock--config--processors--add_fields--field"></a>
 ### Nested Schema for `config.processors.add_fields.field`
@@ -159,12 +159,9 @@ Required:
 
 Required:
 
-- `inputs` (List of String) The inputs for the processor.
-
-Optional:
-
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.
+- `inputs` (List of String) The inputs for the processor.
 
 
 <a id="nestedblock--config--processors--parse_json"></a>
@@ -173,12 +170,9 @@ Optional:
 Required:
 
 - `field` (String) The field to parse.
-- `inputs` (List of String) The inputs for the processor.
-
-Optional:
-
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs this processor targets.
+- `inputs` (List of String) The inputs for the processor.
 
 
 <a id="nestedblock--config--processors--quota"></a>
@@ -187,14 +181,14 @@ Optional:
 Required:
 
 - `drop_events` (Boolean) Whether to drop events exceeding the limit.
+- `id` (String) The unique ID of the processor.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
 - `inputs` (List of String) The inputs for the processor.
 - `name` (String) The name of the quota.
 
 Optional:
 
-- `id` (String) The unique ID of the processor.
 - `ignore_when_missing_partitions` (Boolean) Whether to ignore when partition fields are missing.
-- `include` (String) A Datadog search query used to determine which logs this processor targets.
 - `limit` (Block, Optional) (see [below for nested schema](#nestedblock--config--processors--quota--limit))
 - `overrides` (Block List) The overrides for field-specific quotas. (see [below for nested schema](#nestedblock--config--processors--quota--overrides))
 - `partition_fields` (List of String) List of partition fields.
@@ -242,12 +236,9 @@ Required:
 Required:
 
 - `fields` (List of String) List of fields to remove from the events.
-- `inputs` (List of String) The inputs for the processor.
-
-Optional:
-
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs this processor targets.
+- `inputs` (List of String) The inputs for the processor.
 
 
 <a id="nestedblock--config--processors--rename_fields"></a>
@@ -255,13 +246,13 @@ Optional:
 
 Required:
 
+- `id` (String) The unique ID of the processor.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
 - `inputs` (List of String) he inputs for the processor.
 
 Optional:
 
 - `field` (Block List) List of fields to rename. (see [below for nested schema](#nestedblock--config--processors--rename_fields--field))
-- `id` (String) The unique ID of the processor.
-- `include` (String) A Datadog search query used to determine which logs this processor targets.
 
 <a id="nestedblock--config--processors--rename_fields--field"></a>
 ### Nested Schema for `config.processors.rename_fields.field`
@@ -286,9 +277,12 @@ Optional:
 <a id="nestedblock--config--sources--datadog_agent"></a>
 ### Nested Schema for `config.sources.datadog_agent`
 
-Optional:
+Required:
 
 - `id` (String) The unique ID of the source.
+
+Optional:
+
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--datadog_agent--tls))
 
 <a id="nestedblock--config--sources--datadog_agent--tls"></a>
@@ -311,11 +305,11 @@ Optional:
 Required:
 
 - `group_id` (String) The Kafka consumer group ID.
+- `id` (String) The unique ID of the source.
 - `topics` (List of String) A list of Kafka topic names to subscribe to. The source ingests messages from each topic specified.
 
 Optional:
 
-- `id` (String) The unique ID of the source.
 - `librdkafka_option` (Block List) Advanced librdkafka client configuration options. (see [below for nested schema](#nestedblock--config--sources--kafka--librdkafka_option))
 - `sasl` (Block, Optional) SASL authentication settings. (see [below for nested schema](#nestedblock--config--sources--kafka--sasl))
 - `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--kafka--tls))

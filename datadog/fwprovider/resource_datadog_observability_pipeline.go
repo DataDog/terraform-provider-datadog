@@ -198,7 +198,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "The unique ID of the source.",
 										},
 									},
@@ -212,7 +212,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "The unique ID of the source.",
 										},
 										"group_id": schema.StringAttribute{
@@ -267,11 +267,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "The unique ID of the processor.",
 										},
 										"include": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.",
 										},
 										"inputs": schema.ListAttribute{
@@ -287,11 +287,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "The unique ID of the processor.",
 										},
 										"include": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "A Datadog search query used to determine which logs this processor targets.",
 										},
 										"inputs": schema.ListAttribute{
@@ -311,11 +311,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "The unique ID of the processor.",
 										},
 										"include": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "A Datadog search query used to determine which logs this processor targets.",
 										},
 										"inputs": schema.ListAttribute{
@@ -326,6 +326,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"field": schema.ListNestedBlock{
+											Validators: []validator.List{
+												// this is the only way to make the list of fields required in Terraform
+												listvalidator.SizeAtLeast(1),
+											},
 											Description: "A list of static fields (key-value pairs) that is added to each log event processed by this component.",
 											NestedObject: schema.NestedBlockObject{
 												Attributes: map[string]schema.Attribute{
@@ -348,11 +352,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "The unique ID of the processor.",
 										},
 										"include": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "A Datadog search query used to determine which logs this processor targets.",
 										},
 										"inputs": schema.ListAttribute{
@@ -363,6 +367,10 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 									Blocks: map[string]schema.Block{
 										"field": schema.ListNestedBlock{
+											Validators: []validator.List{
+												// this is the only way to make the list of fields required in Terraform
+												listvalidator.SizeAtLeast(1),
+											},
 											Description: "List of fields to rename.",
 											NestedObject: schema.NestedBlockObject{
 												Attributes: map[string]schema.Attribute{
@@ -389,11 +397,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "The unique ID of the processor.",
 										},
 										"include": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "A Datadog search query used to determine which logs this processor targets.",
 										},
 										"inputs": schema.ListAttribute{
@@ -414,11 +422,11 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "The unique ID of the processor.",
 										},
 										"include": schema.StringAttribute{
-											Optional:    true,
+											Required:    true,
 											Description: "A Datadog search query used to determine which logs this processor targets.",
 										},
 										"inputs": schema.ListAttribute{
