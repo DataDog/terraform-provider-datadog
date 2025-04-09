@@ -219,6 +219,9 @@ func buildSecurityMonitoringTfStandardRule(rule *datadogV2.SecurityMonitoringSta
 		if aggregation, ok := query.GetAggregationOk(); ok {
 			tfQuery["aggregation"] = string(*aggregation)
 		}
+		if dataSource, ok := query.GetDataSourceOk(); ok {
+			tfQuery["data_source"] = string(*dataSource)
+		}
 		if distinctFields, ok := query.GetDistinctFieldsOk(); ok {
 			tfQuery["distinct_fields"] = *distinctFields
 		}

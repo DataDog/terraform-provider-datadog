@@ -8,6 +8,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
     name            = "errors"
     query           = "status:error"
     aggregation     = "count"
+    data_source     = "logs"
     group_by_fields = ["host"]
   }
 
@@ -15,6 +16,7 @@ resource "datadog_security_monitoring_rule" "myrule" {
     name            = "warnings"
     query           = "status:warning"
     aggregation     = "count"
+    data_source     = "logs"
     group_by_fields = ["host"]
   }
 
