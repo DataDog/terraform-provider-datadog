@@ -685,12 +685,12 @@ resource "datadog_observability_pipeline" "parse_grok" {
 
           match_rules {
             name = "match_user"
-            rule = "%{word:user.name}"
+            rule = "%%{word:user.name}"
           }
 
           match_rules {
             name = "match_action"
-            rule = "%{word:action}"
+            rule = "%%{word:action}"
           }
 
           support_rules {
@@ -733,6 +733,56 @@ resource "datadog_observability_pipeline" "parse_grok" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rules.0.rule", "\\w+"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rules.1.name", "custom_word"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rules.1.rule", "[a-zA-Z]+"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_sampleProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.sample"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "sample" {
+  name = "sample-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      sample {
+        id      = "sample-1"
+        include = "*"
+        inputs  = ["source-1"]
+        rate    = 10
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["sample-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "sample-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.0.id", "sample-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.0.rate", "10"),
 				),
 			},
 		},

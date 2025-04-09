@@ -84,6 +84,7 @@ type processorsModel struct {
 	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
 	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
 	ParseGrokProcessor    []*parseGrokProcessorModel    `tfsdk:"parse_grok"`
+	SampleProcessor       []*sampleProcessorModel       `tfsdk:"sample"`
 }
 
 type filterProcessorModel struct {
@@ -180,6 +181,13 @@ type parseGrokProcessorRuleModel struct {
 type grokRuleModel struct {
 	Name types.String `tfsdk:"name"`
 	Rule types.String `tfsdk:"rule"`
+}
+
+type sampleProcessorModel struct {
+	Id      types.String `tfsdk:"id"`
+	Include types.String `tfsdk:"include"`
+	Inputs  types.List   `tfsdk:"inputs"`
+	Rate    types.Int64  `tfsdk:"rate"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -529,44 +537,94 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"parse_grok": schema.ListNestedBlock{
-								Description: "Extracts structured fields from logs using Grok patterns.",
+								Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using grok patterns.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
-										"id":      schema.StringAttribute{Required: true},
-										"include": schema.StringAttribute{Required: true},
-										"inputs": schema.ListAttribute{
-											ElementType: types.StringType,
+										"id": schema.StringAttribute{
 											Required:    true,
+											Description: "A unique identifier for this processor.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
 										},
 										"disable_library_rules": schema.BoolAttribute{
-											Optional: true,
+											Optional:    true,
+											Description: "If set to `true`, disables the default grok rules provided by Datadog.",
 										},
 									},
 									Blocks: map[string]schema.Block{
 										"rules": schema.ListNestedBlock{
+											Description: "The list of grok parsing rules. If multiple matching rules are provided, they are evaluated in order. The first successful match is applied.",
 											NestedObject: schema.NestedBlockObject{
 												Attributes: map[string]schema.Attribute{
-													"source": schema.StringAttribute{Required: true},
+													"source": schema.StringAttribute{
+														Required:    true,
+														Description: "The name of the field in the log event to apply the grok rules to.",
+													},
 												},
 												Blocks: map[string]schema.Block{
 													"match_rules": schema.ListNestedBlock{
+														Description: "A list of grok matching rules that define how to extract fields from the source field. Each rule must contain a name and a valid grok pattern.",
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{
-																"name": schema.StringAttribute{Required: true},
-																"rule": schema.StringAttribute{Required: true},
+																"name": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The name of the rule.",
+																},
+																"rule": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The definition of the grok rule.",
+																},
 															},
 														},
 													},
 													"support_rules": schema.ListNestedBlock{
+														Description: "A list of auxiliary Grok patterns that can be referenced by the matching rules. These are reusable named patterns that simplify complex matching.",
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{
-																"name": schema.StringAttribute{Required: true},
-																"rule": schema.StringAttribute{Required: true},
+																"name": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The name of the auxiliary Grok rule.",
+																},
+																"rule": schema.StringAttribute{
+																	Required:    true,
+																	Description: "The definition of the helper grok rule.",
+																},
 															},
 														},
 													},
 												},
 											},
+										},
+									},
+								},
+							},
+							"sample": schema.ListNestedBlock{
+								Description: "The `sample` processor allows probabilistic sampling of logs at a fixed rate.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+										},
+										"rate": schema.Int64Attribute{
+											Required:    true,
+											Description: "Number of events to sample (1 in N).",
 										},
 									},
 								},
@@ -777,6 +835,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.ParseGrokProcessor {
 		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.SampleProcessor {
+		config.Processors = append(config.Processors, expandSampleProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -827,6 +888,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenParseGrokProcessor(ctx, p.ObservabilityPipelineParseGrokProcessor); f != nil {
 			outCfg.Processors.ParseGrokProcessor = append(outCfg.Processors.ParseGrokProcessor, f)
+		}
+		if s := flattenSampleProcessor(ctx, p.ObservabilityPipelineSampleProcessor); s != nil {
+			outCfg.Processors.SampleProcessor = append(outCfg.Processors.SampleProcessor, s)
 		}
 	}
 	for _, d := range cfg.GetDestinations() {
@@ -1326,4 +1390,35 @@ func flattenParseGrokProcessor(ctx context.Context, proc *datadogV2.Observabilit
 	}
 
 	return out
+}
+
+func expandSampleProcessor(ctx context.Context, p *sampleProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineSampleProcessorWithDefaults()
+	proc.SetId(p.Id.ValueString())
+	proc.SetInclude(p.Include.ValueString())
+
+	var inputs []string
+	p.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	proc.SetRate(p.Rate.ValueInt64())
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineSampleProcessor: proc,
+	}
+}
+
+func flattenSampleProcessor(ctx context.Context, proc *datadogV2.ObservabilityPipelineSampleProcessor) *sampleProcessorModel {
+	if proc == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, proc.GetInputs())
+
+	return &sampleProcessorModel{
+		Id:      types.StringValue(proc.GetId()),
+		Include: types.StringValue(proc.GetInclude()),
+		Inputs:  inputs,
+		Rate:    types.Int64Value(proc.GetRate()),
+	}
 }
