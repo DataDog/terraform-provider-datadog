@@ -788,3 +788,54 @@ resource "datadog_observability_pipeline" "sample" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_fluentSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.fluent"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "fluent" {
+  name = "fluent-pipeline"
+
+  config {
+    sources {
+      fluent {
+        id = "fluent-source-1"
+        tls {
+          crt_file = "/etc/ssl/certs/fluent.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/fluent.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["fluent-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "fluent-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.id", "fluent-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.tls.0.crt_file", "/etc/ssl/certs/fluent.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.fluent.0.tls.0.key_file", "/etc/ssl/private/fluent.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "fluent-source-1"),
+				),
+			},
+		},
+	})
+}

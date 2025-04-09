@@ -42,9 +42,24 @@ type configModel struct {
 type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
+	FluentSource       []*fluentSourceModel       `tfsdk:"fluent"`
 }
 
-// / Source models
+type processorsModel struct {
+	FilterProcessor       []*filterProcessorModel       `tfsdk:"filter"`
+	ParseJsonProcessor    []*parseJsonProcessorModel    `tfsdk:"parse_json"`
+	AddFieldsProcessor    []*addFieldsProcessor         `tfsdk:"add_fields"`
+	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
+	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
+	ParseGrokProcessor    []*parseGrokProcessorModel    `tfsdk:"parse_grok"`
+	SampleProcessor       []*sampleProcessorModel       `tfsdk:"sample"`
+}
+
+type destinationsModel struct {
+	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
+}
+
 type datadogAgentSourceModel struct {
 	Id  types.String `tfsdk:"id"`
 	Tls []tlsModel   `tfsdk:"tls"`
@@ -72,19 +87,6 @@ type tlsModel struct {
 	CrtFile types.String `tfsdk:"crt_file"`
 	CaFile  types.String `tfsdk:"ca_file"`
 	KeyFile types.String `tfsdk:"key_file"`
-}
-
-// Processor models
-
-type processorsModel struct {
-	FilterProcessor       []*filterProcessorModel       `tfsdk:"filter"`
-	ParseJsonProcessor    []*parseJsonProcessorModel    `tfsdk:"parse_json"`
-	AddFieldsProcessor    []*addFieldsProcessor         `tfsdk:"add_fields"`
-	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
-	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
-	ParseGrokProcessor    []*parseGrokProcessorModel    `tfsdk:"parse_grok"`
-	SampleProcessor       []*sampleProcessorModel       `tfsdk:"sample"`
 }
 
 type filterProcessorModel struct {
@@ -154,11 +156,6 @@ type fieldValue struct {
 	Value types.String `tfsdk:"value"`
 }
 
-// Destination models
-
-type destinationsModel struct {
-	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
-}
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
 	Inputs types.List   `tfsdk:"inputs"`
@@ -188,6 +185,11 @@ type sampleProcessorModel struct {
 	Include types.String `tfsdk:"include"`
 	Inputs  types.List   `tfsdk:"inputs"`
 	Rate    types.Int64  `tfsdk:"rate"`
+}
+
+type fluentSourceModel struct {
+	Id  types.String `tfsdk:"id"`
+	Tls []tlsModel   `tfsdk:"tls"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -281,6 +283,20 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"fluent": schema.ListNestedBlock{
+								Description: "The `fluent` source ingests logs from a Fluentd-compatible service.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).",
+										},
+									},
+									Blocks: map[string]schema.Block{
 										"tls": tlsSchema(),
 									},
 								},
@@ -812,6 +828,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, k := range state.Config.Sources.KafkaSource {
 		config.Sources = append(config.Sources, expandKafkaSource(k))
 	}
+	for _, f := range state.Config.Sources.FluentSource {
+		config.Sources = append(config.Sources, expandFluentSource(f))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -865,6 +884,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if k := flattenKafkaSource(src.ObservabilityPipelineKafkaSource); k != nil {
 			outCfg.Sources.KafkaSource = append(outCfg.Sources.KafkaSource, k)
+		}
+		if f := flattenFluentSource(src.ObservabilityPipelineFluentSource); f != nil {
+			outCfg.Sources.FluentSource = append(outCfg.Sources.FluentSource, f)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -1421,4 +1443,31 @@ func flattenSampleProcessor(ctx context.Context, proc *datadogV2.ObservabilityPi
 		Inputs:  inputs,
 		Rate:    types.Int64Value(proc.GetRate()),
 	}
+}
+
+func expandFluentSource(src *fluentSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	source := datadogV2.NewObservabilityPipelineFluentSourceWithDefaults()
+	source.SetId(src.Id.ValueString())
+
+	if len(src.Tls) > 0 {
+		source.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineFluentSource: source,
+	}
+}
+
+func flattenFluentSource(src *datadogV2.ObservabilityPipelineFluentSource) *fluentSourceModel {
+	if src == nil {
+		return nil
+	}
+
+	out := &fluentSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
+	if src.Tls != nil {
+		out.Tls = []tlsModel{flattenTls(src.Tls)}
+	}
+	return out
 }
