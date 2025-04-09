@@ -824,14 +824,18 @@ func buildMonitorStruct(d utils.Resource) (*datadogV1.Monitor, *datadogV1.Monito
 	}
 
 	var roles []string
+	// Send restricted roles only if it has been set at some point, as
+	// determined by GetOK. We should send the zero value if it was set and
+	// then removed because the user may be clearing restricted roles.
 	if attr, ok := d.GetOk("restricted_roles"); ok {
 		for _, r := range attr.(*schema.Set).List() {
 			roles = append(roles, r.(string))
 		}
 		sort.Strings(roles)
+		m.SetRestrictedRoles(roles)
+		u.SetRestrictedRoles(roles)
 	}
-	m.SetRestrictedRoles(roles)
-	u.SetRestrictedRoles(roles)
+
 
 	tags := make([]string, 0)
 	if attr, ok := d.GetOk("tags"); ok {
