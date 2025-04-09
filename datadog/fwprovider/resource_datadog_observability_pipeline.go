@@ -43,6 +43,7 @@ type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
 	FluentSource       []*fluentSourceModel       `tfsdk:"fluent"`
+	HttpServerSource   []*httpServerSourceModel   `tfsdk:"http_server"`
 }
 
 type processorsModel struct {
@@ -192,6 +193,15 @@ type fluentSourceModel struct {
 	Tls []tlsModel   `tfsdk:"tls"`
 }
 
+type httpServerSourceModel struct {
+	Id           types.String `tfsdk:"id"`
+	Include      types.String `tfsdk:"include"`
+	Inputs       types.List   `tfsdk:"inputs"`
+	AuthStrategy types.String `tfsdk:"auth_strategy"`
+	Decoding     types.String `tfsdk:"decoding"`
+	Tls          []tlsModel   `tfsdk:"tls"`
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -295,6 +305,28 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Required:    true,
 											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).",
 										},
+									},
+									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"http_server": schema.ListNestedBlock{
+								Description: "The `http_server` source collects logs over HTTP POST from external services.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "Unique ID for the HTTP server source.",
+										},
+										"auth_strategy": schema.StringAttribute{
+											Required:    true,
+											Description: "HTTP authentication method.",
+											Validators: []validator.String{
+												stringvalidator.OneOf("none", "plain"),
+											},
+										},
+										"decoding": decodingSchema(),
 									},
 									Blocks: map[string]schema.Block{
 										"tls": tlsSchema(),
@@ -711,7 +743,7 @@ func (r *observabilityPipelineResource) Create(ctx context.Context, req resource
 		return
 	}
 
-	body, diags := expandPipelineRequest(ctx, &state)
+	body, diags := expandPipeline(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -769,7 +801,7 @@ func (r *observabilityPipelineResource) Update(ctx context.Context, req resource
 	}
 
 	id := state.ID.ValueString()
-	body, diags := expandPipelineRequest(ctx, &state)
+	body, diags := expandPipeline(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -808,7 +840,7 @@ func (r *observabilityPipelineResource) Delete(ctx context.Context, req resource
 }
 
 // --- Expansion - converting TF state to API model ---
-func expandPipelineRequest(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.ObservabilityPipeline, diag.Diagnostics) {
+func expandPipeline(ctx context.Context, state *observabilityPipelineModel) (*datadogV2.ObservabilityPipeline, diag.Diagnostics) {
 	diags := diag.Diagnostics{}
 
 	req := datadogV2.NewObservabilityPipelineWithDefaults()
@@ -830,6 +862,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	}
 	for _, f := range state.Config.Sources.FluentSource {
 		config.Sources = append(config.Sources, expandFluentSource(f))
+	}
+	for _, s := range state.Config.Sources.HttpServerSource {
+		config.Sources = append(config.Sources, expandHttpServerSource(s))
 	}
 
 	// Processors
@@ -887,6 +922,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenFluentSource(src.ObservabilityPipelineFluentSource); f != nil {
 			outCfg.Sources.FluentSource = append(outCfg.Sources.FluentSource, f)
+		}
+		if s := flattenHttpServerSource(src.ObservabilityPipelineHttpServerSource); s != nil {
+			outCfg.Sources.HttpServerSource = append(outCfg.Sources.HttpServerSource, s)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -1469,5 +1507,58 @@ func flattenFluentSource(src *datadogV2.ObservabilityPipelineFluentSource) *flue
 	if src.Tls != nil {
 		out.Tls = []tlsModel{flattenTls(src.Tls)}
 	}
+	return out
+}
+
+func decodingSchema() schema.StringAttribute {
+	return schema.StringAttribute{
+		Required:    true,
+		Description: "The decoding format used to interpret incoming logs.",
+		Validators: []validator.String{
+			stringvalidator.OneOf("json", "gelf", "syslog", "bytes"),
+		},
+	}
+}
+
+func expandHttpServerSource(src *httpServerSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	s := datadogV2.NewObservabilityPipelineHttpServerSourceWithDefaults()
+	s.SetId(src.Id.ValueString())
+	s.SetInclude(src.Include.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(context.Background(), &inputs, false)
+	s.SetInputs(inputs)
+
+	s.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpServerSourceAuthStrategy(src.AuthStrategy.ValueString()))
+	s.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
+
+	if len(src.Tls) > 0 {
+		s.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineHttpServerSource: s,
+	}
+}
+
+func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSource) *httpServerSourceModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(context.Background(), types.StringType, src.GetInputs())
+
+	out := &httpServerSourceModel{
+		Id:           types.StringValue(src.GetId()),
+		Include:      types.StringValue(src.GetInclude()),
+		Inputs:       inputs,
+		AuthStrategy: types.StringValue(string(src.GetAuthStrategy())),
+		Decoding:     types.StringValue(string(src.GetDecoding())),
+	}
+
+	if src.Tls != nil {
+		out.Tls = []tlsModel{flattenTls(src.Tls)}
+	}
+
 	return out
 }

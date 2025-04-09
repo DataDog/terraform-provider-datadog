@@ -839,3 +839,59 @@ resource "datadog_observability_pipeline" "fluent" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_httpServerSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.http_server"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "http_server" {
+  name = "http-server-pipeline"
+
+  config {
+    sources {
+      http_server {
+        id            = "http-source-1"
+        auth_strategy = "plain"
+        decoding      = "json"
+
+        tls {
+          crt_file = "/etc/ssl/certs/http.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/http.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["http-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "http-server-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.id", "http-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.auth_strategy", "plain"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.decoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.tls.0.crt_file", "/etc/ssl/certs/http.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.http_server.0.tls.0.key_file", "/etc/ssl/private/http.key"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "http-source-1"),
+				),
+			},
+		},
+	})
+}
