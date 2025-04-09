@@ -651,3 +651,90 @@ resource "datadog_observability_pipeline" "add_fields" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_parseGrokProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.parse_grok"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "parse_grok" {
+  name = "parse-grok-test"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      parse_grok {
+        id      = "parse-grok-1"
+        include = "*"
+        inputs  = ["source-1"]
+        disable_library_rules = true
+
+        rules {
+          source = "message"
+
+          match_rules {
+            name = "match_user"
+            rule = "%{word:user.name}"
+          }
+
+          match_rules {
+            name = "match_action"
+            rule = "%{word:action}"
+          }
+
+          support_rules {
+            name = "word"
+            rule = "\\w+"
+          }
+
+          support_rules {
+            name = "custom_word"
+            rule = "[a-zA-Z]+"
+          }
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["parse-grok-1"]
+      }
+    }
+  }
+}`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "parse-grok-test"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.id", "parse-grok-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.disable_library_rules", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.source", "message"),
+
+					// Match Rules
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rules.0.name", "match_user"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rules.0.rule", "%{word:user.name}"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rules.1.name", "match_action"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rules.1.rule", "%{word:action}"),
+
+					// Support Rules
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rules.0.name", "word"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rules.0.rule", "\\w+"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rules.1.name", "custom_word"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rules.1.rule", "[a-zA-Z]+"),
+				),
+			},
+		},
+	})
+}

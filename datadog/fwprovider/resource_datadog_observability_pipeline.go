@@ -83,6 +83,7 @@ type processorsModel struct {
 	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
 	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
 	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
+	ParseGrokProcessor    []*parseGrokProcessorModel    `tfsdk:"parse_grok"`
 }
 
 type filterProcessorModel struct {
@@ -160,6 +161,25 @@ type destinationsModel struct {
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
 	Inputs types.List   `tfsdk:"inputs"`
+}
+
+type parseGrokProcessorModel struct {
+	Id                  types.String                  `tfsdk:"id"`
+	Include             types.String                  `tfsdk:"include"`
+	Inputs              types.List                    `tfsdk:"inputs"`
+	DisableLibraryRules types.Bool                    `tfsdk:"disable_library_rules"`
+	Rules               []parseGrokProcessorRuleModel `tfsdk:"rules"`
+}
+
+type parseGrokProcessorRuleModel struct {
+	Source       types.String    `tfsdk:"source"`
+	MatchRules   []grokRuleModel `tfsdk:"match_rules"`
+	SupportRules []grokRuleModel `tfsdk:"support_rules"`
+}
+
+type grokRuleModel struct {
+	Name types.String `tfsdk:"name"`
+	Rule types.String `tfsdk:"rule"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -508,6 +528,49 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"parse_grok": schema.ListNestedBlock{
+								Description: "Extracts structured fields from logs using Grok patterns.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id":      schema.StringAttribute{Required: true},
+										"include": schema.StringAttribute{Required: true},
+										"inputs": schema.ListAttribute{
+											ElementType: types.StringType,
+											Required:    true,
+										},
+										"disable_library_rules": schema.BoolAttribute{
+											Optional: true,
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"rules": schema.ListNestedBlock{
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"source": schema.StringAttribute{Required: true},
+												},
+												Blocks: map[string]schema.Block{
+													"match_rules": schema.ListNestedBlock{
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"name": schema.StringAttribute{Required: true},
+																"rule": schema.StringAttribute{Required: true},
+															},
+														},
+													},
+													"support_rules": schema.ListNestedBlock{
+														NestedObject: schema.NestedBlockObject{
+															Attributes: map[string]schema.Attribute{
+																"name": schema.StringAttribute{Required: true},
+																"rule": schema.StringAttribute{Required: true},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -711,6 +774,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.QuotaProcessor {
 		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.ParseGrokProcessor {
+		config.Processors = append(config.Processors, expandParseGrokProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -758,6 +824,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if f := flattenQuotaProcessor(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
 			outCfg.Processors.QuotaProcessor = append(outCfg.Processors.QuotaProcessor, f)
+		}
+		if f := flattenParseGrokProcessor(ctx, p.ObservabilityPipelineParseGrokProcessor); f != nil {
+			outCfg.Processors.ParseGrokProcessor = append(outCfg.Processors.ParseGrokProcessor, f)
 		}
 	}
 	for _, d := range cfg.GetDestinations() {
@@ -1172,4 +1241,89 @@ func expandTls(src []tlsModel) *datadogV2.ObservabilityPipelineTls {
 		tls.SetKeyFile(tlsTF.KeyFile.ValueString())
 	}
 	return tls
+}
+
+func expandParseGrokProcessor(ctx context.Context, p *parseGrokProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineParseGrokProcessorWithDefaults()
+	proc.SetId(p.Id.ValueString())
+	proc.SetInclude(p.Include.ValueString())
+
+	var inputs []string
+	p.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	if !p.DisableLibraryRules.IsNull() {
+		proc.SetDisableLibraryRules(p.DisableLibraryRules.ValueBool())
+	}
+
+	var rules []datadogV2.ObservabilityPipelineParseGrokProcessorRule
+	for _, r := range p.Rules {
+		var matchRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule
+		for _, m := range r.MatchRules {
+			matchRules = append(matchRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule{
+				Name: m.Name.ValueString(),
+				Rule: m.Rule.ValueString(),
+			})
+		}
+
+		var supportRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule
+		for _, s := range r.SupportRules {
+			supportRules = append(supportRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule{
+				Name: s.Name.ValueString(),
+				Rule: s.Rule.ValueString(),
+			})
+		}
+
+		rules = append(rules, datadogV2.ObservabilityPipelineParseGrokProcessorRule{
+			Source:       r.Source.ValueString(),
+			MatchRules:   matchRules,
+			SupportRules: supportRules,
+		})
+	}
+	proc.SetRules(rules)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineParseGrokProcessor: proc,
+	}
+}
+
+func flattenParseGrokProcessor(ctx context.Context, proc *datadogV2.ObservabilityPipelineParseGrokProcessor) *parseGrokProcessorModel {
+	if proc == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, proc.GetInputs())
+
+	out := &parseGrokProcessorModel{
+		Id:                  types.StringValue(proc.GetId()),
+		Include:             types.StringValue(proc.GetInclude()),
+		Inputs:              inputs,
+		DisableLibraryRules: types.BoolValue(proc.GetDisableLibraryRules()),
+	}
+
+	for _, r := range proc.GetRules() {
+		var matchRules []grokRuleModel
+		for _, m := range r.MatchRules {
+			matchRules = append(matchRules, grokRuleModel{
+				Name: types.StringValue(m.Name),
+				Rule: types.StringValue(m.Rule),
+			})
+		}
+
+		var supportRules []grokRuleModel
+		for _, s := range r.SupportRules {
+			supportRules = append(supportRules, grokRuleModel{
+				Name: types.StringValue(s.Name),
+				Rule: types.StringValue(s.Rule),
+			})
+		}
+
+		out.Rules = append(out.Rules, parseGrokProcessorRuleModel{
+			Source:       types.StringValue(r.Source),
+			MatchRules:   matchRules,
+			SupportRules: supportRules,
+		})
+	}
+
+	return out
 }
