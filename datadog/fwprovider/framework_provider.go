@@ -82,6 +82,7 @@ var Resources = []func() resource.Resource{
 	NewActionConnectionResource,
 	NewWorkflowAutomationResource,
 	NewAppBuilderAppResource,
+	NewObservabilitPipelineResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -429,6 +430,12 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
+
+	// Enable Observability Pipelines
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.GetPipeline", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.UpdatePipeline", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.DeletePipeline", true)
 
 	if !config.ApiUrl.IsNull() && config.ApiUrl.ValueString() != "" {
 		parsedAPIURL, parseErr := url.Parse(config.ApiUrl.ValueString())
