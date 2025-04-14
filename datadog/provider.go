@@ -159,14 +159,14 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeList,
 				Optional:    true,
 				MaxItems:    1,
-				Description: "[Experimental - Monitors and Logs Pipelines only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Logs Pipelines, Monitors and Security Monitoring Rule only] Configuration block containing settings to apply default resource tags across all resources.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"tags": {
 							Type:        schema.TypeMap,
 							Optional:    true,
 							Elem:        &schema.Schema{Type: schema.TypeString},
-							Description: "[Experimental - Monitors and Logs Pipelines only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Logs Pipelines, Monitors and Security Monitoring Rule only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
