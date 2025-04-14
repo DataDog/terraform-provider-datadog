@@ -96,7 +96,7 @@ Optional:
 
 Required:
 
-- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`.
+- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`, `user_behavior`.
 
 Optional:
 
@@ -108,6 +108,7 @@ Optional:
 Optional:
 
 - `duration` (Number) Duration of the action in seconds.
+- `user_behavior_name` (String) Name of the risk tag applied to users triggering a `user_behavior` case action.
 
 
 
