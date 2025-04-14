@@ -172,8 +172,8 @@ type parseGrokProcessorModel struct {
 
 type parseGrokProcessorRuleModel struct {
 	Source       types.String    `tfsdk:"source"`
-	MatchRules   []grokRuleModel `tfsdk:"match_rules"`
-	SupportRules []grokRuleModel `tfsdk:"support_rules"`
+	ParsingRules []grokRuleModel `tfsdk:"parsing_rule"`
+	HelperRules  []grokRuleModel `tfsdk:"helper_rule"`
 }
 
 type grokRuleModel struct {
@@ -195,8 +195,6 @@ type fluentSourceModel struct {
 
 type httpServerSourceModel struct {
 	Id           types.String `tfsdk:"id"`
-	Include      types.String `tfsdk:"include"`
-	Inputs       types.List   `tfsdk:"inputs"`
 	AuthStrategy types.String `tfsdk:"auth_strategy"`
 	Decoding     types.String `tfsdk:"decoding"`
 	Tls          []tlsModel   `tfsdk:"tls"`
@@ -585,7 +583,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 								},
 							},
 							"parse_grok": schema.ListNestedBlock{
-								Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using grok patterns.",
+								Description: "The `parse_grok` processor extracts structured fields from unstructured log messages using Grok patterns.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
@@ -603,22 +601,22 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"disable_library_rules": schema.BoolAttribute{
 											Optional:    true,
-											Description: "If set to `true`, disables the default grok rules provided by Datadog.",
+											Description: "If set to `true`, disables the default Grok rules provided by Datadog.",
 										},
 									},
 									Blocks: map[string]schema.Block{
 										"rules": schema.ListNestedBlock{
-											Description: "The list of grok parsing rules. If multiple matching rules are provided, they are evaluated in order. The first successful match is applied.",
+											Description: "The list of Grok parsing rules. If multiple parsing rules are provided, they are evaluated in order. The first successful match is applied.",
 											NestedObject: schema.NestedBlockObject{
 												Attributes: map[string]schema.Attribute{
 													"source": schema.StringAttribute{
 														Required:    true,
-														Description: "The name of the field in the log event to apply the grok rules to.",
+														Description: "The name of the field in the log event to apply the Grok rules to.",
 													},
 												},
 												Blocks: map[string]schema.Block{
-													"match_rules": schema.ListNestedBlock{
-														Description: "A list of grok matching rules that define how to extract fields from the source field. Each rule must contain a name and a valid grok pattern.",
+													"parsing_rule": schema.ListNestedBlock{
+														Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{
 																"name": schema.StringAttribute{
@@ -627,22 +625,22 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 																},
 																"rule": schema.StringAttribute{
 																	Required:    true,
-																	Description: "The definition of the grok rule.",
+																	Description: "The definition of the Grok rule.",
 																},
 															},
 														},
 													},
-													"support_rules": schema.ListNestedBlock{
-														Description: "A list of auxiliary Grok patterns that can be referenced by the matching rules. These are reusable named patterns that simplify complex matching.",
+													"helper_rule": schema.ListNestedBlock{
+														Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{
 																"name": schema.StringAttribute{
 																	Required:    true,
-																	Description: "The name of the auxiliary Grok rule.",
+																	Description: "The name of the helper Grok rule.",
 																},
 																"rule": schema.StringAttribute{
 																	Required:    true,
-																	Description: "The definition of the helper grok rule.",
+																	Description: "The definition of the helper Grok rule.",
 																},
 															},
 														},
@@ -1383,7 +1381,7 @@ func expandParseGrokProcessor(ctx context.Context, p *parseGrokProcessorModel) d
 	var rules []datadogV2.ObservabilityPipelineParseGrokProcessorRule
 	for _, r := range p.Rules {
 		var matchRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule
-		for _, m := range r.MatchRules {
+		for _, m := range r.ParsingRules {
 			matchRules = append(matchRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule{
 				Name: m.Name.ValueString(),
 				Rule: m.Rule.ValueString(),
@@ -1391,7 +1389,7 @@ func expandParseGrokProcessor(ctx context.Context, p *parseGrokProcessorModel) d
 		}
 
 		var supportRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule
-		for _, s := range r.SupportRules {
+		for _, s := range r.HelperRules {
 			supportRules = append(supportRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule{
 				Name: s.Name.ValueString(),
 				Rule: s.Rule.ValueString(),
@@ -1444,8 +1442,8 @@ func flattenParseGrokProcessor(ctx context.Context, proc *datadogV2.Observabilit
 
 		out.Rules = append(out.Rules, parseGrokProcessorRuleModel{
 			Source:       types.StringValue(r.Source),
-			MatchRules:   matchRules,
-			SupportRules: supportRules,
+			ParsingRules: matchRules,
+			HelperRules:  supportRules,
 		})
 	}
 
@@ -1523,11 +1521,6 @@ func decodingSchema() schema.StringAttribute {
 func expandHttpServerSource(src *httpServerSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineHttpServerSourceWithDefaults()
 	s.SetId(src.Id.ValueString())
-	s.SetInclude(src.Include.ValueString())
-
-	var inputs []string
-	src.Inputs.ElementsAs(context.Background(), &inputs, false)
-	s.SetInputs(inputs)
 
 	s.SetAuthStrategy(datadogV2.ObservabilityPipelineHttpServerSourceAuthStrategy(src.AuthStrategy.ValueString()))
 	s.SetDecoding(datadogV2.ObservabilityPipelineDecoding(src.Decoding.ValueString()))
@@ -1546,12 +1539,8 @@ func flattenHttpServerSource(src *datadogV2.ObservabilityPipelineHttpServerSourc
 		return nil
 	}
 
-	inputs, _ := types.ListValueFrom(context.Background(), types.StringType, src.GetInputs())
-
 	out := &httpServerSourceModel{
 		Id:           types.StringValue(src.GetId()),
-		Include:      types.StringValue(src.GetInclude()),
-		Inputs:       inputs,
 		AuthStrategy: types.StringValue(string(src.GetAuthStrategy())),
 		Decoding:     types.StringValue(string(src.GetDecoding())),
 	}
