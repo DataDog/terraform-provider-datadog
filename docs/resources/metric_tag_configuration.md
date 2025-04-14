@@ -45,7 +45,7 @@ resource "datadog_metric_tag_configuration" "example_count_metric" {
 
 - `metric_name` (String) The metric name for this resource.
 - `metric_type` (String) The metric's type. This field can't be updated after creation. Valid values are `gauge`, `count`, `rate`, `distribution`.
-- `tags` (Set of String) A list of tag keys that will be queryable for your metric.
+- `tags` (Set of String) A list of tag keys that will be queryable for your metric. Note: if default tags are present at provider level, they will be added to this resource.
 
 ### Optional
 

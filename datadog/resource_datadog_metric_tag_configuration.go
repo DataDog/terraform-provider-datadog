@@ -10,6 +10,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
@@ -21,54 +22,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 		ReadContext:   resourceDatadogMetricTagConfigurationRead,
 		UpdateContext: resourceDatadogMetricTagConfigurationUpdate,
 		DeleteContext: resourceDatadogMetricTagConfigurationDelete,
-		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-			_, includePercentilesOk := diff.GetOkExists("include_percentiles")
-			oldAggrs, newAggrs := diff.GetChange("aggregations")
-			metricType, metricTypeOk := diff.GetOkExists("metric_type")
-			tags, _ := diff.GetOkExists("tags")
-			excludeTagsMode, _ := diff.GetOkExists("exclude_tags_mode")
-
-			if excludeTagsMode.(bool) && len(tags.(*schema.Set).List()) == 0 {
-				return fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
-			}
-
-			if !includePercentilesOk && oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
-				// if there was no change to include_percentiles nor aggregations nor metricType we don't need special handling
-				return nil
-			}
-			metricTypeValidated, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(metricType.(string))
-			if err != nil {
-				return fmt.Errorf("error validating diff: %w", err)
-			}
-			if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-				return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
-			}
-
-			if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
-				if !oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) {
-					return fmt.Errorf("cannot use aggregations with a metric_type of %s, must use metric_type of 'count','rate', or 'gauge'", metricType)
-				}
-				diff.SetNew("aggregations", nil)
-			} else {
-				// Always add the default aggregation regardless of if the user manually added it or not
-				var defaultAggrCombo map[string]interface{}
-				if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
-					// the avg/avg combo is the default aggregation for gauge metrics
-					defaultAggrCombo = map[string]interface{}{"time": "avg", "space": "avg"}
-				} else {
-					// the sum/sum combo is the default aggregation for count/rates metrics
-					defaultAggrCombo = map[string]interface{}{"time": "sum", "space": "sum"}
-				}
-
-				newAggrs.(*schema.Set).Add(defaultAggrCombo)
-
-				if err := diff.SetNew("aggregations", newAggrs); err != nil {
-					return err
-				}
-			}
-
-			return nil
-		},
+		CustomizeDiff: customdiff.All(metricTagCustomDiff, tagDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -90,7 +44,7 @@ func resourceDatadogMetricTagConfiguration() *schema.Resource {
 					ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewMetricTagConfigurationMetricTypesFromValue),
 				},
 				"tags": {
-					Description: "A list of tag keys that will be queryable for your metric.",
+					Description: "A list of tag keys that will be queryable for your metric. Note: if default tags are present at provider level, they will be added to this resource.",
 					Type:        schema.TypeSet,
 					Elem: &schema.Schema{
 						Type:         schema.TypeString,
@@ -414,6 +368,55 @@ func resourceDatadogMetricTagConfigurationDelete(ctx context.Context, d *schema.
 
 	if err != nil {
 		return utils.TranslateClientErrorDiag(err, httpResponse, "error deleting MetricTagConfiguration")
+	}
+
+	return nil
+}
+
+func metricTagCustomDiff(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+	_, includePercentilesOk := diff.GetOkExists("include_percentiles")
+	oldAggrs, newAggrs := diff.GetChange("aggregations")
+	metricType, metricTypeOk := diff.GetOkExists("metric_type")
+	tags, _ := diff.GetOkExists("tags")
+	excludeTagsMode, _ := diff.GetOkExists("exclude_tags_mode")
+
+	if excludeTagsMode.(bool) && len(tags.(*schema.Set).List()) == 0 {
+		return fmt.Errorf("cannot use exclude_tags_mode without configuring any tags")
+	}
+
+	if !includePercentilesOk && oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) && !metricTypeOk {
+		// if there was no change to include_percentiles nor aggregations nor metricType we don't need special handling
+		return nil
+	}
+	metricTypeValidated, err := datadogV2.NewMetricTagConfigurationMetricTypesFromValue(metricType.(string))
+	if err != nil {
+		return fmt.Errorf("error validating diff: %w", err)
+	}
+	if includePercentilesOk && *metricTypeValidated != datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		return fmt.Errorf("cannot use include_percentiles with a metric_type of %s, must use metric_type of 'distribution'", metricType)
+	}
+
+	if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_DISTRIBUTION {
+		if !oldAggrs.(*schema.Set).Equal(newAggrs.(*schema.Set)) {
+			return fmt.Errorf("cannot use aggregations with a metric_type of %s, must use metric_type of 'count','rate', or 'gauge'", metricType)
+		}
+		diff.SetNew("aggregations", nil)
+	} else {
+		// Always add the default aggregation regardless of if the user manually added it or not
+		var defaultAggrCombo map[string]interface{}
+		if *metricTypeValidated == datadogV2.METRICTAGCONFIGURATIONMETRICTYPES_GAUGE {
+			// the avg/avg combo is the default aggregation for gauge metrics
+			defaultAggrCombo = map[string]interface{}{"time": "avg", "space": "avg"}
+		} else {
+			// the sum/sum combo is the default aggregation for count/rates metrics
+			defaultAggrCombo = map[string]interface{}{"time": "sum", "space": "sum"}
+		}
+
+		newAggrs.(*schema.Set).Add(defaultAggrCombo)
+
+		if err := diff.SetNew("aggregations", newAggrs); err != nil {
+			return err
+		}
 	}
 
 	return nil
