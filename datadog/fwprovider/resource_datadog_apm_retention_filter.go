@@ -132,7 +132,7 @@ func (r *ApmRetentionFilterResource) Read(ctx context.Context, request resource.
 	}
 
 	attributes := resp.Data.Attributes
-	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), attributes.GetTraceRate(), *attributes.Filter.Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
+	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), attributes.HasTraceRate(), attributes.GetTraceRate(), *attributes.Filter.Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -165,7 +165,7 @@ func (r *ApmRetentionFilterResource) Create(ctx context.Context, request resourc
 	}
 
 	attributes := resp.Data.Attributes
-	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), attributes.GetTraceRate(), *attributes.Filter.Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
+	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), attributes.HasTraceRate(), attributes.GetTraceRate(), *attributes.Filter.Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -200,7 +200,7 @@ func (r *ApmRetentionFilterResource) Update(ctx context.Context, request resourc
 	}
 
 	attributes := resp.Data.Attributes
-	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), attributes.GetTraceRate(), *attributes.GetFilter().Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
+	r.updateState(ctx, &state, resp.Data.Id, attributes.GetName(), attributes.GetRate(), attributes.HasTraceRate(), attributes.GetTraceRate(), *attributes.GetFilter().Query, attributes.GetEnabled(), string(attributes.GetFilterType()))
 
 	// Save data into Terraform state
 	response.Diagnostics.Append(response.State.Set(ctx, &state)...)
@@ -228,7 +228,7 @@ func (r *ApmRetentionFilterResource) Delete(ctx context.Context, request resourc
 	}
 }
 
-func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *ApmRetentionFilterModel, dataId string, name string, rate float64, traceRate float64, query string, enabled bool, filterType string) {
+func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *ApmRetentionFilterModel, dataId string, name string, rate float64, hasTraceRate bool, traceRate float64, query string, enabled bool, filterType string) {
 	state.ID = types.StringValue(dataId)
 	state.Name = types.StringValue(name)
 
@@ -240,7 +240,11 @@ func (r *ApmRetentionFilterResource) updateState(ctx context.Context, state *Apm
 		precision = len(configVal) - i - 1
 	}
 	state.Rate = types.StringValue(strconv.FormatFloat(rate, 'f', precision, 64))
-	state.TraceRate = types.StringValue(strconv.FormatFloat(traceRate, 'f', precision, 64))
+	if hasTraceRate && traceRate > 0 {
+		state.TraceRate = types.StringValue(strconv.FormatFloat(traceRate, 'f', precision, 64))
+	} else {
+		state.TraceRate = types.StringNull()
+	}
 
 	if state.Filter == nil {
 		filter := retentionFilterModel{}
@@ -263,11 +267,16 @@ func (r *ApmRetentionFilterResource) buildRetentionFilterCreateRequestBody(_ con
 		diags.AddError("rate", fmt.Sprintf("error parsing rate: %s", err))
 	}
 	attributes.SetRate(fValue)
-	traceRateFvalue, err := strconv.ParseFloat(state.TraceRate.ValueString(), 64)
-	if err != nil {
-		diags.AddError("trace_rate", fmt.Sprintf("error parsing trace_rate: %s", err))
+	traceRate := state.TraceRate.ValueString()
+	if traceRate == "" || traceRate == "0.0" {
+		attributes.TraceRate = nil
+	} else {
+		traceRateFvalue, err := strconv.ParseFloat(traceRate, 64)
+		if err != nil {
+			diags.AddError("trace_rate", fmt.Sprintf("error parsing trace_rate: %s", err))
+		}
+		attributes.SetTraceRate(traceRateFvalue)
 	}
-	attributes.SetTraceRate(traceRateFvalue)
 	attributes.Filter.Query = state.Filter.Query.ValueString()
 
 	req := datadogV2.NewRetentionFilterCreateRequestWithDefaults()
@@ -288,11 +297,16 @@ func (r *ApmRetentionFilterResource) buildApmRetentionFilterUpdateRequestBody(_ 
 		diags.AddError("rate", fmt.Sprintf("error parsing rate: %s", err))
 	}
 	attributes.SetRate(fValue)
-	traceRateFvalue, err := strconv.ParseFloat(state.TraceRate.ValueString(), 64)
-	if err != nil {
-		diags.AddError("trace_rate", fmt.Sprintf("error parsing trace_rate: %s", err))
+	if state.TraceRate.IsNull() || state.TraceRate.IsUnknown() || state.TraceRate.ValueString() == "" || state.TraceRate.ValueString() == "0.0" {
+		attributes.TraceRate = nil
+	} else {
+		traceRateFvalue, err := strconv.ParseFloat(state.TraceRate.ValueString(), 64)
+		if err != nil {
+			diags.AddError("trace_rate", fmt.Sprintf("error parsing trace_rate: %s", err))
+		}
+		attributes.SetTraceRate(traceRateFvalue)
 	}
-	attributes.SetTraceRate(traceRateFvalue)
+
 	attributes.SetEnabled(state.Enabled.ValueBool())
 	attributes.Filter.Query = state.Filter.Query.ValueString()
 
