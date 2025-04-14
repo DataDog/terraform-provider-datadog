@@ -1,4 +1,4 @@
-{%- set apiName = operations["singular"]["schema"]["tags"][0].replace(" ", "") + "Api" %}
+{%- set apiName = operations["singular"]["schema"]["tags"][0].replace(" ", "").replace("-", "") + "Api" %}
 {%- set singularParams = operations["singular"]["schema"]|parameters %}
 {%- set singularParamAttr = singularParams|sort_schemas_by_type%}
 

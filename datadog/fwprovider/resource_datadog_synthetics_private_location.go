@@ -159,7 +159,7 @@ func (r *syntheticsPrivateLocationResource) Create(ctx context.Context, request 
 
 	resp, _, err := r.Api.CreatePrivateLocation(r.Auth, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving SyntheticsPrivateLocation"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error creating SyntheticsPrivateLocation"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -200,7 +200,7 @@ func (r *syntheticsPrivateLocationResource) Update(ctx context.Context, request 
 
 	resp, _, err := r.Api.UpdatePrivateLocation(r.Auth, id, *body)
 	if err != nil {
-		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error retrieving SyntheticsPrivateLocation"))
+		response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error updating SyntheticsPrivateLocation"))
 		return
 	}
 	if err := utils.CheckForUnparsed(resp); err != nil {
@@ -226,7 +226,7 @@ func (r *syntheticsPrivateLocationResource) Delete(ctx context.Context, request 
 	if err != nil {
 		if httpResp == nil || httpResp.StatusCode != 404 {
 			// The resource is assumed to still exist, and all prior state is preserved.
-			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting synthetics_private_location"))
+			response.Diagnostics.Append(utils.FrameworkErrorDiag(err, "error deleting SyntheticsPrivateLocation"))
 			return
 		}
 	}

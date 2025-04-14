@@ -1,4 +1,4 @@
-{%- set apiName = operations[GET_OPERATION]["schema"]["tags"][0].replace(" ", "") + "Api" %}
+{%- set apiName = operations[GET_OPERATION]["schema"]["tags"][0].replace(" ", "").replace("-", "") + "Api" %}
 {%- set getOperationId = operations[GET_OPERATION]["schema"]["operationId"] %}
 {%- set updateOperationId = operations[UPDATE_OPERATION]["schema"]["operationId"] %}
 {%- set createOperationId = operations[CREATE_OPERATION]["schema"]["operationId"] %}
