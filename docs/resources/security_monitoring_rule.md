@@ -96,7 +96,7 @@ Optional:
 
 Required:
 
-- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`.
+- `type` (String) Type of action to perform when the case triggers. Valid values are `block_ip`, `block_user`, `user_behavior`.
 
 Optional:
 

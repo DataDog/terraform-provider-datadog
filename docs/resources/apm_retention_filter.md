@@ -38,6 +38,7 @@ resource "datadog_apm_retention_filter" "foo" {
 ### Optional
 
 - `filter` (Block, Optional) The spans filter. Spans matching this filter will be indexed and stored. (see [below for nested schema](#nestedblock--filter))
+- `trace_rate` (String) Sample rate to apply to traces with spans going through this retention filter as a string, a value of 1.0 keeps all traces matching the query. Value must be between 0.00 and 1.00.
 
 ### Read-Only
 
