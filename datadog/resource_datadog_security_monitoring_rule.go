@@ -363,6 +363,13 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 							ValidateDiagFunc: validators.ValidateNonEmptyStrings,
 						},
 					},
+					"data_source": {
+						Type:             schema.TypeString,
+						ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringStandardDataSourceFromValue),
+						Optional:         true,
+						Description:      "Source of events.",
+						Default:          datadogV2.SECURITYMONITORINGSTANDARDDATASOURCE_LOGS,
+					},
 					"metric": {
 						Type:        schema.TypeString,
 						Deprecated:  "Configure `metrics` instead. This attribute will be removed in the next major version of the provider.",
@@ -1047,6 +1054,11 @@ func buildCreateStandardPayloadQueries(d utils.Resource) []datadogV2.SecurityMon
 			payloadQuery.SetDistinctFields(parseStringArray(v.([]interface{})))
 		}
 
+		if v, ok := query["data_source"]; ok {
+			dataSource := datadogV2.SecurityMonitoringStandardDataSource(v.(string))
+			payloadQuery.SetDataSource(dataSource)
+		}
+
 		if v, ok := query["metric"]; ok {
 			payloadQuery.SetMetric(v.(string))
 		}
@@ -1270,6 +1282,9 @@ func extractStandardRuleQueries(responseRuleQueries []datadogV2.SecurityMonitori
 		}
 		if groupByFields, ok := responseRuleQuery.GetGroupByFieldsOk(); ok {
 			ruleQuery["group_by_fields"] = *groupByFields
+		}
+		if dataSource, ok := responseRuleQuery.GetDataSourceOk(); ok {
+			ruleQuery["data_source"] = *dataSource
 		}
 		if metric, ok := responseRuleQuery.GetMetricOk(); ok {
 			ruleQuery["metric"] = *metric
@@ -1623,6 +1638,11 @@ func buildUpdateStandardRuleQuery(tfQuery interface{}) *datadogV2.SecurityMonito
 
 	if v, ok := query["distinct_fields"]; ok {
 		payloadQuery.SetDistinctFields(parseStringArray(v.([]interface{})))
+	}
+
+	if v, ok := query["data_source"]; ok {
+		dataSource := datadogV2.SecurityMonitoringStandardDataSource(v.(string))
+		payloadQuery.SetDataSource(dataSource)
 	}
 
 	if v, ok := query["metric"]; ok {
