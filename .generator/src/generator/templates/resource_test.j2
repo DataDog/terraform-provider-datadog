@@ -1,6 +1,6 @@
 {%- import "utils/resource_test_helper.j2" as helperMacros %}
 
-{%- set apiName = operations[GET_OPERATION]["schema"]["tags"][0].replace(" ", "") + "Api" %}
+{%- set apiName = operations[GET_OPERATION]["schema"]["tags"][0].replace(" ", "").replace("-", "") + "Api" %}
 {%- set getOperationId = operations[GET_OPERATION]["schema"]["operationId"] %}
 {%- set deleteOperationId = operations[DELETE_OPERATION]["schema"]["operationId"] %}
 {%- set readOperationParams = operations[GET_OPERATION]["schema"]|parameters %}
