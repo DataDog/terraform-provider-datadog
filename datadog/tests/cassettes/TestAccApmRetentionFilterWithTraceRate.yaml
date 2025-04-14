@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":false,"filter":{"query":"error_code:456 service:my-other-service"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232 - second","rate":0.1,"trace_rate":0.5},"type":"apm_retention_filter"}}
+            {"data":{"attributes":{"enabled":false,"filter":{"query":"error_code:456 service:my-other-service"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702 - second","rate":0.1,"trace_rate":0.5},"type":"apm_retention_filter"}}
         form: {}
         headers:
             Accept:
@@ -32,13 +32,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"T7EprT1XSk29x5YGAMJeww","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232 - second","rate":0.1,"trace_rate":0.5,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638234,"created_by":"frog@datadoghq.com","created_at":1744638234},"type":"apm_retention_filter"}}
+            {"data":{"id":"D_GzebETREud_eWvRSiTjg","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702 - second","rate":0.1,"trace_rate":0.5,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672704,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 783.725125ms
+        duration: 314.645375ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -51,7 +51,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:456 service:my-other-service"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232","rate":0.1,"trace_rate":0.5},"type":"apm_retention_filter"}}
+            {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:456 service:my-other-service"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702","rate":0.1,"trace_rate":0.5},"type":"apm_retention_filter"}}
         form: {}
         headers:
             Accept:
@@ -70,13 +70,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"pioGDzBtSm2vPO_4ck-maQ","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232","rate":0.1,"trace_rate":0.5,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638235,"created_by":"frog@datadoghq.com","created_at":1744638235},"type":"apm_retention_filter"}}
+            {"data":{"id":"HhR4d-G-RTmlDZZmQwC5qw","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702","rate":0.1,"trace_rate":0.5,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672704,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 417.965042ms
+        duration: 481.6465ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -93,7 +93,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/pioGDzBtSm2vPO_4ck-maQ
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/HhR4d-G-RTmlDZZmQwC5qw
         method: GET
       response:
         proto: HTTP/1.1
@@ -105,13 +105,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"pioGDzBtSm2vPO_4ck-maQ","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232","rate":0.1,"trace_rate":0.5,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638235,"created_by":"frog@datadoghq.com","created_at":1744638235},"type":"apm_retention_filter"}}
+            {"data":{"id":"HhR4d-G-RTmlDZZmQwC5qw","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702","rate":0.1,"trace_rate":0.5,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672704,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 251.113708ms
+        duration: 208.723833ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -128,7 +128,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/T7EprT1XSk29x5YGAMJeww
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/D_GzebETREud_eWvRSiTjg
         method: GET
       response:
         proto: HTTP/1.1
@@ -140,13 +140,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"T7EprT1XSk29x5YGAMJeww","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232 - second","rate":0.1,"trace_rate":0.5,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638234,"created_by":"frog@datadoghq.com","created_at":1744638234},"type":"apm_retention_filter"}}
+            {"data":{"id":"D_GzebETREud_eWvRSiTjg","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702 - second","rate":0.1,"trace_rate":0.5,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672704,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 233.96775ms
+        duration: 383.166667ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -163,7 +163,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/T7EprT1XSk29x5YGAMJeww
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/HhR4d-G-RTmlDZZmQwC5qw
         method: GET
       response:
         proto: HTTP/1.1
@@ -175,13 +175,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"T7EprT1XSk29x5YGAMJeww","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232 - second","rate":0.1,"trace_rate":0.5,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638234,"created_by":"frog@datadoghq.com","created_at":1744638234},"type":"apm_retention_filter"}}
+            {"data":{"id":"HhR4d-G-RTmlDZZmQwC5qw","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702","rate":0.1,"trace_rate":0.5,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672704,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 245.77325ms
+        duration: 207.572416ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -198,7 +198,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/pioGDzBtSm2vPO_4ck-maQ
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/D_GzebETREud_eWvRSiTjg
         method: GET
       response:
         proto: HTTP/1.1
@@ -210,13 +210,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"pioGDzBtSm2vPO_4ck-maQ","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232","rate":0.1,"trace_rate":0.5,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638235,"created_by":"frog@datadoghq.com","created_at":1744638235},"type":"apm_retention_filter"}}
+            {"data":{"id":"D_GzebETREud_eWvRSiTjg","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702 - second","rate":0.1,"trace_rate":0.5,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672704,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 496.369375ms
+        duration: 222.196625ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -233,7 +233,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/pioGDzBtSm2vPO_4ck-maQ
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/HhR4d-G-RTmlDZZmQwC5qw
         method: GET
       response:
         proto: HTTP/1.1
@@ -245,13 +245,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"pioGDzBtSm2vPO_4ck-maQ","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232","rate":0.1,"trace_rate":0.5,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638235,"created_by":"frog@datadoghq.com","created_at":1744638235},"type":"apm_retention_filter"}}
+            {"data":{"id":"HhR4d-G-RTmlDZZmQwC5qw","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702","rate":0.1,"trace_rate":0.5,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672704,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 237.209959ms
+        duration: 205.142ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -268,7 +268,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/T7EprT1XSk29x5YGAMJeww
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/D_GzebETREud_eWvRSiTjg
         method: GET
       response:
         proto: HTTP/1.1
@@ -280,13 +280,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"T7EprT1XSk29x5YGAMJeww","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232 - second","rate":0.1,"trace_rate":0.5,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638234,"created_by":"frog@datadoghq.com","created_at":1744638234},"type":"apm_retention_filter"}}
+            {"data":{"id":"D_GzebETREud_eWvRSiTjg","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702 - second","rate":0.1,"trace_rate":0.5,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456 service:my-other-service"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672704,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 238.239375ms
+        duration: 208.82975ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -299,14 +299,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":false,"filter":{"query":"error_code:456"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232 - second","rate":1,"trace_rate":0.8},"id":"","type":"apm_retention_filter"}}
+            {"data":{"attributes":{"enabled":false,"filter":{"query":"error_code:456"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702 - second","rate":1,"trace_rate":0.8},"id":"","type":"apm_retention_filter"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/T7EprT1XSk29x5YGAMJeww
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/D_GzebETREud_eWvRSiTjg
         method: PUT
       response:
         proto: HTTP/1.1
@@ -318,13 +318,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"T7EprT1XSk29x5YGAMJeww","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232 - second","rate":1.0,"trace_rate":0.8,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638237,"created_by":"frog@datadoghq.com","created_at":1744638234},"type":"apm_retention_filter"}}
+            {"data":{"id":"D_GzebETREud_eWvRSiTjg","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702 - second","rate":1.0,"trace_rate":0.8,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672707,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 370.03925ms
+        duration: 369.50525ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -337,14 +337,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:456"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232","rate":1,"trace_rate":0.8},"id":"","type":"apm_retention_filter"}}
+            {"data":{"attributes":{"enabled":true,"filter":{"query":"error_code:456"},"filter_type":"spans-sampling-processor","name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702","rate":1,"trace_rate":0.8},"id":"","type":"apm_retention_filter"}}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/pioGDzBtSm2vPO_4ck-maQ
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/HhR4d-G-RTmlDZZmQwC5qw
         method: PUT
       response:
         proto: HTTP/1.1
@@ -356,13 +356,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"pioGDzBtSm2vPO_4ck-maQ","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232","rate":1.0,"trace_rate":0.8,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638237,"created_by":"frog@datadoghq.com","created_at":1744638235},"type":"apm_retention_filter"}}
+            {"data":{"id":"HhR4d-G-RTmlDZZmQwC5qw","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702","rate":1.0,"trace_rate":0.8,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672707,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 404.508375ms
+        duration: 333.171333ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -379,7 +379,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/pioGDzBtSm2vPO_4ck-maQ
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/HhR4d-G-RTmlDZZmQwC5qw
         method: GET
       response:
         proto: HTTP/1.1
@@ -391,13 +391,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"pioGDzBtSm2vPO_4ck-maQ","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232","rate":1.0,"trace_rate":0.8,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638237,"created_by":"frog@datadoghq.com","created_at":1744638235},"type":"apm_retention_filter"}}
+            {"data":{"id":"HhR4d-G-RTmlDZZmQwC5qw","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702","rate":1.0,"trace_rate":0.8,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672707,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 228.897291ms
+        duration: 221.807ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -414,7 +414,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/T7EprT1XSk29x5YGAMJeww
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/D_GzebETREud_eWvRSiTjg
         method: GET
       response:
         proto: HTTP/1.1
@@ -426,13 +426,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"T7EprT1XSk29x5YGAMJeww","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232 - second","rate":1.0,"trace_rate":0.8,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638237,"created_by":"frog@datadoghq.com","created_at":1744638234},"type":"apm_retention_filter"}}
+            {"data":{"id":"D_GzebETREud_eWvRSiTjg","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702 - second","rate":1.0,"trace_rate":0.8,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672707,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 223.632834ms
+        duration: 247.234333ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -449,7 +449,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/T7EprT1XSk29x5YGAMJeww
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/HhR4d-G-RTmlDZZmQwC5qw
         method: GET
       response:
         proto: HTTP/1.1
@@ -461,13 +461,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"T7EprT1XSk29x5YGAMJeww","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232 - second","rate":1.0,"trace_rate":0.8,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638237,"created_by":"frog@datadoghq.com","created_at":1744638234},"type":"apm_retention_filter"}}
+            {"data":{"id":"HhR4d-G-RTmlDZZmQwC5qw","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702","rate":1.0,"trace_rate":0.8,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672707,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 238.004333ms
+        duration: 200.867375ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -484,7 +484,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/pioGDzBtSm2vPO_4ck-maQ
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/D_GzebETREud_eWvRSiTjg
         method: GET
       response:
         proto: HTTP/1.1
@@ -496,13 +496,13 @@ interactions:
         content_length: -1
         uncompressed: true
         body: |
-            {"data":{"id":"pioGDzBtSm2vPO_4ck-maQ","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744638232","rate":1.0,"trace_rate":0.8,"enabled":true,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744638237,"created_by":"frog@datadoghq.com","created_at":1744638235},"type":"apm_retention_filter"}}
+            {"data":{"id":"D_GzebETREud_eWvRSiTjg","attributes":{"name":"tf-TestAccApmRetentionFilterWithTraceRate-local-1744672702 - second","rate":1.0,"trace_rate":0.8,"enabled":false,"filter_type":"spans-sampling-processor","filter":{"query":"error_code:456"},"editable":true,"modified_by":"frog@datadoghq.com","modified_at":1744672707,"created_by":"frog@datadoghq.com","created_at":1744672704},"type":"apm_retention_filter"}}
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 244.413583ms
+        duration: 200.965542ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -519,7 +519,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/T7EprT1XSk29x5YGAMJeww
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/D_GzebETREud_eWvRSiTjg
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -536,7 +536,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 358.089ms
+        duration: 313.034958ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -553,7 +553,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/pioGDzBtSm2vPO_4ck-maQ
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/HhR4d-G-RTmlDZZmQwC5qw
         method: DELETE
       response:
         proto: HTTP/1.1
@@ -570,7 +570,7 @@ interactions:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 525.430875ms
+        duration: 350.760542ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -587,7 +587,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/pioGDzBtSm2vPO_4ck-maQ
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/HhR4d-G-RTmlDZZmQwC5qw
         method: GET
       response:
         proto: HTTP/1.1
@@ -598,13 +598,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["retention filter with id: ''pioGDzBtSm2vPO_4ck-maQ'' not found"]}'
+        body: '{"errors":["retention filter with id: ''HhR4d-G-RTmlDZZmQwC5qw'' not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 254.039208ms
+        duration: 234.991125ms
     - id: 17
       request:
         proto: HTTP/1.1
@@ -621,7 +621,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/T7EprT1XSk29x5YGAMJeww
+        url: https://api.datadoghq.com/api/v2/apm/config/retention-filters/D_GzebETREud_eWvRSiTjg
         method: GET
       response:
         proto: HTTP/1.1
@@ -632,10 +632,10 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"errors":["retention filter with id: ''T7EprT1XSk29x5YGAMJeww'' not found"]}'
+        body: '{"errors":["retention filter with id: ''D_GzebETREud_eWvRSiTjg'' not found"]}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 250.684875ms
+        duration: 222.162833ms

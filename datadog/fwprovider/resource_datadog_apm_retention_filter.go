@@ -80,11 +80,11 @@ func (r *ApmRetentionFilterResource) Schema(_ context.Context, _ resource.Schema
 				Validators:  []validator.String{validators.NewEnumValidator[validator.String](datadogV2.NewRetentionFilterTypeFromValue)},
 			},
 			"rate": schema.StringAttribute{
-				Description: "Sample rate to apply to spans going through this retention filter as a string, a value of 1.0 keeps all spans matching the query.",
+				Description: "Sample rate to apply to spans going through this retention filter as a string; a value of 1.0 keeps all spans matching the query.",
 				Required:    true,
 				Validators:  []validator.String{validators.Float64Between(0, 1)}},
 			"trace_rate": schema.StringAttribute{
-				Description: "Sample rate to apply to traces with spans going through this retention filter as a string, a value of 1.0 keeps all traces matching the query.",
+				Description: "Sample rate to apply to traces with spans going through this retention filter as a string; a value of 1.0 keeps all traces matching the query.",
 				Optional:    true,
 				Validators:  []validator.String{validators.Float64Between(0, 1)}},
 		},
