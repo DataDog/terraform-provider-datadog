@@ -7,6 +7,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 
 	"github.com/terraform-providers/terraform-provider-datadog/datadog/internal/utils"
@@ -41,6 +42,7 @@ func resourceDatadogCloudConfigurationRule() *schema.Resource {
 		SchemaFunc: func() map[string]*schema.Schema {
 			return cloudConfigurationRuleSchema()
 		},
+		CustomizeDiff: customdiff.All(tagDiffList),
 	}
 }
 
@@ -100,7 +102,8 @@ func cloudConfigurationRuleSchema() map[string]*schema.Schema {
 		tagsField: {
 			Type:        schema.TypeList,
 			Optional:    true,
-			Description: "Tags of the rule, propagated to findings and signals. Defaults to empty list.",
+			Computed:    true,
+			Description: "Tags of the rule, propagated to findings and signals. Defaults to empty list. Note: if default tags are present at provider level, they will be added to this resource.",
 			Elem:        &schema.Schema{Type: schema.TypeString},
 		},
 		filterField: {
