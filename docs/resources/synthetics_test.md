@@ -429,7 +429,7 @@ resource "datadog_synthetics_test" "test_browser" {
     params {
       files = jsonencode([{
         name    = "hello.txt"   // Name of the file
-        size    = 11            // Size of the file
+        size    = 11            // Size of the file in bytes
         content = "Hello world" // Content of the file
       }])
       element = "*[@id='simple-file-upload']"
