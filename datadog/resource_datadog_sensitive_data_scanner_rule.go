@@ -5,6 +5,7 @@ import (
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
@@ -22,6 +23,7 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		CustomizeDiff: customdiff.All(tagDiffList),
 
 		SchemaFunc: func() map[string]*schema.Schema {
 			return map[string]*schema.Schema{
@@ -72,7 +74,8 @@ func resourceDatadogSensitiveDataScannerRule() *schema.Resource {
 				"tags": {
 					Type:        schema.TypeList,
 					Optional:    true,
-					Description: "List of tags.",
+					Computed:    true,
+					Description: "List of tags. Note: if default tags are present at provider level, they will be added to this resource.",
 					Elem:        &schema.Schema{Type: schema.TypeString},
 				},
 				"included_keyword_configuration": {

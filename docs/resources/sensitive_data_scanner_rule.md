@@ -104,7 +104,7 @@ resource "datadog_sensitive_data_scanner_rule" "mylibraryrule_with_recommended_k
 - `pattern` (String) Not included if there is a relationship to a standard pattern.
 - `priority` (Number) Priority level of the rule (optional). Used to order sensitive data discovered in the sds summary page. It must be between 1 and 5 (1 being the most important).
 - `standard_pattern_id` (String) Id of the standard pattern the rule refers to. If provided, then pattern must not be provided.
-- `tags` (List of String) List of tags.
+- `tags` (List of String) List of tags. Note: if default tags are present at provider level, they will be added to this resource.
 - `text_replacement` (Block List, Max: 1) Object describing how the scanned event will be replaced. Defaults to `type: none` (see [below for nested schema](#nestedblock--text_replacement))
 
 ### Read-Only
