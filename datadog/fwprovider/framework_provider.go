@@ -220,13 +220,13 @@ func (p *FrameworkProvider) Schema(_ context.Context, _ provider.SchemaRequest, 
 				Validators: []validator.List{
 					listvalidator.SizeAtMost(1),
 				},
-				Description: "[Experimental - Cloud Configuration Rule, Logs Pipelines, Monitors, Powerpack, Security Monitoring Rule, and Sensitive Data Scanner Rule only] Configuration block containing settings to apply default resource tags across all resources.",
+				Description: "[Experimental - Cloud Configuration Rule, Logs Pipelines, Monitors, Powerpack, Security Monitoring Rule, Sensitive Data Scanner Rule, and Service Level Objective only] Configuration block containing settings to apply default resource tags across all resources.",
 				NestedObject: schema.NestedBlockObject{
 					Attributes: map[string]schema.Attribute{
 						"tags": schema.MapAttribute{
 							ElementType: types.StringType,
 							Optional:    true,
-							Description: "[Experimental - Cloud Configuration Rule, Logs Pipelines, Monitors, Powerpack, Security Monitoring Rule, and Sensitive Data Scanner Rule only] Resource tags to be applied by default across all resources.",
+							Description: "[Experimental - Cloud Configuration Rule, Logs Pipelines, Monitors, Powerpack, Security Monitoring Rule, Sensitive Data Scanner Rule, and Service Level Objective only] Resource tags to be applied by default across all resources.",
 						},
 					},
 				},
