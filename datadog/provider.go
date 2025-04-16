@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+	"github.com/DataDog/datadog-api-client-go/v2/delegated_auth"
 	"github.com/hashicorp/go-cleanhttp"
 	"github.com/hashicorp/go-cty/cty"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -95,6 +96,21 @@ func Provider() *schema.Provider {
 				Optional:     true,
 				Description:  "Enables validation of the provided API key during provider initialization. Valid values are [`true`, `false`]. Default is true. When false, api_key won't be checked.",
 				ValidateFunc: validation.StringInSlice([]string{"true", "false"}, true),
+			},
+			"cloud_provider_type": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The cloud provider type. Valid values are [`aws`]. We will add support for more cloud providers in the future.",
+			},
+			"cloud_provider_region": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The cloud provider region specifier. Ex `us-east-1` for AWS.",
+			},
+			"org_uuid": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Description: "The organization UUID. Please refer to the [Datadog API documentation](https://docs.datadoghq.com/api/v1/organizations/) for more information.",
 			},
 			"http_client_retry_enabled": {
 				Type:         schema.TypeString,
@@ -281,6 +297,14 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		apiURL, _ = utils.GetMultiEnvVar(utils.APIUrlEnvVars[:]...)
 	}
 
+	cloudProviderType := d.Get("cloud_provider_type").(string)
+	cloudProviderRegion := d.Get("cloud_provider_region").(string)
+
+	orgUUID := d.Get("org_uuid").(string)
+	if orgUUID == "" {
+		orgUUID, _ = utils.GetMultiEnvVar(utils.OrgUUIDEnvVars[:]...)
+	}
+
 	httpRetryEnabled := true
 	httpRetryEnabledStr := d.Get("http_client_retry_enabled").(string)
 	if httpRetryEnabledStr == "" {
@@ -297,8 +321,17 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 		validate, _ = strconv.ParseBool(v)
 	}
 
-	if validate && (apiKey == "" || appKey == "") {
-		return nil, diag.FromErr(errors.New("api_key and app_key must be set unless validate = false"))
+	if validate {
+		if cloudProviderType == "" && (apiKey == "" || appKey == "") {
+			return nil, diag.FromErr(errors.New("api_key and app_key or orgUUID must be set unless validate = false"))
+		} else if cloudProviderType != "" && orgUUID == "" {
+			return nil, diag.FromErr(errors.New("orgUUID must be set when using cloud provider auth unless validate = false"))
+		} else if cloudProviderType != "" && cloudProviderRegion == "" {
+			if cloudProviderType == "aws" {
+				// Default to us-east-1 for AWS
+				cloudProviderRegion = "us-east-1"
+			}
+		}
 	}
 
 	// Initialize the community client
@@ -319,18 +352,41 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	communityClient.HttpClient = c
 
 	// Initialize the official Datadog V1 API client
-	auth := context.WithValue(
-		context.Background(),
-		datadog.ContextAPIKeys,
-		map[string]datadog.APIKey{
-			"apiKeyAuth": {
-				Key: apiKey,
+	auth := context.Background()
+	if apiKey != "" || appKey != "" {
+		auth = context.WithValue(
+			auth,
+			datadog.ContextAPIKeys,
+			map[string]datadog.APIKey{
+				"apiKeyAuth": {
+					Key: apiKey,
+				},
+				"appKeyAuth": {
+					Key: appKey,
+				},
 			},
-			"appKeyAuth": {
-				Key: appKey,
-			},
-		},
-	)
+		)
+	} else if cloudProviderType != "" {
+		switch cloudProviderType {
+		case "aws":
+			awsAuth := delegated_auth.AWSAuth{
+				AwsRegion: cloudProviderRegion,
+			}
+			auth = context.WithValue(
+				auth,
+				datadog.ContextDelegatedToken,
+				&datadog.DelegatedTokenConfig{
+					DelegatedTokenCredentials: datadog.DelegatedTokenCredentials{
+						OrgUUID: orgUUID,
+					},
+					ProviderAuth: &awsAuth,
+					Provider:     "aws",
+				},
+			)
+		default:
+			return nil, diag.FromErr(errors.New("cloud_provider_type must be set to a valid value unless validate = false"))
+		}
+	}
 
 	config := datadog.NewConfiguration()
 	config.RetryConfiguration.EnableRetry = httpRetryEnabled

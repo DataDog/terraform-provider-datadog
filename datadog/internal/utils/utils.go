@@ -34,11 +34,17 @@ const DDAPIKeyEnvName = "DD_API_KEY"
 // DDAPIUrlEnvName name of env var for API key
 const DDAPIUrlEnvName = "DD_HOST"
 
+// DDOrgUUIDEnvName name of env var for Org UUID
+const DDOrgUUIDEnvName = "DD_ORG_UUID"
+
 // DatadogAPPKeyEnvName name of env var for APP key
 const DatadogAPPKeyEnvName = "DATADOG_APP_KEY"
 
 // DatadogAPIKeyEnvName name of env var for API key
 const DatadogAPIKeyEnvName = "DATADOG_API_KEY"
+
+// DatadogOrgUUIDEnvName name of env var for Org UUID
+const DatadogOrgUUIDEnvName = "DATADOG_ORG_UUID"
 
 // DatadogAPIUrlEnvName name of env var for API key
 const DatadogAPIUrlEnvName = "DATADOG_HOST"
@@ -66,6 +72,9 @@ var APPKeyEnvVars = []string{DDAPPKeyEnvName, DatadogAPPKeyEnvName}
 
 // APIKeyEnvVars names of env var for API key
 var APIKeyEnvVars = []string{DDAPIKeyEnvName, DatadogAPIKeyEnvName}
+
+// OrgUUIDEnvVars names of env var for Org UUID
+var OrgUUIDEnvVars = []string{DDOrgUUIDEnvName, DatadogOrgUUIDEnvName}
 
 // APIUrlEnvVars names of env var for API key
 var APIUrlEnvVars = []string{DDAPIUrlEnvName, DatadogAPIUrlEnvName}
