@@ -1365,7 +1365,7 @@ Optional:
 
 Required:
 
-- `tick_every` (Number) How often the test should run (in seconds).
+- `tick_every` (Number) How often the test should run (in seconds). Valid values are `60 - 604800` for browser tests, `30 - 604800` for api tests, and `300 - 604800` for mobile tests, 
 
 Optional:
 
