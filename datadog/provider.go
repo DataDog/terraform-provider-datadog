@@ -229,7 +229,6 @@ func Provider() *schema.Provider {
 			"datadog_logs_indexes":                            dataSourceDatadogLogsIndexes(),
 			"datadog_logs_indexes_order":                      dataSourceDatadogLogsIndexesOrder(),
 			"datadog_logs_pipelines":                          dataSourceDatadogLogsPipelines(),
-			"datadog_metric_tags":                             dataSourceDatadogMetricTags(),
 			"datadog_monitor":                                 dataSourceDatadogMonitor(),
 			"datadog_monitors":                                dataSourceDatadogMonitors(),
 			"datadog_monitor_config_policies":                 dataSourceDatadogMonitorConfigPolicies(),
