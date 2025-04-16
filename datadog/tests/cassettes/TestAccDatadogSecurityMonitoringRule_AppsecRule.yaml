@@ -13,7 +13,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -34,7 +34,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 130.266375ms
+        duration: 160.409875ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -47,7 +47,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -68,7 +68,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 139.131ms
+        duration: 144.271542ms
     - id: 2
       request:
         proto: HTTP/1.1
@@ -81,7 +81,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -98,13 +98,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980","createdAt":1744807982128,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"2az-p0q-j3s","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752","createdAt":1744809754151,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"mya-5ym-avw","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 134.405542ms
+        duration: 161.985709ms
     - id: 3
       request:
         proto: HTTP/1.1
@@ -121,7 +121,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security_monitoring/rules/2az-p0q-j3s
+        url: https://api.datad0g.com/api/v2/security_monitoring/rules/mya-5ym-avw
         method: GET
       response:
         proto: HTTP/2.0
@@ -131,13 +131,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980","createdAt":1744807982128,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"2az-p0q-j3s","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752","createdAt":1744809754151,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"mya-5ym-avw","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 134.914583ms
+        duration: 128.689667ms
     - id: 4
       request:
         proto: HTTP/1.1
@@ -150,7 +150,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -171,7 +171,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 116.638125ms
+        duration: 161.087792ms
     - id: 5
       request:
         proto: HTTP/1.1
@@ -188,7 +188,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security_monitoring/rules/2az-p0q-j3s
+        url: https://api.datad0g.com/api/v2/security_monitoring/rules/mya-5ym-avw
         method: GET
       response:
         proto: HTTP/2.0
@@ -198,13 +198,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980","createdAt":1744807982128,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"2az-p0q-j3s","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752","createdAt":1744809754151,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"mya-5ym-avw","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 114.379458ms
+        duration: 165.640292ms
     - id: 6
       request:
         proto: HTTP/1.1
@@ -217,7 +217,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":3600,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 600000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":false,"message":"acceptance rule triggered","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752","options":{"detectionMethod":"threshold","evaluationWindow":300,"keepAlive":600,"maxSignalDuration":900},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -238,7 +238,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 114.562042ms
+        duration: 154.846833ms
     - id: 7
       request:
         proto: HTTP/1.1
@@ -255,7 +255,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security_monitoring/rules/2az-p0q-j3s
+        url: https://api.datad0g.com/api/v2/security_monitoring/rules/mya-5ym-avw
         method: GET
       response:
         proto: HTTP/2.0
@@ -265,13 +265,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980","createdAt":1744807982128,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"2az-p0q-j3s","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"","name":""}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752","createdAt":1744809754151,"isDefault":false,"isPartner":false,"isEnabled":false,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":300,"detectionMethod":"threshold","maxSignalDuration":900,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 600000","actions":[{"type":"block_ip","options":{"duration":3600}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":1,"id":"mya-5ym-avw","blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"","name":""}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 118.4365ms
+        duration: 347.559875ms
     - id: 8
       request:
         proto: HTTP/1.1
@@ -284,7 +284,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -305,7 +305,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 109.171542ms
+        duration: 165.852791ms
     - id: 9
       request:
         proto: HTTP/1.1
@@ -318,7 +318,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -339,7 +339,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 120.129625ms
+        duration: 510.566375ms
     - id: 10
       request:
         proto: HTTP/1.1
@@ -352,14 +352,14 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"]}
+            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"filters":[],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"]}
         form: {}
         headers:
             Accept:
                 - application/json
             Content-Type:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security_monitoring/rules/2az-p0q-j3s
+        url: https://api.datad0g.com/api/v2/security_monitoring/rules/mya-5ym-avw
         method: PUT
       response:
         proto: HTTP/2.0
@@ -369,13 +369,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980 - updated","isEnabled":true,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"id":"2az-p0q-j3s","version":2,"createdAt":1744807982128,"creationAuthorId":30180796,"updateAuthorId":30180796,"updatedAt":1744807984290,"isDefault":false,"blocking":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752 - updated","isEnabled":true,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"id":"mya-5ym-avw","version":2,"createdAt":1744809754151,"creationAuthorId":30180796,"updateAuthorId":30180796,"updatedAt":1744809757653,"isDefault":false,"blocking":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 197.534333ms
+        duration: 595.023125ms
     - id: 11
       request:
         proto: HTTP/1.1
@@ -392,7 +392,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security_monitoring/rules/2az-p0q-j3s
+        url: https://api.datad0g.com/api/v2/security_monitoring/rules/mya-5ym-avw
         method: GET
       response:
         proto: HTTP/2.0
@@ -402,13 +402,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980 - updated","createdAt":1744807982128,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":2,"id":"2az-p0q-j3s","updatedAt":1744807984290,"blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"updateAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752 - updated","createdAt":1744809754151,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":2,"id":"mya-5ym-avw","updatedAt":1744809757653,"blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"updateAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 124.864459ms
+        duration: 140.302ms
     - id: 12
       request:
         proto: HTTP/1.1
@@ -421,7 +421,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -442,7 +442,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 110.79925ms
+        duration: 123.497291ms
     - id: 13
       request:
         proto: HTTP/1.1
@@ -459,7 +459,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security_monitoring/rules/2az-p0q-j3s
+        url: https://api.datad0g.com/api/v2/security_monitoring/rules/mya-5ym-avw
         method: GET
       response:
         proto: HTTP/2.0
@@ -469,13 +469,13 @@ interactions:
         trailer: {}
         content_length: -1
         uncompressed: true
-        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980 - updated","createdAt":1744807982128,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":2,"id":"2az-p0q-j3s","updatedAt":1744807984290,"blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"updateAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"}}'
+        body: '{"name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752 - updated","createdAt":1744809754151,"isDefault":false,"isPartner":false,"isEnabled":true,"isBeta":false,"isDeleted":false,"isDeprecated":false,"queries":[{"query":"@appsec.security_activity:attack_attempt.*","groupByFields":["service","env"],"hasOptionalGroupByFields":false,"distinctFields":[],"aggregation":"count","name":"first","dataSource":"app_sec_spans"}],"options":{"evaluationWindow":600,"detectionMethod":"threshold","maxSignalDuration":1800,"keepAlive":600},"cases":[{"name":"high case","status":"high","notifications":[],"condition":"first \u003e 500000","actions":[{"type":"block_ip","options":{"duration":7200}},{"type":"block_user","options":{}},{"type":"user_behavior","options":{"userBehaviorName":"behavior_name"}}]}],"message":"acceptance rule triggered (updated)","tags":["u:tomato","i:tomato"],"hasExtendedTitle":false,"type":"application_security","filters":[],"version":2,"id":"mya-5ym-avw","updatedAt":1744809757653,"blocking":true,"groupSignalsBy":["service"],"metadata":{"entities":null,"sources":null},"creationAuthorId":30180796,"updateAuthorId":30180796,"creator":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"},"updater":{"handle":"quentin.guillard@datadoghq.com","name":"Quentin Guillard"}}'
         headers:
             Content-Type:
                 - application/json
         status: 200 OK
         code: 200
-        duration: 116.839458ms
+        duration: 129.895458ms
     - id: 14
       request:
         proto: HTTP/1.1
@@ -488,7 +488,7 @@ interactions:
         remote_addr: ""
         request_uri: ""
         body: |
-            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744807980 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
+            {"cases":[{"actions":[{"options":{"duration":7200,"userBehaviorName":""},"type":"block_ip"},{"options":{},"type":"block_user"},{"options":{"duration":0,"userBehaviorName":"behavior_name"},"type":"user_behavior"}],"condition":"first \u003e 500000","name":"high case","notifications":[],"status":"high"}],"groupSignalsBy":["service"],"hasExtendedTitle":false,"isEnabled":true,"message":"acceptance rule triggered (updated)","name":"tf-TestAccDatadogSecurityMonitoringRule_AppsecRule-local-1744809752 - updated","options":{"detectionMethod":"threshold","evaluationWindow":600,"keepAlive":600,"maxSignalDuration":1800},"queries":[{"aggregation":"count","dataSource":"app_sec_spans","distinctFields":[],"groupByFields":["service","env"],"metric":"","metrics":[],"name":"first","query":"@appsec.security_activity:attack_attempt.*"}],"tags":["u:tomato","i:tomato"],"type":"application_security"}
         form: {}
         headers:
             Accept:
@@ -509,7 +509,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 119.114375ms
+        duration: 135.330459ms
     - id: 15
       request:
         proto: HTTP/1.1
@@ -526,7 +526,7 @@ interactions:
         headers:
             Accept:
                 - '*/*'
-        url: https://api.datad0g.com/api/v2/security_monitoring/rules/2az-p0q-j3s
+        url: https://api.datad0g.com/api/v2/security_monitoring/rules/mya-5ym-avw
         method: DELETE
       response:
         proto: HTTP/2.0
@@ -540,7 +540,7 @@ interactions:
         headers: {}
         status: 204 No Content
         code: 204
-        duration: 157.847667ms
+        duration: 185.982792ms
     - id: 16
       request:
         proto: HTTP/1.1
@@ -557,7 +557,7 @@ interactions:
         headers:
             Accept:
                 - application/json
-        url: https://api.datad0g.com/api/v2/security_monitoring/rules/2az-p0q-j3s
+        url: https://api.datad0g.com/api/v2/security_monitoring/rules/mya-5ym-avw
         method: GET
       response:
         proto: HTTP/2.0
@@ -567,10 +567,10 @@ interactions:
         trailer: {}
         content_length: 86
         uncompressed: false
-        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: 2az-p0q-j3s"}}'
+        body: '{"error":{"code":"NotFound","message":"Threat detection rule not found: mya-5ym-avw"}}'
         headers:
             Content-Type:
                 - application/json
         status: 404 Not Found
         code: 404
-        duration: 117.429959ms
+        duration: 140.28825ms
