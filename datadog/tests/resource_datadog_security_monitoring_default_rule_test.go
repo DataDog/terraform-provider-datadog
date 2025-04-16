@@ -82,6 +82,35 @@ func TestAccDatadogSecurityMonitoringDefaultRule_DeprecationWarning(t *testing.T
 	})
 }
 
+func TestAccDatadogSecurityMonitoringDefaultRule_AppsecRule(t *testing.T) {
+	t.Parallel()
+	_, accProviders := testAccProviders(context.Background(), t)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { testAccPreCheck(t) },
+		ProviderFactories: accProviders,
+		Steps: []resource.TestStep{
+			// Define an existing default rule as one we want to import
+			{
+				Config: testAccDatadogSecurityMonitoringDefaultRuleAppsec(),
+			},
+			// Import the rule
+			{
+				Config:             testAccCheckDatadogSecurityMonitoringAppsec(),
+				ResourceName:       tfSecurityDefaultRuleName,
+				ImportState:        true,
+				ImportStateIdFunc:  idFromDatasource,
+				ImportStatePersist: true,
+			},
+			// Update a case to the imported rule
+			{
+				Config: testAccDatadogSecurityMonitoringDefaultRuleUpdateCase(),
+				Check:  testAccCheckDatadogSecurityMonitoringDefaultRuleUpdateCase(),
+			},
+		},
+	})
+}
+
 func idFromDatasource(state *terraform.State) (string, error) {
 	resources := state.RootModule().Resources
 	resourceState := resources["data.datadog_security_monitoring_rules.bruteforce"]
@@ -136,7 +165,7 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 	options {
 		decrease_criticality_based_on_env = true
 	}
-	
+
 	custom_tags = [
 		"testtag:newtag",
 	]
@@ -150,5 +179,79 @@ func testAccCheckDatadogSecurityMonitoringDefaultRuleAddTag() resource.TestCheck
 			tfSecurityDefaultRuleName, "custom_tags.#", "1"),
 		resource.TestCheckResourceAttr(
 			tfSecurityDefaultRuleName, "custom_tags.0", "testtag:newtag"),
+	)
+}
+
+func testAccDatadogSecurityMonitoringDefaultRuleAppsec() string {
+	return `
+data "datadog_security_monitoring_rules" "bruteforce" {
+	tags_filter = ["source:application-security"]
+	default_only_filter = true
+	user_only_filter = false
+}
+`
+}
+
+func testAccCheckDatadogSecurityMonitoringAppsec() string {
+	return `
+data "datadog_security_monitoring_rules" "bruteforce" {
+	tags_filter = ["source:application-security"]
+	default_only_filter = "true"
+}
+
+resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+}
+`
+}
+
+func testAccDatadogSecurityMonitoringDefaultRuleUpdateCase() string {
+	return `
+resource "datadog_security_monitoring_default_rule" "acceptance_test" {
+
+	case {
+		status = "low"
+		notifications = ["team@example.com"]
+		action {
+			type = "block_ip"
+			options {
+				duration = 3600
+			}
+		}
+		action {
+			type = "block_user"
+		}
+		action {
+			type = "user_behavior"
+			options {
+				user_behavior_name = "test"
+			}
+		}
+	}
+}
+`
+}
+
+func testAccCheckDatadogSecurityMonitoringDefaultRuleUpdateCase() resource.TestCheckFunc {
+	return resource.ComposeTestCheckFunc(
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.status", "low"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.notifications.0", "team@example.com"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.#", "3"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.0.type", "block_ip"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.0.options.#", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.0.options.0.duration", "3600"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.1.type", "block_user"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.2.type", "user_behavior"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.2.options.#", "1"),
+		resource.TestCheckResourceAttr(
+			tfSecurityDefaultRuleName, "case.0.action.2.options.0.user_behavior_name", "test"),
 	)
 }

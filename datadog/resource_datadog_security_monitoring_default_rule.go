@@ -46,6 +46,41 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 								Description: "Notification targets for each rule case.",
 								Elem:        &schema.Schema{Type: schema.TypeString},
 							},
+							"action": {
+								Type:        schema.TypeList,
+								Optional:    true,
+								Description: "Action to perform when the case triggerS",
+								Elem: &schema.Resource{
+									Schema: map[string]*schema.Schema{
+										"type": {
+											Type:             schema.TypeString,
+											ValidateDiagFunc: validators.ValidateEnumValue(datadogV2.NewSecurityMonitoringRuleCaseActionTypeFromValue),
+											Required:         true,
+											Description:      "Type of action to perform when the case triggers.",
+										},
+										"options": {
+											Type:        schema.TypeList,
+											Optional:    true,
+											Description: "Options for the action.",
+											MaxItems:    1,
+											Elem: &schema.Resource{
+												Schema: map[string]*schema.Schema{
+													"duration": {
+														Type:        schema.TypeInt,
+														Optional:    true,
+														Description: "Duration of the action in seconds.",
+													},
+													"user_behavior_name": {
+														Type:        schema.TypeString,
+														Optional:    true,
+														Description: "Name of the risk tag applied to users triggering a `user_behavior` case action.",
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -161,7 +196,7 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 
 	if v, ok := d.GetOk("case"); ok {
 		tfCasesRaw := v.([]interface{})
-		readNotifications := make([][]string, len(tfCasesRaw))
+		tfCases := make([]map[string]interface{}, len(tfCasesRaw))
 		for i, tfCaseRaw := range tfCasesRaw {
 			tfCase := tfCaseRaw.(map[string]interface{})
 			var ruleCase *datadogV2.SecurityMonitoringRuleCase
@@ -175,12 +210,41 @@ func resourceDatadogSecurityMonitoringDefaultRuleRead(ctx context.Context, d *sc
 			if ruleCase == nil {
 				return diag.FromErr(errors.New("error: no rule case with status " + string(tfStatus)))
 			}
-			readNotifications[i] = ruleCase.GetNotifications()
+
+			caseMap := map[string]interface{}{
+				"status":        tfStatus,
+				"notifications": ruleCase.GetNotifications(),
+			}
+
+			tfActions := make([]map[string]interface{}, len(ruleCase.GetActions()))
+			for j, action := range ruleCase.GetActions() {
+
+				actionMap := map[string]interface{}{
+					"type": string(action.GetType()),
+				}
+
+				options := action.GetOptions()
+				optionsMap := map[string]interface{}{}
+				if options.HasDuration() {
+					optionsMap["duration"] = int(options.GetDuration())
+				}
+				if options.HasUserBehaviorName() {
+					optionsMap["user_behavior_name"] = options.GetUserBehaviorName()
+				}
+				if len(optionsMap) > 0 {
+					actionMap["options"] = []map[string]interface{}{optionsMap}
+				}
+				tfActions[j] = actionMap
+			}
+
+			if len(tfActions) > 0 {
+				caseMap["action"] = tfActions
+			}
+			tfCases[i] = caseMap
 		}
 
-		for i, notification := range readNotifications {
-			d.Set(fmt.Sprintf("case.%d.notifications", i), notification)
-		}
+		d.Set("case", tfCases)
+
 	}
 
 	ruleFilters := make([]map[string]interface{}, len(rule.GetFilters()))
@@ -292,6 +356,7 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 			Name:          currentState.GetCases()[i].Name,
 			Notifications: currentState.GetCases()[i].Notifications,
 			Status:        currentState.GetCases()[i].Status,
+			Actions:       currentState.GetCases()[i].Actions,
 		}
 
 		if tfCase, ok := findRuleCaseForStatus(tfCasesRaw, ruleCase.GetStatus()); ok {
@@ -309,6 +374,17 @@ func buildSecMonDefaultRuleUpdatePayload(currentState *datadogV2.SecurityMonitor
 			if !stringSliceEquals(tfNotifications, ruleCase.GetNotifications()) {
 				modifiedCases++
 				updatedRuleCase[i].Notifications = tfNotifications
+			}
+
+			tfActionsRaw := tfCase["action"].([]interface{})
+			tfActions := make([]map[string]interface{}, len(tfActionsRaw))
+			for actionIdx, v := range tfActionsRaw {
+				tfActions[actionIdx] = v.(map[string]interface{})
+			}
+
+			if !actionsEqual(tfActions, ruleCase.GetActions()) {
+				modifiedCases++
+				updatedRuleCase[i].Actions = buildDefaultRulePayloadOptionsCaseActions(tfActions)
 			}
 
 		} else {
@@ -420,6 +496,56 @@ func findRuleCaseForStatus(tfCasesRaw []interface{}, status datadogV2.SecurityMo
 	}
 
 	return nil, false
+}
+
+func actionsEqual(tfActions []map[string]interface{}, ruleCaseActions []datadogV2.SecurityMonitoringRuleCaseAction) bool {
+	if len(tfActions) != len(ruleCaseActions) {
+		return false
+	}
+	// compare actions type and options, order is important
+	for i := range tfActions {
+		if tfActions[i]["type"] != ruleCaseActions[i].GetType() {
+			return false
+		}
+		if optionsList, ok := tfActions[i]["options"].([]interface{}); ok && len(optionsList) > 0 {
+			if options, ok := optionsList[0].(map[string]interface{}); ok {
+				ruleOptions := ruleCaseActions[i].GetOptions()
+				if duration, ok := options["duration"].(int); ok {
+					if int64(duration) != ruleOptions.GetDuration() {
+						return false
+					}
+				}
+				if name, ok := options["user_behavior_name"].(string); ok {
+					if name != ruleOptions.GetUserBehaviorName() {
+						return false
+					}
+				}
+			}
+		}
+	}
+	return true
+}
+
+func buildDefaultRulePayloadOptionsCaseActions(tfActions []map[string]interface{}) []datadogV2.SecurityMonitoringRuleCaseAction {
+	actions := make([]datadogV2.SecurityMonitoringRuleCaseAction, len(tfActions))
+	for i, tfAction := range tfActions {
+		action := datadogV2.NewSecurityMonitoringRuleCaseAction()
+		action.SetType(datadogV2.SecurityMonitoringRuleCaseActionType(tfAction["type"].(string)))
+		if optionsList, ok := tfAction["options"].([]interface{}); ok && len(optionsList) > 0 {
+			if options, ok := optionsList[0].(map[string]interface{}); ok {
+				actionOptions := datadogV2.NewSecurityMonitoringRuleCaseActionOptions()
+				if duration, ok := options["duration"].(int); ok {
+					actionOptions.SetDuration(int64(duration))
+				}
+				if name, ok := options["user_behavior_name"].(string); ok {
+					actionOptions.SetUserBehaviorName(name)
+				}
+				action.SetOptions(*actionOptions)
+			}
+		}
+		actions[i] = *action
+	}
+	return actions
 }
 
 func resourceDatadogSecurityMonitoringDefaultRuleDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
