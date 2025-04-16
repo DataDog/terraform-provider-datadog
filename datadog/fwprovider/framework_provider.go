@@ -85,6 +85,7 @@ var Resources = []func() resource.Resource{
 	NewAppBuilderAppResource,
 	NewObservabilitPipelineResource,
 	NewSecurityMonitoringRuleJSONResource,
+	NewCustomFrameworkResource,
 }
 
 var Datasources = []func() datasource.DataSource{
@@ -433,6 +434,7 @@ func defaultConfigureFunc(p *FrameworkProvider, request *provider.ConfigureReque
 	ddClientConfig.SetUnstableOperationEnabled("v2.DeleteAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.GetAWSAccount", true)
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreateNewAWSExternalID", true)
+	ddClientConfig.SetUnstableOperationEnabled("v2.CreateCustomFramework", true)
 
 	// Enable Observability Pipelines
 	ddClientConfig.SetUnstableOperationEnabled("v2.CreatePipeline", true)
