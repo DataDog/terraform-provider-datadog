@@ -1,3 +1,19 @@
+## 3.60.0 (April 16, 2025)
+
+### BUGFIXES
+* [datadog_synthetics_private_location] Fix error messages by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2955
+### IMPROVEMENTS
+* [datadog_integration_slack_channel] Add mute_button argument by @ecdatadog in https://github.com/DataDog/terraform-provider-datadog/pull/2950
+### FEATURES
+* [datadog_observability_pipeline] Add Observability Pipeline resource by @vladimir-dd in https://github.com/DataDog/terraform-provider-datadog/pull/2945
+
+## New Contributors
+* @vladimir-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2945
+* @daniel-m-dd made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2958
+* @haoran-shao-datadog made their first contribution in https://github.com/DataDog/terraform-provider-datadog/pull/2931
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.59.1...v3.60.0
+
 ## 3.59.1 (April 4, 2025)
 
 ### BUGFIXES
