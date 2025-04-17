@@ -50,7 +50,7 @@ Required:
 
 Optional:
 
-- `action` (Block List) Action to perform when the case triggerS (see [below for nested schema](#nestedblock--case--action))
+- `action` (Block List) Action to perform when the case triggers (see [below for nested schema](#nestedblock--case--action))
 
 <a id="nestedblock--case--action"></a>
 ### Nested Schema for `case.action`

@@ -49,7 +49,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 							"action": {
 								Type:        schema.TypeList,
 								Optional:    true,
-								Description: "Action to perform when the case triggerS",
+								Description: "Action to perform when the case triggers",
 								Elem: &schema.Resource{
 									Schema: map[string]*schema.Schema{
 										"type": {
