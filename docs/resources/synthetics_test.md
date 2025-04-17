@@ -1172,7 +1172,7 @@ Required:
 
 - `device_ids` (List of String)
 - `mobile_application` (Block List, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--mobile_options_list--mobile_application))
-- `tick_every` (Number) How often the test should run (in seconds).
+- `tick_every` (Number) How often the test should run (in seconds). Valid range is `300-604800` for mobile tests.
 
 Optional:
 
@@ -1365,7 +1365,7 @@ Optional:
 
 Required:
 
-- `tick_every` (Number) How often the test should run (in seconds).
+- `tick_every` (Number) How often the test should run (in seconds). Valid range is `30-604800 for API tests and `60-604800` for browser tests.
 
 Optional:
 
