@@ -442,6 +442,25 @@ resource "datadog_synthetics_test" "test_browser" {
     }
   }
 
+  browser_step {
+    name = "Test sending http requests"
+    type = "assertRequests"
+    params {
+      requests = jsonencode(
+        {
+          count = {
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
+          }
+          url = "https://www.example.org"
+        }
+      )
+    }
+  }
+
   browser_variable {
     type    = "text"
     name    = "MY_PATTERN_VAR"
@@ -1090,6 +1109,7 @@ Optional:
 - `modifiers` (List of String) Modifier to use for a "press key" step.
 - `playing_tab_id` (String) ID of the tab to play the subtest.
 - `request` (String) Request for an API step.
+- `requests` (String) Details of the requests for an "assert request" step, JSON encoded string. Refer to the examples for a usage example showing the schema.
 - `subtest_public_id` (String) ID of the Synthetics test to use as subtest.
 - `value` (String) Value of the step.
 - `variable` (Block List, Max: 1) Details of the variable to extract. (see [below for nested schema](#nestedblock--browser_step--params--variable))

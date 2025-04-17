@@ -4075,7 +4075,7 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "tags.1", "baz"),
 			resource.TestCheckResourceAttr(
-				"datadog_synthetics_test.bar", "browser_step.#", "8"),
+				"datadog_synthetics_test.bar", "browser_step.#", "10"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.0.name", "first step"),
 			resource.TestCheckResourceAttr(
@@ -4154,6 +4154,26 @@ func createSyntheticsBrowserTestStepNewBrowserStep(ctx context.Context, accProvi
 				"datadog_synthetics_test.bar", "browser_step.7.params.#", "1"),
 			resource.TestCheckResourceAttr(
 				"datadog_synthetics_test.bar", "browser_step.7.params.0.element", MML_2),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.8.name", "Upload a file"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.8.type", "uploadFiles"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.8.params.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.8.params.0.files", "[{\"content\":\"Hello world\",\"name\":\"hello.txt\",\"size\":11}]"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.8.params.0.element_user_locator.#", "1"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.8.params.0.element_user_locator.0.value.0.type", "css"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.8.params.0.element_user_locator.0.value.0.value", "#simple-file-upload"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.9.name", "Test sending http requests"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.9.type", "assertRequests"),
+			resource.TestCheckResourceAttr(
+				"datadog_synthetics_test.bar", "browser_step.9.params.0.requests", "{\"count\":{\"type\":\"equals\",\"value\":1},\"url\":\"https://www.example.org\"}"),
 			resource.TestCheckResourceAttrSet(
 				"datadog_synthetics_test.bar", "monitor_id"),
 		),
@@ -4330,6 +4350,41 @@ resource "datadog_synthetics_test" "bar" {
 				},
 				"targetOuterHTML": "img height=\"100\" src=\"https://imgix.datadoghq.com/img/some_other_image_200x100.png...",
 				"url": "https://www.datadoghq.com/other-page"
+			})
+		}
+	}
+
+	browser_step {
+		name = "Upload a file"
+		type = "uploadFiles"
+		params {
+			files = jsonencode([{
+				name    = "hello.txt"   // Name of the file
+				size    = 11            // Size of the file
+				content = "Hello world" // Content of the file
+			}])
+			element_user_locator {
+				value {
+					type  = "css"
+					value = "#simple-file-upload"
+				}
+			}
+		}
+	}
+
+	browser_step {
+		name = "Test sending http requests"
+		type = "assertRequests"
+		params {
+			requests = jsonencode({
+				count = {
+					type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+					// "lowerEquals", "notEquals", "between"
+					value = 1
+					// min   = 1      // only used for "between"
+					// max   = 1      // only used for "between"
+				}
+				url = "https://www.example.org"
 			})
 		}
 	}
