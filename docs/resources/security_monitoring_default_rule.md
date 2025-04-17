@@ -50,7 +50,7 @@ Required:
 
 Optional:
 
-- `action` (Block List) Action to perform when the case triggers (see [below for nested schema](#nestedblock--case--action))
+- `action` (Block List) Action to perform when the case triggers (see below for [nested schema](#nestedblock--case--action)).
 
 <a id="nestedblock--case--action"></a>
 ### Nested Schema for `case.action`
@@ -61,7 +61,7 @@ Required:
 
 Optional:
 
-- `options` (Block List, Max: 1) Options for the action. (see [below for nested schema](#nestedblock--case--action--options))
+- `options` (Block List, Max: 1) Options for the action (see below for [nested schema](#nestedblock--case--action--options)).
 
 <a id="nestedblock--case--action--options"></a>
 ### Nested Schema for `case.action.options`
