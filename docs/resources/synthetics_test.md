@@ -1365,7 +1365,7 @@ Optional:
 
 Required:
 
-- `tick_every` (Number) How often the test should run (in seconds). Valid range is `30-604800 for API tests and `60-604800` for browser tests.
+- `tick_every` (Number) How often the test should run (in seconds). Valid range is `30-604800` for API tests and `60-604800` for browser tests.
 
 Optional:
 
