@@ -4372,24 +4372,22 @@ resource "datadog_synthetics_test" "bar" {
 		}
 	}
 
-  browser_step {
-    name = "Test sending http requests"
-    type = "assertRequests"
-    params {
-      requests = jsonencode(
-        {
-          count = {
-            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
-            // "lowerEquals", "notEquals", "between"
-            value = 1
-            // min   = 1      // only used for "between"
-            // max   = 1      // only used for "between"
-          }
-          url = "https://www.example.org"
-        }
-      )
-    }
-  }
+	browser_step {
+		name = "Test sending http requests"
+		type = "assertRequests"
+		params {
+			requests = jsonencode({
+				count = {
+					type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+					// "lowerEquals", "notEquals", "between"
+					value = 1
+					// min   = 1      // only used for "between"
+					// max   = 1      // only used for "between"
+				}
+				url = "https://www.example.org"
+			})
+		}
+	}
 }`, uniq)
 }
 
