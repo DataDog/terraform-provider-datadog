@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV1"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
@@ -23,6 +24,7 @@ func resourceDatadogPowerpack() *schema.Resource {
 		UpdateContext: resourceDatadogPowerpackUpdate,
 		ReadContext:   resourceDatadogPowerpackRead,
 		DeleteContext: resourceDatadogPowerpackDelete,
+		CustomizeDiff: customdiff.All(tagDiff),
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -47,7 +49,8 @@ func resourceDatadogPowerpack() *schema.Resource {
 				"tags": {
 					Type:        schema.TypeSet,
 					Optional:    true,
-					Description: "List of tags to identify this powerpack.",
+					Computed:    true,
+					Description: "List of tags to identify this powerpack. Note: if default tags are present at provider level, they will be added to this resource.",
 					Elem: &schema.Schema{
 						Type: schema.TypeString,
 					},
