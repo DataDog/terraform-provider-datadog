@@ -683,22 +683,22 @@ resource "datadog_observability_pipeline" "parse_grok" {
         rules {
           source = "message"
 
-          parsing_rule {
+          match_rule {
             name = "match_user"
             rule = "%%{word:user.name}"
           }
 
-          parsing_rule {
+          match_rule {
             name = "match_action"
             rule = "%%{word:action}"
           }
 
-          helper_rule {
+          support_rule {
             name = "word"
             rule = "\\w+"
           }
 
-          helper_rule {
+          support_rule {
             name = "custom_word"
             rule = "[a-zA-Z]+"
           }
@@ -723,16 +723,16 @@ resource "datadog_observability_pipeline" "parse_grok" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.source", "message"),
 
 					// Match Rules
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.parsing_rule.0.name", "match_user"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.parsing_rule.0.rule", "%{word:user.name}"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.parsing_rule.1.name", "match_action"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.parsing_rule.1.rule", "%{word:action}"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rule.0.name", "match_user"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rule.0.rule", "%{word:user.name}"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rule.1.name", "match_action"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.match_rule.1.rule", "%{word:action}"),
 
 					// Support Rules
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.helper_rule.0.name", "word"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.helper_rule.0.rule", "\\w+"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.helper_rule.1.name", "custom_word"),
-					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.helper_rule.1.rule", "[a-zA-Z]+"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rule.0.name", "word"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rule.0.rule", "\\w+"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rule.1.name", "custom_word"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.parse_grok.0.rules.0.support_rule.1.rule", "[a-zA-Z]+"),
 				),
 			},
 		},

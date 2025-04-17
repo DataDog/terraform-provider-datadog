@@ -172,8 +172,8 @@ type parseGrokProcessorModel struct {
 
 type parseGrokProcessorRuleModel struct {
 	Source       types.String    `tfsdk:"source"`
-	ParsingRules []grokRuleModel `tfsdk:"parsing_rule"`
-	HelperRules  []grokRuleModel `tfsdk:"helper_rule"`
+	MatchRules   []grokRuleModel `tfsdk:"match_rule"`
+	SupportRules []grokRuleModel `tfsdk:"support_rule"`
 }
 
 type grokRuleModel struct {
@@ -615,7 +615,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													},
 												},
 												Blocks: map[string]schema.Block{
-													"parsing_rule": schema.ListNestedBlock{
+													"match_rule": schema.ListNestedBlock{
 														Description: "A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern.",
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{
@@ -630,7 +630,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 															},
 														},
 													},
-													"helper_rule": schema.ListNestedBlock{
+													"support_rule": schema.ListNestedBlock{
 														Description: "A list of helper Grok rules that can be referenced by the parsing rules.",
 														NestedObject: schema.NestedBlockObject{
 															Attributes: map[string]schema.Attribute{
@@ -1381,7 +1381,7 @@ func expandParseGrokProcessor(ctx context.Context, p *parseGrokProcessorModel) d
 	var rules []datadogV2.ObservabilityPipelineParseGrokProcessorRule
 	for _, r := range p.Rules {
 		var matchRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule
-		for _, m := range r.ParsingRules {
+		for _, m := range r.MatchRules {
 			matchRules = append(matchRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleMatchRule{
 				Name: m.Name.ValueString(),
 				Rule: m.Rule.ValueString(),
@@ -1389,7 +1389,7 @@ func expandParseGrokProcessor(ctx context.Context, p *parseGrokProcessorModel) d
 		}
 
 		var supportRules []datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule
-		for _, s := range r.HelperRules {
+		for _, s := range r.SupportRules {
 			supportRules = append(supportRules, datadogV2.ObservabilityPipelineParseGrokProcessorRuleSupportRule{
 				Name: s.Name.ValueString(),
 				Rule: s.Rule.ValueString(),
@@ -1442,8 +1442,8 @@ func flattenParseGrokProcessor(ctx context.Context, proc *datadogV2.Observabilit
 
 		out.Rules = append(out.Rules, parseGrokProcessorRuleModel{
 			Source:       types.StringValue(r.Source),
-			ParsingRules: matchRules,
-			HelperRules:  supportRules,
+			MatchRules:   matchRules,
+			SupportRules: supportRules,
 		})
 	}
 
