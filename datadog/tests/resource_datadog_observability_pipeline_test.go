@@ -652,6 +652,67 @@ resource "datadog_observability_pipeline" "add_fields" {
 	})
 }
 
+func TestAccDatadogObservabilityPipeline_amazonS3Source(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.s3"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "amazon_s3" {
+  name = "amazon_s3-source-pipeline"
+
+  config {
+    sources {
+      amazon_s3 {
+        id     = "s3-source-1"
+        region = "us-east-1"
+
+        auth {
+          assume_role  = "arn:aws:iam::123456789012:role/test-role"
+          external_id  = "external-test-id"
+          session_name = "session-test"
+        }
+
+        tls {
+          crt_file = "/etc/ssl/certs/s3.crt"
+          ca_file  = "/etc/ssl/certs/s3.ca"
+          key_file = "/etc/ssl/private/s3.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["s3-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_s3.0.id", "s3-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_s3.0.region", "us-east-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_s3.0.auth.assume_role", "arn:aws:iam::123456789012:role/test-role"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_s3.0.auth.external_id", "external-test-id"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_s3.0.auth.session_name", "session-test"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_s3.0.tls.0.crt_file", "/etc/ssl/certs/s3.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_s3.0.tls.0.ca_file", "/etc/ssl/certs/s3.ca"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.amazon_s3.0.tls.0.key_file", "/etc/ssl/private/s3.key"),
+				),
+			},
+		},
+	})
+}
+
 func TestAccDatadogObservabilityPipeline_splunkHecSource(t *testing.T) {
 	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
 
@@ -746,6 +807,142 @@ resource "datadog_observability_pipeline" "splunk_tcp" {
 					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_tcp.0.tls.0.crt_file", "/etc/ssl/certs/tcp.crt"),
 					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_tcp.0.tls.0.ca_file", "/etc/ssl/certs/tcp.ca"),
 					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_tcp.0.tls.0.key_file", "/etc/ssl/private/tcp.key"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_generateMetricsProcessor(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.generate_metrics"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "generate_metrics" {
+  name = "generate-metrics-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {
+      generate_datadog_metrics {
+        id      = "generate-metrics-1"
+        include = "env:metrics"
+        inputs  = ["source-1"]
+
+        metrics {
+          name        = "logs.generated"
+          include     = "service:payments"
+          metric_type = "count"
+          group_by    = ["service", "env"]
+
+          value {
+            strategy = "increment_by_field"
+            field    = "events.count"
+          }
+        }
+
+        metrics {
+          name        = "logs.default_count"
+          include     = "service:checkout"
+          metric_type = "count"
+
+          value {
+            strategy = "increment_by_one"
+          }
+        }
+      }
+    }
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["generate-metrics-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.generate_datadog_metrics.0.id", "generate-metrics-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.generate_datadog_metrics.0.metrics.0.name", "logs.generated"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.generate_datadog_metrics.0.metrics.0.value.strategy", "increment_by_field"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.generate_datadog_metrics.0.metrics.1.value.strategy", "increment_by_one"),
+				),
+			},
+		},
+	})
+}
+
+func TestAccDatadogObservabilityPipeline_googleCloudStorageDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.gcs_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "gcs_dest" {
+  name = "gcs-destination-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      google_cloud_storage {
+        id            = "gcs-destination-1"
+        bucket        = "my-gcs-bucket"
+        key_prefix    = "logs/"
+        storage_class = "NEARLINE"
+        acl           = "project-private"
+        inputs        = ["source-1"]
+
+        auth {
+          credentials_file = "/var/secrets/gcp-creds.json"
+        }
+
+        metadata {
+          name  = "environment"
+          value = "production"
+        }
+
+        metadata {
+          name  = "team"
+          value = "platform"
+        }
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.bucket", "my-gcs-bucket"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.key_prefix", "logs/"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.auth.credentials_file", "/var/secrets/gcp-creds.json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.metadata.0.name", "environment"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.metadata.0.value", "production"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.metadata.1.name", "team"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.google_cloud_storage.0.metadata.1.value", "platform"),
 				),
 			},
 		},

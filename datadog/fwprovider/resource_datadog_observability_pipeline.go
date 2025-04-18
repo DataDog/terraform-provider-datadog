@@ -3,6 +3,8 @@ package fwprovider
 import (
 	"context"
 
+	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
+
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -42,6 +44,7 @@ type configModel struct {
 type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
+	AmazonS3Source     []*amazonS3SourceModel     `tfsdk:"amazon_s3"`
 	SplunkHecSource    []*splunkHecSourceModel    `tfsdk:"splunk_hec"`
 	SplunkTcpSource    []*splunkTcpSourceModel    `tfsdk:"splunk_tcp"`
 }
@@ -70,6 +73,19 @@ type kafkaSourceSaslModel struct {
 	Mechanism types.String `tfsdk:"mechanism"`
 }
 
+type amazonS3SourceModel struct {
+	Id     types.String  `tfsdk:"id"`     // Unique identifier for the component
+	Region types.String  `tfsdk:"region"` // AWS region where the S3 bucket resides
+	Auth   *awsAuthModel `tfsdk:"auth"`   // AWS authentication credentials
+	Tls    []tlsModel    `tfsdk:"tls"`    // TLS encryption configuration
+}
+
+type awsAuthModel struct {
+	AssumeRole  types.String `tfsdk:"assume_role"`  // ARN of the role to assume
+	ExternalId  types.String `tfsdk:"external_id"`  // Unique identifier for cross-account assumption
+	SessionName types.String `tfsdk:"session_name"` // Session identifier for logging/tracing
+}
+
 type tlsModel struct {
 	CrtFile types.String `tfsdk:"crt_file"`
 	CaFile  types.String `tfsdk:"ca_file"`
@@ -79,12 +95,13 @@ type tlsModel struct {
 // Processor models
 
 type processorsModel struct {
-	FilterProcessor       []*filterProcessorModel       `tfsdk:"filter"`
-	ParseJsonProcessor    []*parseJsonProcessorModel    `tfsdk:"parse_json"`
-	AddFieldsProcessor    []*addFieldsProcessor         `tfsdk:"add_fields"`
-	RenameFieldsProcessor []*renameFieldsProcessorModel `tfsdk:"rename_fields"`
-	RemoveFieldsProcessor []*removeFieldsProcessorModel `tfsdk:"remove_fields"`
-	QuotaProcessor        []*quotaProcessorModel        `tfsdk:"quota"`
+	FilterProcessor          []*filterProcessorModel          `tfsdk:"filter"`
+	ParseJsonProcessor       []*parseJsonProcessorModel       `tfsdk:"parse_json"`
+	AddFieldsProcessor       []*addFieldsProcessor            `tfsdk:"add_fields"`
+	RenameFieldsProcessor    []*renameFieldsProcessorModel    `tfsdk:"rename_fields"`
+	RemoveFieldsProcessor    []*removeFieldsProcessorModel    `tfsdk:"remove_fields"`
+	QuotaProcessor           []*quotaProcessorModel           `tfsdk:"quota"`
+	GenerateMetricsProcessor []*generateMetricsProcessorModel `tfsdk:"generate_datadog_metrics"`
 }
 
 type filterProcessorModel struct {
@@ -157,8 +174,9 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
-	SplunkHecDestination   []*splunkHecDestinationModel   `tfsdk:"splunk_hec"`
+	DatadogLogsDestination        []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
+	GoogleCloudStorageDestination []*gcsDestinationModel         `tfsdk:"google_cloud_storage"`
+	SplunkHecDestination          []*splunkHecDestinationModel   `tfsdk:"splunk_hec"`
 }
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
@@ -168,6 +186,26 @@ type datadogLogsDestinationModel struct {
 type splunkHecSourceModel struct {
 	Id  types.String `tfsdk:"id"`  // The unique identifier for this component.
 	Tls []tlsModel   `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
+}
+
+type generateMetricsProcessorModel struct {
+	Id      types.String           `tfsdk:"id"`
+	Include types.String           `tfsdk:"include"`
+	Inputs  types.List             `tfsdk:"inputs"`
+	Metrics []generatedMetricModel `tfsdk:"metrics"`
+}
+
+type generatedMetricModel struct {
+	Name       types.String          `tfsdk:"name"`
+	Include    types.String          `tfsdk:"include"`
+	MetricType types.String          `tfsdk:"metric_type"`
+	GroupBy    types.List            `tfsdk:"group_by"`
+	Value      *generatedMetricValue `tfsdk:"value"`
+}
+
+type generatedMetricValue struct {
+	Strategy types.String `tfsdk:"strategy"`
+	Field    types.String `tfsdk:"field"`
 }
 
 type splunkTcpSourceModel struct {
@@ -182,6 +220,26 @@ type splunkHecDestinationModel struct {
 	Encoding             types.String `tfsdk:"encoding"`
 	Sourcetype           types.String `tfsdk:"sourcetype"`
 	Index                types.String `tfsdk:"index"`
+}
+
+type gcsDestinationModel struct {
+	Id           types.String    `tfsdk:"id"`
+	Inputs       types.List      `tfsdk:"inputs"`
+	Bucket       types.String    `tfsdk:"bucket"`
+	KeyPrefix    types.String    `tfsdk:"key_prefix"`
+	StorageClass types.String    `tfsdk:"storage_class"`
+	Acl          types.String    `tfsdk:"acl"`
+	Auth         gcpAuthModel    `tfsdk:"auth"`
+	Metadata     []metadataEntry `tfsdk:"metadata"`
+}
+
+type gcpAuthModel struct {
+	CredentialsFile types.String `tfsdk:"credentials_file"`
+}
+
+type metadataEntry struct {
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -272,6 +330,41 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 													Validators: []validator.String{
 														stringvalidator.OneOf("PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"),
 													},
+												},
+											},
+										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"amazon_s3": schema.ListNestedBlock{
+								Description: "The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication and TLS encryption.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"region": schema.StringAttribute{
+											Required:    true,
+											Description: "AWS region where the S3 bucket resides.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"auth": schema.SingleNestedBlock{
+											Description: "AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables).",
+											Attributes: map[string]schema.Attribute{
+												"assume_role": schema.StringAttribute{
+													Optional:    true,
+													Description: "The Amazon Resource Name (ARN) of the role to assume.",
+												},
+												"external_id": schema.StringAttribute{
+													Optional:    true,
+													Description: "A unique identifier for cross-account role assumption.",
+												},
+												"session_name": schema.StringAttribute{
+													Optional:    true,
+													Description: "A session identifier used for logging and tracing the assumed role session.",
 												},
 											},
 										},
@@ -411,7 +504,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"inputs": schema.ListAttribute{
 											Required:    true,
-											Description: "he inputs for the processor.",
+											Description: "The inputs for the processor.",
 											ElementType: types.StringType,
 										},
 									},
@@ -558,6 +651,67 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"generate_datadog_metrics": schema.ListNestedBlock{
+								Description: "The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline.",
+										},
+										"include": schema.StringAttribute{
+											Required:    true,
+											Description: "A Datadog search query used to determine which logs this processor targets.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this processor.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"metrics": schema.ListNestedBlock{
+											Description: "Configuration for generating individual metrics.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Required:    true,
+														Description: "Name of the custom metric to be created.",
+													},
+													"include": schema.StringAttribute{
+														Required:    true,
+														Description: "Datadog filter query to match logs for metric generation.",
+													},
+													"metric_type": schema.StringAttribute{
+														Required:    true,
+														Description: "Type of metric to create.",
+													},
+													"group_by": schema.ListAttribute{
+														Optional:    true,
+														ElementType: types.StringType,
+														Description: "Optional fields used to group the metric series.",
+													},
+												},
+												Blocks: map[string]schema.Block{
+													"value": schema.SingleNestedBlock{
+														Description: "Specifies how the value of the generated metric is computed.",
+														Attributes: map[string]schema.Attribute{
+															"strategy": schema.StringAttribute{
+																Required:    true,
+																Description: "Metric value strategy: `increment_by_one` or `increment_by_field`.",
+															},
+															"field": schema.StringAttribute{
+																Optional:    true,
+																Description: "Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).",
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
 					"destinations": schema.SingleNestedBlock{
@@ -575,6 +729,64 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Description: "The inputs for the destination.",
 											ElementType: types.StringType,
 											Required:    true,
+										},
+									},
+								},
+							},
+							"google_cloud_storage": schema.ListNestedBlock{
+								Description: "The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "Unique identifier for the destination component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+										},
+										"bucket": schema.StringAttribute{
+											Required:    true,
+											Description: "Name of the GCS bucket.",
+										},
+										"key_prefix": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional prefix for object keys within the GCS bucket.",
+										},
+										"storage_class": schema.StringAttribute{
+											Required:    true,
+											Description: "Storage class used for objects stored in GCS.",
+										},
+										"acl": schema.StringAttribute{
+											Required:    true,
+											Description: "Access control list setting for objects written to the bucket.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"auth": schema.SingleNestedBlock{
+											Description: "GCP credentials used to authenticate with Google Cloud Storage.",
+											Attributes: map[string]schema.Attribute{
+												"credentials_file": schema.StringAttribute{
+													Required:    true,
+													Description: "Path to the GCP service account key file.",
+												},
+											},
+										},
+										"metadata": schema.ListNestedBlock{
+											Description: "Custom metadata key-value pairs added to each object.",
+											NestedObject: schema.NestedBlockObject{
+												Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Required:    true,
+														Description: "The metadata key.",
+													},
+													"value": schema.StringAttribute{
+														Required:    true,
+														Description: "The metadata value.",
+													},
+												},
+											},
 										},
 									},
 								},
@@ -779,6 +991,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, s := range state.Config.Sources.SplunkTcpSource {
 		config.Sources = append(config.Sources, expandSplunkTcpSource(s))
 	}
+	for _, s := range state.Config.Sources.AmazonS3Source {
+		config.Sources = append(config.Sources, expandAmazonS3Source(s))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -799,6 +1014,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, p := range state.Config.Processors.QuotaProcessor {
 		config.Processors = append(config.Processors, expandQuotaProcessor(ctx, p))
 	}
+	for _, p := range state.Config.Processors.GenerateMetricsProcessor {
+		config.Processors = append(config.Processors, expandGenerateMetricsProcessor(ctx, p))
+	}
 
 	// Destinations
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
@@ -806,6 +1024,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	}
 	for _, d := range state.Config.Destinations.SplunkHecDestination {
 		config.Destinations = append(config.Destinations, expandSplunkHecDestination(ctx, d))
+	}
+	for _, d := range state.Config.Destinations.GoogleCloudStorageDestination {
+		config.Destinations = append(config.Destinations, expandGoogleCloudStorageDestination(ctx, d))
 	}
 
 	attrs.SetConfig(*config)
@@ -824,46 +1045,73 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	outCfg := configModel{}
 
 	for _, src := range cfg.GetSources() {
+
 		if a := flattenDatadogAgentSource(src.ObservabilityPipelineDatadogAgentSource); a != nil {
 			outCfg.Sources.DatadogAgentSource = append(outCfg.Sources.DatadogAgentSource, a)
 		}
+
 		if k := flattenKafkaSource(src.ObservabilityPipelineKafkaSource); k != nil {
 			outCfg.Sources.KafkaSource = append(outCfg.Sources.KafkaSource, k)
 		}
+
 		if s := flattenSplunkHecSource(src.ObservabilityPipelineSplunkHecSource); s != nil {
 			outCfg.Sources.SplunkHecSource = append(outCfg.Sources.SplunkHecSource, s)
 		}
+
 		if s := flattenSplunkTcpSource(src.ObservabilityPipelineSplunkTcpSource); s != nil {
 			outCfg.Sources.SplunkTcpSource = append(outCfg.Sources.SplunkTcpSource, s)
 		}
+
+		if s3 := flattenAmazonS3Source(src.ObservabilityPipelineAmazonS3Source); s3 != nil {
+			outCfg.Sources.AmazonS3Source = append(outCfg.Sources.AmazonS3Source, s3)
+		}
 	}
+
 	for _, p := range cfg.GetProcessors() {
+
 		if f := flattenFilterProcessor(ctx, p.ObservabilityPipelineFilterProcessor); f != nil {
 			outCfg.Processors.FilterProcessor = append(outCfg.Processors.FilterProcessor, f)
 		}
+
 		if f := flattenParseJsonProcessor(ctx, p.ObservabilityPipelineParseJSONProcessor); f != nil {
 			outCfg.Processors.ParseJsonProcessor = append(outCfg.Processors.ParseJsonProcessor, f)
 		}
+
 		if f := flattenAddFieldsProcessor(ctx, p.ObservabilityPipelineAddFieldsProcessor); f != nil {
 			outCfg.Processors.AddFieldsProcessor = append(outCfg.Processors.AddFieldsProcessor, f)
 		}
+
 		if f := flattenRenameFieldsProcessor(ctx, p.ObservabilityPipelineRenameFieldsProcessor); f != nil {
 			outCfg.Processors.RenameFieldsProcessor = append(outCfg.Processors.RenameFieldsProcessor, f)
 		}
+
 		if f := flattenRemoveFieldsProcessor(ctx, p.ObservabilityPipelineRemoveFieldsProcessor); f != nil {
 			outCfg.Processors.RemoveFieldsProcessor = append(outCfg.Processors.RemoveFieldsProcessor, f)
 		}
+
 		if f := flattenQuotaProcessor(ctx, p.ObservabilityPipelineQuotaProcessor); f != nil {
 			outCfg.Processors.QuotaProcessor = append(outCfg.Processors.QuotaProcessor, f)
 		}
+
+		if f := flattenGenerateMetricsProcessor(ctx, p.ObservabilityPipelineGenerateMetricsProcessor); f != nil {
+			outCfg.Processors.GenerateMetricsProcessor = append(outCfg.Processors.GenerateMetricsProcessor, f)
+		}
+
 	}
+
 	for _, d := range cfg.GetDestinations() {
+
 		if logs := flattenDatadogLogsDestination(ctx, d.ObservabilityPipelineDatadogLogsDestination); logs != nil {
 			outCfg.Destinations.DatadogLogsDestination = append(outCfg.Destinations.DatadogLogsDestination, logs)
 		}
 		if hec := flattenSplunkHecDestination(ctx, d.ObservabilityPipelineSplunkHecDestination); hec != nil {
 			outCfg.Destinations.SplunkHecDestination = append(outCfg.Destinations.SplunkHecDestination, hec)
 		}
+
+		if gcs := flattenGoogleCloudStorageDestination(ctx, d.ObservabilityPipelineGoogleCloudStorageDestination); gcs != nil {
+			outCfg.Destinations.GoogleCloudStorageDestination = append(outCfg.Destinations.GoogleCloudStorageDestination, gcs)
+		}
+
 	}
 
 	state.Config = outCfg
@@ -1304,6 +1552,69 @@ func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource)
 	return out
 }
 
+func expandGoogleCloudStorageDestination(ctx context.Context, d *gcsDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineGoogleCloudStorageDestinationWithDefaults()
+
+	dest.SetId(d.Id.ValueString())
+	dest.SetBucket(d.Bucket.ValueString())
+	dest.SetStorageClass(datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationStorageClass(d.StorageClass.ValueString()))
+	dest.SetAcl(datadogV2.ObservabilityPipelineGoogleCloudStorageDestinationAcl(d.Acl.ValueString()))
+
+	if !d.KeyPrefix.IsNull() {
+		dest.SetKeyPrefix(d.KeyPrefix.ValueString())
+	}
+
+	dest.SetAuth(datadogV2.ObservabilityPipelineGcpAuth{
+		CredentialsFile: d.Auth.CredentialsFile.ValueString(),
+	})
+
+	var metadata []datadogV2.ObservabilityPipelineMetadataEntry
+	for _, m := range d.Metadata {
+		metadata = append(metadata, datadogV2.ObservabilityPipelineMetadataEntry{
+			Name:  m.Name.ValueString(),
+			Value: m.Value.ValueString(),
+		})
+	}
+	dest.SetMetadata(metadata)
+
+	var inputs []string
+	d.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineGoogleCloudStorageDestination: dest,
+	}
+}
+
+func flattenGoogleCloudStorageDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineGoogleCloudStorageDestination) *gcsDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+
+	var metadata []metadataEntry
+	for _, m := range src.GetMetadata() {
+		metadata = append(metadata, metadataEntry{
+			Name:  types.StringValue(m.Name),
+			Value: types.StringValue(m.Value),
+		})
+	}
+
+	return &gcsDestinationModel{
+		Id:           types.StringValue(src.GetId()),
+		Bucket:       types.StringValue(src.GetBucket()),
+		KeyPrefix:    types.StringPointerValue(src.KeyPrefix.Get()),
+		StorageClass: types.StringValue(string(src.GetStorageClass())),
+		Acl:          types.StringValue(string(src.GetAcl())),
+		Auth: gcpAuthModel{
+			CredentialsFile: types.StringValue(src.Auth.CredentialsFile),
+		},
+		Metadata: metadata,
+		Inputs:   inputs,
+	}
+}
+
 func expandSplunkTcpSource(src *splunkTcpSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
 	s := datadogV2.NewObservabilityPipelineSplunkTcpSourceWithDefaults()
 	s.SetId(src.Id.ValueString())
@@ -1331,6 +1642,88 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 	}
 
 	return out
+}
+
+func expandGenerateMetricsProcessor(ctx context.Context, p *generateMetricsProcessorModel) datadogV2.ObservabilityPipelineConfigProcessorItem {
+	proc := datadogV2.NewObservabilityPipelineGenerateMetricsProcessorWithDefaults()
+
+	proc.SetId(p.Id.ValueString())
+	proc.SetInclude(p.Include.ValueString())
+
+	var inputs []string
+	p.Inputs.ElementsAs(ctx, &inputs, false)
+	proc.SetInputs(inputs)
+
+	var metrics []datadogV2.ObservabilityPipelineGeneratedMetric
+	for _, m := range p.Metrics {
+		val := datadogV2.ObservabilityPipelineMetricValue{}
+
+		switch m.Value.Strategy.ValueString() {
+		case "increment_by_one":
+			val.ObservabilityPipelineGeneratedMetricIncrementByOne = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByOne{
+				Strategy: "increment_by_one",
+			}
+		case "increment_by_field":
+			val.ObservabilityPipelineGeneratedMetricIncrementByField = &datadogV2.ObservabilityPipelineGeneratedMetricIncrementByField{
+				Strategy: "increment_by_field",
+				Field:    m.Value.Field.ValueString(),
+			}
+		}
+
+		groupBy := []string{}
+		m.GroupBy.ElementsAs(ctx, &groupBy, false)
+
+		metrics = append(metrics, datadogV2.ObservabilityPipelineGeneratedMetric{
+			Name:       m.Name.ValueString(),
+			Include:    m.Include.ValueString(),
+			MetricType: datadogV2.ObservabilityPipelineGeneratedMetricMetricType(m.MetricType.ValueString()),
+			Value:      val,
+			GroupBy:    *datadog.NewNullableList(&groupBy),
+		})
+	}
+
+	proc.SetMetrics(metrics)
+
+	return datadogV2.ObservabilityPipelineConfigProcessorItem{
+		ObservabilityPipelineGenerateMetricsProcessor: proc,
+	}
+}
+
+func flattenGenerateMetricsProcessor(ctx context.Context, proc *datadogV2.ObservabilityPipelineGenerateMetricsProcessor) *generateMetricsProcessorModel {
+	if proc == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, proc.GetInputs())
+
+	var metrics []generatedMetricModel
+	for _, m := range proc.GetMetrics() {
+		groupBy, _ := types.ListValueFrom(ctx, types.StringType, m.GroupBy)
+
+		val := &generatedMetricValue{}
+		if m.Value.ObservabilityPipelineGeneratedMetricIncrementByOne != nil {
+			val.Strategy = types.StringValue("increment_by_one")
+		}
+		if m.Value.ObservabilityPipelineGeneratedMetricIncrementByField != nil {
+			val.Strategy = types.StringValue("increment_by_field")
+			val.Field = types.StringValue(m.Value.ObservabilityPipelineGeneratedMetricIncrementByField.Field)
+		}
+
+		metrics = append(metrics, generatedMetricModel{
+			Name:       types.StringValue(m.Name),
+			Include:    types.StringValue(m.Include),
+			MetricType: types.StringValue(string(m.MetricType)),
+			GroupBy:    groupBy,
+			Value:      val,
+		})
+	}
+
+	return &generateMetricsProcessorModel{
+		Id:      types.StringValue(proc.GetId()),
+		Include: types.StringValue(proc.GetInclude()),
+		Inputs:  inputs,
+		Metrics: metrics,
+	}
 }
 
 func expandSplunkHecDestination(ctx context.Context, d *splunkHecDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
@@ -1375,4 +1768,58 @@ func flattenSplunkHecDestination(ctx context.Context, src *datadogV2.Observabili
 		Sourcetype:           types.StringPointerValue(src.Sourcetype),
 		Index:                types.StringPointerValue(src.Index),
 	}
+}
+
+func expandAmazonS3Source(src *amazonS3SourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	s := datadogV2.NewObservabilityPipelineAmazonS3SourceWithDefaults()
+
+	s.SetId(src.Id.ValueString())
+	s.SetRegion(src.Region.ValueString())
+
+	if src.Auth != nil {
+		auth := datadogV2.ObservabilityPipelineAwsAuth{}
+		if !src.Auth.AssumeRole.IsNull() {
+			auth.SetAssumeRole(src.Auth.AssumeRole.ValueString())
+		}
+		if !src.Auth.ExternalId.IsNull() {
+			auth.SetExternalId(src.Auth.ExternalId.ValueString())
+		}
+		if !src.Auth.SessionName.IsNull() {
+			auth.SetSessionName(src.Auth.SessionName.ValueString())
+		}
+		s.SetAuth(auth)
+	}
+
+	if len(src.Tls) > 0 {
+		s.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineAmazonS3Source: s,
+	}
+}
+
+func flattenAmazonS3Source(src *datadogV2.ObservabilityPipelineAmazonS3Source) *amazonS3SourceModel {
+	if src == nil {
+		return nil
+	}
+
+	out := &amazonS3SourceModel{
+		Id:     types.StringValue(src.GetId()),
+		Region: types.StringValue(src.GetRegion()),
+	}
+
+	if src.Auth != nil {
+		out.Auth = &awsAuthModel{
+			AssumeRole:  types.StringPointerValue(src.Auth.AssumeRole.Get()),
+			ExternalId:  types.StringPointerValue(src.Auth.ExternalId.Get()),
+			SessionName: types.StringPointerValue(src.Auth.SessionName.Get()),
+		}
+	}
+
+	if src.Tls != nil {
+		out.Tls = []tlsModel{flattenTls(src.Tls)}
+	}
+
+	return out
 }
