@@ -185,7 +185,7 @@ func testAccCheckDatadogSecurityMonitoringDefaultRuleAddTag() resource.TestCheck
 func testAccDatadogSecurityMonitoringDefaultRuleAppsec() string {
 	return `
 data "datadog_security_monitoring_rules" "bruteforce" {
-	tags_filter = ["source:application-security"]
+	tags_filter = ["source:application-security", "category:unauthorized_traffic"]
 	default_only_filter = true
 	user_only_filter = false
 }
@@ -195,8 +195,9 @@ data "datadog_security_monitoring_rules" "bruteforce" {
 func testAccCheckDatadogSecurityMonitoringAppsec() string {
 	return `
 data "datadog_security_monitoring_rules" "bruteforce" {
-	tags_filter = ["source:application-security"]
-	default_only_filter = "true"
+	tags_filter = ["source:application-security", "category:unauthorized_traffic"]
+	default_only_filter = true
+	user_only_filter = false
 }
 
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
@@ -209,7 +210,7 @@ func testAccDatadogSecurityMonitoringDefaultRuleUpdateCase() string {
 resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 
 	case {
-		status = "low"
+		status = "medium"
 		notifications = ["team@example.com"]
 		action {
 			type = "block_ip"
@@ -234,7 +235,7 @@ resource "datadog_security_monitoring_default_rule" "acceptance_test" {
 func testAccCheckDatadogSecurityMonitoringDefaultRuleUpdateCase() resource.TestCheckFunc {
 	return resource.ComposeTestCheckFunc(
 		resource.TestCheckResourceAttr(
-			tfSecurityDefaultRuleName, "case.0.status", "low"),
+			tfSecurityDefaultRuleName, "case.0.status", "medium"),
 		resource.TestCheckResourceAttr(
 			tfSecurityDefaultRuleName, "case.0.notifications.0", "team@example.com"),
 		resource.TestCheckResourceAttr(
