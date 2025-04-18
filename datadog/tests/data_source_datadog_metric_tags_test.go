@@ -29,7 +29,7 @@ func TestAccDatadogMetricTagsDatasource(t *testing.T) {
 
 func testAccDatasourceMetricTagsConfig(metric string) string {
 	return fmt.Sprintf(`
-data "metric_tags" "agent" {
+data "datadog_metric_tags" "agent" {
 	metric = "%s"
 }
 `, metric)
