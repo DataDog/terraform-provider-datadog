@@ -189,25 +189,25 @@ Required:
 
 Optional:
 
-- `helper_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processors--parse_grok--rules--helper_rule))
-- `parsing_rule` (Block List) A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processors--parse_grok--rules--parsing_rule))
+- `match_rule` (Block List) A list of Grok parsing rules that define how to extract fields from the source field. Each rule must contain a name and a valid Grok pattern. (see [below for nested schema](#nestedblock--config--processors--parse_grok--rules--match_rule))
+- `support_rule` (Block List) A list of helper Grok rules that can be referenced by the parsing rules. (see [below for nested schema](#nestedblock--config--processors--parse_grok--rules--support_rule))
 
-<a id="nestedblock--config--processors--parse_grok--rules--helper_rule"></a>
-### Nested Schema for `config.processors.parse_grok.rules.helper_rule`
-
-Required:
-
-- `name` (String) The name of the helper Grok rule.
-- `rule` (String) The definition of the helper Grok rule.
-
-
-<a id="nestedblock--config--processors--parse_grok--rules--parsing_rule"></a>
-### Nested Schema for `config.processors.parse_grok.rules.parsing_rule`
+<a id="nestedblock--config--processors--parse_grok--rules--match_rule"></a>
+### Nested Schema for `config.processors.parse_grok.rules.match_rule`
 
 Required:
 
 - `name` (String) The name of the rule.
 - `rule` (String) The definition of the Grok rule.
+
+
+<a id="nestedblock--config--processors--parse_grok--rules--support_rule"></a>
+### Nested Schema for `config.processors.parse_grok.rules.support_rule`
+
+Required:
+
+- `name` (String) The name of the helper Grok rule.
+- `rule` (String) The definition of the helper Grok rule.
 
 
 
@@ -283,7 +283,7 @@ Required:
 
 Required:
 
-- `fields` (List of String) List of fields to remove from the events.
+- `fields` (List of String) A list of field names to be removed from each log event.
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs this processor targets.
 - `inputs` (List of String) The inputs for the processor.
@@ -296,11 +296,11 @@ Required:
 
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs this processor targets.
-- `inputs` (List of String) he inputs for the processor.
+- `inputs` (List of String) The inputs for the processor.
 
 Optional:
 
-- `field` (Block List) List of fields to rename. (see [below for nested schema](#nestedblock--config--processors--rename_fields--field))
+- `field` (Block List) A list of rename rules specifying which fields to rename in the event, what to rename them to, and whether to preserve the original fields. (see [below for nested schema](#nestedblock--config--processors--rename_fields--field))
 
 <a id="nestedblock--config--processors--rename_fields--field"></a>
 ### Nested Schema for `config.processors.rename_fields.field`
