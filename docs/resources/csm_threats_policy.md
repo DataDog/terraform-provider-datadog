@@ -23,7 +23,8 @@ Provides a Datadog CSM Threats policy API resource.
 
 - `description` (String) A description for the policy.
 - `enabled` (Boolean) Indicates whether the policy is enabled. Defaults to `false`.
-- `tags` (Set of String) Host tags that define where the policy is deployed.
+- `host_tags_lists` (Set of List of String) Host tags that define where the policy is deployed. Inner values are ANDed, outer arrays are ORed.
+- `tags` (Set of String) Host tags that define where the policy is deployed. Deprecated, use host_tags_lists instead.
 
 ### Read-Only
 
