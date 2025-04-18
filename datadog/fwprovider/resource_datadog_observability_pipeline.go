@@ -435,7 +435,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"inputs": schema.ListAttribute{
 											Required:    true,
-											Description: "he inputs for the processor.",
+											Description: "The inputs for the processor.",
 											ElementType: types.StringType,
 										},
 									},
@@ -445,7 +445,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												// this is the only way to make the list of fields required in Terraform
 												listvalidator.SizeAtLeast(1),
 											},
-											Description: "List of fields to rename.",
+											Description: "A list of rename rules specifying which fields to rename in the event, what to rename them to, and whether to preserve the original fields.",
 											NestedObject: schema.NestedBlockObject{
 												Attributes: map[string]schema.Attribute{
 													"source": schema.StringAttribute{
@@ -485,7 +485,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 										},
 										"fields": schema.ListAttribute{
 											Required:    true,
-											Description: "List of fields to remove from the events.",
+											Description: "A list of field names to be removed from each log event.",
 											ElementType: types.StringType,
 										},
 									},
