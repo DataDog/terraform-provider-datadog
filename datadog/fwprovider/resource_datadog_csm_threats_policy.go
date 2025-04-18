@@ -15,11 +15,12 @@ import (
 )
 
 type csmThreatsPolicyModel struct {
-	Id          types.String `tfsdk:"id"`
-	Tags        types.Set    `tfsdk:"tags"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Enabled     types.Bool   `tfsdk:"enabled"`
+	Id            types.String `tfsdk:"id"`
+	Tags          types.Set    `tfsdk:"tags"`
+	HostTagsLists types.Set    `tfsdk:"host_tags_lists"`
+	Name          types.String `tfsdk:"name"`
+	Description   types.String `tfsdk:"description"`
+	Enabled       types.Bool   `tfsdk:"enabled"`
 }
 
 type csmThreatsPolicyResource struct {
@@ -63,9 +64,16 @@ func (r *csmThreatsPolicyResource) Schema(_ context.Context, _ resource.SchemaRe
 			},
 			"tags": schema.SetAttribute{
 				Optional:    true,
-				Description: "Host tags that define where the policy is deployed.",
+				Description: "Host tags that define where the policy is deployed. Deprecated, use host_tags_lists instead.",
 				ElementType: types.StringType,
 				Computed:    true,
+			},
+			"host_tags_lists": schema.SetAttribute{
+				Optional:    true,
+				Description: "Host tags that define where the policy is deployed. Inner values are ANDed, outer arrays are ORed.",
+				ElementType: types.ListType{
+					ElemType: types.StringType,
+				},
 			},
 		},
 	}
@@ -182,7 +190,7 @@ func (r *csmThreatsPolicyResource) Delete(ctx context.Context, request resource.
 }
 
 func (r *csmThreatsPolicyResource) buildCreateCSMThreatsPolicyPayload(state *csmThreatsPolicyModel) (*datadogV2.CloudWorkloadSecurityAgentPolicyCreateRequest, error) {
-	_, name, description, enabled, tags, err := r.extractPolicyAttributesFromResource(state)
+	_, name, description, enabled, tags, hostTagsLists, err := r.extractPolicyAttributesFromResource(state)
 	if err != nil {
 		return nil, err
 	}
@@ -192,13 +200,14 @@ func (r *csmThreatsPolicyResource) buildCreateCSMThreatsPolicyPayload(state *csm
 	attributes.Description = description
 	attributes.Enabled = enabled
 	attributes.HostTags = tags
+	attributes.HostTagsLists = hostTagsLists
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentPolicyCreateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTPOLICYTYPE_POLICY)
 	return datadogV2.NewCloudWorkloadSecurityAgentPolicyCreateRequest(*data), nil
 }
 
 func (r *csmThreatsPolicyResource) buildUpdateCSMThreatsPolicyPayload(state *csmThreatsPolicyModel) (*datadogV2.CloudWorkloadSecurityAgentPolicyUpdateRequest, error) {
-	policyId, name, description, enabled, tags, err := r.extractPolicyAttributesFromResource(state)
+	policyId, name, description, enabled, tags, hostTagsLists, err := r.extractPolicyAttributesFromResource(state)
 	if err != nil {
 		return nil, err
 	}
@@ -207,13 +216,14 @@ func (r *csmThreatsPolicyResource) buildUpdateCSMThreatsPolicyPayload(state *csm
 	attributes.Description = description
 	attributes.Enabled = enabled
 	attributes.HostTags = tags
+	attributes.HostTagsLists = hostTagsLists
 
 	data := datadogV2.NewCloudWorkloadSecurityAgentPolicyUpdateData(attributes, datadogV2.CLOUDWORKLOADSECURITYAGENTPOLICYTYPE_POLICY)
 	data.Id = &policyId
 	return datadogV2.NewCloudWorkloadSecurityAgentPolicyUpdateRequest(*data), nil
 }
 
-func (r *csmThreatsPolicyResource) extractPolicyAttributesFromResource(state *csmThreatsPolicyModel) (string, string, *string, *bool, []string, error) {
+func (r *csmThreatsPolicyResource) extractPolicyAttributesFromResource(state *csmThreatsPolicyModel) (string, string, *string, *bool, []string, [][]string, error) {
 	// Mandatory fields
 	id := state.Id.ValueString()
 	name := state.Name.ValueString()
@@ -224,13 +234,30 @@ func (r *csmThreatsPolicyResource) extractPolicyAttributesFromResource(state *cs
 		for _, tag := range state.Tags.Elements() {
 			tagStr, ok := tag.(types.String)
 			if !ok {
-				return "", "", nil, nil, nil, fmt.Errorf("expected item to be of type types.String, got %T", tag)
+				return "", "", nil, nil, nil, nil, fmt.Errorf("expected item to be of type types.String, got %T", tag)
 			}
 			tags = append(tags, tagStr.ValueString())
 		}
 	}
-
-	return id, name, description, enabled, tags, nil
+	var hostTagsLists [][]string
+	if !state.HostTagsLists.IsNull() && !state.HostTagsLists.IsUnknown() {
+		for _, hostTagList := range state.HostTagsLists.Elements() {
+			hostTagListStr, ok := hostTagList.(types.List)
+			if !ok {
+				return "", "", nil, nil, nil, nil, fmt.Errorf("expected item to be of type types.List, got %T", hostTagList)
+			}
+			var tags []string
+			for _, hostTag := range hostTagListStr.Elements() {
+				hostTagStr, ok := hostTag.(types.String)
+				if !ok {
+					return "", "", nil, nil, nil, nil, fmt.Errorf("expected item to be of type types.String, got %T", hostTag)
+				}
+				tags = append(tags, hostTagStr.ValueString())
+			}
+			hostTagsLists = append(hostTagsLists, tags)
+		}
+	}
+	return id, name, description, enabled, tags, hostTagsLists, nil
 }
 
 func (r *csmThreatsPolicyResource) updateStateFromResponse(ctx context.Context, state *csmThreatsPolicyModel, res *datadogV2.CloudWorkloadSecurityAgentPolicyResponse) {
@@ -242,4 +269,9 @@ func (r *csmThreatsPolicyResource) updateStateFromResponse(ctx context.Context, 
 	state.Description = types.StringValue(attributes.GetDescription())
 	state.Enabled = types.BoolValue(attributes.GetEnabled())
 	state.Tags, _ = types.SetValueFrom(ctx, types.StringType, attributes.GetHostTags())
+	state.HostTagsLists, _ = types.SetValueFrom(ctx, types.ListType{
+		ElemType: types.ListType{
+			ElemType: types.StringType,
+		},
+	}, attributes.GetHostTagsLists())
 }
