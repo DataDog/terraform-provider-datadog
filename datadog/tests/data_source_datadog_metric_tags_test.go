@@ -21,6 +21,7 @@ func TestAccDatadogMetricTagsDatasource(t *testing.T) {
 				Config: testAccDatasourceMetricTagsConfig(metric),
 				Check: resource.ComposeTestCheckFunc(
 					resource.TestCheckResourceAttr("data.datadog_metric_tags.agent", "metric", metric),
+					resource.TestCheckResourceAttr("data.datadog_metric_tags.agent", "tags.0", "foo:bar"),
 				),
 			},
 		},
