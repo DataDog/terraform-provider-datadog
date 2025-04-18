@@ -158,6 +158,7 @@ type fieldValue struct {
 
 type destinationsModel struct {
 	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
+	SplunkHecDestination   []*splunkHecDestinationModel   `tfsdk:"splunk_hec"`
 }
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
@@ -172,6 +173,15 @@ type splunkHecSourceModel struct {
 type splunkTcpSourceModel struct {
 	Id  types.String `tfsdk:"id"`  // The unique identifier for this component.
 	Tls []tlsModel   `tfsdk:"tls"` // TLS encryption settings for secure transmission.
+}
+
+type splunkHecDestinationModel struct {
+	Id                   types.String `tfsdk:"id"`
+	Inputs               types.List   `tfsdk:"inputs"`
+	AutoExtractTimestamp types.Bool   `tfsdk:"auto_extract_timestamp"`
+	Encoding             types.String `tfsdk:"encoding"`
+	Sourcetype           types.String `tfsdk:"sourcetype"`
+	Index                types.String `tfsdk:"index"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -569,6 +579,38 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"splunk_hec": schema.ListNestedBlock{
+								Description: "The `splunk_hec` destination forwards logs to Splunk using the HTTP Event Collector (HEC).",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											ElementType: types.StringType,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+										},
+										"auto_extract_timestamp": schema.BoolAttribute{
+											Optional:    true,
+											Description: "If `true`, Splunk tries to extract timestamps from incoming log events.",
+										},
+										"encoding": schema.StringAttribute{
+											Optional:    true,
+											Description: "Encoding format for log events. Valid values: `json`, `raw_message`.",
+										},
+										"sourcetype": schema.StringAttribute{
+											Optional:    true,
+											Description: "The Splunk sourcetype to assign to log events.",
+										},
+										"index": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional name of the Splunk index where logs are written.",
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -762,6 +804,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, d := range state.Config.Destinations.DatadogLogsDestination {
 		config.Destinations = append(config.Destinations, expandDatadogLogsDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.SplunkHecDestination {
+		config.Destinations = append(config.Destinations, expandSplunkHecDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -815,6 +860,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 	for _, d := range cfg.GetDestinations() {
 		if logs := flattenDatadogLogsDestination(ctx, d.ObservabilityPipelineDatadogLogsDestination); logs != nil {
 			outCfg.Destinations.DatadogLogsDestination = append(outCfg.Destinations.DatadogLogsDestination, logs)
+		}
+		if hec := flattenSplunkHecDestination(ctx, d.ObservabilityPipelineSplunkHecDestination); hec != nil {
+			outCfg.Destinations.SplunkHecDestination = append(outCfg.Destinations.SplunkHecDestination, hec)
 		}
 	}
 
@@ -1283,4 +1331,48 @@ func flattenSplunkTcpSource(src *datadogV2.ObservabilityPipelineSplunkTcpSource)
 	}
 
 	return out
+}
+
+func expandSplunkHecDestination(ctx context.Context, d *splunkHecDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	dest := datadogV2.NewObservabilityPipelineSplunkHecDestinationWithDefaults()
+
+	dest.SetId(d.Id.ValueString())
+
+	var inputs []string
+	d.Inputs.ElementsAs(ctx, &inputs, false)
+	dest.SetInputs(inputs)
+
+	if !d.AutoExtractTimestamp.IsNull() {
+		dest.SetAutoExtractTimestamp(d.AutoExtractTimestamp.ValueBool())
+	}
+	if !d.Encoding.IsNull() {
+		dest.SetEncoding(datadogV2.ObservabilityPipelineSplunkHecDestinationEncoding(d.Encoding.ValueString()))
+	}
+	if !d.Sourcetype.IsNull() {
+		dest.SetSourcetype(d.Sourcetype.ValueString())
+	}
+	if !d.Index.IsNull() {
+		dest.SetIndex(d.Index.ValueString())
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineSplunkHecDestination: dest,
+	}
+}
+
+func flattenSplunkHecDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineSplunkHecDestination) *splunkHecDestinationModel {
+	if src == nil {
+		return nil
+	}
+
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+
+	return &splunkHecDestinationModel{
+		Id:                   types.StringValue(src.GetId()),
+		Inputs:               inputs,
+		AutoExtractTimestamp: types.BoolValue(src.GetAutoExtractTimestamp()),
+		Encoding:             types.StringValue(string(*src.Encoding)),
+		Sourcetype:           types.StringPointerValue(src.Sourcetype),
+		Index:                types.StringPointerValue(src.Index),
+	}
 }

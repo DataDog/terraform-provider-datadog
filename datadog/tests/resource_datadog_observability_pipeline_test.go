@@ -751,3 +751,52 @@ resource "datadog_observability_pipeline" "splunk_tcp" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_splunkHecDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.splunk_hec_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec_dest" {
+  name = "splunk-hec-destination-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      splunk_hec {
+        id     = "splunk-hec-1"
+        inputs = ["source-1"]
+
+        auto_extract_timestamp = true
+        encoding               = "json"
+        sourcetype             = "custom_sourcetype"
+        index                  = "main"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.splunk_hec.0.id", "splunk-hec-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.splunk_hec.0.auto_extract_timestamp", "true"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.splunk_hec.0.encoding", "json"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.splunk_hec.0.sourcetype", "custom_sourcetype"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.splunk_hec.0.index", "main"),
+				),
+			},
+		},
+	})
+}
