@@ -388,7 +388,7 @@ resource "datadog_synthetics_test" "test_browser" {
     params {
       files = jsonencode([{
         name    = "hello.txt"   // Name of the file
-        size    = 11            // Size of the file
+        size    = 11            // Size of the file in bytes
         content = "Hello world" // Content of the file
       }])
       element = "*[@id='simple-file-upload']"
@@ -398,6 +398,25 @@ resource "datadog_synthetics_test" "test_browser" {
           value = "#simple-file-upload"
         }
       }
+    }
+  }
+
+  browser_step {
+    name = "Test sending http requests"
+    type = "assertRequests"
+    params {
+      requests = jsonencode(
+        {
+          count = {
+            type = "equals" // "equals", "greater", "greaterEquals", "lower", 
+            // "lowerEquals", "notEquals", "between"
+            value = 1
+            // min   = 1      // only used for "between"
+            // max   = 1      // only used for "between"
+          }
+          url = "https://www.example.org"
+        }
+      )
     }
   }
 

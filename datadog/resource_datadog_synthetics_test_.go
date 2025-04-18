@@ -1365,6 +1365,11 @@ func syntheticsBrowserStepParams() schema.Schema {
 					Type:        schema.TypeString,
 					Optional:    true,
 				},
+				"requests": {
+					Description: `Details of the requests for an "assert request" step, JSON encoded string. Refer to the examples for a usage example showing the schema.`,
+					Type:        schema.TypeString,
+					Optional:    true,
+				},
 				"subtest_public_id": {
 					Description: "ID of the Synthetics test to use as subtest.",
 					Type:        schema.TypeString,
@@ -4706,7 +4711,7 @@ func decompressAndDecodeValue(value string, acceptBase64Only bool) (string, erro
 
 func convertStepParamsValueForConfig(stepType interface{}, key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "files", "request":
+	case "element", "email", "file", "files", "request", "requests":
 		var result interface{}
 		if err := utils.GetMetadataFromJSON([]byte(value.(string)), &result); err != nil {
 			log.Printf("[ERROR] Error converting step param %s: %v", key, err)
@@ -4734,7 +4739,7 @@ func convertStepParamsValueForConfig(stepType interface{}, key string, value int
 
 func convertStepParamsValueForState(key string, value interface{}) interface{} {
 	switch key {
-	case "element", "email", "file", "files", "request":
+	case "element", "email", "file", "files", "request", "requests":
 		result, _ := json.Marshal(value)
 		return string(result)
 
@@ -4992,6 +4997,9 @@ func getParamsKeysForStepType(stepType datadogV1.SyntheticsStepType) []string {
 
 	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_PAGE_LACKS:
 		return []string{"value"}
+
+	case datadogV1.SYNTHETICSSTEPTYPE_ASSERT_REQUESTS:
+		return []string{"requests"}
 
 	case datadogV1.SYNTHETICSSTEPTYPE_CLICK:
 		return []string{"click_type", "element"}
