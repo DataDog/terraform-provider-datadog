@@ -651,3 +651,53 @@ resource "datadog_observability_pipeline" "add_fields" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_splunkHecSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.splunk_hec"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_hec" {
+  name = "splunk-hec-pipeline"
+
+  config {
+    sources {
+      splunk_hec {
+        id = "splunk-hec-source-1"
+
+        tls {
+          crt_file = "/etc/ssl/certs/splunk.crt"
+          ca_file  = "/etc/ssl/certs/ca.crt"
+          key_file = "/etc/ssl/private/splunk.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["splunk-hec-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_hec.0.id", "splunk-hec-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_hec.0.tls.0.crt_file", "/etc/ssl/certs/splunk.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_hec.0.tls.0.ca_file", "/etc/ssl/certs/ca.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_hec.0.tls.0.key_file", "/etc/ssl/private/splunk.key"),
+				),
+			},
+		},
+	})
+}

@@ -42,6 +42,7 @@ type configModel struct {
 type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
+	SplunkHecSource    []*splunkHecSourceModel    `tfsdk:"splunk_hec"`
 }
 
 // / Source models
@@ -162,6 +163,11 @@ type datadogLogsDestinationModel struct {
 	Inputs types.List   `tfsdk:"inputs"`
 }
 
+type splunkHecSourceModel struct {
+	Id  types.String `tfsdk:"id"`  // The unique identifier for this component.
+	Tls []tlsModel   `tfsdk:"tls"` // TLS encryption settings for secure ingestion.
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -253,6 +259,20 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 												},
 											},
 										},
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"splunk_hec": schema.ListNestedBlock{
+								Description: "The `splunk_hec` source implements the Splunk HTTP Event Collector (HEC) API.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+									},
+									Blocks: map[string]schema.Block{
 										"tls": tlsSchema(),
 									},
 								},
@@ -691,6 +711,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, k := range state.Config.Sources.KafkaSource {
 		config.Sources = append(config.Sources, expandKafkaSource(k))
 	}
+	for _, s := range state.Config.Sources.SplunkHecSource {
+		config.Sources = append(config.Sources, expandSplunkHecSource(s))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -738,6 +761,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if k := flattenKafkaSource(src.ObservabilityPipelineKafkaSource); k != nil {
 			outCfg.Sources.KafkaSource = append(outCfg.Sources.KafkaSource, k)
+		}
+		if s := flattenSplunkHecSource(src.ObservabilityPipelineSplunkHecSource); s != nil {
+			outCfg.Sources.SplunkHecSource = append(outCfg.Sources.SplunkHecSource, s)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -1172,4 +1198,34 @@ func expandTls(src []tlsModel) *datadogV2.ObservabilityPipelineTls {
 		tls.SetKeyFile(tlsTF.KeyFile.ValueString())
 	}
 	return tls
+}
+
+func expandSplunkHecSource(src *splunkHecSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	s := datadogV2.NewObservabilityPipelineSplunkHecSourceWithDefaults()
+
+	s.SetId(src.Id.ValueString())
+
+	if len(src.Tls) > 0 {
+		s.Tls = expandTls(src.Tls)
+	}
+
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineSplunkHecSource: s,
+	}
+}
+
+func flattenSplunkHecSource(src *datadogV2.ObservabilityPipelineSplunkHecSource) *splunkHecSourceModel {
+	if src == nil {
+		return nil
+	}
+
+	out := &splunkHecSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
+
+	if src.Tls != nil {
+		out.Tls = []tlsModel{flattenTls(src.Tls)}
+	}
+
+	return out
 }
