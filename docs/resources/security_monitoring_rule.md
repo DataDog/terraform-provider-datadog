@@ -110,6 +110,7 @@ Optional:
 Optional:
 
 - `duration` (Number) Duration of the action in seconds.
+- `user_behavior_name` (String) Name of the risk tag applied to users triggering a `user_behavior` case action.
 
 
 

@@ -87,6 +87,11 @@ func datadogSecurityMonitoringRuleSchema(includeValidate bool) map[string]*schem
 												Optional:    true,
 												Description: "Duration of the action in seconds.",
 											},
+											"user_behavior_name": {
+												Type:        schema.TypeString,
+												Optional:    true,
+												Description: "Name of the risk tag applied to users triggering a `user_behavior` case action.",
+											},
 										},
 									},
 								},
@@ -1161,6 +1166,8 @@ func buildPayloadCaseActions(tfActions []any) []datadogV2.SecurityMonitoringRule
 			for k, v := range tfOptions {
 				if k == "duration" {
 					payloadOptions.SetDuration(int64(v.(int)))
+				} else if k == "user_behavior_name" {
+					payloadOptions.SetUserBehaviorName(v.(string))
 				}
 			}
 		}
@@ -1388,6 +1395,9 @@ func extractRuleCases(responseRulesCases []datadogV2.SecurityMonitoringRuleCase)
 					tfOptions := make(map[string]interface{})
 					if duration, ok := options.GetDurationOk(); ok {
 						tfOptions["duration"] = duration
+					}
+					if userBehaviorName, ok := options.GetUserBehaviorNameOk(); ok {
+						tfOptions["user_behavior_name"] = userBehaviorName
 					}
 					if len(tfOptions) > 0 {
 						tfAction["options"] = []any{tfOptions}

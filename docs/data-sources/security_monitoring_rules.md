@@ -81,6 +81,7 @@ Read-Only:
 Read-Only:
 
 - `duration` (Number)
+- `user_behavior_name` (String)
 
 
 
