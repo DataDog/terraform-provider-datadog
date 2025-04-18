@@ -701,3 +701,53 @@ resource "datadog_observability_pipeline" "splunk_hec" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_splunkTcpSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+
+	resourceName := "datadog_observability_pipeline.splunk_tcp"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "splunk_tcp" {
+  name = "splunk-tcp-pipeline"
+
+  config {
+    sources {
+      splunk_tcp {
+        id = "splunk-tcp-source-1"
+
+        tls {
+          crt_file = "/etc/ssl/certs/tcp.crt"
+          ca_file  = "/etc/ssl/certs/tcp.ca"
+          key_file = "/etc/ssl/private/tcp.key"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["splunk-tcp-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_tcp.0.id", "splunk-tcp-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_tcp.0.tls.0.crt_file", "/etc/ssl/certs/tcp.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_tcp.0.tls.0.ca_file", "/etc/ssl/certs/tcp.ca"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.splunk_tcp.0.tls.0.key_file", "/etc/ssl/private/tcp.key"),
+				),
+			},
+		},
+	})
+}
