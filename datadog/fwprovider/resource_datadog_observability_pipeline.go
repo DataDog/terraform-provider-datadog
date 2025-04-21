@@ -3,8 +3,6 @@ package fwprovider
 import (
 	"context"
 
-	"github.com/DataDog/datadog-api-client-go/v2/api/datadog"
-
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -1678,7 +1676,7 @@ func expandGenerateMetricsProcessor(ctx context.Context, p *generateMetricsProce
 			Include:    m.Include.ValueString(),
 			MetricType: datadogV2.ObservabilityPipelineGeneratedMetricMetricType(m.MetricType.ValueString()),
 			Value:      val,
-			GroupBy:    *datadog.NewNullableList(&groupBy),
+			GroupBy:    groupBy,
 		})
 	}
 
