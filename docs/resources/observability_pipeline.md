@@ -108,6 +108,8 @@ Optional:
 Optional:
 
 - `datadog_logs` (Block List) The `datadog_logs` destination forwards logs to Datadog Log Management. (see [below for nested schema](#nestedblock--config--destinations--datadog_logs))
+- `google_cloud_storage` (Block List) The `google_cloud_storage` destination stores logs in a Google Cloud Storage (GCS) bucket. (see [below for nested schema](#nestedblock--config--destinations--google_cloud_storage))
+- `splunk_hec` (Block List) The `splunk_hec` destination forwards logs to Splunk using the HTTP Event Collector (HEC). (see [below for nested schema](#nestedblock--config--destinations--splunk_hec))
 
 <a id="nestedblock--config--destinations--datadog_logs"></a>
 ### Nested Schema for `config.destinations.datadog_logs`
@@ -118,6 +120,57 @@ Required:
 - `inputs` (List of String) The inputs for the destination.
 
 
+<a id="nestedblock--config--destinations--google_cloud_storage"></a>
+### Nested Schema for `config.destinations.google_cloud_storage`
+
+Required:
+
+- `acl` (String) Access control list setting for objects written to the bucket.
+- `bucket` (String) Name of the GCS bucket.
+- `id` (String) Unique identifier for the destination component.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+- `storage_class` (String) Storage class used for objects stored in GCS.
+
+Optional:
+
+- `auth` (Block, Optional) GCP credentials used to authenticate with Google Cloud Storage. (see [below for nested schema](#nestedblock--config--destinations--google_cloud_storage--auth))
+- `key_prefix` (String) Optional prefix for object keys within the GCS bucket.
+- `metadata` (Block List) Custom metadata key-value pairs added to each object. (see [below for nested schema](#nestedblock--config--destinations--google_cloud_storage--metadata))
+
+<a id="nestedblock--config--destinations--google_cloud_storage--auth"></a>
+### Nested Schema for `config.destinations.google_cloud_storage.auth`
+
+Required:
+
+- `credentials_file` (String) Path to the GCP service account key file.
+
+
+<a id="nestedblock--config--destinations--google_cloud_storage--metadata"></a>
+### Nested Schema for `config.destinations.google_cloud_storage.metadata`
+
+Required:
+
+- `name` (String) The metadata key.
+- `value` (String) The metadata value.
+
+
+
+<a id="nestedblock--config--destinations--splunk_hec"></a>
+### Nested Schema for `config.destinations.splunk_hec`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `auto_extract_timestamp` (Boolean) If `true`, Splunk tries to extract timestamps from incoming log events.
+- `encoding` (String) Encoding format for log events. Valid values: `json`, `raw_message`.
+- `index` (String) Optional name of the Splunk index where logs are written.
+- `sourcetype` (String) The Splunk sourcetype to assign to log events.
+
+
 
 <a id="nestedblock--config--processors"></a>
 ### Nested Schema for `config.processors`
@@ -126,6 +179,7 @@ Optional:
 
 - `add_fields` (Block List) The `add_fields` processor adds static key-value fields to logs. (see [below for nested schema](#nestedblock--config--processors--add_fields))
 - `filter` (Block List) The `filter` processor allows conditional processing of logs based on a Datadog search query. Logs that match the `include` query are passed through; others are discarded. (see [below for nested schema](#nestedblock--config--processors--filter))
+- `generate_datadog_metrics` (Block List) The `generate_datadog_metrics` processor creates custom metrics from logs. Metrics can be counters, gauges, or distributions and optionally grouped by log fields. (see [below for nested schema](#nestedblock--config--processors--generate_datadog_metrics))
 - `parse_json` (Block List) The `parse_json` processor extracts JSON from a specified field and flattens it into the event. This is useful when logs contain embedded JSON as a string. (see [below for nested schema](#nestedblock--config--processors--parse_json))
 - `quota` (Block List) The `quota` measures logging traffic for logs that match a specified filter. When the configured daily quota is met, the processor can drop or alert. (see [below for nested schema](#nestedblock--config--processors--quota))
 - `remove_fields` (Block List) The `remove_fields` processor deletes specified fields from logs. (see [below for nested schema](#nestedblock--config--processors--remove_fields))
@@ -162,6 +216,47 @@ Required:
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs should pass through the filter. Logs that match this query continue to downstream components; others are dropped.
 - `inputs` (List of String) The inputs for the processor.
+
+
+<a id="nestedblock--config--processors--generate_datadog_metrics"></a>
+### Nested Schema for `config.processors.generate_datadog_metrics`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline.
+- `include` (String) A Datadog search query used to determine which logs this processor targets.
+- `inputs` (List of String) A list of component IDs whose output is used as the `input` for this processor.
+
+Optional:
+
+- `metrics` (Block List) Configuration for generating individual metrics. (see [below for nested schema](#nestedblock--config--processors--generate_datadog_metrics--metrics))
+
+<a id="nestedblock--config--processors--generate_datadog_metrics--metrics"></a>
+### Nested Schema for `config.processors.generate_datadog_metrics.metrics`
+
+Required:
+
+- `include` (String) Datadog filter query to match logs for metric generation.
+- `metric_type` (String) Type of metric to create.
+- `name` (String) Name of the custom metric to be created.
+
+Optional:
+
+- `group_by` (List of String) Optional fields used to group the metric series.
+- `value` (Block, Optional) Specifies how the value of the generated metric is computed. (see [below for nested schema](#nestedblock--config--processors--generate_datadog_metrics--metrics--value))
+
+<a id="nestedblock--config--processors--generate_datadog_metrics--metrics--value"></a>
+### Nested Schema for `config.processors.generate_datadog_metrics.metrics.value`
+
+Required:
+
+- `strategy` (String) Metric value strategy: `increment_by_one` or `increment_by_field`.
+
+Optional:
+
+- `field` (String) Name of the log field containing the numeric value to increment the metric by (used only for `increment_by_field`).
+
+
 
 
 <a id="nestedblock--config--processors--parse_json"></a>
@@ -248,7 +343,7 @@ Required:
 
 - `id` (String) The unique ID of the processor.
 - `include` (String) A Datadog search query used to determine which logs this processor targets.
-- `inputs` (List of String) he inputs for the processor.
+- `inputs` (List of String) The inputs for the processor.
 
 Optional:
 
@@ -271,8 +366,48 @@ Required:
 
 Optional:
 
+- `amazon_s3` (Block List) The `amazon_s3` source ingests logs from an Amazon S3 bucket. It supports AWS authentication and TLS encryption. (see [below for nested schema](#nestedblock--config--sources--amazon_s3))
 - `datadog_agent` (Block List) The `datadog_agent` source collects logs from the Datadog Agent. (see [below for nested schema](#nestedblock--config--sources--datadog_agent))
 - `kafka` (Block List) The `kafka` source ingests data from Apache Kafka topics. (see [below for nested schema](#nestedblock--config--sources--kafka))
+- `splunk_hec` (Block List) The `splunk_hec` source implements the Splunk HTTP Event Collector (HEC) API. (see [below for nested schema](#nestedblock--config--sources--splunk_hec))
+- `splunk_tcp` (Block List) The `splunk_tcp` source receives logs from a Splunk Universal Forwarder over TCP. TLS is supported for secure transmission. (see [below for nested schema](#nestedblock--config--sources--splunk_tcp))
+
+<a id="nestedblock--config--sources--amazon_s3"></a>
+### Nested Schema for `config.sources.amazon_s3`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+- `region` (String) AWS region where the S3 bucket resides.
+
+Optional:
+
+- `auth` (Block, Optional) AWS authentication credentials used for accessing AWS services such as S3. If omitted, the system’s default credentials are used (for example, the IAM role and environment variables). (see [below for nested schema](#nestedblock--config--sources--amazon_s3--auth))
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--amazon_s3--tls))
+
+<a id="nestedblock--config--sources--amazon_s3--auth"></a>
+### Nested Schema for `config.sources.amazon_s3.auth`
+
+Optional:
+
+- `assume_role` (String) The Amazon Resource Name (ARN) of the role to assume.
+- `external_id` (String) A unique identifier for cross-account role assumption.
+- `session_name` (String) A session identifier used for logging and tracing the assumed role session.
+
+
+<a id="nestedblock--config--sources--amazon_s3--tls"></a>
+### Nested Schema for `config.sources.amazon_s3.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
 
 <a id="nestedblock--config--sources--datadog_agent"></a>
 ### Nested Schema for `config.sources.datadog_agent`
@@ -333,6 +468,56 @@ Required:
 
 <a id="nestedblock--config--sources--kafka--tls"></a>
 ### Nested Schema for `config.sources.kafka.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--sources--splunk_hec"></a>
+### Nested Schema for `config.sources.splunk_hec`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+
+Optional:
+
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--splunk_hec--tls))
+
+<a id="nestedblock--config--sources--splunk_hec--tls"></a>
+### Nested Schema for `config.sources.splunk_hec.tls`
+
+Required:
+
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
+
+Optional:
+
+- `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
+
+
+
+<a id="nestedblock--config--sources--splunk_tcp"></a>
+### Nested Schema for `config.sources.splunk_tcp`
+
+Required:
+
+- `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).
+
+Optional:
+
+- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--splunk_tcp--tls))
+
+<a id="nestedblock--config--sources--splunk_tcp--tls"></a>
+### Nested Schema for `config.sources.splunk_tcp.tls`
 
 Required:
 
