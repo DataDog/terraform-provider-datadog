@@ -837,7 +837,7 @@ resource "datadog_observability_pipeline" "generate_metrics" {
     processors {
       generate_datadog_metrics {
         id      = "generate-metrics-1"
-        include = "env:metrics"
+        include = "*"
         inputs  = ["source-1"]
 
         metrics {
