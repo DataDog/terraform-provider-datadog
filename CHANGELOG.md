@@ -1,3 +1,11 @@
+## 3.60.1 (April 17, 2025)
+
+### IMPROVEMENTS
+* [slo_query_type] bump datadog-api-client-go v2.37.1 by @pablito-perez in https://github.com/DataDog/terraform-provider-datadog/pull/2967
+
+
+**Full Changelog**: https://github.com/DataDog/terraform-provider-datadog/compare/v3.60.0...v3.60.1
+
 ## 3.60.0 (April 16, 2025)
 
 ### BUGFIXES
