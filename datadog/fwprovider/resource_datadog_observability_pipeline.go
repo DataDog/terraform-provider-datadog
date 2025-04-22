@@ -284,7 +284,7 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Description: "SASL authentication settings.",
 											Attributes: map[string]schema.Attribute{
 												"mechanism": schema.StringAttribute{
-													Required:    true,
+													Optional:    true, // must be optional to make the block optional
 													Description: "SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512).",
 													Validators: []validator.String{
 														stringvalidator.OneOf("PLAIN", "SCRAM-SHA-256", "SCRAM-SHA-512"),
