@@ -321,6 +321,10 @@ Required:
 - `id` (String) The unique identifier for this component. Used to reference this component in other parts of the pipeline (for example, as the `input` to downstream components).
 - `include` (String) A Datadog search query used to determine which logs this processor targets.
 - `inputs` (List of String) A list of component IDs whose output is used as the `input` for this component.
+
+Optional:
+
+- `percentage` (Number) The percentage of logs to sample.
 - `rate` (Number) Number of events to sample (1 in N).
 
 
@@ -344,18 +348,15 @@ Required:
 
 Optional:
 
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--datadog_agent--tls))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--datadog_agent--tls))
 
 <a id="nestedblock--config--sources--datadog_agent--tls"></a>
 ### Nested Schema for `config.sources.datadog_agent.tls`
 
-Required:
-
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
-
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
 
@@ -369,18 +370,15 @@ Required:
 
 Optional:
 
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--fluent--tls))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--fluent--tls))
 
 <a id="nestedblock--config--sources--fluent--tls"></a>
 ### Nested Schema for `config.sources.fluent.tls`
 
-Required:
-
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
-
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
 
@@ -396,18 +394,15 @@ Required:
 
 Optional:
 
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--http_server--tls))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--http_server--tls))
 
 <a id="nestedblock--config--sources--http_server--tls"></a>
 ### Nested Schema for `config.sources.http_server.tls`
 
-Required:
-
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
-
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
 
 
@@ -425,7 +420,7 @@ Optional:
 
 - `librdkafka_option` (Block List) Advanced librdkafka client configuration options. (see [below for nested schema](#nestedblock--config--sources--kafka--librdkafka_option))
 - `sasl` (Block, Optional) SASL authentication settings. (see [below for nested schema](#nestedblock--config--sources--kafka--sasl))
-- `tls` (Block List) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--kafka--tls))
+- `tls` (Block, Optional) Configuration for enabling TLS encryption between the pipeline component and external services. (see [below for nested schema](#nestedblock--config--sources--kafka--tls))
 
 <a id="nestedblock--config--sources--kafka--librdkafka_option"></a>
 ### Nested Schema for `config.sources.kafka.librdkafka_option`
@@ -439,7 +434,7 @@ Required:
 <a id="nestedblock--config--sources--kafka--sasl"></a>
 ### Nested Schema for `config.sources.kafka.sasl`
 
-Required:
+Optional:
 
 - `mechanism` (String) SASL mechanism to use (e.g., PLAIN, SCRAM-SHA-256, SCRAM-SHA-512). Valid values are `PLAIN`, `SCRAM-SHA-256`, `SCRAM-SHA-512`.
 
@@ -447,11 +442,8 @@ Required:
 <a id="nestedblock--config--sources--kafka--tls"></a>
 ### Nested Schema for `config.sources.kafka.tls`
 
-Required:
-
-- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
-
 Optional:
 
 - `ca_file` (String) Path to the Certificate Authority (CA) file used to validate the server’s TLS certificate.
+- `crt_file` (String) Path to the TLS client certificate file used to authenticate the pipeline component with upstream or downstream services.
 - `key_file` (String) Path to the private key file associated with the TLS client certificate. Used for mutual TLS authentication.
