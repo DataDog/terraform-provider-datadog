@@ -45,7 +45,7 @@ resource "datadog_monitor_notification_rule" "foo" {
 
 Required:
 
-- `tags` (Set of String) Tags that all target monitors must match.
+- `tags` (Set of String) All tags that target monitors must match.
 
 ## Import
 

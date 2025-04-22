@@ -6,6 +6,7 @@ import (
 	"github.com/DataDog/datadog-api-client-go/v2/api/datadogV2"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/resourcevalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	frameworkPath "github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -74,6 +75,9 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 				Required:    true,
 				ElementType: types.StringType,
 				Description: "List of recipients to notify.",
+				Validators: []validator.Set{
+					setvalidator.SizeAtLeast(1),
+				},
 			},
 		},
 		Blocks: map[string]schema.Block{
@@ -82,7 +86,10 @@ func (r *MonitorNotificationRuleResource) Schema(_ context.Context, _ resource.S
 					"tags": schema.SetAttribute{
 						Required:    true,
 						ElementType: types.StringType,
-						Description: "Tags that all target monitors must match.",
+						Description: "All tags that target monitors must match.",
+						Validators: []validator.Set{
+							setvalidator.SizeAtLeast(1),
+						},
 					},
 				},
 				Validators: []validator.Object{
