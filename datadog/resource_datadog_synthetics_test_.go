@@ -724,8 +724,9 @@ func syntheticsTestOptionsList() *schema.Schema {
 								Optional:    true,
 							},
 							"escalation_message": {
-								Type:     schema.TypeString,
-								Optional: true,
+								Description: "A message to include with a re-notification.",
+								Type:        schema.TypeString,
+								Optional:    true,
 							},
 						},
 					},
@@ -876,8 +877,9 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 								Optional:    true,
 							},
 							"escalation_message": {
-								Type:     schema.TypeString,
-								Optional: true,
+								Description: "A message to include with a re-notification.",
+								Type:        schema.TypeString,
+								Optional:    true,
 							},
 							"renotify_occurrences": {
 								Description: "The number of times a monitor renotifies. It can only be set if `renotify_interval` is set.",
