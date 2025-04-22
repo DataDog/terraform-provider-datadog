@@ -1002,3 +1002,52 @@ resource "datadog_observability_pipeline" "azure_storage_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_microsoftSentinelDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.sentinel"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "sentinel" {
+  name = "sentinel-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      microsoft_sentinel {
+        id               = "sentinel-dest-1"
+        inputs           = ["source-1"]
+        client_id        = "a1b2c3d4-5678-90ab-cdef-1234567890ab"
+        tenant_id        = "abcdef12-3456-7890-abcd-ef1234567890"
+        dcr_immutable_id = "dcr-uuid-1234"
+        table            = "CustomLogsTable"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "sentinel-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.microsoft_sentinel.0.id", "sentinel-dest-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.microsoft_sentinel.0.client_id", "a1b2c3d4-5678-90ab-cdef-1234567890ab"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.microsoft_sentinel.0.tenant_id", "abcdef12-3456-7890-abcd-ef1234567890"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.microsoft_sentinel.0.dcr_immutable_id", "dcr-uuid-1234"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.microsoft_sentinel.0.table", "CustomLogsTable"),
+				),
+			},
+		},
+	})
+}

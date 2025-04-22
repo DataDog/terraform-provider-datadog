@@ -157,12 +157,13 @@ type fieldValue struct {
 // Destination models
 
 type destinationsModel struct {
-	DatadogLogsDestination   []*datadogLogsDestinationModel   `tfsdk:"datadog_logs"`
-	SumoLogicDestination     []*sumoLogicDestinationModel     `tfsdk:"sumo_logic"`
-	RsyslogDestination       []*rsyslogDestinationModel       `tfsdk:"rsyslog"`
-	SyslogNgDestination      []*syslogNgDestinationModel      `tfsdk:"syslog_ng"`
-	ElasticsearchDestination []*elasticsearchDestinationModel `tfsdk:"elasticsearch"`
-	AzureStorageDestination  []*azureStorageDestinationModel  `tfsdk:"azure_storage"`
+	DatadogLogsDestination       []*datadogLogsDestinationModel       `tfsdk:"datadog_logs"`
+	SumoLogicDestination         []*sumoLogicDestinationModel         `tfsdk:"sumo_logic"`
+	RsyslogDestination           []*rsyslogDestinationModel           `tfsdk:"rsyslog"`
+	SyslogNgDestination          []*syslogNgDestinationModel          `tfsdk:"syslog_ng"`
+	ElasticsearchDestination     []*elasticsearchDestinationModel     `tfsdk:"elasticsearch"`
+	AzureStorageDestination      []*azureStorageDestinationModel      `tfsdk:"azure_storage"`
+	MicrosoftSentinelDestination []*microsoftSentinelDestinationModel `tfsdk:"microsoft_sentinel"`
 }
 
 type datadogLogsDestinationModel struct {
@@ -223,6 +224,15 @@ type azureStorageDestinationModel struct {
 	Inputs        types.List   `tfsdk:"inputs"`
 	ContainerName types.String `tfsdk:"container_name"`
 	BlobPrefix    types.String `tfsdk:"blob_prefix"`
+}
+
+type microsoftSentinelDestinationModel struct {
+	Id             types.String `tfsdk:"id"`
+	Inputs         types.List   `tfsdk:"inputs"`
+	ClientId       types.String `tfsdk:"client_id"`
+	TenantId       types.String `tfsdk:"tenant_id"`
+	DcrImmutableId types.String `tfsdk:"dcr_immutable_id"`
+	Table          types.String `tfsdk:"table"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -771,6 +781,38 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"microsoft_sentinel": schema.ListNestedBlock{
+								Description: "The `microsoft_sentinel` destination forwards logs to Microsoft Sentinel.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"client_id": schema.StringAttribute{
+											Required:    true,
+											Description: "Azure AD client ID used for authentication.",
+										},
+										"tenant_id": schema.StringAttribute{
+											Required:    true,
+											Description: "Azure AD tenant ID.",
+										},
+										"dcr_immutable_id": schema.StringAttribute{
+											Required:    true,
+											Description: "The immutable ID of the Data Collection Rule (DCR).",
+										},
+										"table": schema.StringAttribute{
+											Required:    true,
+											Description: "The name of the Log Analytics table where logs will be sent.",
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -973,6 +1015,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, d := range state.Config.Destinations.AzureStorageDestination {
 		config.Destinations = append(config.Destinations, expandAzureStorageDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.MicrosoftSentinelDestination {
+		config.Destinations = append(config.Destinations, expandMicrosoftSentinelDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -1041,6 +1086,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if a := flattenAzureStorageDestination(ctx, d.AzureStorageDestination); a != nil {
 			outCfg.Destinations.AzureStorageDestination = append(outCfg.Destinations.AzureStorageDestination, a)
+		}
+		if m := flattenMicrosoftSentinelDestination(ctx, d.MicrosoftSentinelDestination); m != nil {
+			outCfg.Destinations.MicrosoftSentinelDestination = append(outCfg.Destinations.MicrosoftSentinelDestination, m)
 		}
 	}
 
@@ -1735,4 +1783,37 @@ func flattenAzureStorageDestination(ctx context.Context, src *datadogV2.AzureSto
 		out.BlobPrefix = types.StringValue(*v)
 	}
 	return out
+}
+
+func expandMicrosoftSentinelDestination(ctx context.Context, src *microsoftSentinelDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	obj := datadogV2.NewMicrosoftSentinelDestinationWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	obj.SetClientId(src.ClientId.ValueString())
+	obj.SetTenantId(src.TenantId.ValueString())
+	obj.SetDcrImmutableId(src.DcrImmutableId.ValueString())
+	obj.SetTable(src.Table.ValueString())
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		MicrosoftSentinelDestination: obj,
+	}
+}
+
+func flattenMicrosoftSentinelDestination(ctx context.Context, src *datadogV2.MicrosoftSentinelDestination) *microsoftSentinelDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	return &microsoftSentinelDestinationModel{
+		Id:             types.StringValue(src.GetId()),
+		Inputs:         inputs,
+		ClientId:       types.StringValue(src.GetClientId()),
+		TenantId:       types.StringValue(src.GetTenantId()),
+		DcrImmutableId: types.StringValue(src.GetDcrImmutableId()),
+		Table:          types.StringValue(src.GetTable()),
+	}
 }
