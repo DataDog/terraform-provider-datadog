@@ -956,3 +956,49 @@ resource "datadog_observability_pipeline" "elasticsearch_dest" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_azureStorageDestination(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.azure_storage_dest"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "azure_storage_dest" {
+  name = "azure-storage-dest-pipeline"
+
+  config {
+    sources {
+      datadog_agent {
+        id = "source-1"
+      }
+    }
+
+    processors {}
+
+    destinations {
+      azure_storage {
+        id             = "azure-storage-destination-1"
+        inputs         = ["source-1"]
+        container_name = "logs-container"
+        blob_prefix    = "logs/"
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "azure-storage-dest-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.azure_storage.0.id", "azure-storage-destination-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.azure_storage.0.inputs.0", "source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.azure_storage.0.container_name", "logs-container"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.azure_storage.0.blob_prefix", "logs/"),
+				),
+			},
+		},
+	})
+}

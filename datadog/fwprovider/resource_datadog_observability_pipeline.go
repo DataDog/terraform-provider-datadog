@@ -162,6 +162,7 @@ type destinationsModel struct {
 	RsyslogDestination       []*rsyslogDestinationModel       `tfsdk:"rsyslog"`
 	SyslogNgDestination      []*syslogNgDestinationModel      `tfsdk:"syslog_ng"`
 	ElasticsearchDestination []*elasticsearchDestinationModel `tfsdk:"elasticsearch"`
+	AzureStorageDestination  []*azureStorageDestinationModel  `tfsdk:"azure_storage"`
 }
 
 type datadogLogsDestinationModel struct {
@@ -215,6 +216,13 @@ type elasticsearchDestinationModel struct {
 	Inputs     types.List   `tfsdk:"inputs"`
 	ApiVersion types.String `tfsdk:"api_version"`
 	BulkIndex  types.String `tfsdk:"bulk_index"`
+}
+
+type azureStorageDestinationModel struct {
+	Id            types.String `tfsdk:"id"`
+	Inputs        types.List   `tfsdk:"inputs"`
+	ContainerName types.String `tfsdk:"container_name"`
+	BlobPrefix    types.String `tfsdk:"blob_prefix"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -739,6 +747,30 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"azure_storage": schema.ListNestedBlock{
+								Description: "The `azure_storage` destination forwards logs to an Azure Blob Storage container.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"container_name": schema.StringAttribute{
+											Required:    true,
+											Description: "The name of the Azure Blob Storage container to store logs in.",
+										},
+										"blob_prefix": schema.StringAttribute{
+											Optional:    true,
+											Description: "Optional prefix for blobs written to the container.",
+										},
+									},
+								},
+							},
 						},
 					},
 				},
@@ -938,6 +970,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, d := range state.Config.Destinations.ElasticsearchDestination {
 		config.Destinations = append(config.Destinations, expandElasticsearchDestination(ctx, d))
 	}
+	for _, d := range state.Config.Destinations.AzureStorageDestination {
+		config.Destinations = append(config.Destinations, expandAzureStorageDestination(ctx, d))
+	}
 
 	attrs.SetConfig(*config)
 	data.SetAttributes(*attrs)
@@ -1003,6 +1038,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if e := flattenElasticsearchDestination(ctx, d.ObservabilityPipelineElasticsearchDestination); e != nil {
 			outCfg.Destinations.ElasticsearchDestination = append(outCfg.Destinations.ElasticsearchDestination, e)
+		}
+		if a := flattenAzureStorageDestination(ctx, d.AzureStorageDestination); a != nil {
+			outCfg.Destinations.AzureStorageDestination = append(outCfg.Destinations.AzureStorageDestination, a)
 		}
 	}
 
@@ -1660,6 +1698,41 @@ func flattenElasticsearchDestination(ctx context.Context, src *datadogV2.Observa
 	}
 	if v, ok := src.GetBulkIndexOk(); ok {
 		out.BulkIndex = types.StringValue(*v)
+	}
+	return out
+}
+
+func expandAzureStorageDestination(ctx context.Context, src *azureStorageDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	obj := datadogV2.NewAzureStorageDestinationWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	obj.SetContainerName(src.ContainerName.ValueString())
+
+	if !src.BlobPrefix.IsNull() {
+		obj.SetBlobPrefix(src.BlobPrefix.ValueString())
+	}
+
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		AzureStorageDestination: obj,
+	}
+}
+
+func flattenAzureStorageDestination(ctx context.Context, src *datadogV2.AzureStorageDestination) *azureStorageDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &azureStorageDestinationModel{
+		Id:            types.StringValue(src.GetId()),
+		Inputs:        inputs,
+		ContainerName: types.StringValue(src.GetContainerName()),
+	}
+	if v, ok := src.GetBlobPrefixOk(); ok {
+		out.BlobPrefix = types.StringValue(*v)
 	}
 	return out
 }
