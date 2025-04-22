@@ -679,7 +679,7 @@ func syntheticsTestOptionsList() *schema.Schema {
 				"allow_insecure":   syntheticsAllowInsecureOption(),
 				"follow_redirects": syntheticsFollowRedirectsOption(),
 				"tick_every": {
-					Description:  "How often the test should run (in seconds).",
+					Description:  "How often the test should run (in seconds). Valid range is `30-604800` for API tests and `60-604800` for browser tests.",
 					Type:         schema.TypeInt,
 					Required:     true,
 					ValidateFunc: validation.IntBetween(30, 604800),
@@ -853,7 +853,7 @@ func syntheticsMobileTestOptionsList() *schema.Schema {
 				},
 				"retry": syntheticsTestOptionsRetry(),
 				"tick_every": {
-					Description:  "How often the test should run (in seconds).",
+					Description:  "How often the test should run (in seconds). Valid range is `300-604800` for mobile tests.",
 					Type:         schema.TypeInt,
 					Required:     true,
 					ValidateFunc: validation.IntBetween(300, 604800),
