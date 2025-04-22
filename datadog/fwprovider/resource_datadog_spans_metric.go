@@ -20,9 +20,8 @@ import (
 )
 
 var (
-	_ resource.ResourceWithConfigure      = &spansMetricResource{}
-	_ resource.ResourceWithImportState    = &spansMetricResource{}
-	_ resource.ResourceWithValidateConfig = &spansMetricResource{}
+	_ resource.ResourceWithConfigure   = &spansMetricResource{}
+	_ resource.ResourceWithImportState = &spansMetricResource{}
 )
 
 type spansMetricResource struct {
@@ -171,27 +170,6 @@ func (m includePercentilesUnknownSuppressor) PlanModifyBool(ctx context.Context,
 
 	if !req.StateValue.IsNull() && resp.PlanValue.IsUnknown() {
 		resp.PlanValue = req.StateValue
-	}
-}
-
-func (r *spansMetricResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	var data spansMetricModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	if data.Compute.IncludePercentiles.IsNull() || data.Compute.IncludePercentiles.IsUnknown() {
-		return
-	}
-
-	if data.Compute.AggregationType.ValueString() != "distribution" && !data.Compute.IncludePercentiles.IsUnknown() {
-		resp.Diagnostics.AddAttributeError(
-			frameworkPath.Root("compute").AtName("include_percentiles"),
-			"Invalid configuration",
-			"include_percentiles can only be set when aggregation_type is 'distribution'",
-		)
 	}
 }
 
