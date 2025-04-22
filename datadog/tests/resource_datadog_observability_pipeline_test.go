@@ -767,12 +767,19 @@ resource "datadog_observability_pipeline" "sample" {
         inputs  = ["source-1"]
         rate    = 10
       }
+
+      sample {
+        id      = "sample-2"
+        include = "*"
+        inputs  = ["sample-1"]
+        percentage    = 4.99
+      }	
     }
 
     destinations {
       datadog_logs {
         id     = "destination-1"
-        inputs = ["sample-1"]
+        inputs = ["sample-2"]
       }
     }
   }
@@ -783,6 +790,9 @@ resource "datadog_observability_pipeline" "sample" {
 					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.0.id", "sample-1"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.0.include", "*"),
 					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.0.rate", "10"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.id", "sample-2"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.include", "*"),
+					resource.TestCheckResourceAttr(resourceName, "config.processors.sample.1.percentage", "4.99"),
 				),
 			},
 		},

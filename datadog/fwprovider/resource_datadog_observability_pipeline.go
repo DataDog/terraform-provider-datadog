@@ -182,10 +182,11 @@ type grokRuleModel struct {
 }
 
 type sampleProcessorModel struct {
-	Id      types.String `tfsdk:"id"`
-	Include types.String `tfsdk:"include"`
-	Inputs  types.List   `tfsdk:"inputs"`
-	Rate    types.Int64  `tfsdk:"rate"`
+	Id         types.String  `tfsdk:"id"`
+	Include    types.String  `tfsdk:"include"`
+	Inputs     types.List    `tfsdk:"inputs"`
+	Rate       types.Int64   `tfsdk:"rate"`
+	Percentage types.Float64 `tfsdk:"percentage"`
 }
 
 type fluentSourceModel struct {
@@ -669,8 +670,12 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 											Description: "A list of component IDs whose output is used as the `input` for this component.",
 										},
 										"rate": schema.Int64Attribute{
-											Required:    true,
+											Optional:    true,
 											Description: "Number of events to sample (1 in N).",
+										},
+										"percentage": schema.Float64Attribute{
+											Optional:    true,
+											Description: "The percentage of logs to sample.",
 										},
 									},
 								},
@@ -1459,7 +1464,12 @@ func expandSampleProcessor(ctx context.Context, p *sampleProcessorModel) datadog
 	p.Inputs.ElementsAs(ctx, &inputs, false)
 	proc.SetInputs(inputs)
 
-	proc.SetRate(p.Rate.ValueInt64())
+	if !p.Rate.IsNull() {
+		proc.SetRate(p.Rate.ValueInt64())
+	}
+	if !p.Percentage.IsNull() {
+		proc.SetPercentage(p.Percentage.ValueFloat64())
+	}
 
 	return datadogV2.ObservabilityPipelineConfigProcessorItem{
 		ObservabilityPipelineSampleProcessor: proc,
@@ -1473,12 +1483,25 @@ func flattenSampleProcessor(ctx context.Context, proc *datadogV2.ObservabilityPi
 
 	inputs, _ := types.ListValueFrom(ctx, types.StringType, proc.GetInputs())
 
-	return &sampleProcessorModel{
+	out := &sampleProcessorModel{
 		Id:      types.StringValue(proc.GetId()),
 		Include: types.StringValue(proc.GetInclude()),
 		Inputs:  inputs,
-		Rate:    types.Int64Value(proc.GetRate()),
 	}
+
+	if rate, ok := proc.GetRateOk(); ok {
+		out.Rate = types.Int64Value(*rate)
+	} else {
+		out.Rate = types.Int64Null()
+	}
+
+	if pct, ok := proc.GetPercentageOk(); ok {
+		out.Percentage = types.Float64Value(*pct)
+	} else {
+		out.Percentage = types.Float64Null()
+	}
+
+	return out
 }
 
 func expandFluentSource(src *fluentSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
