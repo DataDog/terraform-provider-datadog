@@ -763,3 +763,52 @@ resource "datadog_observability_pipeline" "rsyslog_source" {
 		},
 	})
 }
+
+func TestAccDatadogObservabilityPipeline_syslogNgSource(t *testing.T) {
+	_, providers, accProviders := testAccFrameworkMuxProviders(context.Background(), t)
+	resourceName := "datadog_observability_pipeline.syslogng_source"
+
+	resource.Test(t, resource.TestCase{
+		ProtoV5ProviderFactories: accProviders,
+		CheckDestroy:             testAccCheckDatadogPipelinesDestroy(providers.frameworkProvider),
+		Steps: []resource.TestStep{
+			{
+				Config: `
+resource "datadog_observability_pipeline" "syslogng_source" {
+  name = "syslogng-source-pipeline"
+
+  config {
+    sources {
+      syslog_ng {
+        id   = "syslogng-source-1"
+        mode = "udp"
+
+        tls {
+          crt_file = "/etc/certs/syslogng.crt"
+        }
+      }
+    }
+
+    processors {}
+
+    destinations {
+      datadog_logs {
+        id     = "destination-1"
+        inputs = ["syslogng-source-1"]
+      }
+    }
+  }
+}
+`,
+				Check: resource.ComposeTestCheckFunc(
+					testAccCheckDatadogPipelinesExists(providers.frameworkProvider),
+					resource.TestCheckResourceAttr(resourceName, "name", "syslogng-source-pipeline"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.syslog_ng.0.id", "syslogng-source-1"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.syslog_ng.0.mode", "udp"),
+					resource.TestCheckResourceAttr(resourceName, "config.sources.syslog_ng.0.tls.crt_file", "/etc/certs/syslogng.crt"),
+					resource.TestCheckResourceAttr(resourceName, "config.destinations.datadog_logs.0.inputs.0", "syslogng-source-1"),
+				),
+			},
+		},
+	})
+}

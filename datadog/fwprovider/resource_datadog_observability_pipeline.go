@@ -43,6 +43,7 @@ type sourcesModel struct {
 	DatadogAgentSource []*datadogAgentSourceModel `tfsdk:"datadog_agent"`
 	KafkaSource        []*kafkaSourceModel        `tfsdk:"kafka"`
 	RsyslogSource      []*rsyslogSourceModel      `tfsdk:"rsyslog"`
+	SyslogNgSource     []*syslogNgSourceModel     `tfsdk:"syslog_ng"`
 }
 
 // / Source models
@@ -185,6 +186,12 @@ type rsyslogSourceModel struct {
 	Tls  *tlsModel    `tfsdk:"tls"`
 }
 
+type syslogNgSourceModel struct {
+	Id   types.String `tfsdk:"id"`
+	Mode types.String `tfsdk:"mode"`
+	Tls  *tlsModel    `tfsdk:"tls"`
+}
+
 func NewObservabilitPipelineResource() resource.Resource {
 	return &observabilityPipelineResource{}
 }
@@ -282,6 +289,24 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 							},
 							"rsyslog": schema.ListNestedBlock{
 								Description: "The `rsyslog` source listens for logs over TCP or UDP from an `rsyslog` server using the syslog protocol.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component. Used to reference this component in other parts of the pipeline (e.g., as input to downstream components).",
+										},
+										"mode": schema.StringAttribute{
+											Optional:    true,
+											Description: "Protocol used by the syslog source to receive messages.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
+							"syslog_ng": schema.ListNestedBlock{
+								Description: "The `syslog_ng` source listens for logs over TCP or UDP from a `syslog-ng` server using the syslog protocol.",
 								NestedObject: schema.NestedBlockObject{
 									Attributes: map[string]schema.Attribute{
 										"id": schema.StringAttribute{
@@ -778,6 +803,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, s := range state.Config.Sources.RsyslogSource {
 		config.Sources = append(config.Sources, expandRsyslogSource(s))
 	}
+	for _, s := range state.Config.Sources.SyslogNgSource {
+		config.Sources = append(config.Sources, expandSyslogNgSource(s))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -831,6 +859,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if r := flattenRsyslogSource(src.ObservabilityPipelineRsyslogSource); r != nil {
 			outCfg.Sources.RsyslogSource = append(outCfg.Sources.RsyslogSource, r)
+		}
+		if s := flattenSyslogNgSource(src.ObservabilityPipelineSyslogNgSource); s != nil {
+			outCfg.Sources.SyslogNgSource = append(outCfg.Sources.SyslogNgSource, s)
 		}
 	}
 	for _, p := range cfg.GetProcessors() {
@@ -1362,6 +1393,37 @@ func flattenRsyslogSource(src *datadogV2.ObservabilityPipelineRsyslogSource) *rs
 		return nil
 	}
 	out := &rsyslogSourceModel{
+		Id: types.StringValue(src.GetId()),
+	}
+	if v, ok := src.GetModeOk(); ok {
+		out.Mode = types.StringValue(string(*v))
+	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+	return out
+}
+
+func expandSyslogNgSource(src *syslogNgSourceModel) datadogV2.ObservabilityPipelineConfigSourceItem {
+	obj := datadogV2.NewObservabilityPipelineSyslogNgSourceWithDefaults()
+	obj.SetId(src.Id.ValueString())
+	if !src.Mode.IsNull() {
+		obj.SetMode(datadogV2.ObservabilityPipelineSyslogSourceMode(src.Mode.ValueString()))
+	}
+	if src.Tls != nil {
+		obj.Tls = expandTls(src.Tls)
+	}
+	return datadogV2.ObservabilityPipelineConfigSourceItem{
+		ObservabilityPipelineSyslogNgSource: obj,
+	}
+}
+
+func flattenSyslogNgSource(src *datadogV2.ObservabilityPipelineSyslogNgSource) *syslogNgSourceModel {
+	if src == nil {
+		return nil
+	}
+	out := &syslogNgSourceModel{
 		Id: types.StringValue(src.GetId()),
 	}
 	if v, ok := src.GetModeOk(); ok {
