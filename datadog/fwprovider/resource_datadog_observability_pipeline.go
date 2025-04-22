@@ -159,6 +159,7 @@ type fieldValue struct {
 type destinationsModel struct {
 	DatadogLogsDestination []*datadogLogsDestinationModel `tfsdk:"datadog_logs"`
 	SumoLogicDestination   []*sumoLogicDestinationModel   `tfsdk:"sumo_logic"`
+	RsyslogDestination     []*rsyslogDestinationModel     `tfsdk:"rsyslog"`
 }
 type datadogLogsDestinationModel struct {
 	Id     types.String `tfsdk:"id"`
@@ -190,6 +191,13 @@ type syslogNgSourceModel struct {
 	Id   types.String `tfsdk:"id"`
 	Mode types.String `tfsdk:"mode"`
 	Tls  *tlsModel    `tfsdk:"tls"`
+}
+
+type rsyslogDestinationModel struct {
+	Id        types.String `tfsdk:"id"`
+	Inputs    types.List   `tfsdk:"inputs"`
+	Keepalive types.Int64  `tfsdk:"keepalive"`
+	Tls       *tlsModel    `tfsdk:"tls"`
 }
 
 func NewObservabilitPipelineResource() resource.Resource {
@@ -644,6 +652,29 @@ func (r *observabilityPipelineResource) Schema(_ context.Context, _ resource.Sch
 									},
 								},
 							},
+							"rsyslog": schema.ListNestedBlock{
+								Description: "The `rsyslog` destination forwards logs to an external `rsyslog` server over TCP or UDP using the syslog protocol.",
+								NestedObject: schema.NestedBlockObject{
+									Attributes: map[string]schema.Attribute{
+										"id": schema.StringAttribute{
+											Required:    true,
+											Description: "The unique identifier for this component.",
+										},
+										"inputs": schema.ListAttribute{
+											Required:    true,
+											Description: "A list of component IDs whose output is used as the `input` for this component.",
+											ElementType: types.StringType,
+										},
+										"keepalive": schema.Int64Attribute{
+											Optional:    true,
+											Description: "Optional socket keepalive duration in milliseconds.",
+										},
+									},
+									Blocks: map[string]schema.Block{
+										"tls": tlsSchema(),
+									},
+								},
+							},
 						},
 					},
 				},
@@ -806,6 +837,9 @@ func expandPipelineRequest(ctx context.Context, state *observabilityPipelineMode
 	for _, s := range state.Config.Sources.SyslogNgSource {
 		config.Sources = append(config.Sources, expandSyslogNgSource(s))
 	}
+	for _, d := range state.Config.Destinations.RsyslogDestination {
+		config.Destinations = append(config.Destinations, expandRsyslogDestination(ctx, d))
+	}
 
 	// Processors
 	for _, p := range state.Config.Processors.FilterProcessor {
@@ -890,6 +924,9 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 		if s := flattenSumoLogicDestination(ctx, d.ObservabilityPipelineSumoLogicDestination); s != nil {
 			outCfg.Destinations.SumoLogicDestination = append(outCfg.Destinations.SumoLogicDestination, s)
+		}
+		if r := flattenRsyslogDestination(ctx, d.ObservabilityPipelineRsyslogDestination); r != nil {
+			outCfg.Destinations.RsyslogDestination = append(outCfg.Destinations.RsyslogDestination, r)
 		}
 	}
 
@@ -1428,6 +1465,44 @@ func flattenSyslogNgSource(src *datadogV2.ObservabilityPipelineSyslogNgSource) *
 	}
 	if v, ok := src.GetModeOk(); ok {
 		out.Mode = types.StringValue(string(*v))
+	}
+	if src.Tls != nil {
+		tls := flattenTls(src.Tls)
+		out.Tls = &tls
+	}
+	return out
+}
+
+func expandRsyslogDestination(ctx context.Context, src *rsyslogDestinationModel) datadogV2.ObservabilityPipelineConfigDestinationItem {
+	obj := datadogV2.NewObservabilityPipelineRsyslogDestinationWithDefaults()
+	obj.SetId(src.Id.ValueString())
+
+	var inputs []string
+	src.Inputs.ElementsAs(ctx, &inputs, false)
+	obj.SetInputs(inputs)
+
+	if !src.Keepalive.IsNull() {
+		obj.SetKeepalive(src.Keepalive.ValueInt64())
+	}
+	if src.Tls != nil {
+		obj.Tls = expandTls(src.Tls)
+	}
+	return datadogV2.ObservabilityPipelineConfigDestinationItem{
+		ObservabilityPipelineRsyslogDestination: obj,
+	}
+}
+
+func flattenRsyslogDestination(ctx context.Context, src *datadogV2.ObservabilityPipelineRsyslogDestination) *rsyslogDestinationModel {
+	if src == nil {
+		return nil
+	}
+	inputs, _ := types.ListValueFrom(ctx, types.StringType, src.GetInputs())
+	out := &rsyslogDestinationModel{
+		Id:     types.StringValue(src.GetId()),
+		Inputs: inputs,
+	}
+	if v, ok := src.GetKeepaliveOk(); ok {
+		out.Keepalive = types.Int64Value(*v)
 	}
 	if src.Tls != nil {
 		tls := flattenTls(src.Tls)
