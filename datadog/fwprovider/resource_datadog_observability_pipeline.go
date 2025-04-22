@@ -31,7 +31,7 @@ type observabilityPipelineResource struct {
 type observabilityPipelineModel struct {
 	ID     types.String `tfsdk:"id"`
 	Name   types.String `tfsdk:"name"`
-	Config configModel  `tfsdk:"config"`
+	Config *configModel `tfsdk:"config"` // config must be a pointer to allow terraform import
 }
 
 type configModel struct {
@@ -766,7 +766,7 @@ func flattenPipeline(ctx context.Context, state *observabilityPipelineModel, res
 		}
 	}
 
-	state.Config = outCfg
+	state.Config = &outCfg
 }
 
 // ---------- Sources ----------
