@@ -61,7 +61,7 @@ func resourceDatadogSecurityMonitoringDefaultRule() *schema.Resource {
 										"options": {
 											Type:        schema.TypeList,
 											Optional:    true,
-											Description: "Options for the action.",
+											Description: "Options for the action",
 											MaxItems:    1,
 											Elem: &schema.Resource{
 												Schema: map[string]*schema.Schema{
